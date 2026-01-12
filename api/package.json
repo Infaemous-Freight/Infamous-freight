@@ -23,7 +23,7 @@
     "validate:env": "node scripts/env.validation.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.20.0",
+    "@anthropic-ai/sdk": "^0.71.2",
     "@infamous-freight/shared": "file:../packages/shared",
     "@json2csv/node": "^7.0.6",
     "@paypal/checkout-server-sdk": "^1.0.3",
