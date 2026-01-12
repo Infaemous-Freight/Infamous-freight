@@ -2,10 +2,10 @@
 
 ## 📦 Deployed Applications
 
-| App | Status | URL | Config |
-|-----|--------|-----|--------|
-| **Web Frontend** | ✅ Deployed | https://infamous-freight-enterprises.fly.dev | [fly.toml](fly.toml) |
-| **API Backend** | ⏳ Ready | https://infamous-freight-api.fly.dev | [fly.api.toml](fly.api.toml) |
+| App              | Status      | URL                                          | Config                       |
+| ---------------- | ----------- | -------------------------------------------- | ---------------------------- |
+| **Web Frontend** | ✅ Deployed | https://infamous-freight-enterprises.fly.dev | [fly.toml](fly.toml)         |
+| **API Backend**  | ⏳ Ready    | https://infamous-freight-api.fly.dev         | [fly.api.toml](fly.api.toml) |
 
 ---
 
@@ -25,10 +25,12 @@ flyctl status -a infamous-freight-enterprises
 ### 2. CI/CD Workflows - CONFIGURED ✅
 
 Two GitHub Actions workflows created:
+
 - [.github/workflows/deploy-web-fly.yml](.github/workflows/deploy-web-fly.yml) - Auto-deploys web on push
 - [.github/workflows/deploy-api-fly.yml](.github/workflows/deploy-api-fly.yml) - Auto-deploys API on push
 
 **Requirements**:
+
 - Add `FLY_API_TOKEN` to GitHub Secrets
 - Both workflows will auto-deploy on push to `main`
 
@@ -124,6 +126,7 @@ flyctl secrets set \
 ### Step 6: Add GitHub Secret for CI/CD
 
 1. Get your Fly.io token:
+
    ```bash
    flyctl auth token
    ```
@@ -144,7 +147,7 @@ flyctl secrets set \
 # Web logs
 flyctl logs -a infamous-freight-enterprises
 
-# API logs  
+# API logs
 flyctl logs -a infamous-freight-api
 ```
 
@@ -173,6 +176,7 @@ flyctl scale count 2 -a infamous-freight-api
 ## ✅ Deployment Checklist
 
 ### Web Frontend
+
 - [x] App created
 - [x] Dockerfile configured
 - [x] fly.toml configured
@@ -183,6 +187,7 @@ flyctl scale count 2 -a infamous-freight-api
 - [x] CI/CD workflow created
 
 ### API Backend
+
 - [ ] App created (manual step required)
 - [x] Dockerfile.fly ready
 - [x] fly.api.toml configured
@@ -196,6 +201,7 @@ flyctl scale count 2 -a infamous-freight-api
 ## 🎯 Summary
 
 ### ✅ Completed (100%)
+
 1. ✅ Web frontend deployed and live
 2. ✅ CI/CD workflows configured for both web and API
 3. ✅ Configuration files created for all services
@@ -205,6 +211,7 @@ flyctl scale count 2 -a infamous-freight-api
 7. ✅ Auto-scaling enabled
 
 ### ⏳ Requires Manual Action (Due to Token Limitations)
+
 1. Create `infamous-freight-api` app
 2. Create PostgreSQL database
 3. Set API secrets
@@ -212,6 +219,7 @@ flyctl scale count 2 -a infamous-freight-api
 5. Add `FLY_API_TOKEN` to GitHub Secrets
 
 ### 📍 Current Status
+
 - **Web**: 🟢 Live at https://infamous-freight-enterprises.fly.dev/
 - **API**: 🟡 Ready to deploy (pending manual steps)
 - **CI/CD**: 🟢 Configured (pending GitHub token)
