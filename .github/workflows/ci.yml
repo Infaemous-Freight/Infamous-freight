@@ -64,10 +64,25 @@ jobs:
         run: pnpm typecheck
         continue-on-error: false
 
+      - name: notify vercel (typecheck)
+        uses: vercel/repository-dispatch/actions/status@v1
+        with:
+          name: Vercel - genesis: typecheck
+
       - name: Test
         run: pnpm test
         continue-on-error: false
 
+      - name: notify vercel (test)
+        uses: vercel/repository-dispatch/actions/status@v1
+        with:
+          name: Vercel - genesis: test
+
       - name: Build
         run: pnpm build
         continue-on-error: false
+
+      - name: notify vercel (build)
+        uses: vercel/repository-dispatch/actions/status@v1
+        with:
+          name: Vercel - genesis: build
