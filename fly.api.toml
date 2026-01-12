@@ -1,18 +1,18 @@
-# fly.toml - Main configuration for Fly.io deployment
-app = "infamous-freight-enterprises"
+# fly.api.toml - Configuration for API Backend
+app = "infamous-freight-api"
 primary_region = "iad"
 kill_signal = "SIGINT"
 kill_timeout = "5s"
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = "Dockerfile.fly"
 
 [env]
-  PORT = "3000"
+  PORT = "4000"
   NODE_ENV = "production"
 
 [http_service]
-  internal_port = 3000
+  internal_port = 4000
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
@@ -25,7 +25,7 @@ kill_timeout = "5s"
     interval = "30s"
     method = "GET"
     timeout = "5s"
-    path = "/"
+    path = "/api/health"
 
   [http_service.concurrency]
     type = "requests"
@@ -36,3 +36,8 @@ kill_timeout = "5s"
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+# Metrics and monitoring
+[metrics]
+  port = 9091
+  path = "/metrics"
