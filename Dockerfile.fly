@@ -23,24 +23,23 @@ WORKDIR /app
 
 # Copy workspace files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY src/apps/api/package.json ./src/apps/api/package.json
-COPY src/packages/shared/package.json ./src/packages/shared/package.json
+COPY api/package.json ./api/package.json
+COPY packages/shared/package.json ./packages/shared/package.json
 
-# Install dependencies with frozen lockfile and cache mount
+# Install dependencies with frozen lockfile
 ENV HUSKY=0
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --filter infamous-freight-api... --frozen-lockfile --prod=false
+RUN pnpm install --filter api... --frozen-lockfile --prod=false
 
 # Stage 2: Build shared packages
 FROM base AS shared-builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/src/packages/shared/node_modules ./src/packages/shared/node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY src/packages/shared ./src/packages/shared
+COPY packages/shared ./packages/shared
 
-WORKDIR /app/src/packages/shared
+WORKDIR /app/packages/shared
 RUN pnpm run build
 
 # Stage 3: Build application
@@ -49,19 +48,19 @@ WORKDIR /app
 
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/src/apps/api/node_modules ./src/apps/api/node_modules
+COPY --from=deps /app/api/node_modules ./api/node_modules
 
 # Copy built shared package
-COPY --from=shared-builder /app/src/packages/shared/dist ./src/packages/shared/dist
-COPY --from=shared-builder /app/src/packages/shared/package.json ./src/packages/shared/package.json
+COPY --from=shared-builder /app/packages/shared/dist ./packages/shared/dist
+COPY --from=shared-builder /app/packages/shared/package.json ./packages/shared/package.json
 
 # Copy source files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY src/apps/api ./src/apps/api
+COPY api ./api
 
 # Generate Prisma client and build
-WORKDIR /app/src/apps/api
-RUN pnpm run prisma:generate && pnpm run build
+WORKDIR /app/api
+RUN pnpm run prisma:generate
 
 # Stage 4: Production runtime
 FROM node:20-alpine AS runner
@@ -91,13 +90,13 @@ RUN addgroup -g 1001 -S nodejs && \
     chown -R nodejs:nodejs /app
 
 # Copy only necessary files for production
-COPY --from=builder --chown=nodejs:nodejs /app/src/apps/api/dist ./dist
-COPY --from=builder --chown=nodejs:nodejs /app/src/apps/api/prisma ./prisma
-COPY --from=builder --chown=nodejs:nodejs /app/src/apps/api/package.json ./package.json
+COPY --from=builder --chown=nodejs:nodejs /app/api/src ./src
+COPY --from=builder --chown=nodejs:nodejs /app/api/prisma ./prisma
+COPY --from=builder --chown=nodejs:nodejs /app/api/package.json ./package.json
 
 # Copy built shared package
-COPY --from=shared-builder --chown=nodejs:nodejs /app/src/packages/shared/dist /app/node_modules/@infamous-freight/shared/dist
-COPY --from=shared-builder --chown=nodejs:nodejs /app/src/packages/shared/package.json /app/node_modules/@infamous-freight/shared/package.json
+COPY --from=shared-builder --chown=nodejs:nodejs /app/packages/shared/dist ./node_modules/@infamous-freight/shared/dist
+COPY --from=shared-builder --chown=nodejs:nodejs /app/packages/shared/package.json ./node_modules/@infamous-freight/shared/package.json
 
 # Copy production node_modules
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
@@ -114,4 +113,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["node", "dist/server.js"]
+CMD ["node", "src/server.js"]

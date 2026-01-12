@@ -1,25 +1,27 @@
 /**
  * Stripe Payment Component
  * All payments route 100% to merchant account
- * 
+ *
  * Usage:
  * <StripePaymentForm amount={99.99} description="Premium Feature" />
  */
 
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { loadStripe } from '@stripe/js';
+import React, { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
   CardElement,
   useStripe,
   useElements,
-} from '@stripe/react-js';
+} from "@stripe/react-stripe-js";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-);
+const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+if (!publishableKey) {
+  throw new Error("Stripe publishable key is not configured");
+}
+const stripePromise = loadStripe(publishableKey);
 
 interface PaymentFormProps {
   amount: number;
@@ -47,7 +49,7 @@ function PaymentFormContent({
     e.preventDefault();
 
     if (!stripe || !elements) {
-      setError('Stripe not loaded');
+      setError("Stripe not loaded");
       return;
     }
 
@@ -56,21 +58,22 @@ function PaymentFormContent({
 
     try {
       // Step 1: Create payment intent on backend
-      const response = await fetch('/api/billing/create-payment-intent', {
-        method: 'POST',
+      const response = await fetch("/api/billing/create-payment-intent", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
           amount: amount.toString(),
-          currency: 'usd',
-          description: description || 'Payment from Infamous Freight Enterprises',
+          currency: "usd",
+          description:
+            description || "Payment from Infamous Freight Enterprises",
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create payment intent');
+        throw new Error("Failed to create payment intent");
       }
 
       const { clientSecret } = await response.json();
@@ -87,19 +90,19 @@ function PaymentFormContent({
       });
 
       if (result.error) {
-        setError(result.error.message || 'Payment failed');
-        onError?.(result.error.message || 'Payment failed');
-      } else if (result.paymentIntent.status === 'succeeded') {
+        setError(result.error.message || "Payment failed");
+        onError?.(result.error.message || "Payment failed");
+      } else if (result.paymentIntent.status === "succeeded") {
         setSuccess(true);
         onSuccess?.(result.paymentIntent.id);
         // Payment successful - 100% to your account
-        console.log('✅ Payment succeeded! 100% to your Stripe account');
+        console.log("✅ Payment succeeded! 100% to your Stripe account");
       } else {
-        setError('Payment processing failed. Please try again.');
-        onError?.('Payment processing failed');
+        setError("Payment processing failed. Please try again.");
+        onError?.("Payment processing failed");
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unknown error';
+      const message = err instanceof Error ? err.message : "Unknown error";
       setError(message);
       onError?.(message);
     } finally {
@@ -127,14 +130,14 @@ function PaymentFormContent({
           options={{
             style: {
               base: {
-                fontSize: '16px',
-                color: '#424770',
-                '::placeholder': {
-                  color: '#aab7c4',
+                fontSize: "16px",
+                color: "#424770",
+                "::placeholder": {
+                  color: "#aab7c4",
                 },
               },
               invalid: {
-                color: '#fa755a',
+                color: "#fa755a",
               },
             },
           }}
@@ -157,7 +160,7 @@ function PaymentFormContent({
         disabled={loading || !stripe}
         className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? 'Processing...' : `Pay $${amount.toFixed(2)}`}
+        {loading ? "Processing..." : `Pay $${amount.toFixed(2)}`}
       </button>
 
       <p className="text-xs text-gray-500 text-center">
@@ -202,11 +205,11 @@ export function StripeSubscriptionForm({
     setError(null);
 
     try {
-      const response = await fetch('/api/billing/create-subscription', {
-        method: 'POST',
+      const response = await fetch("/api/billing/create-subscription", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
           priceId,
@@ -214,21 +217,23 @@ export function StripeSubscriptionForm({
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create subscription');
+        throw new Error("Failed to create subscription");
       }
 
       const { subscriptionId, status } = await response.json();
 
-      if (status === 'active') {
+      if (status === "active") {
         setSuccess(true);
         onSuccess?.(subscriptionId);
         // Subscription successful - 100% to your account monthly
-        console.log('✅ Subscription active! 100% of recurring payments to your account');
+        console.log(
+          "✅ Subscription active! 100% of recurring payments to your account",
+        );
       } else {
-        throw new Error('Subscription not activated');
+        throw new Error("Subscription not activated");
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unknown error';
+      const message = err instanceof Error ? err.message : "Unknown error";
       setError(message);
       onError?.(message);
     } finally {
@@ -239,9 +244,7 @@ export function StripeSubscriptionForm({
   if (success) {
     return (
       <div className="p-4 bg-green-50 border border-green-200 rounded">
-        <p className="text-green-800">
-          ✅ Subscription activated! Thank you.
-        </p>
+        <p className="text-green-800">✅ Subscription activated! Thank you.</p>
         <p className="text-sm text-green-600 mt-2">
           (100% of your subscription goes to our account)
         </p>
@@ -269,7 +272,7 @@ export function StripeSubscriptionForm({
         disabled={loading}
         className="w-full bg-green-600 text-white py-2 rounded font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {loading ? 'Setting up...' : `Subscribe to ${planName}`}
+        {loading ? "Setting up..." : `Subscribe to ${planName}`}
       </button>
 
       <p className="text-xs text-gray-500 text-center">
@@ -288,9 +291,9 @@ export function RevenueStats() {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    fetch('/api/billing/revenue', {
+    fetch("/api/billing/revenue", {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
       .then((r) => r.json())
@@ -299,7 +302,7 @@ export function RevenueStats() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Failed to load revenue:', err);
+        console.error("Failed to load revenue:", err);
         setLoading(false);
       });
   }, []);
@@ -340,8 +343,8 @@ export function RevenueStats() {
 
       <div className="col-span-full bg-yellow-50 p-3 rounded border border-yellow-200">
         <p className="text-sm text-yellow-800">
-          💰 <strong>100% of all revenue goes to your Stripe account.</strong> No fees
-          applied by our platform.
+          💰 <strong>100% of all revenue goes to your Stripe account.</strong>{" "}
+          No fees applied by our platform.
         </p>
       </div>
     </div>

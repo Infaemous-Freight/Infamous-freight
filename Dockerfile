@@ -8,17 +8,20 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm@8.15.9
 
-# Copy package files
-COPY package.json pnpm-lock.yaml* ./
+# Copy workspace and package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY api/package.json ./api/
+COPY packages/shared/package.json ./packages/shared/
+COPY web/package.json ./web/
 
-# Install dependencies
+# Install ALL dependencies (including dev dependencies needed for build)
 RUN pnpm install --frozen-lockfile
 
 # Copy application code
 COPY . .
 
-# Build the application
-RUN pnpm build
+# Build the application (builds shared first, then api)
+RUN pnpm --filter @infamous-freight/shared build && pnpm --filter api build
 
 # Expose ports
 EXPOSE 3000 3001 8080

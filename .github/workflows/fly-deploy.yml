@@ -1,6 +1,14 @@
 name: Deploy API to Fly.io
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "packages/shared/**"
+      - "Dockerfile.fly"
+      - "fly.toml"
+      - ".github/workflows/fly-deploy.yml"
   workflow_dispatch:
   workflow_call:
 

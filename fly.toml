@@ -12,6 +12,13 @@ kill_timeout = "5s"
   PORT = "4000"
   NODE_ENV = "production"
 
+[build]
+  dockerfile = "api/Dockerfile"
+
+[env]
+  PORT = "4000"
+  NODE_ENV = "production"
+
 [http_service]
   internal_port = 4000
   force_https = true
@@ -34,7 +41,6 @@ kill_timeout = "5s"
     soft_limit = 200
 
 [[vm]]
-  memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
 

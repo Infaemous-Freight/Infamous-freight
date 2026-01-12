@@ -17,6 +17,8 @@ model Organization {
   apiKeys   ApiKey[]
   documents Document[]
   jobs      Job[]
+   stripeCustomerId String?  @unique
+   subscriptions    Subscription[]
   createdAt DateTime    @default(now())
 }
 
@@ -526,16 +528,20 @@ model Payment {
 model Subscription {
   id                       String   @id @default(cuid())
   userId                   String
+ organizationId           String?
+ organization             Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   stripeSubscriptionId     String   @unique
   stripeCustomerId         String
   stripePriceId            String
   status                   String   @default("active") // active, cancelled, past_due
   currentPeriodStart       DateTime?
   currentPeriodEnd         DateTime?
+ cancelAtPeriodEnd        Boolean  @default(false)
   createdAt                DateTime @default(now())
   updatedAt                DateTime @updatedAt
 
   @@index([userId])
+   @@index([organizationId])
   @@index([status])
   @@index([createdAt(sort: Desc)])
 }

@@ -1,0 +1,77 @@
+name: Post-Deploy Health
+
+on:
+  workflow_run:
+    workflows: ["Deploy Web to Vercel"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    name: Check Web and API Health
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Determine targets
+        id: targets
+        run: |
+          WEB_URL="${{ secrets.WEB_URL }}"
+          API_URL="${{ secrets.API_URL }}"
+          [ -z "$WEB_URL" ] && WEB_URL="https://infamous-freight-enterprises.vercel.app"
+          [ -z "$API_URL" ] && API_URL="https://infamous-freight-api.fly.dev/api/health"
+          echo "web_url=$WEB_URL" >> $GITHUB_OUTPUT
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+
+      - name: Check Web
+        id: web
+        run: |
+          URL="${{ steps.targets.outputs.web_url }}"
+          MAX=5
+          i=0
+          STATUS="timeout"
+          while [ $i -lt $MAX ]; do
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            echo "Attempt $((i+1))/$MAX: $URL -> HTTP $CODE"
+            if [ "$CODE" = "200" ]; then STATUS="ok"; break; fi
+            sleep 3
+            i=$((i+1))
+          done
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+
+      - name: Check API
+        id: api
+        run: |
+          URL="${{ steps.targets.outputs.api_url }}"
+          MAX=5
+          i=0
+          STATUS="timeout"
+          while [ $i -lt $MAX ]; do
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            echo "Attempt $((i+1))/$MAX: $URL -> HTTP $CODE"
+            if [ "$CODE" = "200" ]; then STATUS="ok"; break; fi
+            sleep 3
+            i=$((i+1))
+          done
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+
+      - name: Notify Vercel (web health)
+        uses: vercel/repository-dispatch/actions/status@v1
+        with:
+          name: Vercel - health: web ${{ steps.web.outputs.status }}
+
+      - name: Notify Vercel (api health)
+        uses: vercel/repository-dispatch/actions/status@v1
+        with:
+          name: Vercel - health: api ${{ steps.api.outputs.status }}
+
+      - name: Publish Health Summary
+        if: always()
+        run: |
+          echo "## 🔎 Post-Deploy Health" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Target | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Web | ${{ steps.web.outputs.status }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| API | ${{ steps.api.outputs.status }} |" >> $GITHUB_STEP_SUMMARY
