@@ -5,24 +5,24 @@ name: Platform Health Check
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # Every 5 minutes
-  workflow_dispatch:  # Manual trigger
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
   push:
-    branches: [main]  # Run on every deploy
+    branches: [main]
 
 jobs:
   health-check:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    
+
     steps:
       - name: Check Vercel Deployment
         id: vercel
         continue-on-error: true
         run: |
           RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 \
-            https://infamous-freight-enterprises.vercel.app/api/health || echo "000")
-          
+            https://infamous-freight-enterprises.vercel.app || echo "000")
+
           if [ "$RESPONSE" = "200" ] || [ "$RESPONSE" = "404" ]; then
             echo "status=✅ Operational" >> $GITHUB_OUTPUT
             echo "color=success" >> $GITHUB_OUTPUT
