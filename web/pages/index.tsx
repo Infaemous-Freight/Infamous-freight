@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2025 Infæmous Freight. All Rights Reserved.
+ * Proprietary and Confidential - See COPYRIGHT file for details.
+ * Page: Home / Dashboard
+ */
+
 import { ApiResponse } from "@infamous-freight/shared";
 import dynamic from "next/dynamic";
 

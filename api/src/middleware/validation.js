@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2025 Infæmous Freight. All Rights Reserved.
+ * Proprietary and Confidential - See COPYRIGHT file for details.
+ * Module: Request Validation Middleware
+ */
+
 const { body, param, query, validationResult } = require("express-validator");
 
 function validateString(field, opts = {}) {

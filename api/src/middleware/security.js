@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2025 Infæmous Freight. All Rights Reserved.
+ * Proprietary and Confidential - See COPYRIGHT file for details.
+ * Module: Security & Authentication Middleware
+ */
+
 const rateLimit = require("express-rate-limit");
 const jwt = require("jsonwebtoken");
 

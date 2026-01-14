@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2025 Infæmous Freight. All Rights Reserved.
+ * Proprietary and Confidential - See COPYRIGHT file for details.
+ * Module: AI Recommendation Service - Advanced Engine
+ */
+
 /**
  * AI-Powered Recommendation Service
  * Intelligent suggestions for services, routes, drivers, vehicles, and pricing

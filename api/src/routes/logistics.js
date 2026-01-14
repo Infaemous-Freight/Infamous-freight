@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2025 Infæmous Freight. All Rights Reserved.
+ * Proprietary and Confidential - See COPYRIGHT file for details.
+ * Module: Logistics Management API Routes
+ */
+
 const express = require('express');
 const router = express.Router();
 const { LogisticsService } = require('../services/logisticsService');

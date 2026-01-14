@@ -1,8 +1,14 @@
 {
   "name": "web",
-  "version": "0.1.0",
+  "version": "2.2.0",
   "private": true,
   "type": "module",
+  "license": "Proprietary",
+  "author": {
+    "name": "Santorio Djuan Miles",
+    "email": "237955567+MrMiless44@users.noreply.github.com"
+  },
+  "copyright": "Copyright © 2025 Infæmous Freight. All Rights Reserved.",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",

@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2025 Infæmous Freight. All Rights Reserved.
+ * Proprietary and Confidential - See COPYRIGHT file for details.
+ * Module: Logistics Service
+ */
+
 /**
  * Logistics Management Service
  * Comprehensive logistics operations including shipment tracking, warehouse management,

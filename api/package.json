@@ -1,9 +1,15 @@
 {
   "name": "infamous-freight-api",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "description": "REST API for freight management platform with authentication, billing, AI integration, and voice features",
   "main": "src/server.js",
   "type": "commonjs",
+  "license": "Proprietary",
+  "author": {
+    "name": "Santorio Djuan Miles",
+    "email": "237955567+MrMiless44@users.noreply.github.com"
+  },
+  "copyright": "Copyright © 2025 Infæmous Freight. All Rights Reserved.",
   "scripts": {
     "dev": "node src/server.js",
     "start": "NODE_ENV=production node src/server.js",

@@ -1,3 +1,9 @@
+/*
+ * Copyright © 2025 Infæmous Freight. All Rights Reserved.
+ * Proprietary and Confidential - See COPYRIGHT file for details.
+ * Module: Billing & Payment Processing API Routes
+ */
+
 const express = require('express');
 const { limiters, authenticate, requireScope, auditLog } = require('../middleware/security');
 const { validateString, validateEmail, handleValidationErrors } = require('../middleware/validation');

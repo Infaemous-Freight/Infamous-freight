@@ -1,10 +1,16 @@
 {
   "name": "@infamous-freight/shared",
-  "version": "0.0.0",
+  "version": "2.2.0",
   "private": true,
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "license": "Proprietary",
+  "author": {
+    "name": "Santorio Djuan Miles",
+    "email": "237955567+MrMiless44@users.noreply.github.com"
+  },
+  "copyright": "Copyright © 2025 Infæmous Freight. All Rights Reserved.",
   "files": [
     "dist"
   ],
