@@ -17,21 +17,22 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 
 ### Key Metrics
 
-| Metric | Value |
-|--------|-------|
-| **Loyalty Tiers** | 4 (Bronze, Silver, Gold, Platinum) |
-| **Bonus Categories** | 6 major programs |
-| **Earning Rate (Bronze)** | 1.0 points per $1 spent |
-| **Earning Rate (Platinum)** | 2.0 points per $1 spent |
-| **Maximum Annual Bonus Cap** | $100,000 USD |
-| **Minimum Redemption** | $5.00 USD |
-| **Support Tiers** | 4 (Email → Email+Chat → Premium → Concierge) |
+| Metric                       | Value                                        |
+| ---------------------------- | -------------------------------------------- |
+| **Loyalty Tiers**            | 4 (Bronze, Silver, Gold, Platinum)           |
+| **Bonus Categories**         | 6 major programs                             |
+| **Earning Rate (Bronze)**    | 1.0 points per $1 spent                      |
+| **Earning Rate (Platinum)**  | 2.0 points per $1 spent                      |
+| **Maximum Annual Bonus Cap** | $100,000 USD                                 |
+| **Minimum Redemption**       | $5.00 USD                                    |
+| **Support Tiers**            | 4 (Email → Email+Chat → Premium → Concierge) |
 
 ---
 
 ## 🏆 LOYALTY TIERS
 
 ### BRONZE - Entry Level
+
 **Automatic enrollment for all new customers**
 
 - **Requirements**: None (default tier)
@@ -50,6 +51,7 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 ---
 
 ### SILVER - Engaged Customers
+
 **For customers reaching $500+ spend or 1,000 points**
 
 - **Requirements**: 1,000 points OR $500 annual spend OR 25+ shipments
@@ -72,6 +74,7 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 ---
 
 ### GOLD - Loyal Customers
+
 **For customers reaching $2,500+ spend or 5,000 points**
 
 - **Requirements**: 5,000 points OR $2,500 annual spend OR 100+ shipments
@@ -98,6 +101,7 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 ---
 
 ### PLATINUM - Elite Customers
+
 **For customers reaching $7,500+ spend or 10,000 points**
 
 - **Requirements**: 10,000 points OR $7,500 annual spend OR 300+ shipments (ALL required)
@@ -130,6 +134,7 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 ### 1. REFERRAL BONUS PROGRAM
 
 #### Customer Referral Bonuses
+
 - **Referrer Bonus**: $50 per successful referral
 - **Referred Bonus**: $25 account credit (30-day validity)
 - **Tier Bonuses** (Referrer):
@@ -141,6 +146,7 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 - **Requirements**: Referred customer must complete first paid shipment
 
 #### Driver Referral Bonuses
+
 - **Referrer Bonus**: $100 per recruited driver
 - **Milestone Bonuses**:
   - 50 drivers: +$2,500
@@ -155,6 +161,7 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 ### 2. LOYALTY REWARDS PROGRAM
 
 **Points Accumulation**:
+
 - Base rate: 1.0 point per $1 spent
 - Multipliers by tier: 1.25x (Silver), 1.5x (Gold), 2.0x (Platinum)
 - Monthly bonuses: 100-500 points depending on tier
@@ -162,6 +169,7 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 - Annual bonuses: Up to 5,000 points (Platinum)
 
 **Points Redemption**:
+
 - Minimum: 50 points ($2.50 value)
 - Conversion rate: $0.05 per point
 - Expiry: 12-36 months depending on tier
@@ -169,35 +177,39 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 
 **Redemption Methods**:
 
-| Method | Conversion | Details |
-|--------|-----------|---------|
-| Account Credit | 1.0:1 | Instant, full value |
-| Free Shipment | 0.5:1 | $1 credit = $0.50 shipment value |
-| Discount Code | 0.8:1 | $1 credit = $0.80 discount |
-| Cashback | 0.75:1 | 5-day processing, $25 minimum |
+| Method         | Conversion | Details                          |
+| -------------- | ---------- | -------------------------------- |
+| Account Credit | 1.0:1      | Instant, full value              |
+| Free Shipment  | 0.5:1      | $1 credit = $0.50 shipment value |
+| Discount Code  | 0.8:1      | $1 credit = $0.80 discount       |
+| Cashback       | 0.75:1     | 5-day processing, $25 minimum    |
 
 ---
 
 ### 3. DRIVER PERFORMANCE BONUSES
 
 #### On-Time Delivery
+
 - 99-100%: $500/month
 - 95-98%: $250/month
 - 90-94%: $100/month
 - **Minimum**: 50 shipments/month
 
 #### Customer Satisfaction
+
 - 4.9-5.0 rating: $300/month
 - 4.7-4.8 rating: $150/month
 - 4.5-4.6 rating: $75/month
 - **Minimum**: 20 ratings/month
 
 #### Safety Record
+
 - Zero accidents (3 months): $250
 - Zero accidents (6 months): $750
 - Zero accidents (12 months): $2,000
 
 #### Volume Incentive
+
 - 100-250 shipments: $200 + 2%
 - 251-500 shipments: $500 + 3%
 - 501-1,000 shipments: $1,000 + 4%
@@ -208,53 +220,57 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 ### 4. MILESTONE BONUSES
 
 #### Shipment Milestones
-| Milestone | Bonus |
-|-----------|-------|
-| 10 shipments | $10 |
-| 25 shipments | $25 |
-| 50 shipments | $50 |
-| 100 shipments | $100 |
-| 250 shipments | $250 |
-| 500 shipments | $500 |
+
+| Milestone       | Bonus  |
+| --------------- | ------ |
+| 10 shipments    | $10    |
+| 25 shipments    | $25    |
+| 50 shipments    | $50    |
+| 100 shipments   | $100   |
+| 250 shipments   | $250   |
+| 500 shipments   | $500   |
 | 1,000 shipments | $1,000 |
 
 #### Volume Milestones
-| Milestone | Bonus |
-|-----------|-------|
-| $500 spent | $50 |
-| $1,000 spent | $100 |
-| $5,000 spent | $500 |
+
+| Milestone     | Bonus  |
+| ------------- | ------ |
+| $500 spent    | $50    |
+| $1,000 spent  | $100   |
+| $5,000 spent  | $500   |
 | $10,000 spent | $1,000 |
 | $25,000 spent | $2,500 |
 | $50,000 spent | $5,000 |
 
 #### Tenure Milestones
-| Milestone | Bonus |
-|-----------|-------|
-| 3 months active | $25 |
-| 6 months active | $75 |
-| 1 year active | $200 |
-| 2 years active | $500 |
-| 5 years active | $1,500 |
+
+| Milestone       | Bonus  |
+| --------------- | ------ |
+| 3 months active | $25    |
+| 6 months active | $75    |
+| 1 year active   | $200   |
+| 2 years active  | $500   |
+| 5 years active  | $1,500 |
 
 ---
 
 ### 5. PROMOTIONAL BONUSES (Limited-Time)
 
-| Campaign | Period | Bonus | Offer |
-|----------|--------|-------|-------|
-| New Year | Jan 1-31 | $50 | First shipment bonus |
-| Spring Refresh | Mar 1-Apr 30 | 1.5x | Double points |
-| Summer Shipping | Jun 1-Aug 31 | 5% | Volume bonus |
-| Holiday | Nov 1-Dec 31 | $150 | Seasonal special |
-| Flash Deals | Weekly | $25 | Random bonuses |
-| Birthday | Monthly | 50-500 | Tier-based gifts |
+| Campaign        | Period       | Bonus  | Offer                |
+| --------------- | ------------ | ------ | -------------------- |
+| New Year        | Jan 1-31     | $50    | First shipment bonus |
+| Spring Refresh  | Mar 1-Apr 30 | 1.5x   | Double points        |
+| Summer Shipping | Jun 1-Aug 31 | 5%     | Volume bonus         |
+| Holiday         | Nov 1-Dec 31 | $150   | Seasonal special     |
+| Flash Deals     | Weekly       | $25    | Random bonuses       |
+| Birthday        | Monthly      | 50-500 | Tier-based gifts     |
 
 ---
 
 ### 6. ENTERPRISE BONUSES
 
 #### Volume Commitment
+
 - **$10k commitment**: $500 bonus + 5% discount
 - **$25k commitment**: $1,500 bonus + 10% discount
 - **$50k commitment**: $3,000 bonus + 15% discount
@@ -262,10 +278,12 @@ The Infamous Freight Bonus & Rewards System is a **comprehensive, multi-tier loy
 - **$250k+ commitment**: $20,000 bonus + 25% discount
 
 #### Custom Integration
+
 - **Bonus**: $2,500
 - **Includes**: Custom API setup, webhook support, white-label options
 
 #### Quarterly Performance Bonuses
+
 - Based on: Volume growth, customer retention, referral success
 - Frequency: Quarterly reviews with dedicated manager
 
@@ -288,9 +306,11 @@ api/src/
 ### Core Services
 
 #### BonusEngine (`bonusEngine.js`)
+
 **Responsibilities**: Calculate all bonus types and totals
 
 **Key Methods**:
+
 - `calculateReferralBonus(referralDetails)` - Referral bonus amounts
 - `calculateLoyaltyPoints(purchaseDetails)` - Points earned
 - `calculateDriverPerformanceBonus(driverMetrics)` - Performance rewards
@@ -301,9 +321,11 @@ api/src/
 - `validateBonusRedemption(redemptionRequest)` - Redemption validation
 
 #### LoyaltyProgram (`loyaltyProgram.js`)
+
 **Responsibilities**: Manage tier progression and member lifecycle
 
 **Key Methods**:
+
 - `enrollCustomer(customerId, initialTier)` - New member setup
 - `recordActivity(customerId, activity)` - Track customer activities
 - `checkTierUpgrade(customerStats)` - Check upgrade eligibility
@@ -324,9 +346,9 @@ api/src/
 const bonusEngine = new BonusEngine();
 
 const result = await bonusEngine.calculateReferralBonus({
-  type: 'customer',
-  referrerInfo: { loyaltyTier: 'gold' },
-  referredInfo: { email: 'customer@example.com' },
+  type: "customer",
+  referrerInfo: { loyaltyTier: "gold" },
+  referredInfo: { email: "customer@example.com" },
   shipmentCount: 1, // Referred customer completed first shipment
 });
 
@@ -343,9 +365,9 @@ const result = await bonusEngine.calculateReferralBonus({
 
 ```javascript
 const result = await bonusEngine.calculateLoyaltyPoints({
-  amount: 250.00,
-  customerId: 'cust_123',
-  loyaltyTier: 'silver',
+  amount: 250.0,
+  customerId: "cust_123",
+  loyaltyTier: "silver",
   isSubscriptionRenewal: true,
   promoCode: null,
 });
@@ -383,10 +405,7 @@ const result = await bonusEngine.determineLoyaltyTier({
 ```javascript
 const loyaltyProgram = new LoyaltyProgram();
 
-const enrollment = await loyaltyProgram.enrollCustomer(
-  'cust_456',
-  'bronze'
-);
+const enrollment = await loyaltyProgram.enrollCustomer("cust_456", "bronze");
 
 // Result:
 // {
@@ -402,18 +421,15 @@ const enrollment = await loyaltyProgram.enrollCustomer(
 ### Example 5: Generate Loyalty Report
 
 ```javascript
-const report = await loyaltyProgram.generateLoyaltyReport(
-  'cust_789',
-  {
-    currentTier: 'silver',
-    points: 2340,
-    pointsBalance: 1650,
-    lifetimeSpend: 1875,
-    totalShipments: 45,
-    membershipMonths: 8,
-    recentActivityDays: 12,
-  }
-);
+const report = await loyaltyProgram.generateLoyaltyReport("cust_789", {
+  currentTier: "silver",
+  points: 2340,
+  pointsBalance: 1650,
+  lifetimeSpend: 1875,
+  totalShipments: 45,
+  membershipMonths: 8,
+  recentActivityDays: 12,
+});
 
 // Result includes:
 // - Tier status with benefits
@@ -429,6 +445,7 @@ const report = await loyaltyProgram.generateLoyaltyReport(
 ## 🛡️ ANTI-FRAUD MEASURES
 
 ### Detection Rules
+
 - Unusual activity patterns
 - Multiple accounts from same IP
 - Rapid redemption spikes
@@ -436,12 +453,14 @@ const report = await loyaltyProgram.generateLoyaltyReport(
 - Unusual volume surges
 
 ### Verification Requirements
+
 - Phone number verification
 - Email verification
 - Address verification
 - Account age minimums for certain bonuses
 
 ### Suspension Conditions
+
 - Fraud detected
 - Terms violations
 - Multiple infractions
@@ -452,6 +471,7 @@ const report = await loyaltyProgram.generateLoyaltyReport(
 ## 📊 ANALYTICS & REPORTING
 
 ### Key Metrics Tracked
+
 - Total bonuses issued
 - Total bonuses redeemed
 - Average bonus per customer
@@ -462,6 +482,7 @@ const report = await loyaltyProgram.generateLoyaltyReport(
 - Points redemption rate
 
 ### Reporting Frequency
+
 - Daily bonus summaries
 - Weekly tier migration reports
 - Monthly campaign performance
@@ -473,12 +494,14 @@ const report = await loyaltyProgram.generateLoyaltyReport(
 ## 🔗 INTEGRATION POINTS
 
 ### Referral API Endpoints
+
 ```
 POST /api/bonuses/referral
 GET  /api/bonuses/referral/:code
 ```
 
 ### Loyalty Endpoints
+
 ```
 GET  /api/loyalty/tier/:customerId
 POST /api/loyalty/enroll
@@ -487,6 +510,7 @@ GET  /api/loyalty/report/:customerId
 ```
 
 ### Bonus Endpoints
+
 ```
 GET  /api/bonuses/balance/:customerId
 POST /api/bonuses/claim/:bonusId
@@ -498,15 +522,18 @@ GET  /api/bonuses/performance
 ## 📈 PERFORMANCE TARGETS
 
 ### Customer Acquisition
+
 - **Target**: 30% of new customers become Silver tier within 90 days
 - **Referral Conversion**: 25% of referral codes generate revenue
 
 ### Retention
+
 - **Silver Retention**: 85% month-over-month
 - **Gold Retention**: 92% month-over-month
 - **Platinum Retention**: 98% month-over-month
 
 ### Engagement
+
 - **Points Redemption Rate**: 60% of earned points redeemed annually
 - **Average Customer Lifetime Value**: $8,500 (Silver+), $25,000 (Gold+)
 
@@ -515,18 +542,20 @@ GET  /api/bonuses/performance
 ## ⚙️ CONFIGURATION
 
 ### Global Settings
-| Setting | Value |
-|---------|-------|
-| **Version** | 2026.01 |
-| **Currency** | USD |
-| **Max Monthly Bonus** | $10,000 |
-| **Max Annual Bonus** | $100,000 |
-| **Automated Execution** | Enabled |
-| **Notifications** | Enabled |
-| **Dashboard** | Visible to all tiers |
-| **Support Email** | bonuses@infamousfreight.com |
+
+| Setting                 | Value                       |
+| ----------------------- | --------------------------- |
+| **Version**             | 2026.01                     |
+| **Currency**            | USD                         |
+| **Max Monthly Bonus**   | $10,000                     |
+| **Max Annual Bonus**    | $100,000                    |
+| **Automated Execution** | Enabled                     |
+| **Notifications**       | Enabled                     |
+| **Dashboard**           | Visible to all tiers        |
+| **Support Email**       | bonuses@infamousfreight.com |
 
 ### Regional Overrides
+
 - Bonuses calculated in local currency with USD conversion
 - Regional multipliers applied to base amounts
 - Tier requirements adjusted for regional markets
@@ -555,6 +584,7 @@ GET  /api/bonuses/performance
 ## 📞 SUPPORT & QUESTIONS
 
 For implementation questions or customizations:
+
 - **Email**: bonuses@infamousfreight.com
 - **Docs**: https://help.infamousfreight.com/bonuses
 - **Admin Panel**: https://admin.infamousfreight.com/bonuses
