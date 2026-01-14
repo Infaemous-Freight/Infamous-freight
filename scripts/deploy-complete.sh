@@ -33,11 +33,15 @@ if ! command -v git &> /dev/null; then
     exit 1
 fi
 
-# Check for uncommitted changes
-if ! git diff-index --quiet HEAD --; then
-    echo -e "${YELLOW}⚠️  You have uncommitted changes. Commit them first.${NC}"
-    git status
-    exit 1
+# Check for uncommitted changes (skip in Vercel builds)
+if [ "$VERCEL" != "1" ]; then
+    if ! git diff-index --quiet HEAD --; then
+        echo -e "${YELLOW}⚠️  You have uncommitted changes. Commit them first.${NC}"
+        git status
+        exit 1
+    fi
+else
+    echo -e "${GREEN}✅ Vercel build detected, skipping uncommitted changes check${NC}"
 fi
 
 echo -e "${GREEN}✅ Prerequisites met${NC}"
