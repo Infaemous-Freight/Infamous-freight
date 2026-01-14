@@ -74,13 +74,14 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:create` scope)
 
 **Request Body**:
+
 ```json
 {
   "customerId": "cust_123",
   "origin": {
     "address": "123 Main St, New York, NY 10001",
     "lat": 40.7128,
-    "lng": -74.0060
+    "lng": -74.006
   },
   "destination": {
     "address": "456 Oak Ave, Los Angeles, CA 90001",
@@ -107,6 +108,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -150,6 +152,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Not required (public tracking)
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -162,7 +165,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
       "origin": {
         "address": "123 Main St, New York, NY",
         "lat": 40.7128,
-        "lng": -74.0060
+        "lng": -74.006
       },
       "destination": {
         "address": "456 Oak Ave, Los Angeles, CA",
@@ -248,6 +251,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:update` scope)
 
 **Request Body**:
+
 ```json
 {
   "status": "delivered",
@@ -273,6 +277,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:view` scope)
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -332,6 +337,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:warehouse` scope)
 
 **Request Body**:
+
 ```json
 {
   "warehouseId": "wh_nyc01",
@@ -340,12 +346,12 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
     {
       "productId": "prod_123",
       "quantity": 50,
-      "unitValue": 45.00
+      "unitValue": 45.0
     },
     {
       "productId": "prod_456",
       "quantity": 100,
-      "unitValue": 25.00
+      "unitValue": 25.0
     }
   ],
   "receivedBy": "emp_john",
@@ -365,6 +371,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:warehouse` scope)
 
 **Request Body**:
+
 ```json
 {
   "warehouseId": "wh_nyc01",
@@ -386,6 +393,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -435,12 +443,14 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:view` scope)
 
 **Query Parameters**:
+
 - `warehouseId` (optional): Filter by warehouse
 - `productId` (optional): Filter by product
 - `lowStock` (optional): Show only low stock items
 - `category` (optional): Filter by category
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -457,8 +467,8 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
         "location": "A1-B05",
         "reorderPoint": 50,
         "reorderQuantity": 200,
-        "unitValue": 45.00,
-        "totalValue": 11250.00,
+        "unitValue": 45.0,
+        "totalValue": 11250.0,
         "lastRestocked": "2026-01-10T10:00:00Z",
         "status": "in_stock"
       }
@@ -503,6 +513,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:warehouse` scope)
 
 **Request Body**:
+
 ```json
 {
   "productId": "prod_123",
@@ -525,6 +536,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:warehouse` scope)
 
 **Request Body**:
+
 ```json
 {
   "warehouseId": "wh_nyc01",
@@ -544,6 +556,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -587,6 +600,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:view` scope)
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -652,13 +666,14 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:fleet` scope)
 
 **Request Body**:
+
 ```json
 {
   "vehicleId": "veh_abc123",
   "maintenanceType": "oil_change",
   "scheduledDate": "2026-02-15T10:00:00Z",
   "description": "Regular oil change and filter replacement",
-  "estimatedCost": 250.00,
+  "estimatedCost": 250.0,
   "priority": "routine"
 }
 ```
@@ -674,6 +689,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:fleet` scope)
 
 **Request Body**:
+
 ```json
 {
   "shipments": [
@@ -692,6 +708,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -725,6 +742,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:optimize` scope)
 
 **Request Body**:
+
 ```json
 {
   "shipments": [
@@ -747,6 +765,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -762,12 +781,12 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
           "weight": 62.5,
           "volume": 55.0
         },
-        "cost": 175.00,
-        "savings": 125.00,
+        "cost": 175.0,
+        "savings": 125.0,
         "savingsPercentage": 41.67
       }
     ],
-    "totalSavings": 125.00,
+    "totalSavings": 125.0,
     "shipmentsConsolidated": 2
   },
   "message": "Identified $125.00 in potential savings"
@@ -785,6 +804,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:optimize` scope)
 
 **Request Body**:
+
 ```json
 {
   "items": [
@@ -798,6 +818,7 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -839,9 +860,11 @@ The Infamous Freight Enterprises Logistics Management System provides comprehens
 **Authentication**: Required (JWT + `logistics:view` scope)
 
 **Query Parameters**:
+
 - `timeRange` (optional): Days to analyze (default: 30)
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -945,26 +968,26 @@ pnpm prisma:generate
 
 ```javascript
 // api/src/server.js
-const logisticsRoutes = require('./routes/logistics');
-app.use('/api/logistics', logisticsRoutes);
+const logisticsRoutes = require("./routes/logistics");
+app.use("/api/logistics", logisticsRoutes);
 ```
 
 ### Step 3: Use Service
 
 ```javascript
-const { LogisticsService } = require('./services/logisticsService');
-const { PrismaClient } = require('@prisma/client');
+const { LogisticsService } = require("./services/logisticsService");
+const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const logistics = new LogisticsService(prisma);
 
 // Create shipment
 const shipment = await logistics.createShipment({
-  customerId: 'cust_123',
-  origin: { address: '...', lat: 40.7128, lng: -74.0060 },
-  destination: { address: '...', lat: 34.0522, lng: -118.2437 },
-  cargo: { type: 'palletized', weight: 500, volume: 2.5 },
-  priority: 'standard',
+  customerId: "cust_123",
+  origin: { address: "...", lat: 40.7128, lng: -74.006 },
+  destination: { address: "...", lat: 34.0522, lng: -118.2437 },
+  cargo: { type: "palletized", weight: 500, volume: 2.5 },
+  priority: "standard",
 });
 ```
 
@@ -975,47 +998,47 @@ const shipment = await logistics.createShipment({
 ### Example 1: Create and Track Shipment
 
 ```javascript
-const axios = require('axios');
+const axios = require("axios");
 
 // Create shipment
 const createShipment = async () => {
   const response = await axios.post(
-    'https://api.infamous-freight.com/api/logistics/shipments',
+    "https://api.infamous-freight.com/api/logistics/shipments",
     {
-      customerId: 'cust_123',
+      customerId: "cust_123",
       origin: {
-        address: '123 Main St, New York, NY',
+        address: "123 Main St, New York, NY",
         lat: 40.7128,
-        lng: -74.0060,
+        lng: -74.006,
       },
       destination: {
-        address: '456 Oak Ave, Los Angeles, CA',
+        address: "456 Oak Ave, Los Angeles, CA",
         lat: 34.0522,
         lng: -118.2437,
       },
       cargo: {
-        type: 'palletized',
+        type: "palletized",
         weight: 500,
         volume: 2.5,
       },
-      priority: 'standard',
+      priority: "standard",
     },
     {
       headers: {
         Authorization: `Bearer ${JWT_TOKEN}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-    }
+    },
   );
 
-  console.log('Tracking Number:', response.data.data.tracking.trackingNumber);
+  console.log("Tracking Number:", response.data.data.tracking.trackingNumber);
   return response.data.data.tracking.trackingNumber;
 };
 
 // Track shipment
 const trackShipment = async (trackingNumber) => {
   const response = await axios.get(
-    `https://api.infamous-freight.com/api/logistics/shipments/track/${trackingNumber}`
+    `https://api.infamous-freight.com/api/logistics/shipments/track/${trackingNumber}`,
   );
 
   const tracking = response.data.data;
@@ -1031,22 +1054,22 @@ const trackShipment = async (trackingNumber) => {
 ```javascript
 const receiveGoods = async () => {
   const response = await axios.post(
-    'https://api.infamous-freight.com/api/logistics/warehouses/receive',
+    "https://api.infamous-freight.com/api/logistics/warehouses/receive",
     {
-      warehouseId: 'wh_nyc01',
-      shipmentId: 'ship_abc123',
+      warehouseId: "wh_nyc01",
+      shipmentId: "ship_abc123",
       items: [
-        { productId: 'prod_123', quantity: 50, unitValue: 45.00 },
-        { productId: 'prod_456', quantity: 100, unitValue: 25.00 },
+        { productId: "prod_123", quantity: 50, unitValue: 45.0 },
+        { productId: "prod_456", quantity: 100, unitValue: 25.0 },
       ],
-      receivedBy: 'emp_john',
-      condition: 'good',
+      receivedBy: "emp_john",
+      condition: "good",
     },
     {
       headers: {
         Authorization: `Bearer ${JWT_TOKEN}`,
       },
-    }
+    },
   );
 
   console.log(response.data.message);
@@ -1059,23 +1082,23 @@ const receiveGoods = async () => {
 // Get inventory report
 const getInventoryReport = async () => {
   const response = await axios.get(
-    'https://api.infamous-freight.com/api/logistics/inventory',
+    "https://api.infamous-freight.com/api/logistics/inventory",
     {
       params: {
-        warehouseId: 'wh_nyc01',
+        warehouseId: "wh_nyc01",
         lowStock: true,
       },
       headers: {
         Authorization: `Bearer ${JWT_TOKEN}`,
       },
-    }
+    },
   );
 
   const report = response.data.data;
   console.log(`Total Items: ${report.analytics.totalItems}`);
   console.log(`Low Stock Items: ${report.analytics.lowStockCount}`);
-  
-  report.reorderNeeded.forEach(item => {
+
+  report.reorderNeeded.forEach((item) => {
     console.log(`\nReorder Needed: ${item.productName}`);
     console.log(`  Current: ${item.currentQuantity}`);
     console.log(`  Reorder: ${item.reorderQuantity}`);
@@ -1086,20 +1109,20 @@ const getInventoryReport = async () => {
 // Transfer inventory
 const transferInventory = async () => {
   await axios.post(
-    'https://api.infamous-freight.com/api/logistics/inventory/transfer',
+    "https://api.infamous-freight.com/api/logistics/inventory/transfer",
     {
-      productId: 'prod_123',
-      fromWarehouseId: 'wh_nyc01',
-      toWarehouseId: 'wh_la01',
+      productId: "prod_123",
+      fromWarehouseId: "wh_nyc01",
+      toWarehouseId: "wh_la01",
       quantity: 100,
-      reason: 'rebalancing',
-      requestedBy: 'mgr_john',
+      reason: "rebalancing",
+      requestedBy: "mgr_john",
     },
     {
       headers: {
         Authorization: `Bearer ${JWT_TOKEN}`,
       },
-    }
+    },
   );
 };
 ```
@@ -1135,7 +1158,7 @@ pnpm test logisticsService.test.js
 
 ```javascript
 if (!cargo.weight || cargo.weight <= 0) {
-  throw new Error('Invalid cargo weight');
+  throw new Error("Invalid cargo weight");
 }
 ```
 
@@ -1145,10 +1168,10 @@ if (!cargo.weight || cargo.weight <= 0) {
 await service.createInventoryMovement({
   warehouseId,
   productId,
-  movementType: 'picking',
+  movementType: "picking",
   quantity,
-  fromLocation: 'A1',
-  toLocation: 'shipping_dock',
+  fromLocation: "A1",
+  toLocation: "shipping_dock",
 });
 ```
 
@@ -1163,7 +1186,7 @@ const pickList = await service.pickItems({
 });
 
 // Use optimized route
-console.log('Optimized sequence:', pickList.optimizedRoute.sequence);
+console.log("Optimized sequence:", pickList.optimizedRoute.sequence);
 ```
 
 ### 4. Monitor Fleet Maintenance
@@ -1173,11 +1196,11 @@ const fleet = await service.getFleetStatus();
 
 // Schedule maintenance for overdue vehicles
 fleet.vehicles
-  .filter(v => v.maintenanceDue)
-  .forEach(async v => {
+  .filter((v) => v.maintenanceDue)
+  .forEach(async (v) => {
     await service.scheduleMaintenance({
       vehicleId: v.id,
-      maintenanceType: 'inspection',
+      maintenanceType: "inspection",
       scheduledDate: new Date(),
     });
   });
@@ -1189,9 +1212,9 @@ fleet.vehicles
 // Perform weekly cycle counts
 const result = await service.cycleCount({
   warehouseId,
-  zone: 'A1',
+  zone: "A1",
   items: inventoryItems,
-  countedBy: 'emp_jane',
+  countedBy: "emp_jane",
 });
 
 console.log(`Accuracy: ${result.accuracy}%`);
@@ -1206,10 +1229,11 @@ console.log(`Accuracy: ${result.accuracy}%`);
 **Cause**: Invalid tracking number
 
 **Solution**:
+
 ```javascript
 // Verify tracking number format
 if (!/^IFE[A-Z0-9]+$/.test(trackingNumber)) {
-  throw new Error('Invalid tracking number format');
+  throw new Error("Invalid tracking number format");
 }
 ```
 
@@ -1218,12 +1242,13 @@ if (!/^IFE[A-Z0-9]+$/.test(trackingNumber)) {
 **Cause**: Missing cycle counts or incorrect movements
 
 **Solution**:
+
 ```javascript
 // Perform cycle count
 await service.cycleCount({
   warehouseId,
   items: suspectItems,
-  countedBy: 'supervisor',
+  countedBy: "supervisor",
 });
 ```
 
@@ -1232,12 +1257,13 @@ await service.cycleCount({
 **Cause**: Suboptimal deployment
 
 **Solution**:
+
 ```javascript
 // Use fleet optimization
 const optimized = await service.optimizeFleetDeployment(pendingShipments);
 
 // Apply recommendations
-optimized.assignments.forEach(async assignment => {
+optimized.assignments.forEach(async (assignment) => {
   await assignShipmentToVehicle(assignment);
 });
 ```
@@ -1259,9 +1285,9 @@ optimized.assignments.forEach(async assignment => {
 ```javascript
 const analytics = await service.getSupplyChainAnalytics(30);
 
-console.log('On-Time Rate:', analytics.shipmentAnalytics.onTimeRate);
-console.log('Fleet Utilization:', analytics.fleetMetrics.utilizationRate);
-console.log('Profit Margin:', analytics.costAnalysis.profitMargin);
+console.log("On-Time Rate:", analytics.shipmentAnalytics.onTimeRate);
+console.log("Fleet Utilization:", analytics.fleetMetrics.utilizationRate);
+console.log("Profit Margin:", analytics.costAnalysis.profitMargin);
 ```
 
 ---
@@ -1306,4 +1332,3 @@ console.log('Profit Margin:', analytics.costAnalysis.profitMargin);
 - `403` - Insufficient scope
 - `404` - Not found
 - `500` - Server error
-
