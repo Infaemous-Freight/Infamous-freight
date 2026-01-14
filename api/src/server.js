@@ -40,6 +40,7 @@ const voiceRoutes = require("./routes/voice");
 const aiSimRoutes = require("./routes/aiSim.internal");
 const usersRoutes = require("./routes/users");
 const shipmentsRoutes = require("./routes/shipments");
+const analyticsRoutes = require("./routes/analytics");
 
 const app = express();
 
@@ -105,6 +106,7 @@ app.use("/api", billingPaymentsRoutes);
 app.use("/api", voiceRoutes);
 app.use("/api", usersRoutes);
 app.use("/api", shipmentsRoutes);
+app.use("/api", analyticsRoutes);
 app.get("/health", (_req, res) => res.status(200).send("ok"));
 
 // CSP Violation Report Handler
@@ -131,6 +133,17 @@ const host = "0.0.0.0";
 if (require.main === module) {
   const httpServer = app.listen(port, host, async () => {
     logger.info(`Infamous Freight API listening on ${host}:${port}`);
+
+    // Initialize Real-Time WebSocket server
+    try {
+      const realtimeService = require("./services/realtime");
+      realtimeService.initialize(httpServer);
+      logger.info("Real-Time WebSocket server initialized");
+    } catch (error) {
+      logger.warn("Real-Time WebSocket initialization failed", {
+        error: error.message,
+      });
+    }
 
     // Initialize WebSocket server
     try {
