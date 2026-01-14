@@ -1,0 +1,328 @@
+// Payment & Payout Database Schema
+// Prisma schema for tracking payments, payouts, and transactions
+
+// ============================================================================
+// PAYOUT MODELS
+// ============================================================================
+
+model Payout {
+  id              String   @id @default(uuid())
+  recipientId     String
+  recipientType   String   // 'user' | 'driver' | 'contractor'
+  
+  // Payment details
+  amount          Decimal  @db.Decimal(10, 2)
+  netAmount       Decimal  @db.Decimal(10, 2)
+  currency        String   @default("USD")
+  
+  // Method & destination
+  method          String   // 'stripe' | 'paypal' | 'bankTransfer' | 'debitCard'
+  destination     String
+  
+  // Fees
+  feePercentage   Decimal  @db.Decimal(5, 2)
+  feeFixed        Decimal  @db.Decimal(5, 2)
+  feeTotal        Decimal  @db.Decimal(10, 2)
+  
+  // Status tracking
+  status          String   // 'processing' | 'completed' | 'failed' | 'cancelled'
+  type            String   // 'instant' | 'standard'
+  
+  // Timestamps
+  requestedAt     DateTime @default(now())
+  processedAt     DateTime?
+  completedAt     DateTime?
+  estimatedArrival DateTime?
+  
+  // External IDs
+  externalId      String?  // Stripe payout ID, PayPal transaction ID, etc.
+  
+  // Metadata
+  reason          String?
+  metadata        Json?
+  
+  // Relations
+  transactions    PayoutTransaction[]
+  
+  @@index([recipientId, status])
+  @@index([requestedAt])
+  @@index([status])
+  @@map("payouts")
+}
+
+// ============================================================================
+// PAYOUT TRANSACTIONS
+// ============================================================================
+
+model PayoutTransaction {
+  id              String   @id @default(uuid())
+  payoutId        String
+  
+  // Transaction details
+  type            String   // 'payout' | 'fee' | 'refund'
+  amount          Decimal  @db.Decimal(10, 2)
+  currency        String   @default("USD")
+  
+  // Status
+  status          String   // 'pending' | 'completed' | 'failed'
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  completedAt     DateTime?
+  
+  // External reference
+  externalId      String?
+  
+  // Metadata
+  description     String?
+  metadata        Json?
+  
+  // Relations
+  payout          Payout   @relation(fields: [payoutId], references: [id], onDelete: Cascade)
+  
+  @@index([payoutId])
+  @@index([status])
+  @@map("payout_transactions")
+}
+
+// ============================================================================
+// PAYMENT METHODS
+// ============================================================================
+
+model PaymentMethod {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // Method details
+  type            String   // 'stripe' | 'paypal' | 'bankAccount' | 'debitCard'
+  provider        String   // 'stripe' | 'paypal' | 'plaid'
+  
+  // Account info (encrypted)
+  accountId       String
+  accountName     String?
+  last4           String?  // Last 4 digits of account/card
+  
+  // Status
+  verified        Boolean  @default(false)
+  isDefault       Boolean  @default(false)
+  active          Boolean  @default(true)
+  
+  // Capabilities
+  instantPayoutSupported Boolean @default(false)
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  verifiedAt      DateTime?
+  
+  // Metadata
+  metadata        Json?
+  
+  @@index([userId, isDefault])
+  @@index([userId, active])
+  @@map("payment_methods")
+}
+
+// ============================================================================
+// PAYMENT ACCOUNTS (Stripe Connect, etc.)
+// ============================================================================
+
+model PaymentAccount {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  
+  // Provider details
+  provider        String   // 'stripe_connect' | 'paypal_merchant'
+  accountId       String   @unique
+  
+  // Account status
+  verified        Boolean  @default(false)
+  chargesEnabled  Boolean  @default(false)
+  payoutsEnabled  Boolean  @default(false)
+  
+  // Capabilities
+  capabilities    Json?    // List of enabled capabilities
+  
+  // Balance
+  availableBalance Decimal @db.Decimal(10, 2) @default(0)
+  pendingBalance   Decimal @db.Decimal(10, 2) @default(0)
+  currency         String  @default("USD")
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  verifiedAt      DateTime?
+  
+  // Metadata
+  metadata        Json?
+  
+  @@index([userId])
+  @@index([accountId])
+  @@map("payment_accounts")
+}
+
+// ============================================================================
+// BONUS PAYOUTS
+// ============================================================================
+
+model BonusPayout {
+  id              String   @id @default(uuid())
+  userId          String
+  bonusId         String
+  
+  // Bonus details
+  bonusType       String   // 'referral' | 'loyalty' | 'performance' | 'milestone'
+  bonusAmount     Decimal  @db.Decimal(10, 2)
+  
+  // Payout details
+  payoutId        String?
+  payoutStatus    String   @default("pending") // 'pending' | 'processing' | 'completed' | 'failed'
+  
+  // Payment method
+  paymentMethod   String?
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  processedAt     DateTime?
+  completedAt     DateTime?
+  
+  // Metadata
+  metadata        Json?
+  
+  @@index([userId, payoutStatus])
+  @@index([bonusId])
+  @@map("bonus_payouts")
+}
+
+// ============================================================================
+// PAYOUT BATCHES (for batch processing)
+// ============================================================================
+
+model PayoutBatch {
+  id              String   @id @default(uuid())
+  
+  // Batch details
+  name            String
+  description     String?
+  totalAmount     Decimal  @db.Decimal(10, 2)
+  totalPayouts    Int
+  
+  // Status
+  status          String   // 'pending' | 'processing' | 'completed' | 'failed'
+  
+  // Progress
+  processedCount  Int      @default(0)
+  successCount    Int      @default(0)
+  failedCount     Int      @default(0)
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  startedAt       DateTime?
+  completedAt     DateTime?
+  
+  // Created by
+  createdBy       String   // Admin user ID
+  
+  // Metadata
+  metadata        Json?
+  
+  @@index([status])
+  @@index([createdAt])
+  @@map("payout_batches")
+}
+
+// ============================================================================
+// PAYOUT FEES (for tracking fee revenue)
+// ============================================================================
+
+model PayoutFee {
+  id              String   @id @default(uuid())
+  payoutId        String
+  
+  // Fee details
+  feeType         String   // 'instant' | 'standard'
+  percentageFee   Decimal  @db.Decimal(5, 2)
+  fixedFee        Decimal  @db.Decimal(5, 2)
+  totalFee        Decimal  @db.Decimal(10, 2)
+  
+  // Revenue tracking
+  revenueAmount   Decimal  @db.Decimal(10, 2)
+  currency        String   @default("USD")
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  
+  @@index([payoutId])
+  @@index([createdAt])
+  @@map("payout_fees")
+}
+
+// ============================================================================
+// PAYMENT LOGS (for audit trail)
+// ============================================================================
+
+model PaymentLog {
+  id              String   @id @default(uuid())
+  
+  // Event details
+  eventType       String   // 'payout_requested' | 'payout_processed' | 'payout_completed' | 'payout_failed'
+  entityType      String   // 'payout' | 'transaction' | 'method'
+  entityId        String
+  
+  // User & IP
+  userId          String?
+  ipAddress       String?
+  
+  // Event data
+  details         Json?
+  errorMessage    String?
+  
+  // Timestamp
+  createdAt       DateTime @default(now())
+  
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("payment_logs")
+}
+
+// ============================================================================
+// EXTEND EXISTING MODELS
+// ============================================================================
+
+// Add payment fields to existing Customer model
+model Customer {
+  // ... existing fields ...
+  
+  // Payment preferences
+  preferredPaymentMethod String?
+  instantPayoutEnabled   Boolean @default(true)
+  
+  // Payment account ID
+  paymentAccountId       String?
+  
+  // Balances
+  availableBalance       Decimal @db.Decimal(10, 2) @default(0)
+  pendingBalance         Decimal @db.Decimal(10, 2) @default(0)
+}
+
+// Add payment fields to existing Driver model
+model Driver {
+  // ... existing fields ...
+  
+  // Payment preferences
+  preferredPaymentMethod String?
+  instantPayoutEnabled   Boolean @default(true)
+  
+  // Payment account ID
+  paymentAccountId       String?
+  
+  // Balances & earnings
+  availableBalance       Decimal @db.Decimal(10, 2) @default(0)
+  pendingBalance         Decimal @db.Decimal(10, 2) @default(0)
+  totalEarnings          Decimal @db.Decimal(10, 2) @default(0)
+  
+  // Payout schedule
+  payoutSchedule         String  @default("weekly") // 'instant' | 'daily' | 'weekly' | 'monthly'
+  minPayoutAmount        Decimal @db.Decimal(10, 2) @default(50)
+}
