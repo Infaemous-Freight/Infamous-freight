@@ -4,7 +4,56 @@
  * Module: Prometheus Metrics Endpoint
  */
 
-const promClient = require('prom-client');
+let promClient;
+try {
+    promClient = require('prom-client');
+} catch (e) {
+    // Fallback when prom-client not available
+    console.warn('⚠ prom-client not installed. Install with: npm install prom-client');
+    promClient = null;
+}
+
+// Fallback metrics storage
+const fallbackMetrics = {
+    requests: {},
+    connections: 0,
+    startTime: Date.now()
+};
+
+if (!promClient) {
+    // Export fallback implementation
+    module.exports = {
+        metricsMiddleware: (req, res, next) => {
+            const route = req.path || 'unknown';
+            fallbackMetrics.requests[route] = (fallbackMetrics.requests[route] || 0) + 1;
+            next();
+        },
+        metricsHandler: async (req, res) => {
+            const metrics = [
+                '# HELP http_requests_total Total HTTP requests',
+                '# TYPE http_requests_total counter',
+                ...Object.entries(fallbackMetrics.requests).map(([route, count]) =>
+                    `http_requests_total{route="${route}"} ${count}`
+                ),
+                '',
+                '# HELP api_uptime_seconds API uptime in seconds',
+                '# TYPE api_uptime_seconds counter',
+                `api_uptime_seconds ${Math.floor((Date.now() - fallbackMetrics.startTime) / 1000)}`,
+                '',
+                '# HELP active_connections Current active connections',
+                '# TYPE active_connections gauge',
+                `active_connections ${fallbackMetrics.connections}`,
+                ''
+            ];
+            res.setHeader('Content-Type', 'text/plain; version=0.0.4');
+            res.end(metrics.join('\n'));
+        },
+        trackDatabaseOperation: () => { },
+        trackCache: () => { },
+        metrics: {}
+    };
+    return;
+}
 
 // Create a Registry
 const register = new promClient.Registry();
