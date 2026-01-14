@@ -157,6 +157,78 @@ describe('Logger Middleware', () => {
 
             expect(res.on).toHaveBeenCalledWith('finish', expect.any(Function));
         });
+
+        it('should use url when originalUrl is not available', () => {
+            const loggerSpy = jest.spyOn(logger, 'info').mockImplementation();
+            delete req.originalUrl;
+            req.url = '/fallback/url';
+
+            performanceMiddleware(req, res, next);
+
+            const finishCallback = res.on.mock.calls[0][1];
+            finishCallback();
+
+            expect(loggerSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    path: '/fallback/url',
+                }),
+                expect.any(String)
+            );
+
+            loggerSpy.mockRestore();
+        });
+
+        it('should truncate long user agent to 100 characters', () => {
+            const loggerSpy = jest.spyOn(logger, 'info').mockImplementation();
+            const longUserAgent = 'A'.repeat(150);
+            req.get.mockReturnValue(longUserAgent);
+
+            performanceMiddleware(req, res, next);
+
+            const finishCallback = res.on.mock.calls[0][1];
+            finishCallback();
+
+            expect(loggerSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    userAgent: 'A'.repeat(100),
+                }),
+                expect.any(String)
+            );
+
+            loggerSpy.mockRestore();
+        });
+
+        it('should handle missing user agent', () => {
+            const loggerSpy = jest.spyOn(logger, 'info').mockImplementation();
+            req.get.mockReturnValue(undefined);
+
+            performanceMiddleware(req, res, next);
+
+            const finishCallback = res.on.mock.calls[0][1];
+            finishCallback();
+
+            expect(loggerSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    userAgent: undefined,
+                }),
+                expect.any(String)
+            );
+
+            loggerSpy.mockRestore();
+        });
+
+        it('should not add performance field for fast requests', () => {
+            const loggerSpy = jest.spyOn(logger, 'info').mockImplementation();
+
+            performanceMiddleware(req, res, next);
+
+            const finishCallback = res.on.mock.calls[0][1];
+            finishCallback();
+
+            expect(loggerSpy.mock.calls[0][0]).not.toHaveProperty('performance');
+
+            loggerSpy.mockRestore();
+        });
     });
 
     describe('logger configuration', () => {

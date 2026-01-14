@@ -75,6 +75,35 @@ describe('Security Middleware', () => {
             expect(res.status).toHaveBeenCalledWith(401);
             expect(res.json).toHaveBeenCalledWith({ error: 'Invalid or expired token' });
         });
+
+        it('should authenticate with capital Authorization header', () => {
+            const token = jwt.sign(
+                { sub: 'user-456', scopes: ['test:read'] },
+                process.env.JWT_SECRET
+            );
+            req.headers.Authorization = `Bearer ${token}`;
+
+            authenticate(req, res, next);
+
+            expect(next).toHaveBeenCalledWith();
+            expect(req.user).toBeDefined();
+            expect(req.user.sub).toBe('user-456');
+        });
+
+        it('should return 500 when JWT_SECRET is not configured', () => {
+            const originalSecret = process.env.JWT_SECRET;
+            delete process.env.JWT_SECRET;
+
+            req.headers.authorization = 'Bearer sometoken';
+
+            authenticate(req, res, next);
+
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ error: 'Server auth misconfiguration' });
+            expect(next).not.toHaveBeenCalled();
+
+            process.env.JWT_SECRET = originalSecret;
+        });
     });
 
     describe('requireScope', () => {
@@ -190,6 +219,43 @@ describe('Security Middleware', () => {
                 'request',
                 expect.objectContaining({
                     auth: '***',
+                })
+            );
+        });
+
+        it('should use path when originalUrl is missing', () => {
+            delete req.originalUrl;
+            req.path = '/fallback-path';
+            const finishCallback = jest.fn();
+            res.on = jest.fn((event, callback) => {
+                if (event === 'finish') finishCallback.mockImplementation(callback);
+            });
+
+            auditLog(req, res, next);
+            finishCallback();
+
+            expect(console.info).toHaveBeenCalledWith(
+                'request',
+                expect.objectContaining({
+                    path: '/fallback-path',
+                })
+            );
+        });
+
+        it('should not include auth field when no authorization header', () => {
+            const finishCallback = jest.fn();
+            res.on = jest.fn((event, callback) => {
+                if (event === 'finish') finishCallback.mockImplementation(callback);
+            });
+
+            auditLog(req, res, next);
+            finishCallback();
+
+            expect(console.info).toHaveBeenCalledWith(
+                'request',
+                expect.objectContaining({
+                    method: 'GET',
+                    auth: undefined,
                 })
             );
         });
