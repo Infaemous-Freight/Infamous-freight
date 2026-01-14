@@ -5,14 +5,14 @@ kill_signal = "SIGINT"
 kill_timeout = "5s"
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = "Dockerfile.api"
 
 [env]
-  PORT = "3000"
+  PORT = "3001"
   NODE_ENV = "production"
 
 [http_service]
-  internal_port = 3000
+  internal_port = 3001
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true

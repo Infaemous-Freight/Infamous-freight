@@ -1,0 +1,41 @@
+FROM node:18-alpine
+
+LABEL maintainer="Santorio Djuan Miles <237955567+MrMiless44@users.noreply.github.com>"
+LABEL description="Infamous Freight Enterprises - API Server"
+
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm@8.15.9
+
+# Copy workspace and package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY api/package.json ./api/
+COPY packages/shared/package.json ./packages/shared/
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy application code
+COPY . .
+
+# Build the shared package and API
+RUN pnpm --filter @infamous-freight/shared build && pnpm --filter api build
+
+# Generate Prisma client
+RUN cd api && pnpm prisma:generate || true
+
+# Expose API port
+EXPOSE 3001
+
+# Set production environment
+ENV NODE_ENV=production
+ENV PORT=3001
+ENV API_PORT=3001
+
+# Production command - run the API server
+CMD ["sh", "-c", "cd api && node src/server.js"]
+
+# Health check for API
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
