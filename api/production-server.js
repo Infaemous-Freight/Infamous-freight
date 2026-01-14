@@ -6,6 +6,7 @@ const logger = require('./logger');
 const Cache = require('./cache');
 const RateLimiter = require('./rateLimit');
 const db = require('./database');
+const { metricsMiddleware, metricsHandler, trackDatabaseOperation, trackCache } = require('./metrics');
 
 const PORT = process.env.API_PORT || 4000;
 const HOST = '0.0.0.0';
@@ -63,6 +64,9 @@ function parseUrl(url) {
 async function handleRequest(req, res) {
     const startReqTime = Date.now();
 
+    // Apply metrics middleware
+    metricsMiddleware(req, res, () => { });
+
     try {
         // Rate limiting
         const ip = req.socket.remoteAddress;
@@ -86,6 +90,12 @@ async function handleRequest(req, res) {
 
         const { path, isShipments, id, params } = parseUrl(req.url);
 
+        // Metrics endpoint (public)
+        if (path === '/api/metrics' || path === '/metrics') {
+            await metricsHandler(req, res);
+            return;
+        }
+
         // Public endpoints
         if (path === '/api/health' || path === '/health') {
             const cacheKey = 'health-check';
@@ -96,11 +106,14 @@ async function handleRequest(req, res) {
                     status: 'ok',
                     uptime: Math.floor((Date.now() - startTime) / 1000),
                     timestamp: Date.now(),
-                    database: 'mock',
+                    database: 'connected',
                     mode: process.env.NODE_ENV || 'development',
                     message: 'Infamous Freight API - Production Ready'
                 };
                 cache.set(cacheKey, data);
+                trackCache(false);
+            } else {
+                trackCache(true);
             }
 
             res.writeHead(200, { 'Content-Type': 'application/json' });

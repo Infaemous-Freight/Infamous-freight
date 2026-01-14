@@ -1,0 +1,105 @@
+# AlertManager Configuration
+global:
+  resolve_timeout: 5m
+  # Slack webhook URL (set via environment variable SLACK_WEBHOOK_URL)
+  slack_api_url: ${SLACK_WEBHOOK_URL}
+
+# Email configuration (optional)
+# smtp_smarthost: 'smtp.gmail.com:587'
+# smtp_from: 'alerts@infamousfreight.com'
+# smtp_auth_username: 'alerts@infamousfreight.com'
+# smtp_auth_password: ${SMTP_PASSWORD}
+
+# Route tree for alerts
+route:
+  receiver: "default-receiver"
+  group_by: ["alertname", "cluster", "service"]
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+
+  routes:
+    # Critical alerts - immediate notification
+    - match:
+        severity: critical
+      receiver: "critical-alerts"
+      group_wait: 5s
+      repeat_interval: 5m
+
+    # Warning alerts - less urgent
+    - match:
+        severity: warning
+      receiver: "warning-alerts"
+      group_wait: 30s
+      repeat_interval: 1h
+
+    # Business alerts - special handling
+    - match:
+        service: business
+      receiver: "business-alerts"
+
+receivers:
+  - name: "default-receiver"
+    webhook_configs:
+      - url: "http://localhost:5001/alerts"
+        send_resolved: true
+
+  - name: "critical-alerts"
+    # Slack notifications for critical alerts
+    slack_configs:
+      - channel: "#alerts-critical"
+        title: "🚨 CRITICAL: {{ .GroupLabels.alertname }}"
+        text: |
+          *Alert:* {{ .GroupLabels.alertname }}
+          *Severity:* {{ .CommonLabels.severity }}
+          *Service:* {{ .CommonLabels.service }}
+          *Summary:* {{ .CommonAnnotations.summary }}
+          *Description:* {{ .CommonAnnotations.description }}
+        send_resolved: true
+
+    # Email for critical alerts (optional)
+    # email_configs:
+    #   - to: 'oncall@infamousfreight.com'
+    #     headers:
+    #       Subject: '🚨 CRITICAL ALERT: {{ .GroupLabels.alertname }}'
+
+    # PagerDuty integration (optional)
+    # pagerduty_configs:
+    #   - service_key: ${PAGERDUTY_SERVICE_KEY}
+
+  - name: "warning-alerts"
+    slack_configs:
+      - channel: "#alerts-warning"
+        title: "⚠️ Warning: {{ .GroupLabels.alertname }}"
+        text: |
+          *Alert:* {{ .GroupLabels.alertname }}
+          *Severity:* {{ .CommonLabels.severity }}
+          *Service:* {{ .CommonLabels.service }}
+          *Summary:* {{ .CommonAnnotations.summary }}
+        send_resolved: true
+
+  - name: "business-alerts"
+    slack_configs:
+      - channel: "#alerts-business"
+        title: "📊 Business Alert: {{ .GroupLabels.alertname }}"
+        text: |
+          *Alert:* {{ .GroupLabels.alertname }}
+          *Service:* {{ .CommonLabels.service }}
+          *Details:* {{ .CommonAnnotations.description }}
+        send_resolved: true
+
+# Inhibit rules - prevent duplicate alerts
+inhibit_rules:
+  # If API is down, don't alert on high response time
+  - source_match:
+      alertname: "APIDown"
+    target_match:
+      alertname: "HighResponseTime"
+    equal: ["instance"]
+
+  # If disk is full, don't alert on high memory
+  - source_match:
+      alertname: "DiskSpaceLow"
+    target_match:
+      alertname: "HighMemoryUsage"
+    equal: ["instance"]
