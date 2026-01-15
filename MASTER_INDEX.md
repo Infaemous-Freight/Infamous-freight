@@ -56,6 +56,11 @@ This is the **complete reference guide** for the entire platform. Use this index
 | [API_ENDPOINTS_REFERENCE.md](API_ENDPOINTS_REFERENCE.md) | All endpoints with examples | 15+ endpoints | 15 min |
 | [This File - MASTER_INDEX.md](MASTER_INDEX.md) | Navigation hub (you are here) | 200+ links | 20 min |
 
+### Phase & Feature Documentation
+| Document | Purpose | Tier | Status |
+|----------|---------|------|--------|
+| [PHASE_1_GENESIS_AVATARS.md](PHASE_1_GENESIS_AVATARS.md) | System identity layer (4 Genesis avatars) | Foundation | 🔒 LOCKED |
+
 ### Deployment & Operations
 | Document | Purpose | Audience | Status |
 |----------|---------|----------|--------|
@@ -252,6 +257,13 @@ Infamous-freight-enterprises/
 2. [Structured Logging](api/src/middleware/logger.js) - Winston setup
 3. [Error Tracking](api/src/middleware/errorHandler.js) - Sentry integration
 4. [Monitoring Script](scripts/monitor-build-status.sh) - Build tracking
+
+### System Identity & Avatars (Phase-1)
+1. [Phase-1 Genesis Avatars](PHASE_1_GENESIS_AVATARS.md) - System identity layer
+2. [Avatar Manifest](web/public/avatars/main/manifest.json) - 4 Genesis personas
+3. [Avatar API](api/src/routes/avatar.ts) - `/v1/avatars/system` endpoint
+4. [Avatar Integration](web/components/AvatarSelector.tsx) - Web UI wiring
+5. [Deployment Readiness](PHASE_1_GENESIS_AVATARS.md#-deployment-steps) - How to lock Phase-1
 
 ---
 
