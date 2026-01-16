@@ -60,6 +60,7 @@ const marketplaceEnabled =
 let marketplaceRouter;
 let marketplaceBillingRouter;
 let marketplaceWebhooks;
+let marketplaceMetricsRouter;
 let dispatchQueue;
 let expiryQueue;
 let etaQueue;
@@ -70,11 +71,21 @@ if (marketplaceEnabled) {
   marketplaceRouter = require("./marketplace/router");
   marketplaceBillingRouter = require("./marketplace/billingRouter");
   marketplaceWebhooks = require("./marketplace/webhooks");
+  marketplaceMetricsRouter = require("./routes/marketplace-metrics");
   // Phase 15: Bull Board ops UI
   ({ dispatchQueue, expiryQueue, etaQueue } = require("./queue/queues"));
   ({ createBullBoard } = require("@bull-board/api"));
   ({ BullMQAdapter } = require("@bull-board/api/bullMQAdapter"));
   ({ ExpressAdapter } = require("@bull-board/express"));
+  // Phase 19: Initialize metrics service (skip in test environment)
+  if (process.env.NODE_ENV !== "test") {
+    try {
+      const { getMetricsService } = require("./services/metricsService");
+      getMetricsService(); // Initialize singleton
+    } catch (e) {
+      // Fail open if metrics service unavailable
+    }
+  }
 }
 const { notifyRouter } = require("./notify/router");
 const { uploadsRouter } = require("./uploads/router");
@@ -162,6 +173,13 @@ if (marketplaceEnabled && marketplaceRouter) {
 }
 if (marketplaceEnabled && marketplaceBillingRouter) {
   app.use("/api/marketplace/billing", marketplaceBillingRouter);
+}
+if (
+  marketplaceEnabled &&
+  marketplaceMetricsRouter &&
+  process.env.NODE_ENV !== "test"
+) {
+  app.use("/api/marketplace", marketplaceMetricsRouter);
 }
 app.get("/health", (_req, res) => res.status(200).send("ok"));
 

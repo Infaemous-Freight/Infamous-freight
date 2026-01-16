@@ -1,0 +1,168 @@
+# Kubernetes Deployment for Infamous Freight API
+# Phase 19: Production Auto-Scaling Infrastructure
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: infamous-freight-api
+  namespace: infamous-freight
+  labels:
+    app: infamous-freight-api
+    version: v2.2.0
+    environment: production
+spec:
+  replicas: 2 # Starting with minimum replicas
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: infamous-freight-api
+  template:
+    metadata:
+      labels:
+        app: infamous-freight-api
+        version: v2.2.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/api/marketplace/metrics/prometheus"
+    spec:
+      containers:
+        - name: api
+          image: infamous-freight/api:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 4000
+              protocol: TCP
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: API_PORT
+              value: "4000"
+            - name: METRICS_ENABLED
+              value: "true"
+            - name: METRICS_PORT
+              value: "9090"
+            - name: METRICS_PATH
+              value: "/metrics"
+            - name: ENABLE_PERFORMANCE_MONITORING
+              value: "true"
+            - name: PERFORMANCE_SAMPLE_RATE
+              value: "1.0"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: infamous-freight-secrets
+                  key: database-url
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: infamous-freight-secrets
+                  key: redis-url
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: infamous-freight-secrets
+                  key: jwt-secret
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: infamous-freight-secrets
+                  key: openai-api-key
+                  optional: true
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: infamous-freight-secrets
+                  key: anthropic-api-key
+                  optional: true
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: infamous-freight-secrets
+                  key: stripe-secret-key
+            - name: DD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: infamous-freight-secrets
+                  key: datadog-api-key
+                  optional: true
+            - name: DD_TRACE_ENABLED
+              value: "true"
+            - name: DD_SERVICE
+              value: "infamous-freight-api"
+            - name: DD_ENV
+              value: "production"
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: infamous-freight-secrets
+                  key: sentry-dsn
+                  optional: true
+            - name: WORKER_CONCURRENCY_DISPATCH
+              value: "50"
+            - name: WORKER_CONCURRENCY_ETA
+              value: "10"
+            - name: WORKER_CONCURRENCY_EXPIRY
+              value: "20"
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 2000m
+              memory: 4Gi
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 4000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /api/health
+              port: 4000
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 30
+      terminationGracePeriodSeconds: 60
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: infamous-freight-api
+  namespace: infamous-freight
+  labels:
+    app: infamous-freight-api
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: 4000
+      protocol: TCP
+    - name: metrics
+      port: 9090
+      targetPort: 9090
+      protocol: TCP
+  selector:
+    app: infamous-freight-api
