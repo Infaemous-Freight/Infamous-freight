@@ -1,0 +1,329 @@
+/**
+ * Stripe Subscription Sync Service (Phase 20.3)
+ * 
+ * Manages subscription creation, updates, and cancellations
+ * Syncs org billing with Stripe's subscription model
+ */
+
+import Stripe from "stripe";
+import { PrismaClient, BillingPlan } from "@prisma/client";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+const prisma = new PrismaClient();
+
+// Stripe price IDs from environment (created in Stripe dashboard)
+const STRIPE_PRICES = {
+  [BillingPlan.STARTER]: process.env.STRIPE_PRICE_STARTER || "",
+  [BillingPlan.GROWTH]: process.env.STRIPE_PRICE_GROWTH || "",
+  [BillingPlan.ENTERPRISE]: process.env.STRIPE_PRICE_ENTERPRISE || "",
+};
+
+const PLAN_DETAILS = {
+  [BillingPlan.STARTER]: {
+    monthlyBase: 99,
+    monthlyQuota: 100,
+    overagePrice: 1.5,
+  },
+  [BillingPlan.GROWTH]: {
+    monthlyBase: 499,
+    monthlyQuota: 1000,
+    overagePrice: 1.5,
+  },
+  [BillingPlan.ENTERPRISE]: {
+    monthlyBase: 2500,
+    monthlyQuota: 999999, // Unlimited
+    overagePrice: 0,
+  },
+};
+
+/**
+ * Create a Stripe customer and subscription for a new organization
+ */
+export async function createStripeSubscription(
+  organizationId: string,
+  orgName: string,
+  plan: BillingPlan = BillingPlan.STARTER,
+  email?: string
+): Promise<{
+  customerId: string;
+  subscriptionId: string;
+  status: string;
+}> {
+  try {
+    // 1. Create Stripe customer
+    const customer = await stripe.customers.create({
+      name: orgName,
+      email: email || `billing@${orgName.toLowerCase().replace(/\s+/g, "-")}.local`,
+      metadata: {
+        organizationId,
+        createdAt: new Date().toISOString(),
+      },
+    });
+
+    console.log(`Created Stripe customer ${customer.id} for org ${organizationId}`);
+
+    // 2. Create subscription
+    const priceId = STRIPE_PRICES[plan];
+    if (!priceId) {
+      throw new Error(
+        `No Stripe price ID configured for plan: ${plan}. ` +
+        `Set STRIPE_PRICE_${plan.toUpperCase()} in .env`
+      );
+    }
+
+    const subscription = await stripe.subscriptions.create({
+      customer: customer.id,
+      items: [{ price: priceId }],
+      payment_behavior: "default_incomplete",
+      expand: ["latest_invoice.payment_intent"],
+      metadata: {
+        organizationId,
+        plan,
+      },
+    });
+
+    console.log(
+      `Created Stripe subscription ${subscription.id} (${plan}) for org ${organizationId}`
+    );
+
+    // 3. Update OrgBilling record
+    await prisma.orgBilling.upsert({
+      where: { organizationId },
+      create: {
+        organizationId,
+        plan,
+        stripeCustomerId: customer.id,
+        stripeSubId: subscription.id,
+        stripeStatus: subscription.status,
+        monthlyBase: PLAN_DETAILS[plan].monthlyBase,
+        monthlyQuota: PLAN_DETAILS[plan].monthlyQuota,
+        overagePrice: PLAN_DETAILS[plan].overagePrice,
+        billingCycleStart: new Date(),
+        nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      },
+      update: {
+        plan,
+        stripeCustomerId: customer.id,
+        stripeSubId: subscription.id,
+        stripeStatus: subscription.status,
+        monthlyBase: PLAN_DETAILS[plan].monthlyBase,
+        monthlyQuota: PLAN_DETAILS[plan].monthlyQuota,
+        overagePrice: PLAN_DETAILS[plan].overagePrice,
+      },
+    });
+
+    return {
+      customerId: customer.id,
+      subscriptionId: subscription.id,
+      status: subscription.status,
+    };
+  } catch (error) {
+    console.error("Failed to create Stripe subscription", {
+      organizationId,
+      plan,
+      error: (error as Error).message,
+    });
+    throw error;
+  }
+}
+
+/**
+ * Update subscription plan (upgrade/downgrade)
+ */
+export async function updateSubscriptionPlan(
+  organizationId: string,
+  newPlan: BillingPlan
+): Promise<void> {
+  try {
+    const billing = await prisma.orgBilling.findUnique({
+      where: { organizationId },
+    });
+
+    if (!billing?.stripeSubId) {
+      throw new Error(
+        `Organization ${organizationId} has no active Stripe subscription`
+      );
+    }
+
+    const priceId = STRIPE_PRICES[newPlan];
+    if (!priceId) {
+      throw new Error(`No Stripe price ID configured for plan: ${newPlan}`);
+    }
+
+    // Get current subscription to find item ID
+    const subscription = await stripe.subscriptions.retrieve(billing.stripeSubId);
+    const itemId = subscription.items.data[0].id;
+
+    // Update subscription item with new price
+    await stripe.subscriptionItems.update(itemId, {
+      price: priceId,
+    });
+
+    // Update database
+    const planDetails = PLAN_DETAILS[newPlan];
+    await prisma.orgBilling.update({
+      where: { organizationId },
+      data: {
+        plan: newPlan,
+        monthlyBase: planDetails.monthlyBase,
+        monthlyQuota: planDetails.monthlyQuota,
+        overagePrice: planDetails.overagePrice,
+      },
+    });
+
+    console.log(
+      `Updated subscription for org ${organizationId} to ${newPlan}`
+    );
+  } catch (error) {
+    console.error("Failed to update subscription plan", {
+      organizationId,
+      newPlan,
+      error: (error as Error).message,
+    });
+    throw error;
+  }
+}
+
+/**
+ * Cancel an organization's subscription
+ */
+export async function cancelSubscription(
+  organizationId: string,
+  immediately: boolean = false
+): Promise<void> {
+  try {
+    const billing = await prisma.orgBilling.findUnique({
+      where: { organizationId },
+    });
+
+    if (!billing?.stripeSubId) {
+      console.warn(
+        `No Stripe subscription found for org ${organizationId}. Skipping cancellation.`
+      );
+      return;
+    }
+
+    // Cancel subscription
+    const canceledAt = immediately ? undefined : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+    await stripe.subscriptions.update(billing.stripeSubId, {
+      cancel_at: immediately ? null : Math.floor(canceledAt!.getTime() / 1000),
+    });
+
+    // Update database
+    await prisma.orgBilling.update({
+      where: { organizationId },
+      data: {
+        stripeStatus: immediately ? "canceled" : "active", // Will transition after cancel_at
+      },
+    });
+
+    console.log(
+      `Canceled subscription for org ${organizationId} (immediately: ${immediately})`
+    );
+  } catch (error) {
+    console.error("Failed to cancel subscription", {
+      organizationId,
+      error: (error as Error).message,
+    });
+    throw error;
+  }
+}
+
+/**
+ * Sync Stripe subscription status with database
+ * Call this periodically or via webhook to keep data in sync
+ */
+export async function syncSubscriptionStatus(organizationId: string): Promise<void> {
+  try {
+    const billing = await prisma.orgBilling.findUnique({
+      where: { organizationId },
+    });
+
+    if (!billing?.stripeSubId) {
+      return;
+    }
+
+    const subscription = await stripe.subscriptions.retrieve(billing.stripeSubId);
+
+    // Update status
+    await prisma.orgBilling.update({
+      where: { organizationId },
+      data: {
+        stripeStatus: subscription.status,
+        billingCycleStart: new Date(subscription.current_period_start * 1000),
+        nextBillingDate: new Date(subscription.current_period_end * 1000),
+      },
+    });
+
+    console.log(
+      `Synced subscription status for org ${organizationId}: ${subscription.status}`
+    );
+  } catch (error) {
+    console.error("Failed to sync subscription status", {
+      organizationId,
+      error: (error as Error).message,
+    });
+  }
+}
+
+/**
+ * Get subscription details for customer portal or display
+ */
+export async function getSubscriptionDetails(organizationId: string) {
+  try {
+    const billing = await prisma.orgBilling.findUnique({
+      where: { organizationId },
+      include: {
+        organization: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+      },
+    });
+
+    if (!billing?.stripeSubId) {
+      return null;
+    }
+
+    const subscription = await stripe.subscriptions.retrieve(billing.stripeSubId);
+    const customer = await stripe.customers.retrieve(billing.stripeCustomerId || "");
+
+    return {
+      organization: billing.organization,
+      plan: billing.plan,
+      status: subscription.status,
+      currentPeriodStart: new Date(subscription.current_period_start * 1000),
+      currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+      cancelAt: subscription.cancel_at
+        ? new Date(subscription.cancel_at * 1000)
+        : null,
+      items: subscription.items.data.map((item) => ({
+        priceId: item.price.id,
+        quantity: item.quantity,
+        billingPeriod: item.price.recurring?.interval,
+      })),
+      customer: {
+        email: (customer as Stripe.Customer).email,
+        name: (customer as Stripe.Customer).name,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to get subscription details", {
+      organizationId,
+      error: (error as Error).message,
+    });
+    return null;
+  }
+}
+
+export default {
+  createStripeSubscription,
+  updateSubscriptionPlan,
+  cancelSubscription,
+  syncSubscriptionStatus,
+  getSubscriptionDetails,
+};

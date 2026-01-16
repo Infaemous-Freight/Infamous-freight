@@ -363,8 +363,137 @@ LOW (CVSS 0-3)
 - [CycloneDX SBOM](https://cyclonedx.org/)
 - [CVE Database](https://cve.mitre.org/)
 
+## SOC2-lite Compliance Controls
+
+### Authentication & Authorization (Phase 17)
+
+**RBAC Implementation:**
+- Roles: `SHIPPER`, `DRIVER`, `ADMIN`, `SYSTEM`
+- Permissions: `job:*`, `offer:*`, `payout:run`, `admin:ops`
+- Files: `api/src/auth/roles.js`, `api/src/auth/authorize.js`
+- Enforcement: `requirePerm()` middleware on critical endpoints
+
+**JWT Rotation (JWKS-ready):**
+- Optional JWKS validator: `api/src/auth/jwtRotation.js`
+- Mounted globally, fail-open when not configured
+- Populates `req.auth` for RBAC checks
+- Environment: `AUTH_JWKS_URI`, `AUTH_AUDIENCE`, `AUTH_ISSUER`
+
+### Audit Trail Integrity
+
+**Tamper-evident Hash Chain:**
+- Implementation: `api/src/lib/auditChain.js`
+- Append-only log with previous hash chaining
+- Automatically captures all requests via `auditLog` middleware
+- Storage: Configurable via `AUDIT_LOG_DIR`, `AUDIT_LOG_FILE`
+- Salt: `AUDIT_LOG_SALT` for additional entropy
+
+**Recommended Operations:**
+```bash
+# View audit log
+tail -f data/audit.log | jq
+
+# Rotate logs (preserve chain)
+logrotate /etc/logrotate.d/infamous-audit
+```
+
+### API Security Hardening
+
+**Request Validation:**
+- Express-validator on all write endpoints
+- Zod schemas for complex payloads
+- Idempotency keys via Redis: `api/src/middleware/idempotency.js`
+- TTL: `IDEMPOTENCY_TTL_SECONDS` (default 900s)
+
+**Rate Limiting:**
+- Global: 100 req/15min per user
+- Auth: 5 req/15min per IP
+- AI: 20 req/1min per user
+- Billing: 30 req/15min per user
+- Payouts: Uses billing limiter + RBAC
+
+**Security Headers:**
+- Helmet with strict CSP: `api/src/middleware/securityHeaders.js`
+- CSP violation reporting: `POST /api/csp-violation`
+- HSTS, X-Frame-Options, X-Content-Type-Options
+- Configure report endpoint: `CSP_REPORT_URI`
+
+**CORS Policy:**
+- Strict allowlist: `CORS_ORIGINS` (comma-separated)
+- No wildcards in production
+- Server-to-server allowed (no Origin header)
+
+### Secrets Hygiene
+
+**Pre-commit Hook:**
+```bash
+# Activate secret scanning
+git config core.hooksPath .githooks
+
+# Hook blocks commits with:
+# - AWS keys, Stripe keys, JWT secrets
+# - Private keys, Google API keys
+# File: .githooks/pre-commit
+```
+
+**Runtime Validation:**
+- Required envs checked at startup: `api/src/config/validate.js`
+- Logs redact authorization headers
+- Audit chain masks sensitive fields
+
+### Incident Response
+
+**Playbook:** See `INCIDENT_RESPONSE.md`
+
+**Key Contacts:**
+- Primary: security@infamous-freight.com
+- On-call: security-oncall@infamous-freight.com (24/7)
+- Escalation: Critical <1hr, High <24hr
+
+**Detection Sources:**
+- CodeQL findings
+- Sentry error spikes
+- Rate limit violations
+- CSP violation reports
+- User reports
+
+**Monitoring Integration:**
+- CSP reports → `CSP_REPORT_URI` webhook
+- Auth failures → Sentry alerts
+- Rate limit blocks → metrics dashboard
+
+### Compliance Artifacts
+
+1. **RBAC Matrix:** `api/src/auth/roles.js`
+2. **Audit Logs:** `data/audit.log` (immutable)
+3. **Security Headers:** Verified via SecurityHeaders.com
+4. **Dependency Scan:** `pnpm audit` (daily)
+5. **Secrets Scan:** Pre-commit hook + TruffleHog
+6. **Incident Response:** `INCIDENT_RESPONSE.md`
+
+### Environment Variables Reference
+
+**Authentication:**
+- `AUTH_JWKS_URI` - JWKS endpoint for JWT validation
+- `AUTH_AUDIENCE` - Expected JWT audience
+- `AUTH_ISSUER` - Expected JWT issuer
+
+**Audit & Logging:**
+- `AUDIT_LOG_DIR` - Directory for audit logs (default: `./data`)
+- `AUDIT_LOG_FILE` - Audit log file path
+- `AUDIT_LOG_SALT` - Salt for hash chain
+
+**Security:**
+- `CORS_ORIGINS` - Comma-separated allowlist (NO wildcards in prod)
+- `CSP_REPORT_URI` - CSP violation webhook
+- `IDEMPOTENCY_TTL_SECONDS` - Idempotency cache TTL (default: 900)
+
+**Phase 16 (Redis/ETA):**
+- `MAPBOX_ETA_CACHE_TTL_SECONDS` - Shared Redis ETA cache TTL
+- `REDIS_URL` - Redis connection for cache + queues
+
 ---
 
-**Status**: ✅ ACTIVE - CodeQL 100% Security Implementation  
-**Last Updated**: January 11, 2026  
-**Next Review**: April 11, 2026
+**Status**: ✅ ACTIVE - CodeQL 100% + SOC2-lite Controls  
+**Last Updated**: January 15, 2026  
+**Next Review**: April 15, 2026

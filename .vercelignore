@@ -40,13 +40,18 @@ playwright-report
 
 # Test files
 
-**/*test** **/*tests**
+**/__tests__/**
+**/*test**
+**/*tests**
 *.test.ts
 *.test.js
 *.spec.ts
 *.spec.js
+*.test.tsx
+*.spec.tsx
 junit.xml
 tests/e2e
+e2e
 
 # Archives & Docs
 
@@ -57,6 +62,7 @@ docs
 
 .github
 .husky
+.devcontainer
 
 # Docker
 

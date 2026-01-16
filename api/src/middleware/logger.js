@@ -30,6 +30,9 @@ const httpLogger = pinoHttp({
 function correlationMiddleware(req, _res, next) {
   req.correlationId =
     req.headers["x-correlation-id"] || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  // Surface correlation ID to downstream services and clients
+  req.setHeader?.("x-correlation-id", req.correlationId);
+  _res?.setHeader?.("x-correlation-id", req.correlationId);
   req.startTime = Date.now();
   next();
 }

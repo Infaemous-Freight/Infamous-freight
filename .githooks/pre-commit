@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+# Prevent committing obvious secrets to the repository
+
+FILES=$(git diff --cached --name-only | tr '\n' ' ')
+
+if [ -z "$FILES" ]; then
+  exit 0
+fi
+
+# Patterns to flag (extend as needed)
+PATTERNS='(AWS_SECRET_ACCESS_KEY|AWS_ACCESS_KEY_ID|STRIPE_SECRET_KEY|JWT_SECRET|GOOGLE_API_KEY|PRIVATE KEY-----)'
+
+for f in $FILES; do
+  if [ -f "$f" ]; then
+    if grep -E -i "$PATTERNS" "$f" >/dev/null 2>&1; then
+      echo "[pre-commit] Potential secret found in $f"
+      echo "Activate hooks via: git config core.hooksPath .githooks"
+      echo "Commit aborted. Remove/redact secrets before committing."
+      exit 1
+    fi
+  fi
+done
+
+exit 0

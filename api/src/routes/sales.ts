@@ -1,0 +1,547 @@
+/**
+ * Sales & Marketing API Routes (Phase 21)
+ * 
+ * Endpoints for:
+ * - Lead capture (21.2)
+ * - Demo scheduling (21.3)
+ * - ROI calculator (21.4)
+ * - Referrals (21.6)
+ * - Metrics (21.8)
+ */
+
+import { Router } from "express";
+import { body, query } from "express-validator";
+import {
+  authenticate,
+  requireScope,
+  limiters,
+} from "../middleware/security";
+import { handleValidationErrors } from "../middleware/validation";
+
+import {
+  createLead,
+  getLead,
+  updateLeadStatus,
+  convertLead,
+  getLeads,
+} from "../sales/leadCapture";
+
+import {
+  scheduleDemo,
+  getDemo,
+  updateDemoStatus,
+  getUpcomingDemos,
+  getDemoStats,
+  sendDemoReminders,
+} from "../sales/demoScheduling";
+
+import {
+  calculateRoi,
+  compareScenarios,
+  INDUSTRY_DEFAULTS,
+  LOAD_PRICE_RANGES,
+} from "../sales/roiCalculator";
+
+import {
+  generateReferralCode,
+  getReferralLink,
+  createReferral,
+  trackReferralSignup,
+  checkReferralMilestone,
+  getReferralStats,
+  getTopReferrers,
+} from "../sales/referrals";
+
+import {
+  getMetricsSnapshot,
+  storeMetricsSnapshot,
+  getMetricsTrend,
+  getGrowthRates,
+  getInvestorKpis,
+} from "../sales/metrics";
+
+const router = Router();
+
+// ============================================
+// Lead Capture (21.2)
+// ============================================
+
+/**
+ * POST /api/sales/leads
+ * Create a new lead
+ */
+router.post(
+  "/leads",
+  limiters.general,
+  [
+    body("name").isString().notEmpty().withMessage("Name is required"),
+    body("email").isEmail().withMessage("Valid email is required"),
+    body("type").isIn(["SHIPPER", "DRIVER", "ENTERPRISE", "OTHER"]),
+    body("source").isString().optional(),
+    body("company").isString().optional(),
+    body("phone").isString().optional(),
+    body("estimatedMonthlyVolume").isInt().optional(),
+    body("estimatedMonthlyBudget").isFloat().optional(),
+  ],
+  handleValidationErrors,
+  async (req, res, next) => {
+    try {
+      const lead = await createLead({
+        name: req.body.name,
+        email: req.body.email,
+        company: req.body.company,
+        phone: req.body.phone,
+        type: req.body.type,
+        source: req.body.source || "LANDING_PAGE",
+        estimatedMonthlyVolume: req.body.estimatedMonthlyVolume,
+        estimatedMonthlyBudget: req.body.estimatedMonthlyBudget,
+        currentProvider: req.body.currentProvider,
+        painPoints: req.body.painPoints,
+        metadata: req.body.metadata,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: lead,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/sales/leads/:email
+ * Get lead by email
+ */
+router.get(
+  "/leads/:email",
+  limiters.general,
+  authenticate,
+  async (req, res, next) => {
+    try {
+      const lead = await getLead(req.params.email);
+
+      if (!lead) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+
+      res.json({ success: true, data: lead });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * PATCH /api/sales/leads/:id
+ * Update lead status
+ */
+router.patch(
+  "/leads/:id",
+  limiters.general,
+  authenticate,
+  requireScope("admin:sales"),
+  [
+    body("status").isString().optional(),
+    body("notes").isString().optional(),
+  ],
+  handleValidationErrors,
+  async (req, res, next) => {
+    try {
+      const lead = await updateLeadStatus(req.params.id, req.body.status, req.body.notes);
+
+      res.json({ success: true, data: lead });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/sales/leads
+ * Get all leads (admin dashboard)
+ */
+router.get(
+  "/leads",
+  limiters.general,
+  authenticate,
+  requireScope("admin:sales"),
+  async (req, res, next) => {
+    try {
+      const leads = await getLeads({
+        type: req.query.type as string,
+        status: req.query.status as string,
+        source: req.query.source as string,
+        limit: req.query.limit ? parseInt(req.query.limit as string) : 50,
+      });
+
+      res.json({ success: true, data: leads });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// ============================================
+// Demo Scheduling (21.3)
+// ============================================
+
+/**
+ * POST /api/sales/demo
+ * Schedule a demo
+ */
+router.post(
+  "/demo",
+  limiters.general,
+  [
+    body("name").isString().notEmpty().optional(),
+    body("email").isEmail().optional(),
+    body("scheduledFor").isISO8601().withMessage("Valid date required"),
+    body("duration").isInt({ min: 15, max: 120 }).optional(),
+    body("timezone").isString().optional(),
+  ],
+  handleValidationErrors,
+  async (req, res, next) => {
+    try {
+      const demoBooking = await scheduleDemo({
+        leadId: req.body.leadId,
+        name: req.body.name,
+        email: req.body.email,
+        company: req.body.company,
+        phone: req.body.phone,
+        type: req.body.type,
+        scheduledFor: new Date(req.body.scheduledFor),
+        duration: req.body.duration || 30,
+        timezone: req.body.timezone || "America/Los_Angeles",
+      });
+
+      res.status(201).json({
+        success: true,
+        data: demoBooking,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/sales/demo/:id
+ * Get demo details
+ */
+router.get(
+  "/demo/:id",
+  limiters.general,
+  async (req, res, next) => {
+    try {
+      const demo = await getDemo(req.params.id);
+
+      if (!demo) {
+        return res.status(404).json({ error: "Demo not found" });
+      }
+
+      res.json({ success: true, data: demo });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * PATCH /api/sales/demo/:id
+ * Update demo status
+ */
+router.patch(
+  "/demo/:id",
+  limiters.general,
+  authenticate,
+  requireScope("admin:sales"),
+  async (req, res, next) => {
+    try {
+      const demo = await updateDemoStatus(
+        req.params.id,
+        req.body.status,
+        req.body.recordingUrl,
+        req.body.notes
+      );
+
+      res.json({ success: true, data: demo });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/sales/demo/stats
+ * Get demo statistics
+ */
+router.get(
+  "/demo/stats",
+  limiters.general,
+  authenticate,
+  requireScope("admin:sales"),
+  async (req, res, next) => {
+    try {
+      const stats = await getDemoStats();
+
+      res.json({ success: true, data: stats });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// ============================================
+// ROI Calculator (21.4)
+// ============================================
+
+/**
+ * POST /api/sales/roi-calculate
+ * Calculate ROI for prospect
+ */
+router.post(
+  "/roi-calculate",
+  limiters.general,
+  [
+    body("estimatedLoadsPerMonth").isInt().withMessage("Must be integer"),
+    body("averageLoadPrice").isFloat().withMessage("Must be decimal"),
+    body("plan").isIn(["STARTER", "GROWTH", "ENTERPRISE"]).optional(),
+    body("currentBrokerFeePercent").isFloat().optional(),
+    body("currentDispatchCostPerLoad").isFloat().optional(),
+  ],
+  handleValidationErrors,
+  async (req, res, next) => {
+    try {
+      const roi = calculateRoi({
+        estimatedLoadsPerMonth: req.body.estimatedLoadsPerMonth,
+        averageLoadPrice: req.body.averageLoadPrice,
+        plan: req.body.plan || "GROWTH",
+        currentBrokerFeePercent: req.body.currentBrokerFeePercent,
+        currentDispatchCostPerLoad: req.body.currentDispatchCostPerLoad,
+      });
+
+      res.json({ success: true, data: roi });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/sales/roi-defaults
+ * Get industry defaults for ROI calculator (public)
+ */
+router.get("/roi-defaults", (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      defaults: INDUSTRY_DEFAULTS,
+      loadPriceRanges: LOAD_PRICE_RANGES,
+    },
+  });
+});
+
+// ============================================
+// Referrals (21.6)
+// ============================================
+
+/**
+ * POST /api/sales/referral
+ * Create referral code for user
+ */
+router.post(
+  "/referral",
+  limiters.general,
+  authenticate,
+  [body("refereeEmail").isEmail().withMessage("Valid email required")],
+  handleValidationErrors,
+  async (req, res, next) => {
+    try {
+      const referrerEmail = req.user.email || req.user.sub;
+      const referralCode = generateReferralCode(referrerEmail);
+      const referralLink = getReferralLink(referralCode);
+
+      // Create referral record
+      await createReferral(
+        referrerEmail,
+        req.body.refereeEmail,
+        req.body.rewardAmount || 100,
+        req.body.rewardType || "credit"
+      );
+
+      res.status(201).json({
+        success: true,
+        data: {
+          referralCode,
+          referralLink,
+          rewardAmount: req.body.rewardAmount || 100,
+        },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/sales/referral/stats
+ * Get referral stats for logged-in user
+ */
+router.get(
+  "/referral/stats",
+  limiters.general,
+  authenticate,
+  async (req, res, next) => {
+    try {
+      const email = req.user.email || req.user.sub;
+      const stats = await getReferralStats(email);
+
+      res.json({ success: true, data: stats });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/sales/referral/leaderboard
+ * Get top referrers
+ */
+router.get(
+  "/referral/leaderboard",
+  limiters.general,
+  async (req, res, next) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      const topReferrers = await getTopReferrers(limit);
+
+      res.json({ success: true, data: topReferrers });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+// ============================================
+// Metrics (21.8)
+// ============================================
+
+/**
+ * GET /api/sales/metrics
+ * Get current metrics snapshot (for dashboard)
+ */
+router.get(
+  "/metrics",
+  limiters.general,
+  async (req, res, next) => {
+    try {
+      const metrics = await getMetricsSnapshot();
+      
+      // Store snapshot if requested
+      if (req.query.store === "true") {
+        await storeMetricsSnapshot(metrics);
+      }
+
+      res.json({
+        success: true,
+        data: metrics,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/sales/metrics/trend
+ * Get metrics trend (historical)
+ */
+router.get(
+  "/metrics/trend",
+  limiters.general,
+  async (req, res, next) => {
+    try {
+      const days = req.query.days ? parseInt(req.query.days as string) : 30;
+      const trend = await getMetricsTrend(days);
+
+      res.json({
+        success: true,
+        data: trend,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/sales/metrics/growth
+ * Get growth rates
+ */
+router.get(
+  "/metrics/growth",
+  limiters.general,
+  async (req, res, next) => {
+    try {
+      const growth = await getGrowthRates();
+
+      res.json({
+        success: true,
+        data: growth,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * GET /api/sales/metrics/investor
+ * Get investor KPIs
+ */
+router.get(
+  "/metrics/investor",
+  limiters.general,
+  authenticate,
+  requireScope("admin:analytics"),
+  async (req, res, next) => {
+    try {
+      const kpis = await getInvestorKpis();
+
+      res.json({
+        success: true,
+        data: kpis,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * POST /api/sales/metrics/snapshot
+ * Force store current metrics (admin only)
+ */
+router.post(
+  "/metrics/snapshot",
+  limiters.general,
+  authenticate,
+  requireScope("admin:analytics"),
+  async (req, res, next) => {
+    try {
+      const metrics = await getMetricsSnapshot();
+      await storeMetricsSnapshot(metrics);
+
+      res.status(201).json({
+        success: true,
+        data: metrics,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+export default router;

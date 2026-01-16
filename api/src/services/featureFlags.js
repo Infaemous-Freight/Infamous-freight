@@ -7,6 +7,32 @@ class FeatureFlagsService {
     constructor() {
         this.flags = new Map();
         this.cache = new Map();
+        this.bootstrapFromEnv();
+    }
+
+    bootstrapFromEnv() {
+        const envBackedFlags = [
+            'ENABLE_AI_COMMANDS',
+            'ENABLE_VOICE_PROCESSING',
+            'ENABLE_EXPERIMENTAL_UI',
+        ];
+
+        envBackedFlags.forEach((name) => {
+            const envValue = process.env[name];
+            if (envValue !== undefined && !this.flags.has(name)) {
+                this.flags.set(name, {
+                    id: `flag_${Date.now()}_${name}`,
+                    name,
+                    enabled: envValue !== 'false',
+                    percentageRollout: 100,
+                    targetUsers: [],
+                    targetSegments: [],
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    source: 'env',
+                });
+            }
+        });
     }
 
     createFlag(name, config) {
@@ -19,13 +45,17 @@ class FeatureFlagsService {
             targetSegments: config.targetSegments || [],
             createdAt: new Date(),
             updatedAt: new Date(),
+            source: config.source || 'manual',
         };
         this.flags.set(name, flag);
         return flag;
     }
 
     isEnabled(userId, flagName) {
-        if (!this.flags.has(flagName)) return false;
+        if (!this.flags.has(flagName)) {
+            const envValue = process.env[flagName];
+            return envValue ? envValue !== 'false' : false;
+        }
         const flag = this.flags.get(flagName);
 
         if (!flag.enabled) return false;
@@ -51,10 +81,25 @@ class FeatureFlagsService {
     updateFlag(name, config) {
         if (!this.flags.has(name)) throw new Error(`Flag ${name} not found`);
         const flag = this.flags.get(name);
-        const updated = { ...flag, ...config, updatedAt: new Date() };
+        const updated = { ...flag, ...config, updatedAt: new Date(), source: config.source || flag.source };
         this.flags.set(name, updated);
         this.cache.clear();
         return updated;
+    }
+
+    upsertFlag(name, config) {
+        if (this.flags.has(name)) {
+            return this.updateFlag(name, config);
+        }
+        return this.createFlag(name, config);
+    }
+
+    setEnabled(name, enabled) {
+        return this.upsertFlag(name, {
+            enabled,
+            percentageRollout: enabled ? 100 : 0,
+            source: 'manual',
+        });
     }
 
     getFlag(name) {

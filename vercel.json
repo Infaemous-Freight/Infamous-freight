@@ -1,14 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "pnpm --filter web build",
+  "buildCommand": "cd web && bash scripts/validate-build.sh && cd .. && pnpm --filter web build",
   "devCommand": "pnpm --filter web dev",
   "installCommand": "pnpm install",
   "outputDirectory": "web/.next",
   "ignoreCommand": "git diff HEAD^ HEAD --quiet . ':(exclude)api/**' ':(exclude)packages/**' ':(exclude)archive/**' ':(exclude)mobile/**'",
+  "crons": [],
+  "cache": [
+    "web/.next/cache/**",
+    "node_modules/.cache/**",
+    ".pnpm-store/**"
+  ],
   "github": {
     "silent": false,
-    "enabled": true
+    "enabled": true,
+    "autoAlias": true
   },
   "git": {
     "deploymentEnabled": true

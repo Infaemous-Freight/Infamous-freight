@@ -769,4 +769,100 @@
  *         description: Insufficient permissions
  */
 
+/**
+ * @swagger
+ * /api/admin/flags:
+ *   get:
+ *     summary: List all feature flags
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current feature flags with rollout metadata
+ *   post:
+ *     summary: Create or update a feature flag
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name]
+ *             properties:
+ *               name:
+ *                 type: string
+ *               enabled:
+ *                 type: boolean
+ *               percentageRollout:
+ *                 type: number
+ *                 minimum: 0
+ *                 maximum: 100
+ *               targetUsers:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               targetSegments:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: Upserted feature flag
+ *       400:
+ *         description: Invalid flag payload
+ *       403:
+ *         description: Admin role required
+ */
+
+/**
+ * @swagger
+ * /api/admin/rate-limits:
+ *   get:
+ *     summary: Get rate limit metrics snapshot
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Per-limiter hit and block counts
+ *       403:
+ *         description: Admin role required
+ */
+
+/**
+ * @swagger
+ * /api/admin/database/slow-queries:
+ *   get:
+ *     summary: List recent slow database queries
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Slow query records with duration and model/action
+ *       403:
+ *         description: Admin role required
+ */
+
+/**
+ * @swagger
+ * /api/admin/health/full:
+ *   get:
+ *     summary: Full system health (admin)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Health snapshot with system metrics
+ *       503:
+ *         description: Degraded health
+ *       403:
+ *         description: Admin role required
+ */
+
 module.exports = {};

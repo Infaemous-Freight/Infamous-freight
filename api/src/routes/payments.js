@@ -7,6 +7,8 @@ const express = require('express');
 const router = express.Router();
 const paymentService = require('../services/paymentService');
 const { authenticate, requireScope, limiters, auditLog } = require('../middleware/security');
+const { withIdempotency } = require('../middleware/idempotency');
+const { requirePerm } = require('../auth/authorize');
 const { validateString, handleValidationErrors } = require('../middleware/validation');
 const { body, param } = require('express-validator');
 
@@ -24,7 +26,9 @@ router.post(
     limiters.billing,
     authenticate,
     requireScope('payment:payout'),
+    requirePerm('payout:run'),
     auditLog,
+    withIdempotency({ scope: 'payments:payout:instant' }),
     [
         body('amount').isFloat({ min: 10, max: 25000 }).withMessage('Amount must be between $10 and $25,000'),
         body('method').isIn(['stripe', 'paypal', 'debitCard']).withMessage('Invalid payment method'),
@@ -81,7 +85,9 @@ router.post(
     limiters.billing,
     authenticate,
     requireScope('payment:payout'),
+    requirePerm('payout:run'),
     auditLog,
+    withIdempotency({ scope: 'payments:payout:standard' }),
     [
         body('amount').isFloat({ min: 1, max: 100000 }).withMessage('Amount must be between $1 and $100,000'),
         body('method').isIn(['bankTransfer', 'stripe', 'paypal']).withMessage('Invalid payment method'),
@@ -141,7 +147,9 @@ router.post(
     limiters.billing,
     authenticate,
     requireScope('payment:bonus'),
+    requirePerm('payout:run'),
     auditLog,
+    withIdempotency({ scope: 'payments:bonus:payout' }),
     [
         body('bonusId').notEmpty().withMessage('Bonus ID is required'),
         body('amount').isFloat({ min: 10 }).withMessage('Amount must be at least $10'),

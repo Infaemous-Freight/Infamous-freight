@@ -25,12 +25,14 @@ const {
   performanceMiddleware,
 } = require("./middleware/logger");
 const { rateLimit } = require("./middleware/security");
+const { authMiddleware: jwtRotationAuth } = require("./auth/jwtRotation");
 const errorHandler = require("./middleware/errorHandler");
 const {
   securityHeaders,
   handleCSPViolation,
 } = require("./middleware/securityHeaders");
-const { initSentry, attachErrorHandler } = require("./config/sentry");
+const { initSentry: legacySentry, attachErrorHandler } = require("./config/sentry");
+const { initSentry, Sentry } = require("./observability/sentry");
 const config = require("./config");
 const { compressionMiddleware } = require("./middleware/performance");
 const healthRoutes = require("./routes/health");
@@ -43,11 +45,23 @@ const aiSimRoutes = require("./routes/aiSim.internal");
 const usersRoutes = require("./routes/users");
 const shipmentsRoutes = require("./routes/shipments");
 const analyticsRoutes = require("./routes/analytics");
+const adminFeatureFlagsRoutes = require("./routes/admin/feature-flags");
+const adminOpsRoutes = require("./routes/admin/ops");
 const avatarsRouter = require("./avatars/routes");
 const genesisRouter = require("./genesis/routes");
 const satelliteRouter = require("./satellite/routes");
 const billingRouter = require("./billing/routes");
 const authRouter = require("./auth/routes");
+const marketplaceRouter = require("./marketplace/router");
+const marketplaceBillingRouter = require("./marketplace/billingRouter");
+const marketplaceWebhooks = require("./marketplace/webhooks");
+// Phase 15: Bull Board ops UI
+const { dispatchQueue, expiryQueue, etaQueue } = require("./queue/queues");
+const { createBullBoard } = require("@bull-board/api");
+const { BullMQAdapter } = require("@bull-board/api/bullMQAdapter");
+const { ExpressAdapter } = require("@bull-board/express");
+const { notifyRouter } = require("./notify/router");
+const { uploadsRouter } = require("./uploads/router");
 const { validateRuntimeEnv } = require("./config/validate");
 
 const app = express();
@@ -56,7 +70,14 @@ const app = express();
 validateRuntimeEnv();
 
 // Initialize Sentry for error tracking (must be early)
-initSentry(app);
+legacySentry(app);
+initSentry("api");
+
+// Mount Sentry request and tracing handlers (must be early)
+if (process.env.SENTRY_DSN) {
+  app.use(Sentry.Handlers.requestHandler());
+  app.use(Sentry.Handlers.tracingHandler());
+}
 
 app.set("trust proxy", 1);
 
@@ -70,6 +91,13 @@ app.use(performanceMiddleware);
 app.use(httpLogger);
 app.use(compressionMiddleware); // Add compression for all responses
 app.use(rateLimit);
+
+// Optional JWT rotation-ready validator (populates req.auth if configured)
+app.use(jwtRotationAuth());
+
+// Stripe webhooks need raw body - must be before express.json()
+app.use("/api/webhooks", marketplaceWebhooks);
+
 app.use(express.json({ limit: "12mb" }));
 
 // Swagger API Documentation
@@ -92,6 +120,8 @@ app.use("/api", voiceRoutes);
 app.use("/api", usersRoutes);
 app.use("/api", shipmentsRoutes);
 app.use("/api", analyticsRoutes);
+app.use("/api", adminFeatureFlagsRoutes);
+app.use("/api", adminOpsRoutes);
 app.use("/v1/auth", authRouter);
 
 // Serve static avatar files (Phase 1 & Phase 2)
@@ -104,10 +134,75 @@ app.use("/api/avatars", avatarsRouter);  // Legacy path support
 app.use("/v1/genesis", genesisRouter);
 app.use("/v1/satellite", satelliteRouter);
 app.use("/v1/billing", billingRouter);
+app.use("/api/notify", notifyRouter);
+app.use("/api/uploads", uploadsRouter);
+app.use("/api/marketplace", marketplaceRouter);
+app.use("/api/marketplace/billing", marketplaceBillingRouter);
 app.get("/health", (_req, res) => res.status(200).send("ok"));
+
+// Mount Bull Board (ops dashboard)
+try {
+  if (String(process.env.BULLBOARD_ENABLED || "true").toLowerCase() === "true") {
+    const serverAdapter = new ExpressAdapter();
+    serverAdapter.setBasePath(process.env.BULLBOARD_PATH || "/ops/queues");
+    createBullBoard({
+      queues: [
+        new BullMQAdapter(dispatchQueue),
+        new BullMQAdapter(expiryQueue),
+        new BullMQAdapter(etaQueue),
+      ],
+      serverAdapter,
+    });
+    app.use(process.env.BULLBOARD_PATH || "/ops/queues", serverAdapter.getRouter());
+  }
+} catch (e) {
+  // Fail open if bull-board not available
+}
 
 // CSP Violation Report Handler
 app.post("/api/csp-violation", handleCSPViolation);
+
+// Status endpoint - operational snapshot (for ops monitoring)
+app.get("/api/status", async (_req, res) => {
+  try {
+    const queues = await Promise.all([
+      dispatchQueue.getJobCounts("waiting", "active", "delayed", "failed"),
+      expiryQueue.getJobCounts("waiting", "active", "delayed", "failed"),
+      etaQueue.getJobCounts("waiting", "active", "delayed", "failed"),
+    ]);
+
+    // Check worker heartbeat
+    let workerHeartbeat = null;
+    try {
+      const { cacheGetJson } = require("./lib/redisCache");
+      workerHeartbeat = await cacheGetJson("heartbeat:worker");
+    } catch (_e) {
+      // Redis not available or not configured
+    }
+
+    res.json({
+      ok: true,
+      time: new Date().toISOString(),
+      release: process.env.RELEASE_SHA || null,
+      environment: process.env.NODE_ENV || "development",
+      queues: {
+        dispatch: queues[0],
+        expiry: queues[1],
+        eta: queues[2],
+      },
+      worker: {
+        heartbeat: workerHeartbeat,
+      },
+    });
+  } catch (error) {
+    logger.error("Status endpoint error", { error: error.message });
+    res.status(500).json({
+      ok: false,
+      error: error.message,
+      time: new Date().toISOString(),
+    });
+  }
+});
 
 // Internal synthetic engine simulator
 app.use("/internal", aiSimRoutes);
@@ -120,7 +215,10 @@ app.use((req, res) => {
 // Error handler (must be last, after Sentry)
 app.use(errorHandler);
 
-// Attach Sentry error handler (must be after all other middleware)
+// Attach Sentry error handler (must be after all other middleware and error handler)
+if (process.env.SENTRY_DSN) {
+  app.use(Sentry.Handlers.errorHandler());
+}
 attachErrorHandler(app);
 
 const apiConfig = config.getApiConfig();
@@ -157,6 +255,17 @@ if (require.main === module) {
       await initializeRedis();
     } catch (error) {
       logger.warn("Redis initialization failed, using memory cache", {
+        error: error.message,
+      });
+    }
+
+    // Initialize worker heartbeat monitoring
+    try {
+      const { startHeartbeat } = require("./worker/heartbeat");
+      startHeartbeat("api"); // API can report its own heartbeat
+      logger.info("API heartbeat monitoring initialized");
+    } catch (error) {
+      logger.warn("API heartbeat initialization failed", {
         error: error.message,
       });
     }

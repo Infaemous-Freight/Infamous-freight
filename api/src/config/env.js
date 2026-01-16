@@ -28,6 +28,12 @@ const env = {
     anthropicModel: process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-latest",
     corsOrigins: (process.env.CORS_ORIGINS || "http://localhost:3000,http://localhost:3001").split(","),
     logLevel: process.env.LOG_LEVEL || "info",
+    outboundHttpAllowlist: (process.env.OUTBOUND_HTTP_ALLOWLIST || "api.open-meteo.com,open-meteo.com,hooks.slack.com")
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter(Boolean),
+    outboundHttpBlockPrivate: process.env.OUTBOUND_HTTP_BLOCK_PRIVATE !== "false",
+    outboundHttpTimeoutMs: parseInt(process.env.OUTBOUND_HTTP_TIMEOUT_MS || "8000", 10),
 };
 
 module.exports = { env };

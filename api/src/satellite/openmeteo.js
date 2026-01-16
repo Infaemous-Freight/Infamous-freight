@@ -2,6 +2,8 @@
  * Satellite weather adapter (Open-Meteo default, no API key required)
  */
 
+const { safeFetch } = require("../lib/outboundHttp");
+
 const SOURCE = "open-meteo";
 
 function toNumber(value) {
@@ -18,7 +20,7 @@ async function getWeather(lat, lon) {
         `&longitude=${encodeURIComponent(lon)}` +
         "&current=temperature_2m,wind_speed_10m,precipitation,visibility";
 
-    const res = await fetch(url);
+    const res = await safeFetch(url, { timeoutMs: 5000 });
     if (!res.ok) {
         throw new Error("Open-Meteo request failed");
     }

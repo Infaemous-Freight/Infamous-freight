@@ -27,6 +27,9 @@
 /nginx/ @MrMiless44
 /.github/workflows/ @MrMiless44
 /.github/dependabot.yml @MrMiless44
+/vercel.json @MrMiless44
+/.vercelignore @MrMiless44
+/web/scripts/validate-build.sh @MrMiless44
 
 # Documentation
 /docs/ @MrMiless44

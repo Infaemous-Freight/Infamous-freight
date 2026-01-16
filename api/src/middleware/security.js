@@ -8,62 +8,84 @@ const rateLimit = require("express-rate-limit");
 const jwt = require("jsonwebtoken");
 const { authenticateWithRotation } = require("./advancedSecurity");
 const { env } = require("../config/env");
+const rateLimitMetrics = require("../lib/rateLimitMetrics");
 
 // Rate limiters with enhanced configuration
-const createLimiter = (options) => rateLimit({
-  ...options,
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: (req) => req.path === '/api/health' || req.path === '/api/health/live',
-});
+const createLimiter = (name, options) => {
+  const limiter = rateLimit({
+    ...options,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.path === '/api/health' || req.path === '/api/health/live',
+  });
+
+  return (req, res, next) => {
+    if (options.skip && options.skip(req, res)) {
+      return next();
+    }
+
+    const key = options.keyGenerator ? options.keyGenerator(req, res) : req.ip;
+    rateLimitMetrics.recordHit(name, key);
+
+    res.on("finish", () => {
+      if (res.statusCode === 429) {
+        rateLimitMetrics.recordBlocked(name, key);
+      } else {
+        rateLimitMetrics.recordSuccess(name);
+      }
+    });
+
+    return limiter(req, res, next);
+  };
+};
 
 const limiters = {
-  general: createLimiter({
+  general: createLimiter('general', {
     windowMs: parseInt(process.env.RATE_LIMIT_GENERAL_WINDOW_MS || '15') * 60 * 1000,
     max: parseInt(process.env.RATE_LIMIT_GENERAL_MAX || '100'),
     keyGenerator: (req) => req.user?.sub || req.ip,
     message: { error: 'Too many requests. Please try again later.' },
   }),
-  auth: createLimiter({
+  auth: createLimiter('auth', {
     windowMs: parseInt(process.env.RATE_LIMIT_AUTH_WINDOW_MS || '15') * 60 * 1000,
     max: parseInt(process.env.RATE_LIMIT_AUTH_MAX || '5'),
     keyGenerator: (req) => req.ip,
     message: { error: "Too many authentication attempts. Try again later." },
   }),
-  ai: createLimiter({
+  ai: createLimiter('ai', {
     windowMs: parseInt(process.env.RATE_LIMIT_AI_WINDOW_MS || '1') * 60 * 1000,
     max: parseInt(process.env.RATE_LIMIT_AI_MAX || '20'),
     keyGenerator: (req) => req.user?.sub || req.ip,
     message: { error: 'AI service rate limit exceeded.' },
   }),
-  billing: createLimiter({
+  billing: createLimiter('billing', {
     windowMs: parseInt(process.env.RATE_LIMIT_BILLING_WINDOW_MS || '15') * 60 * 1000,
     max: parseInt(process.env.RATE_LIMIT_BILLING_MAX || '30'),
     keyGenerator: (req) => req.user?.sub || req.ip,
     message: { error: 'Billing rate limit exceeded.' },
   }),
-  voice: createLimiter({
+  voice: createLimiter('voice', {
     windowMs: parseInt(process.env.RATE_LIMIT_VOICE_WINDOW_MS || '1') * 60 * 1000,
     max: parseInt(process.env.RATE_LIMIT_VOICE_MAX || '10'),
     keyGenerator: (req) => req.user?.sub || req.ip,
     message: { error: 'Voice processing rate limit exceeded.' },
   }),
   // High-cost operations (exports, reports)
-  export: createLimiter({
+  export: createLimiter('export', {
     windowMs: parseInt(process.env.RATE_LIMIT_EXPORT_WINDOW_MS || '60') * 60 * 1000,
     max: parseInt(process.env.RATE_LIMIT_EXPORT_MAX || '5'),
     keyGenerator: (req) => req.user?.sub || req.ip,
     message: { error: 'Export rate limit exceeded. Maximum 5 exports per hour.' },
   }),
   // Password/account operations
-  passwordReset: createLimiter({
+  passwordReset: createLimiter('passwordReset', {
     windowMs: parseInt(process.env.RATE_LIMIT_PASSWORD_RESET_WINDOW_MS || '24') * 60 * 60 * 1000,
     max: parseInt(process.env.RATE_LIMIT_PASSWORD_RESET_MAX || '3'),
     keyGenerator: (req) => req.body?.email || req.ip,
     message: { error: 'Too many password reset attempts. Try again in 24 hours.' },
   }),
   // Webhook validation (allow bursts but track)
-  webhook: createLimiter({
+  webhook: createLimiter('webhook', {
     windowMs: parseInt(process.env.RATE_LIMIT_WEBHOOK_WINDOW_MS || '1') * 60 * 1000,
     max: parseInt(process.env.RATE_LIMIT_WEBHOOK_MAX || '100'),
     keyGenerator: (req) => req.ip,
@@ -78,6 +100,11 @@ function authenticate(req, res, next) {
     // Dev fallback: allow x-user-id when bearer is absent
     if ((!header || !header.startsWith("Bearer ")) && req.headers["x-user-id"]) {
       req.user = { sub: String(req.headers["x-user-id"]), scopes: ["user:avatar"] };
+      req.auth = {
+        userId: req.user.sub,
+        role: req.user.role,
+        organizationId: req.headers["x-org-id"], // Dev: org can be overridden
+      };
       return next();
     }
 
@@ -90,11 +117,33 @@ function authenticate(req, res, next) {
       return res.status(500).json({ error: "Server auth misconfiguration" });
     }
     const payload = jwt.verify(token, secret);
-    req.user = payload; // expected shape: { sub, email?, role?, scopes?: string[] }
+    req.user = payload; // expected shape: { sub, email?, role?, scopes?: string[], org_id?: string }
+
+    // Phase 19: Extract organization from JWT claim
+    req.auth = {
+      userId: payload.sub,
+      email: payload.email,
+      role: payload.role,
+      organizationId: payload.org_id, // JWT claim name: org_id
+      scopes: payload.scopes,
+    };
+
     next();
   } catch (err) {
     return res.status(401).json({ error: "Invalid or expired token" });
   }
+}
+
+// Phase 19: Middleware to require organization in JWT
+function requireOrganization(req, res, next) {
+  const orgId = req.auth?.organizationId;
+  if (!orgId) {
+    return res.status(401).json({
+      error: "No organization",
+      message: "JWT must include org_id claim"
+    });
+  }
+  next();
 }
 
 // Optional rotation-aware authentication controlled via env
@@ -120,7 +169,7 @@ function requireScope(required) {
   };
 }
 
-// Audit log (basic)
+// Audit log (basic + tamper-evident chain)
 function auditLog(req, res, next) {
   const start = Date.now();
   res.on("finish", () => {
@@ -135,6 +184,19 @@ function auditLog(req, res, next) {
       ip: req.ip,
       auth: maskedAuthorization,
     });
+
+    try {
+      const { append } = require("../lib/auditChain");
+      append({
+        method: req.method,
+        path: req.originalUrl || req.path,
+        status: res.statusCode,
+        duration,
+        user: req.user?.sub,
+        role: req.user?.role || req.auth?.role,
+        ip: req.ip,
+      });
+    } catch (_) { }
   });
   next();
 }
@@ -165,9 +227,11 @@ function validateUserOwnership(paramName = 'userId') {
 module.exports = {
   limiters,
   rateLimit: limiters.general,
+  rateLimitMetrics,
   authenticate,
   authenticateFlexible,
   requireScope,
+  requireOrganization,
   auditLog,
   validateUserOwnership,
 };
