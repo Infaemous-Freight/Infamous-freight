@@ -1,20 +1,8 @@
-const Sentry = require('@sentry/node');
-const {
-    initializeSentry,
-    trackPaymentError,
-    trackSubscriptionError,
-    trackWebhookError,
-    trackInvoiceError,
-    trackRateLimitViolation,
-    trackSlowOperation,
-    trackBusinessEvent,
-    withErrorTracking,
-    sentryRequestHandler,
-    sentryTracingHandler,
-    sentryErrorHandler,
-} = require('../../src/middleware/errorTracking');
+jest.mock('@sentry/profiling-node', () => ({
+    ProfilingIntegration: jest.fn(() => ({})),
+}));
 
-// Mock Sentry
+// Mock Sentry with required integrations
 jest.mock('@sentry/node', () => ({
     init: jest.fn(),
     withScope: jest.fn((fn) => fn({
@@ -30,12 +18,39 @@ jest.mock('@sentry/node', () => ({
         setStatus: jest.fn(),
         finish: jest.fn(),
     })),
+    Integrations: {
+        Http: jest.fn(() => ({})),
+        Express: jest.fn(() => ({})),
+        OnUncaughtException: jest.fn(() => ({})),
+        OnUnhandledRejection: jest.fn(() => ({})),
+    },
     Handlers: {
         requestHandler: jest.fn(() => (req, res, next) => next()),
         tracingHandler: jest.fn(() => (req, res, next) => next()),
-        errorHandler: jest.fn(() => (err, req, res, next) => next(err)),
+        errorHandler: jest.fn((opts = {}) => (err, req, res, next) => {
+            if (opts.shouldHandleError) {
+                opts.shouldHandleError(err);
+            }
+            return next(err);
+        }),
     },
 }));
+
+const Sentry = require('@sentry/node');
+const {
+    initializeSentry,
+    trackPaymentError,
+    trackSubscriptionError,
+    trackWebhookError,
+    trackInvoiceError,
+    trackRateLimitViolation,
+    trackSlowOperation,
+    trackBusinessEvent,
+    withErrorTracking,
+    sentryRequestHandler,
+    sentryTracingHandler,
+    sentryErrorHandler,
+} = require('../../src/middleware/errorTracking');
 
 describe('Error Tracking Middleware', () => {
     let mockApp, mockError, mockContext;

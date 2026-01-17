@@ -2,6 +2,7 @@ const request = require('supertest');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const shipmentsRoutes = require('../../src/routes/shipments');
+const { env } = require('../../src/config/env');
 
 // Mock dependencies
 jest.mock('../../src/db/prisma', () => ({
@@ -20,6 +21,17 @@ jest.mock('../../src/db/prisma', () => ({
     },
 }));
 
+jest.mock('../../src/middleware/cache', () => ({
+    cacheMiddleware: () => (_req, _res, next) => next(),
+    invalidateCache: jest.fn(),
+}));
+
+jest.mock('../../src/services/websocket', () => ({
+    emitShipmentUpdate: jest.fn(),
+}));
+
+const TEST_SECRET = process.env.JWT_SECRET || env.jwtSecret || 'test-secret';
+const VALID_UUID = '550e8400-e29b-41d4-a716-446655440000';
 const { prisma } = require('../../src/db/prisma');
 
 describe('Shipments Routes', () => {
@@ -32,7 +44,7 @@ describe('Shipments Routes', () => {
 
         validToken = jwt.sign(
             { sub: 'user-123', email: 'test@example.com', scopes: ['shipments:read', 'shipments:write'] },
-            process.env.JWT_SECRET
+            TEST_SECRET
         );
 
         jest.clearAllMocks();
@@ -91,7 +103,7 @@ describe('Shipments Routes', () => {
 
             expect(prisma.shipment.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    where: { status: 'delivered' },
+                    where: { status: 'delivered', userId: 'user-123' },
                 })
             );
         });
@@ -104,12 +116,13 @@ describe('Shipments Routes', () => {
                 reference: 'SHIP-001',
                 origin: 'New York',
                 destination: 'Los Angeles',
+                userId: 'user-123',
                 driver: null,
             };
             prisma.shipment.findUnique.mockResolvedValue(mockShipment);
 
             const response = await request(app)
-                .get('/api/shipments/1')
+                .get(`/api/shipments/${VALID_UUID}`)
                 .set('Authorization', `Bearer ${validToken}`);
 
             expect(response.status).toBe(200);
@@ -121,7 +134,7 @@ describe('Shipments Routes', () => {
             prisma.shipment.findUnique.mockResolvedValue(null);
 
             const response = await request(app)
-                .get('/api/shipments/999')
+                .get(`/api/shipments/${VALID_UUID}`)
                 .set('Authorization', `Bearer ${validToken}`);
 
             expect(response.status).toBe(404);
@@ -181,7 +194,7 @@ describe('Shipments Routes', () => {
                 .send({});
 
             expect(response.status).toBe(400);
-            expect(response.body.error).toContain('required');
+            expect(response.body.error).toContain('Validation failed');
         });
 
         it('should handle duplicate reference error', async () => {
@@ -206,16 +219,17 @@ describe('Shipments Routes', () => {
     describe('PATCH /shipments/:id', () => {
         it('should update shipment status', async () => {
             const updatedShipment = {
-                id: '1',
+                id: VALID_UUID,
                 reference: 'SHIP-001',
                 status: 'delivered',
                 driver: null,
             };
 
+            prisma.shipment.findUnique.mockResolvedValue({ id: VALID_UUID, userId: 'user-123' });
             prisma.$transaction.mockResolvedValue(updatedShipment);
 
             const response = await request(app)
-                .patch('/api/shipments/1')
+                .patch(`/api/shipments/${VALID_UUID}`)
                 .set('Authorization', `Bearer ${validToken}`)
                 .send({ status: 'delivered' });
 
@@ -225,12 +239,10 @@ describe('Shipments Routes', () => {
         });
 
         it('should return 404 for non-existent shipment', async () => {
-            const notFoundError = new Error('Not found');
-            notFoundError.code = 'P2025';
-            prisma.$transaction.mockRejectedValue(notFoundError);
+            prisma.shipment.findUnique.mockResolvedValue(null);
 
             const response = await request(app)
-                .patch('/api/shipments/999')
+                .patch(`/api/shipments/${VALID_UUID}`)
                 .set('Authorization', `Bearer ${validToken}`)
                 .send({ status: 'delivered' });
 
@@ -240,10 +252,11 @@ describe('Shipments Routes', () => {
 
     describe('DELETE /shipments/:id', () => {
         it('should delete shipment', async () => {
-            prisma.shipment.delete.mockResolvedValue({ id: '1' });
+            prisma.shipment.findUnique.mockResolvedValue({ id: VALID_UUID, userId: 'user-123' });
+            prisma.shipment.delete.mockResolvedValue({ id: VALID_UUID });
 
             const response = await request(app)
-                .delete('/api/shipments/1')
+                .delete(`/api/shipments/${VALID_UUID}`)
                 .set('Authorization', `Bearer ${validToken}`);
 
             expect(response.status).toBe(200);
@@ -252,12 +265,10 @@ describe('Shipments Routes', () => {
         });
 
         it('should return 404 when deleting non-existent shipment', async () => {
-            const notFoundError = new Error('Not found');
-            notFoundError.code = 'P2025';
-            prisma.shipment.delete.mockRejectedValue(notFoundError);
+            prisma.shipment.findUnique.mockResolvedValue(null);
 
             const response = await request(app)
-                .delete('/api/shipments/999')
+                .delete(`/api/shipments/${VALID_UUID}`)
                 .set('Authorization', `Bearer ${validToken}`);
 
             expect(response.status).toBe(404);

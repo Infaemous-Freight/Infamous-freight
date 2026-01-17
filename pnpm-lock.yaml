@@ -12,6 +12,9 @@ importers:
         specifier: ^10.1.8
         version: 10.1.8(eslint@9.39.2)
     devDependencies:
+      '@21yunbox/netlify-plugin-21yunbox-deploy-to-china-cdn':
+        specifier: ^1.0.0
+        version: 1.0.7
       '@playwright/test':
         specifier: ^1.47.0
         version: 1.57.0
@@ -150,6 +153,9 @@ importers:
       uuid:
         specifier: 9.0.1
         version: 9.0.1
+      xss:
+        specifier: ^1.0.15
+        version: 1.0.15
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -241,6 +247,15 @@ importers:
         version: 5.9.3
 
 packages:
+
+  /@21yunbox/netlify-plugin-21yunbox-deploy-to-china-cdn@1.0.7:
+    resolution: {integrity: sha512-U0O7CTk0LU4dUTxEvthWeezOFNgoBSW2Bh2mTU3nuk2QPIT+mc1aAPe1qMZ6+xZNCDhPOX3wubYLb7bpP3uqxw==}
+    dependencies:
+      axios: 0.27.2
+      form-data: 4.0.5
+    transitivePeerDependencies:
+      - debug
+    dev: true
 
   /@anthropic-ai/sdk@0.20.9:
     resolution: {integrity: sha512-Lq74+DhiEQO6F9/gdVOLmHx57pX45ebK2Q/zH14xYe1157a7QeUVknRqIp0Jz5gQI01o7NKbuv9Dag2uQsLjDg==}
@@ -3852,6 +3867,15 @@ packages:
     dependencies:
       possible-typed-array-names: 1.1.0
 
+  /axios@0.27.2:
+    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
+    dependencies:
+      follow-redirects: 1.15.11
+      form-data: 4.0.5
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
   /axios@1.13.2:
     resolution: {integrity: sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==}
     dependencies:
@@ -4224,6 +4248,10 @@ packages:
     engines: {node: '>=18'}
     dev: true
 
+  /commander@2.20.3:
+    resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
+    dev: false
+
   /commander@6.2.0:
     resolution: {integrity: sha512-zP4jEKbe8SHzKJYQmq8Y9gYjtO/POJLgIdKgV7B9qNmABVFVc+ctqSX6iXh4mCpJfRBOabiZ2YKPg8ciDw6C+Q==}
     engines: {node: '>= 6'}
@@ -4338,6 +4366,10 @@ packages:
 
   /crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    dev: false
+
+  /cssfilter@0.0.10:
+    resolution: {integrity: sha512-FAaLDaplstoRsDR8XGYH51znUN0UY7nMc6Z9/fvE8EXGwvJE9hu7W2vHwx1+bd6gCYnln9nLbzxFTrcO9YQDZw==}
     dev: false
 
   /csstype@3.2.3:
@@ -5411,7 +5443,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dev: false
 
   /fontkit@1.9.0:
     resolution: {integrity: sha512-HkW/8Lrk8jl18kzQHvAw9aTHe1cqsyx5sDnxncx652+CIfhawokEPkeM3BoIC+z/Xv7a0yMr0f3pRRwhGH455g==}
@@ -9041,6 +9072,15 @@ packages:
   /xml@1.0.1:
     resolution: {integrity: sha512-huCv9IH9Tcf95zuYCsQraZtWnJvBtLVE0QHMOs8bWyZAFZNDcYjsPq1nEx8jKA9y+Beo9v+7OBPRisQTjinQMw==}
     dev: true
+
+  /xss@1.0.15:
+    resolution: {integrity: sha512-FVdlVVC67WOIPvfOwhoMETV72f6GbW7aOabBC3WxN/oUdoEMDyLz4OgRv5/gck2ZeNqEQu+Tb0kloovXOfpYVg==}
+    engines: {node: '>= 0.10.0'}
+    hasBin: true
+    dependencies:
+      commander: 2.20.3
+      cssfilter: 0.0.10
+    dev: false
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}

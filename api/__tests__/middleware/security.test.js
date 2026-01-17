@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { authenticate, requireScope, auditLog } = require('../../src/middleware/security');
+const { env } = require('../../src/config/env');
 
 describe('Security Middleware', () => {
     let req, res, next;
@@ -92,7 +93,9 @@ describe('Security Middleware', () => {
 
         it('should return 500 when JWT_SECRET is not configured', () => {
             const originalSecret = process.env.JWT_SECRET;
+            const originalEnvSecret = env.jwtSecret;
             delete process.env.JWT_SECRET;
+            env.jwtSecret = undefined;
 
             req.headers.authorization = 'Bearer sometoken';
 
@@ -103,6 +106,7 @@ describe('Security Middleware', () => {
             expect(next).not.toHaveBeenCalled();
 
             process.env.JWT_SECRET = originalSecret;
+            env.jwtSecret = originalEnvSecret;
         });
     });
 

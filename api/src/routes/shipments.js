@@ -7,6 +7,11 @@ const {
   requireScope,
   auditLog,
 } = require("../middleware/security");
+const {
+  validateString,
+  validateUUID,
+  handleValidationErrors,
+} = require("../middleware/validation");
 const { cacheMiddleware, invalidateCache } = require("../middleware/cache");
 const {
   exportToCSV,
@@ -69,6 +74,8 @@ router.get(
   requireScope("shipments:read"),
   cacheMiddleware(60),
   auditLog,
+  validateUUID("id"),
+  handleValidationErrors,
   async (req, res, next) => {
     try {
       const shipment = await prisma.shipment.findUnique({
@@ -107,6 +114,13 @@ router.post(
   authenticate,
   requireScope("shipments:write"),
   auditLog,
+  [
+    validateString("origin", { maxLength: 200 }),
+    validateString("destination", { maxLength: 200 }),
+    validateString("trackingId", { maxLength: 64 }).optional(),
+    validateString("reference", { maxLength: 64 }).optional(),
+    handleValidationErrors,
+  ],
   async (req, res, next) => {
     try {
       const { reference, trackingId, origin, destination, driverId } = req.body;
@@ -194,6 +208,12 @@ router.patch(
   authenticate,
   requireScope("shipments:write"),
   auditLog,
+  [
+    validateUUID("id"),
+    validateString("status", { maxLength: 50 }).optional(),
+    validateString("driverId", { maxLength: 100 }).optional(),
+    handleValidationErrors,
+  ],
   async (req, res, next) => {
     try {
       const { status, driverId } = req.body;
@@ -281,6 +301,7 @@ router.delete(
   authenticate,
   requireScope("shipments:write"),
   auditLog,
+  [validateUUID("id"), handleValidationErrors],
   async (req, res, next) => {
     try {
       const existing = await prisma.shipment.findUnique({

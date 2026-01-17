@@ -299,21 +299,27 @@ describe('Security Middleware', () => {
   describe('auditLog middleware', () => {
     test('should log request info on response finish', async () => {
       const consoleSpy = jest.spyOn(console, 'info').mockImplementation();
+      const reqMock = {
+        method: 'GET',
+        path: '/api/protected',
+        originalUrl: '/api/protected',
+        user: { sub: 'user123' },
+        ip: '127.0.0.1',
+        headers: {},
+      };
+      const resMock = {
+        statusCode: 200,
+        on: (event, handler) => {
+          if (event === 'finish') {
+            handler();
+          }
+        },
+      };
+      const nextSpy = jest.fn();
 
-      const token = jwt.sign(
-        { sub: 'user123' },
-        process.env.JWT_SECRET || 'test-secret'
-      );
+      auditLog(reqMock, resMock, nextSpy);
 
-      const res = await request(app)
-        .get('/api/protected')
-        .set('Authorization', `Bearer ${token}`);
-
-      expect(res.status).toBe(200);
-
-      // Wait for async logging
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
+      expect(nextSpy).toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith(
         'request',
         expect.objectContaining({

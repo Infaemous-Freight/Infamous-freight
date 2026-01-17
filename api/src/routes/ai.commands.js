@@ -63,7 +63,7 @@ router.post(
  */
 router.get(
     '/ai/history',
-    limiters.general,
+    limiters.ai,
     authenticate,
     requireScope('ai:history'),
     cacheMiddleware(30),

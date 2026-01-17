@@ -6,10 +6,14 @@ import GlobalLayout from "../components/GlobalLayout";
 import { initDatadogRUM } from "../src/lib/datadog";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const isProduction = process.env.NEXT_PUBLIC_ENV === "production";
+
   // Initialize Datadog RUM on app mount
   useEffect(() => {
-    initDatadogRUM();
-  }, []);
+    if (isProduction) {
+      initDatadogRUM();
+    }
+  }, [isProduction]);
 
   return (
     <GlobalLayout>
