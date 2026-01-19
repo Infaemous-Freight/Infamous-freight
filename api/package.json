@@ -40,7 +40,7 @@
     "@json2csv/node": "^7.0.6",
     "@paypal/checkout-server-sdk": "^1.0.3",
     "@prisma/client": "^5.22.0",
-    "@sentry/node": "^7.100.0",
+    "@sentry/node": "^10.34.0",
     "@sentry/profiling-node": "^10.34.0",
     "axios": "^1.7.0",
     "bullmq": "^5.66.5",
