@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Pre-dev hook to ensure shared is built
+# Install with: npx husky install && npx husky add .husky/pre-dev
+
+set -e
+
+echo "🔄 Pre-dev check: ensuring shared package is built..."
+
+# Check if shared source changed and dist is missing/outdated
+if [ ! -d "packages/shared/dist" ] || [ "packages/shared/src" -nt "packages/shared/dist" ]; then
+  echo "📦 Building shared package..."
+  pnpm --filter @infamous-freight/shared build || {
+    echo "❌ Shared build failed."
+    exit 1
+  }
+fi
+
+echo "✅ Shared package ready. Starting dev..."

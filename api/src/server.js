@@ -24,6 +24,8 @@ const {
   correlationMiddleware,
   performanceMiddleware,
 } = require("./middleware/logger");
+const metricsRecorderMiddleware = require("./middleware/metricsRecorder");
+const { cacheResponseMiddleware } = require("./middleware/responseCache");
 const { rateLimit } = require("./middleware/security");
 const { authMiddleware: jwtRotationAuth } = require("./auth/jwtRotation");
 const errorHandler = require("./middleware/errorHandler");
@@ -48,6 +50,7 @@ const aiSimRoutes = require("./routes/aiSim.internal");
 const usersRoutes = require("./routes/users");
 const shipmentsRoutes = require("./routes/shipments");
 const analyticsRoutes = require("./routes/analytics");
+const metricsRoutes = require("./routes/metrics");
 const adminFeatureFlagsRoutes = require("./routes/admin/feature-flags");
 const adminOpsRoutes = require("./routes/admin/ops");
 const avatarsRouter = require("./avatars/routes");
@@ -115,6 +118,8 @@ securityHeaders(app);
 app.use(corsMiddleware());
 app.use(correlationMiddleware);
 app.use(performanceMiddleware);
+app.use(metricsRecorderMiddleware);
+app.use(cacheResponseMiddleware);
 app.use(httpLogger);
 app.use(compressionMiddleware); // Add compression for all responses
 app.use(rateLimit);
@@ -149,6 +154,7 @@ app.use("/api", voiceRoutes);
 app.use("/api", usersRoutes);
 app.use("/api", shipmentsRoutes);
 app.use("/api", analyticsRoutes);
+app.use("/api", metricsRoutes);
 app.use("/api", adminFeatureFlagsRoutes);
 app.use("/api", adminOpsRoutes);
 app.use("/v1/auth", authRouter);

@@ -30,6 +30,32 @@ function validateUUID(field = "id") {
   return param(field).isUUID().withMessage("Invalid UUID");
 }
 
+// Validate UUID present in body payload
+function validateUUIDBody(field = "id") {
+  return body(field).isUUID().withMessage("Invalid UUID");
+}
+
+// Validate enum values against an allowed set (pass array from shared)
+function validateEnum(field, allowed) {
+  return body(field)
+    .custom((value) => allowed.includes(value))
+    .withMessage(`${field} must be one of: ${Array.isArray(allowed) ? allowed.join(", ") : allowed}`);
+}
+
+// Common pagination query validators
+function validatePaginationQuery({ page = "page", pageSize = "pageSize", maxPageSize = 100 } = {}) {
+  return [
+    query(page)
+      .optional()
+      .isInt({ min: 1 })
+      .withMessage(`${page} must be a positive integer`),
+    query(pageSize)
+      .optional()
+      .isInt({ min: 1, max: maxPageSize })
+      .withMessage(`${pageSize} must be between 1 and ${maxPageSize}`),
+  ];
+}
+
 function handleValidationErrors(req, res, next) {
   const errors = validationResult(req);
   if (errors.isEmpty()) return next();
@@ -46,5 +72,8 @@ module.exports = {
   validateEmail,
   validatePhone,
   validateUUID,
+  validateUUIDBody,
+  validateEnum,
+  validatePaginationQuery,
   handleValidationErrors,
 };

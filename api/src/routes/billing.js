@@ -5,7 +5,7 @@
  */
 
 const express = require('express');
-const { limiters, authenticate, requireScope, auditLog } = require('../middleware/security');
+const { limiters, authenticate, requireOrganization, requireScope, auditLog } = require('../middleware/security');
 const { validateString, validateEmail, handleValidationErrors } = require('../middleware/validation');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { PrismaClient } = require('@prisma/client');
@@ -26,6 +26,7 @@ router.post(
     '/create-payment-intent',
     limiters.billing,
     authenticate,
+    requireOrganization,
     requireScope('billing:write'),
     auditLog,
     validateString('amount'),
@@ -86,6 +87,7 @@ router.post(
     '/create-subscription',
     limiters.billing,
     authenticate,
+    requireOrganization,
     requireScope('billing:write'),
     auditLog,
     validateString('priceId'),
@@ -182,6 +184,7 @@ router.get(
     '/subscriptions',
     limiters.billing,
     authenticate,
+    requireOrganization,
     requireScope('billing:read'),
     auditLog,
     async (req, res, next) => {
@@ -219,6 +222,7 @@ router.post(
     '/cancel-subscription/:id',
     limiters.billing,
     authenticate,
+    requireOrganization,
     requireScope('billing:write'),
     auditLog,
     async (req, res, next) => {

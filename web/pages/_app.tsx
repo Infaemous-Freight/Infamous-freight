@@ -11,7 +11,18 @@ export default function App({ Component, pageProps }: AppProps) {
   // Initialize Datadog RUM on app mount
   useEffect(() => {
     if (isProduction) {
-      initDatadogRUM();
+      const hasDDConfig =
+        !!process.env.NEXT_PUBLIC_DD_APP_ID &&
+        !!process.env.NEXT_PUBLIC_DD_CLIENT_TOKEN &&
+        !!process.env.NEXT_PUBLIC_DD_SITE;
+      if (hasDDConfig) {
+        initDatadogRUM();
+      } else {
+        // Avoid client-side errors when env is missing; log once in dev tools
+        console.warn(
+          "Datadog RUM not initialized: missing NEXT_PUBLIC_DD_* configuration",
+        );
+      }
     }
   }, [isProduction]);
 
@@ -19,7 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <GlobalLayout>
       <Component {...pageProps} />
       <Analytics />
-      <SpeedInsights />
+      {isProduction ? <SpeedInsights /> : null}
     </GlobalLayout>
   );
 }

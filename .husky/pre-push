@@ -1,0 +1,45 @@
+/**
+ * Git pre-push hook configuration for Infamous Freight API.
+ * Install with: npx husky install && npx husky add .husky/pre-push
+ * Then add this content to .husky/pre-push
+ */
+
+#!/bin/sh
+
+set -e
+
+echo "Running pre-push checks..."
+
+# Build shared if it changed
+echo "Checking shared package..."
+if git diff origin/main HEAD -- packages/shared/src | grep -q .; then
+  echo "📦 Building shared package..."
+  pnpm --filter @infamous-freight/shared build || {
+    echo "❌ Shared build failed. Fix errors and try again."
+    exit 1
+  }
+fi
+
+# Lint
+echo "🔍 Linting..."
+pnpm lint || {
+  echo "❌ Lint failed. Run 'pnpm lint --fix' to auto-fix."
+  exit 1
+}
+
+# Type check
+echo "✔️ Type checking..."
+pnpm check:types || {
+  echo "❌ Type check failed."
+  exit 1
+}
+
+# API tests
+echo "🧪 Running API tests..."
+pnpm --filter api test --bail || {
+  echo "❌ Tests failed."
+  exit 1
+}
+
+echo "✅ All pre-push checks passed!"
+exit 0

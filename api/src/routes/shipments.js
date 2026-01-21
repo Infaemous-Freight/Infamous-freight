@@ -4,9 +4,12 @@ const { prisma } = require("../db/prisma");
 const {
   limiters,
   authenticate,
+  requireOrganization,
   requireScope,
   auditLog,
 } = require("../middleware/security");
+const { validateEnum, validatePaginationQuery } = require("../middleware/validation");
+const { SHIPMENT_STATUSES } = require("@infamous-freight/shared");
 const {
   validateString,
   validateUUID,
@@ -27,9 +30,11 @@ router.get(
   "/shipments",
   limiters.general,
   authenticate,
+  requireOrganization,
   requireScope("shipments:read"),
   cacheMiddleware(60),
   auditLog,
+  [...validatePaginationQuery(), validateEnum("status", SHIPMENT_STATUSES).optional(), handleValidationErrors],
   async (req, res, next) => {
     try {
       const { status, driverId } = req.query;
@@ -71,6 +76,7 @@ router.get(
   "/shipments/:id",
   limiters.general,
   authenticate,
+  requireOrganization,
   requireScope("shipments:read"),
   cacheMiddleware(60),
   auditLog,
@@ -112,6 +118,7 @@ router.post(
   "/shipments",
   limiters.general,
   authenticate,
+  requireOrganization,
   requireScope("shipments:write"),
   auditLog,
   [
@@ -206,11 +213,12 @@ router.patch(
   "/shipments/:id",
   limiters.general,
   authenticate,
+  requireOrganization,
   requireScope("shipments:write"),
   auditLog,
   [
     validateUUID("id"),
-    validateString("status", { maxLength: 50 }).optional(),
+    validateEnum("status", SHIPMENT_STATUSES).optional(),
     validateString("driverId", { maxLength: 100 }).optional(),
     handleValidationErrors,
   ],
@@ -299,6 +307,7 @@ router.delete(
   "/shipments/:id",
   limiters.general,
   authenticate,
+  requireOrganization,
   requireScope("shipments:write"),
   auditLog,
   [validateUUID("id"), handleValidationErrors],

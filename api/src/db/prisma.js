@@ -1,6 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const { env } = require("../config/env");
 const { recordQuery, DEFAULT_THRESHOLD } = require("../lib/queryMetrics");
+const { attachSlowQueryLogger } = require("../lib/slowQueryLogger");
 
 let prisma = null;
 
@@ -11,6 +12,9 @@ function getPrisma() {
 
   if (!prisma) {
     prisma = new PrismaClient();
+
+    // Attach slow query logger (Prisma $on event)
+    attachSlowQueryLogger(prisma);
 
     // Track query performance for admin analytics
     prisma.$use(async (params, next) => {

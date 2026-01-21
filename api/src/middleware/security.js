@@ -16,11 +16,16 @@ const createLimiter = (name, options) => {
     ...options,
     standardHeaders: true,
     legacyHeaders: false,
-    skip: (req) => req.path === '/api/health' || req.path === '/api/health/live',
+    // Skip health checks and CORS preflight
+    skip: (req) =>
+      req.method === 'OPTIONS' ||
+      req.path === '/api/health' ||
+      req.path === '/api/health/live',
   });
 
   return (req, res, next) => {
-    if (options.skip && options.skip(req, res)) {
+    // Allow custom skip hooks and preflight bypass
+    if (req.method === 'OPTIONS' || (options.skip && options.skip(req, res))) {
       return next();
     }
 
@@ -182,6 +187,7 @@ function auditLog(req, res, next) {
       duration,
       user: req.user?.sub,
       ip: req.ip,
+      correlationId: req.correlationId,
       auth: maskedAuthorization,
     });
 
@@ -195,6 +201,7 @@ function auditLog(req, res, next) {
         user: req.user?.sub,
         role: req.user?.role || req.auth?.role,
         ip: req.ip,
+        correlationId: req.correlationId,
       });
     } catch (_) { }
   });

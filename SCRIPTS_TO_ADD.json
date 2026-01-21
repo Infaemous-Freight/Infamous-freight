@@ -1,0 +1,21 @@
+/**
+ * Package.json scripts for 100% implementation verification and testing.
+ * Add these scripts to root package.json for easy access.
+ */
+
+{
+  "scripts": {
+    "verify": "bash scripts/verify-implementation.sh",
+    "verify:security": "pnpm --filter api test -- security-performance.integration.test.js",
+    "verify:all": "pnpm lint && pnpm check:types && pnpm --filter api test",
+    "test:auth": "pnpm --filter api test -- auth\\.test\\.js",
+    "test:metrics": "pnpm --filter api test -- metrics.*\\.test\\.js",
+    "test:cache": "pnpm --filter api test -- responseCache\\.test\\.js",
+    "test:slow-query": "pnpm --filter api test -- slowQueryLogger\\.test\\.js",
+    "docs:routes": "node -e \"const r = require('./api/src/lib/routeScopeRegistry'); console.table(r.listAllRoutes());\"",
+    "check:cors": "node -e \"console.log('CORS Origins:', process.env.CORS_ORIGINS || 'NOT SET')\"",
+    "check:env": "node scripts/validate-env.js",
+    "setup:hooks": "npx husky install && npx husky add .husky/pre-push 'bash .husky/pre-push'",
+    "metrics:export": "curl -s http://localhost:4000/api/metrics | head -30"
+  }
+}
