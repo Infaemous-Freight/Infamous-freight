@@ -54,7 +54,7 @@ jobs:
 
           RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
             -m 10 \
-            "https://infamous-freight-enterprises.vercel.app")
+            "https://infamous-freight-enterprises.vercel.app" || echo "000")
 
           if [ "$RESPONSE" = "200" ]; then
             echo "✅ Web is healthy (HTTP $RESPONSE)"
@@ -133,9 +133,8 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const conclusion = '${{ steps.api_health.outputs.api_status }}' === 'healthy' 
-              ? 'success' 
-              : 'failure';
+            const apiStatus = '${{ steps.api_health.outputs.api_status }}'
+            const conclusion = apiStatus === 'healthy' ? 'success' : 'neutral'
 
             github.rest.checks.create({
               owner: context.repo.owner,

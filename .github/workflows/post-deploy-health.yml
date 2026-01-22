@@ -32,7 +32,7 @@ jobs:
           i=0
           STATUS="timeout"
           while [ $i -lt $MAX ]; do
-            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
             echo "Attempt $((i+1))/$MAX: $URL -> HTTP $CODE"
             if [ "$CODE" = "200" ]; then STATUS="ok"; break; fi
             sleep 3
@@ -48,7 +48,7 @@ jobs:
           i=0
           STATUS="timeout"
           while [ $i -lt $MAX ]; do
-            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
             echo "Attempt $((i+1))/$MAX: $URL -> HTTP $CODE"
             if [ "$CODE" = "200" ]; then STATUS="ok"; break; fi
             sleep 3
