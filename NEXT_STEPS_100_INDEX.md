@@ -96,6 +96,10 @@
     - Auto-builds shared package
     - Runs on `pnpm dev`
 
+12. **[.github/workflows/api-tests.yml](.github/workflows/api-tests.yml)**
+   - CI runs API tests on pushes/PRs
+   - Node 20 + pnpm 8 with cache and shared build
+
 ---
 
 ## ✅ What's Already Done
@@ -217,6 +221,9 @@ pnpm web:dev             # Web only
 git log --oneline -5     # Recent commits
 git diff origin/main     # Changes not pushed
 git push origin main     # Push to GitHub
+
+# CI workflow (server-side tests)
+# Push triggers GitHub Actions: .github/workflows/api-tests.yml
 
 # Check code
 cat api/src/server.js                      # Entry point
