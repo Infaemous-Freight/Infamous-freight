@@ -69,17 +69,17 @@ describe('Logger Middleware', () => {
 
         it('should log slow request with warn level', (done) => {
             const loggerSpy = jest.spyOn(logger, 'warn').mockImplementation();
-            performanceMiddleware(req, res, next);
 
-            // Simulate response finish after slow duration
-            const finishCallback = res.on.mock.calls[0][1];
-
-            // Mock Date.now to simulate slow response
+            // Mock Date.now BEFORE calling middleware
             const originalNow = Date.now;
             Date.now = jest.fn()
                 .mockReturnValueOnce(1000) // start time
                 .mockReturnValueOnce(1000 + PERF_WARN_THRESHOLD + 100); // end time
 
+            performanceMiddleware(req, res, next);
+
+            // Simulate response finish after slow duration
+            const finishCallback = res.on.mock.calls[0][1];
             finishCallback();
 
             expect(loggerSpy).toHaveBeenCalled();
@@ -96,15 +96,15 @@ describe('Logger Middleware', () => {
 
         it('should log critical request with error level', (done) => {
             const loggerSpy = jest.spyOn(logger, 'error').mockImplementation();
-            performanceMiddleware(req, res, next);
-
-            const finishCallback = res.on.mock.calls[0][1];
 
             const originalNow = Date.now;
             Date.now = jest.fn()
                 .mockReturnValueOnce(1000)
                 .mockReturnValueOnce(1000 + PERF_ERROR_THRESHOLD + 100);
 
+            performanceMiddleware(req, res, next);
+
+            const finishCallback = res.on.mock.calls[0][1];
             finishCallback();
 
             expect(loggerSpy).toHaveBeenCalled();

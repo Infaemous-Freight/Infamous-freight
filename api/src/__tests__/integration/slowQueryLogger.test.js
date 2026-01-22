@@ -39,8 +39,7 @@ describe('Slow query logger', () => {
                 message: 'Slow query detected',
                 duration: SLOW_QUERY_THRESHOLD_MS + 100,
                 threshold: SLOW_QUERY_THRESHOLD_MS,
-            }),
-            undefined
+            })
         );
     });
 
@@ -61,7 +60,7 @@ describe('Slow query logger', () => {
     test('truncates long queries to 200 chars', () => {
         attachSlowQueryLogger(mockPrisma);
 
-        const longQuery = 'SELECT * FROM ' + 'users, ' * 100 + 'orders';
+        const longQuery = 'SELECT * FROM ' + 'users, '.repeat(100) + 'orders';
         const queryEvent = {
             query: longQuery,
             duration: SLOW_QUERY_THRESHOLD_MS + 1,
@@ -73,14 +72,14 @@ describe('Slow query logger', () => {
         expect(logWarnSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 query: expect.any(String),
-            }),
-            undefined
+            })
         );
         const callArgs = logWarnSpy.mock.calls[0][0];
         expect(callArgs.query.length).toBeLessThanOrEqual(200);
     });
 
     test('marks queries > 5s as error level', () => {
+        const logErrorSpy = jest.spyOn(logger, 'error').mockImplementation();
         attachSlowQueryLogger(mockPrisma);
 
         const criticalEvent = {
@@ -91,6 +90,7 @@ describe('Slow query logger', () => {
 
         mockPrisma._queryCallback(criticalEvent);
 
-        expect(logWarnSpy).toHaveBeenCalled();
+        expect(logErrorSpy).toHaveBeenCalled();
+        logErrorSpy.mockRestore();
     });
 });
