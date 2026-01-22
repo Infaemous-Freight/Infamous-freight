@@ -6,6 +6,7 @@
 
 import { Request, Response, Router } from "express";
 import crypto from "crypto";
+import { isIP } from "net";
 import { authenticate, requireScope } from "./security";
 import { cdc, CDCEvent } from "../lib/changeDataCapture";
 
@@ -35,6 +36,90 @@ const webhooks = new Map<string, Webhook>();
  */
 function generateWebhookSecret(): string {
   return crypto.randomBytes(32).toString("hex");
+}
+
+const WEBHOOK_HOST_ALLOWLIST = (process.env.WEBHOOK_HOST_ALLOWLIST || "")
+  .split(",")
+  .map((h) => h.trim().toLowerCase())
+  .filter(Boolean);
+
+function isBlockedHost(hostname: string): boolean {
+  const host = hostname.toLowerCase();
+
+  if (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host === "::1" ||
+    host.endsWith(".localhost") ||
+    host.endsWith(".local") ||
+    host.endsWith(".internal")
+  ) {
+    return true;
+  }
+
+  const ipType = isIP(host);
+  if (ipType) {
+    // IPv4 private ranges and loopback
+    if (
+      host.startsWith("10.") ||
+      host.startsWith("192.168.") ||
+      host.startsWith("172.16.") ||
+      host.startsWith("172.17.") ||
+      host.startsWith("172.18.") ||
+      host.startsWith("172.19.") ||
+      host.startsWith("172.20.") ||
+      host.startsWith("172.21.") ||
+      host.startsWith("172.22.") ||
+      host.startsWith("172.23.") ||
+      host.startsWith("172.24.") ||
+      host.startsWith("172.25.") ||
+      host.startsWith("172.26.") ||
+      host.startsWith("172.27.") ||
+      host.startsWith("172.28.") ||
+      host.startsWith("172.29.") ||
+      host.startsWith("172.30.") ||
+      host.startsWith("172.31.") ||
+      host.startsWith("127.") ||
+      host.startsWith("169.254.")
+    ) {
+      return true;
+    }
+
+    // IPv6: loopback, link-local, unique local
+    if (host.startsWith("fc") || host.startsWith("fd") || host.startsWith("fe80") || host === "::1") {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function validateWebhookUrl(url: string): URL {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error("Invalid URL");
+  }
+
+  if (parsed.protocol !== "https:") {
+    throw new Error("Webhook URL must use https");
+  }
+
+  const host = parsed.hostname;
+
+  if (isBlockedHost(host)) {
+    throw new Error("Webhook URL targets a disallowed host");
+  }
+
+  if (WEBHOOK_HOST_ALLOWLIST.length > 0) {
+    const allowed = WEBHOOK_HOST_ALLOWLIST.some((entry) => entry === host);
+    if (!allowed) {
+      throw new Error("Webhook host is not in allowlist");
+    }
+  }
+
+  return parsed;
 }
 
 /**
@@ -75,11 +160,11 @@ router.post(
       return res.status(400).json({ error: "URL and events required" });
     }
 
-    // Validate URL
+    // Validate URL with SSRF protections
     try {
-      new URL(url);
-    } catch {
-      return res.status(400).json({ error: "Invalid URL" });
+      validateWebhookUrl(url);
+    } catch (err) {
+      return res.status(400).json({ error: (err as Error).message });
     }
 
     // Validate events
@@ -177,10 +262,10 @@ router.patch(
 
     if (url) {
       try {
-        new URL(url);
+        validateWebhookUrl(url);
         webhook.url = url;
-      } catch {
-        return res.status(400).json({ error: "Invalid URL" });
+      } catch (err) {
+        return res.status(400).json({ error: (err as Error).message });
       }
     }
 
@@ -267,6 +352,16 @@ router.post(
  */
 async function deliverWebhook(webhook: Webhook, event: any): Promise<void> {
   if (!webhook.active) return;
+
+  // Validate destination before attempting delivery to mitigate SSRF
+  try {
+    validateWebhookUrl(webhook.url);
+  } catch (err) {
+    webhook.active = false;
+    webhook.failureCount++;
+    console.error(`❌ Webhook disabled due to invalid/blocked URL: ${webhook.url}`);
+    throw err;
+  }
 
   const payload = JSON.stringify(event);
   const signature = signWebhook(payload, webhook.secret);
