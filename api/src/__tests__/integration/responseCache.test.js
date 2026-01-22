@@ -28,7 +28,7 @@ describe('Response cache middleware', () => {
         };
     });
 
-    test('caches successful GET responses', (done) => {
+    test('caches successful GET responses', () => {
         mockReq = {
             method: 'GET',
             originalUrl: '/api/test',
@@ -42,19 +42,15 @@ describe('Response cache middleware', () => {
 
         cacheResponseMiddleware(mockReq, mockRes, mockNext);
 
-        // Simulate response finish
-        mockRes.on.mock.calls[0][1]();
-
         // Call json to trigger caching
         const data = { id: 1, name: 'test' };
         mockRes.json(data);
 
         expect(mockNext).toHaveBeenCalled();
         expect(nextCalled).toBe(true);
-        done();
     });
 
-    test('does not cache non-GET requests', (done) => {
+    test('does not cache non-GET requests', () => {
         mockReq = {
             method: 'POST',
             originalUrl: '/api/test',
@@ -65,14 +61,12 @@ describe('Response cache middleware', () => {
         const mockNext = jest.fn();
         cacheResponseMiddleware(mockReq, mockRes, mockNext);
 
-        mockRes.on.mock.calls[0][1]();
         mockRes.json({ id: 1 });
 
         expect(mockNext).toHaveBeenCalled();
-        done();
     });
 
-    test('does not cache error responses (status >= 400)', (done) => {
+    test('does not cache error responses (status >= 400)', () => {
         mockReq = {
             method: 'GET',
             originalUrl: '/api/test',
@@ -84,14 +78,12 @@ describe('Response cache middleware', () => {
         const mockNext = jest.fn();
         cacheResponseMiddleware(mockReq, mockRes, mockNext);
 
-        mockRes.on.mock.calls[0][1]();
         mockRes.json({ error: 'Not found' });
 
         expect(mockNext).toHaveBeenCalled();
-        done();
     });
 
-    test('invalidates cache for specific user', (done) => {
+    test('invalidates cache for specific user', () => {
         clearAllCache();
 
         // Cache a response
@@ -104,7 +96,6 @@ describe('Response cache middleware', () => {
 
         const mockNext = jest.fn();
         cacheResponseMiddleware(mockReq, mockRes, mockNext);
-        mockRes.on.mock.calls[0][1]();
         mockRes.json({ shipments: [] });
 
         // Invalidate for that user
@@ -112,10 +103,9 @@ describe('Response cache middleware', () => {
 
         // Should return empty now (no cache hit)
         expect(mockNext).toHaveBeenCalled();
-        done();
     });
 
-    test('invalidates cache for entire org', (done) => {
+    test('invalidates cache for entire org', () => {
         clearAllCache();
 
         // Cache responses for two users in same org
@@ -128,13 +118,11 @@ describe('Response cache middleware', () => {
 
         const mockNext = jest.fn();
         cacheResponseMiddleware(mockReq, mockRes, mockNext);
-        mockRes.on.mock.calls[0][1]();
         mockRes.json({ shipments: [] });
 
         // Invalidate entire org
         invalidateCacheForOrg('org-1');
 
         expect(mockNext).toHaveBeenCalled();
-        done();
     });
 });

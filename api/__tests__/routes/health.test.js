@@ -74,7 +74,8 @@ describe('Health Routes', () => {
             const response = await request(app).get('/api/health/ready');
 
             expect(response.status).toBe(200);
-            expect(response.body).toEqual({ status: 'ready' });
+            expect(response.body).toMatchObject({ status: 'ready' });
+            expect(response.body.timestamp).toBeDefined();
         });
 
         it('should return not ready when database fails', async () => {

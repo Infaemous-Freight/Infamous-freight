@@ -1,5 +1,6 @@
 const errorHandler = require('../../src/middleware/errorHandler');
 const Sentry = require('@sentry/node');
+const { logger } = require('../../src/middleware/logger');
 
 describe('Error Handler Middleware', () => {
     let req, res, next, originalEnv;
@@ -23,6 +24,7 @@ describe('Error Handler Middleware', () => {
         };
         next = jest.fn();
         jest.clearAllMocks();
+        jest.spyOn(logger, 'error').mockImplementation();
     });
 
     afterEach(() => {
@@ -35,9 +37,12 @@ describe('Error Handler Middleware', () => {
         errorHandler(error, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({
-            error: 'Test error',
-        });
+        expect(res.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                error: 'Internal Server Error',
+                errorId: 'test-correlation-123',
+            })
+        );
     });
 
     it('should use error.status if provided', () => {
@@ -47,9 +52,12 @@ describe('Error Handler Middleware', () => {
         errorHandler(error, req, res, next);
 
         expect(res.status).toHaveBeenCalledWith(404);
-        expect(res.json).toHaveBeenCalledWith({
-            error: 'Not found',
-        });
+        expect(res.json).toHaveBeenCalledWith(
+            expect.objectContaining({
+                error: 'Not found',
+                errorId: 'test-correlation-123',
+            })
+        );
     });
 
     it('should use error.statusCode if provided', () => {
@@ -67,14 +75,14 @@ describe('Error Handler Middleware', () => {
 
         errorHandler(error, req, res, next);
 
-        expect(console.error).toHaveBeenCalledWith(
-            'Request failed',
+        expect(logger.error).toHaveBeenCalledWith(
             expect.objectContaining({
                 method: 'GET',
                 path: '/test',
                 status: 500,
                 error: 'Test error',
-            })
+            }),
+            'Request failed'
         );
     });
 
@@ -84,11 +92,11 @@ describe('Error Handler Middleware', () => {
 
         errorHandler(error, req, res, next);
 
-        expect(console.error).toHaveBeenCalledWith(
-            'Request failed',
+        expect(logger.error).toHaveBeenCalledWith(
             expect.objectContaining({
                 user: 'user-123',
-            })
+            }),
+            'Request failed'
         );
     });
 
@@ -101,10 +109,11 @@ describe('Error Handler Middleware', () => {
         expect(Sentry.captureException).toHaveBeenCalledWith(
             error,
             expect.objectContaining({
-                tags: {
+                tags: expect.objectContaining({
                     path: '/test',
                     method: 'GET',
-                },
+                    status: 500,
+                }),
             })
         );
 
@@ -160,11 +169,11 @@ describe('Error Handler Middleware', () => {
 
         errorHandler(error, req, res, next);
 
-        expect(console.error).toHaveBeenCalledWith(
-            'Request failed',
+        expect(logger.error).toHaveBeenCalledWith(
             expect.objectContaining({
                 path: '/original/test',
-            })
+            }),
+            'Request failed'
         );
     });
 
@@ -175,11 +184,11 @@ describe('Error Handler Middleware', () => {
 
         errorHandler(error, req, res, next);
 
-        expect(console.error).toHaveBeenCalledWith(
-            'Request failed',
+        expect(logger.error).toHaveBeenCalledWith(
             expect.objectContaining({
                 path: '/fallback/path',
-            })
+            }),
+            'Request failed'
         );
     });
 
