@@ -116,11 +116,19 @@ jobs:
           
           # Count operational platforms
           OPERATIONAL=0
-          [[ "${{ steps.github-pages.outputs.status }}" =~ "Operational" ]] && ((OPERATIONAL++))
-          [[ "${{ steps.vercel.outputs.status }}" =~ "Operational" ]] && ((OPERATIONAL++))
-          [[ "${{ steps.netlify.outputs.status }}" =~ "Operational" ]] && ((OPERATIONAL++))
-          [[ "${{ steps.cloudflare.outputs.status }}" =~ "Operational" ]] && ((OPERATIONAL++))
-          [[ "${{ steps.render.outputs.status }}" =~ "Operational" ]] && ((OPERATIONAL++))
+          STATUSES=(
+            "${{ steps.github-pages.outputs.status }}"
+            "${{ steps.vercel.outputs.status }}"
+            "${{ steps.netlify.outputs.status }}"
+            "${{ steps.cloudflare.outputs.status }}"
+            "${{ steps.render.outputs.status }}"
+          )
+
+          for s in "${STATUSES[@]}"; do
+            if [[ "$s" == *Operational* ]]; then
+              OPERATIONAL=$((OPERATIONAL + 1))
+            fi
+          done
           
           echo "**Operational Platforms:** $OPERATIONAL / 5" >> $GITHUB_STEP_SUMMARY
           
