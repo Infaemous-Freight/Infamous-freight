@@ -1,6 +1,6 @@
 /**
  * Web Bundle Optimization Guide
- * 
+ *
  * Target metrics:
  * - First Load JS: < 150KB
  * - Total bundle: < 500KB
@@ -9,24 +9,20 @@
  * - CLS: < 0.1
  */
 
+import dynamic from "next/dynamic";
+import React from "react";
+
 // ✅ Code splitting: Dynamic imports for heavy components
 // web/pages/dashboard.tsx
-import dynamic from 'next/dynamic';
+const ShipmentChart = dynamic(() => import("../components/ShipmentChart"), {
+  loading: () => React.createElement("div", { className: "skeleton" }),
+  ssr: false,
+});
 
-const ShipmentChart = dynamic(
-  () => import('../components/ShipmentChart'),
-  {
-    loading: () => <div className="skeleton" />,
-    ssr: false,
-  }
-);
-
-const ReportGenerator = dynamic(
-  () => import('../components/ReportGenerator'),
-  {
-    loading: () => <div>Loading report generator...</div>,
-  }
-);
+const ReportGenerator = dynamic(() => import("../components/ReportGenerator"), {
+  loading: () =>
+    React.createElement("div", null, "Loading report generator..."),
+});
 
 // ✅ Tree-shaking: Export named exports instead of default
 // web/lib/utils.ts
@@ -51,30 +47,39 @@ const config = {
   },
   images: {
     unoptimized: false,
-    formats: ['image/avif', 'image/webp'],
+    formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
   },
 };
 
 // ✅ Image optimization: Use next/image everywhere
 // web/components/ShipmentCard.tsx
-import Image from 'next/image';
+import Image from "next/image";
 
-export function ShipmentCard({ shipment }) {
-  return (
-    <div>
-      {shipment.image && (
-        <Image
-          src={shipment.image}
-          alt={`Shipment ${shipment.id}`}
-          width={400}
-          height={300}
-          priority={false}
-          placeholder="blur"
-        />
-      )}
-      <h3>{shipment.trackingId}</h3>
-    </div>
+interface Shipment {
+  id: string;
+  trackingId: string;
+  image?: string;
+}
+
+interface ShipmentCardProps {
+  shipment: Shipment;
+}
+
+export function ShipmentCard({ shipment }: ShipmentCardProps) {
+  return React.createElement(
+    "div",
+    null,
+    shipment.image &&
+      React.createElement(Image, {
+        src: shipment.image,
+        alt: `Shipment ${shipment.id}`,
+        width: 400,
+        height: 300,
+        priority: false,
+        placeholder: "blur",
+      }),
+    React.createElement("h3", null, shipment.trackingId),
   );
 }
 
@@ -87,36 +92,43 @@ export function ShipmentCard({ shipment }) {
 // ✅ Lazy load expensive libraries
 // web/lib/chartLibrary.ts
 export async function loadChartLibrary() {
-  const recharts = await import('recharts');
+  const recharts = await import("recharts");
   return recharts;
 }
 
 // ✅ Preload critical resources in _app.tsx
 // web/pages/_app.tsx
-import Head from 'next/head';
+import Head from "next/head";
 
-export default function App({ Component, pageProps }) {
-  return (
-    <>
-      <Head>
-        {/* Preload critical fonts */}
-        <link
-          rel="preload"
-          href="/fonts/inter.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        {/* Preconnect to API */}
-        <link
-          rel="preconnect"
-          href="https://infamous-freight-api.fly.dev"
-        />
-        {/* DNS prefetch for external services */}
-        <link rel="dns-prefetch" href="https://cdn.stripe.com" />
-      </Head>
-      <Component {...pageProps} />
-    </>
+interface AppProps {
+  Component: any;
+  pageProps: any;
+}
+
+export default function App({ Component, pageProps }: AppProps) {
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(
+      Head,
+      null,
+      React.createElement("link", {
+        rel: "preload",
+        href: "/fonts/inter.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      }),
+      React.createElement("link", {
+        rel: "preconnect",
+        href: "https://infamous-freight-api.fly.dev",
+      }),
+      React.createElement("link", {
+        rel: "dns-prefetch",
+        href: "https://cdn.stripe.com",
+      }),
+    ),
+    React.createElement(Component, pageProps),
   );
 }
 

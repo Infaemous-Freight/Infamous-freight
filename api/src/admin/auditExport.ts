@@ -168,6 +168,7 @@ export async function streamOrgAudit(
 
   return Readable.from(
     (async function* generator() {
+      let isFirstLog = true;
       if (format === "json") {
         yield JSON.stringify({
           export: {
@@ -191,10 +192,10 @@ export async function streamOrgAudit(
         if (batch.length === 0) break;
 
         for (const log of batch) {
-          if (!isFirstBatch && format === "json") {
+          if (!isFirstLog && format === "json") {
             yield ",";
           }
-          isFirstBatch = false;
+          isFirstLog = false;
 
           const sanitized = sanitizeLogForExport(log, true);
           if (format === "json") {
@@ -208,7 +209,7 @@ export async function streamOrgAudit(
       }
 
       if (format === "json") {
-        yield "]}\n";
+        yield \"]}\n\";
       }
     })()
   );

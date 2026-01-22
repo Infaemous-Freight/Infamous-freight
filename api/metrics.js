@@ -7,7 +7,7 @@
 let promClient;
 try {
     promClient = require('prom-client');
-} catch (e) {
+} catch (_e) {
     // Fallback when prom-client not available
     console.warn('⚠ prom-client not installed. Install with: npm install prom-client');
     promClient = null;
@@ -52,7 +52,6 @@ if (!promClient) {
         trackCache: () => { },
         metrics: {}
     };
-    return;
 }
 
 // Create a Registry

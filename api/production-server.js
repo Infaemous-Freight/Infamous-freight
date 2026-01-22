@@ -6,7 +6,13 @@ const logger = require('./logger');
 const Cache = require('./cache');
 const RateLimiter = require('./rateLimit');
 const db = require('./database');
-const { metricsMiddleware, metricsHandler, trackDatabaseOperation, trackCache } = require('./metrics');
+const { metricsMiddleware, metricsHandler, trackCache } = require('./metrics');
+
+// Polyfill URLSearchParams for older Node versions
+if (typeof URLSearchParams === 'undefined') {
+    const { URLSearchParams: USP } = require('url');
+    global.URLSearchParams = USP;
+}
 
 const PORT = process.env.API_PORT || 4000;
 const HOST = '0.0.0.0';

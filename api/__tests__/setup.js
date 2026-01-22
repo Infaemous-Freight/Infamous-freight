@@ -4,6 +4,11 @@ process.env.JWT_SECRET = 'test-secret-key-for-jwt-validation';
 process.env.CORS_ORIGINS = 'http://localhost:3000';
 process.env.LOG_LEVEL = 'error';
 
+// Polyfill global for Node.js environment
+if (typeof global === 'undefined') {
+    var global = globalThis;
+}
+
 // Mock Sentry to avoid external calls during tests
 jest.mock('@sentry/node', () => ({
     init: jest.fn(),

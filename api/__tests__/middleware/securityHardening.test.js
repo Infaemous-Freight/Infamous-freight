@@ -15,7 +15,11 @@ const {
 } = require('../../src/middleware/securityHardening');
 
 jest.mock('xss', () => (input) => input);
-jest.mock('sqlstring');
+jest.mock('sqlstring', () => ({
+    escape: jest.fn(val => `'${val}'`),
+    escapeId: jest.fn(id => `\`${id}\``),
+    format: jest.fn((query, values) => query),
+}));
 
 describe('Security Hardening Middleware', () => {
     let req, res, next;

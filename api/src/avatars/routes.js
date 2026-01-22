@@ -11,7 +11,7 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
-const { body, param, validationResult } = require('express-validator');
+const { body, param } = require('express-validator');
 const {
     listUserAvatars,
     createUserAvatar,

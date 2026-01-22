@@ -250,7 +250,9 @@ export const RevenueMonitorDashboard: React.FC = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
-              <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+              <Tooltip
+                formatter={(value: number) => formatCurrency(Number(value))}
+              />
               <Legend />
               <Line
                 type="monotone"
@@ -285,7 +287,9 @@ export const RevenueMonitorDashboard: React.FC = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="tier" />
               <YAxis />
-              <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+              <Tooltip
+                formatter={(value: number) => formatCurrency(Number(value))}
+              />
               <Legend />
               <Bar dataKey="revenue" fill="#4CAF50" name="Revenue" />
               <Bar dataKey="count" fill="#2196F3" name="Customers" />
