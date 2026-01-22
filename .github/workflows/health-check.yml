@@ -29,7 +29,7 @@ jobs:
           while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
               -m 10 \
-              "${{ secrets.API_URL || 'https://infamous-freight-api.fly.dev' }}/api/health")
+              "${{ secrets.API_URL || 'https://infamous-freight-api.fly.dev' }}/api/health" || echo "000")
             
             if [ "$RESPONSE" = "200" ]; then
               echo "✅ API is healthy (HTTP $RESPONSE)"
@@ -62,6 +62,24 @@ jobs:
           else
             echo "❌ Web returned HTTP $RESPONSE"
             echo "web_status=unhealthy" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check Metrics Endpoint
+        id: metrics_health
+        env:
+          METRICS_URL: ${{ secrets.METRICS_URL }}
+        run: |
+          echo "🔍 Checking Metrics endpoint..."
+
+          URL="${METRICS_URL:-https://infamous-freight-api.fly.dev/api/metrics}"
+
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -m 10 "$URL" || echo "000")
+          if [ "$RESPONSE" = "200" ]; then
+            echo "✅ Metrics endpoint healthy (HTTP $RESPONSE)"
+            echo "metrics_status=healthy" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Metrics endpoint returned HTTP $RESPONSE"
+            echo "metrics_status=unhealthy" >> $GITHUB_OUTPUT
           fi
 
       - name: Database Connection Check
@@ -131,6 +149,7 @@ jobs:
                 summary: `
                   API: ${{ steps.api_health.outputs.api_status }}
                   Web: ${{ steps.web_health.outputs.web_status }}
+                  Metrics: ${{ steps.metrics_health.outputs.metrics_status }}
                   Database: ${{ steps.db_check.outputs.db_status }}
                   Redis: ${{ steps.redis_check.outputs.redis_status }}
                 `,
@@ -142,20 +161,24 @@ jobs:
             });
 
       - name: Send Slack Notification
-        if: failure()
-        uses: slackapi/slack-github-action@v1.24.0
-        with:
-          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
-          payload: |
-            {
-              "text": "🚨 Health Check Failed",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Health Check Failed*\nAPI: ${{ steps.api_health.outputs.api_status }}\nWeb: ${{ steps.web_health.outputs.web_status }}"
-                  }
+        if: failure() && secrets.SLACK_WEBHOOK != ''
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          echo "📣 Sending Slack failure notification"
+          PAYLOAD=$(cat <<'JSON'
+          {
+            "text": "🚨 Health Check Failed",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Health Check Failed*\nAPI: ${{ steps.api_health.outputs.api_status }}\nWeb: ${{ steps.web_health.outputs.web_status }}\nMetrics: ${{ steps.metrics_health.outputs.metrics_status }}"
                 }
-              ]
-            }
+              }
+            ]
+          }
+JSON
+          )
+          curl -X POST -H 'Content-type: application/json' --data "$PAYLOAD" "$SLACK_WEBHOOK"
