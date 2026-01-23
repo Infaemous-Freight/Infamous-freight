@@ -3,6 +3,13 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+/**
+ * Root React component rendering Vite and React branding alongside a simple click counter UI.
+ *
+ * Renders two logo links (Vite and React), a heading, a button that increments and displays the current count, and instructional text about editing the source to test HMR.
+ *
+ * @returns The component's JSX element.
+ */
 function App() {
   const [count, setCount] = useState(0)
 
