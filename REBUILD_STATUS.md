@@ -12,7 +12,7 @@
 
 - **Command**: `pnpm build`
 - **Result**: ✅ Build completed successfully.
-- **Notes**: NPM reported warnings about unknown config values (auto-install-peers, http-proxy, strict-peer-dependencies), but compilation succeeded without errors.
+- **Notes**: During `pnpm build`, npm configuration handling reported warnings about unknown config values (auto-install-peers, http-proxy, strict-peer-dependencies) from npm config (e.g., .npmrc), but compilation succeeded without errors.
 
 ## 🎯 Mission Accomplished
 
