@@ -12,7 +12,6 @@ RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY api/package.json ./api/
 COPY packages/shared/package.json ./packages/shared/
-COPY tests/e2e/package.json ./tests/e2e/
 COPY web/package.json ./web/
 
 # Install ALL dependencies (including dev dependencies needed for build)
