@@ -16,7 +16,7 @@ COPY tests/e2e/package.json ./tests/e2e/
 COPY web/package.json ./web/
 
 # Install ALL dependencies (including dev dependencies needed for build)
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 
 FROM node:18-alpine AS build
 WORKDIR /app
