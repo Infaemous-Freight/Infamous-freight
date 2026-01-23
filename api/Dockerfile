@@ -1,35 +1,36 @@
-## Monorepo-friendly API image for Render/Fly/DO
-FROM node:20-alpine AS base
+# syntax=docker/dockerfile:1.6
 
+FROM node:20-slim AS base
+ENV NODE_ENV=production
 WORKDIR /app
+RUN corepack enable
 
-# Enable pnpm via corepack
-RUN apk add --no-cache python3 make g++ openssl openssl-dev
-RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
-
-# Cache deps first
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
-COPY api/package.json ./api/package.json
-COPY packages/shared/package.json ./packages/shared/package.json
-
-RUN pnpm install --frozen-lockfile || pnpm install
-
-# Build shared package
+FROM base AS deps
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY packages ./packages
-RUN pnpm -C packages/shared build || true
+COPY api/package.json ./api/package.json
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+    pnpm config set store-dir /pnpm/store && \
+    pnpm install --frozen-lockfile
 
-# Copy full repo (api + packages + shared assets)
+FROM base AS build
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+COPY --from=deps /app/api ./api
 COPY . .
+RUN pnpm --filter @infamous-freight/shared build
+RUN pnpm --filter infamous-freight-api build
+RUN pnpm --filter infamous-freight-api prisma:generate
 
-# Generate Prisma client
-RUN pnpm -C api prisma:generate || true
+FROM node:20-slim AS runner
+ENV NODE_ENV=production
+WORKDIR /app
+RUN useradd -m nodeuser
+USER nodeuser
 
-# Build API if script exists (CI-safe)
-RUN pnpm -C api --if-present build || true
-
-# Cleanup build dependencies
-RUN apk del --no-cache python3 make g++
+COPY --from=build /app/api ./api
+COPY --from=build /app/packages ./packages
+COPY --from=build /app/node_modules ./node_modules
 
 EXPOSE 3001
-ENV NODE_ENV=production
-CMD ["node", "api/src/index.js"]
+CMD ["node", "api/src/server.js"]
