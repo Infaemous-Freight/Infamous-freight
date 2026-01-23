@@ -39,6 +39,8 @@ RUN corepack enable
 
 COPY --from=build /app ./
 
+# Re-install only production dependencies to prune devDependencies
+RUN pnpm install --prod --frozen-lockfile
 # Expose port for web
 EXPOSE 3000
 
