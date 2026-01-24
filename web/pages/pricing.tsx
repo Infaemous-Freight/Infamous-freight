@@ -4,7 +4,10 @@ import { useRouter } from "next/router";
 import { getLocaleFromRouter, t } from "../lib/i18n/t";
 import { GetStaticProps } from "next";
 
-const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const apiBase = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001").replace(
+  /\/api\/?$/,
+  ""
+);
 
 type Plan = {
   key: string;
@@ -25,10 +28,12 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
   const [configured, setConfigured] = useState(initialConfigured || false);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [seats, setSeats] = useState<number>(5);
+  const [addOns, setAddOns] = useState<string[]>([]);
 
   // Client-side refresh (optional, for real-time updates)
   useEffect(() => {
-    fetch(`${apiBase}/v1/billing/plans`)
+    fetch(`${apiBase}/api/stripe/plans`)
       .then((r) => r.json())
       .then((d) => {
         setPlans(d.plans || []);
@@ -43,14 +48,19 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
     try {
       // Use dev token if no auth yet
       const token = localStorage.getItem("genesisToken") || "dev-token";
-      const res = await fetch(`${apiBase}/v1/billing/checkout`, {
+      const res = await fetch(`${apiBase}/api/stripe/checkout`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
           Authorization: `Bearer ${token}`,
           "x-user-id": "demo-user",
         },
-        body: JSON.stringify({ planKey }),
+        body: JSON.stringify({
+          plan: planKey,
+          seats,
+          addOns,
+          tenantId: "demo-tenant",
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? "Checkout failed");
@@ -73,8 +83,8 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: 24 }}>
       <h1 style={{ margin: 0, color: "rgb(180,0,0)" }}>Pricing</h1>
       <p style={{ opacity: 0.85 }}>
-        Choose a plan. If Stripe is not configured yet, checkout will show a
-        clear setup message.
+        Choose a plan, seat count, and optional add-ons. If Stripe is not
+        configured yet, checkout will show a clear setup message.
       </p>
 
       {err ? (
@@ -88,6 +98,72 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
           <strong style={{ color: "rgb(180,0,0)" }}>Error:</strong> {err}
         </div>
       ) : null}
+
+      <div style={{ ...card, marginTop: 14 }}>
+        <label style={{ display: "block", fontWeight: 600 }}>
+          Seat count
+        </label>
+        <input
+          type="number"
+          min={1}
+          max={500}
+          value={seats}
+          onChange={(event) => setSeats(Number(event.target.value))}
+          style={{
+            marginTop: 6,
+            padding: "8px 12px",
+            borderRadius: 10,
+            border: "1px solid rgba(255,0,0,0.25)",
+            width: 140,
+          }}
+        />
+        <div style={{ marginTop: 12, fontWeight: 600 }}>Add-ons</div>
+        <label style={{ display: "flex", gap: 8, marginTop: 6 }}>
+          <input
+            type="checkbox"
+            checked={addOns.includes("voice")}
+            onChange={(event) => {
+              setAddOns((prev) =>
+                event.target.checked
+                  ? [...prev, "voice"]
+                  : prev.filter((item) => item !== "voice")
+              );
+            }}
+          />
+          Voice commands (per seat)
+        </label>
+        <label style={{ display: "flex", gap: 8, marginTop: 6 }}>
+          <input
+            type="checkbox"
+            checked={addOns.includes("white_label")}
+            onChange={(event) => {
+              setAddOns((prev) =>
+                event.target.checked
+                  ? [...prev, "white_label"]
+                  : prev.filter((item) => item !== "white_label")
+              );
+            }}
+          />
+          White-label (flat)
+        </label>
+        <label style={{ display: "flex", gap: 8, marginTop: 6 }}>
+          <input
+            type="checkbox"
+            checked={addOns.includes("analytics_export")}
+            onChange={(event) => {
+              setAddOns((prev) =>
+                event.target.checked
+                  ? [...prev, "analytics_export"]
+                  : prev.filter((item) => item !== "analytics_export")
+              );
+            }}
+          />
+          Analytics export (flat)
+        </label>
+        <div style={{ marginTop: 8, fontSize: 12, opacity: 0.7 }}>
+          AI actions are metered and billed monthly when enabled.
+        </div>
+      </div>
 
       <div
         style={{
@@ -105,6 +181,9 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
             </div>
             <div style={{ marginTop: 8, opacity: 0.8, fontSize: 12 }}>
               Stripe priceId: <code>{p.priceId ?? "not set"}</code>
+            </div>
+            <div style={{ marginTop: 8, opacity: 0.8, fontSize: 12 }}>
+              Seats: <strong>{seats}</strong>
             </div>
 
             <button
@@ -142,8 +221,10 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
  */
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const apiUrl = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-    const res = await fetch(`${apiUrl}/v1/billing/plans`, {
+    const apiUrl = (
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
+    ).replace(/\/api\/?$/, "");
+    const res = await fetch(`${apiUrl}/api/stripe/plans`, {
       headers: { 'User-Agent': 'Next.js-ISR' },
     });
     

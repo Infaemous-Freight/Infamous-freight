@@ -45,6 +45,7 @@ const healthDetailedRoutes = require("./routes/health-detailed");
 const aiRoutes = require("./routes/ai.commands");
 const billingRoutes = require("./routes/billing");
 const billingPaymentsRoutes = require("./routes/billing-payments");
+const { stripeRouter, stripeWebhookRouter } = require("./routes/stripe");
 const voiceRoutes = require("./routes/voice");
 const aiSimRoutes = require("./routes/aiSim.internal");
 const usersRoutes = require("./routes/users");
@@ -131,6 +132,9 @@ app.use(jwtRotationAuth());
 if (marketplaceEnabled && marketplaceWebhooks) {
   app.use("/api/webhooks", marketplaceWebhooks);
 }
+if (stripeWebhookRouter) {
+  app.use("/api/stripe", stripeWebhookRouter);
+}
 
 app.use(express.json({ limit: "12mb" }));
 
@@ -157,6 +161,7 @@ app.use("/api", analyticsRoutes);
 app.use("/api", metricsRoutes);
 app.use("/api", adminFeatureFlagsRoutes);
 app.use("/api", adminOpsRoutes);
+app.use("/api/stripe", stripeRouter);
 app.use("/v1/auth", authRouter);
 
 // Serve static avatar files (Phase 1 & Phase 2)
