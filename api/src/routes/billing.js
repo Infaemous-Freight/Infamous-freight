@@ -6,7 +6,7 @@
 
 const express = require('express');
 const { limiters, authenticate, requireOrganization, requireScope, auditLog } = require('../middleware/security');
-const { validateString, validateEmail, handleValidationErrors } = require('../middleware/validation');
+const { validateString, handleValidationErrors } = require('../middleware/validation');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { PrismaClient } = require('@prisma/client');
 
@@ -79,6 +79,69 @@ router.post(
 );
 
 /**
+ * POST /api/billing/customer
+ * Create or fetch a Stripe customer for the current user
+ * Scope: billing:write
+ */
+router.post(
+    '/customer',
+    limiters.billing,
+    authenticate,
+    requireOrganization,
+    requireScope('billing:write'),
+    auditLog,
+    handleValidationErrors,
+    async (req, res, next) => {
+        try {
+            const { email = req.user.email, name } = req.body;
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                return res.status(400).json({ error: 'Invalid email' });
+            }
+
+            let customerId = null;
+            const existingCustomer = await prisma.stripeCustomer.findUnique({
+                where: { userId: req.user.sub },
+            }).catch(() => null);
+
+            if (existingCustomer?.stripeCustomerId) {
+                customerId = existingCustomer.stripeCustomerId;
+            } else {
+                const customer = await stripe.customers.create(
+                    {
+                        email,
+                        name,
+                        metadata: {
+                            userId: req.user.sub,
+                            userEmail: req.user.email,
+                        },
+                    },
+                    STRIPE_CONNECT_ACCOUNT ? { stripeAccount: STRIPE_CONNECT_ACCOUNT } : {}
+                );
+                customerId = customer.id;
+
+                await prisma.stripeCustomer.upsert({
+                    where: { userId: req.user.sub },
+                    create: {
+                        userId: req.user.sub,
+                        stripeCustomerId: customerId,
+                    },
+                    update: {
+                        stripeCustomerId: customerId,
+                    },
+                }).catch(() => { });
+            }
+
+            res.status(200).json({
+                success: true,
+                customerId,
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+);
+
+/**
  * POST /api/billing/create-subscription
  * Create a new subscription (Stripe) - 100% to your account
  * Scope: billing:write
@@ -132,7 +195,7 @@ router.post(
                 }).catch(() => { }); // Non-blocking
             }
 
-            // Create subscription - 100% to your Stripe account
+            // Create subscription with default incomplete payment behavior (Stripe Elements flow)
             const subscription = await stripe.subscriptions.create(
                 {
                     customer: customer.id,
@@ -141,6 +204,8 @@ router.post(
                             price: priceId,
                         },
                     ],
+                    payment_behavior: 'default_incomplete',
+                    expand: ['latest_invoice.payment_intent'],
                     metadata: {
                         userId: req.user.sub,
                         ...metadata,
@@ -149,6 +214,9 @@ router.post(
                 },
                 STRIPE_CONNECT_ACCOUNT ? { stripeAccount: STRIPE_CONNECT_ACCOUNT } : {}
             );
+
+            const paymentIntent = subscription.latest_invoice?.payment_intent;
+            const clientSecret = paymentIntent?.client_secret || null;
 
             // Store subscription in database
             await prisma.subscription.create({
@@ -167,6 +235,7 @@ router.post(
                 success: true,
                 subscriptionId: subscription.id,
                 status: subscription.status,
+                clientSecret,
                 nextBillingDate: new Date(subscription.current_period_end * 1000).toISOString(),
             });
         } catch (err) {
@@ -308,6 +377,7 @@ router.post(
                     }).catch(() => { });
                     break;
 
+                case 'customer.subscription.created':
                 case 'customer.subscription.updated':
                     const updatedSubscription = event.data.object;
                     await prisma.subscription.update({
@@ -326,6 +396,26 @@ router.post(
                         where: { stripeSubscriptionId: deletedSubscription.id },
                         data: { status: 'cancelled' },
                     }).catch(() => { });
+                    break;
+
+                case 'invoice.paid':
+                    const paidInvoice = event.data.object;
+                    if (paidInvoice.subscription) {
+                        await prisma.subscription.update({
+                            where: { stripeSubscriptionId: paidInvoice.subscription },
+                            data: { status: 'active' },
+                        }).catch(() => { });
+                    }
+                    break;
+
+                case 'invoice.payment_failed':
+                    const failedInvoice = event.data.object;
+                    if (failedInvoice.subscription) {
+                        await prisma.subscription.update({
+                            where: { stripeSubscriptionId: failedInvoice.subscription },
+                            data: { status: 'past_due' },
+                        }).catch(() => { });
+                    }
                     break;
 
                 case 'charge.refunded':

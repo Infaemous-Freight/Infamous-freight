@@ -175,6 +175,19 @@ model OrgUsage {
   @@map("org_usage")
 }
 
+model AiUsageRecord {
+  id                       String   @id @default(cuid())
+  tenantId                 String?
+  stripeSubscriptionItemId String
+  quantity                 Int
+  stripeUsageRecordId      String   @unique
+  createdAt                DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([stripeSubscriptionItemId])
+  @@map("ai_usage_records")
+}
+
 model OrgInvoice {
   id             String @id @default(cuid())
   organizationId String

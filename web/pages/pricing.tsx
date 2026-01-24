@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { getLocaleFromRouter, t } from "../lib/i18n/t";
 import { GetStaticProps } from "next";
+import StripeSubscriptionCheckout from "../components/StripeSubscriptionCheckout";
 
 const apiBase = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001").replace(
   /\/api\/?$/,
@@ -30,6 +31,9 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
   const [busy, setBusy] = useState<string | null>(null);
   const [seats, setSeats] = useState<number>(5);
   const [addOns, setAddOns] = useState<string[]>([]);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [activePlan, setActivePlan] = useState<string | null>(null);
+  const [customerEmail, setCustomerEmail] = useState<string>("");
 
   // Client-side refresh (optional, for real-time updates)
   useEffect(() => {
@@ -45,10 +49,12 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
   async function checkout(planKey: string) {
     setBusy(planKey);
     setErr(null);
+    setClientSecret(null);
+    setActivePlan(planKey);
     try {
       // Use dev token if no auth yet
       const token = localStorage.getItem("genesisToken") || "dev-token";
-      const res = await fetch(`${apiBase}/api/stripe/checkout`, {
+      const res = await fetch(`${apiBase}/api/stripe/subscription`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -60,11 +66,15 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
           seats,
           addOns,
           tenantId: "demo-tenant",
+          customerEmail: customerEmail || undefined,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? "Checkout failed");
-      window.location.href = data.url;
+      if (!data.clientSecret) {
+        throw new Error("Stripe client secret missing.");
+      }
+      setClientSecret(data.clientSecret);
     } catch (e: any) {
       setErr(e?.message ?? "Checkout failed");
     } finally {
@@ -163,6 +173,25 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
         <div style={{ marginTop: 8, fontSize: 12, opacity: 0.7 }}>
           AI actions are metered and billed monthly when enabled.
         </div>
+        <div style={{ marginTop: 16 }}>
+          <label style={{ display: "block", fontWeight: 600 }}>
+            Billing email
+          </label>
+          <input
+            type="email"
+            placeholder="billing@yourcompany.com"
+            value={customerEmail}
+            onChange={(event) => setCustomerEmail(event.target.value)}
+            style={{
+              marginTop: 6,
+              padding: "8px 12px",
+              borderRadius: 10,
+              border: "1px solid rgba(255,0,0,0.25)",
+              width: "100%",
+              maxWidth: 340,
+            }}
+          />
+        </div>
       </div>
 
       <div
@@ -199,11 +228,22 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
                 cursor: busy === p.key ? "not-allowed" : "pointer",
               }}
             >
-              {busy === p.key ? "Redirecting..." : "Checkout"}
+              {busy === p.key ? "Preparing..." : "Checkout"}
             </button>
           </section>
         ))}
       </div>
+
+      {clientSecret ? (
+        <section style={{ ...card, marginTop: 16 }}>
+          <h2 style={{ marginTop: 0 }}>Complete your subscription</h2>
+          <p style={{ opacity: 0.8, fontSize: 14 }}>
+            Selected plan:{" "}
+            <strong>{activePlan ? activePlan : "custom"}</strong>
+          </p>
+          <StripeSubscriptionCheckout clientSecret={clientSecret} />
+        </section>
+      ) : null}
 
       <div style={{ marginTop: 14, opacity: 0.8, fontSize: 12 }}>
         Stripe configured: <strong>{configured ? "YES" : "NO"}</strong> •{" "}

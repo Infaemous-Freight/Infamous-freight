@@ -15,6 +15,7 @@ const routeScopeRegistry = {
 
     // Billing
     'POST /api/billing/create-payment-intent': ['billing:write'],
+    'POST /api/billing/customer': ['billing:write'],
     'POST /api/billing/create-subscription': ['billing:write'],
     'GET /api/billing/subscriptions': ['billing:read'],
     'POST /api/billing/cancel-subscription/:id': ['billing:write'],
