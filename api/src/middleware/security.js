@@ -102,15 +102,22 @@ const limiters = {
 function authenticate(req, res, next) {
   try {
     const header = req.headers.authorization || req.headers.Authorization;
+    const allowXUserId = env?.nodeEnv !== "production";
+    const xUserId = req.headers["x-user-id"];
     // Dev fallback: allow x-user-id when bearer is absent
-    if ((!header || !header.startsWith("Bearer ")) && req.headers["x-user-id"]) {
-      req.user = { sub: String(req.headers["x-user-id"]), scopes: ["user:avatar"] };
-      req.auth = {
-        userId: req.user.sub,
-        role: req.user.role,
-        organizationId: req.headers["x-org-id"], // Dev: org can be overridden
-      };
-      return next();
+    if ((!header || !header.startsWith("Bearer ")) && allowXUserId) {
+      if (Array.isArray(xUserId)) {
+        return res.status(400).json({ error: "Invalid x-user-id header" });
+      }
+      if (typeof xUserId === "string") {
+        req.user = { sub: xUserId, scopes: ["user:avatar"] };
+        req.auth = {
+          userId: req.user.sub,
+          role: req.user.role,
+          organizationId: req.headers["x-org-id"], // Dev: org can be overridden
+        };
+        return next();
+      }
     }
 
     if (!header || !header.startsWith("Bearer ")) {
