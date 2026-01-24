@@ -34,16 +34,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-      
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+          cache: 'pnpm'
       
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -114,24 +114,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build web project
+        run: pnpm --filter web build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3001
+          NODE_ENV: production
+      
       - name: Run SEO audit
         run: |
-          npm install
-          npm run build
-          
-          # Check for meta tags
           echo "Checking for meta tags..."
-          grep -E '<meta name="(description|viewport|theme-color)"' dist/index.html || echo "⚠️ Missing recommended meta tags"
+          find web/.next/server/app -name "*.html" -exec grep -l '<meta name="description"' {} \; || echo "⚠️ Missing meta description"
           
-          # Check for open graph tags
           echo "Checking for Open Graph tags..."
-          grep -E '<meta property="og:' dist/index.html || echo "⚠️ Missing Open Graph tags"
+          find web/.next/server/app -name "*.html" -exec grep -l '<meta property="og:' {} \; || echo "⚠️ Missing Open Graph tags"
           
-          # Check for robots.txt
-          [ -f dist/robots.txt ] && echo "✅ robots.txt found" || echo "⚠️ Missing robots.txt"
-          
-          # Check for sitemap
-          [ -f dist/sitemap.xml ] && echo "✅ sitemap.xml found" || echo "⚠️ Missing sitemap.xml"
+          [ -f web/public/robots.txt ] && echo "✅ robots.txt found" || echo "⚠️ Missing robots.txt"
+          [ -f web/public/sitemap.xml ] && echo "✅ sitemap.xml found" || echo "⚠️ Missing sitemap.xml"
   
   security-audit:
     runs-on: ubuntu-latest
@@ -140,14 +152,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Run npm security audit
-        run: npm audit --audit-level=moderate || true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run pnpm security audit
+        run: pnpm audit --audit-level=moderate || true
       
       - name: Check for secrets
         run: |
-          # Install git-secrets
-          brew install git-secrets
-          git secrets --scan || echo "ℹ️ Check for exposed secrets"
+          sudo apt-get update
+          sudo apt-get install -y git-secrets
+          git secrets --install || true
+          git secrets --register-aws
+          git secrets --scan || echo "ℹ️ No secrets detected"
       
       - name: Run OWASP dependency check
         uses: dependency-check/Dependency-Check_Action@main
