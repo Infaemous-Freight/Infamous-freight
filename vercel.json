@@ -66,7 +66,7 @@
       }
     ],
     "minimumCacheTTL": 60,
-    "qualities": [25, 50, 75],
+    "qualities": [75, 85, 90],
     "formats": ["image/webp"],
     "dangerouslyAllowSVG": false,
     "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;",
