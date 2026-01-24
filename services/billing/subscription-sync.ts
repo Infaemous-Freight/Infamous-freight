@@ -30,8 +30,19 @@ async function upsertTenantBillingFromSubscription(args: {
   plan: string | null;
   tenantId: string | null;
 }) {
-  // TODO: persist in DB
-  void args;
+  // This function must be implemented to persist subscription billing data.
+  // Fail fast to avoid silently dropping critical metered billing state.
+  console.error("upsertTenantBillingFromSubscription called without implementation", {
+    stripeCustomerId: args.stripeCustomerId,
+    stripeSubscriptionId: args.stripeSubscriptionId,
+    items: args.items,
+    plan: args.plan,
+    tenantId: args.tenantId,
+  });
+  throw new Error(
+    "upsertTenantBillingFromSubscription is not implemented. " +
+      "Implement database persistence for tenant billing before using this path."
+  );
 }
 
 /**
