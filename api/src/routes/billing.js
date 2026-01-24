@@ -49,6 +49,7 @@ router.post(
                         ...metadata,
                     },
                     receipt_email: req.user.email,
+                    automatic_payment_methods: { enabled: true },
                 },
                 STRIPE_CONNECT_ACCOUNT ? { stripeAccount: STRIPE_CONNECT_ACCOUNT } : {}
             );
@@ -146,6 +147,9 @@ router.post(
                         ...metadata,
                     },
                     automatic_tax: { enabled: true },
+                    payment_behavior: "default_incomplete",
+                    payment_settings: { save_default_payment_method: "on_subscription" },
+                    expand: ["latest_invoice.payment_intent"],
                 },
                 STRIPE_CONNECT_ACCOUNT ? { stripeAccount: STRIPE_CONNECT_ACCOUNT } : {}
             );
@@ -163,11 +167,15 @@ router.post(
                 },
             }).catch(() => { }); // Non-blocking
 
+            const latestInvoice = subscription.latest_invoice;
+            const paymentIntent = latestInvoice?.payment_intent;
+
             res.status(201).json({
                 success: true,
                 subscriptionId: subscription.id,
                 status: subscription.status,
                 nextBillingDate: new Date(subscription.current_period_end * 1000).toISOString(),
+                clientSecret: paymentIntent?.client_secret,
             });
         } catch (err) {
             next(err);
