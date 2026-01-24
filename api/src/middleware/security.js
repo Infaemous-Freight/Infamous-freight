@@ -104,6 +104,11 @@ function authenticate(req, res, next) {
     const header = req.headers.authorization || req.headers.Authorization;
     const allowXUserId = env?.nodeEnv !== "production";
     const xUserId = req.headers["x-user-id"];
+
+    // Reject malformed Authorization headers (arrays or non-strings)
+    if (Array.isArray(header) || (header && typeof header !== "string")) {
+      return res.status(400).json({ error: "Invalid Authorization header" });
+    }
     // Dev fallback: allow x-user-id when bearer is absent
     if ((!header || !header.startsWith("Bearer ")) && allowXUserId) {
       if (Array.isArray(xUserId)) {
