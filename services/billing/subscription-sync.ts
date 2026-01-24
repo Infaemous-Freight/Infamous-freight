@@ -42,29 +42,52 @@ async function upsertTenantBillingFromSubscription(args: {
  * @param subscriptionId - Stripe subscription identifier to retrieve and synchronize
  */
 export async function handleSubscriptionUpsert(subscriptionId: string) {
-  const sub = await stripe.subscriptions.retrieve(subscriptionId, {
-    expand: ["items.data.price"],
-  });
-
-  const stripeCustomerId =
-    typeof sub.customer === "string" ? sub.customer : sub.customer.id;
-
-  const items: Record<string, string> = {};
-  for (const it of sub.items.data) {
-    const price = it.price;
-    const lookupKey = (price as { lookup_key?: string | null }).lookup_key ?? null;
-    const key = featureKeyFromLookupKey(lookupKey);
-    if (key) items[key] = it.id;
+  // Basic validation for Stripe subscription ID format before calling the API
+  if (
+    typeof subscriptionId !== "string" ||
+    subscriptionId.length === 0 ||
+    !/^sub_[A-Za-z0-9]+$/.test(subscriptionId)
+  ) {
+    throw new Error(
+      `Invalid Stripe subscription ID format: "${subscriptionId}"`
+    );
   }
 
-  const tenantId = (sub.metadata?.tenantId as string) ?? null;
-  const plan = (sub.metadata?.plan as string) ?? null;
+  try {
+    const sub = await stripe.subscriptions.retrieve(subscriptionId, {
+      expand: ["items.data.price"],
+    });
 
-  await upsertTenantBillingFromSubscription({
-    stripeCustomerId,
-    stripeSubscriptionId: sub.id,
-    items,
-    plan,
-    tenantId,
-  });
+    const stripeCustomerId =
+      typeof sub.customer === "string" ? sub.customer : sub.customer.id;
+
+    const items: Record<string, string> = {};
+    for (const it of sub.items.data) {
+      const price = it.price;
+      const lookupKey = (price as { lookup_key?: string | null }).lookup_key ?? null;
+      const key = featureKeyFromLookupKey(lookupKey);
+      if (key) items[key] = it.id;
+    }
+
+    const tenantId = (sub.metadata?.tenantId as string) ?? null;
+    const plan = (sub.metadata?.plan as string) ?? null;
+
+    await upsertTenantBillingFromSubscription({
+      stripeCustomerId,
+      stripeSubscriptionId: sub.id,
+      items,
+      plan,
+      tenantId,
+    });
+  } catch (err) {
+    // Structured error logging with context about the failed operation
+    console.error("Failed to handle Stripe subscription upsert", {
+      subscriptionId,
+      error:
+        err instanceof Error
+          ? { message: err.message, stack: err.stack }
+          : err,
+    });
+    throw err;
+  }
 }
