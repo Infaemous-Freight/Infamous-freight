@@ -14,6 +14,16 @@ build/
 coverage/
 .next/
 **/junit.xml
+out/
+
+# TypeScript build cache
+*.tsbuildinfo
+.cache/
+**/.cache/
+
+# Prisma
+.prisma/
+**/prisma/migrations/.migrate_lock
 
 # Environment files (kept untracked)
 .env
