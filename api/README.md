@@ -1,3 +1,174 @@
+# Infamous Freight API
+
+Enterprise-grade REST API for freight management platform with authentication, billing, AI integration, and real-time features.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js >= 20.0.0
+- pnpm >= 9.15.0
+- PostgreSQL database
+- Redis (for caching and rate limiting)
+
+### Installation
+
+```bash
+# Install dependencies
+pnpm install
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your configuration
+
+# Generate Prisma client
+pnpm prisma:generate
+
+# Run database migrations
+pnpm prisma:migrate:dev
+
+# Start development server
+pnpm dev
+```
+
+### Development
+
+```bash
+# Start development server with hot reload
+pnpm dev
+
+# Run tests
+pnpm test
+
+# Run tests with coverage
+pnpm test:coverage
+
+# Lint code
+pnpm lint
+
+# Fix linting issues
+pnpm lint:fix
+
+# Type check
+pnpm typecheck
+
+# Start database (Docker)
+pnpm db:up
+
+# Stop database
+pnpm db:down
+```
+
+## 📁 Project Structure
+
+```
+api/
+├── src/
+│   ├── routes/          # API endpoints
+│   ├── middleware/      # Express middleware (auth, validation, logging)
+│   ├── services/        # Business logic
+│   ├── lib/            # Shared utilities
+│   ├── config/         # Configuration
+│   └── server.js       # Application entry point
+├── prisma/
+│   ├── schema.prisma   # Database schema
+│   └── migrations/     # Database migrations
+├── __tests__/          # Test files
+└── package.json
+```
+
+## 🛠️ Key Features
+
+- **Authentication**: JWT-based authentication with scope-based authorization
+- **Validation**: Zod schemas for type-safe request validation
+- **Logging**: Pino structured logging with correlation IDs
+- **Error Handling**: Custom error classes with proper HTTP status codes
+- **Rate Limiting**: Per-endpoint rate limiting (Redis-backed)
+- **Testing**: Jest with 80-88% coverage thresholds
+- **Database**: Prisma ORM with PostgreSQL
+- **Monitoring**: Sentry integration for error tracking
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+pnpm test
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Generate coverage report
+pnpm test:coverage
+# HTML report available at: coverage/lcov-report/index.html
+```
+
+### Test Structure
+- Unit tests: `__tests__/**/*.test.js`
+- Integration tests: Test files with database/external dependencies
+- Coverage thresholds: 80% branches, 85% functions, 88% lines/statements
+
+## 🔒 Security
+
+- Environment variables stored in `.env` (never committed)
+- Rate limiting on all endpoints
+- JWT token authentication
+- Input validation with Zod
+- SQL injection prevention via Prisma
+- XSS protection with helmet and sanitization
+
+## 📊 Monitoring & Logging
+
+- **Pino**: Structured JSON logging
+- **Sentry**: Error tracking and performance monitoring
+- **Correlation IDs**: Request tracing across services
+- **Metrics**: Custom metrics via `/api/metrics` endpoint
+
+## 🔧 Environment Variables
+
+See `.env.example` for required environment variables:
+- `DATABASE_URL`: PostgreSQL connection string
+- `REDIS_URL`: Redis connection string
+- `JWT_SECRET`: Secret for JWT signing
+- `SENTRY_DSN`: Sentry project DSN
+- `LOG_LEVEL`: Logging level (debug, info, warn, error)
+
+## 📚 API Documentation
+
+API documentation is available via Swagger UI when running the server:
+- Development: http://localhost:4000/api-docs
+- Production: See deployment documentation
+
+## 🤝 Contributing
+
+1. Create a feature branch from `develop`
+2. Make your changes with tests
+3. Ensure all tests pass: `pnpm test`
+4. Ensure linting passes: `pnpm lint`
+5. Create a PR with conventional commit messages
+
+### Commit Message Format
+```
+type(scope): subject
+
+feat(api): add user authentication endpoint
+fix(billing): resolve payment processing issue
+docs: update API documentation
+test(shipments): add edge case tests
+```
+
+## 📦 Build & Deploy
+
+```bash
+# Build for production
+pnpm build
+
+# Start production server
+pnpm start
+```
+
+See deployment documentation for platform-specific deployment guides.
+
+---
+
 # Enterprise Optimization - Implementation Summary
 
 ## ✅ Phase 1: Foundation Complete

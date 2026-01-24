@@ -57,7 +57,7 @@ jobs:
           pnpm audit --json > audit-results.json || true
           cat audit-results.json
 
-  # Secret Scanning
+  # Secret Scanning with TruffleHog
   secret-scan:
     name: Secret Scanning
     runs-on: ubuntu-latest
@@ -68,7 +68,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for secrets in code
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+
+      - name: Check for secrets in code (Fallback)
         run: |
           echo "Scanning for potential secrets..."
           # Check for common secret patterns
