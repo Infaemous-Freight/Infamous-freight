@@ -4,23 +4,27 @@ const { prisma } = require("../db/prisma");
 const { getStats: getCacheStats } = require("../services/cache");
 const { getConnectedClientsCount } = require("../services/websocket");
 const { auditLog } = require("../middleware/security");
+const { asyncHandler, createSuccessResponse, createErrorResponse } = require("../lib/errors");
+const { HTTP_STATUS } = require("../config/constants");
 
 const router = express.Router();
 
 // Basic health check
-router.get("/health", auditLog, (_req, res) => {
-  res.json({
+router.get("/health", auditLog, asyncHandler(async (_req, res) => {
+  const healthData = {
     status: "ok",
     service: "infamous-freight-api",
     version: version || "2.0.0",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || "development",
-  });
-});
+  };
+  
+  res.status(HTTP_STATUS.OK).json(createSuccessResponse(healthData));
+}));
 
 // Detailed health check with service dependencies
-router.get("/health/detailed", auditLog, async (_req, res) => {
+router.get("/health/detailed", auditLog, asyncHandler(async (_req, res) => {
   const checks = {
     api: { status: "healthy", message: "API is running" },
     database: { status: "unknown", message: "Not checked" },
@@ -88,9 +92,9 @@ router.get("/health/detailed", auditLog, async (_req, res) => {
     overallStatus = "degraded";
   }
 
-  const statusCode = overallStatus === "unhealthy" ? 503 : 200;
+  const statusCode = overallStatus === "unhealthy" ? HTTP_STATUS.SERVICE_UNAVAILABLE : HTTP_STATUS.OK;
 
-  res.status(statusCode).json({
+  const healthData = {
     status: overallStatus,
     service: "infamous-freight-api",
     version: version || "2.0.0",
@@ -98,30 +102,36 @@ router.get("/health/detailed", auditLog, async (_req, res) => {
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || "development",
     checks,
-  });
-});
+  };
+
+  res.status(statusCode).json(createSuccessResponse(healthData));
+}));
 
 // Readiness check (for Kubernetes/orchestration)
-router.get("/health/ready", auditLog, async (_req, res) => {
-  try {
-    // Check database with timeout
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('DB health check timeout')), 5000)
-    );
-    await Promise.race([prisma.$queryRaw`SELECT 1`, timeoutPromise]);
-    res.status(200).json({ status: "ready", timestamp: new Date().toISOString() });
-  } catch (error) {
-    res.status(503).json({
-      status: "not ready",
-      error: error.message,
-      timestamp: new Date().toISOString(),
-    });
-  }
-});
+router.get("/health/ready", auditLog, asyncHandler(async (_req, res) => {
+  // Check database with timeout
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('DB health check timeout')), 5000)
+  );
+  
+  await Promise.race([prisma.$queryRaw`SELECT 1`, timeoutPromise]);
+  
+  const readyData = {
+    status: "ready",
+    timestamp: new Date().toISOString(),
+  };
+  
+  res.status(HTTP_STATUS.OK).json(createSuccessResponse(readyData));
+}));
 
 // Liveness check (for Kubernetes/orchestration)
-router.get("/health/live", auditLog, (_req, res) => {
-  res.json({ status: "alive" });
-});
+router.get("/health/live", auditLog, asyncHandler(async (_req, res) => {
+  const liveData = {
+    status: "alive",
+    timestamp: new Date().toISOString(),
+  };
+  
+  res.status(HTTP_STATUS.OK).json(createSuccessResponse(liveData));
+}));
 
 module.exports = router;

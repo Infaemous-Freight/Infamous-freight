@@ -4,7 +4,7 @@
  * Module: Standardized Error Response Utilities
  */
 
-const { HTTP_STATUS, ERROR_MESSAGES } = require('./constants');
+const { HTTP_STATUS, ERROR_MESSAGES } = require('../config/constants');
 
 /**
  * Standard API Error class with proper structure
