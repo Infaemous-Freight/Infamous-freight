@@ -59,10 +59,10 @@
     "remotePatterns": [
       {
         "protocol": "https",
-        "hostname": "example.com",
+        "hostname": "infamous-freight-api.fly.dev",
         "port": "",
-        "pathname": "^/account123/.*$",
-        "search": "?v=1"
+        "pathname": "^/api/uploads/.*$",
+        "search": ""
       }
     ],
     "minimumCacheTTL": 60,
