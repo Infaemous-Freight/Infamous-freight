@@ -70,8 +70,20 @@ function resolveAddOnPriceId(addOnKey) {
 
 async function resolvePriceIdByLookupKey(stripe, lookupKey) {
   if (!stripe || !lookupKey) return null;
-  const prices = await stripe.prices.list({ lookup_keys: [lookupKey], limit: 1 });
-  return prices.data?.[0]?.id || null;
+  try {
+    const prices = await stripe.prices.list({
+      lookup_keys: [lookupKey],
+      limit: 1,
+    });
+    return prices.data?.[0]?.id || null;
+  } catch (error) {
+    // Avoid throwing raw Stripe errors from price lookup; log and return null instead.
+    console.error("Failed to resolve Stripe price ID by lookup key", {
+      lookupKey,
+      error: error && error.message ? error.message : error,
+    });
+    return null;
+  }
 }
 
 /**
