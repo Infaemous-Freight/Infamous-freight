@@ -28,7 +28,7 @@
     "lint:fix": "cd api && npm run lint:fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,yml,yaml}\"",
-    "check:types": "cd packages/shared && npm run typecheck && cd ../../api && npm run typecheck",
+    "check:types": "npm run typecheck",
     "typecheck": "cd packages/shared && npm run typecheck && cd ../../api && npm run typecheck",
     "validate": "npm run format:check && npm run lint && npm run check:types && npm run test",
     "clean": "rm -rf api/node_modules packages/*/node_modules node_modules",
