@@ -255,7 +255,7 @@ stripeRouter.post("/report-usage", limiters.billing, async (req, res) => {
     const usageKey = process.env.STRIPE_USAGE_REPORT_KEY;
     const providedKey = req.headers["x-usage-report-key"];
     const hasUsageKey = hasValidUsageKey(usageKey, providedKey);
-    const isAuthenticated = hasUsageKey ? true : ensureAuthenticated(req);
+    const isAuthenticated = hasUsageKey || ensureAuthenticated(req);
     if (!hasUsageKey && !isAuthenticated) {
       return res.status(403).json({ ok: false, error: "Forbidden" });
     }
