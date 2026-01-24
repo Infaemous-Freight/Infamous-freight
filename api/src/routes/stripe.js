@@ -86,6 +86,53 @@ async function resolvePriceIdByLookupKey(stripe, lookupKey) {
   }
 }
 
+async function resolveAiMeteredPriceId(stripe) {
+  let aiMeteredPriceId = process.env.STRIPE_AI_METERED_PRICE_ID || null;
+  if (!aiMeteredPriceId && process.env.STRIPE_AI_METERED_LOOKUP_KEY) {
+    aiMeteredPriceId = await resolvePriceIdByLookupKey(
+      stripe,
+      process.env.STRIPE_AI_METERED_LOOKUP_KEY
+    );
+  }
+
+  return aiMeteredPriceId;
+}
+
+async function persistAiSubscriptionItemId({
+  stripe,
+  subscriptionId,
+  tenantId,
+}) {
+  if (!stripe || !subscriptionId || !tenantId) return;
+
+  const aiMeteredPriceId = await resolveAiMeteredPriceId(stripe);
+  if (!aiMeteredPriceId) return;
+
+  try {
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
+      expand: ["items.data.price"],
+    });
+
+    const aiItem = subscription?.items?.data?.find(
+      (item) => item?.price?.id === aiMeteredPriceId
+    );
+
+    if (!aiItem?.id) return;
+
+    await persist.setEntitlement(
+      tenantId,
+      "stripe_ai_subscription_item_id",
+      String(aiItem.id)
+    );
+  } catch (error) {
+    console.error("Failed to persist AI subscription item ID", {
+      tenantId,
+      subscriptionId,
+      error: error && error.message ? error.message : error,
+    });
+  }
+}
+
 /**
  * Verify that a provided usage key matches a stored usage key using a timing-safe comparison.
  * @param {string|Buffer|number} usageKey - The expected/stored usage key.
@@ -206,13 +253,7 @@ stripeRouter.post(
         lineItems.push({ price: addOnPriceId, quantity });
       }
 
-      let aiMeteredPriceId = process.env.STRIPE_AI_METERED_PRICE_ID || null;
-      if (!aiMeteredPriceId && process.env.STRIPE_AI_METERED_LOOKUP_KEY) {
-        aiMeteredPriceId = await resolvePriceIdByLookupKey(
-          stripe,
-          process.env.STRIPE_AI_METERED_LOOKUP_KEY
-        );
-      }
+      const aiMeteredPriceId = await resolveAiMeteredPriceId(stripe);
 
       if (body.includeAiMetered && aiMeteredPriceId) {
         lineItems.push({
@@ -393,6 +434,11 @@ stripeWebhookRouter.post(
               "stripe_subscription_id",
               String(session.subscription || "")
             );
+            await persistAiSubscriptionItemId({
+              stripe,
+              subscriptionId: session.subscription,
+              tenantId,
+            });
           }
           break;
         }
@@ -414,6 +460,11 @@ stripeWebhookRouter.post(
                 String(subscription.metadata.plan)
               );
             }
+            await persistAiSubscriptionItemId({
+              stripe,
+              subscriptionId: subscription.id,
+              tenantId,
+            });
           }
           break;
         }
