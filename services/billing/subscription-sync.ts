@@ -1,6 +1,12 @@
 import { stripe } from "./stripe";
 import type { AiMeteredFeature } from "./pricing-map";
 
+/**
+ * Map a Stripe price `lookup_key` to a known AiMeteredFeature, or return `null` if not recognized.
+ *
+ * @param lookupKey - The Stripe price `lookup_key` to translate (may be `null`)
+ * @returns The matching `AiMeteredFeature` for `lookupKey`, or `null` if `lookupKey` is missing or unsupported
+ */
 function featureKeyFromLookupKey(lookupKey: string | null): AiMeteredFeature | null {
   if (!lookupKey) return null;
   const allowed = new Set([
@@ -16,7 +22,15 @@ function featureKeyFromLookupKey(lookupKey: string | null): AiMeteredFeature | n
   return allowed.has(lookupKey) ? (lookupKey as AiMeteredFeature) : null;
 }
 
-// You must implement these against your DB
+/**
+ * Persist or update tenant billing and subscription details derived from a Stripe subscription.
+ *
+ * @param args.stripeCustomerId - Stripe Customer ID associated with the subscription
+ * @param args.stripeSubscriptionId - Stripe Subscription ID
+ * @param args.items - Map from AiMeteredFeature key to Stripe subscription item ID (si_...)
+ * @param args.plan - Optional plan identifier extracted from subscription metadata, or `null` if absent
+ * @param args.tenantId - Optional tenant identifier extracted from subscription metadata, or `null` if absent
+ */
 async function upsertTenantBillingFromSubscription(args: {
   stripeCustomerId: string;
   stripeSubscriptionId: string;
@@ -28,6 +42,13 @@ async function upsertTenantBillingFromSubscription(args: {
   void args;
 }
 
+/**
+ * Synchronizes tenant billing state from a Stripe subscription.
+ *
+ * Retrieves the subscription (with price data expanded), maps price lookup keys to known metered features, reads tenant and plan metadata, and upserts the resulting billing/subscription data.
+ *
+ * @param subscriptionId - Stripe subscription identifier to retrieve and synchronize
+ */
 export async function handleSubscriptionUpsert(subscriptionId: string) {
   const sub = await stripe.subscriptions.retrieve(subscriptionId, {
     expand: ["items.data.price"],

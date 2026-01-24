@@ -2,6 +2,15 @@ import type { AiMeteredFeature } from "./pricing-map";
 
 export type UsageTotals = Record<AiMeteredFeature, number>;
 
+/**
+ * Compute per-feature usage totals for a tenant over a billing period to determine billable overage.
+ *
+ * @param params.tenantId - Tenant identifier to aggregate usage for
+ * @param params.periodStart - Inclusive start of the billing period
+ * @param params.periodEnd - Exclusive end of the billing period
+ * @param params.includedTokenQuota - Number of chat tokens included in the tenant's plan; used when calculating token overage
+ * @returns A UsageTotals record mapping each `AiMeteredFeature` to its total usage for the specified period
+ */
 export async function computeOverageForTenant(params: {
   tenantId: string;
   periodStart: Date;
