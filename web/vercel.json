@@ -9,10 +9,6 @@
   "regions": ["iad1"],
   "rewrites": [
     {
-      "source": "/about",
-      "destination": "/about-our-company.html"
-    },
-    {
       "source": "/api/:path*",
       "destination": "https://:api_host/api/:path*"
     }
