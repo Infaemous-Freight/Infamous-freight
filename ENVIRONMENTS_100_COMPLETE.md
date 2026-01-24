@@ -250,7 +250,8 @@ ENV NODE_ENV=${NODE_ENV}
 ```bash
 # Project Settings → Environment Variables
 NEXT_PUBLIC_API_URL=https://api.infamousfreight.com
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_*
+# Use pk_live_* in production, pk_test_* for staging/preview
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_<test_or_live>_*
 ```
 
 ### Fly.io (API)
