@@ -23,10 +23,24 @@ export async function reportUsageForTenant(params: {
     const subscriptionItemId = params.stripeSubscriptionItems[feature];
     if (!subscriptionItemId) continue;
 
-    await stripe.subscriptionItems.createUsageRecord(subscriptionItemId, {
-      quantity: Math.ceil(qty),
-      timestamp: ts,
-      action: "increment",
-    });
+    try {
+      await stripe.subscriptionItems.createUsageRecord(subscriptionItemId, {
+        quantity: Math.floor(qty),
+        timestamp: ts,
+        action: "increment",
+      });
+    } catch (err) {
+      // Log and continue so one failure does not prevent reporting other features
+      console.error("Failed to report Stripe usage record", {
+        feature,
+        quantity: qty,
+        subscriptionItemId,
+        timestamp: ts,
+        error:
+          err instanceof Error
+            ? { message: err.message, stack: err.stack }
+            : { message: String(err) },
+      });
+    }
   }
 }
