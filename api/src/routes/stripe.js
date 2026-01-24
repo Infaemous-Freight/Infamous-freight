@@ -68,6 +68,12 @@ function resolveAddOnPriceId(addOnKey) {
   return process.env[entry.env] || null;
 }
 
+async function resolvePriceIdByLookupKey(stripe, lookupKey) {
+  if (!stripe || !lookupKey) return null;
+  const prices = await stripe.prices.list({ lookup_keys: [lookupKey], limit: 1 });
+  return prices.data?.[0]?.id || null;
+}
+
 /**
  * Verify that a provided usage key matches a stored usage key using a timing-safe comparison.
  * @param {string|Buffer|number} usageKey - The expected/stored usage key.
@@ -188,9 +194,17 @@ stripeRouter.post(
         lineItems.push({ price: addOnPriceId, quantity });
       }
 
-      if (body.includeAiMetered && process.env.STRIPE_AI_METERED_PRICE_ID) {
+      let aiMeteredPriceId = process.env.STRIPE_AI_METERED_PRICE_ID || null;
+      if (!aiMeteredPriceId && process.env.STRIPE_AI_METERED_LOOKUP_KEY) {
+        aiMeteredPriceId = await resolvePriceIdByLookupKey(
+          stripe,
+          process.env.STRIPE_AI_METERED_LOOKUP_KEY
+        );
+      }
+
+      if (body.includeAiMetered && aiMeteredPriceId) {
         lineItems.push({
-          price: process.env.STRIPE_AI_METERED_PRICE_ID,
+          price: aiMeteredPriceId,
           quantity: 1,
         });
       }
