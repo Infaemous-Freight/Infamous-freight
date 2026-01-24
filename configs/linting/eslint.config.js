@@ -43,8 +43,13 @@ export default [
     },
     rules: {
       ...js.configs.recommended.rules,
-      "no-console": ["warn", { allow: ["warn", "error", "info"] }],
-      "no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      // Enterprise Standards - No console.log in production code
+      "no-console": ["error", { allow: [] }], // Ban all console - use structured logging
+      "no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+      "no-var": "error",
+      "prefer-const": "error",
+      "eqeqeq": ["error", "always"],
+      "no-implicit-globals": "error",
     },
   },
   {
@@ -66,8 +71,15 @@ export default [
       "@typescript-eslint": tsPlugin,
     },
     rules: {
-      "no-console": ["warn", { allow: ["warn", "error", "info"] }],
-      "no-unused-vars": "off",
+      // Enterprise Standards - TypeScript files
+      "no-console": ["error", { allow: [] }], // Ban all console - use structured logging
+      "no-unused-vars": "off", // Handled by TypeScript
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "no-var": "error",
+      "prefer-const": "error",
+      "eqeqeq": ["error", "always"],
     },
   },
   {
@@ -114,7 +126,15 @@ export default [
         jest: "readonly",
         beforeEach: "readonly",
         afterEach: "readonly",
+        beforeAll: "readonly",
+        afterAll: "readonly",
+        it: "readonly",
       },
+    },
+    rules: {
+      // Allow console in tests for debugging
+      "no-console": "off",
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
   prettier,

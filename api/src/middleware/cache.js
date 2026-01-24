@@ -5,6 +5,7 @@
  */
 
 const redis = require('redis');
+const { logger } = require('./logger');
 
 let redisClient = null;
 
@@ -20,13 +21,13 @@ async function initRedis() {
             },
         });
 
-        redisClient.on('error', (err) => console.error('Redis Client Error', err));
-        redisClient.on('connect', () => console.info('✅ Redis connected'));
+        redisClient.on('error', (err) => logger.error({ err }, 'Redis Client Error'));
+        redisClient.on('connect', () => logger.info('Redis connected'));
 
         await redisClient.connect();
         return redisClient;
     } catch (err) {
-        console.warn('⚠️  Redis unavailable, caching disabled:', err.message);
+        logger.warn({ err: err.message }, 'Redis unavailable, caching disabled');
         return null;
     }
 }
@@ -50,7 +51,7 @@ function cacheMiddleware(ttl = 300) {
                 return res.json(JSON.parse(cached));
             }
         } catch (err) {
-            console.warn('Cache read error:', err.message);
+            logger.warn({ err: err.message }, 'Cache read error');
             // Continue on cache miss/error
         }
 
@@ -59,7 +60,7 @@ function cacheMiddleware(ttl = 300) {
         res.json = function (data) {
             if (res.statusCode === 200 && client) {
                 client.setEx(cacheKey, ttl, JSON.stringify(data))
-                    .catch((err) => console.warn('Cache write error:', err.message));
+                    .catch((err) => logger.warn({ err: err.message }, 'Cache write error'));
             }
             res.set('X-Cache', 'MISS');
             return originalJson(data);
@@ -78,10 +79,10 @@ async function invalidateCache(pattern = '*') {
         const keys = await client.keys(`cache:${pattern}`);
         if (keys.length > 0) {
             await client.del(keys);
-            console.info(`✅ Invalidated ${keys.length} cache keys`);
+            logger.info({ count: keys.length }, 'Invalidated cache keys');
         }
     } catch (err) {
-        console.error('Cache invalidation error:', err.message);
+        logger.error({ err: err.message }, 'Cache invalidation error');
     }
 }
 

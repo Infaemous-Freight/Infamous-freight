@@ -5,6 +5,7 @@
  */
 
 const { ROLE_PERMISSIONS, UserRole, roleHasPermission, canAccessResource } = require("@infamous-freight/shared");
+const { logger } = require("./logger");
 
 /**
  * Require specific permission(s)
@@ -148,7 +149,7 @@ function auditAction(actionName) {
                                 }
                             }
                         })
-                        .catch((err) => console.error("Audit log error:", err));
+                        .catch((err) => logger.error({ err }, 'Audit log error'));
                 }
             }
 

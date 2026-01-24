@@ -8,6 +8,7 @@
 const { Queue, Worker } = require("bullmq");
 const { prisma } = require("../lib/prismaClient");
 const { redisConnection } = require("./redis");
+const { logger } = require("../middleware/logger");
 
 // ==================== AGENT QUEUES ====================
 
@@ -24,7 +25,7 @@ const dispatchWorker = new Worker(
         try {
             const { shipmentIds, driverIds, algorithm, userId } = job.data;
 
-            console.log(`[dispatch] Processing ${shipmentIds.length} shipments with ${algorithm}`);
+            logger.info({ jobId: job.id, shipmentCount: shipmentIds.length, algorithm }, '[dispatch] Processing shipments');
 
             // Log agent run start
             const agentRun = await prisma.agentRun.create({
@@ -73,7 +74,7 @@ const dispatchWorker = new Worker(
                 algorithm
             };
         } catch (error) {
-            console.error("[dispatch] Error:", error);
+            logger.error({ jobId: job.id, error: error.message }, '[dispatch] Job processing error');
             throw error;
         }
     },
@@ -154,7 +155,7 @@ const invoiceAuditWorker = new Worker(
         try {
             const { shipmentId, invoiceId, userId } = job.data;
 
-            console.log(`[invoice-audit] Processing shipment ${shipmentId}`);
+            logger.info({ jobId: job.id, shipmentId }, '[invoice-audit] Processing shipment');
 
             const agentRun = await prisma.agentRun.create({
                 data: {
@@ -191,7 +192,7 @@ const invoiceAuditWorker = new Worker(
 
             return reconciliationResult;
         } catch (error) {
-            console.error("[invoice-audit] Error:", error);
+            logger.error({ jobId: job.id, error: error.message }, '[invoice-audit] Job processing error');
             throw error;
         }
     },
@@ -206,7 +207,7 @@ const etaPredictionWorker = new Worker(
         try {
             const { assignmentId, userId } = job.data;
 
-            console.log(`[eta-prediction] Predicting ETA for assignment ${assignmentId}`);
+            logger.info({ jobId: job.id, assignmentId }, '[eta-prediction] Predicting ETA for assignment');
 
             const agentRun = await prisma.agentRun.create({
                 data: {
@@ -254,7 +255,7 @@ const etaPredictionWorker = new Worker(
 
             return { ok: true, predictedArrival, etaMinutes };
         } catch (error) {
-            console.error("[eta-prediction] Error:", error);
+            logger.error({ jobId: job.id, error: error.message }, '[eta-prediction] Job processing error');
             throw error;
         }
     },
@@ -269,7 +270,7 @@ const analyticsWorker = new Worker(
         try {
             const { eventType, period = "daily", userId } = job.data;
 
-            console.log(`[analytics] Computing ${eventType} metrics for ${period}`);
+            logger.info({ jobId: job.id, eventType, period }, '[analytics] Computing metrics');
 
             const agentRun = await prisma.agentRun.create({
                 data: {
@@ -294,7 +295,7 @@ const analyticsWorker = new Worker(
 
             return { ok: true, metrics };
         } catch (error) {
-            console.error("[analytics] Error:", error);
+            logger.error({ jobId: job.id, error: error.message }, '[analytics] Job processing error');
             throw error;
         }
     },
@@ -325,19 +326,19 @@ async function computeAnalytics(eventType, period) {
 // ==================== EVENT LISTENERS ====================
 
 dispatchWorker.on("failed", (job, err) => {
-    console.error(`[dispatch] Job ${job.id} failed:`, err.message);
+    logger.error({ jobId: job.id, error: err.message }, '[dispatch] Job failed');
 });
 
 invoiceAuditWorker.on("failed", (job, err) => {
-    console.error(`[invoice-audit] Job ${job.id} failed:`, err.message);
+    logger.error({ jobId: job.id, error: err.message }, '[invoice-audit] Job failed');
 });
 
 etaPredictionWorker.on("failed", (job, err) => {
-    console.error(`[eta-prediction] Job ${job.id} failed:`, err.message);
+    logger.error({ jobId: job.id, error: err.message }, '[eta-prediction] Job failed');
 });
 
 analyticsWorker.on("failed", (job, err) => {
-    console.error(`[analytics] Job ${job.id} failed:`, err.message);
+    logger.error({ jobId: job.id, error: err.message }, '[analytics] Job failed');
 });
 
 // ==================== EXPORTS ====================

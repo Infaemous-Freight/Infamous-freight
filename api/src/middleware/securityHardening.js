@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
 const xss = require('xss');
 const sqlstring = require('sqlstring');
+const { logger } = require('./logger');
 
 /**
  * Advanced rate limiting by user tier, IP, and endpoint
@@ -48,12 +49,12 @@ const createAdvancedLimiter = (config) => {
     legacyHeaders: false,  // Disable X-RateLimit-* headers
     handler: (req, res) => {
       // Log rate limit violations
-      console.warn('⚠️ Rate limit exceeded', {
+      logger.warn({
         user: req.user?.sub || 'anonymous',
         ip: req.ip,
         path: req.path,
         tier: req.user?.tier || 'free',
-      });
+      }, 'Rate limit exceeded');
       
       res.status(429).json({
         error: 'Rate limit exceeded',
@@ -155,13 +156,13 @@ function validateSQLInput(req, res, next) {
     checkObject(req.params || {});
 
   if (suspicious) {
-    console.error('🚨 SQL injection attempt detected', {
+    logger.error({
       user: req.user?.sub || 'anonymous',
       ip: req.ip,
       path: req.path,
       body: req.body,
       query: req.query,
-    });
+    }, 'SQL injection attempt detected');
 
     return res.status(400).json({
       error: 'Invalid input detected',
@@ -239,11 +240,11 @@ function validateNoSQLInput(req, res, next) {
     checkObject(req.params || {});
 
   if (suspicious) {
-    console.error('🚨 NoSQL injection attempt detected', {
+    logger.error({
       user: req.user?.sub || 'anonymous',
       ip: req.ip,
       path: req.path,
-    });
+    }, 'NoSQL injection attempt detected');
 
     return res.status(400).json({
       error: 'Invalid input detected',
@@ -272,11 +273,11 @@ function validateCSRFToken(req, res, next) {
   const sessionToken = req.session?.csrfToken;
 
   if (!token || token !== sessionToken) {
-    console.error('🚨 CSRF validation failed', {
+    logger.error({
       user: req.user?.sub || 'anonymous',
       ip: req.ip,
       path: req.path,
-    });
+    }, 'CSRF validation failed');
 
     return res.status(403).json({
       error: 'CSRF validation failed',
@@ -297,12 +298,12 @@ class IPFilter {
 
   addToBlacklist(ip) {
     this.blacklist.add(ip);
-    console.log(`🚫 Added ${ip} to blacklist`);
+    logger.info({ ip }, 'Added to blacklist');
   }
 
   addToWhitelist(ip) {
     this.whitelist.add(ip);
-    console.log(`✅ Added ${ip} to whitelist`);
+    logger.info({ ip }, 'Added to whitelist');
   }
 
   middleware() {
@@ -318,7 +319,7 @@ class IPFilter {
 
       // Check blacklist
       if (this.blacklist.has(ip)) {
-        console.warn(`🚫 Blocked blacklisted IP: ${ip}`);
+        logger.warn({ ip }, 'Blocked blacklisted IP');
         return res.status(403).json({
           error: 'Access denied',
         });
@@ -365,10 +366,10 @@ function validateRequestSignature(req, res, next) {
     .digest('hex');
 
   if (signature !== expectedSignature) {
-    console.error('🚨 Invalid request signature', {
+    logger.error({
       ip: req.ip,
       path: req.path,
-    });
+    }, 'Invalid request signature');
 
     return res.status(401).json({
       error: 'Invalid signature',

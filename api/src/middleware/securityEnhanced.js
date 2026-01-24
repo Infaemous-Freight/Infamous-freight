@@ -5,6 +5,7 @@
  */
 
 const helmet = require('helmet');
+const { logger } = require('./logger');
 
 /**
  * Comprehensive security headers configuration
@@ -185,7 +186,7 @@ function auditLog(req, res, next) {
     res.json = function (data) {
         // Log sensitive operations
         if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
-            console.info('[AUDIT]', {
+            logger.info({
                 timestamp: new Date().toISOString(),
                 method: req.method,
                 path: req.path,
@@ -193,7 +194,7 @@ function auditLog(req, res, next) {
                 ip: req.ip,
                 statusCode: res.statusCode,
                 userAgent: req.get('user-agent'),
-            });
+            }, 'AUDIT');
         }
 
         return originalJson(data);

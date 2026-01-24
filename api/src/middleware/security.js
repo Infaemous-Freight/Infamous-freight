@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const { authenticateWithRotation } = require("./advancedSecurity");
 const { env } = require("../config/env");
 const rateLimitMetrics = require("../lib/rateLimitMetrics");
+const { logger } = require("./logger");
 
 // Rate limiters with enhanced configuration
 const createLimiter = (name, options) => {
@@ -187,7 +188,7 @@ function auditLog(req, res, next) {
   res.on("finish", () => {
     const duration = Date.now() - start;
     const maskedAuthorization = req.headers.authorization ? "***" : undefined;
-    console.info("request", {
+    logger.info({
       method: req.method,
       path: req.originalUrl || req.path,
       status: res.statusCode,
@@ -196,7 +197,7 @@ function auditLog(req, res, next) {
       ip: req.ip,
       correlationId: req.correlationId,
       auth: maskedAuthorization,
-    });
+    }, 'request');
 
     try {
       const { append } = require("../lib/auditChain");
