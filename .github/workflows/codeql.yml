@@ -121,7 +121,7 @@ jobs:
           pnpm outdated --depth=0 | tee outdated-output.txt || true
 
       - name: 📤 Upload audit results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: dependency-audit
@@ -157,7 +157,7 @@ jobs:
           output-file: sbom-cyclonedx.json
 
       - name: 📤 Upload SBOM
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: sbom
           path: sbom-cyclonedx.json
@@ -325,7 +325,7 @@ jobs:
           path: security-artifacts
 
       - name: 📤 Upload final artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: codeql-complete-report
