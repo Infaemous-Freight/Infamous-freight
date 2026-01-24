@@ -40,6 +40,10 @@ const addOnCatalog = {
   },
 };
 
+/**
+ * Return the application's base URL from environment configuration or a sensible default.
+ * @returns {string} The application base URL: `APP_URL` if set, otherwise `PUBLIC_APP_URL`, otherwise `http://localhost:3000`.
+ */
 function getAppUrl() {
   return (
     process.env.APP_URL ||
@@ -48,12 +52,22 @@ function getAppUrl() {
   );
 }
 
+/**
+ * Return the Stripe price ID from the environment for a given plan key.
+ * @param {string} plan - Plan key (e.g., "pro" or "business") as defined in planCatalog.
+ * @returns {string|null} The corresponding Stripe price ID from environment variables, or `null` if the plan is not found or the environment variable is not set.
+ */
 function resolvePlanPriceId(plan) {
   const entry = planCatalog.find((item) => item.key === plan);
   if (!entry) return null;
   return process.env[entry.env] || null;
 }
 
+/**
+ * Lookup the Stripe price ID environment variable for a given add-on key.
+ * @param {string} addOnKey - The add-on catalog key (e.g., "voice", "white_label", "analytics_export").
+ * @returns {string|null} The resolved Stripe price ID from environment, or `null` if the add-on is unknown or not configured.
+ */
 function resolveAddOnPriceId(addOnKey) {
   const entry = addOnCatalog[addOnKey];
   if (!entry) return null;

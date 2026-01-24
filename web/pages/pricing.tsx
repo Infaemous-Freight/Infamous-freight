@@ -20,6 +20,16 @@ type PricingProps = {
   initialConfigured: boolean;
 };
 
+/**
+ * Render the Pricing page allowing users to choose a plan, select seat count and add-ons, and initiate checkout.
+ *
+ * The component seeds client state from the provided initial props, refreshes plan/configuration state from the server,
+ * displays any load or checkout errors, and redirects the browser to the Stripe checkout URL when a plan is purchased.
+ *
+ * @param initialPlans - Initial list of available plans used to seed client state (typically from ISR props)
+ * @param initialConfigured - Initial flag indicating whether Stripe is configured (typically from ISR props)
+ * @returns The rendered Pricing page as a React element
+ */
 export default function Pricing({ initialPlans, initialConfigured }: PricingProps) {
   const router = useRouter();
   const locale = getLocaleFromRouter(router.locale);
