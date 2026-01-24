@@ -9,7 +9,7 @@ export async function computeOverageForTenant(
   periodStart: number,
   periodEnd: number,
 ): Promise<UsageTotals> {
-  throw new Error(
-    `unimplemented: computeOverageForTenant tenantId=${tenantId} periodStart=${periodStart} periodEnd=${periodEnd}`,
-  );
+  // NOTE: Implementation pending. Keep error message generic to avoid leaking internal identifiers.
+  throw new Error("unimplemented: computeOverageForTenant");
+}
 }
