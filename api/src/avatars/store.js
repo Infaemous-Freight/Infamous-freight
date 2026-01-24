@@ -7,6 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { logger } = require('../middleware/logger');
 
 /**
  * @typedef {Object} StoredAvatar
@@ -53,7 +54,7 @@ function read() {
     try {
         return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
     } catch (err) {
-        console.error('Failed to read avatar store:', err);
+        logger.error({ err }, 'Failed to read avatar store');
         return { avatars: [], selections: {} };
     }
 }
@@ -67,7 +68,7 @@ function write(store) {
     try {
         fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2));
     } catch (err) {
-        console.error('Failed to write avatar store:', err);
+        logger.error({ err }, 'Failed to write avatar store');
     }
 }
 

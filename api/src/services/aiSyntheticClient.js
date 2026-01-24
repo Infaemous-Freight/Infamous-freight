@@ -5,6 +5,7 @@
  */
 
 const Sentry = require("@sentry/node");
+const { logger } = require("../middleware/logger");
 
 class AISyntheticClient {
   constructor(provider = "synthetic") {
@@ -70,7 +71,7 @@ class AISyntheticClient {
         },
       };
     } catch (error) {
-      console.warn("OpenAI failed, falling back to synthetic:", error.message);
+      logger.warn({ error: error.message }, 'OpenAI failed, falling back to synthetic');
       return this.processSynthetic(command, userId);
     }
   }
@@ -105,10 +106,7 @@ class AISyntheticClient {
         },
       };
     } catch (error) {
-      console.warn(
-        "Anthropic failed, falling back to synthetic:",
-        error.message,
-      );
+      logger.warn({ error: error.message }, 'Anthropic failed, falling back to synthetic');
       return this.processSynthetic(command, userId);
     }
   }

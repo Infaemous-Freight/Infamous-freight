@@ -5,6 +5,7 @@
  */
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { logger } = require('../middleware/logger');
 
 /**
  * Payment Service Configuration
@@ -167,7 +168,7 @@ class PaymentService {
                 message: 'Instant payout initiated - funds arriving in 0-15 minutes',
             };
         } catch (error) {
-            console.error('Instant payout error:', error);
+            logger.error({ error, userId, amount }, 'Instant payout error');
             return {
                 success: false,
                 error: error.message,
@@ -235,7 +236,7 @@ class PaymentService {
                 message: 'Standard payout scheduled - arriving in 1-2 business days',
             };
         } catch (error) {
-            console.error('Standard payout error:', error);
+            logger.error({ error, userId, amount }, 'Standard payout error');
             return {
                 success: false,
                 error: error.message,
@@ -267,7 +268,7 @@ class PaymentService {
                 arrivalDate: payout.arrival_date,
             };
         } catch (error) {
-            console.error('Stripe payout error:', error);
+            logger.error({ error, destination, amount }, 'Stripe payout error');
             throw new Error(`Stripe payout failed: ${error.message}`);
         }
     }
@@ -297,7 +298,7 @@ class PaymentService {
                 arrivalDate: instant ? new Date().toISOString() : null,
             };
         } catch (error) {
-            console.error('PayPal payout error:', error);
+            logger.error({ error, email, amount }, 'PayPal payout error');
             throw new Error(`PayPal payout failed: ${error.message}`);
         }
     }
@@ -326,7 +327,7 @@ class PaymentService {
                 arrivalDate: mockTransferResult.estimatedArrival,
             };
         } catch (error) {
-            console.error('Bank transfer error:', error);
+            logger.error({ error, accountNumber, amount }, 'Bank transfer error');
             throw new Error(`Bank transfer failed: ${error.message}`);
         }
     }
@@ -356,7 +357,7 @@ class PaymentService {
                 arrivalDate: new Date().toISOString(),
             };
         } catch (error) {
-            console.error('Debit card payout error:', error);
+            logger.error({ error, cardToken, amount }, 'Debit card payout error');
             throw new Error(`Debit card payout failed: ${error.message}`);
         }
     }
@@ -453,7 +454,7 @@ class PaymentService {
                 message: 'Payout is being processed',
             };
         } catch (error) {
-            console.error('Status check error:', error);
+            logger.error({ error, payoutId }, 'Status check error');
             return {
                 success: false,
                 error: error.message,
@@ -495,7 +496,7 @@ class PaymentService {
 
             return payout;
         } catch (error) {
-            console.error('Bonus payout error:', error);
+            logger.error({ error, userId, bonusType }, 'Bonus payout error');
             return {
                 success: false,
                 error: error.message,

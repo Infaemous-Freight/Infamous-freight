@@ -3,6 +3,7 @@
 // Automatic alerts for anomalies and trends
 
 const { PrismaClient } = require('@prisma/client');
+const { logger } = require('../middleware/logger');
 const prisma = new PrismaClient();
 
 class RevenueMonitor {
@@ -15,7 +16,7 @@ class RevenueMonitor {
             dropPercent: options.dropPercent || 20,  // Alert on 20%+ drops
         };
 
-        this.alertChannel = options.alertChannel || console.log;
+        this.alertChannel = options.alertChannel || ((msg) => logger.info(msg));
     }
 
     /**
@@ -30,7 +31,7 @@ class RevenueMonitor {
             new Date(Date.now() - 7 * 86400000)
         );
 
-        console.log(`📊 Daily Revenue Check: $${today}`);
+        logger.info({ revenue: today }, 'Daily revenue check');
 
         // Alert if below minimum threshold
         if (today < this.thresholds.dailyMin) {
@@ -98,7 +99,7 @@ class RevenueMonitor {
         const growth = (thisWeek - lastWeek) / lastWeek;
         const fourWeekGrowth = fourWeeksAgo > 0 ? (thisWeek - fourWeeksAgo) / fourWeeksAgo : 0;
 
-        console.log(`📊 Weekly Revenue: $${thisWeek} (${(growth * 100).toFixed(1)}% growth)`);
+        logger.info({ thisWeek, lastWeek, growth }, 'Weekly revenue check');
 
         // Alert if below growth target
         if (growth < this.thresholds.weeklyGrowth) {
@@ -158,7 +159,7 @@ class RevenueMonitor {
             ? cancelledThisMonth / activeAtMonthStart
             : 0;
 
-        console.log(`📊 Churn Rate: ${(churnRate * 100).toFixed(2)}%`);
+        logger.info({ churnRate, churned, activeStart }, 'Churn rate check');
 
         // Alert if churn exceeds threshold
         if (churnRate > this.thresholds.churnMax) {
@@ -196,7 +197,7 @@ class RevenueMonitor {
             ? ((currentMRR - lastMonthMRR) / lastMonthMRR) * 100
             : 0;
 
-        console.log(`📊 MRR: $${currentMRR} (${mrrGrowth > 0 ? '+' : ''}${mrrGrowth.toFixed(1)}%)`);
+        logger.info({ currentMRR, lastMonthMRR, mrrGrowth }, 'MRR check');
 
         // Alert on MRR decline
         if (mrrGrowth < 0) {
@@ -269,7 +270,7 @@ class RevenueMonitor {
      * Comprehensive daily health check
      */
     async runDailyHealthCheck() {
-        console.log('\n🚀 Running Daily Revenue Health Check...\n');
+        logger.info('Running Daily Revenue Health Check');
 
         try {
             const [
@@ -302,10 +303,10 @@ class RevenueMonitor {
                 }),
             };
 
-            console.log('\n✅ Daily Health Check Complete\n');
+            logger.info('Daily Health Check Complete');
             return summary;
         } catch (error) {
-            console.error('❌ Error in daily health check:', error);
+            logger.error({ error }, 'Error in daily health check');
             throw error;
         }
     }
@@ -448,29 +449,29 @@ function scheduleRevenueMonitoring(options = {}) {
 
     // Daily health check at 9 AM
     cron.schedule('0 9 * * *', async () => {
-        console.log('⏰ Running scheduled daily health check...');
+        logger.info('Running scheduled daily health check');
         await monitor.runDailyHealthCheck();
     });
 
     // Weekly growth check on Mondays at 10 AM
     cron.schedule('0 10 * * 1', async () => {
-        console.log('⏰ Running weekly growth check...');
+        logger.info('Running weekly growth check');
         await monitor.checkWeeklyGrowth();
     });
 
     // Monthly churn check on 1st of month at 11 AM
     cron.schedule('0 11 1 * *', async () => {
-        console.log('⏰ Running monthly churn check...');
+        logger.info('Running monthly churn check');
         await monitor.checkChurnRate();
     });
 
     // Payment failure check every 4 hours
     cron.schedule('0 */4 * * *', async () => {
-        console.log('⏰ Checking payment failures...');
+        logger.info('Checking payment failures');
         await monitor.checkPaymentFailures();
     });
 
-    console.log('✅ Revenue monitoring scheduled');
+    logger.info('Revenue monitoring scheduled');
     return monitor;
 }
 

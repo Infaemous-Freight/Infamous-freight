@@ -12,6 +12,7 @@ const { stripeClient, isStripeConfigured } = require("../billing/stripe");
 const { env } = require("../config/env");
 const { authenticate, limiters } = require("../middleware/security");
 const persist = require("../billing/persist");
+const { logger } = require("../middleware/logger");
 
 const stripeRouter = express.Router();
 const stripeWebhookRouter = express.Router();
@@ -78,10 +79,10 @@ async function resolvePriceIdByLookupKey(stripe, lookupKey) {
     return prices.data?.[0]?.id || null;
   } catch (error) {
     // Avoid throwing raw Stripe errors from price lookup; log and return null instead.
-    console.error("Failed to resolve Stripe price ID by lookup key", {
+    logger.error({
       lookupKey,
-      error: error && error.message ? error.message : error,
-    });
+      error: error && error.message ? error.message : error
+    }, 'Failed to resolve Stripe price ID by lookup key');
     return null;
   }
 }
@@ -125,11 +126,11 @@ async function persistAiSubscriptionItemId({
       String(aiItem.id)
     );
   } catch (error) {
-    console.error("Failed to persist AI subscription item ID", {
+    logger.error({
       tenantId,
       subscriptionId,
       error: error && error.message ? error.message : error,
-    });
+    }, 'Failed to persist AI subscription item ID');
   }
 }
 

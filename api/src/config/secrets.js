@@ -5,6 +5,7 @@
  */
 
 const fs = require('fs');
+const { logger } = require('../middleware/logger');
 
 /**
  * Get secret from Docker secrets or environment variable
@@ -18,7 +19,7 @@ function getSecret(secretName, envVarName, defaultValue = null) {
         try {
             return fs.readFileSync(secretPath, 'utf8').trim();
         } catch (error) {
-            console.warn(`Failed to read secret file ${secretPath}:`, error.message);
+            logger.warn({ secretPath, error: error.message }, 'Failed to read secret file');
         }
     }
 
@@ -28,7 +29,7 @@ function getSecret(secretName, envVarName, defaultValue = null) {
         try {
             return fs.readFileSync(process.env[envFileVar], 'utf8').trim();
         } catch (error) {
-            console.warn(`Failed to read secret file from ${envFileVar}:`, error.message);
+            logger.warn({ envFileVar, error: error.message }, 'Failed to read secret file from env var');
         }
     }
 
@@ -100,7 +101,7 @@ function validateSecrets() {
         throw new Error(`Missing required secrets: ${missing.join(', ')}`);
     }
 
-    console.info('✓ All required secrets loaded');
+    logger.info('All required secrets loaded');
 }
 
 /**

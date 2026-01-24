@@ -8,6 +8,7 @@
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { PrismaClient } = require('@prisma/client');
+const { logger } = require('../middleware/logger');
 
 const prisma = new PrismaClient();
 
@@ -95,7 +96,7 @@ async function createPaymentIntent(userId, userEmail, amount, currency = 'usd', 
                 }),
                 type: 'ONE_TIME',
             },
-        }).catch((err) => console.error('Failed to log payment:', err));
+        }).catch((err) => logger.error({ err }, 'Failed to log payment'));
 
         return {
             success: true,
@@ -104,7 +105,7 @@ async function createPaymentIntent(userId, userEmail, amount, currency = 'usd', 
             revenue: calculateMerchantRevenue(amount),
         };
     } catch (error) {
-        console.error('Failed to create payment intent:', error);
+        logger.error({ error }, 'Failed to create payment intent');
         throw error;
     }
 }
@@ -138,7 +139,7 @@ async function createSubscription(userId, userEmail, priceId, metadata = {}) {
                 where: { userId },
                 create: { userId, stripeCustomerId: customer.id },
                 update: { stripeCustomerId: customer.id },
-            }).catch((err) => console.error('Failed to save customer:', err));
+            }).catch((err) => logger.error({ err }, 'Failed to save customer'));
         }
 
         // Create subscription - 100% to merchant
@@ -167,7 +168,7 @@ async function createSubscription(userId, userEmail, priceId, metadata = {}) {
                 currentPeriodStart: new Date(subscription.current_period_start * 1000),
                 currentPeriodEnd: new Date(subscription.current_period_end * 1000),
             },
-        }).catch((err) => console.error('Failed to log subscription:', err));
+        }).catch((err) => logger.error({ err }, 'Failed to log subscription'));
 
         return {
             success: true,
@@ -176,7 +177,7 @@ async function createSubscription(userId, userEmail, priceId, metadata = {}) {
             nextBillingDate: new Date(subscription.current_period_end * 1000).toISOString(),
         };
     } catch (error) {
-        console.error('Failed to create subscription:', error);
+        logger.error({ error }, 'Failed to create subscription');
         throw error;
     }
 }
@@ -216,7 +217,7 @@ async function cancelSubscription(userId, subscriptionId) {
             subscriptionId,
         };
     } catch (error) {
-        console.error('Failed to cancel subscription:', error);
+        logger.error({ error }, 'Failed to cancel subscription');
         throw error;
     }
 }
@@ -264,7 +265,7 @@ async function getRevenueStats(periodDays = 30) {
             note: '100% of revenue goes to merchant account',
         };
     } catch (error) {
-        console.error('Failed to get revenue stats:', error);
+        logger.error({ error }, 'Failed to get revenue stats');
         throw error;
     }
 }
@@ -300,7 +301,7 @@ async function handlePaymentSucceeded(paymentIntent) {
         }).catch(() => { });
         return { handled: true };
     } catch (error) {
-        console.error('Failed to handle payment succeeded:', error);
+        logger.error({ error }, 'Failed to handle payment succeeded');
         return { handled: false };
     }
 }
@@ -316,7 +317,7 @@ async function handlePaymentFailed(paymentIntent) {
         }).catch(() => { });
         return { handled: true };
     } catch (error) {
-        console.error('Failed to handle payment failed:', error);
+        logger.error({ error }, 'Failed to handle payment failed');
         return { handled: false };
     }
 }
@@ -326,10 +327,10 @@ async function handlePaymentFailed(paymentIntent) {
  */
 async function handleRefund(charge) {
     try {
-        console.log(`Refund processed: ${charge.id}, Amount: ${charge.refunded}`);
+        logger.info({ chargeId: charge.id, refunded: charge.refunded }, 'Refund processed');
         return { handled: true };
     } catch (error) {
-        console.error('Failed to handle refund:', error);
+        logger.error({ error }, 'Failed to handle refund');
         return { handled: false };
     }
 }
@@ -349,7 +350,7 @@ async function handleSubscriptionUpdated(subscription) {
         }).catch(() => { });
         return { handled: true };
     } catch (error) {
-        console.error('Failed to handle subscription updated:', error);
+        logger.error({ error }, 'Failed to handle subscription updated');
         return { handled: false };
     }
 }
@@ -365,7 +366,7 @@ async function handleSubscriptionDeleted(subscription) {
         }).catch(() => { });
         return { handled: true };
     } catch (error) {
-        console.error('Failed to handle subscription deleted:', error);
+        logger.error({ error }, 'Failed to handle subscription deleted');
         return { handled: false };
     }
 }

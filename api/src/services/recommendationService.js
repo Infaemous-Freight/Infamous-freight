@@ -4,6 +4,8 @@
  * Module: AI Recommendation Service - Advanced Engine
  */
 
+const { logger } = require('../middleware/logger');
+
 /**
  * AI-Powered Recommendation Service
  * Intelligent suggestions for services, routes, drivers, vehicles, and pricing
@@ -1067,7 +1069,7 @@ class RecommendationService {
                 },
             });
         } catch (error) {
-            console.error("Failed to log recommendation:", error);
+            logger.error({ error }, 'Failed to log recommendation');
         }
     }
 }

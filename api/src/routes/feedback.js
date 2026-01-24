@@ -8,6 +8,7 @@ const router = express.Router();
 const { authenticate } = require('../middleware/security');
 const { validateString, handleValidationErrors } = require('../middleware/validation');
 const { body } = require('express-validator');
+const { logger } = require('../middleware/logger');
 
 // Feedback categories
 const FEEDBACK_CATEGORIES = {
@@ -329,11 +330,13 @@ router.post('/track1-validation', authenticate, async (req, res, next) => {
 // Helper functions
 
 async function sendCriticalFeedbackAlert(feedback) {
-    console.log('🚨 CRITICAL FEEDBACK RECEIVED:');
-    console.log(`   Category: ${feedback.category}`);
-    console.log(`   Title: ${feedback.title}`);
-    console.log(`   Rating: ${feedback.rating}/5`);
-    console.log(`   User: ${feedback.user_email}`);
+    logger.warn({
+        category: feedback.category,
+        title: feedback.title,
+        rating: feedback.rating,
+        user: feedback.user_email
+    }, 'Critical feedback received');
+    
     // Alert team for urgent negative feedback
     if (process.env.SLACK_ALERTS_WEBHOOK) {
         try {
@@ -351,7 +354,7 @@ async function sendCriticalFeedbackAlert(feedback) {
                 })
             });
         } catch (err) {
-            console.warn('Alert notification failed:', err.message);
+            logger.warn({ err: err.message }, 'Alert notification failed');
         }
     }
     // TODO: Add email alerting when SMTP is configured

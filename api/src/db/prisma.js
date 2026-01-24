@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const { env } = require("../config/env");
 const { recordQuery, DEFAULT_THRESHOLD } = require("../lib/queryMetrics");
 const { attachSlowQueryLogger } = require("../lib/slowQueryLogger");
+const { logger } = require("../middleware/logger");
 
 let prisma = null;
 
@@ -24,7 +25,12 @@ function getPrisma() {
         const duration = Date.now() - start;
 
         if (duration >= DEFAULT_THRESHOLD) {
-          console.warn(`Slow query detected: ${params.model}.${params.action} took ${duration}ms`);
+          logger.warn({
+            model: params.model,
+            action: params.action,
+            duration_ms: duration,
+            threshold: DEFAULT_THRESHOLD
+          }, 'Slow query detected');
         }
 
         recordQuery({

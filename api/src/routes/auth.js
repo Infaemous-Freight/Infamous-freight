@@ -9,6 +9,7 @@ const { validateEmail, validateString, handleValidationErrors } = require('../mi
 const { hashPassword, decrypt } = require('../services/encryption');
 const { sendEmail } = require('../services/email');
 const { prisma } = require('../db/prisma');
+const { logger } = require('../middleware/logger');
 
 const router = express.Router();
 
@@ -203,10 +204,7 @@ router.post(
       const currentPasswordHash = hashPassword(currentPassword);
       if (user.password !== currentPasswordHash) {
         // Log failed attempt
-        console.warn('Failed password change attempt', {
-          userId,
-          ip: req.ip,
-        });
+        logger.warn({ userId, ip: req.ip }, 'Failed password change attempt');
 
         return res.status(401).json({
           error: 'Current password is incorrect',

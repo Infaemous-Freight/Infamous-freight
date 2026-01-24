@@ -5,6 +5,7 @@
 
 const WebSocket = require("ws");
 const { verifyToken } = require("../middleware/security");
+const { logger } = require("../middleware/logger");
 
 class WebSocketService {
   constructor() {
@@ -16,7 +17,7 @@ class WebSocketService {
     const wss = new WebSocket.Server({ server });
 
     wss.on("connection", (ws, req) => {
-      console.log("New WebSocket connection");
+      logger.info('New WebSocket connection');
 
       // Verify JWT from query string or first message
       ws.on("message", async (message) => {
@@ -34,12 +35,12 @@ class WebSocketService {
             }
           }
         } catch (error) {
-          console.error("WebSocket message error:", error);
+          logger.error({ error }, 'WebSocket message error');
         }
       });
     });
 
-    console.log(`WebSocket server running on port ${port || 8080}`);
+    logger.info({ port: port || 8080 }, 'WebSocket server running');
   }
 
   broadcastShipmentUpdate(shipmentId, update) {

@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticate, requireScope } = require('../middleware/security');
 const { prisma } = require('../config/database');
+const { logger } = require('../middleware/logger');
 
 // Sign-off types
 const SIGNOFF_TYPES = {
@@ -405,12 +406,14 @@ async function sendSignOffNotifications(signoff) {
             notifications.push({ channel: 'slack', status: 'pending' });
         }
         // TODO: Send actual notifications once integration credentials are configured
-        console.log('Signoff created - notifications queued:', notifications);
+        logger.info({ notifications }, 'Signoff created - notifications queued');
     } catch (notifyErr) {
-        console.warn('Notification failed (non-blocking):', notifyErr.message);
+        logger.warn({ err: notifyErr.message }, 'Notification failed (non-blocking)');
     }
-    console.log(`📧 Sending sign-off notifications for: ${signoff.title}`);
-    console.log(`   Required stakeholders: ${signoff.required_stakeholders.join(', ')}`);
+    logger.info({
+        title: signoff.title,
+        stakeholders: signoff.required_stakeholders
+    }, 'Sending sign-off notifications');
 
     // In production, this would send emails/Slack messages to each stakeholder
 }
@@ -422,31 +425,31 @@ async function verifyStakeholderAuthority(user, role) {
     const isAuthorized = authorizedRoles.includes(userRole);
     // TODO: Enhance with database-backed role permissions when user management is expanded
     if (!isAuthorized) {
-        console.warn(`User ${req.user?.sub} attempted signoff without authorization`);
+        logger.warn({ userId: req.user?.sub }, 'User attempted signoff without authorization');
     }
     // For now, accept if user has 'signoff:sign' scope
     return user.scopes?.includes('signoff:sign');
 }
 
 async function handleSignOffCompletion(signoff) {
-    console.log(`✅ Sign-off completed: ${signoff.title}`);
+    logger.info({ title: signoff.title }, 'Sign-off completed');
 
     // Trigger automated actions based on sign-off type
     switch (signoff.type) {
         case SIGNOFF_TYPES.DEPLOYMENT:
             // Trigger production deployment
-            console.log('🚀 Triggering production deployment...');
+            logger.info('Triggering production deployment');
             break;
         case SIGNOFF_TYPES.FEATURE_RELEASE:
             // Enable feature flag
-            console.log('🚩 Enabling feature flag...');
+            logger.info('Enabling feature flag');
             break;
         case SIGNOFF_TYPES.TRACK_COMPLETION:
             // Update project status
-            console.log('📊 Updating track completion status...');
+            logger.info('Updating track completion status');
             break;
         default:
-            console.log('No automated action for this sign-off type');
+            logger.info('No automated action for this sign-off type');
     }
 
     // Send completion notifications
@@ -454,13 +457,12 @@ async function handleSignOffCompletion(signoff) {
 }
 
 async function sendRejectionNotifications(signoff, role, reason) {
-    console.log(`❌ Sign-off rejected by ${role}`);
-    console.log(`   Reason: ${reason}`);
+    logger.warn({ role, reason }, 'Sign-off rejected');
     // TODO: Send notifications to requester and stakeholders
 }
 
 async function sendCompletionNotifications(signoff) {
-    console.log(`✅ Sending completion notifications for: ${signoff.title}`);
+    logger.info({ title: signoff.title }, 'Sending completion notifications');
     // TODO: Send success notifications
 }
 

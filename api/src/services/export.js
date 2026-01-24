@@ -5,6 +5,7 @@
 
 const PDFDocument = require("pdfkit");
 const { parse } = require("json2csv");
+const { logger } = require("../middleware/logger");
 
 class ExportService {
   /**
@@ -15,7 +16,7 @@ class ExportService {
       const csv = parse(data, { fields });
       return csv;
     } catch (error) {
-      console.error("CSV export error:", error);
+      logger.error({ error }, 'CSV export error');
       throw error;
     }
   }

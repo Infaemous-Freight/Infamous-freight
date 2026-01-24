@@ -4,6 +4,7 @@
 
 const { PrismaClient } = require('@prisma/client');
 const { sendEmail } = require('./emailService');
+const { logger } = require('../middleware/logger');
 
 const prisma = new PrismaClient();
 
@@ -24,7 +25,7 @@ class CustomerSuccessAutomation {
    * Run daily customer health monitoring
    */
   async monitorCustomerHealth() {
-    console.log('🏥 Running customer health check...');
+    logger.info('Running customer health check');
     
     try {
       const customers = await prisma.customer.findMany({
@@ -53,9 +54,9 @@ class CustomerSuccessAutomation {
         }
       }
       
-      console.log(`✅ Analyzed ${customers.length} customers`);
+      logger.info({ count: customers.length }, 'Customer analysis complete');
     } catch (error) {
-      console.error('❌ Error monitoring customer health:', error);
+      logger.error({ error }, 'Error monitoring customer health');
       throw error;
     }
   }
@@ -207,7 +208,7 @@ class CustomerSuccessAutomation {
    * Handle unhealthy customer (low health score)
    */
   async handleUnhealthyCustomer(customer, healthScore) {
-    console.log(`⚠️ Unhealthy customer: ${customer.email} (score: ${healthScore})`);
+    logger.warn({ email: customer.email, healthScore }, 'Unhealthy customer detected');
     
     // Check last engagement attempt
     const lastContact = await this.getLastEngagementContact(customer.id);
@@ -236,7 +237,7 @@ class CustomerSuccessAutomation {
    * Handle customer with cancellation intent
    */
   async handleCancellationIntent(customer) {
-    console.log(`🚨 Cancellation intent: ${customer.email}`);
+    logger.warn({ email: customer.email }, 'Cancellation intent detected');
     
     // Check if we've already offered retention
     const existingOffer = await prisma.retentionOffer.findFirst({
@@ -339,7 +340,7 @@ class CustomerSuccessAutomation {
       body: template.body,
     });
 
-    console.log(`📧 Sent day ${day} onboarding email to ${customer.email}`);
+    logger.info({ email: customer.email, day }, 'Sent onboarding email');
   }
 
   /**
@@ -363,7 +364,7 @@ class CustomerSuccessAutomation {
       `,
     });
 
-    console.log(`📧 Sent re-engagement email to ${customer.email}`);
+    logger.info({ email: customer.email }, 'Sent re-engagement email');
   }
 
   /**
@@ -397,7 +398,7 @@ class CustomerSuccessAutomation {
       `,
     });
 
-    console.log(`📧 Sent retention offer to ${customer.email}`);
+    logger.info({ email: customer.email, offer }, 'Sent retention offer');
   }
 
   /**
@@ -423,7 +424,7 @@ class CustomerSuccessAutomation {
       `,
     });
 
-    console.log(`📧 Sent payment retry email to ${customer.email}`);
+    logger.info({ email: customer.email }, 'Sent payment retry email');
   }
 
   /**
@@ -455,7 +456,7 @@ class CustomerSuccessAutomation {
     setTimeout(() => this.sendOnboardingEmail(customer, 3), 3 * 24 * 60 * 60 * 1000);
     setTimeout(() => this.sendOnboardingEmail(customer, 7), 7 * 24 * 60 * 60 * 1000);
     
-    console.log(`✅ Scheduled onboarding for ${customer.email}`);
+    logger.info({ email: customer.email }, 'Scheduled onboarding');
   }
 }
 
@@ -468,11 +469,11 @@ function scheduleCustomerSuccess(config = {}) {
 
   // Daily health check at 10 AM
   cron.schedule('0 10 * * *', async () => {
-    console.log('⏰ Running scheduled customer health check...');
+    logger.info('Running scheduled customer health check');
     await automation.monitorCustomerHealth();
   });
 
-  console.log('✅ Customer success automation scheduled');
+  logger.info('Customer success automation scheduled');
   return automation;
 }
 

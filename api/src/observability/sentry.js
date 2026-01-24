@@ -6,6 +6,7 @@
 
 const Sentry = require("@sentry/node");
 const { nodeProfilingIntegration } = require("@sentry/profiling-node");
+const { logger } = require("../middleware/logger");
 
 /**
  * Initialize Sentry for error tracking and performance monitoring
@@ -16,7 +17,7 @@ function initSentry(serviceName) {
 
     // Skip initialization if DSN not configured (development mode)
     if (!dsn) {
-        console.log("Sentry DSN not configured, skipping Sentry initialization");
+        logger.info('Sentry DSN not configured, skipping Sentry initialization');
         return;
     }
 
@@ -49,7 +50,7 @@ function initSentry(serviceName) {
     // Set service tag for filtering in Sentry dashboard
     Sentry.setTag("service", serviceName);
 
-    console.log(`[Sentry] Initialized for service: ${serviceName}`);
+    logger.info({ service: serviceName }, 'Sentry initialized');
 }
 
 /**

@@ -4,6 +4,7 @@ const { processDispatch } = require("./processors/dispatch");
 const { processExpireOffers, processExpireHolds } = require("./processors/expiry");
 const { processEta } = require("./processors/eta");
 const { ensureExpirySweepers } = require("../queue/schedule");
+const { logger } = require("../middleware/logger");
 
 function envNum(name, def) {
     const n = Number(process.env[name]);
@@ -51,7 +52,7 @@ async function startWorkers() {
 
 if (require.main === module) {
     startWorkers().catch((e) => {
-        console.error("Worker startup failed", e);
+        logger.error({ error: e }, 'Worker startup failed');
         process.exit(1);
     });
 }

@@ -6,6 +6,7 @@
 
 const redis = require('redis');
 const { env } = require('../config/env');
+const { logger } = require('../middleware/logger');
 
 // Create Redis client
 const redisClient = redis.createClient({
@@ -27,11 +28,11 @@ const redisClient = redis.createClient({
 });
 
 redisClient.on('error', (err) => {
-    console.error('Redis connection error:', err);
+    logger.error({ err }, 'Redis connection error');
 });
 
 redisClient.on('connect', () => {
-    console.info('Redis connected');
+    logger.info('Redis connected');
 });
 
 // Webhook deduplication
@@ -50,7 +51,7 @@ class WebhookDeduplicator {
             }
             return !!exists;
         } catch (err) {
-            console.error('Webhook dedup check failed:', err);
+            logger.error({ err, eventId }, 'Webhook dedup check failed');
             // On error, assume not duplicate to avoid blocking
             return false;
         }
@@ -61,7 +62,7 @@ class WebhookDeduplicator {
             const key = `webhook:${eventId}`;
             await this.client.setex(key, this.ttl, '1');
         } catch (err) {
-            console.error('Failed to mark webhook as processed:', err);
+            logger.error({ err, eventId }, 'Failed to mark webhook as processed');
         }
     }
 
@@ -84,7 +85,7 @@ class CacheManager {
             const cached = await this.client.get(key);
             return cached ? JSON.parse(cached) : null;
         } catch (err) {
-            console.warn('Cache get failed:', err);
+            logger.warn({ err, lat, lng, maxMiles }, 'Cache get failed');
             return null;
         }
     }
@@ -94,7 +95,7 @@ class CacheManager {
             const key = `jobs:location:${lat}:${lng}:${maxMiles}`;
             await this.client.setex(key, 300, JSON.stringify(jobs)); // 5 minutes
         } catch (err) {
-            console.warn('Cache set failed:', err);
+            logger.warn({ err }, 'Cache set failed');
         }
     }
 
@@ -105,7 +106,7 @@ class CacheManager {
             const cached = await this.client.get(key);
             return cached ? JSON.parse(cached) : null;
         } catch (err) {
-            console.warn('Cache get failed:', err);
+            logger.warn({ err, driverId }, 'Cache get failed');
             return null;
         }
     }
@@ -115,7 +116,7 @@ class CacheManager {
             const key = `driver:${driverId}:status`;
             await this.client.setex(key, 30, JSON.stringify(status)); // 30 seconds
         } catch (err) {
-            console.warn('Cache set failed:', err);
+            logger.warn({ err, driverId }, 'Cache set failed');
         }
     }
 
@@ -126,7 +127,7 @@ class CacheManager {
             const cached = await this.client.get(key);
             return cached ? JSON.parse(cached) : null;
         } catch (err) {
-            console.warn('Cache get failed:', err);
+            logger.warn({ err }, 'Cache get failed for pricing rules');
             return null;
         }
     }
@@ -136,7 +137,7 @@ class CacheManager {
             const key = 'pricing:rules';
             await this.client.setex(key, 3600, JSON.stringify(rules)); // 1 hour
         } catch (err) {
-            console.warn('Cache set failed:', err);
+            logger.warn({ err }, 'Cache set failed');
         }
     }
 
@@ -147,7 +148,7 @@ class CacheManager {
             const cached = await this.client.get(key);
             return cached ? JSON.parse(cached) : null;
         } catch (err) {
-            console.warn('Cache get failed:', err);
+            logger.warn({ err }, 'Cache get failed for user subscription');
             return null;
         }
     }
@@ -157,7 +158,7 @@ class CacheManager {
             const key = `user:${userId}:subscription`;
             await this.client.setex(key, 600, JSON.stringify(subscription)); // 10 minutes
         } catch (err) {
-            console.warn('Cache set failed:', err);
+            logger.warn({ err, userId }, 'Cache set failed');
         }
     }
 
@@ -166,7 +167,7 @@ class CacheManager {
         try {
             await this.client.del(key);
         } catch (err) {
-            console.warn('Cache invalidation failed:', err);
+            logger.warn({ err, key }, 'Cache invalidation failed');
         }
     }
 
@@ -189,7 +190,7 @@ class CacheManager {
                 });
             }
         } catch (err) {
-            console.warn('Pattern invalidation failed:', err);
+            logger.warn({ err, pattern }, 'Pattern invalidation failed');
         }
     }
 
@@ -198,7 +199,7 @@ class CacheManager {
         try {
             await this.client.flushdb();
         } catch (err) {
-            console.error('Failed to flush cache:', err);
+            logger.error({ err }, 'Failed to flush cache');
         }
     }
 }
@@ -215,7 +216,7 @@ class SessionManager {
             const key = `token:blacklist:${token}`;
             await this.client.setex(key, expiresIn, '1');
         } catch (err) {
-            console.warn('Token blacklist failed:', err);
+            logger.warn({ err }, 'Token blacklist failed');
         }
     }
 
@@ -226,7 +227,7 @@ class SessionManager {
             const exists = await this.client.exists(key);
             return !!exists;
         } catch (err) {
-            console.warn('Token blacklist check failed:', err);
+            logger.warn({ err }, 'Token blacklist check failed');
             return false;
         }
     }
@@ -240,7 +241,7 @@ const sessionManager = new SessionManager(redisClient);
 // Graceful shutdown
 process.on('SIGTERM', () => {
     redisClient.quit(() => {
-        console.info('Redis connection closed');
+        logger.info('Redis connection closed');
     });
 });
 

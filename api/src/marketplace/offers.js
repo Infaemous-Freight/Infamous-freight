@@ -9,6 +9,7 @@
 const { PrismaClient } = require("@prisma/client");
 const { milesBetween } = require("../lib/geo");
 const { etaToPickupSeconds } = require("../mapbox/eta");
+const { logger } = require("../middleware/logger");
 let redis;
 try {
     // Optional Redis cache for ETA results (Phase 15)
@@ -127,7 +128,7 @@ async function getEligibleDriversForJob(params) {
             return { job, eligible };
         } catch (err) {
             // Fallback to distance ranking if Mapbox fails
-            console.error("Mapbox ETA lookup failed, falling back to distance ranking:", err.message);
+            logger.error({ err: err.message, jobId }, 'Mapbox ETA lookup failed, falling back to distance ranking');
             const eligible = preFiltered
                 .slice(0, limit)
                 .map((x, idx) => ({ ...x, rank: idx + 1 }));

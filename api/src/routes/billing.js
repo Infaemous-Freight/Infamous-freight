@@ -9,6 +9,7 @@ const { limiters, authenticate, requireOrganization, requireScope, auditLog } = 
 const { validateString, validateEmail, handleValidationErrors } = require('../middleware/validation');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { PrismaClient } = require('@prisma/client');
+const { logger } = require('../middleware/logger');
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -331,7 +332,7 @@ router.post(
                 case 'charge.refunded':
                     const refundedCharge = event.data.object;
                     // Log refund - flows back to customer, revenue to you remains
-                    console.log(`Refund processed: ${refundedCharge.id}, Amount: ${refundedCharge.refunded}`);
+                    logger.info({ chargeId: refundedCharge.id, refunded: refundedCharge.refunded }, 'Refund processed');
                     break;
 
                 default:

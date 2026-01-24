@@ -4,6 +4,7 @@
  */
 
 const crypto = require('crypto');
+const { logger } = require('../middleware/logger');
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
 const ALGORITHM = 'aes-256-gcm';
@@ -45,7 +46,7 @@ function decrypt(encryptedText) {
 
     return decrypted;
   } catch (err) {
-    console.error('Decryption error:', err);
+    logger.error({ err }, 'Decryption error');
     return null;
   }
 }

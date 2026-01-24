@@ -4,6 +4,7 @@
 
 const Sentry = require('@sentry/node');
 const { ProfilingIntegration } = require('@sentry/profiling-node');
+const { logger } = require('./logger');
 
 /**
  * Initialize Sentry with comprehensive monitoring
@@ -65,7 +66,7 @@ function initializeSentry(app) {
     ],
   });
   
-  console.log('✅ Sentry initialized for error tracking');
+  logger.info('Sentry initialized for error tracking');
 }
 
 /**
@@ -103,10 +104,7 @@ function trackPaymentError(error, context = {}) {
     Sentry.captureException(error);
   });
   
-  console.error('💳 Payment error tracked:', {
-    error: error.message,
-    context,
-  });
+  logger.error({ error: error.message, context }, 'Payment error tracked');
 }
 
 /**

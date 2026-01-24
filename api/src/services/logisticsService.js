@@ -4,6 +4,8 @@
  * Module: Logistics Service
  */
 
+const { logger } = require('../middleware/logger');
+
 /**
  * Logistics Management Service
  * Comprehensive logistics operations including shipment tracking, warehouse management,
@@ -1163,12 +1165,12 @@ class LogisticsService {
 
     async sendShipmentNotification(shipment, status) {
         // Implement notification logic (email, SMS, push)
-        console.log(`Notification: Shipment ${shipment.trackingNumber} is now ${status}`);
+        logger.info({ trackingNumber: shipment.trackingNumber, status }, 'Shipment notification');
     }
 
     async updateWarehouseOnDelivery(shipment) {
         // Update warehouse inventory if applicable
-        console.log(`Updating warehouse for delivered shipment ${shipment.id}`);
+        logger.info({ shipmentId: shipment.id }, 'Updating warehouse for delivered shipment');
     }
 
     calculateWarehouseCapacity(warehouse) {

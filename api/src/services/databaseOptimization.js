@@ -9,6 +9,8 @@
  * - Target: Handle 100K concurrent users, 1M+ shipments
  */
 
+const { logger } = require('../middleware/logger');
+
 // ============================================
 // PERFORMANCE TARGETS
 // ============================================
@@ -205,7 +207,7 @@ const prismaWithLogging = new prisma.$extends({
             const duration = Date.now() - start;
 
             if (duration > 100) {
-                console.warn(`Slow query (${duration}ms): ${model}.${operation}`);
+                logger.warn({ duration_ms: duration, model, operation }, 'Slow query detected');
             }
 
             return result;
