@@ -144,7 +144,7 @@ router.post(
   authenticate,
   requireScope('copilot:write'),
   auditLog,
-  validateString('driverId', { minLength: 1 }),
+  validateString('driverId'),
   handleValidationErrors,
   async (req, res, next) => {
     try {
