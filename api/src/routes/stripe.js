@@ -4,9 +4,12 @@
  * Module: Stripe Checkout + Billing Portal + Webhooks
  */
 
+const crypto = require("crypto");
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const { z } = require("zod");
 const { stripeClient, isStripeConfigured } = require("../billing/stripe");
+const { env } = require("../config/env");
 const { authenticate, limiters } = require("../middleware/security");
 const persist = require("../billing/persist");
 
@@ -54,10 +57,64 @@ function resolvePlanPriceId(plan) {
   return process.env[entry.env] || null;
 }
 
+/**
+ * Resolve the Stripe price ID environment variable for a given add-on key.
+ * @param {string} addOnKey - Add-on key such as "voice", "white_label", or "analytics_export".
+ * @returns {string|null} The Stripe price ID from environment for the add-on, or `null` if the add-on or its price ID is not configured.
+ */
 function resolveAddOnPriceId(addOnKey) {
   const entry = addOnCatalog[addOnKey];
   if (!entry) return null;
   return process.env[entry.env] || null;
+}
+
+/**
+ * Verify that a provided usage key matches a stored usage key using a timing-safe comparison.
+ * @param {string|Buffer|number} usageKey - The expected/stored usage key.
+ * @param {string|Buffer|number} providedKey - The usage key supplied by the caller to validate.
+ * @returns {boolean} `true` if both keys are present, have the same length, and match in a timing-safe manner; `false` otherwise.
+ */
+function hasValidUsageKey(usageKey, providedKey) {
+  if (!usageKey || !providedKey) return false;
+  const usageBuffer = Buffer.from(String(usageKey));
+  const providedBuffer = Buffer.from(String(providedKey));
+  if (usageBuffer.length !== providedBuffer.length) return false;
+  return crypto.timingSafeEqual(usageBuffer, providedBuffer);
+}
+
+/**
+ * Establishes an authenticated user on the request when possible.
+ *
+ * Checks for an existing authenticated user, a Bearer token validated against the configured JWT secret, or an x-user-id header fallback; when authentication succeeds, attaches a `user` object with a `sub` property to `req`.
+ * @param {import('express').Request} req - Express request object to inspect and mutate.
+ * @returns {boolean} `true` if authentication was established and `req.user` was set or already present, `false` otherwise.
+ */
+function ensureAuthenticated(req) {
+  if (req.user?.sub) {
+    return true;
+  }
+
+  const header = req.headers.authorization || req.headers.Authorization;
+  if ((!header || !header.startsWith("Bearer ")) && req.headers["x-user-id"]) {
+    req.user = { sub: String(req.headers["x-user-id"]) };
+    return true;
+  }
+
+  if (header && header.startsWith("Bearer ")) {
+    const token = header.replace("Bearer ", "");
+    const secret = process.env.JWT_SECRET || env?.jwtSecret;
+    if (!secret) {
+      return false;
+    }
+    try {
+      req.user = jwt.verify(token, secret);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  return false;
 }
 
 // --------------------------------------------
@@ -214,11 +271,11 @@ stripeRouter.post(
 stripeRouter.post("/report-usage", limiters.billing, async (req, res) => {
   try {
     const usageKey = process.env.STRIPE_USAGE_REPORT_KEY;
-    if (usageKey) {
-      const providedKey = req.headers["x-usage-report-key"];
-      if (providedKey !== usageKey) {
-        return res.status(403).json({ ok: false, error: "Forbidden" });
-      }
+    const providedKey = req.headers["x-usage-report-key"];
+    const hasUsageKey = hasValidUsageKey(usageKey, providedKey);
+    const isAuthenticated = hasUsageKey || ensureAuthenticated(req);
+    if (!hasUsageKey && !isAuthenticated) {
+      return res.status(403).json({ ok: false, error: "Forbidden" });
     }
 
     const Schema = z.object({
