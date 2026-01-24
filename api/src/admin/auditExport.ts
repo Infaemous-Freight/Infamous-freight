@@ -170,7 +170,15 @@ export async function streamOrgAudit(
     (async function* generator() {
       let isFirstLog = true;
       if (format === "json") {
-        yield `{"export":{"organizationId":"${organizationId}","exportedAt":"${new Date().toISOString()}","period":{"from":"${from.toISOString()}","to":"${to.toISOString()}"}},"logs":[`;
+        const exportMetadata = {
+          organizationId,
+          exportedAt: new Date().toISOString(),
+          period: {
+            from: from.toISOString(),
+            to: to.toISOString(),
+          },
+        };
+        yield `{"export":${JSON.stringify(exportMetadata)},"logs":[`;
       }
 
       // Stream in batches
