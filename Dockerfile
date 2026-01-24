@@ -6,7 +6,7 @@ LABEL description="Infamous Freight Enterprises - Full-stack application"
 WORKDIR /app
 
 # Enable pnpm via Corepack
-RUN corepack enable
+RUN npm install -g --force corepack && corepack enable
 
 # Copy workspace and package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -19,7 +19,7 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install
 
 FROM node:25-alpine AS build
 WORKDIR /app
-RUN corepack enable
+RUN npm install -g --force corepack && corepack enable
 
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
@@ -34,7 +34,7 @@ FROM node:25-alpine AS run
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
-RUN corepack enable
+RUN npm install -g --force corepack && corepack enable
 
 # Copy only runtime essentials instead of the entire /app directory
 # Root workspace metadata for pnpm

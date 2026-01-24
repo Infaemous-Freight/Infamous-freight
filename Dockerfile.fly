@@ -13,6 +13,9 @@ RUN apk update && \
         ca-certificates && \
     rm -rf /var/cache/apk/*
 
+# Install and enable corepack
+RUN npm install -g --force corepack
+
 # Enable pnpm with specific version
 RUN corepack enable && corepack prepare pnpm@8.15.9 --activate
 ENV PNPM_HOME=/usr/local/bin
@@ -76,8 +79,8 @@ RUN apk update && \
         tini && \
     rm -rf /var/cache/apk/*
 
-# Enable pnpm
-RUN corepack enable && corepack prepare pnpm@8.15.9 --activate
+# Install and enable pnpm
+RUN npm install -g --force corepack && corepack enable && corepack prepare pnpm@8.15.9 --activate
 
 ENV PNPM_HOME=/usr/local/bin
 ENV NODE_ENV=production

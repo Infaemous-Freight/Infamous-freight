@@ -9,6 +9,9 @@ RUN apk update && \
     apk add --no-cache dumb-init ca-certificates && \
     rm -rf /var/cache/apk/*
 
+# Install and enable corepack
+RUN npm install -g --force corepack
+
 # Enable pnpm
 RUN corepack enable && corepack prepare pnpm@8.15.9 --activate
 ENV PNPM_HOME=/usr/local/bin
