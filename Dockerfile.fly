@@ -2,7 +2,7 @@
 # Build from project root with monorepo structure
 # Production-ready with security hardening and multi-stage optimization
 
-FROM node:20-alpine AS base
+FROM node:25-alpine AS base
 
 # Install security updates and required tools
 RUN apk update && \
@@ -63,7 +63,7 @@ WORKDIR /app/api
 RUN pnpm run prisma:generate
 
 # Stage 4: Production runtime
-FROM node:20-alpine AS runner
+FROM node:25-alpine AS runner
 WORKDIR /app
 
 # Install security updates and required tools

@@ -1,4 +1,4 @@
-FROM node:18-alpine AS deps
+FROM node:25-alpine AS deps
 
 LABEL maintainer="Santorio Djuan Miles <237955567+MrMiless44@users.noreply.github.com>"
 LABEL description="Infamous Freight Enterprises - Full-stack application"
@@ -17,7 +17,7 @@ COPY web/package.json ./web/
 # Install ALL dependencies (including dev dependencies needed for build)
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 
-FROM node:18-alpine AS build
+FROM node:25-alpine AS build
 WORKDIR /app
 RUN corepack enable
 
@@ -30,7 +30,7 @@ RUN pnpm --filter @infamous-freight/shared build \
   && pnpm --filter api build \
   && pnpm --filter web build
 
-FROM node:18-alpine AS run
+FROM node:25-alpine AS run
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000

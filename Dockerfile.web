@@ -1,7 +1,7 @@
 # Fly.io Dockerfile for Next.js Web Frontend
 # Build from project root with monorepo structure
 
-FROM node:20-alpine AS base
+FROM node:25-alpine AS base
 
 # Install dependencies
 RUN apk update && \
@@ -58,7 +58,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm run build
 
 # Stage 4: Production runtime
-FROM node:20-alpine AS runner
+FROM node:25-alpine AS runner
 WORKDIR /app
 
 RUN apk update && \
