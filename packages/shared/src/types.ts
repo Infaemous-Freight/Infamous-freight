@@ -28,12 +28,7 @@ export interface CategoryProgress {
   details?: string;
 }
 
-export interface CopilotProgressDetails {
-  safety?: CategoryProgress;
-  efficiency?: CategoryProgress;
-  compliance?: CategoryProgress;
-  [category: string]: CategoryProgress | undefined;  // Allow additional categories but enforce structure
-}
+export type CopilotProgressDetails = Record<string, CategoryProgress | undefined>;
 
 export interface CopilotMilestone {
   milestone: string;
