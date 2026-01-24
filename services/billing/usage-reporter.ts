@@ -24,7 +24,7 @@ export async function reportUsageForTenant(params: {
     if (!subscriptionItemId) continue;
 
     await stripe.subscriptionItems.createUsageRecord(subscriptionItemId, {
-      quantity: Math.floor(qty),
+      quantity: Math.ceil(qty),
       timestamp: ts,
       action: "increment",
     });
