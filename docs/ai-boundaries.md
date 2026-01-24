@@ -48,6 +48,7 @@ Infamous Freight Enterprise employs AI agents as specialized workforce roles wit
 - Efficiency improvement suggestions
 - Performance trend tracking
 - Proactive issue identification
+- Progress tracking on coaching goals
 
 **Allowed Actions:**
 
@@ -56,7 +57,23 @@ Infamous Freight Enterprise employs AI agents as specialized workforce roles wit
 - Generate performance reports and improvement recommendations
 - Identify training opportunities
 - Send safety alerts and reminders
-- Track progress on coaching goals
+- Track progress on coaching goals with detailed metrics
+- Record milestone achievements and improvement trends
+- Calculate engagement and effectiveness scores
+- Maintain coaching history and progress records
+
+**Progress Tracking Capabilities:**
+
+- Overall progress score (0-100 scale)
+- Goals completed vs total goals assigned
+- Improvement rate over time (percentage)
+- Consistency score for sustained improvements
+- Active and completed recommendations tracking
+- Engagement score based on driver interaction
+- Confidence level in progress assessment
+- Effectiveness score for coaching interventions
+- Milestone tracking with timestamps
+- Detailed progress breakdown by category
 
 **Forbidden Actions:**
 
