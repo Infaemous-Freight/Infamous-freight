@@ -417,15 +417,19 @@ async function sendSignOffNotifications(signoff) {
 
 async function verifyStakeholderAuthority(user, role) {
     // Verify user role authorization
-    const userRole = req.user?.role || 'user';
+    const userRole = user?.role || 'user';
     const authorizedRoles = ['admin', 'manager', 'lead'];
     const isAuthorized = authorizedRoles.includes(userRole);
+    const isKnownStakeholderRole = role in STAKEHOLDER_ROLES;
     // TODO: Enhance with database-backed role permissions when user management is expanded
     if (!isAuthorized) {
-        console.warn(`User ${req.user?.sub} attempted signoff without authorization`);
+        console.warn(`User ${user?.sub} attempted signoff without authorization`);
+    }
+    if (!isKnownStakeholderRole) {
+        console.warn(`Unknown stakeholder role provided for signoff: ${role}`);
     }
     // For now, accept if user has 'signoff:sign' scope
-    return user.scopes?.includes('signoff:sign');
+    return isAuthorized && isKnownStakeholderRole && user?.scopes?.includes('signoff:sign');
 }
 
 async function handleSignOffCompletion(signoff) {
