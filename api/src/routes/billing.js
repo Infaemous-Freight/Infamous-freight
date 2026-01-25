@@ -195,7 +195,7 @@ router.post(
                 }).catch(() => { }); // Non-blocking
             }
 
-            // Create subscription with default incomplete payment behavior (Stripe Elements flow)
+            // Create subscription with incomplete payment (requires client-side confirmation via Stripe Elements)
             const subscription = await stripe.subscriptions.create(
                 {
                     customer: customer.id,
