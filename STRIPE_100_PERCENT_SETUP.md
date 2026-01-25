@@ -69,7 +69,7 @@ Once you subscribe a customer to the metered price, report usage from Genesis AI
 ```javascript
 await stripe.subscriptionItems.createUsageRecord(
   stripeSubscriptionItemId,
-  { quantity, timestamp: "now", action: "increment" }
+  { quantity, timestamp: Math.floor(Date.now() / 1000), action: "increment" }
 );
 ```
 
