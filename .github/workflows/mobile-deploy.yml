@@ -58,7 +58,7 @@ jobs:
 
       - name: Publish OTA update
         if: env.PUBLISH_OTA == 'true'
-        run: eas update --branch "${{ env.EAS_UPDATE_BRANCH }}" --message "CI OTA update ${GITHUB_SHA}"
+        run: eas update --branch "${{ env.EAS_UPDATE_BRANCH }}" --message "CI OTA update from branch ${{ env.EAS_UPDATE_BRANCH }} (${{ github.sha[0:7] }})"
         working-directory: src/apps/mobile
         env:
           EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
