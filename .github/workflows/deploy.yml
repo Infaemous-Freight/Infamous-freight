@@ -67,7 +67,7 @@ jobs:
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
 
       - name: Deploy to Fly.io
-        uses: superfly/flyctl-actions/setup-flyctl@master
+        uses: superfly/flyctl-actions/setup-flyctl@v1.5.0
 
       - name: Deploy API
         run: flyctl deploy --remote-only
