@@ -66,7 +66,7 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
           seats,
           addOns,
           tenantId: "demo-tenant",
-          customerEmail: customerEmail || undefined,
+          customerEmail: customerEmail.trim() || undefined,
         }),
       });
       const data = await res.json();
