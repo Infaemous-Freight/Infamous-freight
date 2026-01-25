@@ -8,4 +8,4 @@ if [ -z "${APP}" ]; then
 fi
 
 echo "Running pnpm prisma:migrate on Fly app: ${APP}"
-fly ssh console --app "${APP}" -C "cd /app && pnpm prisma:migrate"
+fly ssh console --app "${APP}" -C "cd /app/api && pnpm prisma:migrate"
