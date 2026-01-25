@@ -50,6 +50,54 @@ This must have:
 - Interval: Monthly
 - Lookup key: `iff_ai_action_metered`
 
+#### Create the Metered Price (Dashboard or API)
+
+**Option A — Stripe Dashboard (fastest):**
+
+1. Stripe Dashboard → Products
+2. Open **Infamous AI Actions (metered)**
+3. Add price
+4. Type: **Recurring**
+5. Interval: **Monthly**
+6. Usage: **Metered (usage-based)**
+7. Aggregation: **Sum**
+8. Save → copy the new `price_...` ID
+
+**Option B — Node API (one-time admin script):**
+
+```js
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2025-01-27.acacia",
+});
+
+async function createMeteredPrice() {
+  const productId = "prod_TqlbsmBT9Jw2Z0"; // Infamous AI Actions (metered)
+
+  const price = await stripe.prices.create({
+    product: productId,
+    currency: "usd",
+    unit_amount: 1, // $0.01 per action
+    recurring: {
+      interval: "month",
+      usage_type: "metered",
+      aggregate_usage: "sum",
+    },
+    nickname: "AI Actions - Metered (per action)",
+    lookup_key: "iff_ai_action_metered",
+    metadata: {
+      billing_unit: "ai_action",
+    },
+  });
+
+  console.log("Created metered price:", price.id);
+  return price.id;
+}
+
+createMeteredPrice().catch(console.error);
+```
+
 ### B) Event-Based AI SKUs (Enterprise Invoicing)
 
 You already built these correctly:
