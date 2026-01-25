@@ -13,7 +13,7 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 # Enable pnpm with specific version
-RUN corepack enable && corepack prepare pnpm@8.15.9 --activate
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 ENV PNPM_HOME=/usr/local/bin
 
 # Stage 1: Install dependencies
@@ -85,7 +85,7 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 # Enable pnpm
-RUN corepack enable && corepack prepare pnpm@8.15.9 --activate
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 
 ENV PNPM_HOME=/usr/local/bin
 ENV NODE_ENV=production

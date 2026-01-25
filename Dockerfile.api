@@ -6,7 +6,7 @@ LABEL description="Infamous Freight Enterprises - API Server"
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@8.15.9
+RUN npm install -g pnpm@9.15.0
 
 # Copy workspace and package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
