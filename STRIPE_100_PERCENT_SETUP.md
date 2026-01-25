@@ -131,6 +131,36 @@ BILLING_CURRENCY=usd
 - Price: $49
 - Billing: One-time
 
+#### Production Stripe Products & Payment Links
+
+**Starter**
+- Product: Starter Platform Access
+- Product ID: `prod_...`
+- Price: $29/month
+- Price ID: `price_...`
+- Payment Link: `https://buy.stripe.com/...`
+
+**Pro**
+- Product: Professional Platform Access
+- Product ID: `prod_...`
+- Price: $49/user/month
+- Price ID: `price_...`
+- Payment Link: `https://buy.stripe.com/...`
+
+**Business**
+- Product: Business Platform Access
+- Product ID: `prod_...`
+- Price: $99/user/month
+- Price ID: `price_...`
+- Payment Link: `https://buy.stripe.com/...`
+
+**Enterprise Minimum Monthly Spend**
+- Product: Enterprise Minimum Monthly Spend
+- Product ID: `prod_...`
+- Price: $2,500/month minimum
+- Price ID: `price_...`
+- Payment Link: `https://buy.stripe.com/...`
+
 ---
 
 ## 📡 API Endpoints (100% Revenue Model)
