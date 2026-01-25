@@ -5,10 +5,53 @@ function diffInDays(from, to) {
   return Math.ceil((to.getTime() - from.getTime()) / DAY_MS);
 }
 
-function evaluateRequirement({ requirement, certificates, now }) {
-  const cert = certificates.find(
-    (item) => item.coverageType === requirement.coverageType,
+function selectBestCertificate(certificates, requirement) {
+  if (!Array.isArray(certificates) || !requirement) {
+    return null;
+  }
+
+  const coverageCerts = certificates.filter(
+    (item) => item && item.coverageType === requirement.coverageType,
   );
+
+  if (coverageCerts.length === 0) {
+    return null;
+  }
+
+  const nonRejectedWithExpiration = coverageCerts.filter(
+    (cert) => cert.status !== "REJECTED" && cert.expirationDate,
+  );
+
+  const pool =
+    nonRejectedWithExpiration.length > 0
+      ? nonRejectedWithExpiration
+      : coverageCerts;
+
+  const parseExpiration = (cert) =>
+    cert && cert.expirationDate ? new Date(cert.expirationDate).getTime() : null;
+
+  let best = pool[0];
+  let bestTime = parseExpiration(best);
+
+  for (let i = 1; i < pool.length; i++) {
+    const current = pool[i];
+    const currentTime = parseExpiration(current);
+
+    if (currentTime === null) {
+      continue;
+    }
+
+    if (bestTime === null || currentTime > bestTime) {
+      best = current;
+      bestTime = currentTime;
+    }
+  }
+
+  return best;
+}
+
+function evaluateRequirement({ requirement, certificates, now }) {
+  const cert = selectBestCertificate(certificates, requirement);
   const reasons = [];
   let state = "COMPLIANT";
   let daysToExpiration = null;
