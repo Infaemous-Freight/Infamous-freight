@@ -26,7 +26,6 @@ jobs:
             web:
               - 'web/**'
               - 'packages/**'
-              - 'src/apps/web/**'
             mobile:
               - 'src/apps/mobile/**'
               - 'packages/**'
