@@ -9,9 +9,8 @@ RUN apk update && \
     apk add --no-cache dumb-init ca-certificates && \
     rm -rf /var/cache/apk/*
 
-# Enable pnpm
-RUN corepack enable && corepack prepare pnpm@8.15.9 --activate
-ENV PNPM_HOME=/usr/local/bin
+# Install pnpm (Corepack unavailable in node:25-alpine)
+RUN npm install -g pnpm@9.15.0
 
 # Stage 1: Install dependencies
 FROM base AS deps
