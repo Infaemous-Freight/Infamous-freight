@@ -32,5 +32,8 @@ jobs:
           FLY_APP_NAME: ${{ secrets.FLY_APP_NAME }}
         run: |
           APP_NAME=${FLY_APP_NAME:-infamous-freight-api}
-          sleep 10
-          curl -f "https://${APP_NAME}.fly.dev/api/health" || exit 1
+          if [ -z "${FLY_APP_NAME}" ]; then
+            echo "Error: FLY_APP_NAME is not set. Please configure the FLY_APP_NAME secret."
+            exit 1
+          fi
+          curl -f "https://${FLY_APP_NAME}.fly.dev/api/health" || exit 1
