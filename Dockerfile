@@ -1,11 +1,12 @@
-FROM node:25-alpine AS deps
+ARG NODE_VERSION=24-alpine
+FROM node:${NODE_VERSION} AS deps
 
 LABEL maintainer="Santorio Djuan Miles <237955567+MrMiless44@users.noreply.github.com>"
 LABEL description="Infamous Freight Enterprises - Full-stack application"
 
 WORKDIR /app
 
-# Install pnpm (Corepack is unavailable in node:25-alpine)
+# Install pnpm (Corepack is unavailable in node:alpine)
 RUN npm install -g pnpm@9.15.0
 
 # Copy workspace and package files
@@ -17,7 +18,7 @@ COPY web/package.json ./web/
 # Install ALL dependencies (including dev dependencies needed for build)
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 
-FROM node:25-alpine AS build
+FROM node:${NODE_VERSION} AS build
 WORKDIR /app
 RUN npm install -g pnpm@9.15.0
 
@@ -29,11 +30,11 @@ COPY --from=deps /app/web/node_modules ./web/node_modules
 
 # Build the application (shared, generate Prisma client, api, then web)
 RUN pnpm --filter @infamous-freight/shared build \
-  && cd api && pnpm prisma:generate \
+  && pnpm --filter api exec prisma generate --schema=./api/prisma/schema.prisma \
   && pnpm --filter api build \
   && pnpm --filter web build
 
-FROM node:25-alpine AS run
+FROM node:${NODE_VERSION} AS run
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
