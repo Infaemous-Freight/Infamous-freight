@@ -79,7 +79,7 @@ flyctl deploy
 
 ```bash
 # 1. Install Vercel CLI
-npm i -g vercel
+pnpm add -g vercel@latest
 
 # 2. Login
 vercel login

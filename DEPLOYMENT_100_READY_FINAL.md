@@ -277,7 +277,7 @@ gh workflow run deploy-api-fly.yml
 
 ```bash
 # Install Vercel CLI globally
-npm install -g vercel
+pnpm add -g vercel@latest
 
 # Login to Vercel
 vercel login

@@ -102,7 +102,7 @@ curl https://infamous-freight-api.fly.dev/health
 
 ```bash
 # Install Vercel CLI
-npm install -g vercel
+pnpm add -g vercel@latest
 
 # Login to Vercel
 vercel login

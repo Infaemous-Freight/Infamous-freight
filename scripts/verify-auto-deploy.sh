@@ -83,7 +83,7 @@ check_command "gh"
 if command -v vercel &> /dev/null; then
     echo -e "${GREEN}✅${NC} vercel - $(vercel --version)"
 else
-    echo -e "${YELLOW}⚠️${NC} vercel - not installed (optional, install with: npm i -g vercel)"
+    echo -e "${YELLOW}⚠️${NC} vercel - not installed (optional, install with: pnpm add -g vercel@latest)"
     WARNINGS=$((WARNINGS + 1))
 fi
 

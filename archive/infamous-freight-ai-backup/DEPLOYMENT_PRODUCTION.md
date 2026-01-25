@@ -116,7 +116,7 @@
 2. **Deploy Web to Vercel**
 
    ```bash
-   npm install -g vercel
+   pnpm add -g vercel@latest
    cd web
    vercel login
    vercel --prod

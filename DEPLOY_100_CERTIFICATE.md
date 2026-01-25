@@ -370,7 +370,7 @@ git push origin main
 **Vercel**:
 
 ```bash
-npm install -g vercel
+pnpm add -g vercel@latest
 vercel --prod
 ```
 

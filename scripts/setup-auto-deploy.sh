@@ -51,7 +51,7 @@ fi
 
 if ! check_command "vercel"; then
     MISSING_TOOLS+=("Vercel CLI")
-    echo "   Install: npm install -g vercel"
+    echo "   Install: pnpm add -g vercel@latest"
 fi
 
 if ! check_command "eas-cli" && ! check_command "eas"; then

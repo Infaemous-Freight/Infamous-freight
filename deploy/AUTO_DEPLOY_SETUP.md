@@ -100,7 +100,7 @@ flyctl secrets set DATABASE_URL="<postgres-url>" -a infamous-freight-api
 
 ```bash
 # Install Vercel CLI
-npm i -g vercel
+pnpm add -g vercel@latest
 
 # Login
 vercel login

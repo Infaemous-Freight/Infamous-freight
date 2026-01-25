@@ -11,7 +11,7 @@ echo "📊 Monitoring Vercel Build Performance..."
 
 # Check if Vercel CLI is available
 if ! command -v vercel &> /dev/null; then
-    echo "⚠️  Vercel CLI not installed. Install with: npm i -g vercel"
+    echo "⚠️  Vercel CLI not installed. Install with: pnpm add -g vercel@latest"
     exit 0
 fi
 

@@ -108,7 +108,7 @@ Notify Success/Failure
 flyctl auth login
 
 # Login to Vercel
-npm i -g vercel
+pnpm add -g vercel@latest
 vercel login
 
 # Login to Expo

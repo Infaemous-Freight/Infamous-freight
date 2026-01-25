@@ -244,7 +244,7 @@ bash production-dashboard.sh
 #### Vercel Deployment
 
 ```bash
-npm install -g vercel
+pnpm add -g vercel@latest
 vercel login
 vercel --prod
 ```

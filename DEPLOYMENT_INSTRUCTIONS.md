@@ -294,7 +294,7 @@ pnpm check:types
 
 ```bash
 # Install Vercel CLI
-npm i -g vercel
+pnpm add -g vercel@latest
 
 # Deploy
 cd web

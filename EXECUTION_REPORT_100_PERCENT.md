@@ -95,7 +95,7 @@ bash production-preflight.sh && ./deploy-production.sh all
 **Vercel**:
 
 ```bash
-npm install -g vercel
+pnpm add -g vercel@latest
 vercel login
 vercel --prod
 ```
@@ -153,7 +153,7 @@ Before running the deployment, ensure you have:
 
 ```
 [ ] Vercel CLI installed:
-    npm install -g vercel
+    pnpm add -g vercel@latest
 
 [ ] Vercel logged in:
     vercel login
@@ -184,7 +184,7 @@ Before running the deployment, ensure you have:
 ### STEP 1: Install CLIs (if needed)
 
 ```bash
-npm install -g vercel
+pnpm add -g vercel@latest
 curl -L https://fly.io/install.sh | sh
 ```
 

@@ -69,7 +69,7 @@ deploy_vercel() {
     log_info "Deploying Web to Vercel..."
     
     if ! command -v vercel &> /dev/null; then
-        log_error "Vercel CLI not installed. Install with: npm install -g vercel"
+        log_error "Vercel CLI not installed. Install with: pnpm add -g vercel@latest"
         return 1
     fi
     

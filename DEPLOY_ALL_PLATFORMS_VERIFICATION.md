@@ -169,7 +169,7 @@ All configuration files are committed to the repository and ready for deployment
 
 **Vercel**:
 ```bash
-npm install -g vercel
+pnpm add -g vercel@latest
 vercel --prod
 ```
 

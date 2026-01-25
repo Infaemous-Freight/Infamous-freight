@@ -218,7 +218,7 @@ flyctl deploy --config fly.toml
 
 ```bash
 # Install Vercel CLI
-npm i -g vercel
+pnpm add -g vercel@latest
 
 # Login
 vercel login

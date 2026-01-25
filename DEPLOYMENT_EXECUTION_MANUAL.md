@@ -23,7 +23,7 @@
 curl -L https://fly.io/install.sh | sh
 
 # Install Vercel CLI
-npm install -g vercel
+pnpm add -g vercel@latest
 
 # Install Expo CLI
 npm install -g eas-cli

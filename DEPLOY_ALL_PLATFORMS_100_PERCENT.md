@@ -241,7 +241,7 @@ git push origin main
 **Vercel (CLI)**:
 ```bash
 # Install Vercel CLI
-npm i -g vercel
+pnpm add -g vercel@latest
 
 # Deploy
 vercel --prod

@@ -81,7 +81,7 @@ bash production-preflight.sh && ./deploy-production.sh all
 
 ```bash
 # Install and authenticate
-npm install -g vercel
+pnpm add -g vercel@latest
 vercel login
 
 # Deploy to production

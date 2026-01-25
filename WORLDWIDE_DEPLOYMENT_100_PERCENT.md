@@ -31,7 +31,7 @@
 **Setup Instructions**:
 ```bash
 # 1. Install Vercel CLI
-npm i -g vercel
+pnpm add -g vercel@latest
 
 # 2. Login to Vercel
 vercel login

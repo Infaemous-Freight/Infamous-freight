@@ -238,7 +238,7 @@ git commit -m "feat: New feature"
 git push origin main
 
 # OR use Vercel CLI
-npm i -g vercel
+pnpm add -g vercel@latest
 vercel --prod
 
 # Monitor deployment

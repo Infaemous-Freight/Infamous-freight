@@ -88,7 +88,7 @@ case $choice in
         # Check if vercel is installed
         if ! command -v vercel &> /dev/null; then
             echo "📦 Installing Vercel CLI..."
-            npm install -g vercel
+            pnpm add -g vercel@latest
         fi
         
         cd web
