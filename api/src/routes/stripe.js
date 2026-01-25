@@ -593,14 +593,26 @@ stripeRouter.post("/report-usage", limiters.billing, async (req, res) => {
     const prisma = getPrisma();
     const tenantId = body.tenantId || req.auth?.organizationId || req.user?.sub;
     if (prisma && tenantId) {
-      await prisma.aiUsageRecord.create({
-        data: {
+      try {
+        await prisma.aiUsageRecord.create({
+          data: {
+            tenantId,
+            stripeSubscriptionItemId: body.subscriptionItemId,
+            quantity: body.quantity,
+            stripeUsageRecordId: usageRecord.id,
+          },
+        });
+      } catch (dbErr) {
+        // Avoid failing the whole request if audit logging fails after Stripe usage was recorded.
+        // Log a warning so operators can reconcile Stripe records with missing audit entries.
+        console.warn("Failed to persist AI usage audit record", {
+          error: dbErr && dbErr.message ? dbErr.message : dbErr,
           tenantId,
           stripeSubscriptionItemId: body.subscriptionItemId,
           quantity: body.quantity,
           stripeUsageRecordId: usageRecord.id,
-        },
-      });
+        });
+      }
     }
 
     return res.json({ ok: true, usageRecordId: usageRecord.id });
