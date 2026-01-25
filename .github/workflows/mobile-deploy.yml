@@ -1,0 +1,56 @@
+name: Mobile App Deployment
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/apps/mobile/**"
+  workflow_dispatch:
+    inputs:
+      ota-branch:
+        description: "EAS update branch/channel to publish OTA updates"
+        required: false
+        default: "production"
+        type: string
+      publish-ota:
+        description: "Publish an OTA update after the build"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: "20"
+  EAS_UPDATE_BRANCH: ${{ github.event.inputs.ota-branch || vars.EAS_UPDATE_BRANCH || 'production' }}
+  PUBLISH_OTA: ${{ github.event.inputs.publish-ota || 'false' }}
+
+jobs:
+  deploy-mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install EAS CLI
+        run: npm install --global eas-cli
+
+      - name: Verify EAS authentication
+        run: eas whoami
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+
+      - name: Build iOS + Android (EAS)
+        run: eas build --platform all --non-interactive --profile production
+        working-directory: src/apps/mobile
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
+
+      - name: Publish OTA update
+        if: env.PUBLISH_OTA == 'true'
+        run: eas update --branch "${{ env.EAS_UPDATE_BRANCH }}" --message "CI OTA update ${GITHUB_SHA}"
+        working-directory: src/apps/mobile
+        env:
+          EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
