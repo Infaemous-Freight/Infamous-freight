@@ -1,0 +1,36 @@
+name: CD Pipeline (Deploy)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-api:
+    uses: ./.github/workflows/fly-deploy.yml
+    secrets: inherit
+
+  deploy-web:
+    uses: ./.github/workflows/vercel-deploy.yml
+    secrets: inherit
+
+  staging-validation:
+    runs-on: ubuntu-latest
+    needs: [deploy-api, deploy-web]
+    steps:
+      - name: Validate staging endpoints
+        env:
+          STAGING_API_URL: ${{ secrets.STAGING_API_URL }}
+          STAGING_WEB_URL: ${{ secrets.STAGING_WEB_URL }}
+        run: |
+          if [ -n "$STAGING_API_URL" ]; then
+            curl -f "$STAGING_API_URL"
+          else
+            echo "STAGING_API_URL not set; skipping API validation"
+          fi
+
+          if [ -n "$STAGING_WEB_URL" ]; then
+            curl -f "$STAGING_WEB_URL"
+          else
+            echo "STAGING_WEB_URL not set; skipping web validation"
+          fi

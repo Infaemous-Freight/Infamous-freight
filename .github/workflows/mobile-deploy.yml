@@ -1,0 +1,36 @@
+name: Deploy Mobile (Expo)
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  deploy-mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/apps/mobile
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20.11.0"
+          cache: npm
+          cache-dependency-path: src/apps/mobile/package.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build with EAS
+        run: eas build --platform all --non-interactive
+
+      - name: Publish OTA update
+        run: eas update --branch main --non-interactive
