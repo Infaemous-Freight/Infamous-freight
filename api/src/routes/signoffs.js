@@ -420,7 +420,7 @@ async function verifyStakeholderAuthority(user, role) {
     const userRole = user?.role || 'user';
     const authorizedRoles = ['admin', 'manager', 'lead'];
     const isAuthorized = authorizedRoles.includes(userRole);
-    const isKnownStakeholderRole = Object.prototype.hasOwnProperty.call(STAKEHOLDER_ROLES, role);
+    const isKnownStakeholderRole = role in STAKEHOLDER_ROLES;
     // TODO: Enhance with database-backed role permissions when user management is expanded
     if (!isAuthorized) {
         console.warn(`User ${user?.sub} attempted signoff without authorization`);
