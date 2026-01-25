@@ -23,6 +23,9 @@ RUN npm install -g pnpm@9.15.0
 
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY --from=deps /app/api/node_modules ./api/node_modules
+COPY --from=deps /app/web/node_modules ./web/node_modules
 
 # Build the application (shared, generate Prisma client, api, then web)
 RUN pnpm --filter @infamous-freight/shared build \
