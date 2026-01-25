@@ -65,9 +65,30 @@ export default function CarrierInsuranceDetail() {
       <section>
         <h2>Actions</h2>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-          <button style={{ padding: 10, borderRadius: 8 }}>Upload Certificate</button>
-          <button style={{ padding: 10, borderRadius: 8 }}>Verify</button>
-          <button style={{ padding: 10, borderRadius: 8 }}>Reject</button>
+          <button
+            style={{ padding: 10, borderRadius: 8 }}
+            disabled
+            aria-disabled="true"
+            title="Upload functionality not yet implemented"
+          >
+            Upload Certificate
+          </button>
+          <button
+            style={{ padding: 10, borderRadius: 8 }}
+            disabled
+            aria-disabled="true"
+            title="Verification functionality not yet implemented"
+          >
+            Verify
+          </button>
+          <button
+            style={{ padding: 10, borderRadius: 8 }}
+            disabled
+            aria-disabled="true"
+            title="Rejection functionality not yet implemented"
+          >
+            Reject
+          </button>
         </div>
       </section>
     </main>
