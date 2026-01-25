@@ -42,11 +42,10 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Install EAS CLI
-        run: npm install --global eas-cli
-
-      - name: Verify EAS authentication
-        run: eas whoami
+      - name: Setup Expo and EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
         env:
           EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
 
