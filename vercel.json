@@ -3,7 +3,7 @@
   "framework": "nextjs",
   "buildCommand": "if [ -d web ]; then cd web; fi; bash scripts/validate-build.sh && pnpm build",
   "devCommand": "if [ -d web ]; then pnpm --filter web dev; else pnpm dev; fi",
-  "installCommand": "if [ -f pnpm-workspace.yaml ]; then pnpm install --frozen-lockfile --filter web...; else pnpm install --frozen-lockfile; fi",
+  "installCommand": "if [ -f pnpm-workspace.yaml ]; then pnpm install --frozen-lockfile --filter web...; elif [ -f ../pnpm-workspace.yaml ]; then cd .. && pnpm install --frozen-lockfile --filter web...; else pnpm install --frozen-lockfile; fi",
   "outputDirectory": "web/.next",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
   "crons": [],
