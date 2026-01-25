@@ -7,5 +7,5 @@ if [ -z "${APP}" ]; then
   exit 1
 fi
 
-echo "Running pnpm prisma:migrate on Fly app: ${APP}"
-fly ssh console --app "${APP}" -C "cd /app && pnpm prisma:migrate"
+echo "Running pnpm prisma:migrate:deploy on Fly app: ${APP}"
+fly ssh console --app "${APP}" -C "cd /app/api && pnpm prisma:migrate:deploy"

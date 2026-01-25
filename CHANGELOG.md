@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tests not executed in this container due to missing Node.js; CI will validate on push/tag
 - Deployment via `deploy.sh` requires Node.js; tag pushes may trigger repository workflows
 
-## [2.1.0] - 2026-01-04
+## [2.1.0] - 2026-01-24
 
 ### Added
 
