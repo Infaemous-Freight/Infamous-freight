@@ -56,7 +56,7 @@ jobs:
           EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
 
       - name: Publish OTA update
-        if: env.PUBLISH_OTA == 'true'
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.publish-ota == 'true'
         run: eas update --branch "${{ env.EAS_UPDATE_BRANCH }}" --message "CI OTA update from branch ${{ env.EAS_UPDATE_BRANCH }} (${{ github.sha[0:7] }})"
         working-directory: src/apps/mobile
         env:
