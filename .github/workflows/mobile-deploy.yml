@@ -17,8 +17,8 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "20.11.0"
-          cache: npm
-          cache-dependency-path: src/apps/mobile/package.json
+          cache: pnpm
+          cache-dependency-path: src/apps/mobile/pnpm-lock.yaml
 
       - name: Install dependencies
         run: npm install
