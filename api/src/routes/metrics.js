@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const prometheusMetrics = require('../lib/prometheusMetrics');
-const { PrismaClient } = require('@prisma/client');
+const { getPrisma } = require('../db/prisma');
 const { limiters, authenticate, requireScope, auditLog } = require('../middleware/security');
-
-const prisma = new PrismaClient();
 
 // In-memory cache for metrics (use Redis in production)
 let metricsCache = {
@@ -25,6 +23,11 @@ router.get('/metrics', (_req, res) => {
 // GET /api/metrics/revenue/live
 router.get('/metrics/revenue/live', limiters.general, authenticate, requireScope('metrics:read'), auditLog, async (_req, res, next) => {
     try {
+        const prisma = ensurePrisma(res);
+        if (!prisma) {
+            return;
+        }
+
         if (metricsCache.data && Date.now() - metricsCache.timestamp < metricsCache.ttl) {
             return res.json({
                 ...metricsCache.data,
@@ -33,10 +36,10 @@ router.get('/metrics/revenue/live', limiters.general, authenticate, requireScope
             });
         }
 
-        const metrics = await calculateLiveMetrics();
-        const mrrHistory = await getMRRHistory(12);
-        const tierDistribution = await getTierDistribution();
-        const alerts = await getRecentAlerts();
+        const metrics = await calculateLiveMetrics(prisma);
+        const mrrHistory = await getMRRHistory(prisma, 12);
+        const tierDistribution = await getTierDistribution(prisma);
+        const alerts = await getRecentAlerts(prisma);
 
         const response = {
             current: metrics,
@@ -68,8 +71,13 @@ router.post('/metrics/revenue/clear-cache', limiters.general, authenticate, requ
 // GET /api/metrics/revenue/export
 router.get('/metrics/revenue/export', limiters.general, authenticate, requireScope('metrics:export'), auditLog, async (_req, res, next) => {
     try {
-        const metrics = await calculateLiveMetrics();
-        const mrrHistory = await getMRRHistory(12);
+        const prisma = ensurePrisma(res);
+        if (!prisma) {
+            return;
+        }
+
+        const metrics = await calculateLiveMetrics(prisma);
+        const mrrHistory = await getMRRHistory(prisma, 12);
 
         const csv = [
             'Metric,Value',
@@ -91,7 +99,7 @@ router.get('/metrics/revenue/export', limiters.general, authenticate, requireSco
     }
 });
 
-async function calculateLiveMetrics() {
+async function calculateLiveMetrics(prisma) {
     const now = new Date();
     const startOfDay = new Date(now.setHours(0, 0, 0, 0));
     const startOfWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -148,7 +156,7 @@ async function calculateLiveMetrics() {
     };
 }
 
-async function getMRRHistory(months = 12) {
+async function getMRRHistory(prisma, months = 12) {
     const history = [];
     for (let i = months - 1; i >= 0; i--) {
         const date = new Date();
@@ -169,12 +177,12 @@ async function getMRRHistory(months = 12) {
     return history;
 }
 
-async function getTierDistribution() {
+async function getTierDistribution(prisma) {
     const tiers = await prisma.subscription.groupBy({ by: ['tier'], where: { status: 'active' }, _count: true, _sum: { monthlyValue: true } });
     return tiers.map(tier => ({ tier: tier.tier || 'Unknown', count: tier._count, revenue: tier._sum.monthlyValue || 0 }));
 }
 
-async function getRecentAlerts() {
+async function getRecentAlerts(prisma) {
     if (prisma.revenueAlert) {
         const alerts = await prisma.revenueAlert.findMany({ where: { createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } }, orderBy: { createdAt: 'desc' }, take: 5 });
         return alerts.map(alert => ({ id: alert.id, severity: alert.severity, title: alert.title, message: alert.message, timestamp: alert.createdAt.toISOString() }));
@@ -183,3 +191,12 @@ async function getRecentAlerts() {
 }
 
 module.exports = router;
+
+function ensurePrisma(res) {
+    const prisma = getPrisma();
+    if (!prisma) {
+        res.status(503).json({ error: 'Database unavailable' });
+        return null;
+    }
+    return prisma;
+}
