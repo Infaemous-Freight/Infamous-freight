@@ -1435,3 +1435,109 @@ model DriverPerformance {
   @@index([periodStart])
   @@map("driver_performance")
 }
+
+enum CoverageType {
+  AUTO
+  CARGO
+  CONTINGENT_CARGO
+  GENERAL_LIABILITY
+  ERRORS_OMISSIONS
+  WORKERS_COMP
+  CYBER
+}
+
+enum InsuranceCertStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  EXPIRED
+}
+
+enum ComplianceState {
+  COMPLIANT
+  WARNING
+  NON_COMPLIANT
+  SUSPENDED
+}
+
+model InsuranceCertificate {
+  id              String              @id @default(cuid())
+  orgId           String
+  carrierId       String?
+  providerName    String?
+  policyNumber    String?
+  coverageType    CoverageType
+  effectiveDate   DateTime?
+  expirationDate  DateTime?
+  limitsJson      Json?
+  documentUrl     String
+  extractedJson   Json?
+  status          InsuranceCertStatus @default(PENDING)
+  verifiedAt      DateTime?
+  verifiedBy      String?
+  rejectionReason String?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  @@index([orgId, carrierId])
+  @@index([orgId, coverageType])
+  @@index([orgId, status])
+}
+
+model CoverageRequirement {
+  id                 String       @id @default(cuid())
+  orgId              String
+  coverageType       CoverageType
+  minLimitsJson      Json?
+  requiredForJson    Json?
+  requiredStatesJson Json?
+  graceDays          Int          @default(7)
+  warningDays        Int          @default(14)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@unique([orgId, coverageType])
+}
+
+model InsuranceComplianceStatus {
+  id              String          @id @default(cuid())
+  orgId           String
+  carrierId       String
+  state           ComplianceState @default(COMPLIANT)
+  reasonsJson     Json?
+  lastEvaluatedAt DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@unique([orgId, carrierId])
+  @@index([orgId, state])
+}
+
+model InsuranceEventLog {
+  id          String   @id @default(cuid())
+  orgId       String
+  actorUserId String?
+  carrierId   String?
+  eventType   String
+  payloadJson Json?
+  createdAt   DateTime @default(now())
+
+  @@index([orgId, createdAt])
+  @@index([orgId, carrierId])
+}
+
+model InsuranceQuoteRequest {
+  id          String   @id @default(cuid())
+  orgId       String
+  userId      String?
+  carrierId   String?
+  loadId      String?
+  requestType String
+  partner     String?
+  payloadJson Json?
+  status      String   @default("INITIATED")
+  createdAt   DateTime @default(now())
+
+  @@index([orgId, createdAt])
+  @@index([orgId, loadId])
+}
