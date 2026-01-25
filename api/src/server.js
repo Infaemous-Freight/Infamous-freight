@@ -54,6 +54,7 @@ const analyticsRoutes = require("./routes/analytics");
 const metricsRoutes = require("./routes/metrics");
 const adminFeatureFlagsRoutes = require("./routes/admin/feature-flags");
 const adminOpsRoutes = require("./routes/admin/ops");
+const insuranceRoutes = require("./modules/insurance/routes");
 const avatarsRouter = require("./avatars/routes");
 const genesisRouter = require("./genesis/routes");
 const satelliteRouter = require("./satellite/routes");
@@ -161,6 +162,7 @@ app.use("/api", analyticsRoutes);
 app.use("/api", metricsRoutes);
 app.use("/api", adminFeatureFlagsRoutes);
 app.use("/api", adminOpsRoutes);
+app.use("/api", insuranceRoutes);
 app.use("/api/stripe", stripeRouter);
 app.use("/v1/auth", authRouter);
 
