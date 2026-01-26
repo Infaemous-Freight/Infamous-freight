@@ -31,3 +31,12 @@ export function createEnforcementAction(
 export function getEnforcementActionsForUser(userId: string): EnforcementAction[] {
   return Array.from(actions.values()).filter((action) => action.userId === userId);
 }
+
+export function triggerEnforcementWorkflow(
+  userId: string,
+  reason: string,
+  level: EnforcementLevel = "restriction",
+): EnforcementAction {
+  const id = `enf_${Date.now()}_${actions.size + 1}`;
+  return createEnforcementAction(id, userId, level, reason);
+}
