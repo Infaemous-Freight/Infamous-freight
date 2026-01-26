@@ -12,10 +12,6 @@ jobs:
     uses: ./.github/workflows/deploy-api.yml
     secrets: inherit
 
-  deploy-genesis-ai:
-    uses: ./.github/workflows/deploy-genesis-ai.yml
-    secrets: inherit
-
   deploy-mobile:
     uses: ./.github/workflows/deploy-mobile.yml
     secrets: inherit
