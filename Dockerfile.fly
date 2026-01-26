@@ -2,7 +2,7 @@
 # Build from project root with monorepo structure
 # Production-ready with security hardening and multi-stage optimization
 
-FROM node:25-alpine AS base
+FROM node:20-alpine AS base
 
 # Install security updates and required tools
 RUN apk update && \
@@ -13,7 +13,7 @@ RUN apk update && \
         ca-certificates && \
     rm -rf /var/cache/apk/*
 
-# Install pnpm with specific version (Corepack unavailable in node:25-alpine)
+# Install pnpm with specific version (Corepack unavailable in node:20-alpine)
 RUN npm install -g pnpm@9.15.0
 
 # Stage 1: Install dependencies
@@ -62,7 +62,7 @@ WORKDIR /app/api
 RUN pnpm run prisma:generate
 
 # Stage 4: Production runtime
-FROM node:25-alpine AS runner
+FROM node:20-alpine AS runner
 WORKDIR /app
 
 # Install security updates and required tools
@@ -75,7 +75,7 @@ RUN apk update && \
         tini && \
     rm -rf /var/cache/apk/*
 
-# Install pnpm (Corepack unavailable in node:25-alpine)
+# Install pnpm (Corepack unavailable in node:20-alpine)
 RUN npm install -g pnpm@9.15.0
 ENV NODE_ENV=production
 ENV PORT=4000

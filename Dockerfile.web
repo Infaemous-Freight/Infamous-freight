@@ -1,7 +1,7 @@
 # Fly.io Dockerfile for Next.js Web Frontend
 # Build from project root with monorepo structure
 
-FROM node:25-alpine AS base
+FROM node:20-alpine AS base
 
 # Install dependencies
 RUN apk update && \
@@ -9,7 +9,7 @@ RUN apk update && \
     apk add --no-cache dumb-init ca-certificates && \
     rm -rf /var/cache/apk/*
 
-# Install pnpm (Corepack unavailable in node:25-alpine)
+# Install pnpm (Corepack unavailable in node:20-alpine)
 RUN npm install -g pnpm@9.15.0
 
 # Stage 1: Install dependencies
@@ -57,7 +57,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm run build
 
 # Stage 4: Production runtime
-FROM node:25-alpine AS runner
+FROM node:20-alpine AS runner
 WORKDIR /app
 
 RUN apk update && \

@@ -1,4 +1,4 @@
-FROM node:25-alpine
+FROM node:20-alpine
 
 LABEL maintainer="Santorio Djuan Miles <237955567+MrMiless44@users.noreply.github.com>"
 LABEL description="Infamous Freight Enterprises - API Server"

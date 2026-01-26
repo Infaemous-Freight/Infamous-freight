@@ -1,4 +1,4 @@
-ARG NODE_VERSION=24-alpine
+ARG NODE_VERSION=20-alpine
 FROM node:${NODE_VERSION} AS deps
 
 LABEL maintainer="Santorio Djuan Miles <237955567+MrMiless44@users.noreply.github.com>"
