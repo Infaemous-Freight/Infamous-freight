@@ -101,8 +101,8 @@ exit 1
 - Install Command: `npm install` *(or leave blank to use Vercel's default)*
 - Build Command: `npm run build`
 
-**If Next.js is in a subfolder (example: `apps/web`):**
-- Root Directory: `apps/web`
+**If Next.js is in a subfolder (example: `web`):**
+- Root Directory: `web`
 - Install Command: `npm install` *(or leave blank to use Vercel's default)*
 - Build Command: `npm run build`
 
