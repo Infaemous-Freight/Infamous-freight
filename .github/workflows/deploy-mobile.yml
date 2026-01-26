@@ -31,10 +31,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install mobile dependencies
-        working-directory: src/apps/mobile
-        run: npm install
-
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
