@@ -6,16 +6,28 @@ This document outlines how to test and verify that Vercel builds are triggered c
 
 ## Configuration
 
-**File**: `vercel.json`
+**Source of truth**: the Ignored Build Step script in
+`deploy/vercel-project-settings.md` (Phase 4). If you mirror it into
+`vercel.json`'s `ignoreCommand`, keep the same include/exclude paths.
 
-```json
-"ignoreCommand": "git diff HEAD^ HEAD --quiet . ':(exclude)api/**' ':(exclude)packages/**' ':(exclude)archive/**' ':(exclude)mobile/**'"
+```bash
+CHANGED=$(git diff --name-only "$VERCEL_GIT_PREVIOUS_SHA" "$VERCEL_GIT_COMMIT_SHA" || true)
+
+if echo "$CHANGED" | grep -E '^(web/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)' -q; then
+  exit 1
+fi
+
+if echo "$CHANGED" | grep -E '^(api/|packages/|archive/|docs/|mobile/|README\.md|\.github/|\.vscode/)' -q; then
+  exit 0
+fi
+
+exit 1
 ```
 
 ### What This Means
 
-- **Triggers Build**: Changes to `web/` directory, root config files, documentation
-- **Skips Build**: Changes only to `api/`, `packages/`, `archive/`, `mobile/`
+- **Triggers Build**: Changes to `web/` directory or root config files (`package.json`, `pnpm-lock.yaml`, `turbo.json`, `tsconfig.json`, `next.config.*`)
+- **Skips Build**: Changes only to `api/`, `packages/`, `archive/`, `docs/`, `mobile/`, `README.md`, `.github/`, `.vscode/`
 
 ## Test Scenarios
 
@@ -86,6 +98,15 @@ This document outlines how to test and verify that Vercel builds are triggered c
    ```
    **Expected**: Vercel build skipped
 
+5. **Docs/README-Only Changes**
+   ```bash
+   # Modify documentation
+   echo "# test" >> docs/README.md
+   git add . && git commit -m "test: docs change"
+   git push
+   ```
+   **Expected**: Vercel build skipped
+
 ## Verification Steps
 
 ### 1. Check Vercel Dashboard
@@ -107,14 +128,15 @@ vercel logs [deployment-url]
 
 ### Successful Skip
 ```
-✓ Running git diff HEAD^ HEAD --quiet . ':(exclude)api/**' ':(exclude)packages/**' ':(exclude)archive/**' ':(exclude)mobile/**'
-✓ Build skipped because ignoreCommand returned 0
+✓ Running ignored build step script
+✓ No changes in web/ or root config; only excluded paths changed
+✓ Build skipped because ignore script returned 0
 ```
 
 ### Successful Trigger
 ```
-✓ Running git diff HEAD^ HEAD --quiet . ':(exclude)api/**' ':(exclude)packages/**' ':(exclude)archive/**' ':(exclude)mobile/**'
-✗ Command exited with non-zero status (1)
+✓ Running ignored build step script
+✗ Detected changes in web/ or root config
 ✓ Proceeding with build
 ```
 
@@ -152,9 +174,10 @@ The build now runs validation before starting:
 # Check what git sees
 git diff HEAD^ HEAD --name-only
 
-# Test ignoreCommand locally
-git diff HEAD^ HEAD --quiet . ':(exclude)api/**' ':(exclude)packages/**' ':(exclude)archive/**' ':(exclude)mobile/**'
-echo $?  # Should be 0 for skip, 1 for build
+# Test ignore script locally
+CHANGED=$(git diff HEAD^ HEAD --name-only)
+echo "$CHANGED" | grep -E '^(web/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)'
+echo "$CHANGED" | grep -E '^(api/|packages/|archive/|docs/|mobile/|README\.md|\.github/|\.vscode/)'
 ```
 
 ### Build Skips When It Should Run
