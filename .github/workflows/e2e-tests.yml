@@ -312,7 +312,7 @@ jobs:
       
       - name: Send email notification
         if: github.event_name == 'schedule'
-        uses: dawidd6/action-send-mail@v3
+        uses: dawidd6/action-send-mail@v7
         with:
           server_address: smtp.gmail.com
           server_port: 587
