@@ -1,32 +1,41 @@
-model Dispute {
-  id            String   @id @default(uuid())
-  userId        String
-  transactionId String
-  processor     String
-  status        String
-  createdAt     DateTime @default(now())
-}
-
-model EnforcementAction {
-  id        String   @id @default(uuid())
-  userId    String
-  level     String
-  reason    String
-  createdAt DateTime @default(now())
-}
-
-model RiskScore {
-  id        String   @id @default(uuid())
-  userId    String
-  score     Float
-  factors   Json
-  createdAt DateTime @default(now())
-}
-
-model AuditLog {
-  id        String   @id @default(uuid())
-  actor     String
-  action    String
-  metadata  Json
-  createdAt DateTime @default(now())
-}
+// NOTE: This file is a reference Prisma schema fragment used for compliance modeling.
+// It is NOT an active Prisma schema and is intentionally commented out to avoid
+// conflicts with the main schema at `api/prisma/schema.prisma` and to prevent
+// misconfiguration errors (e.g., missing `datasource` / `generator` blocks).
+//
+// To use any of these models in the actual database schema, copy and adapt them
+// into `api/prisma/schema.prisma` and run the appropriate Prisma migrations.
+//
+// model Dispute {
+//   id            String   @id @default(uuid())
+//   userId        String
+//   transactionId String
+//   processor     String
+//   status        String
+//   createdAt     DateTime @default(now())
+// }
+//
+// model EnforcementAction {
+//   id        String   @id @default(uuid())
+//   userId    String
+//   level     String
+//   reason    String
+//   createdAt DateTime @default(now())
+// }
+//
+// model RiskScore {
+//   id        String   @id @default(uuid())
+//   userId    String
+//   score     Float
+//   factors   Json
+//   createdAt DateTime @default(now())
+// }
+//
+// model AuditLog {
+//   id        String   @id @default(uuid())
+//   actor     String
+//   action    String
+//   metadata  Json
+//   createdAt DateTime @default(now())
+// }
+//
