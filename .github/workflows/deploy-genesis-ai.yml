@@ -1,7 +1,38 @@
-# Workflow intentionally disabled: genesis-ai app does not exist in this repository yet.
-# Recreate a proper deploy workflow once apps/genesis-ai (and corresponding pnpm workspace entry) is added.
-# Rollback example (jq-based):
-# prev=$(flyctl releases list -a "$FLY_APP" --json | jq -r '.[1].version // ""')
-# if [ -n "$prev" ]; then
-#   flyctl releases rollback -a "$FLY_APP" --version "$prev"
-# fi
+name: Deploy Genesis AI (Fly)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/genesis-ai/**"
+      - "pnpm-lock.yaml"
+  workflow_call: {}
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-genesis-ai
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Fly.io CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly (progressive)
+        uses: superfly/flyctl-actions@1.5
+        with:
+          args: "deploy --config apps/genesis-ai/fly.toml --remote-only --strategy rolling"
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Wait for Fly deployment to stabilize
+        run: |
+          FLY_APP=$(awk -F'"' '/^app =/ {print $2}' apps/genesis-ai/fly.toml)
+          flyctl status -a "$FLY_APP"
+          flyctl checks list -a "$FLY_APP" || true
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

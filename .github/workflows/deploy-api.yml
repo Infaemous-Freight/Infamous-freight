@@ -49,10 +49,21 @@ jobs:
             echo "No api/prisma changes detected; skipping Prisma migrate deploy."
           fi
 
-      - name: Deploy to Fly
+      - name: Set up Fly.io CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly (progressive)
         uses: superfly/flyctl-actions@1.5
         with:
-          args: "deploy --config api/fly.toml --remote-only"
+          args: "deploy --config apps/api/fly.toml --remote-only --strategy rolling"
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Wait for Fly deployment to stabilize
+        run: |
+          FLY_APP=$(awk -F'"' '/^app =/ {print $2}' apps/api/fly.toml)
+          flyctl status -a "$FLY_APP"
+          flyctl checks list -a "$FLY_APP" || true
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 

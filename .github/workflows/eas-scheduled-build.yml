@@ -1,0 +1,50 @@
+name: Scheduled Mobile Builds (EAS)
+
+on:
+  schedule:
+    # Daily at 03:15 America/Chicago ≈ 09:15 UTC (adjust if desired)
+    - cron: "15 9 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: eas-scheduled-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: EAS Build (iOS + Android)
+        run: |
+          cd mobile
+          eas build --platform all --profile production --non-interactive
+
+      - name: Slack notify (success)
+        if: success() && secrets.SLACK_WEBHOOK_URL != ''
+        run: |
+          payload=$(jq -n --arg text "Scheduled EAS build succeeded (main @ ${{ github.sha }})" '{text:$text}')
+          curl -X POST -H 'Content-type: application/json' --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"
+
+      - name: Slack notify (failure)
+        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        run: |
+          payload=$(jq -n --arg text "Scheduled EAS build failed (main @ ${{ github.sha }})" '{text:$text}')
+          curl -X POST -H 'Content-type: application/json' --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"
