@@ -18,6 +18,10 @@ model EnforcementAction {
   level     String
   reason    String
   createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([level])
+  @@index([createdAt])
 }
 
 model RiskScore {
