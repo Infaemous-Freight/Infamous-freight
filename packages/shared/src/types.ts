@@ -23,9 +23,15 @@ export enum PaymentEventType {
   CHARGEBACK = "CHARGEBACK",
 }
 
-export interface PaymentEvent {
-  id: string;
-  type: PaymentEventType;
-  userId: string;
-  payload: Record<string, unknown>;
+export interface ChargebackPayload {
+  reason: string;
+  [key: string]: unknown;
 }
+
+export type PaymentEvent =
+  | {
+      id: string;
+      type: PaymentEventType.CHARGEBACK;
+      userId: string;
+      payload: ChargebackPayload;
+    };
