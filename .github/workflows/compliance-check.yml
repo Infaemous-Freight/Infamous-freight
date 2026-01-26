@@ -8,4 +8,42 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Validate Compliance Policies
-        run: ls compliance/policies
+        run: |
+          set -euo pipefail
+
+          POLICIES_DIR="compliance/policies"
+
+          echo "Checking compliance policies directory: ${POLICIES_DIR}"
+
+          if [ ! -d "${POLICIES_DIR}" ]; then
+            echo "ERROR: Policies directory '${POLICIES_DIR}' does not exist."
+            exit 1
+          fi
+
+          # Find markdown policy files at the top level of the policies directory
+          POLICY_FILES="$(find "${POLICIES_DIR}" -maxdepth 1 -type f -name '*.md')"
+
+          if [ -z "${POLICY_FILES}" ]; then
+            echo "ERROR: No markdown policy files (*.md) found in '${POLICIES_DIR}'."
+            exit 1
+          fi
+
+          echo "Found policy files:"
+          echo "${POLICY_FILES}"
+
+          # Validate each policy file has content and at least one markdown heading
+          for FILE in ${POLICY_FILES}; do
+            echo "Validating policy file: ${FILE}"
+
+            if [ ! -s "${FILE}" ]; then
+              echo "ERROR: Policy file '${FILE}' is empty."
+              exit 1
+            fi
+
+            if ! grep -qE '^(# |\s*## )' "${FILE}"; then
+              echo "ERROR: Policy file '${FILE}' does not contain any markdown headings (e.g., '# Title')."
+              exit 1
+            fi
+          done
+
+          echo "All compliance policy files passed basic content validation."
