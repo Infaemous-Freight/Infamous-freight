@@ -49,11 +49,19 @@ set -e
 # exit 0 => ignore build
 # exit 1 => do NOT ignore (build)
 
-if [ -z "$VERCEL_GIT_PREVIOUS_SHA" ] || [ -z "$VERCEL_GIT_COMMIT_SHA" ]; then
+if [ -z "$VERCEL_GIT_COMMIT_SHA" ]; then
   exit 1
 fi
 
-CHANGED=$(git diff --name-only "$VERCEL_GIT_PREVIOUS_SHA" "$VERCEL_GIT_COMMIT_SHA" || true)
+if [ -z "$VERCEL_GIT_PREVIOUS_SHA" ]; then
+  CHANGED=$(git ls-files)
+else
+  CHANGED=$(git diff --name-only "$VERCEL_GIT_PREVIOUS_SHA" "$VERCEL_GIT_COMMIT_SHA" || true)
+fi
+
+if [ -z "$CHANGED" ]; then
+  exit 1
+fi
 
 if echo "$CHANGED" | grep -E '^(web/|api/|packages/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)' -q; then
   exit 1
@@ -72,11 +80,19 @@ exit 1
 #!/bin/bash
 set -e
 
-if [ -z "$VERCEL_GIT_PREVIOUS_SHA" ] || [ -z "$VERCEL_GIT_COMMIT_SHA" ]; then
+if [ -z "$VERCEL_GIT_COMMIT_SHA" ]; then
   exit 1
 fi
 
-CHANGED=$(git diff --name-only "$VERCEL_GIT_PREVIOUS_SHA" "$VERCEL_GIT_COMMIT_SHA" || true)
+if [ -z "$VERCEL_GIT_PREVIOUS_SHA" ]; then
+  CHANGED=$(git ls-files)
+else
+  CHANGED=$(git diff --name-only "$VERCEL_GIT_PREVIOUS_SHA" "$VERCEL_GIT_COMMIT_SHA" || true)
+fi
+
+if [ -z "$CHANGED" ]; then
+  exit 1
+fi
 
 if echo "$CHANGED" | grep -E '^(pages/|app/|src/|public/|components/|lib/|next\.config\.|package\.json|pnpm-lock\.yaml|tsconfig\.json)' -q; then
   exit 1
