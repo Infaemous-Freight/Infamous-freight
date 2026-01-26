@@ -12,6 +12,8 @@ jobs:
       api: ${{ steps.filter.outputs.api }}
       web: ${{ steps.filter.outputs.web }}
       mobile: ${{ steps.filter.outputs.mobile }}
+      ai: ${{ steps.filter.outputs.ai }}
+      igfx: ${{ steps.filter.outputs.igfx }}
     steps:
       - uses: actions/checkout@v6
 
@@ -28,6 +30,12 @@ jobs:
               - 'packages/**'
             mobile:
               - 'src/apps/mobile/**'
+              - 'packages/**'
+            ai:
+              - 'ai/**'
+              - 'packages/**'
+            igfx:
+              - 'igfx/**'
               - 'packages/**'
 
   deploy-api:
@@ -48,9 +56,21 @@ jobs:
     uses: ./.github/workflows/mobile-deploy.yml
     secrets: inherit
 
+  deploy-ai:
+    needs: changes
+    if: needs.changes.outputs.ai == 'true'
+    uses: ./.github/workflows/deploy-ai.yml
+    secrets: inherit
+
+  deploy-igfx:
+    needs: changes
+    if: needs.changes.outputs.igfx == 'true'
+    uses: ./.github/workflows/deploy-market.yml
+    secrets: inherit
+
   summary:
     runs-on: ubuntu-latest
-    needs: [deploy-api, deploy-web, deploy-mobile]
+    needs: [deploy-api, deploy-web, deploy-mobile, deploy-ai, deploy-igfx]
     if: always()
     steps:
       - name: Publish summary
@@ -62,3 +82,5 @@ jobs:
           echo "| API | ${{ contains(fromJson('["success","failure"]'), needs.deploy-api.result) && needs.deploy-api.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Web | ${{ contains(fromJson('["success","failure"]'), needs.deploy-web.result) && needs.deploy-web.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Mobile | ${{ contains(fromJson('["success","failure"]'), needs.deploy-mobile.result) && needs.deploy-mobile.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Genesis AI | ${{ contains(fromJson('["success","failure"]'), needs.deploy-ai.result) && needs.deploy-ai.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| IGFX | ${{ contains(fromJson('["success","failure"]'), needs.deploy-igfx.result) && needs.deploy-igfx.result || 'skipped' }} |" >> $GITHUB_STEP_SUMMARY
