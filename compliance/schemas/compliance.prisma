@@ -1,10 +1,17 @@
+enum DisputeStatus {
+  PENDING
+  UNDER_REVIEW
+  RESOLVED
+  REJECTED
+}
+
 model Dispute {
-  id            String   @id @default(uuid())
+  id            String        @id @default(uuid())
   userId        String
   transactionId String
   processor     String
-  status        String
-  createdAt     DateTime @default(now())
+  status        DisputeStatus
+  createdAt     DateTime     @default(now())
 
   @@index([userId])
   @@index([transactionId])
