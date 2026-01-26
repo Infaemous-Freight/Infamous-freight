@@ -1,12 +1,6 @@
 name: Deploy Mobile (EAS Update)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "mobile/**"
-      - "packages/**"
-      - "pnpm-lock.yaml"
   workflow_dispatch:
   workflow_call:
 
