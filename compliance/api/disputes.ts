@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import prisma from "../db";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 export async function createDispute(
   req: Request,
   res: Response,
