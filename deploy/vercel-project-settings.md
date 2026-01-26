@@ -28,7 +28,7 @@ if [[ "$VERCEL_ENV" == "production" ]]; then
   exit 1
 fi
 
-# Trigger builds for web/app/code changes and key config updates.
+# Trigger builds for web, api, mobile, packages changes and key config updates.
 if echo "$CHANGED" | grep -E "^(web/|api/|mobile/|packages/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)"; then
   echo "Relevant changes detected. Build required."
   exit 1
