@@ -291,7 +291,7 @@ jobs:
 
       - name: 💬 Comment on PR
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
@@ -342,7 +342,7 @@ jobs:
     steps:
       - name: 📧 Notify security team
         if: github.event_name == 'push'
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             console.log('Security scan failed. Review required.');
