@@ -68,14 +68,3 @@ export interface AiFeedback {
   createdAt: Date;
   aiDecision?: AiDecision;
 }
-
-export enum PaymentEventType {
-  CHARGEBACK = "CHARGEBACK",
-}
-
-export interface PaymentEvent {
-  id: string;
-  type: PaymentEventType;
-  userId: string;
-  payload: Record<string, unknown>;
-}
