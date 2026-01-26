@@ -10,3 +10,10 @@ export const HTTP_STATUS = {
 } as const;
 
 export const SHIPMENT_STATUSES = ['CREATED','IN_TRANSIT','DELIVERED','CANCELLED'] as const;
+
+export const DISPUTE_STATUS = {
+  OPEN: "OPEN",
+  UNDER_REVIEW: "UNDER_REVIEW",
+  RESOLVED: "RESOLVED",
+  REJECTED: "REJECTED",
+} as const;
