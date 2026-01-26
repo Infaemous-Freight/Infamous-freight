@@ -9,9 +9,6 @@ updates:
       time: "04:00"
       timezone: "America/Chicago"
     open-pull-requests-limit: 10
-    labels:
-      - automated
-      - dependencies
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -31,10 +28,6 @@ updates:
       time: "05:00"
       timezone: "America/Chicago"
     open-pull-requests-limit: 5
-    labels:
-      - automated
-      - ci
-      - dependencies
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -47,10 +40,6 @@ updates:
       time: "04:10"
       timezone: "America/Chicago"
     open-pull-requests-limit: 10
-    labels:
-      - automated
-      - dependencies
-      - infra
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -70,9 +59,6 @@ updates:
       time: "04:20"
       timezone: "America/Chicago"
     open-pull-requests-limit: 10
-    labels:
-      - automated
-      - dependencies
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -92,9 +78,6 @@ updates:
       time: "04:30"
       timezone: "America/Chicago"
     open-pull-requests-limit: 10
-    labels:
-      - automated
-      - dependencies
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -114,9 +97,6 @@ updates:
       time: "04:40"
       timezone: "America/Chicago"
     open-pull-requests-limit: 10
-    labels:
-      - automated
-      - dependencies
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -136,9 +116,6 @@ updates:
       time: "04:50"
       timezone: "America/Chicago"
     open-pull-requests-limit: 10
-    labels:
-      - automated
-      - dependencies
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -158,10 +135,6 @@ updates:
       time: "05:10"
       timezone: "America/Chicago"
     open-pull-requests-limit: 5
-    labels:
-      - automated
-      - dependencies
-      - infra
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -174,10 +147,6 @@ updates:
       time: "05:20"
       timezone: "America/Chicago"
     open-pull-requests-limit: 5
-    labels:
-      - automated
-      - dependencies
-      - infra
     commit-message:
       prefix: "chore"
       include: "scope"
