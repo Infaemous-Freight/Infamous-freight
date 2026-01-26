@@ -46,21 +46,21 @@ You now have a Public Company Readiness Pack:
 **A. Government Contract Bid Templates**
 - Statement of Work (SoW)  
 - Technical capability narrative  
-- Cybersecurity compliance mapping (NIST / CMMC)  
+- Cybersecurity control alignment summary (NIST / CMMC reference)  
 - Past performance template  
 - Pricing schedule template
 
-**B. Compliance Mapping Framework**
+**B. Compliance Alignment Framework (Repository Coverage)**
 
-| Framework | Coverage |
+| Framework | Status in this repo |
 | --- | --- |
-| NIST 800-53 | Mapped |
-| CMMC | Mapped |
-| CJIS | Mapped |
-| SOC2 | Implementable |
-| FedRAMP | Roadmap only |
+| NIST 800-53 | Security practices aligned; formal control-by-control mapping not included |
+| CMMC | Security practices aligned; formal Level 2–3 mapping not included |
+| CJIS | Some controls addressed (auth, logging, hardening); no formal mapping provided |
+| SOC2 | Implementable with additional policy and control documentation |
+| FedRAMP | Conceptual roadmap only; no formal package or SSP included |
 
-✅ You now have the documentation needed to apply and compete, not just claim eligibility.
+✅ You now have structured templates and security practices that support applying and competing, but formal regulatory assessments and control mappings must be completed separately.
 
 ---
 
