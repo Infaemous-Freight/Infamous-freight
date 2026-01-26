@@ -1,0 +1,24 @@
+model Dispute {
+  id            String   @id @default(uuid())
+  userId        String
+  transactionId String
+  processor     String
+  status        String
+  createdAt     DateTime @default(now())
+}
+
+model EnforcementAction {
+  id        String   @id @default(uuid())
+  userId    String
+  level     String
+  reason    String
+  createdAt DateTime @default(now())
+}
+
+model RiskScore {
+  id        String   @id @default(uuid())
+  userId    String
+  score     Float
+  factors   Json
+  createdAt DateTime @default(now())
+}
