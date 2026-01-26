@@ -106,13 +106,13 @@ vercel logs [deployment-url]
 ## Expected Build Behavior
 
 ### Successful Skip
-```
+```text
 ✓ Running git diff HEAD^ HEAD --quiet . ':(exclude)api/**' ':(exclude)packages/**' ':(exclude)archive/**' ':(exclude)mobile/**'
 ✓ Build skipped because ignoreCommand returned 0
 ```
 
 ### Successful Trigger
-```
+```text
 ✓ Running git diff HEAD^ HEAD --quiet . ':(exclude)api/**' ':(exclude)packages/**' ':(exclude)archive/**' ':(exclude)mobile/**'
 ✗ Command exited with non-zero status (1)
 ✓ Proceeding with build
