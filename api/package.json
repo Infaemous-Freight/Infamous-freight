@@ -46,7 +46,7 @@
     "bullmq": "^5.67.1",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
-    "dotenv": "^16.4.0",
+    "dotenv": "^17.2.3",
     "express": "^4.19.0",
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.0.0",
