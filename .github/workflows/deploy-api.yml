@@ -34,6 +34,21 @@ jobs:
       - name: Build API
         run: pnpm --filter infamous-freight-api build
 
+      - name: Prisma migrate deploy (guarded)
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            changed_files="$(git ls-tree -r --name-only "${{ github.sha }}")"
+          else
+            changed_files="$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")"
+          fi
+
+          if echo "$changed_files" | grep -q "^api/prisma/"; then
+            pnpm --filter api prisma migrate deploy
+          else
+            echo "No api/prisma changes detected; skipping Prisma migrate deploy."
+          fi
+
       - name: Deploy to Fly
         uses: superfly/flyctl-actions@1.5
         with:
