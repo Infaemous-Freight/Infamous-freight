@@ -49,6 +49,7 @@
 - 📝 [Quick Start Guide](AUTO_DEPLOY_READY.md) - 3 steps to deploy
 - 🔍 [Deployment Dashboard](DEPLOYMENT_STATUS.md) - Live status & monitoring
 - 📚 [Complete Guide](deploy/100_PERCENT_AUTO_DEPLOY.md) - Full documentation
+- ✅ [Vercel Project Settings](deploy/vercel-project-settings.md) - Execution plan checklist
 - 🐛 [Troubleshooting](deploy/FLY_TROUBLESHOOTING.md) - Debug issues
 
 ## 🐳 Docker - 100% Production-Ready
