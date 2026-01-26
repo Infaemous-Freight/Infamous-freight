@@ -89,7 +89,7 @@ All platforms operational. All pipelines green. All revenue paths live. All AI s
 ### Compliance Readiness
 - SOC2-lite documentation in repo
 - `SECURITY.md` present
-- `ARCHITECTURE.md` present
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) present
 - Investor-grade technical posture
 
 ---
