@@ -73,7 +73,7 @@ jobs:
           RETRY_COUNT=0
 
           while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" ${{ inputs.health-check-url }})
+            HTTP_CODE=$(curl -s --connect-timeout 5 --max-time 15 -o /dev/null -w "%{http_code}" ${{ inputs.health-check-url }})
             if [ "$HTTP_CODE" = "200" ]; then
               echo "✅ ${{ inputs.app-name }} is healthy (HTTP $HTTP_CODE)"
               echo "health=ok" >> $GITHUB_OUTPUT
