@@ -23,8 +23,3 @@ model Dispute {
   // Amount or value being disputed (in the smallest currency unit, e.g., cents)
   amountCents    Int?
 
-  // Resolution metadata
-  resolvedAt     DateTime?
-  resolution     String?
-  resolvedById   String?
-}
