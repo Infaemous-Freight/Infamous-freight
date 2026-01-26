@@ -57,7 +57,7 @@ CHANGED=$(git diff --name-only "$VERCEL_GIT_PREVIOUS_SHA" "$VERCEL_GIT_COMMIT_SH
 
 # Source of truth: this ignore script. If you mirror it into `vercel.json`,
 # keep the same include/exclude paths.
-if echo "$CHANGED" | grep -E '^(web/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)' -q; then
+if echo "$CHANGED" | grep -E '^(web/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.(js|mjs|ts))' -q; then
   exit 1
 fi
 
