@@ -44,7 +44,7 @@ jobs:
           fi
 
           if echo "$changed_files" | grep -q "^api/prisma/"; then
-            pnpm --filter api prisma migrate deploy
+            pnpm --filter infamous-freight-api prisma migrate deploy
           else
             echo "No api/prisma changes detected; skipping Prisma migrate deploy."
           fi
