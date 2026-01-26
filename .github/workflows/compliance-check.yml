@@ -25,6 +25,7 @@ jobs:
 
       - name: Validate Compliance Policies
         run: |
+          job_name="Validate Compliance Policies"
           required_policies=(
             "dispute-policy.md"
             "enforcement-policy.md"
@@ -41,9 +42,9 @@ jobs:
           done
 
           if (( ${#missing_policies[@]} )); then
-            echo "❌ Validate Compliance Policies: missing required policy files:"
+            echo "❌ ${job_name}: missing required policy files:"
             printf ' - %s\n' "${missing_policies[@]}"
             exit 1
           fi
 
-          echo "✅ Validate Compliance Policies: all required policy files are present."
+          echo "✅ ${job_name}: all required policy files are present."
