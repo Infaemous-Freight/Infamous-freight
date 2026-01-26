@@ -183,8 +183,9 @@ export function recordAuditLog(entry: AuditLogInput): AuditLogEntry {
   };
 
   logs.push(logEntry);
-  while (logs.length > MAX_AUDIT_LOGS) {
-    logs.shift();
+  const excess = logs.length - MAX_AUDIT_LOGS;
+  if (excess > 0) {
+    logs.splice(0, excess);
   }
 
   return logEntry;
