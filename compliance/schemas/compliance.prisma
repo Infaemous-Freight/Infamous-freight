@@ -5,6 +5,10 @@ model Dispute {
   processor     String
   status        String
   createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model EnforcementAction {
