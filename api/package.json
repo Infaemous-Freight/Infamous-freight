@@ -35,7 +35,7 @@
     "@aws-sdk/client-s3": "^3.975.0",
     "@aws-sdk/s3-request-presigner": "^3.744.0",
     "@bull-board/api": "^6.16.4",
-    "@bull-board/express": "^6.16.2",
+    "@bull-board/express": "^6.16.4",
     "@infamous-freight/shared": "workspace:*",
     "@json2csv/node": "^7.0.6",
     "@paypal/checkout-server-sdk": "^1.0.3",
