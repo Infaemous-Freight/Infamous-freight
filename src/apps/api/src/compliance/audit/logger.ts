@@ -83,7 +83,7 @@ const sanitizeValue = (key: string, value: unknown): AuditMetadataValue | undefi
   }
 
   if (value === undefined) {
-    return undefined;
+    return null;
   }
 
   try {
