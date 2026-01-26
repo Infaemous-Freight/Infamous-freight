@@ -26,8 +26,8 @@ exit 1
 
 ### What This Means
 
-- **Triggers Build**: Changes to `web/` directory or root config files (`package.json`, `pnpm-lock.yaml`, `turbo.json`, `tsconfig.json`, `next.config.*`)
-- **Skips Build**: Changes only to `api/`, `packages/`, `archive/`, `docs/`, `mobile/`, `README.md`, `.github/`, `.vscode/`
+- **Triggers Build**: Changes to `web/` directory, root config files (`package.json`, `pnpm-lock.yaml`, `turbo.json`, `tsconfig.json`, `next.config.*`), or any other files not exclusively in the skip list below
+- **Skips Build**: Changes exclusively within `api/`, `packages/`, `archive/`, `docs/`, `mobile/`, `README.md`, `.github/`, `.vscode/` (and no changes outside these paths)
 
 ## Test Scenarios
 
