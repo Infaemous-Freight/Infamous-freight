@@ -118,7 +118,7 @@ jobs:
 
       - name: Upload coverage (if enabled)
         if: inputs.coverage-enabled
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ${{ inputs.working-directory }}/coverage/coverage-final.json
           flags: ${{ inputs.package-name }}
