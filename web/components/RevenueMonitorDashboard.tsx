@@ -19,11 +19,6 @@ const BarChart = dynamic(() => import("recharts").then((mod) => mod.BarChart), {
     <div className="h-[300px] bg-gray-100 animate-pulse rounded" />
   ),
 });
-const PieChart = dynamic(() => import("recharts").then((mod) => mod.PieChart), {
-  loading: () => (
-    <div className="h-[300px] bg-gray-100 animate-pulse rounded" />
-  ),
-});
 
 // Import only required recharts components once dynamically
 const {
@@ -36,7 +31,6 @@ const {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  Pie,
 } = require("recharts");
 
 interface RevenueMetrics {
