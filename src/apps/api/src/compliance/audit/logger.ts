@@ -102,7 +102,7 @@ const sanitizeMetadata = (
 
   return Object.entries(metadata).reduce<Record<string, AuditMetadataValue>>(
     (sanitized, [key, value]) => {
-      if (!ALLOWED_METADATA_KEYS.has(key) && !PII_KEYS.has(key)) {
+      if (!ALLOWED_METADATA_KEYS.has(key)) {
         return sanitized;
       }
 
