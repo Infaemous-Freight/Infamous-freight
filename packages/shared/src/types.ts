@@ -4,6 +4,12 @@ export type ApiResponse<T> = {
   error?: string;
 };
 
+export enum RiskLevel {
+  LOW = "LOW",
+  MEDIUM = "MEDIUM",
+  HIGH = "HIGH",
+}
+
 export type ShipmentStatus =
   | 'CREATED'
   | 'IN_TRANSIT'
