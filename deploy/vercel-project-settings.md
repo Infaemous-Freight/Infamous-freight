@@ -29,13 +29,13 @@ if [[ "$VERCEL_ENV" == "production" ]]; then
 fi
 
 # Skip builds for docs-only changes.
-if echo "$CHANGED" | grep -E "^(docs/|README\.md|\.github/|\.vscode/)"; then
+if echo "$CHANGED" | grep -qE "^(docs/|README\.md|\.github/|\.vscode/)"; then
   echo "Documentation-only changes detected. Skipping build."
   exit 0
 fi
 
 # Trigger builds for web/app/code changes and key config updates.
-if echo "$CHANGED" | grep -E "^(web/|api/|mobile/|packages/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)"; then
+if echo "$CHANGED" | grep -qE "^(web/|api/|mobile/|packages/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)"; then
   echo "Relevant changes detected. Build required."
   exit 1
 fi
