@@ -12,14 +12,26 @@ export function handlePaymentEvent(event: PaymentEvent): void {
   const chargebackReason =
     typeof event.payload["reason"] === "string" ? event.payload["reason"] : "chargeback";
 
-  logAction("payment.chargeback", {
-    eventId: event.id,
-    userId: event.userId,
-    payload: event.payload,
-    reason: chargebackReason,
-  });
+  try {
+    logAction("payment.chargeback", {
+      eventId: event.id,
+      userId: event.userId,
+      payload: event.payload,
+      reason: chargebackReason,
+    });
 
-  triggerEnforcementWorkflow(event.userId, chargebackReason);
+    triggerEnforcementWorkflow(event.userId, chargebackReason);
+  } catch (err) {
+    // Best-effort error logging for failed chargeback handling.
+    // Avoid throwing here to prevent webhook processing from failing silently.
+    // eslint-disable-next-line no-console
+    console.error("Failed to handle payment chargeback event", {
+      error: err instanceof Error ? err.message : err,
+      eventId: event.id,
+      userId: event.userId,
+      reason: chargebackReason,
+    });
+  }
 }
 
 /**
