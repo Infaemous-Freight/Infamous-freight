@@ -67,7 +67,7 @@ if echo "$CHANGED" | grep -E '^(web/|api/|packages/|package\.json|pnpm-lock\.yam
   exit 1
 fi
 
-if echo "$CHANGED" | grep -E '^(docs/|mobile/|README\.md|\.github/|\.vscode/)' -q; then
+if ! echo "$CHANGED" | grep -q -v -E '^(docs/|mobile/|README\.md|\.github/|\.vscode/)'; then
   exit 0
 fi
 
@@ -98,7 +98,7 @@ if echo "$CHANGED" | grep -E '^(pages/|app/|src/|public/|components/|lib/|next\.
   exit 1
 fi
 
-if echo "$CHANGED" | grep -E '^(docs/|README\.md)' -q; then
+if ! echo "$CHANGED" | grep -q -v -E '^(docs/|README\.md)'; then
   exit 0
 fi
 
