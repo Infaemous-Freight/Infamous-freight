@@ -26,4 +26,7 @@ model RiskScore {
   score     Float
   factors   Json
   createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([score, createdAt])
 }
