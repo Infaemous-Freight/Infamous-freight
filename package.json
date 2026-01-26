@@ -44,6 +44,7 @@
     "env:setup": "./scripts/setup-environments.sh",
     "env:validate": "./scripts/env-validate.sh",
     "env:check": "./scripts/env-validate.sh",
+    "release:version": "node ./scripts/release-version.js",
     "security:audit": "pnpm audit --audit-level=high",
     "security:check": "pnpm audit && npm run lint",
     "prepare": "husky install || true"

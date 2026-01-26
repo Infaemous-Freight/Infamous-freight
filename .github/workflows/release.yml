@@ -1,0 +1,71 @@
+name: Release Ops
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-ops
+  cancel-in-progress: false
+
+jobs:
+  version_and_tag:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Bump version
+        id: version
+        run: |
+          node ./scripts/release-version.js
+          v=$(node -p "require('./package.json').version")
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add package.json
+          git commit -m "chore(release): v${{ steps.version.outputs.version }}" || echo "No changes"
+          git push
+
+      - name: Tag
+        run: |
+          git tag "v${{ steps.version.outputs.version }}" || true
+          git push --tags || true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          generate_release_notes: true
+
+      - name: Slack notify (success)
+        if: success() && secrets.SLACK_WEBHOOK_URL != ''
+        run: |
+          payload=$(jq -n --arg text "✅ Release created: v${{ steps.version.outputs.version }} (main)" '{text:$text}')
+          curl -X POST -H 'Content-type: application/json' --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"
+
+      - name: Slack notify (failure)
+        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        run: |
+          payload=$(jq -n --arg text "❌ Release Ops failed on main (commit ${{ github.sha }})" '{text:$text}')
+          curl -X POST -H 'Content-type: application/json' --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"

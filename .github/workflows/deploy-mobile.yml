@@ -38,3 +38,21 @@ jobs:
 
       - name: EAS Update (OTA)
         run: cd src/apps/mobile && eas update --channel production
+
+      - name: Slack notify (success)
+        if: success() && secrets.SLACK_WEBHOOK_URL != ''
+        run: |
+          payload=$(jq -n \
+            --arg text "✅ Deploy Success: ${{ github.workflow }} @ ${{ github.ref_name }} (commit ${{ github.sha }})" \
+            '{text:$text}')
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"
+
+      - name: Slack notify (failure)
+        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        run: |
+          payload=$(jq -n \
+            --arg text "❌ Deploy Failed: ${{ github.workflow }} @ ${{ github.ref_name }} (commit ${{ github.sha }})" \
+            '{text:$text}')
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"
