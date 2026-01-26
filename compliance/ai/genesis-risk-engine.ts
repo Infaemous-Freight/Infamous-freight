@@ -4,6 +4,14 @@ import { scoreRisk } from "../api/risk";
 export interface GenesisInput {
   userId: string;
   factors: RiskFactors;
+  /**
+   * Optional correlation identifiers for audit / tracing purposes.
+   *
+   * These IDs may be used by upstream callers or logging/monitoring layers
+   * to tie a Genesis risk assessment back to a specific transaction or
+   * application session. They are not currently consumed by
+   * runGenesisAssessment itself.
+   */
   transactionId?: string;
   sessionId?: string;
 }
