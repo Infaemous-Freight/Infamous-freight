@@ -37,4 +37,4 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: EAS Update (OTA)
-        run: cd src/apps/mobile && eas update --auto --channel production
+        run: cd src/apps/mobile && eas update --channel production
