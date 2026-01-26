@@ -176,8 +176,14 @@ git diff HEAD^ HEAD --name-only
 
 # Test ignore script locally
 CHANGED=$(git diff HEAD^ HEAD --name-only)
-echo "$CHANGED" | grep -E '^(web/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)'
-echo "$CHANGED" | grep -E '^(api/|packages/|archive/|docs/|mobile/|README\.md|\.github/|\.vscode/)'
+
+# Test include-pattern (web & root configs) — non-zero exit means "no match"
+echo "$CHANGED" | grep -E '^(web/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)' -q
+echo "Include pattern exit code: $?"
+
+# Test exclude-pattern (api, packages, docs, etc.) — non-zero exit means "no match"
+echo "$CHANGED" | grep -E '^(api/|packages/|archive/|docs/|mobile/|README\.md|\.github/|\.vscode/)' -q
+echo "Exclude pattern exit code: $?"
 ```
 
 ### Build Skips When It Should Run
