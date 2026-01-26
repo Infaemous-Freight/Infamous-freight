@@ -107,6 +107,12 @@ A modern full-stack freight management platform with AI-powered features, real-t
 
 Infamous Freight Enterprises is a comprehensive logistics and fleet management solution built as a monorepo with:
 
+## 🚀 Enterprise Expansion Activation
+
+The enterprise expansion scope for Infæmous Freight + Genesis AI is documented in the activation brief below:
+
+- [Enterprise Expansion 100% Activated](ENTERPRISE_EXPANSION_100_ACTIVATED.md)
+
 ## ✨ Latest Updates (v2.0.0 - December 30, 2025)
 
 🎉 **MAJOR RELEASE - Complete Rebranding & IP Protection:**
