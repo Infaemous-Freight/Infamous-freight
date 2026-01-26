@@ -12,12 +12,12 @@ export interface AuditLogInput {
   createdAt: Date;
 }
 
-export const MAX_AUDIT_LOGS = Number(
-  process.env.MAX_AUDIT_LOGS && Number.isFinite(Number(process.env.MAX_AUDIT_LOGS))
-    ? process.env.MAX_AUDIT_LOGS
-    : 500,
-);
+const rawMaxAuditLogs = process.env.MAX_AUDIT_LOGS;
+const parsedMaxAuditLogs = rawMaxAuditLogs ? Number(rawMaxAuditLogs) : NaN;
 
+export const MAX_AUDIT_LOGS = Number.isFinite(parsedMaxAuditLogs)
+  ? parsedMaxAuditLogs
+  : 500;
 const ALLOWED_METADATA_KEYS = new Set([
   "action",
   "actorId",
