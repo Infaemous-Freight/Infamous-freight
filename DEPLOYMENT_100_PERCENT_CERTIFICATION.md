@@ -14,7 +14,7 @@ All platforms operational. All pipelines green. All revenue paths live. All AI s
 - Build cache enabled
 - Node engine pinned & verified
 - Env validation enforced
-- Domain active & assigned
+- Production URL: https://infamous-freight-enterprises-git-f34b9b-santorio-miles-projects.vercel.app (active & assigned)
 
 ### ✅ API (Fly.io)
 - Containerized build (Dockerfile validated)
