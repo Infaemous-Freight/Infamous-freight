@@ -95,7 +95,7 @@ router.post(
   requireOrganization,
   [
     body("plan")
-      .isIn(["STARTER", "GROWTH", "ENTERPRISE"])
+      .isIn(["STARTER", "GROWTH", "PRO", "ENTERPRISE"])
       .withMessage("Invalid plan"),
   ],
   handleValidationErrors,
@@ -153,7 +153,7 @@ router.post(
   requireOrganization,
   [
     body("plan")
-      .isIn(["STARTER", "GROWTH", "ENTERPRISE"])
+      .isIn(["STARTER", "GROWTH", "PRO", "ENTERPRISE"])
       .withMessage("Invalid plan"),
   ],
   handleValidationErrors,
@@ -433,20 +433,31 @@ router.get("/pricing", async (req, res) => {
       },
       enterprise: {
         STARTER: {
-          monthly: 99,
-          included: 100,
+          monthly: 29,
+          included: 10,
           overagePrice: 1.5,
         },
         GROWTH: {
-          monthly: 499,
-          included: 1000,
-          overagePrice: 1.5,
+          monthly: 99,
+          included: 100,
+          overagePrice: 1.25,
         },
-        ENTERPRISE: {
-          monthly: 2500,
+        PRO: {
+          monthly: 249,
           included: 999999,
           overagePrice: 0,
         },
+        ENTERPRISE: {
+          monthly: 0,
+          included: 999999,
+          overagePrice: 0,
+        },
+      },
+      aiUsage: {
+        routingRun: 0.05,
+        invoiceAudit: 0.1,
+        genesisAgentPer1kTokens: 0.02,
+        ocrParsing: 0.03,
       },
     },
   });

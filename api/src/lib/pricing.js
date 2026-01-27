@@ -8,7 +8,7 @@
  * @typedef {Object} QuoteInput
  * @property {number} estimatedMiles - Estimated delivery distance in miles
  * @property {number} estimatedMinutes - Estimated delivery time in minutes
- * @property {"FREE"|"STARTER"|"PRO"|"ENTERPRISE"} [shipperPlanTier] - Shipper's subscription tier
+ * @property {"FREE"|"STARTER"|"GROWTH"|"PRO"|"ENTERPRISE"} [shipperPlanTier] - Shipper's subscription tier
  */
 
 /**
@@ -26,6 +26,7 @@ const n = (v, fallback) => {
  */
 function discountPctForTier(tier) {
   if (tier === "STARTER") return n(process.env.DISCOUNT_STARTER_PCT, 10);
+  if (tier === "GROWTH") return n(process.env.DISCOUNT_GROWTH_PCT, 12);
   if (tier === "PRO") return n(process.env.DISCOUNT_PRO_PCT, 20);
   if (tier === "ENTERPRISE") return n(process.env.DISCOUNT_ENTERPRISE_PCT, 30);
   return 0;

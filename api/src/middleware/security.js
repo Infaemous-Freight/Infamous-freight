@@ -10,6 +10,7 @@ const { authenticateWithRotation } = require("./advancedSecurity");
 const { env } = require("../config/env");
 const rateLimitMetrics = require("../lib/rateLimitMetrics");
 const { logger } = require("./logger");
+const persist = require("../billing/persist");
 
 // Rate limiters with enhanced configuration
 const createLimiter = (name, options) => {
@@ -182,6 +183,37 @@ function requireScope(required) {
   };
 }
 
+function requirePlan(minPlan) {
+  const planOrder = ["free", "starter", "growth", "pro", "enterprise", "custom"];
+  const minIndex = planOrder.indexOf(String(minPlan).toLowerCase());
+
+  return async (req, res, next) => {
+    try {
+      const tenantId =
+        req.auth?.organizationId || req.user?.sub || req.headers["x-user-id"];
+      const entitlements = tenantId
+        ? await persist.getEntitlements(String(tenantId))
+        : { plan: "free" };
+      const currentPlan = String(entitlements.plan || "free").toLowerCase();
+      const currentIndex = planOrder.indexOf(currentPlan);
+
+      if (minIndex === -1 || currentIndex >= minIndex) {
+        return next();
+      }
+
+      return res.status(403).json({
+        error: "Plan upgrade required",
+        requiredPlan: minPlan,
+        currentPlan,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        error: "Plan validation failed",
+      });
+    }
+  };
+}
+
 // Audit log (basic + tamper-evident chain)
 function auditLog(req, res, next) {
   const start = Date.now();
@@ -246,6 +278,7 @@ module.exports = {
   authenticate,
   authenticateFlexible,
   requireScope,
+  requirePlan,
   requireOrganization,
   auditLog,
   validateUserOwnership,
@@ -254,3 +287,4 @@ module.exports = {
 // Ensure single-line export patterns for verification script compatibility
 module.exports.requireOrganization = requireOrganization;
 module.exports.requireScope = requireScope;
+module.exports.requirePlan = requirePlan;

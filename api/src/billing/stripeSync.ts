@@ -15,22 +15,28 @@ const prisma = new PrismaClient();
 const STRIPE_PRICES = {
   [BillingPlan.STARTER]: process.env.STRIPE_PRICE_STARTER || "",
   [BillingPlan.GROWTH]: process.env.STRIPE_PRICE_GROWTH || "",
+  [BillingPlan.PRO]: process.env.STRIPE_PRICE_PRO || "",
   [BillingPlan.ENTERPRISE]: process.env.STRIPE_PRICE_ENTERPRISE || "",
 };
 
 const PLAN_DETAILS = {
   [BillingPlan.STARTER]: {
-    monthlyBase: 99,
-    monthlyQuota: 100,
+    monthlyBase: 29,
+    monthlyQuota: 10,
     overagePrice: 1.5,
   },
   [BillingPlan.GROWTH]: {
-    monthlyBase: 499,
-    monthlyQuota: 1000,
-    overagePrice: 1.5,
+    monthlyBase: 99,
+    monthlyQuota: 100,
+    overagePrice: 1.25,
+  },
+  [BillingPlan.PRO]: {
+    monthlyBase: 249,
+    monthlyQuota: 999999,
+    overagePrice: 0,
   },
   [BillingPlan.ENTERPRISE]: {
-    monthlyBase: 2500,
+    monthlyBase: 0,
     monthlyQuota: 999999, // Unlimited
     overagePrice: 0,
   },
@@ -73,7 +79,12 @@ export async function createStripeSubscription(
 
     const subscription = await stripe.subscriptions.create({
       customer: customer.id,
-      items: [{ price: priceId }],
+      items: [
+        { price: priceId },
+        ...(process.env.STRIPE_AI_METERED_PRICE_ID
+          ? [{ price: process.env.STRIPE_AI_METERED_PRICE_ID }]
+          : []),
+      ],
       payment_behavior: "default_incomplete",
       expand: ["latest_invoice.payment_intent"],
       metadata: {

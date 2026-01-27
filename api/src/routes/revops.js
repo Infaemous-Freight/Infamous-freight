@@ -419,7 +419,7 @@ router.post(
         body('contactEmail').isEmail(),
         body('annualValue').isFloat({ min: 0 }),
         body('contractTerm').isInt({ min: 1 }),
-        body('plan').isIn(['STARTER', 'GROWTH', 'ENTERPRISE', 'CUSTOM']),
+        body('plan').isIn(['STARTER', 'GROWTH', 'PRO', 'ENTERPRISE', 'CUSTOM']),
         handleValidationErrors,
     ],
     async (req, res, next) => {

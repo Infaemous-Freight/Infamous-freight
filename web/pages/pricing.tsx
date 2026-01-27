@@ -19,6 +19,39 @@ type PricingProps = {
   initialConfigured: boolean;
 };
 
+const planDetails: Record<
+  string,
+  { price: string; subtitle: string; features: string[] }
+> = {
+  starter: {
+    price: "$29/mo",
+    subtitle: "1 dispatcher • 10 loads • basic AI",
+    features: ["Core dispatch tools", "Basic AI assist", "Email support"],
+  },
+  growth: {
+    price: "$99/mo",
+    subtitle: "5 users • 100 loads • AI routing + SMS",
+    features: ["AI routing", "SMS alerts", "Standard analytics"],
+  },
+  pro: {
+    price: "$249/mo",
+    subtitle: "Unlimited users • AI audit • analytics",
+    features: ["Unlimited users", "AI invoice audit", "Advanced analytics"],
+  },
+  enterprise: {
+    price: "Custom",
+    subtitle: "SLA • custom AI agents • API access",
+    features: ["Dedicated SLA", "Custom AI agents", "Enterprise API access"],
+  },
+};
+
+const aiUsageRates = [
+  { feature: "AI Routing", unit: "per run", price: "$0.05" },
+  { feature: "AI Invoice Audit", unit: "per invoice", price: "$0.10" },
+  { feature: "Genesis AI Agent", unit: "per 1k tokens", price: "$0.02" },
+  { feature: "OCR Parsing", unit: "per doc", price: "$0.03" },
+];
+
 export default function Pricing({ initialPlans, initialConfigured }: PricingProps) {
   const [plans, setPlans] = useState<Plan[]>(initialPlans || []);
   const [configured, setConfigured] = useState(initialConfigured || false);
@@ -200,6 +233,12 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
         {plans.map((p) => (
           <section key={p.key} style={card}>
             <h2 style={{ marginTop: 0 }}>{p.label}</h2>
+            <div style={{ fontSize: 20, fontWeight: 700 }}>
+              {planDetails[p.key]?.price || "Custom"}
+            </div>
+            <div style={{ opacity: 0.8, marginTop: 4 }}>
+              {planDetails[p.key]?.subtitle || "Custom configuration"}
+            </div>
             <div style={{ opacity: 0.8, fontSize: 12 }}>
               planKey: <code>{p.key}</code>
             </div>
@@ -209,6 +248,13 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
             <div style={{ marginTop: 8, opacity: 0.8, fontSize: 12 }}>
               Seats: <strong>{seats}</strong>
             </div>
+            <ul style={{ marginTop: 10, paddingLeft: 18 }}>
+              {(planDetails[p.key]?.features || ["Custom scope"]).map((feature) => (
+                <li key={feature} style={{ fontSize: 13, opacity: 0.85 }}>
+                  {feature}
+                </li>
+              ))}
+            </ul>
 
             <button
               onClick={() => checkout(p.key)}
@@ -228,6 +274,35 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
           </section>
         ))}
       </div>
+
+      <section style={{ ...card, marginTop: 16 }}>
+        <h2 style={{ marginTop: 0 }}>AI Usage Metering</h2>
+        <p style={{ opacity: 0.8, fontSize: 14 }}>
+          AI usage is metered separately and billed monthly based on actual
+          consumption.
+        </p>
+        <div style={{ display: "grid", gap: 8 }}>
+          {aiUsageRates.map((rate) => (
+            <div
+              key={rate.feature}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                background: "rgba(255,0,0,0.03)",
+                padding: "8px 12px",
+                borderRadius: 10,
+                border: "1px solid rgba(255,0,0,0.15)",
+                fontSize: 13,
+              }}
+            >
+              <span>{rate.feature}</span>
+              <span>
+                {rate.unit} • <strong>{rate.price}</strong>
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {clientSecret ? (
         <section style={{ ...card, marginTop: 16 }}>

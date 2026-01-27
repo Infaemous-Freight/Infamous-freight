@@ -13,6 +13,7 @@ function isStripeConfigured() {
 function priceCatalog() {
     return [
         { key: "starter", label: "Starter", priceId: env.STRIPE_PRICE_STARTER },
+        { key: "growth", label: "Growth", priceId: env.STRIPE_PRICE_GROWTH },
         { key: "pro", label: "Pro", priceId: env.STRIPE_PRICE_PRO },
         {
             key: "enterprise",

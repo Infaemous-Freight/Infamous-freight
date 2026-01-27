@@ -18,11 +18,25 @@ const stripeRouter = express.Router();
 const stripeWebhookRouter = express.Router();
 
 const planCatalog = [
-  { key: "pro", label: "Infæmous Freight Pro (per seat)", env: "STRIPE_PRO_PRICE_ID" },
   {
-    key: "business",
-    label: "Infæmous Freight Business (per seat)",
-    env: "STRIPE_BUSINESS_PRICE_ID",
+    key: "starter",
+    label: "Infæmous Freight Starter (monthly)",
+    env: "STRIPE_STARTER_PRICE_ID",
+  },
+  {
+    key: "growth",
+    label: "Infæmous Freight Growth (monthly)",
+    env: "STRIPE_GROWTH_PRICE_ID",
+  },
+  {
+    key: "pro",
+    label: "Infæmous Freight Pro (monthly)",
+    env: "STRIPE_PRO_PRICE_ID",
+  },
+  {
+    key: "enterprise",
+    label: "Infæmous Freight Enterprise (custom)",
+    env: "STRIPE_ENTERPRISE_PRICE_ID",
   },
 ];
 
@@ -287,7 +301,7 @@ stripeRouter.post(
       const Schema = z
         .object({
           priceId: z.string().optional(),
-          plan: z.enum(["pro", "business"]).optional(),
+          plan: z.enum(["starter", "growth", "pro", "enterprise"]).optional(),
           seats: z.number().int().min(1).max(500).optional().default(1),
           addOns: z
             .array(z.enum(["voice", "white_label", "analytics_export"]))
@@ -429,7 +443,7 @@ stripeRouter.post(
   async (req, res) => {
     try {
       const Schema = z.object({
-        plan: z.enum(["pro", "business"]),
+        plan: z.enum(["starter", "growth", "pro", "enterprise"]),
         seats: z.number().int().min(1).max(500).optional().default(1),
         addOns: z
           .array(z.enum(["voice", "white_label", "analytics_export"]))
@@ -567,6 +581,9 @@ stripeRouter.post("/report-usage", limiters.billing, async (req, res) => {
 
     const Schema = z.object({
       subscriptionItemId: z.string().min(1),
+      feature: z
+        .enum(["ai_routing", "ai_invoice_audit", "genesis_ai_agent", "ocr_parsing"])
+        .optional(),
       quantity: z.number().int().positive(),
       timestamp: z.number().int().optional(),
       tenantId: z.string().optional(),
@@ -597,6 +614,7 @@ stripeRouter.post("/report-usage", limiters.billing, async (req, res) => {
         await prisma.aiUsageRecord.create({
           data: {
             tenantId,
+            feature: body.feature || "unknown",
             stripeSubscriptionItemId: body.subscriptionItemId,
             quantity: body.quantity,
             stripeUsageRecordId: usageRecord.id,
@@ -822,6 +840,24 @@ stripeWebhookRouter.post(
               "last_invoice_status",
               String(invoice.status)
             );
+          }
+          break;
+        }
+        case "usage_record.summary.created": {
+          const summary = event.data.object;
+          const subscriptionId = summary.subscription;
+          if (subscriptionId) {
+            const subscription = await stripe.subscriptions.retrieve(
+              String(subscriptionId)
+            );
+            const tenantId = subscription.metadata?.tenantId || "";
+            if (tenantId) {
+              await persist.setEntitlement(
+                tenantId,
+                "last_usage_summary",
+                String(summary.id || "")
+              );
+            }
           }
           break;
         }

@@ -31,13 +31,13 @@ router.get("/me", authenticate, async (req, res) => {
 
 /**
  * POST /v1/billing/checkout
- * Body: { planKey: "starter"|"pro"|"enterprise" }
+ * Body: { planKey: "starter"|"growth"|"pro"|"enterprise" }
  */
 router.post("/checkout", authenticate, async (req, res) => {
     try {
         const userId = req.user?.sub || req.headers["x-user-id"] || "anonymous";
         const Schema = z.object({
-            planKey: z.enum(["starter", "pro", "enterprise"]),
+            planKey: z.enum(["starter", "growth", "pro", "enterprise"]),
         });
         const body = Schema.parse(req.body);
 

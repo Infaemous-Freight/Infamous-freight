@@ -307,7 +307,7 @@ router.post(
   [
     body("estimatedLoadsPerMonth").isInt().withMessage("Must be integer"),
     body("averageLoadPrice").isFloat().withMessage("Must be decimal"),
-    body("plan").isIn(["STARTER", "GROWTH", "ENTERPRISE"]).optional(),
+    body("plan").isIn(["STARTER", "GROWTH", "PRO", "ENTERPRISE"]).optional(),
     body("currentBrokerFeePercent").isFloat().optional(),
     body("currentDispatchCostPerLoad").isFloat().optional(),
   ],

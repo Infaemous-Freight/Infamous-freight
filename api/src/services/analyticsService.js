@@ -195,7 +195,7 @@ class AnalyticsService {
      */
     async getSubscriptionMetrics() {
         try {
-            const plans = ['BASIC', 'PLUS', 'PRO', 'ENTERPRISE'];
+            const plans = ['STARTER', 'GROWTH', 'PRO', 'ENTERPRISE'];
             const metrics = {};
 
             for (const plan of plans) {
@@ -213,7 +213,7 @@ class AnalyticsService {
             return {
                 total,
                 byPlan: metrics,
-                mrr: total * 29.99, // Approximate MRR (would need actual pricing)
+                mrr: total * 29, // Approximate MRR (would need actual pricing)
             };
         } catch (error) {
             logger.error('Failed to get subscription metrics', { error: error.message });

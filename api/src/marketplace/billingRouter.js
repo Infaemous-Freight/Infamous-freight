@@ -23,9 +23,11 @@ function priceIdForTier(tier) {
     const env =
         tier === "STARTER"
             ? process.env.STRIPE_PRICE_STARTER
-            : tier === "PRO"
-                ? process.env.STRIPE_PRICE_PRO
-                : process.env.STRIPE_PRICE_ENTERPRISE;
+            : tier === "GROWTH"
+                ? process.env.STRIPE_PRICE_GROWTH
+                : tier === "PRO"
+                    ? process.env.STRIPE_PRICE_PRO
+                    : process.env.STRIPE_PRICE_ENTERPRISE;
 
     if (!env) {
         throw new Error(`Missing Stripe price id env for ${tier}`);

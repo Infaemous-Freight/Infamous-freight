@@ -21,7 +21,7 @@ export interface RoiInput {
   averageLoadPrice: number;
   
   // Optional: customization
-  plan?: "STARTER" | "GROWTH" | "ENTERPRISE";
+  plan?: "STARTER" | "GROWTH" | "PRO" | "ENTERPRISE";
   timezone?: string;
 }
 
@@ -168,25 +168,32 @@ interface PlanPricing {
 }
 
 function getPlanPricing(plan: string): PlanPricing {
-  // These align with Phase 20 pricing
+  // These align with Phase 7 pricing
   const planPricingMap: Record<string, PlanPricing> = {
     STARTER: {
       name: "Starter",
-      monthlyBase: 99,
-      jobQuota: 100,
-      platformFeePerLoad: 5, // Simplified: actual = $base + % 
+      monthlyBase: 29,
+      jobQuota: 10,
+      platformFeePerLoad: 5, // Simplified: actual = $base + %
       overagePrice: 1.5,
     },
     GROWTH: {
       name: "Growth",
-      monthlyBase: 499,
-      jobQuota: 1000,
+      monthlyBase: 99,
+      jobQuota: 100,
       platformFeePerLoad: 3.5, // Lower per-load with higher volume
-      overagePrice: 1.5,
+      overagePrice: 1.25,
+    },
+    PRO: {
+      name: "Pro",
+      monthlyBase: 249,
+      jobQuota: 999999,
+      platformFeePerLoad: 2.5,
+      overagePrice: 0,
     },
     ENTERPRISE: {
       name: "Enterprise",
-      monthlyBase: 2500,
+      monthlyBase: 0,
       jobQuota: 999999,
       platformFeePerLoad: 2, // Lowest per-load, unlimited jobs
       overagePrice: 0,

@@ -15,7 +15,7 @@ const vehicleType = z.enum([
     "SEMI",
 ]);
 
-const planTier = z.enum(["FREE", "STARTER", "PRO", "ENTERPRISE"]);
+const planTier = z.enum(["FREE", "STARTER", "GROWTH", "PRO", "ENTERPRISE"]);
 
 const createJobSchema = z.object({
     shipperId: z.string().min(1),
@@ -64,7 +64,7 @@ const holdJobSchema = z.object({
 
 const subscribeSchema = z.object({
     userId: z.string().min(1),
-    tier: z.enum(["STARTER", "PRO", "ENTERPRISE"]),
+    tier: z.enum(["STARTER", "GROWTH", "PRO", "ENTERPRISE"]),
 });
 
 const podSubmitSchema = z.object({

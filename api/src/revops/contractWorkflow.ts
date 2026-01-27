@@ -22,7 +22,7 @@ interface ContractTerms {
   contactEmail: string;
   annualValue: number;
   contractTerm: number; // months
-  plan: 'STARTER' | 'GROWTH' | 'ENTERPRISE' | 'CUSTOM';
+  plan: 'STARTER' | 'GROWTH' | 'PRO' | 'ENTERPRISE' | 'CUSTOM';
   customTerms?: Record<string, any>;
   startDate?: Date;
 }

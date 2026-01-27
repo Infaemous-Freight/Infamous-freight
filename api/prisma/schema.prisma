@@ -121,6 +121,7 @@ model Organization {
 enum BillingPlan {
   STARTER
   GROWTH
+  PRO
   ENTERPRISE
   CUSTOM
 }
@@ -179,6 +180,7 @@ model OrgUsage {
 model AiUsageRecord {
   id                       String   @id @default(cuid())
   tenantId                 String?
+  feature                  String   @default("unknown")
   stripeSubscriptionItemId String
   quantity                 Int
   stripeUsageRecordId      String   @unique

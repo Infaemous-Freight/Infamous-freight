@@ -16,7 +16,7 @@
  * - SEMI: $120.00
  * 
  * Distance-based pricing: $1.50 per mile
- * Plan discounts: STARTER -10%, PRO -15%, ENTERPRISE -20%
+ * Plan discounts: STARTER -10%, GROWTH -12%, PRO -15%, ENTERPRISE -20%
  * 
  * Minimum charge: base rate for vehicle type
  */
@@ -55,6 +55,7 @@ function computePriceUsd(input) {
   const discountsByPlan = {
     FREE: 0,
     STARTER: 0.1, // 10% off
+    GROWTH: 0.12, // 12% off
     PRO: 0.15, // 15% off
     ENTERPRISE: 0.2, // 20% off
   };

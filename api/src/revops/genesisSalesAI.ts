@@ -22,7 +22,7 @@ const prisma = new PrismaClient();
 interface LeadQualificationResult {
   dealScore: number;
   confidence: number;
-  recommendedPlan: 'STARTER' | 'GROWTH' | 'ENTERPRISE' | null;
+  recommendedPlan: 'STARTER' | 'GROWTH' | 'PRO' | 'ENTERPRISE' | null;
   expectedMrr: number;
   urgency: 'low' | 'medium' | 'high' | 'urgent';
   nextAction: 'email' | 'call' | 'demo' | 'proposal' | 'nurture' | 'ignore';
@@ -164,10 +164,12 @@ function calculateDealScore(intel: CompanyIntel, leadData: any): number {
 /**
  * Determine recommended plan based on intel
  */
-function recommendPlan(intel: CompanyIntel): 'STARTER' | 'GROWTH' | 'ENTERPRISE' {
+function recommendPlan(intel: CompanyIntel): 'STARTER' | 'GROWTH' | 'PRO' | 'ENTERPRISE' {
   if (intel.estimatedMonthlyLoads > 1000 || intel.estimatedSize === 'enterprise') {
     return 'ENTERPRISE';
   } else if (intel.estimatedMonthlyLoads > 100 || intel.estimatedSize === 'large') {
+    return 'PRO';
+  } else if (intel.estimatedMonthlyLoads > 10 || intel.estimatedSize === 'medium') {
     return 'GROWTH';
   }
   return 'STARTER';
@@ -178,9 +180,10 @@ function recommendPlan(intel: CompanyIntel): 'STARTER' | 'GROWTH' | 'ENTERPRISE'
  */
 function calculateExpectedMrr(plan: string, monthlyLoads: number): number {
   const planPricing = {
-    STARTER: { base: 99, quota: 100, overage: 1.50 },
-    GROWTH: { base: 499, quota: 1000, overage: 1.25 },
-    ENTERPRISE: { base: 2500, quota: Infinity, overage: 0 },
+    STARTER: { base: 29, quota: 10, overage: 1.5 },
+    GROWTH: { base: 99, quota: 100, overage: 1.25 },
+    PRO: { base: 249, quota: Infinity, overage: 0 },
+    ENTERPRISE: { base: 0, quota: Infinity, overage: 0 },
   };
   
   const pricing = planPricing[plan as keyof typeof planPricing] || planPricing.STARTER;

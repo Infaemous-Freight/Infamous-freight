@@ -1,8 +1,9 @@
 const express = require('express');
 const { prisma } = require('../db/prisma');
 const { cacheMiddleware } = require('../middleware/cache');
-const { limiters, authenticate, requireScope, auditLog } = require('../middleware/security');
+const { limiters, authenticate, requirePlan, requireScope, auditLog } = require('../middleware/security');
 const { validateString, handleValidationErrors } = require('../middleware/validation');
+const { recordUsage, estimateTokenUnits } = require('../billing/usageRecorder');
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ router.post(
     '/ai/command',
     limiters.ai,
     authenticate,
+    requirePlan('pro'),
     requireScope('ai:command'),
     auditLog,
     validateString('command', { maxLength: 500 }),
@@ -43,13 +45,32 @@ router.post(
                 },
             });
 
-            res.json({
+            const responsePayload = {
                 ok: true,
                 command,
                 result: 'AI processing queued',
                 timestamp: new Date().toISOString(),
                 processingTime: Date.now() - startTime,
-            });
+            };
+
+            res.json(responsePayload);
+
+            const tenantId = req.auth?.organizationId || req.user?.sub;
+            if (tenantId) {
+                try {
+                    const tokenUnits = estimateTokenUnits(command);
+                    await recordUsage({
+                        tenantId,
+                        feature: 'genesis_ai_agent',
+                        quantity: tokenUnits,
+                    });
+                } catch (usageError) {
+                    console.warn('Failed to record AI usage', {
+                        tenantId,
+                        error: usageError?.message || usageError,
+                    });
+                }
+            }
         } catch (err) {
             next(err);
         }

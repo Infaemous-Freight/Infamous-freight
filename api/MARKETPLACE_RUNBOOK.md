@@ -37,6 +37,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 
 # Stripe Price IDs (create these in Stripe Dashboard)
 STRIPE_PRICE_STARTER=price_...
+STRIPE_PRICE_GROWTH=price_...
 STRIPE_PRICE_PRO=price_...
 STRIPE_PRICE_ENTERPRISE=price_...
 
@@ -361,7 +362,7 @@ Minimum price enforced: $9.99
 
 ```bash
 # Check required variables
-node -e "const required = ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'STRIPE_PRICE_STARTER', 'STRIPE_PRICE_PRO', 'STRIPE_PRICE_ENTERPRISE', 'PUBLIC_APP_URL']; required.forEach(v => console.log(v, '=', process.env[v] ? '✓' : '✗'));"
+node -e "const required = ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'STRIPE_PRICE_STARTER', 'STRIPE_PRICE_GROWTH', 'STRIPE_PRICE_PRO', 'STRIPE_PRICE_ENTERPRISE', 'PUBLIC_APP_URL']; required.forEach(v => console.log(v, '=', process.env[v] ? '✓' : '✗'));"
 ```
 
 ## 📚 File Reference
