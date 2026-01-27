@@ -2,6 +2,7 @@ name: Compliance Check
 
 on:
   pull_request:
+    branches: [main, develop]
     paths:
       - 'compliance/policies/**'
       - '.github/workflows/compliance-check.yml'
