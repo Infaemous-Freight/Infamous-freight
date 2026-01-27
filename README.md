@@ -1,6 +1,6 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/f6837275-9828-47d7-86ce-da52f48b6a84/deploy-status)](https://app.netlify.com/projects/infamousfreight/deploys)
 
-# Infamous Freight Enterprises ♊️
+## Infamous Freight Enterprises ♊️
 **AI-Powered Freight & Logistics Automation Platform**
 
 ## Deployment Architecture
