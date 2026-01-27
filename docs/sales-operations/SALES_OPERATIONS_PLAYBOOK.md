@@ -7,6 +7,36 @@
 
 ---
 
+## Phase 8 Positioning & Outreach Messaging
+
+**Positioning Statement**
+
+Infæmous Freight is the AI-first Freight Intelligence Platform — dispatch, finance, AI, and compliance in one system. We are not another TMS.
+
+**Outbound Email (B2B)**
+
+Subject: Cut freight leakage with AI-first audits + dispatch
+
+Hi {{FirstName}},
+
+Infæmous Freight replaces fragmented dispatch, finance, and compliance tools with one AI-first Freight Intelligence Platform. We automate dispatch optimization and invoice audits while surfacing real-time profitability.
+
+Would a 15-minute walkthrough help you see where AI can recover margin this quarter?
+
+– {{SenderName}}
+
+**LinkedIn Connection Note (B2B)**
+
+Hi {{FirstName}} — we built an AI-first freight intelligence platform that unifies dispatch + finance + compliance. Open to share a 3-minute AI audit demo?
+
+**Call Talk Track (Discovery)**
+
+- Identify revenue leakage in dispatch + invoicing
+- Show AI audit report with savings estimate
+- Map integration timeline + pilot scope
+
+---
+
 ## Current Sales State (Jan 2026)
 
 ### Baseline Metrics
@@ -718,4 +748,3 @@ KR4: Reduce sales cycle from 14 → 10 days
 
 Comprehensive sales process with BANT/MEDDIC qualification, 5-stage pipeline,
 CRM workflows, and sales enablement to scale ARR from $1.8M to $5.4M in 2026.
-

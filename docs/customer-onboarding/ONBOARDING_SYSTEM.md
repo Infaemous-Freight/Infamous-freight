@@ -10,7 +10,7 @@
 
 **Problem**: 40% of free trials never activate (no action in first 7 days)
 **Root Cause**: Confusing setup, unclear value proposition
-**Solution**: Guided onboarding to first "aha moment" in <7 days
+**Solution**: Guided onboarding to first "aha moment" in <7 days, anchored on the AI-first Freight Intelligence Platform promise (dispatch + finance + AI + compliance in one system).
 
 ### Time-to-Value Timeline
 
@@ -45,23 +45,23 @@ TOUCHPOINT 1: Welcome Email (Within 1 hour of signup)
     - What to expect (5-day onboarding journey)
     - Quick start guide link
     - Success manager intro & contact info
-  • CTA: "Log in and create your first shipment"
+  • CTA: "Log in and trigger your first AI audit"
 
 TOUCHPOINT 2: In-App Welcome Modal (On first login)
-  • Headline: "Welcome! Let's get your first shipment tracked"
+  • Headline: "Welcome! Let's activate your first AI audit"
   • Subheading: "It takes 2 minutes. Here's how:"
-  • CTA: "Create first shipment" or "Skip, show me around"
+  • CTA: "Run AI audit" or "Skip, show me around"
   • Video: 60-second product overview
 
-ONBOARDING TASK: Create First Shipment
+ONBOARDING TASK: Run AI Invoice Audit
   • Guided workflow:
-    Step 1: Enter shipment details (origin, destination, weight)
-    Step 2: Select carrier (FedEx, UPS, etc.)
-    Step 3: Track shipment real-time
-    Step 4: View shipment map
+    Step 1: Upload a recent invoice (PDF or CSV)
+    Step 2: AI flags anomalies + compliance risks
+    Step 3: Review savings + profitability impact
+    Step 4: Share branded report with team
   • Estimated time: 5 minutes
-  • Success: "🎉 Shipment created! You're tracking your first delivery"
-  • Incentive: "Now let's invite your team" (next step)
+  • Success: "🎉 Audit complete! You just saved revenue"
+  • Incentive: "Now let's invite your dispatch team" (next step)
 ```
 
 ### Day 2-3: Competency Building
@@ -148,9 +148,9 @@ TOUCHPOINT 8: Expansion Offer Email (Day 7 - Monday, if active)
 ### Critical Activation Events
 
 ```
-MILESTONE 1: Day 1 - "First Shipment"
-  • Metric: 80% of new signups create a shipment within 24 hours
-  • Impact: High correlation with conversion (80% → paid vs 15% no shipment)
+MILESTONE 1: Day 1 - "First AI Audit"
+  • Metric: 80% of new signups run an AI invoice audit within 24 hours
+  • Impact: High correlation with conversion (80% → paid vs 15% no audit)
   • How to measure: Event tracking in GA4 / product analytics
 
 MILESTONE 2: Day 3 - "Team Invite"
@@ -188,7 +188,7 @@ OVERALL:
   • On-track to convert: [X]%
 
 MILESTONE COMPLETION:
-  • Day 1 shipment creation: [X]% (target: 80%)
+  • Day 1 AI audit: [X]% (target: 80%)
   • Day 3 team invite: [X]% (target: 60%)
   • Day 5 report generation: [X]% (target: 50%)
   • Day 7 ROI calculation: [X]% (target: 40%)
@@ -291,4 +291,3 @@ CONVERSION RATE:
 
 Guided 7-day activation journey with milestones, segmented paths, and
 metrics to achieve 60%+ activation rate and 20%+ trial-to-paid conversion.
-
