@@ -1,0 +1,25 @@
+name: Autonoma Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run_autonoma_tests:
+    runs-on: ubuntu-latest
+    name: Run Autonoma Tests
+
+    steps:
+      - name: Run Single Test (cmbi807au0172xv01dqu4drhi)
+        id: step-1
+        uses: autonoma-ai/actions/test-runner@3b7b01980e7dd3b04dd77540bf37345282ae3639
+        with:
+          test-id: 'cmbi807au0172xv01dqu4drhi'
+          client-id: ${{ secrets.AUTONOMA_CLIENT_ID }}
+          client-secret: ${{ secrets.AUTONOMA_CLIENT_SECRET }}
+          max-wait-time: '10'
+      - name: Show cmbi807au0172xv01dqu4drhi results
+        if: always()
+        run: |
+          echo "Test status: ${{ steps.step-1.outputs.final-status }}"
+          echo "Message: ${{ steps.step-1.outputs.message }}"
+          echo "View results at: ${{ steps.step-1.outputs.url }}"
