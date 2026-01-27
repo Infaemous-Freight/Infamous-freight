@@ -27,7 +27,7 @@ The Trust/Foundation exists to **protect long-term alignment** and prevent short
 
 ---
 
-## 2) Infæmous Global Charter (v1)
+## 2) Infæmous Freight Global Charter (v1)
 
 ### 2.1 What the AI Is Allowed to Do
 - Optimize freight routing, scheduling, pricing, and supply coordination **within approved safety and fairness constraints**.
