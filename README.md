@@ -15,7 +15,7 @@
 [![Deploy API (Fly.io)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/fly-deploy.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/fly-deploy.yml)
 [![Deploy Web (Vercel)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/vercel-deploy.yml)
 [![Deploy Mobile (Expo)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/mobile-deploy.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/mobile-deploy.yml)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/1510fd23-d20a-48ab-9603-15d3b58aa34b/deploy-status)](https://app.netlify.com/projects/infamousfreight/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/ea96723a-5981-4a9b-a2fc-9c5a367e0313/deploy-status)](https://app.netlify.com/projects/infamousfreight/deploys)
 
 **Live Deployments:**
 
