@@ -252,6 +252,12 @@ importers:
       '@stripe/stripe-js':
         specifier: ^8.6.4
         version: 8.6.4
+      '@types/react':
+        specifier: 19.2.8
+        version: 19.2.8
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.8)
       '@vercel/analytics':
         specifier: ^1.6.1
         version: 1.6.1(next@16.1.4(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
@@ -274,12 +280,6 @@ importers:
       '@next/bundle-analyzer':
         specifier: ^16.1.4
         version: 16.1.4
-      '@types/react':
-        specifier: 19.2.8
-        version: 19.2.8
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.8)
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
