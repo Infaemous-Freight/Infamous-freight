@@ -1,8 +1,3 @@
 packages:
-  - "api"
-  - "web"
-  - "mobile"
+  - "apps/*"
   - "packages/*"
-  - "tests/e2e"
-  - "!archive/**"
-  - "!**/node_modules/**"

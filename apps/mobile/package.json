@@ -1,9 +1,11 @@
 {
   "name": "mobile",
-  "version": "0.0.1",
   "private": true,
   "description": "Placeholder for React Native/Expo app",
   "scripts": {
+    "lint": "echo '(mobile) lint not configured'",
+    "typecheck": "echo '(mobile) typecheck not configured'",
+    "build": "echo '(mobile) build not configured'",
     "dev": "echo 'Mobile app scaffold pending'"
   }
 }

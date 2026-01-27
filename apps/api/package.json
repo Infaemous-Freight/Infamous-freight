@@ -1,10 +1,11 @@
 {
-  "name": "infamous-freight-api",
+  "name": "api",
   "version": "2.2.0",
   "description": "REST API for freight management platform with authentication, billing, AI integration, and voice features",
   "main": "src/server.js",
   "type": "commonjs",
   "license": "Proprietary",
+  "private": true,
   "author": {
     "name": "Santorio Djuan Miles",
     "email": "237955567+MrMiless44@users.noreply.github.com"
@@ -12,9 +13,9 @@
   "copyright": "Copyright © 2025 Infæmous Freight. All Rights Reserved.",
   "scripts": {
     "dev": "node src/server.js",
-    "start": "NODE_ENV=production node src/server.js",
-    "build": "node --check src/server.js",
-    "typecheck": "node --check src/server.js",
+    "start": "node dist/index.js",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "clean": "rm -rf coverage .cache .turbo dist node_modules",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix",
@@ -74,6 +75,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@types/jest": "^30.0.0",
+    "typescript": "^5.5.4",
     "eslint": "^9.39.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-n": "^17.23.1",

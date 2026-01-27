@@ -14,7 +14,7 @@
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start -p 3000",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "next lint",
     "lint:fix": "next lint --fix"
   },
