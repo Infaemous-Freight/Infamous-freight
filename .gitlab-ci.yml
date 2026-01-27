@@ -4,13 +4,13 @@ stages:
 smoke_tests:
   stage: test
   script:
-    - curl -X POST ... --location "https://api.prod.autonoma.app/v1/run/folder/$SMOKE_FOLDER_ID" ...
+    - curl -H "Authorization: Bearer $AUTONOMA_API_TOKEN" -X POST ... --location "https://api.prod.autonoma.app/v1/run/folder/$SMOKE_FOLDER_ID" ...
   only:
     - merge_requests
 
 regression_tests:
   stage: test
   script:
-    - curl -X POST ... --location "https://api.prod.autonoma.app/v1/run/folder/$REGRESSION_FOLDER_ID" ...
+    - curl -H "Authorization: Bearer $AUTONOMA_API_TOKEN" -X POST ... --location "https://api.prod.autonoma.app/v1/run/folder/$REGRESSION_FOLDER_ID" ...
   only:
     - main
