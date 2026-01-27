@@ -45,23 +45,23 @@ const releaseLock = async () => {
   }
 };
 
-const handleShutdown = async (signal) => {
+const handleShutdown = async () => {
   try {
     await releaseLock();
   } catch (error) {
     console.error("Failed to release lock cleanly", error);
   } finally {
-    if (signal) {
-      process.kill(process.pid, signal);
-    }
+    // Ensure process terminates after cleanup completes
+    process.exit(1);
   }
 };
 
-process.on("SIGINT", () => void handleShutdown("SIGINT"));
-process.on("SIGTERM", () => void handleShutdown("SIGTERM"));
+
+process.on("SIGINT", () => void handleShutdown());
+process.on("SIGTERM", () => void handleShutdown());
 process.on("uncaughtException", (error) => {
   console.error(error);
-  void handleShutdown("SIGTERM");
+  void handleShutdown();
 });
 process.on("beforeExit", () => releaseLock());
 
