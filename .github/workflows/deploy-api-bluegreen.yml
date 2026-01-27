@@ -1,0 +1,133 @@
+name: Deploy API (Blue/Green)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "apps/api/**"
+      - "packages/**"
+      - "pnpm-lock.yaml"
+  workflow_call: {}
+
+concurrency:
+  group: deploy-api-bluegreen
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      DOMAIN: api.infamousfreight.com
+      BLUE_CNAME: api-blue.infamousfreight.com
+      GREEN_CNAME: api-green.infamousfreight.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Block deploy during freeze
+        if: vars.PROD_FREEZE == 'true'
+        run: |
+          echo "Production freeze is enabled. Blocking deploy."
+          exit 1
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter infamous-freight-api build
+
+      - name: Decide target color
+        id: color
+        run: |
+          active="${{ secrets.ACTIVE_COLOR_API }}"
+          if [ "$active" = "blue" ]; then
+            echo "target=green" >> "$GITHUB_OUTPUT"
+            echo "active=blue" >> "$GITHUB_OUTPUT"
+          else
+            echo "target=blue" >> "$GITHUB_OUTPUT"
+            echo "active=green" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Prisma migrate deploy (guarded + locked)
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            changed_files="$(git ls-tree -r --name-only "${{ github.sha }}")"
+          else
+            changed_files="$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")"
+          fi
+
+          if echo "$changed_files" | grep -q "^api/prisma/"; then
+            node scripts/db-lock.js migrations 180000
+            pnpm --filter infamous-freight-api prisma migrate deploy
+          else
+            echo "No api/prisma changes detected; skipping Prisma migrate deploy."
+          fi
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Deploy to target color (Fly)
+        uses: superfly/flyctl-actions@1.5
+        with:
+          args: >
+            deploy
+            --config apps/api/fly.${{ steps.color.outputs.target }}.toml
+            --remote-only
+            --strategy rolling
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Health check target
+        run: |
+          if [ "${{ steps.color.outputs.target }}" = "blue" ]; then
+            url="https://api-blue.infamousfreight.com/health"
+          else
+            url="https://api-green.infamousfreight.com/health"
+          fi
+
+          for i in {1..40}; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$url" || true)
+            if [ "$code" = "200" ]; then
+              echo "Target healthy ✅ ($url)"
+              exit 0
+            fi
+            echo "Waiting for health (HTTP $code) ..."
+            sleep 5
+          done
+          echo "Target failed health ❌"
+          exit 1
+
+      - name: Optional smoke test
+        run: |
+          if [ "${{ steps.color.outputs.target }}" = "blue" ]; then
+            base="https://api-blue.infamousfreight.com"
+          else
+            base="https://api-green.infamousfreight.com"
+          fi
+          curl -fsS "$base/health" >/dev/null
+
+      - name: Switch production DNS to target (Cloudflare)
+        run: |
+          if [ "${{ steps.color.outputs.target }}" = "blue" ]; then
+            cname="$BLUE_CNAME"
+          else
+            cname="$GREEN_CNAME"
+          fi
+
+          curl -X PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/${{ secrets.CLOUDFLARE_RECORD_ID_API }}" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data "{\"type\":\"CNAME\",\"name\":\"$DOMAIN\",\"content\":\"$cname\",\"ttl\":60,\"proxied\":true}"
+
+      - name: Persist new ACTIVE_COLOR_API
+        run: |
+          echo "Switched active to ${{ steps.color.outputs.target }} ✅"
+          echo "NOTE: GitHub Actions cannot update secrets directly."
+          echo "Manually update ACTIVE_COLOR_API secret to '${{ steps.color.outputs.target }}' once."
