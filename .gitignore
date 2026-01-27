@@ -82,3 +82,4 @@ ci-logs/
 .lighthouseci/
 .vercel
 .env*.local
+.vercel.api/

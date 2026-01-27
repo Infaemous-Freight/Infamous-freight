@@ -1,5 +1,14 @@
+import path from 'path';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    turbopack: {
+        root: path.join(__dirname, '..', '..'),
+        rootDirectory: path.join(__dirname, '..', '..'),
+    },
+    turbo: {
+        rootDirectory: path.join(__dirname, '..', '..'),
+    },
     reactStrictMode: true,
     swcMinify: true,
     output: 'standalone', // Enable standalone output for Docker/Fly.io

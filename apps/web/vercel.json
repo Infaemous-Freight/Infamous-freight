@@ -1,16 +1,16 @@
 {
   "framework": "nextjs",
-  "buildCommand": "pnpm build",
-  "installCommand": "pnpm install",
+  "buildCommand": "cd .. && pnpm --filter web build",
+  "installCommand": "cd .. && pnpm install --frozen-lockfile",
   "outputDirectory": ".next",
   "env": {
-    "NEXT_PUBLIC_API_BASE_URL": "@infamous-freight-api"
+    "NEXT_PUBLIC_API_BASE_URL": "https://infamous-freight-api.fly.dev"
   },
   "regions": ["iad1"],
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://:api_host/api/:path*"
+      "destination": "https://infamous-freight-api.fly.dev/api/:path*"
     }
   ]
 }

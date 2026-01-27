@@ -7,12 +7,6 @@
   "outputDirectory": "web/.next",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
   "crons": [],
-  "functions": {
-    "api/*.js": {
-      "memory": 3009,
-      "maxDuration": 30
-    }
-  },
   "github": {
     "silent": false,
     "enabled": true,
@@ -21,10 +15,7 @@
   "git": {
     "deploymentEnabled": true
   },
-  "alias": [
-    "infamous-freight.vercel.app",
-    "www.infamous-freight.vercel.app"
-  ],
+  "alias": ["infamous-freight.vercel.app", "www.infamous-freight.vercel.app"],
   "headers": [
     {
       "source": "/(.*)",

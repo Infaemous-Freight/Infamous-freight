@@ -350,6 +350,7 @@ router.post(
  */
 router.post(
     '/webhook',
+    limiters.webhook,
     express.raw({ type: 'application/json' }),
     async (req, res, next) => {
         try {

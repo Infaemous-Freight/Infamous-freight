@@ -97,8 +97,19 @@ const { uploadsRouter } = require("./uploads/router");
 const { validateRuntimeEnv } = require("./config/validate");
 
 const app = express();
+const DEFAULT_REQUEST_TIMEOUT_MS = Number(
+  process.env.REQUEST_TIMEOUT_MS || 30000,
+);
+
+// Prevent hung requests from consuming resources indefinitely
+app.use((req, res, next) => {
+  req.setTimeout(DEFAULT_REQUEST_TIMEOUT_MS);
+  res.setTimeout(DEFAULT_REQUEST_TIMEOUT_MS + 2000);
+  next();
+});
 
 // Validate critical runtime env early
+
 validateRuntimeEnv();
 
 // Initialize Sentry for error tracking (must be early)
@@ -300,9 +311,10 @@ attachErrorHandler(app);
 const apiConfig = config.getApiConfig();
 const port = Number(process.env.PORT ?? apiConfig.port ?? 4000);
 const host = "0.0.0.0";
+let httpServer;
 
 if (require.main === module) {
-  const httpServer = app.listen(port, host, async () => {
+  httpServer = app.listen(port, host, async () => {
     logger.info(`Infamous Freight API listening on ${host}:${port}`);
 
     // Initialize Real-Time WebSocket server
@@ -347,5 +359,38 @@ if (require.main === module) {
     }
   });
 }
+
+const SHUTDOWN_TIMEOUT_MS = 10000;
+
+async function shutdown(signal) {
+  logger.info(`Received ${signal}, shutting down gracefully`);
+  try {
+    const { prisma } = require('./db/prisma');
+    await prisma?.$disconnect?.();
+  } catch (error) {
+    logger.warn('Prisma disconnect failed', { error: error.message });
+  }
+
+  if (httpServer) {
+    httpServer.close((err) => {
+      if (err) {
+        logger.error('HTTP server close error', { error: err.message });
+        process.exit(1);
+      }
+      process.exit(0);
+    });
+
+    setTimeout(() => {
+      logger.error('Force exit after graceful shutdown timeout');
+      process.exit(1);
+    }, SHUTDOWN_TIMEOUT_MS);
+  } else {
+    process.exit(0);
+  }
+}
+
+['SIGTERM', 'SIGINT'].forEach((signal) => {
+  process.on(signal, () => shutdown(signal));
+});
 
 module.exports = app;

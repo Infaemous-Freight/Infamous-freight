@@ -1,6 +1,6 @@
 /**
  * Billing API Routes (Phase 20.6)
- * 
+ *
  * Endpoints for:
  * - Billing portal access (Stripe)
  * - Subscription management
@@ -10,7 +10,7 @@
 
 import { Router } from "express";
 import Stripe from "stripe";
-import { authenticate, requireOrganization, limiters } from "../middleware/security";
+import { authenticate, requireOrganization, requireScope, limiters } from "../middleware/security";
 import { handleValidationErrors, validateString } from "../middleware/validation";
 import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog";
 import { tenantPrisma } from "../db/tenant";
@@ -50,9 +50,10 @@ const prisma = new PrismaClient();
  */
 router.get(
   "/portal",
-  limiters.general,
+  limiters.billing,
   authenticate,
   requireOrganization,
+  requireScope("billing:read"),
   async (req, res, next) => {
     try {
       const orgId = req.auth?.organizationId;
@@ -77,7 +78,7 @@ router.get(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 // ============================================
@@ -93,11 +94,8 @@ router.post(
   limiters.billing,
   authenticate,
   requireOrganization,
-  [
-    body("plan")
-      .isIn(["STARTER", "GROWTH", "ENTERPRISE"])
-      .withMessage("Invalid plan"),
-  ],
+  requireScope("billing:write"),
+  [body("plan").isIn(["STARTER", "GROWTH", "ENTERPRISE"]).withMessage("Invalid plan")],
   handleValidationErrors,
   async (req, res, next) => {
     try {
@@ -115,12 +113,7 @@ router.post(
       }
 
       // Create Stripe subscription
-      const result = await createStripeSubscription(
-        orgId,
-        org.name,
-        plan,
-        req.auth?.email
-      );
+      const result = await createStripeSubscription(orgId, org.name, plan, req.auth?.email);
 
       // Log audit event
       await logAuditEvent(prisma, {
@@ -139,7 +132,7 @@ router.post(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 /**
@@ -151,11 +144,8 @@ router.post(
   limiters.billing,
   authenticate,
   requireOrganization,
-  [
-    body("plan")
-      .isIn(["STARTER", "GROWTH", "ENTERPRISE"])
-      .withMessage("Invalid plan"),
-  ],
+  requireScope("billing:write"),
+  [body("plan").isIn(["STARTER", "GROWTH", "ENTERPRISE"]).withMessage("Invalid plan")],
   handleValidationErrors,
   async (req, res, next) => {
     try {
@@ -185,7 +175,7 @@ router.post(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 /**
@@ -197,12 +187,8 @@ router.post(
   limiters.billing,
   authenticate,
   requireOrganization,
-  [
-    body("immediately")
-      .optional()
-      .isBoolean()
-      .withMessage("immediately must be boolean"),
-  ],
+  requireScope("billing:write"),
+  [body("immediately").optional().isBoolean().withMessage("immediately must be boolean")],
   handleValidationErrors,
   async (req, res, next) => {
     try {
@@ -230,7 +216,7 @@ router.post(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 /**
@@ -239,9 +225,10 @@ router.post(
  */
 router.get(
   "/subscription",
-  limiters.general,
+  limiters.billing,
   authenticate,
   requireOrganization,
+  requireScope("billing:read"),
   async (req, res, next) => {
     try {
       const orgId = req.auth?.organizationId;
@@ -261,7 +248,7 @@ router.get(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 // ============================================
@@ -274,9 +261,10 @@ router.get(
  */
 router.get(
   "/usage",
-  limiters.general,
+  limiters.billing,
   authenticate,
   requireOrganization,
+  requireScope("billing:read"),
   async (req, res, next) => {
     try {
       const orgId = req.auth?.organizationId;
@@ -305,7 +293,7 @@ router.get(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 /**
@@ -314,9 +302,10 @@ router.get(
  */
 router.get(
   "/usage/summary",
-  limiters.general,
+  limiters.billing,
   authenticate,
   requireOrganization,
+  requireScope("billing:read"),
   [
     query("from")
       .matches(/^\d{4}-\d{2}$/)
@@ -340,7 +329,7 @@ router.get(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 // ============================================
@@ -353,9 +342,10 @@ router.get(
  */
 router.get(
   "/invoice/:month",
-  limiters.general,
+  limiters.billing,
   authenticate,
   requireOrganization,
+  requireScope("billing:read"),
   async (req, res, next) => {
     try {
       const orgId = req.auth?.organizationId;
@@ -376,7 +366,7 @@ router.get(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 /**
@@ -388,6 +378,7 @@ router.post(
   limiters.billing,
   authenticate,
   requireOrganization,
+  requireScope("billing:write"),
   async (req, res, next) => {
     try {
       const orgId = req.auth?.organizationId;
@@ -410,7 +401,7 @@ router.post(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 // ============================================
