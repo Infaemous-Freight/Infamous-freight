@@ -113,6 +113,29 @@ autonoma_tests:
     - merge_requests
 ```
 
+## 🧩 CircleCI Integration
+
+1. Add credentials in CircleCI: **Project Settings → Environment Variables**
+   - `CLIENT_ID`
+   - `CLIENT_SECRET`
+2. Add this to `.circleci/config.yml`:
+```yaml
+jobs:
+  test:
+    steps:
+      - run:
+          name: Run Autonoma Tests
+          command: |
+            curl -X POST \
+              --silent \
+              --retry 3 \
+              --retry-connrefused \
+              --location "https://api.prod.autonoma.app/v1/run/folder/$FOLDER_ID" \
+              --header "autonoma-client-id: $CLIENT_ID" \
+              --header "autonoma-client-secret: $CLIENT_SECRET" \
+              --header "Content-Type: application/json" || true
+```
+
 ## 🧩 Bitbucket Pipelines Integration
 
 1. Add repository variables in Bitbucket:
