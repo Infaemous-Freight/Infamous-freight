@@ -32,8 +32,9 @@ This report captures the verification steps that can be executed from this envir
 **Fly CLI:**
 - `fly` is not installed in this environment, so `fly status -a ...` cannot be run.
 
-## 4) Genesis AI (Fly.io Blue/Green)
+## 4) Genesis AI (Fly.io)
 
+**Note:** The specific deployment strategy for Genesis AI (e.g., blue/green) is not verifiable from this environment.
 **Health endpoint checks (curl):**
 - `https://genesis.infamousfreight.com/health` → `000`
 - `https://genesis-blue.infamousfreight.com/health` → `000`
