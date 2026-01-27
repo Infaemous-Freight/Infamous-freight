@@ -63,7 +63,7 @@ jobs:
         with:
           args: >
             deploy
-            --config apps/genesis-ai/fly.${{ steps.active.outputs.target }}.toml
+            --config apps/genesis-ai/fly.toml
             --remote-only
             --strategy rolling
         env:
