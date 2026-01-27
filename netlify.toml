@@ -3,7 +3,7 @@
 [build]
   # Build from repo root to support pnpm workspaces
   base = "."
-  command = "corepack enable && pnpm install --frozen-lockfile --prod=false && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
+  command = "corepack enable && pnpm install --frozen-lockfile --prod && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
   publish = "web/.next"
   # The Next.js Netlify plugin will set the functions output
 
@@ -57,12 +57,12 @@
 
 ## Contexts
 [context.production]
-  command = "corepack enable && pnpm install --frozen-lockfile --prod=false && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
+  command = "corepack enable && pnpm install --frozen-lockfile --prod && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
   [context.production.environment]
     NODE_ENV = "production"
 
 [context.deploy-preview]
-  command = "corepack enable && pnpm install --frozen-lockfile --prod=false && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
+  command = "corepack enable && pnpm install --frozen-lockfile --prod && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
 
 [context.branch-deploy]
-  command = "corepack enable && pnpm install --frozen-lockfile --prod=false && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
+  command = "corepack enable && pnpm install --frozen-lockfile && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
