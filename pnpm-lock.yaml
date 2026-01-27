@@ -21,7 +21,7 @@ importers:
         specifier: ^10.1.8
         version: 10.1.8(eslint@9.39.2(jiti@2.6.1))
       pg:
-        specifier: ^8.13.1
+        specifier: ~8.17.2
         version: 8.17.2
     devDependencies:
       '@21yunbox/netlify-plugin-21yunbox-deploy-to-china-cdn':
@@ -220,6 +220,8 @@ importers:
       supertest:
         specifier: ^7.1.4
         version: 7.2.2
+
+  mobile: {}
 
   packages/shared:
     devDependencies:
