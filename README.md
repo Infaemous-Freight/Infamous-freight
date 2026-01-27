@@ -7,12 +7,13 @@
 
 Infamous Freight operates a multi-platform, enterprise-grade CI/CD pipeline designed for reliability, scalability, and zero-drift builds.
 
-### 🌐 Web (Netlify — Primary Frontend)
+### 🌐 Web Frontend (Netlify primary, Vercel secondary)
 - Auto-deploys on every push to `main`
 - pnpm workspace monorepo support
 - Locked dependency installs via `pnpm install --frozen-lockfile`
 - Shared packages build before web app
 - Next.js runtime with Edge + Functions support
+- Deployed to Netlify as the primary frontend, with Vercel used for preview/secondary environments
 - Cache-safe builds using Corepack + pinned pnpm
 
 ### 🔌 API (Fly.io)
