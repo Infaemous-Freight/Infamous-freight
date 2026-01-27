@@ -1,133 +1,98 @@
-name: Deploy to Vercel (Web) + Fly (API)
+name: Deploy
 
 on:
-  # This workflow is intended to be used as a reusable workflow from cd.yml and
-  # other orchestrator workflows, not triggered directly.
-  workflow_call:
+  push:
+    branches: [main]
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/api
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  # ==================== WEB DEPLOYMENT (VERCEL) ====================
-  deploy-web:
+  changes:
     runs-on: ubuntu-latest
-    env:
-      # NOTE: Breaking change – secret name was renamed from VERCEL_PROJECT_ID_WEB to VERCEL_PROJECT_ID.
-      # Ensure repository settings define a VERCEL_PROJECT_ID secret before this workflow runs,
-      # and call out this change in the PR description / deployment documentation when updating.
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+      api: ${{ steps.filter.outputs.api }}
+      mobile: ${{ steps.filter.outputs.mobile }}
+      ai: ${{ steps.filter.outputs.ai }}
+      shared: ${{ steps.filter.outputs.shared }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            web:
+              - "apps/web/**"
+              - "packages/shared/**"
+            api:
+              - "apps/api/**"
+              - "packages/shared/**"
+            mobile:
+              - "apps/mobile/**"
+              - "packages/shared/**"
+            ai:
+              - "apps/ai/**"
+              - "packages/shared/**"
+            shared:
+              - "packages/shared/**"
+
+  verify:
+    runs-on: ubuntu-latest
+    needs: [changes]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm -r --topological run build --if-present
+
+  deploy_web:
+    needs: [changes, verify]
+    if: needs.changes.outputs.web == 'true' && secrets.NETLIFY_BUILD_HOOK != ''
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -X POST "$NETLIFY_BUILD_HOOK"
+        env:
+          NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+
+  deploy_api:
+    needs: [changes, verify]
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
+      - uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Pull Vercel env (Production)
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: web
-
-      - name: Build (Prod)
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: web
-
-      - name: Deploy (Prod)
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: web
-
-  # ==================== API DEPLOYMENT (FLY.IO) ====================
-  deploy-api:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./api
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
-
-      - name: Deploy to Fly.io
-        uses: superfly/flyctl-actions/setup-flyctl@v1.5.0
-
-      - name: Deploy API
-        run: flyctl deploy --remote-only
+      - run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        working-directory: api
 
-      - name: Health check
-        run: |
-          sleep 10
-          curl -f https://${{ secrets.FLY_APP_NAME }}.fly.dev/api/health || exit 1
-
-  # ==================== DATABASE MIGRATIONS ====================
-  migrate-db:
+  deploy_mobile:
+    needs: [changes, verify]
+    if: needs.changes.outputs.mobile == 'true'
     runs-on: ubuntu-latest
-    needs: deploy-api
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "20.11.0"
+          node-version: 20
+          cache: pnpm
 
-      - name: Install dependencies
-        run: npm ci --workspace=api
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
 
-      - name: Run Prisma migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npm run prisma:migrate --workspace=api
-
-  # ==================== SMOKE TESTS ====================
-  smoke-tests:
-    runs-on: ubuntu-latest
-    needs: [deploy-web, deploy-api, migrate-db]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Health check API
-        run: |
-          API_URL="https://${{ secrets.FLY_APP_NAME }}.fly.dev"
-          curl -f "$API_URL/api/health" || exit 1
-
-      - name: Health check Web
-        run: |
-          WEB_URL="https://${{ secrets.VERCEL_URL }}"
-          curl -f "$WEB_URL/" || exit 1
-
-      - name: Test dispatch endpoint
-        run: |
-          API_URL="https://${{ secrets.FLY_APP_NAME }}.fly.dev"
-          curl -f "$API_URL/api/dispatch/drivers" \
-            -H "Authorization: Bearer ${{ secrets.TEST_JWT_TOKEN }}" || exit 1
-
-      - name: Autonoma Smoke Tests - Authentication and Checkout
-        id: autonoma-auth-checkout
-        uses: autonoma-ai/actions/test-runner@v1.0.0
+      - uses: expo/expo-github-action@v8
         with:
-          test-id: ${{ secrets.AUTONOMA_AUTH_CHECKOUT_TEST_ID }}
-          client-id: ${{ secrets.AUTONOMA_CLIENT_ID }}
-          client-secret: ${{ secrets.AUTONOMA_CLIENT_SECRET }}
-          max-wait-time: '15'
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - run: cd apps/mobile && eas build --platform all --non-interactive
