@@ -2,7 +2,7 @@ services:
   api:
     volumes:
       - ./:/app
-      - ./src/apps/api:/app/src/apps/api
+      - ./api:/app/api
     command: sh -c "cd /app && HUSKY=0 pnpm install && pnpm --filter api dev"
 
   web:
