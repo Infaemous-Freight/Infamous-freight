@@ -111,6 +111,10 @@ Welcome to the Infamous Freight Enterprise documentation! This index will help y
 - **[Investor Technical Appendix](investor-technical-appendix.md)** - Technical details for investors
 - **[Pilot Case Study](pilot-case-study.md)** - Case study documentation
 
+## Governance & Legacy
+
+- **[Legacy Protocol v1](governance/LEGACY_PROTOCOL_V1.md)** - Civilizational governance doctrine
+
 ## Session Notes
 
 Historical development session notes are available in the [sessions/](sessions/) directory.
