@@ -1,0 +1,12 @@
+{
+  "name": "ai",
+  "private": true,
+  "scripts": {
+    "lint": "echo '(ai) lint not configured'",
+    "typecheck": "echo '(ai) typecheck not configured'",
+    "build": "echo '(ai) build not configured'"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
