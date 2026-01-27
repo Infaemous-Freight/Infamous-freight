@@ -128,9 +128,10 @@ router.get("/health/ready", auditLog, asyncHandler(async (_req, res) => {
     checks.cache = { status: "healthy", message: "Redis not configured" };
   } else {
     const cacheStats = await getCacheStats();
+    const isCacheConnected = cacheStats.connected !== false;
     checks.cache = {
-      status: cacheStats.connected ? "healthy" : "unhealthy",
-      message: cacheStats.connected ? "Redis connected" : "Redis unavailable",
+      status: isCacheConnected ? "healthy" : "unhealthy",
+      message: isCacheConnected ? "Redis connected" : "Redis unavailable",
       stats: cacheStats,
     };
   }
