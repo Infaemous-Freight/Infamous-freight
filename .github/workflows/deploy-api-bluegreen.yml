@@ -63,8 +63,18 @@ jobs:
           fi
 
           if echo "$changed_files" | grep -q "^api/prisma/"; then
-            node scripts/db-lock.js migrations 180000
+            # Start DB lock process in the background and keep it alive during migration
+            node scripts/db-lock.js migrations 180000 &
+            db_lock_pid=$!
+
+            # Ensure the lock process is cleaned up on exit or error
+            trap 'kill "$db_lock_pid" 2>/dev/null || true' EXIT
+
             pnpm --filter infamous-freight-api prisma migrate deploy
+
+            # Migration complete; release the lock and remove the trap
+            kill "$db_lock_pid" 2>/dev/null || true
+            trap - EXIT
           else
             echo "No api/prisma changes detected; skipping Prisma migrate deploy."
           fi
