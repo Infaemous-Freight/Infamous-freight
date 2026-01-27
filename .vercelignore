@@ -9,7 +9,6 @@ pnpm-lock.yaml.orig
 
 src/apps/api
 src/apps/mobile
-api
 mobile
 
 # Build outputs (keep web .next)
