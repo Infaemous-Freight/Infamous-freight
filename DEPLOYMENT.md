@@ -4,6 +4,8 @@
 
 This guide outlines a complete, production-ready deployment using Docker Compose with PostgreSQL, Redis, API, and Web services.
 
+At a high level, there are two supported deployment strategies: the Docker Compose sections below (PostgreSQL, Redis, API, Web) are intended for local development and optional self-hosted production, while the Managed cloud platforms sections (Web (Netlify), API (Fly.io), Mobile (Expo EAS)) are the recommended CI/CD-backed production deployments, using configs in [`.github/workflows/`](.github/workflows/), [`netlify.toml`](netlify.toml), [`fly.toml`](fly.toml), and [`eas.json`](eas.json). For production, prefer the managed cloud platforms approach; use Docker Compose for development, backups, or self-hosted fallbacks.
+
 ## Prerequisites
 - A Linux host with Docker and Docker Compose v2
 - A production `.env` file at repo root with real secrets
