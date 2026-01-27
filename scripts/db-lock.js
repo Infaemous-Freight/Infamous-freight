@@ -69,3 +69,8 @@ while (true) {
     await sleep(retryDelayMs);
   }
 }
+
+// Keep the process alive so the lock is held until an external signal
+// (e.g., SIGINT or SIGTERM) triggers a clean shutdown and lock release.
+console.log(`Lock ${lockName} is now held; waiting for termination signal to release it.`);
+await new Promise(() => {});
