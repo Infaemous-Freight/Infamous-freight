@@ -110,13 +110,14 @@ jobs:
             cname="$GREEN_CNAME"
           fi
 
-          curl -sS -X PUT \
+          resp=$(curl -sS -X PUT \
             "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/${{ secrets.CLOUDFLARE_RECORD_ID_API }}" \
             -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data "{\"type\":\"CNAME\",\"name\":\"$PROD_DOMAIN\",\"content\":\"$cname\",\"ttl\":60,\"proxied\":true}" \
-            | jq -e '.success==true' >/dev/null
+            --data "{\"type\":\"CNAME\",\"name\":\"$PROD_DOMAIN\",\"content\":\"$cname\",\"ttl\":60,\"proxied\":true}")
 
+          echo "Cloudflare response: $resp"
+          echo "$resp" | jq -e '.success==true' >/dev/null
           echo "Flipped prod to ${{ steps.active.outputs.target }} ✅"
 
       - name: Verify production health after flip
