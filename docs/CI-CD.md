@@ -149,6 +149,22 @@ curl -X POST \
   --header 'Content-Type: application/json' || true
 ```
 
+Replace the placeholders above with your real values. If you prefer environment
+variables, set them and run:
+```bash
+FOLDER_ID="your-folder-id" \
+CLIENT_ID="your-client-id" \
+CLIENT_SECRET="your-client-secret" \
+curl -X POST \
+  --silent \
+  --retry 3 \
+  --retry-connrefused \
+  --location "https://api.prod.autonoma.app/v1/run/folder/$FOLDER_ID" \
+  --header "autonoma-client-id: $CLIENT_ID" \
+  --header "autonoma-client-secret: $CLIENT_SECRET" \
+  --header "Content-Type: application/json" || true
+```
+
 ## 🧠 Best Practices
 
 1. **Run different tests at different stages**
