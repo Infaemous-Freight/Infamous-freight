@@ -31,7 +31,7 @@ COPY tests/e2e/package.json ./tests/e2e/package.json
 
 # Install dependencies with frozen lockfile
 ENV HUSKY=0
-RUN pnpm install:ci --prod=false
+RUN pnpm install --frozen-lockfile --prod=false
 
 # Stage 2: Build shared packages
 FROM base AS shared-builder
