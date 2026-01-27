@@ -1,3 +1,36 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/f6837275-9828-47d7-86ce-da52f48b6a84/deploy-status)](https://app.netlify.com/projects/infamousfright/deploys)
+
+# Infamous Freight Enterprises ♊️
+**AI-Powered Freight & Logistics Automation Platform**
+
+## Deployment Architecture
+
+Infamous Freight operates a multi-platform, enterprise-grade CI/CD pipeline designed for reliability, scalability, and zero-drift builds.
+
+### 🌐 Web (Netlify — Primary Frontend)
+- Auto-deploys on every push to `main`
+- pnpm workspace monorepo support
+- Locked dependency installs via `pnpm install --frozen-lockfile`
+- Shared packages build before web app
+- Next.js runtime with Edge + Functions support
+- Cache-safe builds using Corepack + pinned pnpm
+
+### 🔌 API (Fly.io)
+- Deployed via GitHub Actions
+- Prisma migrations validated per release
+- Zero-downtime rolling deployments
+- Health-checked with automatic rollback
+
+### 📱 Mobile (Expo EAS)
+- OTA updates enabled
+- Release channels synced to GitHub environments
+- Store builds aligned with CI pipeline
+
+### 🔐 CI Integrity
+- All platforms share version-locked tooling
+- No environment drift between local and CI
+- Build reproducibility enforced across pipelines
+
 # Infæmous Freight
 
 **Version: v2.0.0** | **Proprietary Software** | **© 2025 Infæmous Freight. All Rights Reserved.**
