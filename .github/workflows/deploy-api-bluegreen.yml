@@ -5,11 +5,9 @@ on:
     branches: [main]
     paths:
       - "api/**"
-      - "apps/api/**"
       - "packages/**"
       - "pnpm-lock.yaml"
   workflow_call: {}
-
 concurrency:
   group: deploy-api-bluegreen
   cancel-in-progress: false
