@@ -63,6 +63,17 @@ Infamous Freight operates a multi-platform, enterprise-grade CI/CD pipeline desi
    - `YUNBOX_TOKEN` and `YUNBOX_SITE_ID` (per plugin docs)
    - Optionally set `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_API_BASE` to your public API.
 
+### 🗄️ Netlify + Neon Database Access
+- Netlify can auto-provide `NETLIFY_DATABASE_URL` for Neon.
+- Example query using the Netlify Neon client:
+
+```js
+import { neon } from '@netlify/neon';
+const sql = neon(); // automatically uses env NETLIFY_DATABASE_URL
+
+const [post] = await sql`SELECT * FROM posts WHERE id = ${postId}`;
+```
+
 > **🎉 100% AUTO-DEPLOYMENT READY!** All platforms configured with smart change detection. Push to `main` to deploy automatically!
 
 **Quick Start:**
