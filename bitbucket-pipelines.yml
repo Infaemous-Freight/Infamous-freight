@@ -1,0 +1,13 @@
+pipelines:
+  default:
+    - step:
+        name: Deploy
+        script:
+          - curl -X POST \
+              --silent \
+              --retry 3 \
+              --retry-connrefused \
+              --location "https://api.prod.autonoma.app/v1/run/folder/$FOLDER_ID" \
+              --header "autonoma-client-id: $CLIENT_ID" \
+              --header "autonoma-client-secret: $CLIENT_SECRET" \
+              --header "Content-Type: application/json" || true
