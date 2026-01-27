@@ -8,6 +8,9 @@ primary_region = 'iad'
 
 [build]
 
+[env]
+  API_PORT = "8080"
+
 [http_service]
   internal_port = 3001
   force_https = true
