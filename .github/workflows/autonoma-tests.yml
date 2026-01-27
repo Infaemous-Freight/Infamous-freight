@@ -23,3 +23,11 @@ jobs:
           echo "Test status: ${{ steps.step-1.outputs.final-status }}"
           echo "Message: ${{ steps.step-1.outputs.message }}"
           echo "View results at: ${{ steps.step-1.outputs.url }}"
+
+          {
+            echo "### Autonoma Test cmbi807au0172xv01dqu4drhi"
+            echo ""
+            echo "- Status: ${{ steps.step-1.outputs.final-status }}"
+            echo "- Message: ${{ steps.step-1.outputs.message }}"
+            echo "- Results: ${{ steps.step-1.outputs.url }}"
+          } >> "$GITHUB_STEP_SUMMARY"
