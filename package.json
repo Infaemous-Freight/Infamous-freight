@@ -45,6 +45,9 @@
     "env:validate": "./scripts/env-validate.sh",
     "env:check": "./scripts/env-validate.sh",
     "release:version": "node ./scripts/release-version.js",
+    "release:patch": "pnpm -r version patch --no-git-tag-version",
+    "release:minor": "pnpm -r version minor --no-git-tag-version",
+    "release:major": "pnpm -r version major --no-git-tag-version",
     "security:audit": "pnpm audit --audit-level=high",
     "security:check": "pnpm audit && npm run lint",
     "prepare": "husky install || true"

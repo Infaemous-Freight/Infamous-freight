@@ -14,6 +14,7 @@ if (process.env.DD_TRACE_ENABLED === "true") {
   }
 }
 const express = require("express");
+const { version: packageVersion } = require("../package.json");
 const { corsMiddleware } = require("./middleware/cors");
 const path = require("path");
 const swaggerUi = require("swagger-ui-express");
@@ -194,7 +195,22 @@ if (
 ) {
   app.use("/api/marketplace", marketplaceMetricsRouter);
 }
-app.get("/health", (_req, res) => res.status(200).send("ok"));
+app.get("/health", (_req, res) => {
+  const gitSha =
+    process.env.GIT_SHA ||
+    process.env.RELEASE_SHA ||
+    process.env.COMMIT_SHA ||
+    process.env.VERCEL_GIT_COMMIT_SHA ||
+    "unknown";
+
+  res.status(200).json({
+    status: "ok",
+    version: gitSha,
+    appVersion: packageVersion || "2.0.0",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // Mount Bull Board (ops dashboard)
 try {

@@ -11,10 +11,17 @@ const router = express.Router();
 
 // Basic health check
 router.get("/health", auditLog, asyncHandler(async (_req, res) => {
+  const gitSha =
+    process.env.GIT_SHA ||
+    process.env.RELEASE_SHA ||
+    process.env.COMMIT_SHA ||
+    process.env.VERCEL_GIT_COMMIT_SHA ||
+    "unknown";
   const healthData = {
     status: "ok",
     service: "infamous-freight-api",
-    version: version || "2.0.0",
+    version: gitSha,
+    appVersion: version || "2.0.0",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || "development",
@@ -25,6 +32,12 @@ router.get("/health", auditLog, asyncHandler(async (_req, res) => {
 
 // Detailed health check with service dependencies
 router.get("/health/detailed", auditLog, asyncHandler(async (_req, res) => {
+  const gitSha =
+    process.env.GIT_SHA ||
+    process.env.RELEASE_SHA ||
+    process.env.COMMIT_SHA ||
+    process.env.VERCEL_GIT_COMMIT_SHA ||
+    "unknown";
   const checks = {
     api: { status: "healthy", message: "API is running" },
     database: { status: "unknown", message: "Not checked" },
@@ -97,7 +110,8 @@ router.get("/health/detailed", auditLog, asyncHandler(async (_req, res) => {
   const healthData = {
     status: overallStatus,
     service: "infamous-freight-api",
-    version: version || "2.0.0",
+    version: gitSha,
+    appVersion: version || "2.0.0",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || "development",
