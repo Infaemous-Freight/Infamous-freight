@@ -221,9 +221,10 @@ app.get("/ready", async (_req, res) => {
   } else {
     try {
       const cacheStats = await cacheService.getStats();
+      const isConnected = cacheStats.connected ?? true;
       checks.cache = {
-        status: cacheStats.connected ? "healthy" : "unhealthy",
-        message: cacheStats.connected ? "Redis connected" : "Redis unavailable",
+        status: isConnected ? "healthy" : "unhealthy",
+        message: isConnected ? "Redis connected" : "Redis unavailable",
       };
     } catch (error) {
       checks.cache = {
