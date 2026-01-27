@@ -43,7 +43,7 @@ Infæmous Freight is engineered as a civilization-aligned institution. This prot
 Each AI generation must:
 - Inherit core safety constraints and the Legacy Protocol without regression.
 - Be audited against all prior failures and near-misses.
-- Pass civilization-impact tests and adversarial safety evaluations.
+- Pass civilizational-impact tests and adversarial safety evaluations.
 - Publish a signed “Ethics Continuity Report” before deployment.
 
 ### B) Knowledge Continuity Core
