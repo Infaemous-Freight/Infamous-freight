@@ -11,7 +11,3 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# Optional: only keep if you truly use these
-# [[plugins]]
-# package = "@netlify/plugin-lighthouse"
