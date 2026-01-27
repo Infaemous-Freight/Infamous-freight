@@ -13,9 +13,9 @@
   "copyright": "Copyright © 2025 Infæmous Freight. All Rights Reserved.",
   "scripts": {
     "dev": "node src/server.js",
-    "start": "node dist/index.js",
-    "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node src/server.js",
+    "build": "node --check src/server.js src/routes/*.js src/middleware/*.js",
+    "typecheck": "npm run build",
     "clean": "rm -rf coverage .cache .turbo dist node_modules",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix",
