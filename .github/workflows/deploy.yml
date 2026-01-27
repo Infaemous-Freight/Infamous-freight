@@ -122,3 +122,12 @@ jobs:
           API_URL="https://${{ secrets.FLY_APP_NAME }}.fly.dev"
           curl -f "$API_URL/api/dispatch/drivers" \
             -H "Authorization: Bearer ${{ secrets.TEST_JWT_TOKEN }}" || exit 1
+
+      - name: Autonoma Smoke Tests - Authentication and Checkout
+        id: autonoma-auth-checkout
+        uses: autonoma-ai/actions/test-runner@v1.0.0
+        with:
+          test-id: ${{ secrets.AUTONOMA_AUTH_CHECKOUT_TEST_ID }}
+          client-id: ${{ secrets.AUTONOMA_CLIENT_ID }}
+          client-secret: ${{ secrets.AUTONOMA_CLIENT_SECRET }}
+          max-wait-time: '15'
