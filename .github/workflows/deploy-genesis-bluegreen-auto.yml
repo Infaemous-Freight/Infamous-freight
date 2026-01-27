@@ -105,9 +105,32 @@ jobs:
         run: |
           cname="$GREEN_CNAME"
           if [ "${{ steps.active.outputs.active }}" = "blue" ]; then cname="$BLUE_CNAME"; fi
-          curl -sS -X PUT \
-            "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/${{ secrets.CLOUDFLARE_RECORD_ID_GENESIS }}" \
-            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            --data "{\"type\":\"CNAME\",\"name\":\"$PROD_DOMAIN\",\"content\":\"$cname\",\"ttl\":60,\"proxied\":true}" \
-            | jq -e '.success==true' >/dev/null
+
+          echo "Attempting to revert Cloudflare DNS for $PROD_DOMAIN back to $cname"
+
+          success=0
+          for attempt in 1 2 3; do
+            echo "Cloudflare DNS revert attempt $attempt..."
+            response=$(curl -sS -X PUT \
+              "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/${{ secrets.CLOUDFLARE_RECORD_ID_GENESIS }}" \
+              -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              --data "{\"type\":\"CNAME\",\"name\":\"$PROD_DOMAIN\",\"content\":\"$cname\",\"ttl\":60,\"proxied\":true}")
+
+            echo "Cloudflare API response (revert attempt $attempt):"
+            echo "$response"
+
+            if echo "$response" | jq -e '.success==true' >/dev/null 2>&1; then
+              echo "DNS revert succeeded on attempt $attempt."
+              success=1
+              break
+            else
+              echo "DNS revert attempt $attempt failed; Cloudflare API indicated unsuccessful operation."
+              sleep 5
+            fi
+          done
+
+          if [ "$success" -ne 1 ]; then
+            echo "ERROR: Failed to revert Cloudflare DNS for $PROD_DOMAIN back to $cname after multiple attempts." >&2
+            exit 1
+          fi
