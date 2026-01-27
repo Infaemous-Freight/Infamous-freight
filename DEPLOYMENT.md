@@ -61,10 +61,23 @@ Expected:
 - Compose health checks poll both services for readiness
 
 ## 7) CI/CD (Optional)
-- Web: deploy on Vercel. Set `NEXT_PUBLIC_API_URL` to your API domain.
-- API: deploy to Fly.io or a VM using the Compose file. If using Fly:
-  - Create `FLY_API_TOKEN` secret in GitHub
-  - Add a workflow to run `flyctl deploy` against `src/apps/api/Dockerfile`
+Infamous Freight uses a multi-platform CI/CD pipeline with Netlify handling the primary web deployment layer.
+
+### Web (Netlify)
+- Automatic deploys on every push to `main`
+- Locked dependency install via `pnpm install --frozen-lockfile`
+- pnpm workspace monorepo build order enforced
+- Shared packages build before web app
+- Next.js runtime with Netlify Edge + Functions support
+
+### API (Fly.io)
+- Deployed via GitHub Actions
+- Prisma migrations validated per release
+- Zero-downtime rolling deploys
+
+### Mobile (Expo EAS)
+- OTA updates enabled
+- Release channels aligned with GitHub environments
 
 ## 8) Troubleshooting
 - Update shared types after changes: `pnpm --filter @infamous-freight/shared build`
