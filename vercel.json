@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "buildCommand": "if [ -d web ]; then cd web; fi; bash scripts/validate-build.sh && pnpm build",
+  "buildCommand": "if [ -d web ]; then bash web/scripts/validate-build.sh && pnpm --filter web build; else bash scripts/validate-build.sh && pnpm build; fi",
   "devCommand": "if [ -d web ]; then pnpm --filter web dev; else pnpm dev; fi",
   "installCommand": "if [ -f pnpm-workspace.yaml ]; then pnpm install --frozen-lockfile --filter web...; elif [ -f ../pnpm-workspace.yaml ]; then cd .. && pnpm install --frozen-lockfile --filter web...; else pnpm install --frozen-lockfile; fi",
   "outputDirectory": "web/.next",
