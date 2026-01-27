@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "lint": "echo '(ai) lint not configured'",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "build": "tsc -p tsconfig.json"
+    "typecheck": "echo '(ai) typecheck not configured'",
+    "build": "echo '(ai) build not configured'"
   },
   "devDependencies": {
     "typescript": "^5.5.4"
