@@ -1,7 +1,7 @@
-# Phase 13 — Stewardship, Sustainability, and Long-Term Human Alignment (Governance Pack v1)
+# Phase 14 — Stewardship, Sustainability, and Long-Term Human Alignment (Governance Pack v1)
 
 ## Purpose
-This document converts the Phase 13 vision into an actionable governance starter kit. It formalizes the **Institutional Stewardship Model**, the **Global Charter**, and the **Safety & Ethics Policy** so Infæmous Freight can remain aligned, accountable, and resilient over multiple generations.
+This document converts the Phase 14 vision into an actionable governance starter kit. It formalizes the **Institutional Stewardship Model**, the **Global Charter**, and the **Safety & Ethics Policy** so Infæmous Freight can remain aligned, accountable, and resilient over multiple generations.
 
 ---
 
