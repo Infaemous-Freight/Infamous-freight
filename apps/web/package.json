@@ -30,6 +30,7 @@
     "next": "^16.1.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "styled-jsx": "^5.1.7",
     "recharts": "^3.7.0"
   },
   "devDependencies": {

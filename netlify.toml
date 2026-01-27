@@ -1,6 +1,6 @@
 [build]
   command = "pnpm -r --filter @infamous-freight/shared build && pnpm --filter web build"
-  publish = "web/.next"
+  publish = "apps/web/.next"
 
 [build.environment]
   NODE_VERSION = "20"

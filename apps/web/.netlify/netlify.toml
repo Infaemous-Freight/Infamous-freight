@@ -1,0 +1,40 @@
+headers = []
+redirects = []
+
+[functions]
+
+[functions."*"]
+
+[[plugins]]
+origin = "config"
+package = "@netlify/plugin-nextjs"
+
+[plugins.inputs]
+
+[[plugins]]
+origin = "ui"
+package = "@netlify/plugin-lighthouse"
+pinned_version = "6"
+
+[plugins.inputs]
+
+[build]
+publish = "/opt/build/repo/apps/web/.next"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "corepack enable && pnpm install --frozen-lockfile && pnpm --filter web build"
+base = "/opt/build/repo/apps/web"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]

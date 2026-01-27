@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     // Next.js requires ES2020 target and broader lib for DOM APIs
     "target": "ES2020",
