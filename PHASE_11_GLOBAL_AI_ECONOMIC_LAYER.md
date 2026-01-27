@@ -204,4 +204,4 @@ At Phase 11, Infæmous Freight sits alongside:
 - AWS (infrastructure)
 - WTO (trade governance)
 
-—but AI-native and vertically integrated.
+But AI-native and vertically integrated.
