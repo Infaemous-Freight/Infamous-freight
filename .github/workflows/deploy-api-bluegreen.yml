@@ -119,11 +119,30 @@ jobs:
             cname="$GREEN_CNAME"
           fi
 
-          curl -X PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/${{ secrets.CLOUDFLARE_RECORD_ID_API }}" \
+          echo "Updating Cloudflare DNS record for $DOMAIN to CNAME $cname"
+
+          response=$(curl -s -w "\n%{http_code}" -X PUT "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/${{ secrets.CLOUDFLARE_RECORD_ID_API }}" \
             -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data "{\"type\":\"CNAME\",\"name\":\"$DOMAIN\",\"content\":\"$cname\",\"ttl\":60,\"proxied\":true}"
+            --data "{\"type\":\"CNAME\",\"name\":\"$DOMAIN\",\"content\":\"$cname\",\"ttl\":60,\"proxied\":true}")
 
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+
+          echo "Cloudflare response HTTP status: $http_code"
+          echo "Cloudflare response body: $body"
+
+          if [ "$http_code" != "200" ]; then
+            echo "❌ Failed to update Cloudflare DNS record (HTTP $http_code)"
+            exit 1
+          fi
+
+          echo "$body" | grep -q '"success":[ ]*true' || {
+            echo "❌ Cloudflare API reported unsuccessful DNS update"
+            exit 1
+          }
+
+          echo "✅ Successfully updated Cloudflare DNS record for $DOMAIN to $cname"
       - name: Persist new ACTIVE_COLOR_API
         run: |
           echo "Switched active to ${{ steps.color.outputs.target }} ✅"
