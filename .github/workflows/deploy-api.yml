@@ -51,7 +51,13 @@ jobs:
           fi
 
           if echo "$changed_files" | grep -q "^api/prisma/"; then
-            node scripts/db-lock.js migrations 180000
+            echo "api/prisma changes detected; running Prisma migrate deploy with lock."
+            # Acquire an exclusive file lock for up to 180 seconds (matching the previous 180000 ms timeout)
+            exec 200>/tmp/prisma-migrate.lock
+            if ! flock -w 180 200; then
+              echo "Failed to acquire Prisma migration lock within 180 seconds." >&2
+              exit 1
+            fi
             pnpm --filter infamous-freight-api prisma migrate deploy
           else
             echo "No api/prisma changes detected; skipping Prisma migrate deploy."
