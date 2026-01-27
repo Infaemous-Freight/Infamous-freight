@@ -221,8 +221,6 @@ importers:
         specifier: ^7.1.4
         version: 7.2.2
 
-  mobile: {}
-
   packages/shared:
     devDependencies:
       '@types/node':
