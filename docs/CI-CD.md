@@ -11,6 +11,161 @@ The project uses GitHub Actions for CI/CD with the following workflows:
 - **E2E Tests**: End-to-end testing with Playwright
 - **Deploy**: Automated deployment workflows
 
+## 🤔 What Is CI/CD and Why It Matters
+
+**CI/CD** stands for **Continuous Integration** and **Continuous Deployment**. It’s the practice of automatically testing and deploying code changes so problems are caught early and releases stay consistent.
+
+### Continuous Integration (CI)
+**Traditional approach**: developers work in isolation for long stretches, then merge large changes. Conflicts and bugs show up late.  
+**Continuous Integration**: developers merge changes frequently (often multiple times per day). Every merge runs automated tests to catch issues quickly.
+
+**Analogy**: Instead of proofreading a whole book at the end, you check each page as you write it.
+
+### Continuous Deployment (CD)
+**Traditional approach**: deployments are manual (copy files, restart servers, cross fingers).  
+**Continuous Deployment**: code that passes tests automatically deploys, removing manual steps and reducing human error.
+
+**Analogy**: Instead of manually mailing each order, the system automatically ships it as soon as it’s processed.
+
+### Why CI/CD Matters for Testing
+- **Without CI/CD**: tests are manual, easy to forget, and bugs can sit undetected.  
+- **With CI/CD**: tests run on every change, problems are caught in minutes, and deployments become predictable.
+
+## 🧪 Autonoma in the CI/CD Pipeline
+
+Autonoma can run tests at key checkpoints:
+1. Developer opens a PR → Autonoma tests run.
+2. Code merges to `main` → Autonoma tests run again.
+3. Deployment completes → Autonoma tests validate production.
+
+This catches issues **before** users see them.
+
+### Prerequisite: Generate an Autonoma API Key
+In the Autonoma dashboard, generate a key and record:
+- **Client ID**
+- **Client Secret** (keep this secure)
+
+## ✅ GitHub Actions Integration (Recommended)
+
+1. In Autonoma, go to **Settings → Integrations**.
+2. Select the tests/folders you want to run and copy the generated action job.
+3. Paste into your GitHub Actions workflow (e.g., `.github/workflows/deploy.yml`).
+4. Store credentials in GitHub Secrets:
+   - `AUTONOMA_CLIENT_ID`
+   - `AUTONOMA_CLIENT_SECRET`
+
+**Example workflow step:**
+```yaml
+jobs:
+  run_autonoma_tests:
+    runs-on: ubuntu-latest
+    name: Run Autonoma Tests
+
+    steps:
+      - name: Run Single Test (cmbi807au0172xv01dqu4drhi)
+        id: step-1
+        uses: autonoma-ai/actions/test-runner@v1
+        with:
+          test-id: 'cmbi807au0172xv01dqu4drhi'
+          client-id: ${{ secrets.AUTONOMA_CLIENT_ID }}
+          client-secret: ${{ secrets.AUTONOMA_CLIENT_SECRET }}
+          max-wait-time: '10'
+      - name: Show cmbi807au0172xv01dqu4drhi results
+        if: always()
+        run: |
+          echo "Test status: ${{ steps.step-1.outputs.final-status }}"
+          echo "Message: ${{ steps.step-1.outputs.message }}"
+          echo "View results at: ${{ steps.step-1.outputs.url }}"
+```
+
+**Customize when tests run:**
+```yaml
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main ]
+```
+
+## 🧩 GitLab CI Integration
+
+1. Add credentials in GitLab: **Settings → CI/CD → Variables**
+   - `CLIENT_ID`
+   - `CLIENT_SECRET` (masked)
+2. Add this to `.gitlab-ci.yml`:
+```yaml
+stages:
+  - test
+
+autonoma_tests:
+  stage: test
+  script:
+    - curl -X POST \
+        --silent \
+        --retry 3 \
+        --retry-connrefused \
+        --location "https://api.prod.autonoma.app/v1/run/folder/$FOLDER_ID" \
+        --header "autonoma-client-id: $CLIENT_ID" \
+        --header "autonoma-client-secret: $CLIENT_SECRET" \
+        --header "Content-Type: application/json" || true
+  only:
+    - merge_requests
+    - main
+```
+
+## 🧩 Bitbucket Pipelines Integration
+
+1. Add repository variables in Bitbucket:
+   - `CLIENT_ID`
+   - `CLIENT_SECRET`
+2. Add to `bitbucket-pipelines.yml`:
+```yaml
+pipelines:
+  default:
+    - step:
+        name: Deploy
+        script:
+          - curl -X POST \
+              --silent \
+              --retry 3 \
+              --retry-connrefused \
+              --location "https://api.prod.autonoma.app/v1/run/folder/$FOLDER_ID" \
+              --header "autonoma-client-id: $CLIENT_ID" \
+              --header "autonoma-client-secret: $CLIENT_SECRET" \
+              --header "Content-Type: application/json" || true
+```
+
+## 🌍 Universal cURL Integration
+
+For Jenkins, CircleCI, Travis CI, or any CI system:
+```bash
+curl -X POST \
+  --silent \
+  --retry 3 \
+  --retry-connrefused \
+  --location 'https://api.prod.autonoma.app/v1/run/folder/<folder-id>' \
+  --header 'autonoma-client-id: <client-id>' \
+  --header 'autonoma-client-secret: <client-secret>' \
+  --header 'Content-Type: application/json' || true
+```
+
+## 🧠 Best Practices
+
+1. **Run different tests at different stages**
+   - PRs → smoke tests (fast feedback)
+   - Before merge → regression tests (full coverage)
+   - After deploy → smoke tests (verify production)
+2. **Fail fast** on critical test failures.
+3. **Use descriptive job names** so failures are obvious.
+4. **Don’t over-test** on every change—be strategic.
+
+## 🛠️ Troubleshooting
+
+- **Tests aren’t running**: verify API tokens, secret storage, and pipeline triggers.
+- **Tests always fail**: confirm tests pass in Autonoma and the environment is reachable.
+- **Timeouts**: reduce test scope or increase CI timeouts.
+- **No results in CI**: check logs and confirm Autonoma received the request.
+
 ## 🔄 Workflows
 
 ### 1. CI Workflow (`.github/workflows/ci.yml`)
