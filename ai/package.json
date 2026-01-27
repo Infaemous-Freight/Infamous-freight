@@ -4,8 +4,8 @@
   "private": true,
   "description": "Placeholder for AI services workspace",
   "scripts": {
-    "lint": "echo \"(ai) lint not configured\"",
-    "typecheck": "echo \"(ai) typecheck not configured\"",
-    "build": "echo \"(ai) build not configured\""
+    "lint": "echo \"(ai) lint not configured\" && exit 1",
+    "typecheck": "echo \"(ai) typecheck not configured\" && exit 1",
+    "build": "echo \"(ai) build not configured\" && exit 1"
   }
 }
