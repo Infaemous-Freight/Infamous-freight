@@ -1,5 +1,5 @@
 [build]
-  command = "corepack enable && pnpm verify && pnpm build:web"
+  command = "corepack enable && pnpm verify"
   publish = "web/.next"
 
 [build.environment]
