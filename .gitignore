@@ -20,6 +20,7 @@ coverage/
 # Environment files (kept untracked)
 .env
 .env.*
+!/env/*.template
 !.env.example
 .env.local
 
