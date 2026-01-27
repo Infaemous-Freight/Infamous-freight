@@ -4,10 +4,12 @@
   # Build from repo root to support pnpm workspaces
   base = "."
   command = "corepack enable && pnpm install --frozen-lockfile && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
-  # The Next.js Netlify plugin will set the publish/functions outputs
+  publish = "web/.next"
+  # The Next.js Netlify plugin will set the functions output
 
 [build.environment]
   NODE_VERSION = "20"
+  PNPM_VERSION = "9"
   NEXT_PUBLIC_API_URL = "https://api.infamous-freight.com"
   NEXT_PUBLIC_API_BASE = "https://api.infamous-freight.com/api"
 
@@ -56,6 +58,8 @@
 ## Contexts
 [context.production]
   command = "corepack enable && pnpm install --frozen-lockfile && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
+  [context.production.environment]
+    NODE_ENV = "production"
 
 [context.deploy-preview]
   command = "corepack enable && pnpm install --frozen-lockfile && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
