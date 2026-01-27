@@ -144,13 +144,42 @@ jobs:
           fi
 
           echo "Reverting DNS back to prior active: ${{ steps.active.outputs.active }}"
-          curl -sS -X PUT \
-            "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/${{ secrets.CLOUDFLARE_RECORD_ID_API }}" \
-            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            --data "{\"type\":\"CNAME\",\"name\":\"$PROD_DOMAIN\",\"content\":\"$cname\",\"ttl\":60,\"proxied\":true}" \
-            | jq -e '.success==true' >/dev/null
 
+          # Attempt to revert DNS in Cloudflare, with basic retry and logging
+          attempts=0
+          max_attempts=3
+          last_response=""
+
+          while [ "$attempts" -lt "$max_attempts" ]; do
+            attempts=$((attempts + 1))
+            echo "Cloudflare DNS revert attempt $attempts/$max_attempts..."
+
+            last_response=$(
+              curl -sS -X PUT \
+                "https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/dns_records/${{ secrets.CLOUDFLARE_RECORD_ID_API }}" \
+                -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+                -H "Content-Type: application/json" \
+                --data "{\"type\":\"CNAME\",\"name\":\"$PROD_DOMAIN\",\"content\":\"$cname\",\"ttl\":60,\"proxied\":true}"
+            )
+
+            # Log a summarized response (status + errors, if any) for observability
+            echo "Cloudflare revert raw response:"
+            echo "$last_response"
+
+            if echo "$last_response" | jq -e '.success==true' >/dev/null 2>&1; then
+              echo "Cloudflare DNS revert succeeded ✅"
+              exit 0
+            fi
+
+            echo "Cloudflare DNS revert attempt $attempts failed. Will retry if attempts remain."
+            sleep 5
+          done
+
+          echo "Cloudflare DNS revert failed after $max_attempts attempts ❌"
+          echo "Final Cloudflare response:"
+          echo "$last_response"
+          # Explicitly fail this step so the overall workflow clearly indicates revert failure
+          exit 1
       - name: Slack notify (success)
         if: success() && secrets.SLACK_WEBHOOK_URL != ''
         run: |
