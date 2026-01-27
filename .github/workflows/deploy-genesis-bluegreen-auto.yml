@@ -47,10 +47,10 @@ jobs:
             -H "Content-Type: application/json")
 
           content=$(echo "$resp" | jq -r '.result.content')
-          if [ "$content" = "${BLUE_CNAME}" ]; then
+          if [ "$content" = "$BLUE_CNAME" ]; then
             echo "active=blue" >> $GITHUB_OUTPUT
             echo "target=green" >> $GITHUB_OUTPUT
-          elif [ "$content" = "${GREEN_CNAME}" ]; then
+          elif [ "$content" = "$GREEN_CNAME" ]; then
             echo "active=green" >> $GITHUB_OUTPUT
             echo "target=blue" >> $GITHUB_OUTPUT
           else
