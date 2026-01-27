@@ -110,7 +110,6 @@ autonoma_tests:
         --header "Content-Type: application/json" || true
   only:
     - merge_requests
-    - main
 ```
 
 ## 🧩 Bitbucket Pipelines Integration
