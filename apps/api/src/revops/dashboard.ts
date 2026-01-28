@@ -157,9 +157,9 @@ async function calculateMRR() {
   });
   
   const planPricing = {
-    STARTER: 99,
-    GROWTH: 499,
-    ENTERPRISE: 2500,
+    STARTER: 79,
+    GROWTH: 199,
+    ENTERPRISE: 599,
     CUSTOM: 5000, // Average custom deal
   };
   
