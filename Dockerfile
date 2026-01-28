@@ -1,4 +1,5 @@
-ARG NODE_VERSION=20-alpine
+ARG NODE_VERSION=20.20.0-alpine
+ARG PNPM_VERSION=9.15.4
 FROM node:${NODE_VERSION} AS deps
 
 LABEL maintainer="Santorio Djuan Miles <237955567+MrMiless44@users.noreply.github.com>"
@@ -7,20 +8,19 @@ LABEL description="Infamous Freight Enterprises - Full-stack application"
 WORKDIR /app
 
 # Install pnpm (Corepack is unavailable in node:alpine)
-RUN npm install -g pnpm@9.15.0
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 # Copy workspace and package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/api/package.json ./apps/api/
-COPY packages/shared/package.json ./packages/shared/
-COPY apps/web/package.json ./apps/web/
+COPY apps/*/package.json ./apps/
+COPY packages/*/package.json ./packages/
 
 # Install ALL dependencies (including dev dependencies needed for build)
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 
 FROM node:${NODE_VERSION} AS build
 WORKDIR /app
-RUN npm install -g pnpm@9.15.0
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
@@ -38,26 +38,17 @@ FROM node:${NODE_VERSION} AS run
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
-RUN npm install -g pnpm@9.15.0
 
-# Copy only runtime essentials instead of the entire /app directory
-# Root workspace metadata for pnpm
-COPY --from=build /app/package.json /app/pnpm-lock.yaml /app/pnpm-workspace.yaml ./
-# Installed dependencies
-COPY --from=build /app/node_modules ./node_modules
-# Web application build output and configuration
-COPY --from=build /app/apps/web/.next ./apps/web/.next
+# Copy Next.js standalone output and static assets
+COPY --from=build /app/apps/web/.next/standalone ./
+COPY --from=build /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=build /app/apps/web/public ./apps/web/public
-COPY --from=build /app/apps/web/package.json ./apps/web/package.json
 COPY --from=build /app/apps/web/next.config.mjs ./apps/web/next.config.mjs
-
-# Re-install only production dependencies to prune devDependencies
-RUN pnpm install --prod --frozen-lockfile
 # Expose port for web
 EXPOSE 3000
 
 # Production command - run the web server
-CMD ["pnpm", "--filter", "web", "start"]
+CMD ["node", "apps/web/server.js"]
 
 # Health check for web frontend
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
