@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "engines": {
-    "node": ">=20.20.0"
+    "node": "20.20.0"
   },
   "scripts": {
     "install:ci": "pnpm install --frozen-lockfile",
