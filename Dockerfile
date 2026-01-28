@@ -10,10 +10,10 @@ WORKDIR /app
 # Install pnpm (Corepack is unavailable in node:alpine)
 RUN npm install -g pnpm@${PNPM_VERSION}
 
-# Copy workspace and package files
+# Copy workspace and package files (preserve workspace structure for pnpm)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/*/package.json ./apps/
-COPY packages/*/package.json ./packages/
+COPY apps ./apps
+COPY packages ./packages
 
 # Install ALL dependencies (including dev dependencies needed for build)
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
