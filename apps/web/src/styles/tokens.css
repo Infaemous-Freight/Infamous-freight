@@ -1,0 +1,75 @@
+:root{
+  --void-black:#07070A;
+  --obsidian:#0E0E13;
+  --carbon:#121218;
+
+  --crimson-core:#E10600;
+  --neural-red:#FF1A1A;
+  --ember-glow:#FF4D4D;
+
+  --divine-gold:#D4AF37;
+
+  --panel:rgba(14,14,19,.72);
+  --panel2:rgba(18,18,24,.62);
+  --stroke:rgba(255,26,26,.18);
+
+  --glow-soft:0 0 18px rgba(255,26,26,.22);
+  --glow-med:0 0 34px rgba(255,26,26,.35);
+  --glow-hard:0 0 64px rgba(255,26,26,.55);
+
+  --radius:14px;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+
+  --watch-x:0.5;
+  --watch-y:0.45;
+}
+
+/* subtle noise overlay (no external assets) */
+.god-noise{
+  position:relative;
+}
+.god-noise::after{
+  content:"";
+  pointer-events:none;
+  position:absolute; inset:0;
+  opacity:.06;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.35) 0 1px, transparent 1px 2px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.25) 0 1px, transparent 1px 3px);
+  mix-blend-mode:overlay;
+}
+
+/* command mode vignette */
+.command-vignette{
+  position:fixed; inset:0;
+  pointer-events:none;
+  background:radial-gradient(circle at 50% 45%,
+    rgba(255,26,26,.10) 0%,
+    rgba(7,7,10,.55) 55%,
+    rgba(7,7,10,.85) 100%);
+  opacity:0;
+  transition:opacity 260ms var(--ease);
+  z-index:2;
+}
+.command-vignette.on{ opacity:1; }
+
+:root[data-command="on"] .command-vignette { opacity: 1; }
+
+.watcher-bg{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(circle at calc(var(--watch-x)*100%) calc(var(--watch-y)*100%),
+      rgba(255,26,26,.14),
+      transparent 45%),
+    radial-gradient(circle at 80% 70%,
+      rgba(212,175,55,.10),
+      transparent 55%);
+}
+
+.god-app-layer{
+  position:relative;
+  z-index:1;
+}

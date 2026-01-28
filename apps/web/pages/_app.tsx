@@ -3,8 +3,11 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useEffect } from "react";
 import GlobalLayout from "../components/GlobalLayout";
+import { GodModeProvider } from "../components/god/GodModeProvider";
 import { initDatadogRUM } from "../src/lib/datadog";
+import "../src/styles/tailwind.css";
 import "../src/styles/design-system.css";
+import "../src/styles/tokens.css";
 
 export default function App({ Component, pageProps }: AppProps) {
   const isProduction = process.env.NEXT_PUBLIC_ENV === "production";
@@ -28,10 +31,12 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [isProduction]);
 
   return (
-    <GlobalLayout>
-      <Component {...pageProps} />
-      <Analytics />
-      {isProduction ? <SpeedInsights /> : null}
-    </GlobalLayout>
+    <GodModeProvider>
+      <GlobalLayout>
+        <Component {...pageProps} />
+        <Analytics />
+        {isProduction ? <SpeedInsights /> : null}
+      </GlobalLayout>
+    </GodModeProvider>
   );
 }
