@@ -1,0 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap");
+
+:root {
+  --void-black: #07070a;
+  --obsidian: #0e0e13;
+  --crimson-core: #e10600;
+  --neural-red: #ff1a1a;
+  --ember-glow: #ff4d4d;
+  --divine-gold: #d4af37;
+
+  --crimson-900: var(--crimson-core);
+  --gold-500: var(--divine-gold);
+  --violet-600: #2b0b0b;
+  --bg-950: var(--void-black);
+  --surface-900: var(--obsidian);
+  --text-50: #f7f2ef;
+  --muted-400: #9c9494;
+  --danger-500: var(--neural-red);
+  --success-500: #22c55e;
+  --warning-500: #f59e0b;
+  --info-500: #3b82f6;
+
+  --font-display: "Orbitron", "Space Grotesk", "SF Pro Display",
+    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Space Grotesk", "SF Pro Text", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --panel-cut: 18px;
+  --glow-shadow: 0 0 30px rgba(255, 26, 26, 0.25);
+  --glass-border: 1px solid rgba(255, 26, 26, 0.22);
+}

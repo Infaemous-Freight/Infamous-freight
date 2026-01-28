@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import GlobalLayout from "../components/GlobalLayout";
 import { initDatadogRUM } from "../src/lib/datadog";
 import "../src/styles/design-system.css";
+import "../src/styles/tokens.css";
+import "../src/styles/god-mode.css";
 
 export default function App({ Component, pageProps }: AppProps) {
   const isProduction = process.env.NEXT_PUBLIC_ENV === "production";
