@@ -30,7 +30,7 @@ COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
 
 # Build the application (shared, generate Prisma client, api, then web)
 RUN pnpm --filter @infamous-freight/shared build \
-  && pnpm --filter api exec prisma generate --schema=./apps/api/prisma/schema.prisma \
+  && pnpm --filter api exec prisma generate \
   && pnpm --filter api build \
   && pnpm --filter web build
 
