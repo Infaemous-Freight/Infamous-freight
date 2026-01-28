@@ -22,47 +22,61 @@ type PricingProps = {
 
 const planCopy = [
   {
+    key: "free",
+    name: "Free",
+    price: "$0",
+    cadence: "per month",
+    description: "Perfect for evaluating Infæmous Freight.",
+    features: [
+      "10 shipments/month",
+      "2 active shipments",
+      "1 user seat",
+      "Community support",
+    ],
+    metered: "No API access or metered usage",
+  },
+  {
     key: "starter",
     name: "Starter",
-    price: "$499",
-    cadence: "per month",
-    description: "Basics + limited AI for lean teams.",
+    price: "$79",
+    cadence: "per month • 20% off annually",
+    description: "For small teams running local freight operations.",
     features: [
-      "Dispatch workspace",
-      "Basic analytics",
-      "Up to 10 loads/day",
-      "Standard support",
+      "500 shipments/month",
+      "20 active shipments",
+      "3 users + 5 drivers",
+      "Basic analytics + tracking",
     ],
-    metered: "AI calls (limited), tracking events, invoices",
+    metered: "API calls (10k/day), tracking events, invoices",
   },
   {
     key: "pro",
-    name: "Pro",
-    price: "$1,499",
-    cadence: "per month",
-    description: "Full ops + metered AI + automations.",
+    name: "Professional",
+    price: "$199",
+    cadence: "per month • 20% off annually",
+    description: "For growing networks that need AI optimization.",
     features: [
-      "Genesis chat + command",
-      "Automated billing + insurance",
-      "RBAC + audit logs",
-      "Dispatch + fleet intelligence",
+      "2,500 shipments/month",
+      "100 active shipments",
+      "10 users + 25 drivers",
+      "Advanced analytics + AI routing",
     ],
-    metered: "AI calls, tracking events, invoices",
+    metered: "AI actions, tracking events, invoices",
     featured: true,
   },
   {
     key: "enterprise",
     name: "Enterprise",
-    price: "Custom",
-    cadence: "annual",
-    description: "SSO/SAML, SLA, custom RBAC, dedicated support.",
+    price: "$599",
+    cadence: "per month • 20% off annually",
+    description: "For enterprise fleets with SSO, SLA, and dedicated support.",
     features: [
-      "Dedicated success + onboarding",
-      "Custom SLAs",
-      "Advanced security review",
-      "Enterprise integrations",
+      "Unlimited shipments",
+      "Unlimited users + drivers",
+      "5TB storage",
+      "Dedicated success + 99.95% SLA",
     ],
-    metered: "AI calls, tracking events, invoices",
+    metered: "AI actions, tracking events, invoices",
   },
 ];
 
@@ -137,10 +151,10 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
         <div className="container hero-inner">
           <div>
             <p className="section-subtitle">Pricing</p>
-            <h1 className="hero-title">Three tiers. One operating system.</h1>
+            <h1 className="hero-title">Four tiers. One operating system.</h1>
             <p className="hero-copy">
-              Pro is built for scale. Enterprise brings SSO, SLA, and dedicated
-              support. Starter keeps teams lean.
+              Free gets teams started. Starter and Professional scale operations
+              with metered AI. Enterprise brings SSO, SLA, and dedicated support.
             </p>
           </div>
           <div className="hero-card">
@@ -203,24 +217,39 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
                   ))}
                 </div>
                 <div className="metered">Metered: {tier.metered}</div>
-                <button
-                  onClick={() => checkout(tier.key)}
-                  disabled={busy === tier.key || (availablePlanKeys.size > 0 && !availablePlanKeys.has(tier.key))}
-                  className={`btn ${
-                    tier.featured ? "btn-primary" : "btn-secondary"
-                  }`}
-                  aria-disabled={
-                    busy === tier.key ||
-                    (availablePlanKeys.size > 0 && !availablePlanKeys.has(tier.key))
-                  }
-                >
-                  {busy === tier.key ? "Preparing..." : "Start Free"}
-                </button>
+                {tier.key === "free" ? (
+                  <Link href="/signup" className="btn btn-secondary">
+                    Start Free
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => checkout(tier.key)}
+                    disabled={
+                      busy === tier.key ||
+                      (availablePlanKeys.size > 0 &&
+                        !availablePlanKeys.has(tier.key))
+                    }
+                    className={`btn ${
+                      tier.featured ? "btn-primary" : "btn-secondary"
+                    }`}
+                    aria-disabled={
+                      busy === tier.key ||
+                      (availablePlanKeys.size > 0 &&
+                        !availablePlanKeys.has(tier.key))
+                    }
+                  >
+                    {busy === tier.key ? "Preparing..." : "Start plan"}
+                  </button>
+                )}
                 {busy === tier.key ? (
                   <div className="helper-text">Creating checkout session…</div>
                 ) : null}
-                {availablePlanKeys.size > 0 && !availablePlanKeys.has(tier.key) ? (
-                  <div className="helper-text">Unavailable in current billing setup.</div>
+                {tier.key !== "free" &&
+                availablePlanKeys.size > 0 &&
+                !availablePlanKeys.has(tier.key) ? (
+                  <div className="helper-text">
+                    Unavailable in current billing setup.
+                  </div>
                 ) : null}
               </section>
             ))}

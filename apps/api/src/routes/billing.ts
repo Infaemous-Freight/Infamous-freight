@@ -424,17 +424,17 @@ router.get("/pricing", async (req, res) => {
       },
       enterprise: {
         STARTER: {
-          monthly: 99,
-          included: 100,
-          overagePrice: 1.5,
+          monthly: 79,
+          included: 500,
+          overagePrice: 0.15,
         },
         GROWTH: {
-          monthly: 499,
-          included: 1000,
-          overagePrice: 1.5,
+          monthly: 199,
+          included: 2500,
+          overagePrice: 0.08,
         },
         ENTERPRISE: {
-          monthly: 2500,
+          monthly: 599,
           included: 999999,
           overagePrice: 0,
         },

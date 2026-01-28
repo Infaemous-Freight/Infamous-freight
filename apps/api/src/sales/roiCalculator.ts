@@ -172,21 +172,21 @@ function getPlanPricing(plan: string): PlanPricing {
   const planPricingMap: Record<string, PlanPricing> = {
     STARTER: {
       name: "Starter",
-      monthlyBase: 99,
-      jobQuota: 100,
-      platformFeePerLoad: 5, // Simplified: actual = $base + % 
-      overagePrice: 1.5,
+      monthlyBase: 79,
+      jobQuota: 500,
+      platformFeePerLoad: 5, // Simplified: actual = $base + %
+      overagePrice: 0.15,
     },
     GROWTH: {
       name: "Growth",
-      monthlyBase: 499,
-      jobQuota: 1000,
+      monthlyBase: 199,
+      jobQuota: 2500,
       platformFeePerLoad: 3.5, // Lower per-load with higher volume
-      overagePrice: 1.5,
+      overagePrice: 0.08,
     },
     ENTERPRISE: {
       name: "Enterprise",
-      monthlyBase: 2500,
+      monthlyBase: 599,
       jobQuota: 999999,
       platformFeePerLoad: 2, // Lowest per-load, unlimited jobs
       overagePrice: 0,

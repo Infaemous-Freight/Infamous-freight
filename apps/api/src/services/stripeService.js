@@ -257,7 +257,7 @@ async function getRevenueStats(periodDays = 30) {
             subscriptions: {
                 active: subscriptionStats.length,
                 // MRR = Monthly Recurring Revenue (estimated)
-                estimatedMRR: subscriptionStats.length * 99, // Average $99/month
+                estimatedMRR: subscriptionStats.length * 199, // Average $199/month
             },
             totalMerchantRevenue: merchantOneTimeRevenue,
             currency: STRIPE_CONFIG.defaultCurrency,

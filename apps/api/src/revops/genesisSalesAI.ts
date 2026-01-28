@@ -178,9 +178,9 @@ function recommendPlan(intel: CompanyIntel): 'STARTER' | 'GROWTH' | 'ENTERPRISE'
  */
 function calculateExpectedMrr(plan: string, monthlyLoads: number): number {
   const planPricing = {
-    STARTER: { base: 99, quota: 100, overage: 1.50 },
-    GROWTH: { base: 499, quota: 1000, overage: 1.25 },
-    ENTERPRISE: { base: 2500, quota: Infinity, overage: 0 },
+    STARTER: { base: 79, quota: 500, overage: 0.15 },
+    GROWTH: { base: 199, quota: 2500, overage: 0.08 },
+    ENTERPRISE: { base: 599, quota: Infinity, overage: 0 },
   };
   
   const pricing = planPricing[plan as keyof typeof planPricing] || planPricing.STARTER;

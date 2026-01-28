@@ -18,11 +18,20 @@ const stripeRouter = express.Router();
 const stripeWebhookRouter = express.Router();
 
 const planCatalog = [
-  { key: "pro", label: "Infæmous Freight Pro (per seat)", env: "STRIPE_PRO_PRICE_ID" },
   {
-    key: "business",
-    label: "Infæmous Freight Business (per seat)",
-    env: "STRIPE_BUSINESS_PRICE_ID",
+    key: "starter",
+    label: "Infæmous Freight Starter (per seat)",
+    envs: ["STRIPE_STARTER_PRICE_ID", "STRIPE_PRICE_STARTER"],
+  },
+  {
+    key: "pro",
+    label: "Infæmous Freight Professional (per seat)",
+    envs: ["STRIPE_PRO_PRICE_ID", "STRIPE_PRICE_PRO"],
+  },
+  {
+    key: "enterprise",
+    label: "Infæmous Freight Enterprise (per seat)",
+    envs: ["STRIPE_ENTERPRISE_PRICE_ID", "STRIPE_BUSINESS_PRICE_ID", "STRIPE_PRICE_ENTERPRISE"],
   },
 ];
 
@@ -53,9 +62,11 @@ function getAppUrl() {
 }
 
 function resolvePlanPriceId(plan) {
-  const entry = planCatalog.find((item) => item.key === plan);
+  const normalizedPlan = plan === "business" ? "enterprise" : plan;
+  const entry = planCatalog.find((item) => item.key === normalizedPlan);
   if (!entry) return null;
-  return process.env[entry.env] || null;
+  const envKey = entry.envs.find((candidate) => process.env[candidate]);
+  return envKey ? process.env[envKey] : null;
 }
 
 async function getOrCreateStripeCustomer({
@@ -215,7 +226,7 @@ stripeRouter.get("/plans", (_req, res) => {
   const plans = planCatalog.map((plan) => ({
     key: plan.key,
     label: plan.label,
-    priceId: process.env[plan.env] || null,
+    priceId: resolvePlanPriceId(plan.key),
   }));
 
   res.json({
@@ -287,7 +298,7 @@ stripeRouter.post(
       const Schema = z
         .object({
           priceId: z.string().optional(),
-          plan: z.enum(["pro", "business"]).optional(),
+          plan: z.enum(["starter", "pro", "enterprise", "business"]).optional(),
           seats: z.number().int().min(1).max(500).optional().default(1),
           addOns: z
             .array(z.enum(["voice", "white_label", "analytics_export"]))
@@ -429,7 +440,7 @@ stripeRouter.post(
   async (req, res) => {
     try {
       const Schema = z.object({
-        plan: z.enum(["pro", "business"]),
+        plan: z.enum(["starter", "pro", "enterprise", "business"]),
         seats: z.number().int().min(1).max(500).optional().default(1),
         addOns: z
           .array(z.enum(["voice", "white_label", "analytics_export"]))

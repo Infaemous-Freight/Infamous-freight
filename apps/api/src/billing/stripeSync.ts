@@ -14,23 +14,24 @@ const prisma = new PrismaClient();
 // Stripe price IDs from environment (created in Stripe dashboard)
 const STRIPE_PRICES = {
   [BillingPlan.STARTER]: process.env.STRIPE_PRICE_STARTER || "",
-  [BillingPlan.GROWTH]: process.env.STRIPE_PRICE_GROWTH || "",
+  [BillingPlan.GROWTH]:
+    process.env.STRIPE_PRICE_GROWTH || process.env.STRIPE_PRICE_PRO || "",
   [BillingPlan.ENTERPRISE]: process.env.STRIPE_PRICE_ENTERPRISE || "",
 };
 
 const PLAN_DETAILS = {
   [BillingPlan.STARTER]: {
-    monthlyBase: 99,
-    monthlyQuota: 100,
-    overagePrice: 1.5,
+    monthlyBase: 79,
+    monthlyQuota: 500,
+    overagePrice: 0.15,
   },
   [BillingPlan.GROWTH]: {
-    monthlyBase: 499,
-    monthlyQuota: 1000,
-    overagePrice: 1.5,
+    monthlyBase: 199,
+    monthlyQuota: 2500,
+    overagePrice: 0.08,
   },
   [BillingPlan.ENTERPRISE]: {
-    monthlyBase: 2500,
+    monthlyBase: 599,
     monthlyQuota: 999999, // Unlimited
     overagePrice: 0,
   },
