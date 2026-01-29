@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Run Single Test (cmbi807au0172xv01dqu4drhi)
         id: step-1
-        uses: autonoma-ai/actions/test-runner@v1.0.0
+        uses: autonoma-ai/actions/test-runner@v1.3
         with:
           test-id: 'cmbi807au0172xv01dqu4drhi'
           client-id: ${{ secrets.AUTONOMA_CLIENT_ID }}
