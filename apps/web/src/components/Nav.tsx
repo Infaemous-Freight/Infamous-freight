@@ -8,12 +8,23 @@ export default async function Nav() {
 
   let role: string | null = null;
   if (auth.user) {
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", auth.user.id)
       .maybeSingle();
-    role = profile?.role ?? null;
+
+    if (profileError) {
+      // Log profile load failures so they don't fail silently but still fail closed for navigation
+      console.error("Failed to load user profile role", {
+        userId: auth.user.id,
+        error: profileError.message,
+        code: profileError.code,
+      });
+      role = null;
+    } else {
+      role = profile?.role ?? null;
+    }
   }
 
   return (
