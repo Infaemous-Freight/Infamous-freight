@@ -15,7 +15,11 @@ begin
     select 1
     from pg_policies
     where schemaname = 'public'
-      and tablename = split_part(target_table::text, '.', 2)
+      and tablename = case
+        when position('.' in target_table::text) > 0
+          then split_part(target_table::text, '.', 2)
+        else target_table::text
+      end
       and policyname = policy_name
   ) then
     execute format('drop policy %I on %s', policy_name, target_table);
