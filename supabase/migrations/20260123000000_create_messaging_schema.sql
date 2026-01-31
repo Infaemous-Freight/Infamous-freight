@@ -115,7 +115,7 @@ select public.ensure_policy(
   'insert',
   'authenticated',
   null,
-  'user_id = auth.uid()'
+  'user_id = auth.uid() and (not exists (select 1 from public.messages m_existing where m_existing.thread_id = messages.thread_id) or exists (select 1 from public.messages m_existing where m_existing.thread_id = messages.thread_id and m_existing.user_id = auth.uid()))'
 );
 
 select public.ensure_policy(
