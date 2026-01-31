@@ -86,6 +86,12 @@ export default function Chat({
           placeholder="Message..."
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !busy) {
+              e.preventDefault();
+              void send();
+            }
+          }}
         />
         <button
           onClick={send}
