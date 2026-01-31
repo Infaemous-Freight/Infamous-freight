@@ -2,10 +2,20 @@ import BidList from "@/components/BidList";
 import CreateBid from "@/components/CreateBid";
 import { supabaseServer } from "@/lib/supabase/server";
 import { getMyProfile } from "@/lib/db";
+import { redirect } from "next/navigation";
 
 export default async function LoadDetail({ params }: { params: { id: string } }) {
   const supabase = supabaseServer();
-  const profile = await getMyProfile();
+  const profile = await (async () => {
+    try {
+      return await getMyProfile();
+    } catch (error: any) {
+      if (error?.status === 401 || error?.message === "Unauthorized") {
+        redirect("/sign-in");
+      }
+      throw error;
+    }
+  })();
 
   const { data: load, error: loadError } = await supabase
     .from("loads")
