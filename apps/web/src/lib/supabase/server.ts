@@ -17,8 +17,8 @@ if (!supabaseAnonKey) {
       "Please define it (e.g., in apps/web/.env or your deployment environment).",
   );
 }
-export function supabaseServer() {
-  const cookieStore = cookies();
+export async function supabaseServer() {
+  const cookieStore = await cookies();
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
