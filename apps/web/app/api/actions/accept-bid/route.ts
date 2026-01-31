@@ -34,12 +34,13 @@ export async function POST(req: Request) {
       .eq("status", "pending");
     if (uBid) throw uBid;
 
-    await supabase
+    const { error: rejectErr } = await supabase
       .from("bids")
       .update({ status: "rejected" })
       .eq("load_id", bid.load_id)
       .neq("id", bid.id)
       .eq("status", "pending");
+    if (rejectErr) throw rejectErr;
 
     const { data: assignment, error: insA } = await supabase
       .from("assignments")
