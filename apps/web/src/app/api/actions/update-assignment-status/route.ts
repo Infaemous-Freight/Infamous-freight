@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       throw new Error("status required");
     }
 
-    const { data, error } = await supabase.rpc("set_assignment_status", {
+    const { error } = await supabase.rpc("set_assignment_status", {
       p_assignment_id: assignmentId,
       p_status: status,
     });
