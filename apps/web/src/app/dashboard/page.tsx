@@ -2,7 +2,26 @@ import Link from "next/link";
 import { getMyProfile } from "@/lib/db";
 
 export default async function Dashboard() {
-  const profile = await getMyProfile();
+  let profile;
+  try {
+    profile = await getMyProfile();
+  } catch (error) {
+    return (
+      <div className="marketplace-stack">
+        <h1 className="marketplace-title">Dashboard</h1>
+        <div className="card marketplace-card">
+          <div className="marketplace-muted">
+            Your session has expired or you are not signed in.
+          </div>
+          <div className="marketplace-actions">
+            <Link className="btn btn-primary" href="/login">
+              Sign in
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="marketplace-stack">
