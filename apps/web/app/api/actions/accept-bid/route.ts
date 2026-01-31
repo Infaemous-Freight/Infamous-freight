@@ -76,12 +76,18 @@ export async function POST(req: Request) {
     ]);
     if (pErr) throw pErr;
 
-    await supabase.from("messages").insert({
+    const { error: mErr } = await supabase.from("messages").insert({
       thread_id: thread.id,
       sender_id: user.id,
       kind: "system",
       content: "✅ Bid accepted. Use this thread to coordinate pickup, ETA, and delivery details.",
     });
+    if (mErr) {
+      console.warn("Failed to insert kickoff message for thread", {
+        threadId: thread.id,
+        error: mErr.message ?? mErr,
+      });
+    }
 
     return NextResponse.json({
       ok: true,
