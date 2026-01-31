@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     const url = new URL(req.url);
     url.pathname = `/assignments/${assignmentId}`;
     url.search = "";
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(url, 303);
   } catch (error: any) {
     return NextResponse.json(
       { ok: false, error: error?.message ?? String(error) },
