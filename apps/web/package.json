@@ -21,6 +21,8 @@
   "dependencies": {
     "@datadog/browser-rum": "^6.25.4",
     "@infamous-freight/shared": "workspace:*",
+    "@supabase/ssr": "^0.4.1",
+    "@supabase/supabase-js": "^2.49.1",
     "@stripe/react-stripe-js": "^2.8.0",
     "@stripe/stripe-js": "^8.6.4",
     "@types/react": "^19.2.8",
