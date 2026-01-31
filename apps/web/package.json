@@ -23,8 +23,6 @@
     "@infamous-freight/shared": "workspace:*",
     "@stripe/react-stripe-js": "^2.8.0",
     "@stripe/stripe-js": "^8.6.4",
-    "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.49.1",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vercel/analytics": "^1.6.1",
