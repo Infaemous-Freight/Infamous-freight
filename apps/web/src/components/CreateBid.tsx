@@ -21,7 +21,12 @@ export default function CreateBid({ loadId }: { loadId: string }) {
       return;
     }
 
-    const amountCents = Math.max(0, Math.round(Number.parseFloat(amount || "0") * 100));
+    const parsedAmount = Number.parseFloat((amount || "").trim());
+    if (!Number.isFinite(parsedAmount) || parsedAmount < 0) {
+      setErr("Please enter a valid non-negative amount in USD.");
+      return;
+    }
+    const amountCents = Math.round(parsedAmount * 100);
 
     const { error } = await supabase.from("bids").insert({
       load_id: loadId,
