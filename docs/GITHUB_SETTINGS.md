@@ -182,6 +182,71 @@ NODE_VERSION=20
 PNPM_VERSION=8
 ```
 
+## 🔐 GitHub OAuth App (Supabase Auth)
+
+Use this when configuring GitHub OAuth for Supabase Auth.
+
+### GitHub OAuth App Settings
+
+**Application name**
+
+Infæmous Freight Enterprises  
+(If GitHub rejects “Æ”, use **Infamous Freight Enterprises**.)
+
+**Homepage URL (Website URL)**
+
+Use your production site URL:
+- https://infamous-freight.netlify.app
+- https://infamous-freight.vercel.app
+
+**Authorization callback URL (must match exactly)**
+
+```
+https://<YOUR-PROJECT-REF>.supabase.co/auth/v1/callback
+```
+
+Replace `<YOUR-PROJECT-REF>` with your Supabase project ref (the ID in your Supabase URL).
+
+**Example**
+
+```
+https://abcd1234efgh5678.supabase.co/auth/v1/callback
+```
+
+### Supabase Dashboard Settings (Must Match)
+
+Go to **Supabase → Authentication → Providers → GitHub** and add:
+- **Client ID** = from GitHub OAuth App
+- **Client Secret** = from GitHub OAuth App
+
+Then go to **Authentication → URL Configuration** and set:
+
+**Site URL**
+- https://infamous-freight.netlify.app
+- https://infamous-freight.vercel.app
+
+**Redirect URLs**
+- http://localhost:3000/**
+- https://infamous-freight.netlify.app/**
+- https://infamous-freight.vercel.app/**
+
+### Frontend Supabase JS Usage
+
+```ts
+await supabase.auth.signInWithOAuth({
+  provider: "github",
+  options: {
+    redirectTo: `${window.location.origin}/auth/callback`,
+  },
+});
+```
+
+On your `/auth/callback` page, call:
+
+```ts
+await supabase.auth.getSession();
+```
+
 ## 📊 Insights Settings
 
 Enable insights for better project visibility:
