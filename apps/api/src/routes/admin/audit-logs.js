@@ -19,10 +19,11 @@ router.get(
     try {
       const client = getPrisma?.() || prisma;
       if (!client) {
-        return res.status(503).json({
-          ok: false,
-          error: "Audit log unavailable (database not initialized)",
-        });
+        const error = new Error(
+          "Audit log unavailable (database not initialized)",
+        );
+        error.status = 503;
+        throw error;
       }
 
       const role = String(req.auth?.role || req.user?.role || "").toUpperCase();
