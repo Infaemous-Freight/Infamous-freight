@@ -10,7 +10,7 @@ on:
       node-version:
         required: false
         type: string
-        default: "20"
+        default: "20.20.0"
         description: "Node.js version to use"
       working-directory:
         required: false
@@ -75,10 +75,13 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
 
-      - name: Install pnpm
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup pnpm (use packageManager)
         uses: pnpm/action-setup@v4
         with:
-          version: 9.15.0
+          run_install: false
 
       - name: Setup pnpm cache
         uses: actions/setup-node@v6
