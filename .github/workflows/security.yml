@@ -80,7 +80,7 @@ jobs:
         run: |
           echo "Scanning for potential secrets..."
           # Check for common secret patterns (case-insensitive)
-          if git grep -iE "(password|secret|key|token|api_key)[[:space:]]*=[[:space:]]*['\"][^'\"]{8,}" -- '*.js' '*.ts' '*.env*' || true; then
+          if git grep -iE "(password|secret|key|token|api_key)[[:space:]]*=[[:space:]]*['\"][^'\"]{8,}" -- '*.js' '*.ts' '*.env*'; then
             echo "⚠️ Potential secrets found - please review"
           fi
 
