@@ -24,7 +24,7 @@ fly logs --app infamous-freight-api --no-tail# 🚀 INFAMOUS FREIGHT ENTERPRISES
 
 - **Status**: 🟠 Linked & Configured
 - **Project**: `santorio-miles-projects/web`
-- **Project ID**: `prj_mxEkjo2T89KJJhzy6Y0BzTkRivB0`
+- **Project ID**: `prj_WBSUF1WMF2aX7DRmux7R5Aoabr8a`
 - **Build Command**: npm install (pnpm-lock.yaml)
 - **Output Directory**: `.next`
 - **Environment Variables**: Configured
