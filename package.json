@@ -1,6 +1,7 @@
 {
   "name": "infamous-freight",
   "private": true,
+  "packageManager": "pnpm@10.28.2",
   "engines": {
     "node": ">=20 <23",
     "pnpm": ">=10.0.0"
