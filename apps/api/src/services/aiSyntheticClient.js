@@ -49,9 +49,10 @@ class AISyntheticClient {
       const client = new OpenAI({
         apiKey: process.env.OPENAI_API_KEY,
       });
+      const model = process.env.AI_MODEL || "gpt-4";
 
       const response = await client.chat.completions.create({
-        model: "gpt-4",
+        model,
         messages: [
           {
             role: "user",

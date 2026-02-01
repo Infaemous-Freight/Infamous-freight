@@ -76,5 +76,6 @@
   "typescript.referencesCodeLens.enabled": true,
   "typescript.referencesCodeLens.showOnAllFunctions": true,
   "terminal.explorerKind": "both",
-  "terminal.integrated.accessibleViewFocusOnCommandExecution": true
+  "terminal.integrated.accessibleViewFocusOnCommandExecution": true,
+  "editor.codeActions.triggerOnFocusChange": true
 }
