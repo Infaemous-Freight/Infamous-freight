@@ -86,7 +86,7 @@ jobs:
 
       - name: Verify .env files are not committed
         run: |
-          if git ls-files | grep -E "\.env$" | grep -v ".env.example"; then
+          if git ls-files | grep -E "(^|/)\.env$" | grep -v ".env.example"; then
             echo "❌ ERROR: .env file committed to repository"
             exit 1
           fi
