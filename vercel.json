@@ -1,3 +1,20 @@
 {
-  "$schema": "https://vercel.com/schemas/vercel.json"
+  "$schema": "https://vercel.com/schemas/vercel.json",
+  "framework": "nextjs",
+  "nodeVersion": "24.x",
+  "buildCommand": "cd apps/web && pnpm build",
+  "outputDirectory": "apps/web/.next",
+  "regions": [
+    "sfo1"
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "develop": false
+    }
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "NEXT_TELEMETRY_DISABLED": "1"
+  }
 }

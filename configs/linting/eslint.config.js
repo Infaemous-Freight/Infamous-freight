@@ -18,7 +18,7 @@ export default [
       "archive/**",
       "**/*.config.js",
       "**/*.config.ts",
-      "src/apps/mobile/**",
+      "apps/mobile/**",
       "**/*.test.js",
       "**/*.spec.js",
       "**/*.test.ts",
@@ -91,7 +91,7 @@ export default [
     },
   },
   {
-    files: ["src/apps/api/**/*.js", "src/packages/**/*.js"],
+    files: ["apps/api/**/*.js", "packages/**/*.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "commonjs",
@@ -108,7 +108,7 @@ export default [
   },
   {
     files: [
-      "src/apps/web/**/*.{js,jsx,ts,tsx}",
+      "apps/web/**/*.{js,jsx,ts,tsx}",
       "tests/e2e/**/*.{js,jsx,ts,tsx}",
     ],
     languageOptions: {

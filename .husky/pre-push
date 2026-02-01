@@ -1,9 +1,3 @@
-/**
- * Git pre-push hook configuration for Infamous Freight API.
- * Install with: npx husky install && npx husky add .husky/pre-push
- * Then add this content to .husky/pre-push
- */
-
 #!/bin/sh
 
 set -e
@@ -29,7 +23,7 @@ pnpm lint --max-warnings 100 || {
 
 # Type check
 echo "✔️ Type checking..."
-pnpm check:types || {
+pnpm typecheck || {
   echo "❌ Type check failed."
   exit 1
 }

@@ -7,21 +7,32 @@ const __dirname = path.dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  turbopack: {},
+  turbopack: {
+    resolveAlias: {
+      "@": "./src",
+    }
+  },
   typescript: {
-    // TODO: Fix TypeScript errors and set to false
-    // Run: pnpm --filter web typecheck to see all errors
-    // Path aliases now work correctly with baseUrl in tsconfig.json
-    ignoreBuildErrors: true,
+    // Fix TypeScript errors: pnpm --filter web typecheck
+    // In development (Vercel): This ensures build succeeds even with type errors
+    // In production, use: pnpm check:types before committing
+    ignoreBuildErrors: process.env.NODE_ENV === "production" && process.env.CI !== "true",
   },
   reactStrictMode: true,
   output: "standalone",
   compress: true,
   poweredByHeader: false,
+  productionBrowserSourceMaps: false,
+  swcMinify: true,
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb'
-    }
+    },
+    optimizePackageImports: [
+      '@infamous-freight/shared',
+      'recharts',
+      '@supabase/supabase-js',
+    ],
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production"
@@ -36,6 +47,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "infamous-freight-api.fly.dev",
         pathname: "/api/uploads/**"
+      },
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/**"
       }
     ]
   },
@@ -65,6 +81,12 @@ const nextConfig = {
               test: /[\\/]node_modules[\\/](recharts)[\\/]/,
               name: "chart-vendors",
               priority: 10,
+              reuseExistingChunk: true
+            },
+            supabase: {
+              test: /[\\/]node_modules[\\/](@supabase)[\\/]/,
+              name: "supabase-vendors",
+              priority: 12,
               reuseExistingChunk: true
             },
             commons: {

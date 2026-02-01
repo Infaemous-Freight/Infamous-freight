@@ -5,10 +5,23 @@
   "installCommand": "corepack enable && cd .. && pnpm install --frozen-lockfile",
   "buildCommand": "cd .. && pnpm -r --filter @infamous-freight/shared build && pnpm --filter web build",
   "outputDirectory": ".next",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "env": {
+    "NODE_ENV": "production",
+    "NEXT_TELEMETRY_DISABLED": "1"
+  },
+  "regions": [
+    "sfo1"
+  ],
   "functions": {
     "pages/api/**/*.{js,ts}": {
       "memory": 1024,
-      "maxDuration": 10
+      "maxDuration": 30
+    },
+    "app/api/**/*.{js,ts}": {
+      "memory": 1024,
+      "maxDuration": 30
     }
   },
   "headers": [
@@ -21,7 +34,7 @@
         },
         {
           "key": "X-Frame-Options",
-          "value": "DENY"
+          "value": "SAMEORIGIN"
         },
         {
           "key": "X-XSS-Protection",
@@ -33,7 +46,20 @@
         },
         {
           "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
+          "value": "camera=(), microphone=(), geolocation=(), payment=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains; preload"
+        }
+      ]
+    },
+    {
+      "source": "/api/health(/)?",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60, must-revalidate"
         }
       ]
     },
@@ -54,12 +80,41 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
+    },
+    {
+      "source": "/(.*)\\.(jpg|jpeg|png|gif|webp|svg|ico)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(woff|woff2|ttf|otf|eot)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/healthz",
+      "destination": "/api/health",
+      "permanent": false
     }
   ],
   "rewrites": [
     {
       "source": "/api/supabase/:path*",
       "destination": "https://supabase.com/:path*"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/health"
     }
   ],
   "build": {
@@ -68,5 +123,10 @@
       "NODE_ENV": "production"
     }
   },
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/health",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }

@@ -1,12 +1,12 @@
 {
-  "api/src/**/*.{js,ts}": [
+  "apps/api/src/**/*.{js,ts}": [
     "eslint --fix",
     "prettier --write"
   ],
-  "web/**/*.{js,jsx,ts,tsx}": [
+  "apps/web/**/*.{js,jsx,ts,tsx}": [
     "prettier --write"
   ],
-  "mobile/**/*.{js,jsx,ts,tsx}": [
+  "apps/mobile/**/*.{js,jsx,ts,tsx}": [
     "prettier --write"
   ],
   "packages/shared/src/**/*.{js,ts}": [
