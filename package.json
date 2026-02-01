@@ -1,14 +1,16 @@
 {
   "name": "infamous-freight",
   "private": true,
-  "packageManager": "pnpm@10.2.1",
+  "packageManager": "pnpm@9.15.0",
   "engines": {
     "node": "20.x"
   },
   "scripts": {
     "install:ci": "pnpm install --frozen-lockfile",
     "lint": "pnpm -r run lint",
+    "lint:web": "pnpm --filter web lint",
     "typecheck": "pnpm -r run typecheck",
+    "typecheck:web": "pnpm --filter web typecheck",
     "build": "pnpm -r run build",
     "build:shared": "pnpm --filter @infamous-freight/shared build",
     "build:web": "pnpm --filter web build",
