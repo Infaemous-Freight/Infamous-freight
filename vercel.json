@@ -4,7 +4,7 @@
   "buildCommand": "pnpm --filter web... build",
   "devCommand": "pnpm --filter ./web dev",
   "installCommand": "pnpm install --frozen-lockfile",
-  "outputDirectory": ".next",
+  "outputDirectory": "apps/web/.next",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
   "crons": [],
   "github": {
