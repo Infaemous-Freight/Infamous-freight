@@ -1,1 +1,1 @@
-{"version":2,"installCommand":"corepack enable && pnpm install --frozen-lockfile","buildCommand":"pnpm -r --filter @infamous-freight/shared build && pnpm --filter web build","outputDirectory":"apps/web/.next"}
+vercel.json
