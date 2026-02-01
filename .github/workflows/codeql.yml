@@ -45,16 +45,19 @@ jobs:
         with:
           fetch-depth: 0  # Full history for better analysis
 
-      - name: 🔧 Setup Node.js 18
+      - name: 🔧 Setup Node.js 20.20.0
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "20.20.0"
           cache: "npm"
 
-      - name: 📦 Setup pnpm
+      - name: 🔐 Enable Corepack
+        run: corepack enable
+
+      - name: 📦 Setup pnpm (use packageManager)
         uses: pnpm/action-setup@v4
         with:
-          version: 9.15.0
+          run_install: false
 
       - name: 🗂️ Get pnpm store
         shell: bash
@@ -91,15 +94,18 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v6
 
-      - name: 🔧 Setup Node.js 18
+      - name: 🔧 Setup Node.js 20.20.0
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "20.20.0"
 
-      - name: 📦 Setup pnpm
+      - name: 🔐 Enable Corepack
+        run: corepack enable
+
+      - name: 📦 Setup pnpm (use packageManager)
         uses: pnpm/action-setup@v4
         with:
-          version: 9.15.0
+          run_install: false
 
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
@@ -139,15 +145,18 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v6
 
-      - name: 🔧 Setup Node.js 18
+      - name: 🔧 Setup Node.js 20.20.0
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "20.20.0"
 
-      - name: 📦 Setup pnpm
+      - name: 🔐 Enable Corepack
+        run: corepack enable
+
+      - name: 📦 Setup pnpm (use packageManager)
         uses: pnpm/action-setup@v4
         with:
-          version: 9.15.0
+          run_install: false
 
       - name: 🛡️ SBOM Generation (syft)
         uses: anchore/sbom-action@v0
@@ -183,15 +192,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 🔧 Setup Node.js 18
+      - name: 🔧 Setup Node.js 20.20.0
         uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "20.20.0"
 
-      - name: 📦 Setup pnpm
+      - name: 🔐 Enable Corepack
+        run: corepack enable
+
+      - name: 📦 Setup pnpm (use packageManager)
         uses: pnpm/action-setup@v4
         with:
-          version: 9.15.0
+          run_install: false
 
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
