@@ -16,17 +16,19 @@ echo -e "${BLUE}   Infamous Freight Enterprises - Supabase Cloud Setup${NC}"
 echo -e "${BLUE}═══════════════════════════════════════════════════════════════${NC}"
 echo ""
 
-# Check if Supabase CLI is installed
-if ! command -v supabase &> /dev/null; then
-    echo -e "${YELLOW}Supabase CLI not found. Installing...${NC}"
-    npm install -g supabase
+SUPABASE_CLI="npx supabase"
+
+# Check if Supabase CLI is available (use npx to avoid global install permission issues)
+if ! $SUPABASE_CLI --version &> /dev/null; then
+    echo -e "${RED}Supabase CLI not available via npx. Ensure npm is installed and try again.${NC}"
+    exit 1
 fi
 
 # Check if user is logged in
 echo -e "${BLUE}Step 1: Login to Supabase${NC}"
-if ! supabase status &> /dev/null; then
+if ! $SUPABASE_CLI status &> /dev/null; then
     echo -e "${YELLOW}Logging in to Supabase...${NC}"
-    supabase login
+    $SUPABASE_CLI login
 fi
 
 # Get project reference from user
@@ -43,7 +45,7 @@ fi
 
 # Link to project
 echo -e "${GREEN}Linking to project: $PROJECT_REF${NC}"
-supabase link --project-ref "$PROJECT_REF"
+$SUPABASE_CLI link --project-ref "$PROJECT_REF"
 
 # Push database migrations
 echo ""
@@ -53,7 +55,7 @@ read -p "Continue? (y/n): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     cd /workspaces/Infamous-freight-enterprises
-    supabase db push
+    $SUPABASE_CLI db push
     echo -e "${GREEN}✓ Database migrations applied successfully${NC}"
 else
     echo -e "${YELLOW}Skipping database migrations${NC}"
@@ -70,10 +72,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     
     # Deploy each function
     echo -e "${GREEN}Deploying analytics function...${NC}"
-    supabase functions deploy analytics --no-verify-jwt
+    $SUPABASE_CLI functions deploy analytics --no-verify-jwt
     
     echo -e "${GREEN}Deploying shipment-tracking function...${NC}"
-    supabase functions deploy shipment-tracking --no-verify-jwt
+    $SUPABASE_CLI functions deploy shipment-tracking --no-verify-jwt
     
     echo -e "${GREEN}✓ Edge Functions deployed successfully${NC}"
 else
@@ -86,9 +88,9 @@ echo -e "${BLUE}Step 5: Configure Environment Variables${NC}"
 echo -e "${YELLOW}Getting project credentials...${NC}"
 
 # Get project details
-PROJECT_URL=$(supabase status | grep "API URL" | awk '{print $3}')
-ANON_KEY=$(supabase status | grep "anon key" | awk '{print $3}')
-SERVICE_ROLE_KEY=$(supabase status | grep "service_role key" | awk '{print $3}')
+PROJECT_URL=$($SUPABASE_CLI status | grep "API URL" | awk '{print $3}')
+ANON_KEY=$($SUPABASE_CLI status | grep "anon key" | awk '{print $3}')
+SERVICE_ROLE_KEY=$($SUPABASE_CLI status | grep "service_role key" | awk '{print $3}')
 
 if [ -z "$PROJECT_URL" ] || [ -z "$ANON_KEY" ]; then
     echo -e "${YELLOW}Could not auto-retrieve credentials. Please get them manually:${NC}"
@@ -129,7 +131,7 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     cd /workspaces/Infamous-freight-enterprises
     mkdir -p apps/web/types
-    supabase gen types typescript --linked > apps/web/src/types/database.ts
+    $SUPABASE_CLI gen types typescript --linked > apps/web/src/types/database.ts
     echo -e "${GREEN}✓ TypeScript types generated${NC}"
 else
     echo -e "${YELLOW}Skipping TypeScript type generation${NC}"
