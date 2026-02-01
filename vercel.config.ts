@@ -1,3 +1,3 @@
 export const config = {
-  buildCommand: 'pnpm build',
+  buildCommand: 'pnpm --filter @infamous-freight/shared build && pnpm --filter ./web... build',
 };
