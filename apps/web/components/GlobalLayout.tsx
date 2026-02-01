@@ -52,9 +52,6 @@ export default function GlobalLayout({
             <Link href="/security" locale={locale} className="nav-link">
               Security
             </Link>
-            <Link href="/ops/audit" locale={locale} className="nav-link">
-              Audit
-            </Link>
           </div>
 
           <span className="nav-actions">
