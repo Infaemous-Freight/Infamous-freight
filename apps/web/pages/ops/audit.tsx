@@ -253,7 +253,9 @@ export default function OpsAuditPage() {
                     whiteSpace: "pre-wrap",
                   }}
                 >
-                  {JSON.stringify({ metadata: event.metadata }, null, 2)}
+                  {event.metadata === null
+                    ? "No metadata"
+                    : JSON.stringify({ metadata: event.metadata }, null, 2)}
                 </pre>
               </details>
             </article>
