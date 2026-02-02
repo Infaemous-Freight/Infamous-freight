@@ -100,6 +100,32 @@ NEXT_PUBLIC_ENV=production
 NEXT_PUBLIC_SENTRY_RELEASE=v1.0.0
 ```
 
+**Wizard setup (pnpm monorepo-safe):**
+```bash
+cd apps/web
+npx @sentry/wizard@latest -i nextjs --saas --org infamous-freight-enterprise --project javascript-nextjs
+```
+
+**Expected wizard changes:**
+- Creates `sentry.client.config.(js|ts)`, `sentry.server.config.(js|ts)`, and possibly `sentry.edge.config.(js|ts)`
+- Updates `next.config.*` to wrap the config with `withSentryConfig`
+- Adds a tunnel route (commonly `/monitoring`) to bypass ad blockers
+
+**Vercel environment variables (source maps):**
+```bash
+SENTRY_AUTH_TOKEN= # Create in Sentry → User Settings → Auth Tokens
+SENTRY_ORG=infamous-freight-enterprise
+SENTRY_PROJECT=javascript-nextjs
+```
+
+**Middleware tunnel exclusions:**
+If Next.js middleware matches all routes, exclude the Sentry tunnel path to avoid 401/403/500 errors:
+```ts
+export const config = {
+  matcher: ["/((?!monitoring).*)"],
+};
+```
+
 **Auto-initialized via:**
 - `apps/web/src/lib/sentry.client.config.ts` - Client SDK setup
 - `apps/web/pages/_app.tsx` - Automatic initialization on app boot
@@ -689,4 +715,3 @@ Your Sentry setup is 100% complete when:
 - [x] Dashboard configured and shared with team
 - [x] Documentation in place for on-call team
 - [x] Test suite validates Sentry integration
-
