@@ -7,7 +7,7 @@ JWT_SECRET=generate_a_secret
 
 AI_PROVIDER=synthetic
 AI_SYNTHETIC_API_KEY=
-AI_SYNTHETIC_ENGINE_URL=https://your-fly-app.internal/ai-sim
+AI_SYNTHETIC_ENGINE_URL=<https://your-fly-app.internal/ai-sim>
 AI_SECURITY_MODE=strict
 
 # Billing

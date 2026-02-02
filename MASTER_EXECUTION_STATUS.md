@@ -98,6 +98,7 @@ All 22 strategic recommendations for Infamous Freight have been fully documented
 ### 🏃 PHASE 1: IMMEDIATE (Week 1-2)
 
 **Tier 1 Deployment**
+
 ```
 Week 1:
   - Monday: Advanced monitoring implementation
@@ -119,6 +120,7 @@ Week 2:
 ### 💰 PHASE 2: REVENUE (Week 3-8)
 
 **Tier 2 Launch**
+
 ```
 Week 3: Pricing page + Stripe integration
 Week 4: Upsell engine development
@@ -137,6 +139,7 @@ Week 8: Go-to-market campaigns
 ### 🔐 PHASE 3: SECURITY (Week 9-12)
 
 **Tier 3 Hardening**
+
 ```
 Week 9: 2FA rollout (freemium)
 Week 10: Encryption migration
@@ -153,6 +156,7 @@ Week 12: SOC 2 audit begins
 ### 🚀 PHASE 4: PRODUCT (Week 13-24)
 
 **Tier 4 Expansion**
+
 - Mobile app team boots
 - White-label pilot selected
 - Analytics MVP
@@ -164,6 +168,7 @@ Week 12: SOC 2 audit begins
 ### 🌍 PHASE 5: SCALE (Week 25+)
 
 **Tier 5 Execution**
+
 - Series A due diligence
 - APAC team hiring
 - Market expansion
@@ -298,22 +303,26 @@ cat TIER1_DISASTER_RECOVERY.md
 
 ## Question: Where Do I Start?
 
-### If you're Engineering:
+### If you're Engineering
+
 1. **Today**: Review [TIER1_ADVANCED_MONITORING.md](TIER1_ADVANCED_MONITORING.md)
 2. **Week 1**: Deploy monitoring & rate limiting
 3. **Week 3**: Database optimization + caching
 
-### If you're Product:
+### If you're Product
+
 1. **Today**: Review [TIER2_PRICING_MODEL.md](TIER2_PRICING_MODEL.md)
 2. **Week 5**: Launch pricing page
 3. **Week 7**: Go-to-market for upsells
 
-### If you're Sales:
+### If you're Sales
+
 1. **Today**: Read [TIER2_PARTNER_PROGRAM.md](TIER2_PARTNER_PROGRAM.md)
 2. **Week 5**: Begin partner recruitment
 3. **Week 8**: First partnership closed
 
-### If you're Executive:
+### If you're Executive
+
 1. **Today**: Review this summary + [IMPLEMENTATIONS_ALL_22_RECOMMENDATIONS.md](IMPLEMENTATIONS_ALL_22_RECOMMENDATIONS.md)
 2. **Week 1**: Approve resource allocation
 3. **Week 3**: OKR alignment + investor prep
@@ -323,16 +332,19 @@ cat TIER1_DISASTER_RECOVERY.md
 ## Support & Questions
 
 **Need help implementing?**
+
 - Check the specific tier document (contains full implementation guide)
 - Review the "Implementation Checklist" section
 - Follow the step-by-step code samples provided
 
 **Having technical issues?**
+
 - Slack: #engineering or #infra-support
-- Email: engineering-leads@infamousfreight.com
+- Email: <engineering-leads@infamousfreight.com>
 
 **Strategic questions?**
-- Email: founders@infamousfreight.com
+
+- Email: <founders@infamousfreight.com>
 - Calendar link for office hours
 
 ---

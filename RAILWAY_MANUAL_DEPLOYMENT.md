@@ -7,13 +7,15 @@
 ## ⚡ Quick Deploy (Do This Now!)
 
 ### Step 1: Go to Railway Dashboard
-**URL**: https://railway.app/dashboard
+
+**URL**: <https://railway.app/dashboard>
 
 Click **"New Project"**
 
 ---
 
 ### Step 2: Deploy from GitHub
+
 1. Click **"Deploy from GitHub"**
 2. Authorize Railway with your GitHub account if prompted
 3. Select repo: **`MrMiless44/Infamous-freight`**
@@ -26,6 +28,7 @@ Click **"New Project"**
 Railway will auto-detect your repo and show deployment options.
 
 **Select**:
+
 - **Dockerfile**: `Dockerfile.api`
 - **Service Name**: `infamous-freight-api`
 - **Port**: `3001`
@@ -63,7 +66,7 @@ Click **"Add Variable"** and paste these values:
 
 ---
 
-### Step 6: Deploy!
+### Step 6: Deploy
 
 1. Click **"Deploy"** button
 2. Watch the deployment logs scroll by
@@ -75,12 +78,14 @@ Click **"Add Variable"** and paste these values:
 ### Step 7: Get Your API URL
 
 Once deployed:
+
 1. Click on the API service in Railway
 2. Go to **"Settings"**
 3. Find **"Public URL"** or **"Railway Domain"**
 4. Copy the URL (looks like: `https://infamous-freight-api.railway.app`)
 
-**Example**: 
+**Example**:
+
 ```
 https://infamous-freight-api.railway.app
 ```
@@ -101,14 +106,16 @@ curl https://your-railway-api-url/api/health
 
 ### Step 9: Update Vercel Environment
 
-1. Go to: https://vercel.com/dashboard
+1. Go to: <https://vercel.com/dashboard>
 2. Select your project: **"Infamous Freight"**
 3. Go to **"Settings"** → **"Environment Variables"**
 4. Find or create: **`NEXT_PUBLIC_API_URL`**
 5. Set value to your Railway URL:
+
    ```
    https://your-railway-api-url
    ```
+
 6. Click **"Save"**
 7. Go to **"Deployments"** and click **"Redeploy"** on latest commit
 
@@ -118,47 +125,53 @@ curl https://your-railway-api-url/api/health
 
 ### Step 10: Verify End-to-End
 
-1. Open web app: https://infamous-freight-enterprises.vercel.app
+1. Open web app: <https://infamous-freight-enterprises.vercel.app>
 2. You should see the login page
 3. Try to log in (check browser console for CORS errors - should be none)
-4. Check Sentry: https://sentry.io (confirm events arriving)
+4. Check Sentry: <https://sentry.io> (confirm events arriving)
 
 ---
 
-## 🎉 You're Live!
+## 🎉 You're Live
 
 **Deployment Status**:
+
 - ✅ API: Running on Railway
 - ✅ Database: PostgreSQL connected
 - ✅ Web: Deployed on Vercel
 - ✅ Monitoring: Sentry active
 
 **URLs**:
-- **Web App**: https://infamous-freight-enterprises.vercel.app
-- **API Health**: https://your-railway-api-url/api/health
-- **Railway Dashboard**: https://railway.app/dashboard
-- **Vercel Dashboard**: https://vercel.com/dashboard
+
+- **Web App**: <https://infamous-freight-enterprises.vercel.app>
+- **API Health**: <https://your-railway-api-url/api/health>
+- **Railway Dashboard**: <https://railway.app/dashboard>
+- **Vercel Dashboard**: <https://vercel.com/dashboard>
 
 ---
 
 ## 🔧 Troubleshooting
 
 ### API returns 502 error
+
 - Check Railway logs: Railway Dashboard → Right-click service → View Logs
 - Ensure DATABASE_URL is set correctly
 - Check that port is 3001
 
 ### CORS errors in browser
+
 - Verify `CORS_ORIGINS` in Railway environment includes your Vercel domain
 - Redeploy Vercel after Railway URL is set
 - Clear browser cache (Cmd+Shift+Delete)
 
 ### Database not connecting
+
 - In Railway, check PostgreSQL service is healthy (green status)
 - Verify `DATABASE_URL` environment variable exists
 - Check logs for connection errors
 
 ### Can't login
+
 - Check browser DevTools → Network tab
 - Verify API endpoint is correct in Vercel environment
 - Check Sentry for backend errors
@@ -168,7 +181,7 @@ curl https://your-railway-api-url/api/health
 ## 📊 Post-Deployment Checklist
 
 - [ ] API health check passed (returns `{"status":"ok","database":"connected"}`)
-- [ ] Web app loads (https://infamous-freight-enterprises.vercel.app)
+- [ ] Web app loads (<https://infamous-freight-enterprises.vercel.app>)
 - [ ] No CORS errors in browser console
 - [ ] Login page accessible
 - [ ] Railway shows successful deployment (green checkmark)
@@ -180,6 +193,7 @@ curl https://your-railway-api-url/api/health
 ## 📞 Support
 
 **Need help?**
+
 1. Check [DEPLOYMENT_100_GUIDE.md](DEPLOYMENT_100_GUIDE.md) - complete troubleshooting
 2. View Railway logs: Railway Dashboard → Logs
 3. Check Vercel logs: Vercel Dashboard → Deployments → Logs
@@ -188,4 +202,3 @@ curl https://your-railway-api-url/api/health
 ---
 
 **Next**: Follow the 10 steps above → 5 minutes → 100% LIVE! 🚀
-

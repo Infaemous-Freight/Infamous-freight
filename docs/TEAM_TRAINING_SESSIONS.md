@@ -682,14 +682,14 @@ With certification, employees receive:
 
 ### Practice Environments
 
-- Staging: https://staging.infamousfreight.com
-- Training: https://training.infamousfreight.com
+- Staging: <https://staging.infamousfreight.com>
+- Training: <https://training.infamousfreight.com>
 
 ### Support
 
 - Slack: #deployment-support
 - On-call: +1 (555) 123-4567
-- Email: devops@infamousfreight.com
+- Email: <devops@infamousfreight.com>
 
 ---
 

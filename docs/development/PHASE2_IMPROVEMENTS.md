@@ -4,7 +4,7 @@ pnpm audit
 
 # Check Dependabot PRs
 
-# Visit: https://github.com/MrMiless44/Infamous-freight-enterprises/security/dependabot# Phase 2 Improvements - Developer Experience & Tooling
+# Visit: <https://github.com/MrMiless44/Infamous-freight-enterprises/security/dependabot#> Phase 2 Improvements - Developer Experience & Tooling
 
 **Date:** December 13, 2024  
 **Status:** ✅ Completed
@@ -385,6 +385,7 @@ api: ✓ Ready (no build step required)
    - Verify healthchecks pass
 
 3. **Commit Changes**
+
    ```bash
    git add .
    git commit -m "feat: add phase 2 improvements - developer tooling and docker optimization"

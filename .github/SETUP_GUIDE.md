@@ -8,7 +8,7 @@ This guide provides step-by-step instructions for configuring branch protection 
 
 ### Step 1: Navigate to Branch Protection Settings
 
-1. Go to repository on GitHub: https://github.com/MrMiless44/Infamous-freight-enterprises
+1. Go to repository on GitHub: <https://github.com/MrMiless44/Infamous-freight-enterprises>
 2. Click **Settings** tab
 3. Click **Branches** in left sidebar
 4. Under "Branch protection rules", click **Add rule**
@@ -17,7 +17,7 @@ This guide provides step-by-step instructions for configuring branch protection 
 
 **Branch name pattern:** `main`
 
-#### ✅ Enable These Settings:
+#### ✅ Enable These Settings
 
 **Protect matching branches:**
 
@@ -145,7 +145,7 @@ Follow same steps as production environments but:
 
 #### Step 1: Install GitHub App for Slack
 
-1. Go to: https://github.com/marketplace/slack-github
+1. Go to: <https://github.com/marketplace/slack-github>
 2. Click **Set up a plan** (Free)
 3. Install on `Infamous-freight-enterprises` repository
 4. Follow Slack authorization
@@ -174,7 +174,7 @@ In your Slack channel:
 
 ### Configure in GitHub Settings
 
-1. Go to: https://github.com/settings/notifications
+1. Go to: <https://github.com/settings/notifications>
 2. **Actions**:
    - [x] Send notifications for failed workflows only
    - [x] Email

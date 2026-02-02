@@ -13,8 +13,8 @@ All local development checks are passing and services are running.
 
 ### Running Services
 
-- **Web Application**: http://localhost:3000 (Next.js)
-- **Mock API Server**: http://localhost:4000 (JSON Server)
+- **Web Application**: <http://localhost:3000> (Next.js)
+- **Mock API Server**: <http://localhost:4000> (JSON Server)
 
 ### Available Endpoints
 
@@ -71,7 +71,7 @@ Current status: Failing (expected - requires configuration)
 
 1. Configure GitHub secrets for CI/CD
 2. Review workflow configurations in `.github/workflows/`
-3. Check logs at: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+3. Check logs at: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
 
 ## 📦 Installed Packages
 

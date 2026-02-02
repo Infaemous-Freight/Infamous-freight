@@ -18,11 +18,13 @@ This guide documents the validation and quality gates used across the Infamous F
 - **Configuration**: `configs/validation/html-validate.config.js`
 - **Ignores**: Node modules, build artifacts, Playwright reports, and coverage output
 - **Manual run**:
+
   ```bash
   pnpm exec html-validate \
     --config configs/validation/html-validate.config.js \
     "src/**/*.html" "tests/**/*.html"
   ```
+
 - **CI**: Invoked via `pnpm validate` in `.github/workflows/ci.yml`.
 
 ## CSS Validation
@@ -31,9 +33,11 @@ This guide documents the validation and quality gates used across the Infamous F
 - **Configuration**: `configs/validation/stylelint.config.cjs`
 - **Ignore list**: `configs/validation/.stylelintignore`
 - **Manual run**:
+
   ```bash
   pnpm lint:css
   ```
+
 - **CI**: Executed through `pnpm validate`.
 
 ## JavaScript/TypeScript Linting
@@ -41,11 +45,13 @@ This guide documents the validation and quality gates used across the Infamous F
 - **Tool**: [`eslint`](https://eslint.org/)
 - **Configuration**: `configs/linting/eslint.config.js`
 - **Manual run**:
+
   ```bash
   pnpm lint
   # or with explicit paths
   pnpm exec eslint -c configs/linting/eslint.config.js "src/**/*.{js,jsx,ts,tsx}" "tests/**/*.{js,jsx,ts,tsx}"
   ```
+
 - **Type checking**: Packages expose `typecheck` scripts where applicable and are executed in CI with `pnpm -r --if-present typecheck`.
 
 ## Coverage & Reporting

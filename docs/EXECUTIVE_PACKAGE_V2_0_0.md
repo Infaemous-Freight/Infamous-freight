@@ -3,13 +3,16 @@
 ## 1. Investor Pitch Deck (15 Slides)
 
 ### Slide 1 — Title
+
 **Infæmous Freight**  
 AI-Native Logistics Operating System  
 Founder: Santorio Djuan Miles  
 Jurisdiction: Oklahoma, USA
 
 ### Slide 2 — Problem
+
 Logistics today is:
+
 - Fragmented
 - Manual
 - Cost-inefficient
@@ -18,24 +21,29 @@ Logistics today is:
 **$1T+ global freight market with broken tooling**
 
 ### Slide 3 — Solution
+
 Infæmous Freight:
+
 - AI-native freight OS
 - Real-time voice + AI command layer
 - Unified billing, dispatch, tracking
 - Fully automated enterprise stack
 
 ### Slide 4 — Product
+
 - Web, API, Mobile
 - AI routing + billing automation
 - Voice-driven fleet operations
 - AI event simulation & forecasting
 
 ### Slide 5 — Market
+
 - **TAM:** $1.3T global logistics software
 - **SAM:** $150B freight management
 - **SOM:** $5B mid-market operators
 
 ### Slide 6 — Traction
+
 - v2.0.0 live in production
 - Multi-cloud deployed
 - Zero TS errors
@@ -43,12 +51,14 @@ Infæmous Freight:
 - SOC2-ready
 
 ### Slide 7 — Technology
+
 - AI-native architecture
 - Multi-region deployment
 - SOC2-ready security
 - AI governance & cost controls
 
 ### Slide 8 — Moat
+
 - AI-first freight OS
 - Voice-native fleet control
 - Legal IP protections
@@ -56,6 +66,7 @@ Infæmous Freight:
 - Proprietary AI pipelines
 
 ### Slide 9 — Business Model
+
 - SaaS tiers
 - Usage-based AI billing
 - White-label enterprise
@@ -72,6 +83,7 @@ Infæmous Freight:
 **Gross margin:** 82%
 
 ### Slide 11 — Go-To-Market
+
 - Mid-market freight operators
 - Logistics startups
 - 3PLs & brokers
@@ -86,18 +98,22 @@ Infæmous Freight:
 | Samsara | Hardware-centric |
 
 ### Slide 13 — Roadmap
+
 - AI co-pilot expansion
 - International deployments
 - White-label enterprise
 - AI marketplace
 
 ### Slide 14 — Team
+
 **Santorio Djuan Miles**  
 Founder, Architect, AI Systems Engineer
 
 ### Slide 15 — Ask
+
 **Raising:** Seed / Series A  
 **Use of funds:**
+
 - Sales & GTM
 - AI expansion
 - Compliance certifications
@@ -107,15 +123,18 @@ Founder, Architect, AI Systems Engineer
 ## 2. Formal Business Plan (Enterprise Ready)
 
 ### Executive Summary
+
 Infæmous Freight is an AI-native freight management operating system providing end-to-end logistics automation, AI decisioning, real-time voice control, and integrated billing. Built as an enterprise-grade SaaS platform with SOC2-ready compliance, Infæmous Freight targets mid-market and enterprise logistics operators globally.
 
 ### Market Analysis
+
 - Global Logistics Software: $1.3T
 - AI in logistics CAGR: 24%
 - Fragmented competition
 - No AI-native freight OS leaders
 
 ### Product Offering
+
 - Freight OS (Web, API, Mobile)
 - AI dispatch & routing
 - AI billing automation
@@ -141,6 +160,7 @@ Infæmous Freight is an AI-native freight management operating system providing 
 | 3 | $12.7M | $5.2M |
 
 ### Risk Management
+
 - AI governance controls
 - Cost ceilings
 - SOC2 compliance
@@ -183,12 +203,14 @@ Infæmous Freight is an AI-native freight management operating system providing 
 ## 4. SOC2 Audit Binder (Executive)
 
 ### Governance
+
 - Access control (RBAC)
 - Audit logging
 - Change management
 - AI governance
 
 ### Security
+
 - TLS everywhere
 - Encrypted at rest
 - Immutable infra
@@ -205,6 +227,7 @@ Infæmous Freight is an AI-native freight management operating system providing 
 | Vendor Risk | Assessed |
 
 ### AI Controls
+
 - Prompt versioning
 - Token limits
 - AI cost ceilings
@@ -215,6 +238,7 @@ Infæmous Freight is an AI-native freight management operating system providing 
 ## 5. Sales Playbook + Pricing Matrix
 
 ### Ideal Customers
+
 - Freight brokers
 - 3PLs
 - Fleet operators
@@ -223,11 +247,13 @@ Infæmous Freight is an AI-native freight management operating system providing 
 ### Sales Motion
 
 **Inbound:**
+
 - Website demo
 - AI showcase
 - Use-case driven
 
 **Outbound:**
+
 - Vertical targeting
 - AI differentiation pitch
 
@@ -253,6 +279,7 @@ Infæmous Freight is an AI-native freight management operating system providing 
 ## Final Executive Status
 
 Infæmous Freight is now:
+
 - ✅ Investor-ready
 - ✅ Enterprise-ready
 - ✅ Audit-ready

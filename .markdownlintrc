@@ -1,0 +1,41 @@
+# Markdownlint Configuration
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+# Default state for all rules
+default: true
+
+# Rule customizations
+# MD013/line-length - Line length (disabled as it's too restrictive for docs)
+MD013: false
+
+# MD024/no-duplicate-heading - Multiple headings with the same content
+# Allow duplicate headings in different sections
+MD024:
+  siblings_only: true
+
+# MD033/no-inline-html - Inline HTML
+# Allow inline HTML for complex layouts/tables
+MD033: false
+
+# MD034/no-bare-urls - Bare URL used
+# Prefer markdown links, but disabled for simplicity in READMEs
+MD034: false
+
+# MD041/first-line-heading - First line in file should be a top level heading
+# Allow frontmatter and comments before first heading
+MD041: false
+
+# MD046/code-block-style - Code block style
+# Prefer fenced code blocks (```) over indented
+MD046:
+  style: fenced
+
+# MD049/emphasis-style - Emphasis style
+# Prefer asterisks for emphasis (*text*)
+MD049:
+  style: asterisk
+
+# MD050/strong-style - Strong style
+# Prefer asterisks for strong (**text**)
+MD050:
+  style: asterisk

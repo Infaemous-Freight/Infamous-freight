@@ -7,12 +7,12 @@
 
 ### Production Deployments
 
-- **Web (Vercel)**: https://infamous-freight-enterprises-e1mn358un-santorio-miles-projects.vercel.app
+- **Web (Vercel)**: <https://infamous-freight-enterprises-e1mn358un-santorio-miles-projects.vercel.app>
   - Status: ✅ Live (SSO-protected)
   - Framework: Next.js 14.2.35
   - Build: Standalone output
   - Root Directory: `web/`
-- **API (Fly.io)**: https://infamous-freight-ai.fly.dev
+- **API (Fly.io)**: <https://infamous-freight-ai.fly.dev>
   - Status: ⚠️ Needs machine restart (port configuration)
   - Runtime: Node.js 20.18.1
   - Port: 8080 (configured via `API_PORT` secret)
@@ -99,7 +99,7 @@ corsOrigins: [
 
 **To disable for public testing:**
 
-1. Go to: https://vercel.com/santorio-miles-projects/infamous-freight-enterprises/settings/deployment-protection
+1. Go to: <https://vercel.com/santorio-miles-projects/infamous-freight-enterprises/settings/deployment-protection>
 2. Toggle off "Vercel Authentication"
 3. Test publicly: `curl -i https://<vercel-domain>/api/health`
 
@@ -114,7 +114,7 @@ corsOrigins: [
 
 ### Fly.io Monitoring
 
-- **Dashboard**: https://fly.io/apps/infamous-freight-ai/monitoring
+- **Dashboard**: <https://fly.io/apps/infamous-freight-ai/monitoring>
 - **Logs**: `flyctl logs -a infamous-freight-ai`
 - **Status**: `flyctl status -a infamous-freight-ai`
 
@@ -122,7 +122,7 @@ corsOrigins: [
 
 - **Speed Insights**: Enabled in `web/pages/_app.tsx`
 - **Analytics**: Enabled via `@vercel/analytics`
-- **Dashboard**: https://vercel.com/santorio-miles-projects/infamous-freight-enterprises/analytics
+- **Dashboard**: <https://vercel.com/santorio-miles-projects/infamous-freight-enterprises/analytics>
 
 ## 🐛 Known Issues & Fixes
 
@@ -216,5 +216,5 @@ flyctl apps errors -a infamous-freight-ai
 ---
 
 **Deployed by:** GitHub Copilot  
-**Repository:** https://github.com/MrMiless44/Infamous-freight-enterprises  
+**Repository:** <https://github.com/MrMiless44/Infamous-freight-enterprises>  
 **Commit:** `8313d35` (latest)

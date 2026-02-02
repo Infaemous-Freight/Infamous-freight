@@ -18,12 +18,14 @@ CORS_ORIGINS=http://localhost:3000,https://app.infamous-freight.com,https://mobi
 ## Security Best Practices
 
 ✅ **DO:**
+
 - Use HTTPS origins in production
 - Maintain a strict allow-list
 - Exclude localhost if not developing locally
 - Log unauthorized CORS attempts (via Sentry)
 
 ❌ **DON'T:**
+
 - Set `CORS_ORIGINS=*` in production
 - Allow arbitrary subdomains with wildcards
 - Trust `Origin` header blindly

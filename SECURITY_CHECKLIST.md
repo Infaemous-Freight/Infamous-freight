@@ -11,7 +11,7 @@ Your credentials were shared during deployment setup. Follow these steps to secu
 ### Step 1: Reset Database Password
 
 1. **Go to Supabase Dashboard**:
-   https://supabase.com/dashboard/project/wnaievjffghrzjtuvutp/settings/database
+   <https://supabase.com/dashboard/project/wnaievjffghrzjtuvutp/settings/database>
 
 2. **Scroll to "Database password" section**
 
@@ -24,7 +24,7 @@ Your credentials were shared during deployment setup. Follow these steps to secu
    - New: `postgresql://postgres.wnaievjffghrztjuvutp:NEW_PASSWORD_HERE@...`
 
 6. **Update in Vercel**:
-   - Go to: https://vercel.com/dashboard
+   - Go to: <https://vercel.com/dashboard>
    - Your project → Settings → Environment Variables
    - Find `DATABASE_URL` → Edit
    - Paste new connection string with new password
@@ -36,6 +36,7 @@ Your credentials were shared during deployment setup. Follow these steps to secu
 ### Step 2: Generate New JWT_SECRET
 
 1. **Generate new secret**:
+
    ```bash
    openssl rand -base64 32
    ```
@@ -52,7 +53,7 @@ Your credentials were shared during deployment setup. Follow these steps to secu
 
 **If this is a production app with users:**
 
-1. Go to: https://supabase.com/dashboard/project/wnaievjffghrzjtuvutp/settings/api
+1. Go to: <https://supabase.com/dashboard/project/wnaievjffghrzjtuvutp/settings/api>
 
 2. You can rotate the `service_role` key (requires plan upgrade)
 
@@ -113,7 +114,7 @@ git push --force
 
 If you're using GitHub Actions:
 
-1. Go to: https://github.com/MrMiless44/Infamous-freight/settings/secrets/actions
+1. Go to: <https://github.com/MrMiless44/Infamous-freight/settings/secrets/actions>
 
 2. Verify these secrets exist and are correct:
    - `SUPABASE_URL`
@@ -129,9 +130,10 @@ If you're using GitHub Actions:
 ### Enable Row Level Security (RLS) on Supabase
 
 1. **Go to Supabase SQL Editor**:
-   https://supabase.com/dashboard/project/wnaievjffghrzjtuvutp/sql
+   <https://supabase.com/dashboard/project/wnaievjffghrzjtuvutp/sql>
 
 2. **Run this for each table**:
+
    ```sql
    -- Enable RLS
    ALTER TABLE shipments ENABLE ROW LEVEL SECURITY;
@@ -150,6 +152,7 @@ If you're using GitHub Actions:
    ```
 
 3. **Verify RLS is enabled**:
+
    ```sql
    SELECT tablename, rowsecurity 
    FROM pg_tables 
@@ -158,7 +161,7 @@ If you're using GitHub Actions:
 
 ### Configure Supabase Auth
 
-1. **Go to**: https://supabase.com/dashboard/project/wnaievjffghrzjtuvutp/auth/users
+1. **Go to**: <https://supabase.com/dashboard/project/wnaievjffghrzjtuvutp/auth/users>
 
 2. **Enable auth providers** (if using):
    - Email/Password
@@ -176,7 +179,7 @@ If you're using GitHub Actions:
 
 ### Enable Supabase Audit Logs
 
-1. **Go to**: https://supabase.com/dashboard/project/wnaievjffghrzjtuvutp/logs/postgres-logs
+1. **Go to**: <https://supabase.com/dashboard/project/wnaievjffghrzjtuvutp/logs/postgres-logs>
 
 2. **Set up filters**:
    - Failed login attempts
@@ -186,6 +189,7 @@ If you're using GitHub Actions:
 ### Configure Rate Limiting
 
 Already configured in code, but verify:
+
 - API routes have rate limiters
 - Middleware is in correct order
 - Check `api/src/middleware/security.js`
@@ -193,6 +197,7 @@ Already configured in code, but verify:
 ### Set Up Alerts
 
 **Supabase alerts**:
+
 1. Settings → Billing → Alerts
 2. Set alerts for:
    - Database size (near 500MB limit)
@@ -200,6 +205,7 @@ Already configured in code, but verify:
    - Storage usage
 
 **Vercel alerts**:
+
 1. Settings → Notifications
 2. Enable:
    - Deployment failures
@@ -224,8 +230,9 @@ curl -I https://your-app.vercel.app
 ```
 
 Use online tools:
-- https://securityheaders.com
-- https://observatory.mozilla.org
+
+- <https://securityheaders.com>
+- <https://observatory.mozilla.org>
 
 Target: **A or A+** rating
 
@@ -236,6 +243,7 @@ Target: **A or A+** rating
 Copy this to track your progress:
 
 ### Immediate (Today)
+
 - [ ] Reset Supabase database password
 - [ ] Update DATABASE_URL in Vercel with new password
 - [ ] Generate new JWT_SECRET
@@ -244,6 +252,7 @@ Copy this to track your progress:
 - [ ] Verify deployment works with new credentials
 
 ### This Week
+
 - [ ] Verify .env.supabase is in .gitignore
 - [ ] Remove .env.supabase from git history (if committed)
 - [ ] Enable RLS on all Supabase tables
@@ -254,6 +263,7 @@ Copy this to track your progress:
 - [ ] Run security headers test
 
 ### This Month
+
 - [ ] Set up Sentry error tracking
 - [ ] Configure CORS properly
 - [ ] Review API rate limits
@@ -267,18 +277,21 @@ Copy this to track your progress:
 ## 🆘 If Something Goes Wrong
 
 ### Database locked out (wrong password)
+
 1. Go to Supabase → Settings → Database
 2. Reset password again
 3. Update DATABASE_URL in Vercel
 4. Redeploy
 
 ### Application not loading
+
 1. Check Vercel deployment logs
 2. Check browser console for errors
 3. Verify all 6 environment variables are set
 4. Try redeploying
 
 ### Database connection errors
+
 1. Check DATABASE_URL format
 2. Verify password doesn't have special chars that need URL encoding
 3. Use `encodeURIComponent()` for password in connection string
@@ -298,6 +311,7 @@ Copy this to track your progress:
 ## 🎯 Success Criteria
 
 After completing this checklist:
+
 - ✅ No credentials in git history
 - ✅ All secrets rotated after exposure
 - ✅ RLS enabled on database

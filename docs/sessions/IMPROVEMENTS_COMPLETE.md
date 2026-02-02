@@ -361,7 +361,7 @@ pnpm store status
 
 ---
 
-## 🎉 Success!
+## 🎉 Success
 
 Your Infamous Freight Enterprises project is now:
 

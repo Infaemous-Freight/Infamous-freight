@@ -52,9 +52,9 @@ else
 fi
 echo ""
 
-# Test 2: Edge Middleware headers
+# Test 2: Edge Proxy headers
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo -e "${BLUE}Test 2: Edge Middleware Headers${NC}"
+echo -e "${BLUE}Test 2: Edge Proxy Headers${NC}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 HEADERS=$(curl -s -I "https://$DEPLOY_URL" 2>/dev/null)
 
@@ -180,7 +180,7 @@ echo -e "${BLUE}Test 7: Critical Files${NC}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 CRITICAL_FILES=(
-    "middleware.ts"
+    "proxy.ts"
     "lib/edge-config.ts"
     "lib/kv-store.ts"
     "lib/analytics.ts"

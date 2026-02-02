@@ -1,6 +1,7 @@
 # Deployment Runbook
 
 ## Prerequisites
+
 - [ ] All tests passing (`pnpm test`)
 - [ ] Staging deployment verified
 - [ ] Database migrations reviewed
@@ -8,6 +9,7 @@
 - [ ] Team notified of deployment window
 
 ## Pre-Deployment Checklist
+
 ```bash
 # 1. Ensure working directory is clean
 git status
@@ -28,6 +30,7 @@ cd api && pnpm prisma:migrate:status
 ## Deployment Steps
 
 ### Step 1: Apply Database Migrations
+
 ```bash
 cd api
 
@@ -42,6 +45,7 @@ pnpm prisma:generate
 ```
 
 ### Step 2: Deploy API to Production
+
 ```bash
 # Using Fly.io
 flyctl deploy -a infamous-freight-api
@@ -57,6 +61,7 @@ curl https://api.infamous-freight.com/api/health
 ```
 
 ### Step 3: Deploy Web to Production
+
 ```bash
 # Push to main (Vercel auto-deploys)
 git push origin main
@@ -69,6 +74,7 @@ curl https://infamous-freight-enterprises.vercel.app
 ```
 
 ### Step 4: Smoke Tests
+
 ```bash
 # Test critical APIs
 curl -H "Authorization: Bearer $TOKEN" \
@@ -87,6 +93,7 @@ curl -X POST https://api.infamous-freight.com/api/auth/login \
 ## Rollback Steps (If Needed)
 
 ### If API Deployment Fails
+
 ```bash
 # Rollback to previous version
 flyctl releases -a infamous-freight-api
@@ -97,6 +104,7 @@ curl https://api.infamous-freight.com/api/health
 ```
 
 ### If Database Migration Fails
+
 ```bash
 # DO NOT rollback migrations automatically
 # 1. Identify the failed migration
@@ -109,6 +117,7 @@ pnpm prisma:migrate:deploy
 ```
 
 ### If Web Deployment Fails
+
 ```bash
 # Rollback on Vercel dashboard
 # https://vercel.com/infamous-freight-enterprises/settings/git
@@ -118,6 +127,7 @@ vercel rollback
 ```
 
 ## Post-Deployment Verification
+
 ```bash
 # 1. Monitor error rates (Sentry dashboard)
 # 2. Check performance metrics (Datadog)
@@ -133,13 +143,16 @@ pnpm test:e2e
 ```
 
 ## Communication
+
 - [ ] Notify team via Slack #deployments
 - [ ] Post status in team standup
 - [ ] Monitor alerts for 1 hour post-deployment
 - [ ] Update deployment log with version/timestamp
 
 ## Rollback Criteria
+
 Trigger rollback if:
+
 - API error rate > 5%
 - Response times > 2x baseline
 - Database connection failures

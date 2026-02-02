@@ -17,6 +17,7 @@ VERCEL_TOKEN=<your-token>  # For API access
 ### Automatic Tracking
 
 Vercel Analytics automatically tracks:
+
 - Page views
 - Route transitions
 - Navigation timing
@@ -315,6 +316,7 @@ curl -X POST https://api.datadoghq.com/api/v1/dashboard \
 ### Google Analytics Dashboard
 
 Create custom report:
+
 1. Go to Custom Reports
 2. Add dimensions: Page, Device, Country
 3. Add metrics: Sessions, Users, Bounce Rate
@@ -322,7 +324,8 @@ Create custom report:
 ### Vercel Analytics Dashboard
 
 Default available at:
-- https://vercel.com/dashboard/analytics
+
+- <https://vercel.com/dashboard/analytics>
 - Shows: Web Vitals, Page Load Time, Requests
 
 ---

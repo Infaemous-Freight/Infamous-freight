@@ -31,7 +31,8 @@
 | **Pretty TypeScript Errors** (`yoavbls.pretty-ts-errors`) | Readable TS error messages | Auto-format errors |
 | **Code Spell Checker** (`streetsidesoftware.code-spell-checker`) | Catch typos in code | Underline misspellings |
 
-**Impact**: 
+**Impact**:
+
 - ⏱️ **Save 2-3 hours/week** on manual formatting
 - 🐛 **Catch 40% more bugs** before commit
 - 📖 **Reduce PR review time** by 25%
@@ -46,6 +47,7 @@
 | **GitHub Copilot Chat** (`github.copilot-chat`) | Explain code, generate tests | ~50% faster debugging |
 
 **Best Practices**:
+
 - Use Copilot for repetitive patterns (API routes, tests, types)
 - Use Chat to explain complex TypeScript errors
 - Review all suggestions for security & correctness
@@ -61,6 +63,7 @@
 | **SQLTools** (`mtxr.sqltools`) | Query execution, formatting | PostgreSQL drivers |
 
 **Workflow Integration**:
+
 ```bash
 # Edit schema with Prisma IntelliSense
 vim api/prisma/schema.prisma
@@ -82,6 +85,7 @@ pnpm prisma:migrate:dev --name add_user_roles
 | **Test Explorer** (`hbenl.vscode-test-explorer`) | Unified test UI | Run/debug all tests |
 
 **Coverage Requirements**:
+
 - **API**: ≥75% lines, ≥70% branches (enforced in CI)
 - **Web**: ≥70% components (target)
 - **E2E**: Critical user flows only
@@ -99,6 +103,7 @@ pnpm prisma:migrate:dev --name add_user_roles
 | **CSS Peek** (`pranaygp.vscode-css-peek`) | CSS navigation | Jump to class definitions |
 
 **Next.js 14 Optimization**:
+
 - Use Tailwind for rapid prototyping
 - Styled Components for complex themes
 - React Snippets for consistent component patterns
@@ -113,6 +118,7 @@ pnpm prisma:migrate:dev --name add_user_roles
 | **Remote Containers** (`ms-vscode-remote.remote-containers`) | Dev inside containers | `Remote-Containers: Reopen in Container` |
 
 **Docker Compose Integration**:
+
 - Right-click `docker-compose.yml` → "Compose Up"
 - View container logs in terminal
 - Attach shell to running containers
@@ -129,6 +135,7 @@ pnpm prisma:migrate:dev --name add_user_roles
 | **Git History** (`donjayamanne.githistory`) | Advanced history search | `Git: View File History` |
 
 **Workflow Enhancement**:
+
 1. **GitLens Inline Blame**: See who changed each line
 2. **Git Graph**: Visualize branch strategy
 3. **GitHub PR Extension**: Review & merge PRs in editor
@@ -145,6 +152,7 @@ pnpm prisma:migrate:dev --name add_user_roles
 | **HTML CSS Class** (`zignd.html-css-class-completion`) | CSS classes | Suggest classes from stylesheets |
 
 **Import Optimization**:
+
 - Use NPM IntelliSense for correct package names
 - Path IntelliSense prevents typos in file imports
 - Reduces "module not found" errors by 80%
@@ -161,6 +169,7 @@ pnpm prisma:migrate:dev --name add_user_roles
 | **SVG** (`jock.svg`) | `.svg` | Preview, minify, export |
 
 **Config File Support**:
+
 - `.env` files with secret highlighting
 - `docker-compose.yml` with schema validation
 - `package.json` with dependency IntelliSense
@@ -178,6 +187,7 @@ pnpm prisma:migrate:dev --name add_user_roles
 | **Color Highlight** (`naumovs.color-highlight`) | Preview colors | Visual CSS editing |
 
 **Bundle Size Monitoring**:
+
 ```typescript
 import { Button } from 'antd';  // 🔴 2.3MB (shown by Import Cost)
 import Button from 'antd/lib/button';  // 🟢 45KB (optimized)
@@ -194,6 +204,7 @@ import Button from 'antd/lib/button';  // 🟢 45KB (optimized)
 | **Markdown Mermaid** (`bierner.markdown-mermaid`) | Diagrams | Architecture visuals |
 
 **Documentation Workflow**:
+
 1. Write docs with Markdown All in One (Cmd+K V for preview)
 2. Generate TOC automatically
 3. Lint with Markdown Lint for consistency
@@ -209,6 +220,7 @@ import Button from 'antd/lib/button';  // 🟢 45KB (optimized)
 | **webhint** (`webhint.vscode-webhint`) | Web best practices | Performance, security |
 
 **WCAG Compliance**:
+
 - **axe Linter** catches missing ARIA labels in JSX
 - **webhint** suggests image optimization
 - Target: WCAG 2.1 Level AA compliance
@@ -223,6 +235,7 @@ import Button from 'antd/lib/button';  // 🟢 45KB (optimized)
 | **Thunder Client** (`rangav.vscode-thunder-client`) | GUI API testing | Lightweight |
 
 **Example `.http` file**:
+
 ```http
 ### Create Shipment
 POST http://localhost:4000/api/shipments
@@ -246,6 +259,7 @@ Content-Type: application/json
 | **JavaScript Debug Nightly** (`ms-vscode.js-debug-nightly`) | Latest debugging features | Complex async code |
 
 **Debugging Setup**:
+
 - Launch configurations in `.vscode/launch.json`
 - Attach to running Docker containers
 - Debug Next.js with Chrome DevTools integration
@@ -292,12 +306,14 @@ Content-Type: application/json
 ### Install All Extensions
 
 **Option 1: Via Command Palette**
+
 ```
 Cmd/Ctrl+Shift+P → "Extensions: Show Recommended Extensions"
 Click "Install All"
 ```
 
 **Option 2: Via CLI** (for automation)
+
 ```bash
 # Install all at once
 code --install-extension ms-vscode.remote-server \
@@ -398,6 +414,7 @@ code --install-extension ms-vscode.js-debug-nightly
 ## ⚙️ Configuration Highlights
 
 ### Format on Save
+
 ```json
 {
   "editor.formatOnSave": true,
@@ -406,6 +423,7 @@ code --install-extension ms-vscode.js-debug-nightly
 ```
 
 ### ESLint Auto-Fix
+
 ```json
 {
   "editor.codeActionsOnSave": {
@@ -415,6 +433,7 @@ code --install-extension ms-vscode.js-debug-nightly
 ```
 
 ### Prisma Language Server
+
 ```json
 {
   "prisma.showPrismaDataPlatformNotification": false
@@ -422,6 +441,7 @@ code --install-extension ms-vscode.js-debug-nightly
 ```
 
 ### Import Cost
+
 ```json
 {
   "importCost.largePackageSize": 100,
@@ -443,21 +463,23 @@ code --install-extension ms-vscode.js-debug-nightly
 
 ### Extension Tutorials
 
-- **GitLens**: https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens
-- **Playwright**: https://playwright.dev/docs/intro
-- **Prisma**: https://www.prisma.io/docs/getting-started
-- **Docker**: https://code.visualstudio.com/docs/containers/overview
+- **GitLens**: <https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens>
+- **Playwright**: <https://playwright.dev/docs/intro>
+- **Prisma**: <https://www.prisma.io/docs/getting-started>
+- **Docker**: <https://code.visualstudio.com/docs/containers/overview>
 
 ---
 
 ## 🔐 Security Considerations
 
 ### Approved Extensions Only
+
 - All extensions vetted for security
 - Avoid extensions with < 100k installs (unless trusted publisher)
 - Check for recent updates (< 6 months old)
 
 ### Sensitive Data Protection
+
 - **DotENV** highlights secrets but doesn't encrypt
 - Never commit `.env` files (already in `.gitignore`)
 - Use VS Code Secret Storage for API keys
@@ -467,12 +489,14 @@ code --install-extension ms-vscode.js-debug-nightly
 ## 🧹 Maintenance
 
 ### Quarterly Review (Next: May 2026)
+
 - [ ] Remove deprecated extensions
 - [ ] Update to latest versions
 - [ ] Check for security advisories
 - [ ] Evaluate new extensions for emerging tools
 
 ### Extension Health Check
+
 ```bash
 # List outdated extensions
 code --list-extensions | xargs -L 1 echo code --install-extension
@@ -495,6 +519,7 @@ code --list-extensions | xargs -L 1 echo code --install-extension
 | **4. Advanced** | Power users | DevOps, API, A11y (10) | Week 4 |
 
 ### Success Metrics
+
 - **Week 1**: 100% of team has critical extensions
 - **Week 4**: 80% adoption of all recommended extensions
 - **Month 3**: Measure time savings, bug reduction

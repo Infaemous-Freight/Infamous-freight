@@ -129,6 +129,7 @@ Ensure your CI/CD pipeline regenerates the Prisma client:
 2. Check OpenSSL version: `openssl version`
 3. Verify binary targets: `ls -la node_modules/@prisma/engines/`
 4. Clear node_modules and regenerate:
+
    ```bash
    rm -rf node_modules
    pnpm install

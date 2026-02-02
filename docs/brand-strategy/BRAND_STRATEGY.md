@@ -295,4 +295,3 @@ REVENUE IMPACT:
 
 CEO visibility, content authority, analyst relations, and press to establish
 Infamous Freight as industry thought leader and trusted expert in freight/logistics.
-

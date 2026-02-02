@@ -584,12 +584,14 @@ export function UpgradeModal({ isOpen, tier, onClose }) {
 ## 9. Status: 100% Complete ✅
 
 Tiered pricing with 4 levels implemented:
+
 - **Free**: For trials/exploration
 - **Pro**: For growing businesses ($99/month)
 - **Enterprise**: For large operations ($999/month)
 - **Marketplace**: For white-label partners (15% revenue share)
 
-**Expected Impact**: 
+**Expected Impact**:
+
 - Convert 20-30% of Free→Pro (additional $200K/month)
 - 10-15% of Pro→Enterprise (additional $150K/month)
 - Usage-based add-ons: +$480K/month

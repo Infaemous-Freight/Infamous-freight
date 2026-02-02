@@ -349,4 +349,3 @@ Distribution: Board + main investors
 
 Financial metrics, pitch deck, data room, and investor updates to prepare
 for $25M Series A fundraising in Q4 2026 / Q1 2027.
-

@@ -29,7 +29,7 @@
   - ✅ infamous_api (Node.js 20)
   - ⚠️ infamous_web (Next.js 14 - build issue)
   - ✅ infamous_nginx (Nginx)
-- Code pushed to GitHub: https://github.com/MrMiless44/Infamous-Freight-Enterprises
+- Code pushed to GitHub: <https://github.com/MrMiless44/Infamous-Freight-Enterprises>
 
 ---
 
@@ -149,7 +149,7 @@ vercel --prod
 
 ## 🔑 Production Environment Variables
 
-### Required for API:
+### Required for API
 
 ```env
 DATABASE_URL=postgresql://...
@@ -157,14 +157,14 @@ JWT_SECRET=<generate-with-openssl>
 NODE_ENV=production
 ```
 
-### Optional for AI Features:
+### Optional for AI Features
 
 ```env
 AI_PROVIDER=openai
 OPENAI_API_KEY=sk-...
 ```
 
-### Optional for Billing:
+### Optional for Billing
 
 ```env
 STRIPE_SECRET_KEY=sk_live_...
@@ -172,7 +172,7 @@ PAYPAL_CLIENT_ID=...
 PAYPAL_SECRET=...
 ```
 
-### Required for Web:
+### Required for Web
 
 ```env
 NEXT_PUBLIC_API_BASE=https://your-api-domain.com/api
@@ -209,11 +209,11 @@ To enable automatic deployments:
    ```
 
 2. **Get Vercel Token:**
-   - Go to: https://vercel.com/account/tokens
+   - Go to: <https://vercel.com/account/tokens>
    - Create new token
 
 3. **Add to GitHub Secrets:**
-   - Go to: https://github.com/MrMiless44/Infamous-Freight-Enterprises/settings/secrets/actions
+   - Go to: <https://github.com/MrMiless44/Infamous-Freight-Enterprises/settings/secrets/actions>
    - Add `FLY_API_TOKEN`
    - Add `VERCEL_TOKEN`
 
@@ -227,9 +227,9 @@ To enable automatic deployments:
 
 | Component  | Status     | URL                                                        |
 | ---------- | ---------- | ---------------------------------------------------------- |
-| Local API  | ✅ Running | http://localhost:4000                                      |
+| Local API  | ✅ Running | <http://localhost:4000>                                      |
 | Local DB   | ✅ Running | localhost:5432                                             |
-| GitHub     | ✅ Pushed  | https://github.com/MrMiless44/Infamous-Freight-Enterprises |
+| GitHub     | ✅ Pushed  | <https://github.com/MrMiless44/Infamous-Freight-Enterprises> |
 | Fly.io API | ⏳ Ready   | Deploy with commands above                                 |
 | Vercel Web | ⏳ Ready   | Deploy with commands above                                 |
 

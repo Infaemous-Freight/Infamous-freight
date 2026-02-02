@@ -3,6 +3,7 @@
 ## Dispute Handling
 
 Disputes may only be considered valid if:
+
 - The payment processor flags fraud, **or**
 - Infæmous Freight identifies a billing system error.
 

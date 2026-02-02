@@ -55,7 +55,7 @@ export RENDER_API_KEY="your-key-here"
 
 **If you find problems:**
 
-1. Go to: https://github.com/MrMiless44/Infamous-freight-enterprises/issues
+1. Go to: <https://github.com/MrMiless44/Infamous-freight-enterprises/issues>
 2. Click: **New Issue**
 3. Use template from: [SESSION_3_PREPARATION.md#issue-template](SESSION_3_PREPARATION.md)
 4. Include:
@@ -239,7 +239,7 @@ January+ (Session 3)
 
 ## � Render API Commands
 
-**Get your API key**: https://dashboard.render.com/ → Profile → Account Settings → API Keys
+**Get your API key**: <https://dashboard.render.com/> → Profile → Account Settings → API Keys
 
 ### List All Services
 
@@ -355,7 +355,7 @@ curl --header 'Authorization: Bearer YOUR_API_KEY' \
 
 ---
 
-## ✨ Session 2 Complete!
+## ✨ Session 2 Complete
 
 **You've achieved:**
 

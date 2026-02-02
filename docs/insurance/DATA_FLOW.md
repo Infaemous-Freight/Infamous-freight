@@ -8,5 +8,6 @@
 6. Quote requests are captured for per-load or business policy flows.
 
 ## Storage
+
 - Insurance certificates and compliance states live in the primary database.
 - Insurance event logs provide immutable evidence for audits.

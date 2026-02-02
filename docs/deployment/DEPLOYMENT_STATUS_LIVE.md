@@ -1,5 +1,5 @@
-curl https://infamous-freight-api.fly.dev/health
-curl https://infamous-freight-api.fly.dev/api/health # If on different path
+curl <https://infamous-freight-api.fly.dev/health>
+curl <https://infamous-freight-api.fly.dev/api/health> # If on different path
 fly logs --app infamous-freight-api --no-tail# 🚀 INFAMOUS FREIGHT ENTERPRISES - PRODUCTION DEPLOYMENT STATUS
 
 **Last Updated**: December 13, 2025 - 16:46 UTC  
@@ -12,8 +12,8 @@ fly logs --app infamous-freight-api --no-tail# 🚀 INFAMOUS FREIGHT ENTERPRISES
 ### ✅ **Fly.io API Backend** - ACTIVE
 
 - **Status**: ✅ Running (machines started)
-- **URL**: https://infamous-freight-api.fly.dev
-- **Health Check**: https://infamous-freight-api.fly.dev/health
+- **URL**: <https://infamous-freight-api.fly.dev>
+- **Health Check**: <https://infamous-freight-api.fly.dev/health>
 - **Region**: US East (IAD)
 - **Database**: PostgreSQL on Fly.io (`infamous-freight-db`)
 - **Image**: `infamous-freight-api:deployment-01KCC6Q5E1XK6YC814PTYTH88E`
@@ -28,7 +28,7 @@ fly logs --app infamous-freight-api --no-tail# 🚀 INFAMOUS FREIGHT ENTERPRISES
 - **Build Command**: npm install (pnpm-lock.yaml)
 - **Output Directory**: `.next`
 - **Environment Variables**: Configured
-  - `NEXT_PUBLIC_API_BASE` → https://infamous-freight-api.fly.dev
+  - `NEXT_PUBLIC_API_BASE` → <https://infamous-freight-api.fly.dev>
 - **Status**: Ready for deployment
 
 ### 📋 **GitHub Actions CI/CD** - ACTIVE
@@ -42,7 +42,7 @@ fly logs --app infamous-freight-api --no-tail# 🚀 INFAMOUS FREIGHT ENTERPRISES
 
 ### 💾 **Code Repository** - SYNCED
 
-- **Repository**: https://github.com/MrMiless44/Infamous-freight-enterprises
+- **Repository**: <https://github.com/MrMiless44/Infamous-freight-enterprises>
 - **Branch**: `main` (latest commit: 8bed16a)
 - **Recent Changes**:
   - ✅ Vercel configuration optimized
@@ -88,12 +88,12 @@ fly logs --app infamous-freight-api --no-tail# 🚀 INFAMOUS FREIGHT ENTERPRISES
 
 | Service              | URL                                                        | Status       |
 | -------------------- | ---------------------------------------------------------- | ------------ |
-| **API**              | https://infamous-freight-api.fly.dev                       | 🟠 Starting  |
-| **API Health**       | https://infamous-freight-api.fly.dev/health                | 🟠 Testing   |
-| **Web Frontend**     | https://web-\*.vercel.app                                  | 🟠 Deploying |
-| **GitHub Repo**      | https://github.com/MrMiless44/Infamous-freight-enterprises | ✅ Updated   |
-| **Fly.io Dashboard** | https://fly.io/dashboard                                   | ✅ Active    |
-| **Vercel Dashboard** | https://vercel.com/dashboard                               | ✅ Linked    |
+| **API**              | <https://infamous-freight-api.fly.dev>                       | 🟠 Starting  |
+| **API Health**       | <https://infamous-freight-api.fly.dev/health>                | 🟠 Testing   |
+| **Web Frontend**     | <https://web-\*.vercel.app>                                  | 🟠 Deploying |
+| **GitHub Repo**      | <https://github.com/MrMiless44/Infamous-freight-enterprises> | ✅ Updated   |
+| **Fly.io Dashboard** | <https://fly.io/dashboard>                                   | ✅ Active    |
+| **Vercel Dashboard** | <https://vercel.com/dashboard>                               | ✅ Linked    |
 
 ---
 
@@ -182,24 +182,24 @@ flyctl status --app infamous-freight-api
 
 ### Vercel Deployment Stuck
 
-1. Go to https://vercel.com/santorio-miles-projects/web
+1. Go to <https://vercel.com/santorio-miles-projects/web>
 2. Check "Deployments" tab for error details
 3. Click "Redeploy" if needed
 
 ### Docker Build Failing
 
-1. Check GitHub Actions: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+1. Check GitHub Actions: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
 2. View "Build Docker Images" workflow for logs
 
 ---
 
 ## 📞 RESOURCES
 
-- **Fly.io Docs**: https://fly.io/docs
-- **Vercel Docs**: https://vercel.com/docs
-- **Next.js Docs**: https://nextjs.org/docs
-- **GitHub Actions**: https://docs.github.com/en/actions
-- **Docker Docs**: https://docs.docker.com
+- **Fly.io Docs**: <https://fly.io/docs>
+- **Vercel Docs**: <https://vercel.com/docs>
+- **Next.js Docs**: <https://nextjs.org/docs>
+- **GitHub Actions**: <https://docs.github.com/en/actions>
+- **Docker Docs**: <https://docs.docker.com>
 
 ---
 

@@ -158,7 +158,7 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:3001/api/shipments
 
 ## 📈 Performance Verification
 
-### After Deployment, Verify:
+### After Deployment, Verify
 
 ```bash
 # 1. Compression middleware active

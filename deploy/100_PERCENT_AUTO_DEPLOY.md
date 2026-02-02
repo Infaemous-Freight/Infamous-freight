@@ -1,6 +1,6 @@
 # 🚀 100% Auto-Deployment - Complete Setup
 
-## ✅ Configuration Complete!
+## ✅ Configuration Complete
 
 Your repository is now configured for **100% automatic deployment** across all platforms:
 
@@ -8,10 +8,10 @@ Your repository is now configured for **100% automatic deployment** across all p
 
 | Component  | Platform     | Trigger        | URL                                                       |
 | ---------- | ------------ | -------------- | --------------------------------------------------------- |
-| **API**    | Fly.io       | API changes    | https://infamous-freight-api.fly.dev                      |
-| **Web**    | Vercel       | Web changes    | https://infamous-freight-enterprises.vercel.app           |
-| **Mobile** | Expo EAS     | Mobile changes | https://expo.dev/@infamous-freight/mobile                 |
-| **Docs**   | GitHub Pages | Docs changes   | https://mrmiless44.github.io/Infamous-freight-enterprises |
+| **API**    | Fly.io       | API changes    | <https://infamous-freight-api.fly.dev>                      |
+| **Web**    | Vercel       | Web changes    | <https://infamous-freight-enterprises.vercel.app>           |
+| **Mobile** | Expo EAS     | Mobile changes | <https://expo.dev/@infamous-freight/mobile>                 |
+| **Docs**   | GitHub Pages | Docs changes   | <https://mrmiless44.github.io/Infamous-freight-enterprises> |
 
 ### 🔄 Smart Deployment Logic
 
@@ -172,10 +172,10 @@ gh run view --log
 
 ### Deployment Dashboard
 
-- **GitHub Actions**: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
-- **Fly.io Dashboard**: https://fly.io/apps/infamous-freight-api
-- **Vercel Dashboard**: https://vercel.com/dashboard
-- **Expo Dashboard**: https://expo.dev/accounts/[account]/projects
+- **GitHub Actions**: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
+- **Fly.io Dashboard**: <https://fly.io/apps/infamous-freight-api>
+- **Vercel Dashboard**: <https://vercel.com/dashboard>
+- **Expo Dashboard**: <https://expo.dev/accounts/[account]/projects>
 
 ## 🌍 Environment Management
 
@@ -358,7 +358,7 @@ Before pushing to `main`:
 - [ ] Health checks configured
 - [ ] Monitoring enabled
 
-## 🎉 You're Ready!
+## 🎉 You're Ready
 
 Push to `main` and watch the magic happen:
 
@@ -368,7 +368,7 @@ git commit -m "Deploy to production"
 git push origin main
 ```
 
-Monitor at: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+Monitor at: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
 
 ---
 

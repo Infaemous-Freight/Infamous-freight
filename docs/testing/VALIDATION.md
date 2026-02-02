@@ -234,7 +234,7 @@ router.post(
 );
 ```
 
-2. **Handle errors** in handler:
+1. **Handle errors** in handler:
 
 ```javascript
 const { validationResult } = require("express-validator");
@@ -252,8 +252,8 @@ async (req, res, next) => {
 };
 ```
 
-3. **Test coverage** - Add edge cases to test suite
-4. **Document** - Update this file with new validations
+1. **Test coverage** - Add edge cases to test suite
+2. **Document** - Update this file with new validations
 
 ---
 

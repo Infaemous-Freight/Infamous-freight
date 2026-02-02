@@ -50,7 +50,7 @@ flows.
 
 ### 1. Create a Supabase Project
 
-1. Go to https://supabase.com/dashboard
+1. Go to <https://supabase.com/dashboard>
 2. Click "New Project"
 3. Fill in project details:
    - **Name**: infamous-freight
@@ -79,19 +79,19 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 #### GitHub OAuth
 
-1. Go to https://github.com/settings/developers
+1. Go to <https://github.com/settings/developers>
 2. Click "New OAuth App"
 3. Fill in:
    - **Application name**: Infamous Freight
-   - **Homepage URL**: https://your-app.com
-   - **Authorization callback URL**: https://your-app.com/auth/callback
+   - **Homepage URL**: <https://your-app.com>
+   - **Authorization callback URL**: <https://your-app.com/auth/callback>
 4. Copy **Client ID** and **Client Secret**
 5. In Supabase dashboard, go to **Authentication → OAuth Providers → GitHub**
 6. Paste Client ID and Secret, save
 
 #### Google OAuth
 
-1. Go to https://console.cloud.google.com
+1. Go to <https://console.cloud.google.com>
 2. Create new project or select existing
 3. Enable Google+ API
 4. Go to **Credentials → Create OAuth 2.0 Client ID**
@@ -357,7 +357,7 @@ For production:
 
 - Usage-based pricing ($0.32 per additional 1M users)
 - Storage $0.024 per GB
-- See https://supabase.com/pricing
+- See <https://supabase.com/pricing>
 
 ## Learn More
 

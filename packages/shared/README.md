@@ -61,11 +61,13 @@ packages/shared/
 ## 🔧 What's Included
 
 ### Types (`types.ts`)
+
 - **Domain Models**: `Shipment`, `User`, `Payment`, `Subscription`
 - **API Types**: `ApiResponse<T>`, `PaginatedResponse<T>`, `ErrorResponse`
 - **Request/Response Types**: For all major API endpoints
 
 ### Constants (`constants.ts`)
+
 - **HTTP Status Codes**: `HTTP_STATUS` enum
 - **Shipment Statuses**: `SHIPMENT_STATUSES` enum
 - **Error Codes**: `ERROR_CODES` enum
@@ -73,12 +75,14 @@ packages/shared/
 - **Feature Flags**: Environment-based feature toggles
 
 ### Utilities (`utils.ts`)
+
 - **Date Formatting**: `formatDate()`, `parseDate()`
 - **Validation**: `validateEmail()`, `validatePhone()`, `validateUUID()`
 - **Sanitization**: `sanitizeInput()`, `sanitizeHtml()`
 - **Data Transformation**: `camelToSnake()`, `snakeToCamel()`
 
 ### RBAC (`rbac.ts`)
+
 - **Roles**: User role definitions
 - **Permissions**: Permission scopes
 - **Guards**: Role/permission checking utilities
@@ -101,6 +105,7 @@ packages/shared/
 ### Breaking Changes
 
 This package is used across the monorepo. Breaking changes require:
+
 1. Update all consuming packages
 2. Update version in `package.json`
 3. Document migration path in PR
@@ -146,6 +151,7 @@ Currently, this package does not have its own tests. Types and utilities are tes
 ## 🔄 Build Process
 
 The package is built using TypeScript compiler:
+
 - Input: `src/**/*.ts`
 - Output: `dist/**/*.js` + `dist/**/*.d.ts`
 - Configuration: `tsconfig.json` (extends root `tsconfig.base.json`)

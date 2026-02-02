@@ -161,9 +161,9 @@ chmod +x .husky/pre-commit
 
 ## 🌐 URLs
 
-- API: http://localhost:3001
-- Web: http://localhost:3000
-- API Docs: http://localhost:3001/api-docs
+- API: <http://localhost:3001>
+- Web: <http://localhost:3000>
+- API Docs: <http://localhost:3001/api-docs>
 
 ## 🔑 Environment Setup
 

@@ -18,6 +18,7 @@ cd /workspaces/Infamous-freight-enterprises
 ```
 
 The script will:
+
 1. ✅ Install Supabase CLI (if needed)
 2. ✅ Login to Supabase
 3. ✅ Link to your project
@@ -95,6 +96,7 @@ supabase db push
 ```
 
 Expected output:
+
 ```
 Applying migration 20260201000000_initial_schema.sql...
 Applying migration 20260201000001_rls_policies.sql...
@@ -184,6 +186,7 @@ pnpm dev
 Open browser: [http://localhost:3000](http://localhost:3000)
 
 Check browser console for Supabase connection:
+
 ```javascript
 // Should see real Supabase client, not mock
 console.log(supabase)
@@ -204,11 +207,13 @@ console.log(supabase)
    - **Build Command**: `pnpm build`
    - **Output Directory**: `.next`
 4. Add environment variables:
+
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
    SUPABASE_SERVICE_ROLE_KEY=eyJhbGci... (sensitive!)
    ```
+
 5. Deploy!
 
 ### Option 2: Netlify
@@ -236,6 +241,7 @@ fly deploy
 ## 📊 Database Schema Overview
 
 ### Organizations Table
+
 ```sql
 CREATE TABLE organizations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -246,6 +252,7 @@ CREATE TABLE organizations (
 ```
 
 ### Users Table
+
 ```sql
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -257,6 +264,7 @@ CREATE TABLE users (
 ```
 
 ### Shipments Table
+
 ```sql
 CREATE TABLE shipments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -284,11 +292,13 @@ CREATE TABLE shipments (
 ### 1. Environment Variables
 
 ✅ **DO**:
+
 - Store in `.env.local` (gitignored)
 - Use `NEXT_PUBLIC_` prefix for client-side vars
 - Keep `SERVICE_ROLE_KEY` server-side only
 
 ❌ **DON'T**:
+
 - Commit `.env.local` to git
 - Expose `SERVICE_ROLE_KEY` to client
 - Hardcode credentials in code
@@ -296,6 +306,7 @@ CREATE TABLE shipments (
 ### 2. Row Level Security (RLS)
 
 All tables have RLS enabled:
+
 ```sql
 ALTER TABLE shipments ENABLE ROW LEVEL SECURITY;
 
@@ -307,6 +318,7 @@ CREATE POLICY "Users can view org shipments"
 ### 3. Storage Policies
 
 All buckets have access policies:
+
 ```sql
 CREATE POLICY "Org members can upload documents"
   ON storage.objects FOR INSERT
@@ -323,6 +335,7 @@ CREATE POLICY "Org members can upload documents"
 ### Issue: "Supabase CLI not found"
 
 **Solution**:
+
 ```bash
 npm install -g supabase
 # or
@@ -332,6 +345,7 @@ npx supabase login
 ### Issue: "Permission denied when installing globally"
 
 **Solution**:
+
 ```bash
 # Use npx instead
 npx supabase login
@@ -346,6 +360,7 @@ export PATH=~/.npm-global/bin:$PATH
 ### Issue: "Migration already applied"
 
 **Solution**:
+
 ```bash
 # Reset database (WARNING: deletes all data)
 supabase db reset
@@ -357,6 +372,7 @@ supabase migration up --include-name 20260201000000_initial_schema
 ### Issue: "Cannot find module '@/types/database'"
 
 **Solution**:
+
 ```bash
 # Regenerate types
 cd /workspaces/Infamous-freight-enterprises
@@ -366,6 +382,7 @@ pnpm supabase:types
 ### Issue: "Network error when connecting to Supabase"
 
 **Solution**:
+
 1. Check project URL in `.env.local`
 2. Verify project is active (not paused)
 3. Check API keys are correct
@@ -374,6 +391,7 @@ pnpm supabase:types
 ### Issue: "RLS policy blocks access"
 
 **Solution**:
+
 ```bash
 # Temporarily disable RLS for testing (NOT in production!)
 ALTER TABLE shipments DISABLE ROW LEVEL SECURITY;
@@ -387,17 +405,20 @@ const supabase = createClient(url, serviceRoleKey)
 ## 📚 Additional Resources
 
 ### Official Documentation
+
 - [Supabase Docs](https://supabase.com/docs)
 - [Supabase CLI Reference](https://supabase.com/docs/reference/cli)
 - [Row Level Security Guide](https://supabase.com/docs/guides/auth/row-level-security)
 - [Edge Functions Guide](https://supabase.com/docs/guides/functions)
 
 ### Project Documentation
+
 - [SUPABASE_100_COMPLETE.md](../SUPABASE_100_COMPLETE.md) - Full implementation guide
 - [SUPABASE_QUICK_START.md](../SUPABASE_QUICK_START.md) - Quick reference
 - [SUPABASE_IMPLEMENTATION_SUMMARY.md](../SUPABASE_IMPLEMENTATION_SUMMARY.md) - Architecture overview
 
 ### Support
+
 - **GitHub Issues**: [MrMiless44/Infamous-freight/issues](https://github.com/MrMiless44/Infamous-freight/issues)
 - **Supabase Discord**: [https://discord.supabase.com](https://discord.supabase.com)
 

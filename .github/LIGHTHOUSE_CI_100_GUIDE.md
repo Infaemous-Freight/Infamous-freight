@@ -25,6 +25,7 @@
 ### What is Lighthouse CI?
 
 Lighthouse CI is an automated performance testing tool that:
+
 - 🔍 **Audits** web performance, accessibility, SEO, and best practices
 - 📊 **Tracks** performance trends over time
 - 🚨 **Alerts** on regressions or budget violations
@@ -171,6 +172,7 @@ lhci autorun --config=../.lighthouserc.json
 ### 3. Check PR Comments
 
 When you create a pull request, Lighthouse CI automatically:
+
 - Runs performance audit
 - Comments with results
 - Shows score changes
@@ -232,6 +234,7 @@ Edit `.lighthouserc.json`:
 **Good target**: ≤ 2.5 seconds
 
 **Optimization tips**:
+
 - Optimize images (use WebP)
 - Lazy load below-fold content
 - Use CDN for assets
@@ -245,6 +248,7 @@ Edit `.lighthouserc.json`:
 **Good target**: ≤ 100 milliseconds
 
 **Optimization tips**:
+
 - Break up long JavaScript tasks
 - Use web workers for heavy computation
 - Implement request idle callback
@@ -258,6 +262,7 @@ Edit `.lighthouserc.json`:
 **Good target**: ≤ 0.1
 
 **Optimization tips**:
+
 - Reserve space for images/ads
 - Use CSS aspect-ratio
 - Avoid inserting content above existing
@@ -345,6 +350,7 @@ Shows potential improvements ranked by impact:
 ### Diagnostics Section
 
 Provides detailed information:
+
 - Requests that don't have cache expiration
 - Unminified JavaScript/CSS
 - Unused CSS rules
@@ -358,6 +364,7 @@ Provides detailed information:
 ### Performance (Target: ≥80%)
 
 **Quick Wins**:
+
 1. Enable GZIP compression (impact: +10%)
 2. Minify CSS/JS (impact: +5%)
 3. Use image optimization (impact: +15%)
@@ -365,6 +372,7 @@ Provides detailed information:
 5. Add service worker (impact: +5%)
 
 **Long-term**:
+
 1. Upgrade to latest Next.js
 2. Implement edge caching
 3. Use CDN for static assets
@@ -374,6 +382,7 @@ Provides detailed information:
 ### Accessibility (Target: ≥90%)
 
 **Quick Wins**:
+
 1. Add alt text to images (+20%)
 2. Fix color contrast issues (+15%)
 3. Add ARIA labels (+10%)
@@ -381,6 +390,7 @@ Provides detailed information:
 5. Add form labels (+5%)
 
 **Long-term**:
+
 1. Implement WCAG 2.1 AA compliance
 2. User accessibility testing
 3. Screen reader testing
@@ -390,6 +400,7 @@ Provides detailed information:
 ### Best Practices (Target: ≥90%)
 
 **Focus areas**:
+
 1. HTTPS enabled
 2. Secure headers configured
 3. Modern browser APIs
@@ -399,6 +410,7 @@ Provides detailed information:
 ### SEO (Target: ≥90%)
 
 **Essential**:
+
 1. Meta descriptions
 2. Heading hierarchy
 3. Mobile viewport
@@ -412,6 +424,7 @@ Provides detailed information:
 ### Audit Fails with "Cannot start server"
 
 **Solution**:
+
 ```bash
 # Kill existing process
 lsof -ti:3000 | xargs kill -9
@@ -425,6 +438,7 @@ lhci autorun
 **Cause**: Network variance, background processes
 
 **Solution**:
+
 - Run 3+ times (default)
 - Use consistent network throttling
 - Run in clean environment
@@ -433,6 +447,7 @@ lhci autorun
 ### Out of memory
 
 **Solution**:
+
 ```bash
 # Increase Node memory
 node --max-old-space-size=4096 node_modules/@lhci/cli/bin/lhci.js autorun
@@ -441,6 +456,7 @@ node --max-old-space-size=4096 node_modules/@lhci/cli/bin/lhci.js autorun
 ### Can't connect to server
 
 **Solution**:
+
 ```bash
 # Start server manually
 cd web

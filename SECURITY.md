@@ -28,6 +28,7 @@ Complete security analysis framework with **7 comprehensive scanning layers**:
 ### CodeQL Analysis (100% Coverage)
 
 **Architecture:**
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                   CodeQL 100% Coverage                      │
@@ -73,6 +74,7 @@ Complete security analysis framework with **7 comprehensive scanning layers**:
 ```
 
 **Scan Schedule:**
+
 ```
 ┌─ PUSH TO main/develop        → Immediate CodeQL + Dependencies
 ├─ EVERY PULL REQUEST          → Full security checks + Code review
@@ -81,6 +83,7 @@ Complete security analysis framework with **7 comprehensive scanning layers**:
 ```
 
 **Query Coverage:**
+
 ```
 Security Queries (50+):
 ├─ Cross-Site Scripting (XSS)
@@ -106,6 +109,7 @@ Quality Queries (100+):
 ```
 
 **View Results:**
+
 ```
 Repository → Security → Code scanning → Filter by status/severity
 https://github.com/MrMiless44/Infamous-freight-enterprises/security/code-scanning
@@ -136,6 +140,7 @@ pnpm licenses
 | 🔵 Low | Track in backlog | 30 days | ❌ NO |
 
 **Dependabot Auto-Merge:**
+
 - ✅ Patch updates (1.0.0 → 1.0.1)
 - ✅ Minor security updates
 - ❌ Major version bumps (require review)
@@ -143,6 +148,7 @@ pnpm licenses
 ### Supply Chain Security
 
 **SBOM (Software Bill of Materials):**
+
 ```json
 {
   "bomFormat": "CycloneDX",
@@ -164,12 +170,14 @@ Location: GitHub Actions artifacts
 Retention: 90 days
 
 **Secret Detection:**
+
 - 🔍 Scans repository history
 - 🔒 Detects: API keys, tokens, passwords, private keys
 - ⚠️ Excludes: Test secrets in `.env.example`
 - 📊 Generates report for review
 
 **Signing & Verification:**
+
 ```bash
 # Verify commit signatures (enforced for main branch)
 git verify-commit <hash>
@@ -185,12 +193,14 @@ git log --show-signature --oneline -5
 **🚨 NEVER open public issues for security vulnerabilities**
 
 **Use Security Advisory:**
+
 1. Go to: `Security` → `Advisories`
 2. Click: `Report a vulnerability`
 3. Provide details (description, impact, steps to reproduce)
 4. Attach evidence/logs
 
 **Alternative: Direct Email**
+
 ```
 security@infamous-freight.com
 Subject: [SECURITY] Vulnerability in Infamous Freight
@@ -216,6 +226,7 @@ Day 28: Public disclosure (if not critical)
 | v1.x | v1.x | 🔴 EOL | ❌ No |
 
 **Security Patch Policy:**
+
 - Applied to latest version immediately
 - Backported to current stable branch
 - Released with security advisory
@@ -226,6 +237,7 @@ Day 28: Public disclosure (if not critical)
 ### Automated Updates
 
 **Dependabot Configuration:**
+
 ```yaml
 version: 2
 updates:
@@ -264,6 +276,7 @@ git commit -am "chore: update package-name for security patch"
 ### Development
 
 **Before every commit:**
+
 ```bash
 # 1. Security checks
 pnpm audit --audit-level=moderate
@@ -348,16 +361,19 @@ LOW (CVSS 0-3)
 ## Resources
 
 ### Documentation
+
 - [SECURITY.md](SECURITY.md) - This file
 - [.github/workflows/codeql.yml](.github/workflows/codeql.yml) - CodeQL workflow
 - [.github/codeql/codeql-config.yml](.github/codeql/codeql-config.yml) - CodeQL configuration
 
 ### GitHub Security Features
+
 - [Security Alerts](https://github.com/MrMiless44/Infamous-freight-enterprises/security/code-scanning)
 - [Dependabot](https://github.com/MrMiless44/Infamous-freight-enterprises/security/dependabot)
 - [Security Advisories](https://github.com/MrMiless44/Infamous-freight-enterprises/security/advisories)
 
 ### External Resources
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [GitHub CodeQL](https://codeql.github.com/)
 - [CycloneDX SBOM](https://cyclonedx.org/)
@@ -368,12 +384,14 @@ LOW (CVSS 0-3)
 ### Authentication & Authorization (Phase 17)
 
 **RBAC Implementation:**
+
 - Roles: `SHIPPER`, `DRIVER`, `ADMIN`, `SYSTEM`
 - Permissions: `job:*`, `offer:*`, `payout:run`, `admin:ops`
 - Files: `api/src/auth/roles.js`, `api/src/auth/authorize.js`
 - Enforcement: `requirePerm()` middleware on critical endpoints
 
 **JWT Rotation (JWKS-ready):**
+
 - Optional JWKS validator: `api/src/auth/jwtRotation.js`
 - Mounted globally, fail-open when not configured
 - Populates `req.auth` for RBAC checks
@@ -382,6 +400,7 @@ LOW (CVSS 0-3)
 ### Audit Trail Integrity
 
 **Tamper-evident Hash Chain:**
+
 - Implementation: `api/src/lib/auditChain.js`
 - Append-only log with previous hash chaining
 - Automatically captures all requests via `auditLog` middleware
@@ -389,6 +408,7 @@ LOW (CVSS 0-3)
 - Salt: `AUDIT_LOG_SALT` for additional entropy
 
 **Recommended Operations:**
+
 ```bash
 # View audit log
 tail -f data/audit.log | jq
@@ -400,12 +420,14 @@ logrotate /etc/logrotate.d/infamous-audit
 ### API Security Hardening
 
 **Request Validation:**
+
 - Express-validator on all write endpoints
 - Zod schemas for complex payloads
 - Idempotency keys via Redis: `api/src/middleware/idempotency.js`
 - TTL: `IDEMPOTENCY_TTL_SECONDS` (default 900s)
 
 **Rate Limiting:**
+
 - Global: 100 req/15min per user
 - Auth: 5 req/15min per IP
 - AI: 20 req/1min per user
@@ -413,12 +435,14 @@ logrotate /etc/logrotate.d/infamous-audit
 - Payouts: Uses billing limiter + RBAC
 
 **Security Headers:**
+
 - Helmet with strict CSP: `api/src/middleware/securityHeaders.js`
 - CSP violation reporting: `POST /api/csp-violation`
 - HSTS, X-Frame-Options, X-Content-Type-Options
 - Configure report endpoint: `CSP_REPORT_URI`
 
 **CORS Policy:**
+
 - Strict allowlist: `CORS_ORIGINS` (comma-separated)
 - No wildcards in production
 - Server-to-server allowed (no Origin header)
@@ -426,6 +450,7 @@ logrotate /etc/logrotate.d/infamous-audit
 ### Secrets Hygiene
 
 **Pre-commit Hook:**
+
 ```bash
 # Activate secret scanning
 git config core.hooksPath .githooks
@@ -437,6 +462,7 @@ git config core.hooksPath .githooks
 ```
 
 **Runtime Validation:**
+
 - Required envs checked at startup: `api/src/config/validate.js`
 - Logs redact authorization headers
 - Audit chain masks sensitive fields
@@ -446,11 +472,13 @@ git config core.hooksPath .githooks
 **Playbook:** See `INCIDENT_RESPONSE.md`
 
 **Key Contacts:**
-- Primary: security@infamous-freight.com
-- On-call: security-oncall@infamous-freight.com (24/7)
+
+- Primary: <security@infamous-freight.com>
+- On-call: <security-oncall@infamous-freight.com> (24/7)
 - Escalation: Critical <1hr, High <24hr
 
 **Detection Sources:**
+
 - CodeQL findings
 - Sentry error spikes
 - Rate limit violations
@@ -458,6 +486,7 @@ git config core.hooksPath .githooks
 - User reports
 
 **Monitoring Integration:**
+
 - CSP reports → `CSP_REPORT_URI` webhook
 - Auth failures → Sentry alerts
 - Rate limit blocks → metrics dashboard
@@ -474,21 +503,25 @@ git config core.hooksPath .githooks
 ### Environment Variables Reference
 
 **Authentication:**
+
 - `AUTH_JWKS_URI` - JWKS endpoint for JWT validation
 - `AUTH_AUDIENCE` - Expected JWT audience
 - `AUTH_ISSUER` - Expected JWT issuer
 
 **Audit & Logging:**
+
 - `AUDIT_LOG_DIR` - Directory for audit logs (default: `./data`)
 - `AUDIT_LOG_FILE` - Audit log file path
 - `AUDIT_LOG_SALT` - Salt for hash chain
 
 **Security:**
+
 - `CORS_ORIGINS` - Comma-separated allowlist (NO wildcards in prod)
 - `CSP_REPORT_URI` - CSP violation webhook
 - `IDEMPOTENCY_TTL_SECONDS` - Idempotency cache TTL (default: 900)
 
 **Phase 16 (Redis/ETA):**
+
 - `MAPBOX_ETA_CACHE_TTL_SECONDS` - Shared Redis ETA cache TTL
 - `REDIS_URL` - Redis connection for cache + queues
 

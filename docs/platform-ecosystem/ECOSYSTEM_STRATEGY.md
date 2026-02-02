@@ -379,4 +379,3 @@ TOTAL ECOSYSTEM REVENUE (2026):
 
 API, webhooks, marketplace, and developer program to transform Infamous Freight
 from product into platform, unlocking $500K+ ecosystem revenue and high-value partnerships.
-

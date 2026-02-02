@@ -17,7 +17,7 @@
 3. ✅ **Deployment Runbook**: DEPLOYMENT_RUNBOOK.md with full operational guide
 4. ✅ **Testing Guide**: API_TESTING_GUIDE.md (400+ lines) with curl examples
 5. ✅ **README Update**: Added production API section with health check examples
-6. ✅ **Fly.io Deployment**: API live at https://infamous-freight-api.fly.dev
+6. ✅ **Fly.io Deployment**: API live at <https://infamous-freight-api.fly.dev>
 7. ✅ **Code Integration**: Search endpoint merged into users.js (70-line addition)
 8. ✅ **Documentation Index**: All guides linked and organized
 
@@ -126,7 +126,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 | Property       | Value                                |
 | -------------- | ------------------------------------ |
-| **URL**        | https://infamous-freight-api.fly.dev |
+| **URL**        | <https://infamous-freight-api.fly.dev> |
 | **Region**     | iad (US East)                        |
 | **Machine ID** | 3d8d1d66b46e08                       |
 | **Status**     | running                              |
@@ -300,6 +300,7 @@ pnpm e2e --baseURL=https://infamous-freight-api.fly.dev
    **Impact**: Without this, data endpoints won't work
 
 2. **Verify Database Connection**
+
    ```bash
    curl https://infamous-freight-api.fly.dev/api/health
    # Should return: "database": "connected"
@@ -316,7 +317,7 @@ pnpm e2e --baseURL=https://infamous-freight-api.fly.dev
    - Expected: 40+ edge case tests pass
 
 3. **Check GitHub Actions**
-   - Visit: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+   - Visit: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
    - All workflows should be green
 
 ### 🟢 LOW (Nice to Have)
@@ -379,7 +380,7 @@ Session 2 Final Phase (This Session):
 
 ✅ **API Server**
 
-- Running on https://infamous-freight-api.fly.dev
+- Running on <https://infamous-freight-api.fly.dev>
 - Health check responding
 - All middleware active (auth, rate limiting, logging, error handling)
 
@@ -460,7 +461,7 @@ Session 2 Final Phase (This Session):
 
 | Resource             | Link                                           | Purpose             |
 | -------------------- | ---------------------------------------------- | ------------------- |
-| **Live API**         | https://infamous-freight-api.fly.dev           | Production endpoint |
+| **Live API**         | <https://infamous-freight-api.fly.dev>           | Production endpoint |
 | **API Reference**    | [API_REFERENCE.md](API_REFERENCE.md)           | Full endpoint docs  |
 | **Testing Guide**    | [API_TESTING_GUIDE.md](API_TESTING_GUIDE.md)   | curl examples       |
 | **Deployment Guide** | [DEPLOYMENT_RUNBOOK.md](DEPLOYMENT_RUNBOOK.md) | Ops procedures      |

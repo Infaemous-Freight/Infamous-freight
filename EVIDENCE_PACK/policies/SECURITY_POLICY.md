@@ -11,12 +11,14 @@ This document outlines the security controls and standards implemented across In
 ## 1. Access Control
 
 ### 1.1 Authentication
+
 - **JWT-based:** All API endpoints protected with JSON Web Tokens
 - **Expiration:** 24-hour token lifetime with 7-day refresh token
 - **Rotation-ready:** Optional JWKS support for key rotation without redeployment
 - **Fallback:** Automatic validation via JWT_SECRET if JWKS not configured
 
 ### 1.2 Authorization (RBAC)
+
 Four roles with granular permissions:
 
 | Role | Permissions | Use Case |
@@ -27,12 +29,14 @@ Four roles with granular permissions:
 | SYSTEM | All permissions | Internal services/automation |
 
 **Critical endpoints protected:**
+
 - Job marketplace accept: `requirePerm("job:accept")`
 - Offer acceptance: `requirePerm("offer:accept")`
 - Payout operations: `requirePerm("payout:run")`
 - Admin health checks: `requirePerm("admin:ops")`
 
 ### 1.3 Session Management
+
 - No persistent sessions; token-based stateless design
 - Rate limiting prevents brute force: 5 attempts per 15 minutes per IP (auth endpoints)
 - Failed attempts logged and monitored
@@ -40,16 +44,19 @@ Four roles with granular permissions:
 ## 2. Data Protection
 
 ### 2.1 In Transit
+
 - **TLS 1.2+:** HTTPS enforced for all API endpoints
 - **Certificate pinning:** Recommended for mobile apps
 - **Cipher suites:** Strong algorithms (ECDHE, AES-256-GCM)
 
 ### 2.2 At Rest
+
 - **Sensitive fields:** Passwords hashed with bcrypt (min 12 rounds)
 - **Encryption:** Customer data encrypted per column with AES-256 if required
 - **Key rotation:** Keys rotated quarterly
 
 ### 2.3 Secrets Management
+
 - **No hardcoded secrets:** All keys loaded from environment variables
 - **Pre-commit scanning:** `.githooks/pre-commit` blocks commits with secrets
 - **Patterns blocked:** AWS keys, Stripe keys, JWT secrets, private keys
@@ -58,6 +65,7 @@ Four roles with granular permissions:
 ## 3. Audit & Logging
 
 ### 3.1 Immutable Audit Trail
+
 - **Hash chaining:** SHA256 previous-hash linkage prevents tampering
 - **Automatic capture:** All API requests logged with user, action, result
 - **Fields captured:** method, path, status, duration, user ID, role, IP
@@ -65,6 +73,7 @@ Four roles with granular permissions:
 - **Verification:** `verifyJobAuditChain()` detects tampering
 
 ### 3.2 Error Tracking
+
 - **Sentry integration:** All exceptions automatically captured
 - **Profiling:** Performance traces sampled (10% by default)
 - **Context:** Request ID, user, service name attached to errors
@@ -102,9 +111,10 @@ Referrer-Policy: strict-origin-when-cross-origin
 
 ## 7. Incident Response
 
-**Contact:** security@infamous-freight.com (critical), security-oncall@infamous-freight.com (24/7)
+**Contact:** <security@infamous-freight.com> (critical), <security-oncall@infamous-freight.com> (24/7)
 
 **Response time SLAs:**
+
 - Critical (CVSS 9-10): Response within 1 hour
 - High (CVSS 7-8): Response within 24 hours
 - Medium (CVSS 4-6): Response within 72 hours
@@ -115,11 +125,13 @@ See [INCIDENT_RESPONSE.md](../INCIDENT_RESPONSE.md) for detailed procedures.
 ## 8. Compliance
 
 ### 8.1 Standards
+
 - SOC2-lite: Implemented
 - OWASP Top 10: Controls address all categories
 - NIST Cybersecurity Framework: Aligned
 
 ### 8.2 Certifications
+
 - HTTPS/TLS: ✅ A+ rating (SecurityHeaders.com)
 - HSTS: ✅ Preload eligible
 - Code scanning: ✅ GitHub CodeQL (100% issues fixed)
@@ -127,11 +139,13 @@ See [INCIDENT_RESPONSE.md](../INCIDENT_RESPONSE.md) for detailed procedures.
 ## 9. Monitoring & Alerts
 
 ### 9.1 Operational Monitoring
+
 - **Health endpoints:** `/healthz`, `/readyz`, `/api/status` for ops dashboards
 - **Worker heartbeat:** Redis-backed liveness checks (30-second TTL)
 - **Queue monitoring:** BullBoard dashboard at `/ops/queues`
 
 ### 9.2 Security Monitoring
+
 - **Failed auth:** Logged and monitored (trigger after 10 failures/hour)
 - **Rate limit breaches:** Tracked per category
 - **CSP violations:** Reported to `/api/csp-violation` webhook
@@ -140,6 +154,7 @@ See [INCIDENT_RESPONSE.md](../INCIDENT_RESPONSE.md) for detailed procedures.
 ## 10. Change Management
 
 All changes follow:
+
 1. Code review (2+ approvers for security)
 2. Automated tests (>80% coverage)
 3. Security scanning (CodeQL, dependency audit)

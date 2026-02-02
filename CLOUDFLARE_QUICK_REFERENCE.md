@@ -207,7 +207,7 @@ flyctl restart -a infamous-freight-api
 
 ## 📊 Monitoring Dashboard
 
-**URL**: https://dash.cloudflare.com/infamous-freight.com/analytics/loadbalancer
+**URL**: <https://dash.cloudflare.com/infamous-freight.com/analytics/loadbalancer>
 
 **Metrics**:
 

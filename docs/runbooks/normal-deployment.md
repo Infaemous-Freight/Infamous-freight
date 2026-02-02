@@ -37,6 +37,7 @@ echo "Starting production deployment in 2 minutes..."
 ```
 
 **Slack Announcement:**
+
 ```
 📢 Deploying to production
 Version: v1.x.x
@@ -47,6 +48,7 @@ ETA: 20 minutes
 ### 1. Merge to Main (5 minutes)
 
 **In GitHub:**
+
 1. ✅ Open pull request
 2. ✅ Verify all CI checks pass (green checkmarks)
 3. ✅ Get code review approval
@@ -69,18 +71,21 @@ watch -n 5 'curl -s https://api.vercel.com/v13/deployments?teamId=$TEAM_ID | jq 
 **Concurrently (Tabs):**
 
 **Tab 1 - Sentry Errors:**
+
 ```
 https://sentry.io/organizations/infamousfreight/issues/
 (Watch for error spike)
 ```
 
 **Tab 2 - Health Check:**
+
 ```bash
 # Every 30 seconds
 watch -n 30 'curl -s https://your-domain.com/api/health | jq .'
 ```
 
 **Tab 3 - Logs:**
+
 ```bash
 # If using Fly.io
 flyctl logs -a api-app-name
@@ -89,6 +94,7 @@ flyctl logs -a api-app-name
 
 **Tab 4 - Status:**
 Monitor in Vercel Dashboard:
+
 - Deployments tab shows: "Deployment ready"
 - No red error badges
 
@@ -148,6 +154,7 @@ cat lighthouse.json | jq .lighthouseVersion
 ```
 
 **After verification:**
+
 ```
 ✅ Production deployment successful!
 Version: v1.x.x
@@ -192,6 +199,7 @@ done
 ### Issue: Deployment shows "Failed"
 
 **Solution:**
+
 ```bash
 # 1. Check what failed
 vercel projects inspect
@@ -210,6 +218,7 @@ git push
 ### Issue: Health endpoint returns 500
 
 **Solution:**
+
 ```bash
 # 1. Check environment variables
 echo $DATABASE_URL  # Should not be empty
@@ -226,6 +235,7 @@ psql $DATABASE_URL -c "SELECT 1" # Should return 1
 ### Issue: Error spike in Sentry
 
 **Solution:**
+
 ```bash
 # 1. Identify error pattern
 # Sentry: Issues → Select error → See stack trace
@@ -263,6 +273,7 @@ psql $DATABASE_URL -c "SELECT 1" # Should return 1
 **See: docs/runbooks/emergency-rollback.md**
 
 Quick rollback:
+
 ```bash
 # In Vercel Dashboard:
 # Deployments → Select previous version → Rollback button
@@ -274,6 +285,7 @@ Quick rollback:
 ## Post-Mortem (if issues occurred)
 
 Schedule within 24 hours:
+
 - What went wrong?
 - Why did it happen?
 - How to prevent next time?

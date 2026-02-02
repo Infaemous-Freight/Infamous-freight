@@ -169,6 +169,7 @@ rm -rf "$BACKUP_DIR"
 #### Scenario: Primary Database Down
 
 **Step 1: Detection (Automated)**
+
 ```bash
 # Health check runs every 60 seconds
 GET /api/health/db
@@ -179,6 +180,7 @@ GET /api/health/db
 ```
 
 **Step 2: Notify Team**
+
 ```bash
 # Auto-alert in Slack
 Channel: #incidents
@@ -187,6 +189,7 @@ Page: On-call database engineer (PagerDuty)
 ```
 
 **Step 3: Connect to Standby Database**
+
 ```bash
 # Manual override if needed
 cd apps/api
@@ -201,6 +204,7 @@ pnpm api:dev
 ```
 
 **Step 4: Verify Data Integrity**
+
 ```sql
 -- Check replication lag on standby
 SELECT 
@@ -215,6 +219,7 @@ SELECT COUNT(*) FROM shipments;
 ```
 
 **Step 5: Notify Users**
+
 ```
 Status Page Update:
 Title: "Partial Outage - Database Maintenance"
@@ -498,6 +503,7 @@ Quarterly:
 ## Status: 100% Complete ✅
 
 Comprehensive disaster recovery plan implemented with:
+
 - RPO: 1 hour (backups every hour)
 - RTO: 4 hours (multi-region failover ready)
 - Weekly verification ensuring backups work

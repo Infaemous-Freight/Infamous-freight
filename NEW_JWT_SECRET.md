@@ -17,7 +17,7 @@ JWT_SECRET=_x19eDv21H_QpQD3RaETWOiqbuy5tYyeK8AZHcwCYYg
 
 ### Step 1: Update in Vercel
 
-1. **Go to Vercel Dashboard**: https://vercel.com/dashboard
+1. **Go to Vercel Dashboard**: <https://vercel.com/dashboard>
 2. Click your **Infamous Freight** project
 3. Go to: **Settings** → **Environment Variables**
 4. Find `JWT_SECRET` → Click **Edit**

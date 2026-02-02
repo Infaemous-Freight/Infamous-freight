@@ -436,6 +436,7 @@ Sentry.init({
 ### 3.1 Add Slack Integration
 
 **In Sentry Dashboard**:
+
 1. Go to **Integrations → Slack**
 2. Install and configure
 3. Set up alerts to specific channels
@@ -443,6 +444,7 @@ Sentry.init({
 ### 3.2 Add GitHub Integration
 
 **In Sentry Dashboard**:
+
 1. Go to **Integrations → GitHub**
 2. Configure to create issues automatically
 3. Link to repo commits
@@ -450,6 +452,7 @@ Sentry.init({
 ### 3.3 Add Email Alerts
 
 **In Sentry Dashboard**:
+
 1. **Alerts → New Alert Rule**
 2. Condition: Errors > 10 in 5 minutes
 3. Action: Send email to team
@@ -520,17 +523,20 @@ pnpm --filter web dev
 ## 🚀 Next Steps (In Order)
 
 ### Week 1: Critical Path
+
 - [ ] Implement API Response Interceptor (1.2)
 - [ ] Add User Activity Tracking (1.3)
 - [ ] Add Performance Monitoring (1.4)
 - [ ] Test in development environment
 
 ### Week 2: Enhanced Features
+
 - [ ] Implement Custom Error Classes (2.2)
 - [ ] Set up Environment-Specific Config (2.5)
 - [ ] Configure Release Health (2.1)
 
 ### Week 3: Polish
+
 - [ ] Set up Slack Integration (3.1)
 - [ ] Add GitHub Integration (3.2)
 - [ ] Configure Email Alerts (3.3)

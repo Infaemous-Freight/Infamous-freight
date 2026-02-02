@@ -887,18 +887,18 @@ const Q3_2026_BoardPackage: QuarterlyBoardPackage = {
 
 ## 7. SUCCESS METRICS WITH TARGETS
 
-| Metric | Q3 2026 | Q4 2026 | Q1 2027 | Q2 2027 |
-|--------|---------|---------|---------|---------|
-| ARR | $1.5M | $2.5M | $4.0M | $6.0M |
-| MRR Growth | 17% | 16% | 15% | 15% |
-| Customer Count | 180 | 240 | 320 | 420 |
-| NPS | 64 | 66 | 68 | 70 |
-| Retention | 88% | 88% | 88% | 89% |
-| CAC Payback | 8mo | 7mo | 6mo | 6mo |
-| LTV:CAC | 10x | 12x | 14x | 15x |
-| Gross Margin | 70% | 71% | 72% | 73% |
-| Team Size | 40 | 50 | 65 | 80 |
-| Monthly Burn | $520K | $550K | $600K | $650K |
+| Metric         | Q3 2026 | Q4 2026 | Q1 2027 | Q2 2027 |
+| -------------- | ------- | ------- | ------- | ------- |
+| ARR            | $1.5M   | $2.5M   | $4.0M   | $6.0M   |
+| MRR Growth     | 17%     | 16%     | 15%     | 15%     |
+| Customer Count | 180     | 240     | 320     | 420     |
+| NPS            | 64      | 66      | 68      | 70      |
+| Retention      | 88%     | 88%     | 88%     | 89%     |
+| CAC Payback    | 8mo     | 7mo     | 6mo     | 6mo     |
+| LTV:CAC        | 10x     | 12x     | 14x     | 15x     |
+| Gross Margin   | 70%     | 71%     | 72%     | 73%     |
+| Team Size      | 40      | 50      | 65      | 80      |
+| Monthly Burn   | $520K   | $550K   | $600K   | $650K   |
 
 ---
 

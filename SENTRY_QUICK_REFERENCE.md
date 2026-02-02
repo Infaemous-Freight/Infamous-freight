@@ -21,11 +21,11 @@ apps/web/
 
 | Link                                                                                             | Purpose          |
 | ------------------------------------------------------------------------------------------------ | ---------------- |
-| https://sentry.io                                                                                | Main dashboard   |
-| https://sentry.io/organizations/infamous-freight-enterprise/                                     | Organization     |
-| https://sentry.io/organizations/infamous-freight-enterprise/issues/                              | All issues       |
-| https://sentry.io/settings/organizations/infamous-freight-enterprise/                            | Org settings     |
-| https://sentry.io/settings/organizations/infamous-freight-enterprise/projects/javascript-nextjs/ | Project settings |
+| <https://sentry.io>                                                                                | Main dashboard   |
+| <https://sentry.io/organizations/infamous-freight-enterprise/>                                     | Organization     |
+| <https://sentry.io/organizations/infamous-freight-enterprise/issues/>                              | All issues       |
+| <https://sentry.io/settings/organizations/infamous-freight-enterprise/>                            | Org settings     |
+| <https://sentry.io/settings/organizations/infamous-freight-enterprise/projects/javascript-nextjs/> | Project settings |
 
 ## Environment Setup
 
@@ -266,10 +266,10 @@ curl -X GET "http://localhost:3000/debug-sentry"
 
 ## Get Help
 
-- **Sentry Docs**: https://docs.sentry.io/platforms/javascript/guides/nextjs/
+- **Sentry Docs**: <https://docs.sentry.io/platforms/javascript/guides/nextjs/>
 - **Integration Guide**: See [../SENTRY_INTEGRATION_GUIDE.md](../SENTRY_INTEGRATION_GUIDE.md)
 - **Checklist**: See [../SENTRY_IMPLEMENTATION_CHECKLIST.md](../SENTRY_IMPLEMENTATION_CHECKLIST.md)
-- **Sentry Support**: https://sentry.io/support/
+- **Sentry Support**: <https://sentry.io/support/>
 
 ---
 

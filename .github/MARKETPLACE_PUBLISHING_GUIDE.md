@@ -38,8 +38,8 @@ git tag -a performance-baseline-v1.0.0 -m "Release performance-baseline action v
 git push origin performance-baseline-v1.0.0
 ```
 
-2. **Create GitHub Release**
-   - Go to https://github.com/MrMiless44/Infamous-freight-enterprises/releases/new
+1. **Create GitHub Release**
+   - Go to <https://github.com/MrMiless44/Infamous-freight-enterprises/releases/new>
    - Select the tag you just created
    - Add release notes
    - Check "Publish this Action to the GitHub Marketplace"
@@ -47,7 +47,7 @@ git push origin performance-baseline-v1.0.0
    - Add secondary categories if applicable
    - Publish release
 
-3. **Users Can Reference Your Actions**
+2. **Users Can Reference Your Actions**
 
 ```yaml
 # From your repository
@@ -66,18 +66,23 @@ git push origin performance-baseline-v1.0.0
 
 1. **Create New Repository:** `health-check-action`
 2. **Copy Files:**
+
    ```bash
    # In the new repository
    cp action.yml .
    cp README.md .
    ```
+
 3. **Update README.md usage example:**
+
    ```yaml
    - uses: MrMiless44/health-check-action@v1
      with:
        url: https://api.example.com/health
    ```
+
 4. **Commit and Tag:**
+
    ```bash
    git add .
    git commit -m "Initial release"
@@ -85,19 +90,23 @@ git push origin performance-baseline-v1.0.0
    git push origin main
    git push origin v1.0.0
    ```
+
 5. **Create Release with Marketplace Publishing**
 
 #### Performance Baseline Action
 
 1. **Create New Repository:** `performance-baseline-action`
 2. **Copy Files:**
+
    ```bash
    # In the new repository
    cp action.yml .
    cp ../performance-baselines.json ./example-baselines.json
    ```
+
 3. **Create README.md** with usage examples
 4. **Commit and Tag:**
+
    ```bash
    git add .
    git commit -m "Initial release"
@@ -105,6 +114,7 @@ git push origin performance-baseline-v1.0.0
    git push origin main
    git push origin v1.0.0
    ```
+
 5. **Create Release with Marketplace Publishing**
 
 ---
@@ -252,7 +262,7 @@ git push origin v1 --force
 
 ### For Users to Find Your Actions
 
-1. **Search GitHub Marketplace:** https://github.com/marketplace
+1. **Search GitHub Marketplace:** <https://github.com/marketplace>
 2. **Filter by:** Actions → Deployment/Code Quality
 3. **Install:** Click "Use latest version"
 4. **Copy-paste** usage example into workflow
@@ -266,10 +276,10 @@ git push origin v1 --force
 
 ## Resources
 
-- **Marketplace Docs:** https://docs.github.com/en/actions/creating-actions/publishing-actions-in-github-marketplace
-- **Action Metadata:** https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions
-- **Best Practices:** https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
-- **Security:** https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
+- **Marketplace Docs:** <https://docs.github.com/en/actions/creating-actions/publishing-actions-in-github-marketplace>
+- **Action Metadata:** <https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions>
+- **Best Practices:** <https://docs.github.com/en/actions/creating-actions/creating-a-composite-action>
+- **Security:** <https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions>
 
 ---
 

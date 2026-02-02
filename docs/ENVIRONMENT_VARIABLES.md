@@ -45,7 +45,7 @@ These provide additional functionality but have sensible defaults.
 
 - `RATE_LIMIT_POINTS` - Number of points per rate limit window - default: 100
 - `RATE_LIMIT_DURATION` - Rate limit window duration in seconds - default: 60
-- `CORS_ORIGINS` - Comma-separated list of allowed CORS origins - default: http://localhost:3000
+- `CORS_ORIGINS` - Comma-separated list of allowed CORS origins - default: <http://localhost:3000>
 
 ### AI Security
 

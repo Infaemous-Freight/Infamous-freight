@@ -33,6 +33,7 @@ pnpm deploy:web
 | **Enterprise** | $999 | $999 | $11,988 |
 
 **100 Paying Customers Example:**
+
 - 80 Pro @ $99 = $7,920/month
 - 20 Enterprise @ $999 = $19,980/month
 - **Total: $27,900/month = $334,800/year**
@@ -51,6 +52,7 @@ All goes to your bank account. ✅
 ## 🧪 Test Payment
 
 Use card: `4242 4242 4242 4242`
+
 - Expiry: Any future date
 - CVC: Any 3 digits
 - Cost: $0 (auto-refunded)
@@ -58,29 +60,33 @@ Use card: `4242 4242 4242 4242`
 ## 📊 Monitoring
 
 **Check payments in Stripe:**
-https://stripe.com/dashboard/payments
+<https://stripe.com/dashboard/payments>
 
 **Check balance:**
-https://stripe.com/dashboard/balances
+<https://stripe.com/dashboard/balances>
 
 **Payout schedule:**
+
 - Default: Weekly to your bank
 - Next payout: Visible in dashboard
 
 ## ❌ Troubleshooting
 
 **Webhook not receiving events?**
+
 ```bash
 # Test locally
 stripe listen --forward-to localhost:4000/api/billing/webhook
 ```
 
 **Payment declined?**
+
 - Check if card is 3D Secure
 - Use test card: 4242 4242 4242 4242
 - Never reuse real cards for testing
 
 **Funds not showing in bank?**
+
 - Stripe holds for 24-48h on new accounts
 - Check "Payouts" section for schedule
 - First payout may take 5-7 business days

@@ -291,7 +291,7 @@ When you're done:
 
 ---
 
-## 🎉 You're About to Go Live!
+## 🎉 You're About to Go Live
 
 Everything is ready:
 ✅ Code complete and optimized

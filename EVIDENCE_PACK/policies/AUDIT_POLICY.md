@@ -6,6 +6,7 @@
 ## 1. Purpose
 
 This policy establishes requirements for audit logging, retention, and verification to ensure:
+
 - **Non-repudiation:** Users cannot deny actions they performed
 - **Compliance:** SOC2-lite auditability requirements met
 - **Tamper detection:** Hash chaining prevents unauthorized modifications
@@ -14,6 +15,7 @@ This policy establishes requirements for audit logging, retention, and verificat
 ## 2. Scope
 
 This policy applies to:
+
 - All API requests and responses
 - Authentication events (success and failure)
 - Authorization decisions (grants and denials)
@@ -94,6 +96,7 @@ if (!result.ok) {
 ### 5.1 Automated Verification
 
 Verification runs:
+
 - **On-demand:** `POST /api/audit/verify` (admin only)
 - **Scheduled:** Daily at 02:00 UTC (random sample)
 - **On access:** Before returning job event history
@@ -148,6 +151,7 @@ If tampering detected:
 ## 7. Audit Data Privacy
 
 ### 7.1 What's Logged
+
 - ✅ User ID (opaque identifier)
 - ✅ Action type
 - ✅ Resource ID
@@ -157,6 +161,7 @@ If tampering detected:
 - ✅ User role
 
 ### 7.2 What's NOT Logged
+
 - ❌ Passwords (even hashed)
 - ❌ API keys or secrets
 - ❌ Full request/response bodies (truncated to 1KB)
@@ -166,13 +171,16 @@ If tampering detected:
 ## 8. Compliance Evidence
 
 ### 8.1 For Auditors
+
 - **Access log exports:** 90-day rolling window
 - **Verification reports:** Monthly integrity check results
 - **Tampering incidents:** None (historical record)
 - **Retention evidence:** Backup manifests and rotation logs
 
 ### 8.2 For Customers
+
 Customers can request:
+
 - Their own audit trail
 - Verification certificate (signed)
 - Log export in compliance format
@@ -198,6 +206,7 @@ Customers can request:
 ## 11. Exceptions
 
 Exceptions to this policy require:
+
 - Written approval from Chief Architect
 - Documented business justification
 - Risk assessment signed off
@@ -206,6 +215,7 @@ Exceptions to this policy require:
 ## 12. Training & Awareness
 
 All team members complete:
+
 - Annual security awareness training
 - Quarterly audit trail procedures review
 - Incident response drills (semi-annual)
@@ -213,6 +223,7 @@ All team members complete:
 ## 13. Review & Update
 
 This policy is reviewed:
+
 - **Quarterly:** Effectiveness check
 - **Annually:** Compliance certification
 - **As-needed:** Security incident response

@@ -51,6 +51,7 @@ kubectl logs deployment/api --tail=50 --timestamps=true
 ## Severity Levels
 
 ### 🔴 CRITICAL (Page Everyone)
+
 - **Error rate** > 1% for 2+ minutes
 - **API completely down** (no responses)
 - **Database disconnected**
@@ -60,6 +61,7 @@ kubectl logs deployment/api --tail=50 --timestamps=true
 **Action**: Declare SEV-1, page ops team, consider rollback
 
 ### 🟠 HIGH (Page On-Call)
+
 - **Error rate** 0.1-1% for 5+ minutes
 - **Latency P95 > 2000ms** for 5+ minutes
 - **Partial outage** (some endpoints down)
@@ -68,6 +70,7 @@ kubectl logs deployment/api --tail=50 --timestamps=true
 **Action**: Declare SEV-2, investigate root cause, coordinate fix
 
 ### 🟡 MEDIUM (Slack Alert)
+
 - **Error rate** 0.01-0.1%
 - **Latency elevated** (P95 200-500ms)
 - **Non-critical feature degraded**
@@ -76,6 +79,7 @@ kubectl logs deployment/api --tail=50 --timestamps=true
 **Action**: Log ticket, monitor, prioritize based on impact
 
 ### 🟢 LOW (Log Only)
+
 - **Error rate** < 0.01%
 - **Single request failures** (transient)
 - **Expected warnings** (rate limit blocks)
@@ -92,6 +96,7 @@ kubectl logs deployment/api --tail=50 --timestamps=true
 **Duration**: Usually 5-30 minutes
 
 **Step 1: Identify the error**
+
 ```bash
 # Check what's failing
 kubectl logs deployment/api --tail=100 | grep -i error | head -10
@@ -106,6 +111,7 @@ kubectl logs deployment/api --tail=100 | grep -i error | head -10
 **Step 2: Quick fixes by error type**
 
 **If database connection error:**
+
 ```bash
 # Restart API pods (they'll reconnect)
 kubectl rollout restart deployment/api
@@ -118,6 +124,7 @@ kubectl delete pod postgres-0  # If using StatefulSet
 ```
 
 **If configuration error:**
+
 ```bash
 # Check environment variables
 kubectl exec -it pod/api -- env | grep JWT_SECRET
@@ -128,6 +135,7 @@ kubectl rollout restart deployment/api
 ```
 
 **If external service timeout:**
+
 ```bash
 # Check which service is slow
 kubectl logs deployment/api | grep timeout
@@ -138,6 +146,7 @@ kubectl rollout restart deployment/api
 ```
 
 **If out of memory:**
+
 ```bash
 # Check memory usage
 kubectl top pods -l app=api
@@ -151,6 +160,7 @@ kubectl rollout restart deployment/api
 ```
 
 **Step 3: Verify recovery**
+
 ```bash
 # Wait for pods to stabilize
 kubectl rollout status deployment/api --timeout=5m
@@ -163,6 +173,7 @@ curl -s https://api.yourdomain.com/api/health | jq .
 ```
 
 **Step 4: Communicate**
+
 ```
 Status: INVESTIGATING → MITIGATING → RESOLVED
 Updates: Every 5-10 minutes until fixed
@@ -177,6 +188,7 @@ Final: Root cause + prevention plan
 **Duration**: Usually 10-60 minutes
 
 **Step 1: Identify slow queries**
+
 ```bash
 # Check database slow query log
 kubectl exec -it deployment/api -- psql $DATABASE_URL -c "
@@ -192,6 +204,7 @@ kubectl exec -it deployment/api -- psql $DATABASE_URL -c "
 ```
 
 **Step 2: Check external services**
+
 ```bash
 # Are Stripe/Anthropic/email service slow?
 kubectl logs deployment/api | grep -i "stripe\|anthropic\|email" | grep duration
@@ -203,6 +216,7 @@ kubectl logs deployment/api | grep -i "stripe\|anthropic\|email" | grep duration
 ```
 
 **Step 3: Scale up if needed**
+
 ```bash
 # Check current replicas
 kubectl get deployment/api
@@ -213,6 +227,7 @@ kubectl rollout status deployment/api
 ```
 
 **Step 4: Monitor recovery**
+
 ```bash
 # Watch latency decrease
 # Prometheus: histogram_quantile(0.95, http_request_duration_ms)
@@ -228,6 +243,7 @@ kubectl rollout status deployment/api
 **Duration**: Until fixed
 
 **Step 1: Check logs**
+
 ```bash
 # See why pod is crashing
 kubectl logs pod/api-xyz123 --previous  # Previous crashed attempt
@@ -243,6 +259,7 @@ kubectl logs pod/api-xyz123             # Current
 **Step 2: Common causes & fixes**
 
 **If database migration failed:**
+
 ```bash
 # Stop new deployments
 kubectl rollout pause deployment/api
@@ -255,6 +272,7 @@ kubectl rollout resume deployment/api
 ```
 
 **If missing environment variable:**
+
 ```bash
 # Check what's set
 kubectl exec -it pod/api-xyz123 -- env | head -20
@@ -265,6 +283,7 @@ kubectl rollout restart deployment/api
 ```
 
 **If out of memory:**
+
 ```bash
 # Increase memory limit
 kubectl set resources deployment/api --limits=memory=2Gi
@@ -275,6 +294,7 @@ kubectl rollout restart deployment/api
 ```
 
 **Step 3: Verify recovery**
+
 ```bash
 # Watch pods stabilize
 kubectl get pods -l app=api -w
@@ -292,6 +312,7 @@ kubectl rollout undo deployment/api
 **Duration**: Minutes to hours
 
 **Step 1: Check connection count**
+
 ```bash
 # How many connections are open?
 kubectl exec -it deployment/api -- psql $DATABASE_URL -c "
@@ -313,6 +334,7 @@ kubectl exec -it deployment/api -- psql $DATABASE_URL -c "
 **Step 2: Fix**
 
 **If idle connections:**
+
 ```bash
 # Kill idle connections (don't kill active ones!)
 kubectl exec -it deployment/api -- psql $DATABASE_URL -c "
@@ -326,6 +348,7 @@ kubectl rollout restart deployment/api
 ```
 
 **If legitimate load:**
+
 ```bash
 # Increase database connection limit
 # In RDS/DigitalOcean admin panel:
@@ -347,6 +370,7 @@ kubectl scale deployment/api --replicas=2
 **Duration**: Hours before critical
 
 **Step 1: Check disk usage**
+
 ```bash
 # How much space is left?
 kubectl exec -it deployment/postgres -- df -h
@@ -362,6 +386,7 @@ du -sh /var/lib/postgresql/data/*
 **Step 2: Free up space**
 
 **If logs are huge:**
+
 ```bash
 # Clear old log files
 kubectl exec -it deployment/api -- rm -rf /var/log/app/old-*.log
@@ -371,6 +396,7 @@ kubectl set env deployment/api LOG_LEVEL=warn
 ```
 
 **If database is huge:**
+
 ```bash
 # Archive/delete old data (be careful!)
 kubectl exec -it deployment/postgres -- psql -c "
@@ -389,6 +415,7 @@ kubectl exec -it deployment/postgres -- psql -c "
 **Duration**: 24-48 hours until critical
 
 **Step 1: Monitor memory trend**
+
 ```bash
 # Watch memory over time
 kubectl top pods -l app=api --containers=true
@@ -399,6 +426,7 @@ kubectl top pods -l app=api --containers=true
 ```
 
 **Step 2: Find the leak**
+
 ```bash
 # Enable memory profiling (requires code changes)
 # See: api/src/middleware/logger.js for instrumentation
@@ -410,6 +438,7 @@ kubectl top pods -l app=api --containers=true
 ```
 
 **Step 3: Temporary fix**
+
 ```bash
 # Restart pods daily (forces cleanup)
 # Add CronJob to Kubernetes:
@@ -435,6 +464,7 @@ spec:
 ```
 
 **Step 4: Find & fix the leak**
+
 ```bash
 # This is a code issue, requires debugging
 # Check git log for recent changes
@@ -554,6 +584,7 @@ If still broken → All-hands standup + war room
 ## On-Call Responsibilities
 
 **Before Going On-Call**
+
 - [ ] Read this playbook
 - [ ] Know how to kubectl
 - [ ] Have VPN access
@@ -561,6 +592,7 @@ If still broken → All-hands standup + war room
 - [ ] Test that you can SSH to servers
 
 **During On-Call**
+
 - [ ] Respond to pages within 5 minutes
 - [ ] Keep team informed (Slack updates every 5-10 min)
 - [ ] Document actions taken (for post-mortem)
@@ -568,6 +600,7 @@ If still broken → All-hands standup + war room
 - [ ] Have hand-off meeting with next on-call
 
 **After On-Call**
+
 - [ ] Complete incident reports
 - [ ] Update runbooks if needed
 - [ ] Share learnings with team
@@ -589,8 +622,8 @@ If still broken → All-hands standup + war room
 ## Resources
 
 - Runbook: docs/DEPLOYMENT_RUNBOOK_KUBERNETES.md
-- Status Page: https://status.yourdomain.com
-- Monitoring: https://grafana.yourdomain.com
+- Status Page: <https://status.yourdomain.com>
+- Monitoring: <https://grafana.yourdomain.com>
 - Logs: kubectl logs deployment/api
 - Database: PGUSER=$DB_USER PGPASSWORD=$DB_PASSWORD psql $DATABASE_URL
 

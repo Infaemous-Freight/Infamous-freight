@@ -7,6 +7,7 @@ Insurance documents and metadata are sensitive. The Insurance Center enforces:
 - **Data minimization**: store only the metadata required for compliance and underwriting workflows.
 
 ## Recommended Controls
+
 - Encrypt document URLs and access tokens.
 - Configure retention policies for expired certificates.
 - Monitor audit logs for suspicious access patterns.

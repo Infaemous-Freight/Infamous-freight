@@ -5,15 +5,18 @@ Complete setup guide for integrating Sentry error tracking and performance monit
 ## 🚨 Critical for Vercel Deployments
 
 **Before deploying to Vercel, read this:**
+
 - 📘 [SENTRY_VERCEL_DEPLOYMENT.md](./SENTRY_VERCEL_DEPLOYMENT.md) - Complete Vercel deployment guide
 - 📘 [SENTRY_WIZARD_COMMAND.md](./SENTRY_WIZARD_COMMAND.md) - How to run the Sentry wizard correctly
 
 **Critical fixes already implemented:**
+
 - ✅ Middleware excludes `/monitoring` (Sentry tunnel route)
 - ✅ Tunnel route enabled in `next.config.mjs`
 - ✅ Monorepo-safe configuration
 
 **Without these fixes:**
+
 - ❌ Sentry events return 401/403 errors
 - ❌ Source maps won't upload
 - ❌ Stack traces will be minified
@@ -21,6 +24,7 @@ Complete setup guide for integrating Sentry error tracking and performance monit
 ## Overview
 
 Sentry provides:
+
 - **Error Tracking**: Capture and monitor runtime errors
 - **Performance Monitoring**: Track page load times, API response times, and custom transactions
 - **Session Replay**: Watch user interactions leading up to errors
@@ -99,6 +103,7 @@ The following files should be in place:
 ### 7. Build Configuration
 
 The `next.config.mjs` is already wrapped with `withSentryConfig()` which:
+
 - Automatically injects the Sentry SDK
 - Generates and uploads source maps
 - Enables session replay
@@ -143,6 +148,7 @@ Then check your Sentry dashboard to see events arrive.
 ### Error Boundary (`SentryErrorBoundary.tsx`)
 
 React error boundary component that:
+
 - Catches component rendering errors
 - Sends them to Sentry with component stack trace
 - Shows fallback UI to users
@@ -151,6 +157,7 @@ React error boundary component that:
 ### Instrumentation Hook (`instrumentation.ts`)
 
 Runs once when Next.js server starts:
+
 - Initializes Sentry for Node.js runtime
 - Initializes Sentry for Edge runtime
 - Happens before any requests are processed
@@ -190,6 +197,7 @@ transaction.finish();
 ## Error Tracking
 
 Errors are automatically captured from:
+
 - Unhandled JavaScript exceptions
 - React error boundaries
 - Server-side error handling
@@ -225,12 +233,14 @@ addBreadcrumb(
 Sentry records user sessions when errors occur (configurable sampling rate).
 
 The replay includes:
+
 - Network requests
 - Console logs
 - DOM mutations
 - User interactions (clicks, scrolls, form input)
 
 Privacy protections:
+
 - Text content is masked
 - Images/media are blocked
 - Sensitive data patterns are detected
@@ -260,6 +270,7 @@ sourceMaps: {
 ```
 
 During build, Sentry CLI automatically:
+
 1. Generates source maps
 2. Uploads them to Sentry
 3. Deletes local source maps from build output
@@ -335,11 +346,11 @@ NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE=0.1
 
 ## Useful Sentry URLs
 
-- **Sentry Dashboard**: https://sentry.io/
-- **Org Settings**: https://sentry.io/settings/organizations/infamous-freight-enterprise/
-- **Project Settings**: https://sentry.io/settings/organizations/infamous-freight-enterprise/projects/javascript-nextjs/
-- **Issues List**: https://sentry.io/organizations/infamous-freight-enterprise/issues/
-- **Performance Monitoring**: https://sentry.io/organizations/infamous-freight-enterprise/performance/
+- **Sentry Dashboard**: <https://sentry.io/>
+- **Org Settings**: <https://sentry.io/settings/organizations/infamous-freight-enterprise/>
+- **Project Settings**: <https://sentry.io/settings/organizations/infamous-freight-enterprise/projects/javascript-nextjs/>
+- **Issues List**: <https://sentry.io/organizations/infamous-freight-enterprise/issues/>
+- **Performance Monitoring**: <https://sentry.io/organizations/infamous-freight-enterprise/performance/>
 
 ## Key Files
 
@@ -367,6 +378,7 @@ NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE=0.1
 ## Support
 
 For questions or issues:
-- **Sentry Docs**: https://docs.sentry.io/platforms/javascript/guides/nextjs/
-- **Sentry Support**: support@sentry.io
-- **GitHub Issues**: https://github.com/getsentry/sentry-javascript
+
+- **Sentry Docs**: <https://docs.sentry.io/platforms/javascript/guides/nextjs/>
+- **Sentry Support**: <support@sentry.io>
+- **GitHub Issues**: <https://github.com/getsentry/sentry-javascript>

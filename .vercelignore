@@ -1,3 +1,12 @@
 .vercelignore
 
 # Excluded paths
+apps/web/.next/
+.next/
+src/
+archive/
+api/
+apps/api/
+mobile/
+e2e/
+docs/

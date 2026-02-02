@@ -108,7 +108,7 @@ Successfully deployed production infrastructure for Infamous Freight Enterprises
 
 - **File**: [web/vercel.json](web/vercel.json)
 - **Update**: Added environment variable configuration
-- **Variable**: `NEXT_PUBLIC_API_BASE` → https://infamous-freight-api.fly.dev
+- **Variable**: `NEXT_PUBLIC_API_BASE` → <https://infamous-freight-api.fly.dev>
 - **Guide**: [WEB_DEPLOYMENT_VERCEL.md](WEB_DEPLOYMENT_VERCEL.md)
 - **Status**: ✅ Ready to deploy to Vercel
 
@@ -118,7 +118,7 @@ Successfully deployed production infrastructure for Infamous Freight Enterprises
 
 ### ✅ API Live
 
-- **Endpoint**: https://infamous-freight-api.fly.dev
+- **Endpoint**: <https://infamous-freight-api.fly.dev>
 - **Platform**: Fly.io (iad region)
 - **Machine**: 3d8d1d66b46e08
 - **Status**: Running ✅
@@ -252,17 +252,17 @@ Successfully deployed production infrastructure for Infamous Freight Enterprises
 
 ### Short-term (1-2 days)
 
-4. Load testing (Apache Bench, k6)
-5. Security audit (OWASP Top 10)
-6. Performance optimization
-7. Monitoring & alerting setup
+1. Load testing (Apache Bench, k6)
+2. Security audit (OWASP Top 10)
+3. Performance optimization
+4. Monitoring & alerting setup
 
 ### Medium-term (1 week)
 
-8. Mobile app deployment (Expo)
-9. API rate limiting tuning
-10. Cache optimization
-11. Database indexing review
+1. Mobile app deployment (Expo)
+2. API rate limiting tuning
+3. Cache optimization
+4. Database indexing review
 
 ---
 
@@ -337,7 +337,7 @@ For issues or questions:
 
 All 10 recommended improvements have been implemented, tested, and deployed to production. The system is fully operational with:
 
-- ✅ Live API at https://infamous-freight-api.fly.dev
+- ✅ Live API at <https://infamous-freight-api.fly.dev>
 - ✅ Connected PostgreSQL database on Render
 - ✅ E2E tests passing against live infrastructure
 - ✅ Comprehensive documentation for operations and development

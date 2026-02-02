@@ -193,6 +193,7 @@ jobs:
 ```
 
 Output:
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   🚀 FULL LIGHTHOUSE AUDIT (Complete)
@@ -244,16 +245,19 @@ lhci autorun --config=.lighthouserc.json
 ### Edit `.lighthouserc.json`
 
 **Increase Performance Budget**:
+
 ```json
 "categories:performance": ["error", {"minScore": 0.85}]
 ```
 
 **Adjust Web Vitals Budgets**:
+
 ```json
 "largest-contentful-paint": ["error", {"maxNumericValue": 3000}]
 ```
 
 **Disable Specific Assertion**:
+
 ```json
 "first-input-delay": ["warn", {"maxNumericValue": 100}]
 ```
@@ -286,6 +290,7 @@ Create `.lighthouserc.mobile.json` for mobile-only config:
 ```
 
 Then run:
+
 ```bash
 lhci autorun --config=.lighthouserc.mobile.json
 ```
@@ -361,6 +366,7 @@ node --max-old-space-size=4096 \
 **Cause**: Background processes, network variance
 
 **Solutions**:
+
 1. Ensure clean environment
 2. Increase `numberOfRuns` to 5-10
 3. Use consistent network throttling

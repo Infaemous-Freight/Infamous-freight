@@ -11,6 +11,7 @@
 ### Issue 1: Middleware Blocking Sentry Tunnel Route ❌ → ✅
 
 **Problem:**
+
 ```typescript
 // BEFORE (Broken)
 matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"]
@@ -18,6 +19,7 @@ matcher: ["/((?!_next/static|_next/image|favicon.ico|public).*)"]
 ```
 
 **Fix Applied:**
+
 ```typescript
 // AFTER (Fixed) ✅
 matcher: ["/((?!_next/static|_next/image|favicon.ico|public|monitoring).*)"]
@@ -34,11 +36,13 @@ const SKIP_PATHS = [
 ```
 
 **Impact:**
+
 - ✅ Sentry events now flow correctly through `/monitoring`
 - ✅ No more 401/403 errors from middleware
 - ✅ Ad blockers can't block Sentry (tunneled through Next.js)
 
 **Files Changed:**
+
 - `apps/web/middleware.ts` (2 changes)
 
 ---
@@ -46,23 +50,27 @@ const SKIP_PATHS = [
 ### Issue 2: Tunnel Route Disabled ❌ → ✅
 
 **Problem:**
+
 ```javascript
 // BEFORE (Broken)
 tunnelRoute: undefined,  // Sentry events blocked by ad blockers
 ```
 
 **Fix Applied:**
+
 ```javascript
 // AFTER (Fixed) ✅
 tunnelRoute: '/monitoring',  // Proxies events through Next.js
 ```
 
 **Impact:**
+
 - ✅ Ad blockers can't block Sentry events
 - ✅ Better event delivery rate (30-40% improvement typical)
 - ✅ GDPR-friendly (events go through your domain)
 
 **Files Changed:**
+
 - `apps/web/next.config.mjs`
 
 ---
@@ -70,16 +78,19 @@ tunnelRoute: '/monitoring',  // Proxies events through Next.js
 ### Issue 3: Missing Vercel Environment Variable Documentation ❌ → ✅
 
 **Problem:**
+
 - No clear documentation on which env vars are REQUIRED for Vercel
 - Missing `SENTRY_AUTH_TOKEN` would cause silent source map upload failures
 - Developers wouldn't know source maps failed until production errors are unreadable
 
 **Fix Applied:**
+
 - Updated `.env.example` with **critical Vercel warnings**
 - Created comprehensive Vercel deployment guide
 - Added checklist for verification
 
 **Key Addition:**
+
 ```bash
 # ⚠️ CRITICAL FOR VERCEL DEPLOYS: Add SENTRY_AUTH_TOKEN in Vercel env vars!
 # Without this token, source maps won't upload and stack traces will be minified
@@ -87,11 +98,13 @@ SENTRY_AUTH_TOKEN=
 ```
 
 **Impact:**
+
 - ✅ Developers know exactly what to configure
 - ✅ Clear warning about source map failures
 - ✅ Step-by-step Vercel setup guide
 
 **Files Changed:**
+
 - `apps/web/.env.example`
 - `SENTRY_VERCEL_DEPLOYMENT.md` (new)
 
@@ -100,27 +113,32 @@ SENTRY_AUTH_TOKEN=
 ### Issue 4: Wrong Directory for Sentry Wizard ❌ → ✅
 
 **Problem:**
+
 - Running wizard from repo root would fail to detect Next.js
 - Or would patch wrong config files
 - Monorepo structure confuses the wizard
 
 **Fix Applied:**
+
 - Created dedicated wizard command guide
 - Clear instructions: **MUST run from apps/web**
 - Explanation of why monorepo structure matters
 
 **Correct Command:**
+
 ```bash
 cd /workspaces/Infamous-freight-enterprises/apps/web
 npx @sentry/wizard@latest -i nextjs --saas --org infamous-freight-enterprise --project javascript-nextjs
 ```
 
 **Impact:**
+
 - ✅ Wizard detects Next.js correctly
 - ✅ Patches correct config files
 - ✅ Respects monorepo structure
 
 **Files Created:**
+
 - `SENTRY_WIZARD_COMMAND.md` (new)
 
 ---
@@ -160,13 +178,13 @@ npx @sentry/wizard@latest -i nextjs --saas --org infamous-freight-enterprise --p
 
 ### Files Created (2)
 
-5. **SENTRY_VERCEL_DEPLOYMENT.md** (2000+ lines)
+1. **SENTRY_VERCEL_DEPLOYMENT.md** (2000+ lines)
    - Complete Vercel deployment guide
    - Step-by-step with verification
    - Common issues and fixes
    - Emergency rollback procedures
 
-6. **SENTRY_WIZARD_COMMAND.md** (350+ lines)
+2. **SENTRY_WIZARD_COMMAND.md** (350+ lines)
    - Correct vs wrong commands
    - What wizard does
    - Post-wizard manual fixes
@@ -338,8 +356,8 @@ git push
 ### Get Help
 
 - **Debugging:** [SENTRY_VERCEL_DEPLOYMENT.md](./SENTRY_VERCEL_DEPLOYMENT.md) Troubleshooting section
-- **Sentry Support:** https://sentry.io/support/
-- **Vercel Support:** https://vercel.com/support
+- **Sentry Support:** <https://sentry.io/support/>
+- **Vercel Support:** <https://vercel.com/support>
 
 ---
 
@@ -348,27 +366,31 @@ git push
 Once deployed with these fixes:
 
 ✅ **Sentry Events:**
+
 - POST `/monitoring` → 200 OK (not 401/403)
 - Events appear in Sentry within 10 seconds
 - Delivery rate: 95%+ (vs 60% without tunnel)
 
 ✅ **Source Maps:**
+
 - Build logs show "Source maps uploaded"
 - Stack traces point to TypeScript code
 - No minified function names
 
 ✅ **Performance:**
+
 - No slowdown from Sentry SDK
 - Tunnel adds <50ms to event delivery
 - Bundle size: +45KB gzipped (reasonable)
 
 ---
 
-## 🎉 Success!
+## 🎉 Success
 
 **All critical Sentry + Vercel issues have been identified and resolved.**
 
 Your configuration is now:
+
 - ✅ **Monorepo-safe** - Respects pnpm workspace structure
 - ✅ **Vercel-optimized** - Environment vars documented
 - ✅ **Production-ready** - Middleware fixed, tunnel enabled

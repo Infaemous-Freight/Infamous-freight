@@ -225,9 +225,9 @@ When contributing to AI roles:
 
 Contact the AI team:
 
-- **Technical questions**: ai-dev@infamousfreight.com
-- **Security concerns**: security@infamousfreight.com
-- **Product questions**: product@infamousfreight.com
+- **Technical questions**: <ai-dev@infamousfreight.com>
+- **Security concerns**: <security@infamousfreight.com>
+- **Product questions**: <product@infamousfreight.com>
 
 ---
 

@@ -24,12 +24,12 @@
 
 **If you want to go live TODAY:**
 
-1. **Right now**: Open https://vercel.com
+1. **Right now**: Open <https://vercel.com>
 2. **Login** with GitHub
 3. **Import** this repository
 4. **Deploy** (click button, wait 3-5 minutes)
 5. **Get URL** from dashboard
-6. **Repeat** steps 1-5 on https://fly.io for API
+6. **Repeat** steps 1-5 on <https://fly.io> for API
 7. **Connect** them (add API URL to web env vars)
 8. **Done!** You're live 🎉
 
@@ -94,7 +94,7 @@
 
 ## 📋 STEP-BY-STEP DEPLOYMENT
 
-### If You Choose PATH A or B, Follow These Steps:
+### If You Choose PATH A or B, Follow These Steps
 
 **STEP 1: Deploy Web to Vercel** (3-5 min)
 
@@ -365,7 +365,7 @@ You'll have:
 **Pick ONE:**
 
 **A) Go Deploy Now** (Fastest)
-→ Open https://vercel.com now
+→ Open <https://vercel.com> now
 
 **B) Read the Guide First** (Safe)
 → Open [DEPLOY_ACTION.md](DEPLOY_ACTION.md) now
@@ -378,7 +378,7 @@ You'll have:
 
 ---
 
-## 🎉 You're So Close!
+## 🎉 You're So Close
 
 Everything is done. You're literally just 5 clicks away from being live:
 

@@ -422,30 +422,30 @@ After any Severity 1 incident:
 14:30 - All clear notification
 ```
 
-2. **Root Cause**: Why did it happen?
+1. **Root Cause**: Why did it happen?
    - Unoptimized query added in last deployment
    - No load testing before production
    - Alert threshold too high
 
-3. **Impact**: What was affected?
+2. **Impact**: What was affected?
    - API latency increased to 5+ seconds
    - 2% of requests failed
    - ~50 users affected
    - Duration: 20 minutes
 
-4. **What Went Well**: What did we do right?
+3. **What Went Well**: What did we do right?
    - Quick detection via monitoring
    - Fast rollback available
    - Team communicated well
    - Minimal user impact
 
-5. **What to Improve**: Lessons learned?
+4. **What to Improve**: Lessons learned?
    - Add performance tests to CI/CD
    - Lower alert thresholds
    - Document deployment risks
    - Practice rollback procedures
 
-6. **Action Items**: What's next?
+5. **Action Items**: What's next?
    - [ ] Optimize database queries (Owner: DBA)
    - [ ] Add load testing (Owner: QA)
    - [ ] Update alert rules (Owner: Ops)
@@ -459,8 +459,8 @@ After any Severity 1 incident:
 
 - Documentation: `./MONITORING_STACK_SETUP.md`
 - Procedures: `./BLUE_GREEN_DEPLOYMENT_PROCEDURE.md`
-- Dashboards: http://localhost:3001
-- Prometheus: http://localhost:9090
+- Dashboards: <http://localhost:3001>
+- Prometheus: <http://localhost:9090>
 
 **After Incident**:
 

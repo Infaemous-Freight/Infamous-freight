@@ -42,6 +42,7 @@
   # GitHub Copilot Instructions (Infamous Freight Enterprises)
 
   ## Overview
+
   - Monorepo with pnpm workspaces: `api` (Express/CommonJS), `web` (Next.js 14/TypeScript ESM), `mobile` (Expo RN), `packages/shared` (TypeScript shared lib), `e2e` (Playwright).
   - Data flow: Web/Mobile → API (REST, JWT scopes) → PostgreSQL via Prisma.
   - Critical rule: Import domain types/constants/utils from `@infamous-freight/shared` everywhere. Never redefine. Rebuild shared after changes.
@@ -77,6 +78,7 @@
 ## Examples
 
 - API handler:
+
   ```js
   router.post(
     "/action",
@@ -97,6 +99,7 @@
     },
   );
   ```
+
 - Web SSR fetch:
 
   ```ts
@@ -143,7 +146,7 @@
 - Kill ports: `lsof -ti:3001 | xargs kill -9` (API), `lsof -ti:3000 | xargs kill -9` (Web)
 - Env defaults: `AI_PROVIDER=synthetic` (see [.env.example](../.env.example#L27)), `VOICE_MAX_FILE_SIZE_MB=10` (see [.env.example](../.env.example#L42))
 - Env defaults: `AI_PROVIDER=synthetic` (see [.env.example](../.env.example#L27))
-- Production: Web deployed to https://infamous-freight-enterprises-git-f34b9b-santorio-miles-projects.vercel.app (Vercel)
+- Production: Web deployed to <https://infamous-freight-enterprises-git-f34b9b-santorio-miles-projects.vercel.app> (Vercel)
 
 ---
 

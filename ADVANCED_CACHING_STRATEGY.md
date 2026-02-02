@@ -422,16 +422,19 @@ describe('Cache Service', () => {
 ## Troubleshooting
 
 **Issue: Redis connection fails**
+
 - Check Redis is running: `redis-cli ping`
 - Verify credentials in env variables
 - Check firewall/network access
 
 **Issue: Memory usage growing**
+
 - Implement cache eviction policy: `maxmemory-policy allkeys-lru`
 - Set reasonable TTLs
 - Monitor with `MEMORY STATS`
 
 **Issue: Stale data served**
+
 - Reduce TTL for frequently changing data
 - Implement cache versioning
 - Add cache invalidation on mutations

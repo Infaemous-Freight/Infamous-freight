@@ -22,6 +22,7 @@
 **What It Does**: Deploys API + Database in one command
 
 **Steps**:
+
 ```bash
 # Run the deployment script
 ./DEPLOY_NOW_100.sh
@@ -31,6 +32,7 @@
 ```
 
 **Requirements**:
+
 - Railway account (free tier available)
 - One command deployment
 - Auto PostgreSQL provisioning
@@ -44,7 +46,8 @@
 **What It Does**: Use existing Vercel + add Supabase database
 
 **Steps**:
-1. Create Supabase account: https://supabase.com/dashboard
+
+1. Create Supabase account: <https://supabase.com/dashboard>
 2. Create project: "infamous-freight"
 3. Copy database URL
 4. Add to Vercel environment variables
@@ -59,10 +62,11 @@
 **What It Does**: Complete existing auto-deployment
 
 **Steps**:
+
 1. Get Fly.io account (already have signup info in docs)
 2. Run: `flyctl auth token`
 3. Add token to GitHub Secrets as `FLY_API_TOKEN`
-4. Re-run workflow at: https://github.com/MrMiless44/Infamous-freight/actions
+4. Re-run workflow at: <https://github.com/MrMiless44/Infamous-freight/actions>
 
 **Result**: Automated deployment completes!
 
@@ -88,18 +92,21 @@
 When all components reach 100%:
 
 ✅ **Web Application**
-- Live at: https://infamous-freight-enterprises.vercel.app
+
+- Live at: <https://infamous-freight-enterprises.vercel.app>
 - Serving all 31 pages
 - Global CDN active
 - SSL enabled
 
 ✅ **API Backend**
+
 - Live at: https://[your-platform].app
 - All endpoints responding
 - Health checks passing
 - Rate limiting active
 
 ✅ **Database**
+
 - PostgreSQL provisioned
 - Migrations applied
 - Connected to API
@@ -128,17 +135,20 @@ curl https://[your-api-url]/api/health
 ## 🆘 NEED HELP?
 
 **Run the interactive deployment**:
+
 ```bash
 ./DEPLOY_NOW_100.sh
 ```
 
 **Documentation**:
+
 - [DEPLOYMENT_SUCCESS.md](DEPLOYMENT_SUCCESS.md)
 - [LIVE_DEPLOYMENT_STATUS.md](LIVE_DEPLOYMENT_STATUS.md)
 - [GO_LIVE_NOW.md](GO_LIVE_NOW.md)
 
 **Current Vercel Status**:
-- Monitor: https://vercel.com/dashboard
+
+- Monitor: <https://vercel.com/dashboard>
 - Should be building and will auto-complete
 
 ---
@@ -153,12 +163,14 @@ curl https://[your-api-url]/api/health
 ```
 
 This will:
+
 1. Deploy your API in ~5 minutes
 2. Auto-provision PostgreSQL database
 3. Get you to 100% fastest
 4. Set up SSL and health checks automatically
 
 **After Railway deployment**:
+
 1. Update Vercel with your Railway URL
 2. Redeploy Vercel
 3. You're at 100%! 🎉

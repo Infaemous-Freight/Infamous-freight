@@ -102,9 +102,9 @@
 
 ### Dashboards
 
-- **Vercel**: https://vercel.com/dashboard
-- **Render**: https://dashboard.render.com
-- **GitHub Actions**: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+- **Vercel**: <https://vercel.com/dashboard>
+- **Render**: <https://dashboard.render.com>
+- **GitHub Actions**: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
 - **Datadog RUM** (if configured): Monitor real user interactions
 
 ### Alert Thresholds

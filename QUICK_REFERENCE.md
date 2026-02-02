@@ -286,7 +286,7 @@ cd api && pnpm prisma studio
 
 ### Error Tracking
 
-- **Sentry**: https://sentry.io (production errors)
+- **Sentry**: <https://sentry.io> (production errors)
 - **Logs**: `docker logs`, Winston logs in `api/logs/`
 - **Database**: Check `_prisma_migrations` table
 
@@ -593,7 +593,7 @@ node --inspect-brk node_modules/.bin/jest
 
 **Issues**: Create GitHub issue  
 **Discussions**: GitHub Discussions  
-**Email**: dev@infamous-freight.com  
+**Email**: <dev@infamous-freight.com>  
 **Status Page**: status.infamous-freight.com
 
 ---

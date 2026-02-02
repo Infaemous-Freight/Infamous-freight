@@ -23,7 +23,6 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
-  swcMinify: true,
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb'

@@ -60,9 +60,9 @@ chmod +x cloudflare-setup.sh
 
 | What           | Where                                            | How                   |
 | -------------- | ------------------------------------------------ | --------------------- |
-| **API Token**  | https://dash.cloudflare.com/profile/api-tokens   | Create → Zone:Edit    |
-| **Zone ID**    | https://dash.cloudflare.com/infamous-freight.com | Overview → Zone ID    |
-| **Account ID** | https://dash.cloudflare.com/profile              | Account Settings → ID |
+| **API Token**  | <https://dash.cloudflare.com/profile/api-tokens>   | Create → Zone:Edit    |
+| **Zone ID**    | <https://dash.cloudflare.com/infamous-freight.com> | Overview → Zone ID    |
+| **Account ID** | <https://dash.cloudflare.com/profile>              | Account Settings → ID |
 
 ### Step 2: Create Load Balancer Structure
 
@@ -434,7 +434,7 @@ curl -s -X GET "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}
 
 ## Monitoring Dashboard
 
-**Cloudflare Dashboard**: https://dash.cloudflare.com/infamous-freight.com/analytics/loadbalancer
+**Cloudflare Dashboard**: <https://dash.cloudflare.com/infamous-freight.com/analytics/loadbalancer>
 
 **Monitors**:
 
@@ -463,9 +463,9 @@ After setup, you should have:
 
 ## Contact & Support
 
-- **Dashboard**: https://dash.cloudflare.com
-- **API Docs**: https://developers.cloudflare.com/api/
-- **Fly.io CLI**: https://fly.io/docs/reference/flyctl/
+- **Dashboard**: <https://dash.cloudflare.com>
+- **API Docs**: <https://developers.cloudflare.com/api/>
+- **Fly.io CLI**: <https://fly.io/docs/reference/flyctl/>
 - **Incident Channel**: #infrastructure-incidents
 - **On-Call**: Use PagerDuty escalation policy
 

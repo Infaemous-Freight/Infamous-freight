@@ -27,6 +27,7 @@
 **Owner: DevOps Lead**
 
 ### Hour 1: Final Checks
+
 - [ ] Git: All commits merged to main
 - [ ] Tests: Latest CI run passing
 - [ ] Code: No uncommitted changes
@@ -36,6 +37,7 @@
 - [ ] Status page: Set to "Deploying"
 
 ### Hour 2: Database Preparation
+
 - [ ] Backup production database
 - [ ] Test restore procedure
 - [ ] Run final migrations (dry-run first)
@@ -43,6 +45,7 @@
 - [ ] Document any schema changes
 
 ### Hour 3: Image & Deployment Prep
+
 - [ ] Build Docker images (tag with version)
 - [ ] Push to registry (verified push)
 - [ ] Pull images to staging environment
@@ -51,6 +54,7 @@
 - [ ] Verify all env vars in manifests
 
 ### Hour 4: Team Standup
+
 - [ ] All team members online & in Slack
 - [ ] Runbooks distributed & reviewed
 - [ ] Communication channels verified
@@ -64,6 +68,7 @@
 **Owner: DevOps Lead + QA Lead**
 
 ### Hour 5: Deploy API Service
+
 - [ ] Run database migrations
 - [ ] Verify schema applied
 - [ ] Deploy API to staging (Kubernetes)
@@ -72,6 +77,7 @@
 - [ ] Tail logs for errors
 
 ### Hour 6: Deploy Web Service
+
 - [ ] Deploy Web to CDN/Vercel
 - [ ] Clear CDN cache
 - [ ] Verify homepage loads
@@ -79,6 +85,7 @@
 - [ ] Verify CSS/JS assets load
 
 ### Hour 7: Smoke Tests (QA)
+
 - [ ] Health check: `GET /api/health` → 200
 - [ ] Auth flow: Login → Token → Use token
 - [ ] Create resource: `POST /api/shipments` → success
@@ -87,6 +94,7 @@
 - [ ] Delete resource: `DELETE /api/shipments/:id` → success
 
 ### Hour 8: Monitoring & Alerts
+
 - [ ] Prometheus metrics appearing
 - [ ] Grafana dashboards loading data
 - [ ] Alert rules active
@@ -96,6 +104,7 @@
 - [ ] CPU/Memory: Normal ranges
 
 ### Hour 9: Cross-Browser Testing
+
 - [ ] Chrome: Full user flow works
 - [ ] Firefox: Full user flow works
 - [ ] Safari: Full user flow works
@@ -103,6 +112,7 @@
 - [ ] Mobile (Android): Key flows work
 
 ### Hour 10: Final Verification
+
 - [ ] All tests passing
 - [ ] No error spikes
 - [ ] Database queries fast
@@ -117,6 +127,7 @@
 **Owner: Incident Commander**
 
 ### Hour 11: Launch Confirmation
+
 - [ ] Team agrees: Production is stable
 - [ ] Metrics all green
 - [ ] No escalated issues
@@ -124,6 +135,7 @@
 - [ ] Team celebration! 🎉
 
 ### Hour 12: Documentation
+
 - [ ] Document actual deployment time
 - [ ] Log any issues encountered
 - [ ] Record lessons learned
@@ -199,6 +211,7 @@ kubectl exec -it deployment/api -- psql $DATABASE_URL < backup.sql
 ### Every 30 Minutes (Status Updates)
 
 **To Stakeholders**: Status page + email
+
 ```
 ✅ Launch progressing normally
 - API deployed: 15 mins ago, healthy
@@ -213,6 +226,7 @@ Next: 30-min stability window
 ### If Issue Discovered
 
 **Immediate**: Slack #launch channel
+
 ```
 ⚠️ Issue detected
 - CPU spike detected (API pods)
@@ -222,6 +236,7 @@ Next: 30-min stability window
 ```
 
 **Follow-up** (every 5 mins while investigating):
+
 ```
 🔧 Investigating
 - Root cause: Database connection leak
@@ -235,18 +250,21 @@ Next: 30-min stability window
 ## Post-Launch (First 24 Hours)
 
 ### Hour 1-4: Watch Everything
+
 - [ ] Error monitoring (every 15 min)
 - [ ] Performance metrics (every 15 min)
 - [ ] Customer support tickets (in real-time)
 - [ ] Infrastructure alerts (all active)
 
 ### Hour 4-12: Reduce Frequency
+
 - [ ] Error monitoring (every hour)
 - [ ] Performance metrics (every hour)
 - [ ] Check for customer issues
 - [ ] Review logs for warnings
 
 ### Hour 12-24: Return to Normal
+
 - [ ] Daily monitoring as usual
 - [ ] Team stand-up on any issues
 - [ ] Performance report generation
@@ -306,7 +324,7 @@ Action Items:
 
 ## Celebration! 🎉
 
-Launch successful! 
+Launch successful!
 
 - Share the love: Thank team members
 - Reflect: What went well?

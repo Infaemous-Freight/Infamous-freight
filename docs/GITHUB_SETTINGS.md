@@ -196,8 +196,9 @@ Infæmous Freight Enterprises
 **Homepage URL (Website URL)**
 
 Use your production site URL:
-- https://infamous-freight.netlify.app
-- https://infamous-freight.vercel.app
+
+- <https://infamous-freight.netlify.app>
+- <https://infamous-freight.vercel.app>
 
 **Authorization callback URL (must match exactly)**
 
@@ -216,19 +217,22 @@ https://abcd1234efgh5678.supabase.co/auth/v1/callback
 ### Supabase Dashboard Settings (Must Match)
 
 Go to **Supabase → Authentication → Providers → GitHub** and add:
+
 - **Client ID** = from GitHub OAuth App
 - **Client Secret** = from GitHub OAuth App
 
 Then go to **Authentication → URL Configuration** and set:
 
 **Site URL**
-- https://infamous-freight.netlify.app
-- https://infamous-freight.vercel.app
+
+- <https://infamous-freight.netlify.app>
+- <https://infamous-freight.vercel.app>
 
 **Redirect URLs**
-- http://localhost:3000/**
-- https://infamous-freight.netlify.app/**
-- https://infamous-freight.vercel.app/**
+
+- <http://localhost:3000/>**
+- <https://infamous-freight.netlify.app/>**
+- <https://infamous-freight.vercel.app/>**
 
 ### Frontend Supabase JS Usage
 

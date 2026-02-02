@@ -86,7 +86,7 @@
    ```
 
 3. **Set Up External Uptime Monitoring**
-   - UptimeRobot (free): https://uptimerobot.com
+   - UptimeRobot (free): <https://uptimerobot.com>
    - Monitor: `https://infamous-freight-api.fly.dev/api/health`
    - Alert via email/Slack
 
@@ -115,6 +115,7 @@
    ```
 
 3. **Verify SSL Certificate**
+
    ```bash
    flyctl certs check -a infamous-freight-api
    ```
@@ -158,6 +159,7 @@
    - Current config: ~$15/month + DB costs
 
 3. **Database Optimization**
+
    ```bash
    # Consider shared Postgres for staging (free tier)
    flyctl postgres create --name dev-db --vm-size shared-cpu-1x --volume-size 1
@@ -253,6 +255,7 @@
    ```
 
 4. **Enable IP Allowlisting** (for admin endpoints)
+
    ```toml
    # In fly.toml
    [[http_service.http_checks]]
@@ -304,6 +307,7 @@ flyctl secrets set NEW_RELIC_LICENSE_KEY="<key>" -a infamous-freight-api
    ```
 
 3. **Scheduled Deployments**
+
    ```yaml
    # Deploy only during business hours
    on:
@@ -364,7 +368,7 @@ Track these KPIs:
 | `scripts/fly-migrate.sh`           | Post-deploy migrations | ✅ Created  |
 | `deploy/FLY_MONITORING.md`         | Monitoring guide       | ✅ Created  |
 
-## 🚀 Ready to Deploy!
+## 🚀 Ready to Deploy
 
 Everything is configured. Run:
 

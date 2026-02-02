@@ -152,6 +152,7 @@ router.get('/protected',
 ### Scope Enforcement Examples
 
 **Single Scope:**
+
 ```javascript
 router.get('/metrics',
   authenticate,
@@ -161,6 +162,7 @@ router.get('/metrics',
 ```
 
 **Multiple Scopes (ALL required):**
+
 ```javascript
 router.post('/admin/action',
   authenticate,
@@ -188,6 +190,7 @@ const {
 ### Validation Examples
 
 **String Validation:**
+
 ```javascript
 router.post('/shipments',
   [
@@ -202,6 +205,7 @@ router.post('/shipments',
 ```
 
 **Email & Phone Validation:**
+
 ```javascript
 router.post('/billing/create-subscription',
   [
@@ -215,6 +219,7 @@ router.post('/billing/create-subscription',
 ```
 
 **UUID Parameter Validation:**
+
 ```javascript
 router.get('/shipments/:id',
   validateUUID('id'),                // Validate :id param is valid UUID
@@ -224,6 +229,7 @@ router.get('/shipments/:id',
 ```
 
 **Optional Fields:**
+
 ```javascript
 router.patch('/users/me',
   [
@@ -295,6 +301,7 @@ Structured logs include:
 ## Complete Route Examples
 
 ### Example 1: Public Health Check
+
 ```javascript
 // No auth, just audit logging
 router.get('/health',
@@ -306,6 +313,7 @@ router.get('/health',
 ```
 
 ### Example 2: Protected Read Operation
+
 ```javascript
 // Auth + scope + rate limiting + audit
 router.get('/shipments',
@@ -325,6 +333,7 @@ router.get('/shipments',
 ```
 
 ### Example 3: Protected Write with Validation
+
 ```javascript
 // Auth + scope + validation + rate limiting + audit
 router.post('/shipments',
@@ -353,6 +362,7 @@ router.post('/shipments',
 ```
 
 ### Example 4: AI Command with Heavy Rate Limiting
+
 ```javascript
 // AI-specific rate limiter (20/min) + auth + scope + validation + audit
 router.post('/ai/command',
@@ -377,6 +387,7 @@ router.post('/ai/command',
 ```
 
 ### Example 5: Admin-Only Operation
+
 ```javascript
 // Admin scope + auth + rate limiting + audit
 router.post('/metrics/revenue/clear-cache',
@@ -396,6 +407,7 @@ router.post('/metrics/revenue/clear-cache',
 ```
 
 ### Example 6: File Upload with Multer
+
 ```javascript
 const multer = require('multer');
 const upload = multer({
@@ -515,18 +527,21 @@ router.get('/shipments/:id', async (req, res, next) => {
 ### Authentication Testing
 
 **Without Token:**
+
 ```bash
 curl http://localhost:4000/api/shipments
 # Response: 401 { "error": "Missing bearer token" }
 ```
 
 **With Invalid Token:**
+
 ```bash
 curl -H "Authorization: Bearer invalid-token" http://localhost:4000/api/shipments
 # Response: 401 { "error": "Invalid or expired token" }
 ```
 
 **With Valid Token:**
+
 ```bash
 TOKEN="eyJhbGc..."
 curl -H "Authorization: Bearer $TOKEN" http://localhost:4000/api/shipments
@@ -536,6 +551,7 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:4000/api/shipments
 ### Scope Testing
 
 **Missing Scope:**
+
 ```bash
 # Token with scopes: ["users:read"]
 curl -H "Authorization: Bearer $TOKEN" http://localhost:4000/api/shipments
@@ -545,6 +561,7 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:4000/api/shipments
 ### Rate Limiting Testing
 
 **Exceeding Rate Limit:**
+
 ```bash
 # Send 101 requests in 15 minutes
 for i in {1..101}; do
@@ -557,6 +574,7 @@ done
 ### Validation Testing
 
 **Invalid Data:**
+
 ```bash
 curl -X POST http://localhost:4000/api/shipments \
   -H "Content-Type: application/json" \
@@ -595,6 +613,7 @@ VOICE_MAX_FILE_SIZE_MB=10
 ### ✅ DO
 
 1. **Always delegate errors to global handler:**
+
    ```javascript
    try {
      // logic
@@ -610,6 +629,7 @@ VOICE_MAX_FILE_SIZE_MB=10
    - `limiters.general` for everything else
 
 3. **Validate all user input:**
+
    ```javascript
    [
      validateString('field'),
@@ -618,11 +638,13 @@ VOICE_MAX_FILE_SIZE_MB=10
    ```
 
 4. **Add audit logging to all routes:**
+
    ```javascript
    router.METHOD('/path', auditLog, handler);  // ✅ Observability
    ```
 
 5. **Enforce scopes on protected routes:**
+
    ```javascript
    router.get('/data',
      authenticate,
@@ -634,6 +656,7 @@ VOICE_MAX_FILE_SIZE_MB=10
 ### ❌ DON'T
 
 1. **Don't handle errors manually:**
+
    ```javascript
    catch (err) {
      res.status(500).json({ error: err.message });  // ❌ Bypasses logging
@@ -641,6 +664,7 @@ VOICE_MAX_FILE_SIZE_MB=10
    ```
 
 2. **Don't skip handleValidationErrors:**
+
    ```javascript
    [
      validateString('field'),
@@ -649,12 +673,14 @@ VOICE_MAX_FILE_SIZE_MB=10
    ```
 
 3. **Don't use weak scopes:**
+
    ```javascript
    requireScope('admin')  // ❌ Too broad
    requireScope('shipments:write')  // ✅ Specific
    ```
 
 4. **Don't skip rate limiting on expensive operations:**
+
    ```javascript
    router.post('/ai/command', handler);  // ❌ No rate limiting
    router.post('/ai/command', limiters.ai, handler);  // ✅ Appropriate limiter
@@ -689,6 +715,7 @@ router.METHOD('/path',
 ```
 
 **Key Points:**
+
 - ✅ Rate limiting per route type
 - ✅ JWT authentication with scope enforcement
 - ✅ Request validation with field-level errors

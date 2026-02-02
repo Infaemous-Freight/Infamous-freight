@@ -17,6 +17,7 @@ This directory contains configuration for the [Codex CLI](https://github.com/ope
    - MCP servers for external integrations
 
 3. **Sign in to Codex:**
+
    ```bash
    codex
    # Select "Sign in with ChatGPT" for your Plus/Pro/Team/Edu/Enterprise plan

@@ -114,13 +114,13 @@ Interactive helper for publishing custom actions to GitHub Marketplace.
 
 ## 🔧 Setup Instructions
 
-### Make scripts executable:
+### Make scripts executable
 
 ```bash
 chmod +x scripts/*.sh
 ```
 
-### Install GitHub CLI (if needed):
+### Install GitHub CLI (if needed)
 
 **macOS:**
 

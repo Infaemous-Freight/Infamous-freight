@@ -8,7 +8,7 @@
 
 - Vercel account linked to GitHub repository
 - Web project connected to Vercel dashboard
-- Live API running: https://infamous-freight-api.fly.dev
+- Live API running: <https://infamous-freight-api.fly.dev>
 
 ---
 
@@ -16,7 +16,7 @@
 
 ### Step 1: Set Environment Variable in Vercel Dashboard
 
-1. Go to: https://vercel.com/dashboard
+1. Go to: <https://vercel.com/dashboard>
 2. Select your project: **Infamous-freight-enterprises**
 3. Navigate to: **Settings → Environment Variables**
 4. Add this variable:
@@ -26,8 +26,8 @@ Name:  NEXT_PUBLIC_API_BASE
 Value: https://infamous-freight-api.fly.dev
 ```
 
-5. Select environments: **Production, Preview, Development**
-6. Click **Save**
+1. Select environments: **Production, Preview, Development**
+2. Click **Save**
 
 ### Step 2: Trigger Deployment
 
@@ -47,8 +47,8 @@ git push origin main
 
 Wait 2-3 minutes for build to complete:
 
-1. Check deployment status: https://vercel.com/dashboard/[project]
-2. View live deployment: Your Vercel domain (e.g., https://infamous-freight-web.vercel.app)
+1. Check deployment status: <https://vercel.com/dashboard/[project>]
+2. View live deployment: Your Vercel domain (e.g., <https://infamous-freight-web.vercel.app>)
 3. Check browser console for any errors
 4. Test an API call in the browser:
 
@@ -73,7 +73,7 @@ fetch("https://infamous-freight-api.fly.dev/api/health")
 ## Expected Result
 
 ✅ **Web frontend deployed** to Vercel  
-✅ **Connected to live API** at https://infamous-freight-api.fly.dev  
+✅ **Connected to live API** at <https://infamous-freight-api.fly.dev>  
 ✅ **All endpoints working** with real database  
 ✅ **E2E tests passing** (if running against live deployment)
 
@@ -134,7 +134,7 @@ curl -H "Accept: application/json" \
 
 ### Monitor Performance
 
-- Vercel Analytics: https://vercel.com/analytics
+- Vercel Analytics: <https://vercel.com/analytics>
 - Check Core Web Vitals (LCP, FID, CLS)
 - Monitor API response times in browser DevTools
 
@@ -167,7 +167,7 @@ Or in Vercel dashboard:
 
 ## Session 2 Complete ✅
 
-- ✅ API running at https://infamous-freight-api.fly.dev
+- ✅ API running at <https://infamous-freight-api.fly.dev>
 - ✅ Database connected (PostgreSQL on Render)
 - ✅ E2E tests passing against live API
 - ✅ Web frontend ready for Vercel deployment

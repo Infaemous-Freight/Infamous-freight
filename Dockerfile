@@ -1,55 +1,72 @@
-ARG NODE_VERSION=24.20.0-alpine
-ARG PNPM_VERSION=9.15.4
-FROM node:${NODE_VERSION} AS deps
+# Fly.io optimized build - simplified for remote builder compatibility
+FROM node:24-alpine AS base
 
 LABEL maintainer="Santorio Djuan Miles <237955567+MrMiless44@users.noreply.github.com>"
 LABEL description="Infamous Freight Enterprises - Full-stack application"
 
 WORKDIR /app
 
-# Install pnpm (Corepack is unavailable in node:alpine)
-RUN npm install -g pnpm@${PNPM_VERSION}
+# Install pnpm globally
+RUN npm install -g pnpm@9.15.0
 
-# Copy workspace and package files (preserve workspace structure for pnpm)
+# Stage 1: Install dependencies
+FROM base AS deps
+
+# Copy workspace config first (for layer caching)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Copy all workspace packages (apps and packages)
 COPY apps ./apps
 COPY packages ./packages
 
-# Install ALL dependencies (including dev dependencies needed for build)
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
+# Install dependencies without cache mount (for Depot compatibility)
+RUN pnpm install --frozen-lockfile
 
-FROM node:${NODE_VERSION} AS build
+# Stage 2: Build application
+FROM base AS build
+
 WORKDIR /app
-RUN npm install -g pnpm@${PNPM_VERSION}
 
-COPY . .
+# Copy node_modules from deps stage
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
-COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
-COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+COPY --from=deps /app/packages ./packages
+COPY --from=deps /app/apps ./apps
 
-# Build the application (shared, generate Prisma client, api, then web)
-RUN pnpm --filter @infamous-freight/shared build \
-  && pnpm --filter api exec prisma generate \
-  && pnpm --filter api build \
-  && pnpm --filter web build
+# Copy workspace config and TypeScript base config
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
 
-FROM node:${NODE_VERSION} AS run
+# Build shared package, then web app
+RUN pnpm --filter @infamous-freight/shared build && \
+    pnpm --filter web build
+
+# Stage 3: Production runtime
+FROM node:24-alpine AS runner
+
 WORKDIR /app
+
+# Install runtime utilities
+RUN apk add --no-cache wget dumb-init
+
 ENV NODE_ENV=production
 ENV PORT=3000
 
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
 # Copy Next.js standalone output and static assets
-COPY --from=build /app/apps/web/.next/standalone ./
-COPY --from=build /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=build /app/apps/web/public ./apps/web/public
-COPY --from=build /app/apps/web/next.config.mjs ./apps/web/next.config.mjs
-# Expose port for web
+COPY --from=build --chown=nodejs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=build --chown=nodejs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=build --chown=nodejs:nodejs /app/apps/web/public ./apps/web/public
+
+USER nodejs
+
 EXPOSE 3000
 
-# Production command - run the web server
-CMD ["node", "apps/web/server.js"]
-
-# Health check for web frontend
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+
+# Use dumb-init for proper signal handling
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["node", "apps/web/server.js"]

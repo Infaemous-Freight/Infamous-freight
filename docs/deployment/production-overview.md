@@ -182,6 +182,7 @@ cd api && npm run smoke:health
 ### AI Commands
 
 - `POST /api/ai/command` - Execute AI command
+
   ```json
   {
     "command": "optimize_route",
@@ -286,7 +287,7 @@ See LICENSE file.
 For issues and questions:
 
 - GitHub Issues: [your-repo/issues]
-- Email: support@infamous.ai
+- Email: <support@infamous.ai>
 
 ---
 

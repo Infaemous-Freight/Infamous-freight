@@ -3,7 +3,7 @@
 ## 🎉 Project Status: READY FOR DEPLOYMENT
 
 **Created:** February 2025
-**Repository:** https://github.com/MrMiless44/Infamous-Freight-Enterprises
+**Repository:** <https://github.com/MrMiless44/Infamous-Freight-Enterprises>
 **Working Directory:** /tmp/vscode-github-mrmiles44-infamous-freight-enterprises/
 
 ---
@@ -268,7 +268,7 @@ OPENAI_API_KEY=sk-...
 Your deployment is successful when:
 
 - ✅ `curl http://localhost/api/health` returns `{"ok":true}`
-- ✅ http://localhost shows AI avatar grid
+- ✅ <http://localhost> shows AI avatar grid
 - ✅ Dashboard displays API status
 - ✅ Voice panel accepts commands
 - ✅ Billing integrations work

@@ -260,6 +260,7 @@ Create documentation for clients:
 ```
 
 **v2:**
+
 ```json
 {
   "id": "123",
@@ -283,6 +284,7 @@ None. All v1 fields exist in v2.
 2. Or change URL from `/api/v1/` to `/api/v2/`
 3. Handle new response fields in client code
 4. Test thoroughly before deploying
+
 ```
 
 ## Testing

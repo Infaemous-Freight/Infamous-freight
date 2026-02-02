@@ -126,7 +126,7 @@
 
 ## Rollback Procedure (If Needed)
 
-### Trigger Rollback If:
+### Trigger Rollback If
 
 - Critical bugs affecting > 10% of users
 - API error rate > 5%
@@ -134,7 +134,7 @@
 - Security vulnerabilities discovered
 - Performance degradation > 50%
 
-### Rollback Steps:
+### Rollback Steps
 
 1. [ ] **Immediate:** Stop new deployments (cancel in-progress builds)
 2. [ ] **Revert Code:**

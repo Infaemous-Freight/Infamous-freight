@@ -11,7 +11,7 @@
 
 #### 1. **Vercel Analytics Dashboard**
 
-- **URL**: https://vercel.com/analytics
+- **URL**: <https://vercel.com/analytics>
 - **Check these metrics**:
   - ✅ Page load time (LCP: <2.5s)
   - ✅ First Input Delay (FID: <100ms)
@@ -76,7 +76,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 #### 4. **Database Performance (PGHero)**
 
-**Dashboard**: http://pghero-dpg-d50s6gp5pdvs739a3g10-a:10000
+**Dashboard**: <http://pghero-dpg-d50s6gp5pdvs739a3g10-a:10000>
 
 **What to monitor:**
 
@@ -107,7 +107,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 **If Sentry is configured:**
 
-- Dashboard: https://sentry.io
+- Dashboard: <https://sentry.io>
 - Check: Daily error count
 - Review: Most common error types
 - Identify: Patterns and trends

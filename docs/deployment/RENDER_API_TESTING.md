@@ -2,11 +2,12 @@
 
 ## Setup
 
-1. **Get your API key** from https://dashboard.render.com/
+1. **Get your API key** from <https://dashboard.render.com/>
    - Navigate to: Profile → Account Settings → API Keys
    - Create new key or copy existing one
 
 2. **Set environment variable:**
+
    ```bash
    export RENDER_API_KEY="your-actual-key-here"
    ```

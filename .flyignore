@@ -1,0 +1,119 @@
+# Fly.io build context ignore file
+# Only send what's needed for Docker build
+
+# Node modules (will be installed fresh in Docker)
+node_modules/
+**/node_modules/
+.pnpm-store/
+
+# Build outputs (will be created in Docker)
+dist/
+**/dist/
+build/
+**/.next/
+!apps/web/.next/
+out/
+coverage/
+
+# Development & test files
+**/__tests__/
+**/*.test.js
+**/*.test.ts
+**/*.spec.js
+**/*.spec.ts
+e2e/
+tests/
+apps/api/tests/
+apps/web/tests/
+
+# Git
+.git/
+.githooks/
+.github/
+
+# IDE & Editor
+.vscode/
+.idea/
+.devcontainer/
+.codex/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation & archives
+docs/
+archive/
+EVIDENCE_PACK/
+certification-data/
+validation-data/
+compliance/
+@compliance/
+*.md
+!README.md
+!**/README.md
+
+# Logs & temporary files
+*.log
+logs/
+tmp/
+.cache/
+.turbo/
+
+# Environment files (secrets managed by Fly.io)
+.env
+.env.local
+.env.development
+.env.staging
+.env.test
+.env.production
+.env.supabase
+!.env.example
+
+# Not needed for this build
+Dockerfile.api
+Dockerfile.web
+Dockerfile.fly
+Dockerfile.monorepo
+docker-compose*.yml
+docker/
+
+# CI/CD configs
+.gitlab-ci.yml
+bitbucket-pipelines.yml
+.husky/
+netlify.toml
+render.yaml
+railway.json
+
+# Infrastructure
+k8s/
+terraform/
+monitoring/
+nginx/
+supabase/
+ops/
+infrastructure/
+
+# Large optional directories
+my-neon-app/
+examples/
+load-tests/
+src/
+api/
+web/
+mobile/
+services/
+payments/
+observability/
+deploy/
+configs/
+scripts/
+
+# Large files
+*.rdb
+db.json
+build*.log
+deployment*.log
+*.sql
+

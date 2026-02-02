@@ -492,7 +492,7 @@ If you get stuck on any step:
 
 ---
 
-## ✨ YOU DID IT!
+## ✨ YOU DID IT
 
 Your application is now:
 
@@ -504,11 +504,11 @@ Your application is now:
 
 ---
 
-## 🎬 NOW GO!
+## 🎬 NOW GO
 
 **You're ready. Go to Step 1 and click that first link!**
 
-**→ https://vercel.com**
+**→ <https://vercel.com>**
 
 See you on the other side! 🚀
 

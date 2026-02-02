@@ -161,10 +161,12 @@ When you need to modify the database schema:
 
 1. Edit `api/prisma/schema.prisma`
 2. Create a migration:
+
    ```bash
    cd api
    pnpm prisma:migrate:dev --name <migration_name>
    ```
+
 3. The Prisma client will be automatically regenerated
 
 To view the database in a GUI:
@@ -187,6 +189,7 @@ The API uses:
 
 1. Create route file in `api/src/routes/`
 2. Apply middleware in order:
+
    ```javascript
    router.post(
      "/endpoint",
@@ -199,6 +202,7 @@ The API uses:
      handler,
    );
    ```
+
 3. Use `ApiResponse` for responses
 4. Delegate errors with `next(err)` to global error handler
 

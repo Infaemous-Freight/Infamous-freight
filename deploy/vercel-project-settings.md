@@ -16,6 +16,7 @@ This guide captures the latest Vercel project settings checklist for Infæmous F
 Currently assigned domains should match the project actually serving that traffic.
 
 **Option A (Recommended): Separate Web + API projects**
+
 - **Web Vercel project**
   - Settings → Domains
   - Remove `infamous-freight-api.vercel.app`
@@ -26,6 +27,7 @@ Currently assigned domains should match the project actually serving that traffi
 **Result:** Web and API domains are cleanly separated.
 
 **Option B: Single Next.js project serving both web + `/api/*`**
+
 - You may keep `infamous-freight-api.vercel.app`, but it serves the entire app.
 - If API-only behavior is desired, Option A is still preferred.
 
@@ -35,6 +37,7 @@ Currently assigned domains should match the project actually serving that traffi
 - Enable **Use existing Build Cache**
 
 **Clear cache only once** if you suspect stale artifacts:
+
 - Redeploy → Clear Cache
 - Then return to cache **ON**.
 
@@ -113,11 +116,13 @@ exit 1
 ## Phase 6 — Confirm Build & Output settings
 
 **If Next.js is at repo root:**
+
 - Root Directory: *(blank)*
 - Install Command: `npm install` *(or leave blank to use Vercel's default)*
 - Build Command: `npm run build`
 
 **If Next.js is in a subfolder (example: `web`):**
+
 - Root Directory: `web`
 - Install Command: `npm install` *(or leave blank to use Vercel's default)*
 - Build Command: `npm run build`
@@ -127,6 +132,7 @@ exit 1
 Vercel → Project → Settings → **Environment Variables**
 
 Minimum sanity set (adjust to your stack):
+
 - `NEXT_PUBLIC_API_URL` (public API base URL)
 - `DATABASE_URL` (if Prisma/DB runs in this project)
 - `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` (if using Stripe)
@@ -144,6 +150,7 @@ Minimum sanity set (adjust to your stack):
 ---
 
 **Deliverable summary:**
+
 - Production branch fixed to `main`
 - Domains correctly assigned (no web/API confusion)
 - Build cache enabled

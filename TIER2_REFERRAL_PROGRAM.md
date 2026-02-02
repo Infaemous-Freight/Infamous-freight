@@ -619,6 +619,7 @@ async function calculateViralCoefficient(referralId) {
 ## 7. Status: 100% Complete ✅
 
 Referral program designed for viral growth:
+
 - ✅ Two-tier referral rewards (referrer + referee)
 - ✅ Multi-level commission structure (2 levels)
 - ✅ Referral tier badges (Bronze→Platinum)

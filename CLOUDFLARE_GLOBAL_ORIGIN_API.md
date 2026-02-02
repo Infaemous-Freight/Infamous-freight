@@ -511,7 +511,7 @@ done
 
 ### Cloudflare Dashboard Integration
 
-1. **Navigate to**: https://dash.cloudflare.com/infamous-freight.com/analytics/loadbalancer
+1. **Navigate to**: <https://dash.cloudflare.com/infamous-freight.com/analytics/loadbalancer>
 2. **Monitor**:
    - Origin health status
    - Failover events

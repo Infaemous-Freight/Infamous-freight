@@ -50,6 +50,7 @@ Thank you for your interest in contributing! This guide will help you get starte
    ```
 
 4. **Start Development**
+
    ```bash
    pnpm dev  # Starts all services
    ```
@@ -453,6 +454,6 @@ pnpm install
 - [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Command reference
 - [IMPROVEMENTS_COMPLETE.md](IMPROVEMENTS_COMPLETE.md) - Recent changes
 
-## 🎉 Thank You!
+## 🎉 Thank You
 
 Your contributions help make this project better for everyone!

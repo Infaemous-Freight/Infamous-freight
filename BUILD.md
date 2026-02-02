@@ -61,6 +61,7 @@ cp .env.example .env.local
 ```
 
 **Required for Build:**
+
 ```env
 # Minimum required for static generation
 NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
@@ -79,6 +80,7 @@ cp .env.example .env
 ```
 
 **Required for Build:**
+
 ```env
 DATABASE_URL=postgresql://user:pass@localhost:5432/infamous_freight
 JWT_SECRET=your_secret_key_minimum_32_characters
@@ -100,6 +102,7 @@ pnpm build
 ```
 
 **Expected Output:**
+
 ```
 ✓ packages/shared build (TypeScript compilation)
 ✓ apps/api build (Node.js syntax validation)
@@ -147,7 +150,7 @@ pnpm --filter api dev      # API on port 4000
 
 - **Location**: `apps/web/.next/`
 - **Output Mode**: Standalone (optimized for Docker/Fly.io)
-- **Bundle Size**: 
+- **Bundle Size**:
   - First Load JS: ~120-150KB (target)
   - Total Static: ~2-5MB
 
@@ -195,6 +198,7 @@ pnpm --filter web build
 **Cause**: Static page generation requires Supabase config at build time.
 
 **Solution**: Add placeholder values to `.env.local`:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder
@@ -294,6 +298,7 @@ docker build -f apps/api/Dockerfile -t infamous-freight-api .
 ## Build Metrics
 
 **Current Performance:**
+
 - **Full Build Time**: 8-15 seconds
 - **Incremental Build**: 2-5 seconds
 - **packages/shared**: ~600-700ms
@@ -301,6 +306,7 @@ docker build -f apps/api/Dockerfile -t infamous-freight-api .
 - **apps/web**: 4-8 seconds
 
 **Targets:**
+
 - Full build: < 60 seconds
 - Incremental: < 5 seconds
 - Type check: < 10 seconds
@@ -335,11 +341,13 @@ DEBUG=* pnpm build
 ## Support
 
 **Issues?** Check:
+
 1. [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 2. [GitHub Issues](https://github.com/MrMiless44/Infamous-freight/issues)
 3. [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 **Success Indicators:**
+
 - ✅ All builds complete without errors
 - ✅ Type checking passes
 - ✅ Tests pass (optional for build)
@@ -348,6 +356,7 @@ DEBUG=* pnpm build
 ---
 
 **Next Steps:**
+
 - [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Command cheat sheet
 - [DEPLOYMENT.md](./docs/DEPLOYMENT.md) - Deploy to production
 - [DEVELOPER_WORKFLOW.md](./docs/DEVELOPER_WORKFLOW.md) - Development guide

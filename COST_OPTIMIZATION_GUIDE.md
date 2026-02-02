@@ -69,6 +69,7 @@ File Storage: 1TB
 ### A. Compute Optimization
 
 **Fly.io Auto-scaling Configuration**:
+
 ```toml
 # fly.toml
 [env.production]
@@ -96,6 +97,7 @@ File Storage: 1TB
 **Cost Impact**: 30-40% savings by auto-shutting down idle machines
 
 **Vercel Optimization**:
+
 ```js
 // next.config.js
 module.exports = {
@@ -118,6 +120,7 @@ module.exports = {
 ### B. Database Optimization
 
 **Query Optimization**:
+
 ```sql
 -- ❌ SLOW: N+1 query pattern
 SELECT * FROM shipments;
@@ -135,6 +138,7 @@ CREATE INDEX idx_shipments_driver_id ON shipments(driver_id);
 **Cost Impact**: 50-80% reduction in query execution time = fewer DB resources
 
 **Connection Pooling**:
+
 ```bash
 # Fly.io Postgres
 # Set connection limit per app instance
@@ -148,6 +152,7 @@ DATABASE_IDLE_TIMEOUT=600
 ### C. Storage Optimization
 
 **Implement Data Retention Policy**:
+
 ```javascript
 // Cleanup old logs/audit data
 const deleteOldRecords = async () => {
@@ -169,6 +174,7 @@ schedule.scheduleJob('0 2 * * *', deleteOldRecords);
 **Cost Impact**: 20-30% storage savings per year
 
 **S3 Lifecycle Policy**:
+
 ```json
 {
   "Rules": [
@@ -193,6 +199,7 @@ schedule.scheduleJob('0 2 * * *', deleteOldRecords);
 ### D. CDN & Caching
 
 **Enable Cloudflare Free Tier**:
+
 ```bash
 # Benefits:
 # - Free CDN
@@ -212,6 +219,7 @@ schedule.scheduleJob('0 2 * * *', deleteOldRecords);
 **Cost Impact**: Saves $200+/month on CDN costs
 
 **Browser Caching**:
+
 ```javascript
 // apps/api/src/middleware/cache.js
 router.get('/api/data', (req, res) => {
@@ -225,6 +233,7 @@ router.get('/api/data', (req, res) => {
 ### E. Monitoring Cost Reduction
 
 **Optimize Datadog Usage**:
+
 ```javascript
 // Only sample non-critical endpoints
 datadogRum.init({
@@ -243,6 +252,7 @@ datadogRum.init({
 **Cost Impact**: 40-50% reduction in Datadog costs
 
 **Sentry Optimization**:
+
 ```bash
 # Configure quota
 # - Set transaction sample rate: 10%
@@ -335,6 +345,7 @@ curl -X POST https://api.fly.io/graphql \
 ### Budget Limits
 
 Set per-service budgets:
+
 - Fly.io: $100/month limit
 - Vercel: $200/month limit
 - Datadog: $500/month limit

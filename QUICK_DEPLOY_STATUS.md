@@ -3,20 +3,25 @@
 ## 📍 YOUR APPS ARE HERE
 
 ### Web App (Vercel)
+
 ```
 https://infamous-freight-enterprises.vercel.app
 ```
+
 Status: 🟡 Building now (~5-10 min)
 
 ### API Backend (Fly.io)  
+
 ```
 https://infamous-freight-api.fly.dev
 ```
+
 Status: ⏳ Needs FLY_API_TOKEN
 
 ### Monitoring
-- GitHub Actions: https://github.com/MrMiless44/Infamous-freight/actions
-- Vercel Dashboard: https://vercel.com/dashboard
+
+- GitHub Actions: <https://github.com/MrMiless44/Infamous-freight/actions>
+- Vercel Dashboard: <https://vercel.com/dashboard>
 
 ---
 
@@ -47,7 +52,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 ## ⏳ WHAT'S NEXT
 
 1. **Wait 5-10 min** - Vercel builds automatically
-2. **Get Fly.io token** - Sign up at https://fly.io/app/sign-up
+2. **Get Fly.io token** - Sign up at <https://fly.io/app/sign-up>
 3. **Add to GitHub** - Settings → Secrets → `FLY_API_TOKEN`
 4. **Re-run workflow** - GitHub Actions → Re-run
 
@@ -71,7 +76,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 - Read: [LIVE_DEPLOYMENT_STATUS.md](LIVE_DEPLOYMENT_STATUS.md)
 - Read: [DEPLOYMENT_SUCCESS.md](DEPLOYMENT_SUCCESS.md)
-- Check: https://github.com/MrMiless44/Infamous-freight/actions
+- Check: <https://github.com/MrMiless44/Infamous-freight/actions>
 
 ---
 

@@ -24,7 +24,7 @@
 
 | Component         | Status       | Details                              |
 | ----------------- | ------------ | ------------------------------------ |
-| **API**           | 🟢 LIVE      | https://infamous-freight-api.fly.dev |
+| **API**           | 🟢 LIVE      | <https://infamous-freight-api.fly.dev> |
 | **Database**      | 🟢 CONNECTED | Render PostgreSQL                    |
 | **E2E Tests**     | 🟢 PASSING   | All workflows verified               |
 | **Code**          | 🟢 PUSHED    | Commit dd23bde                       |
@@ -121,12 +121,12 @@ pnpm test -- api/__tests__/validation-edge-cases.test.js
 
 | Resource             | URL                                                        |
 | -------------------- | ---------------------------------------------------------- |
-| **Live API**         | https://infamous-freight-api.fly.dev                       |
-| **Health Check**     | https://infamous-freight-api.fly.dev/api/health            |
-| **GitHub Repo**      | https://github.com/MrMiless44/Infamous-freight-enterprises |
-| **Vercel Dashboard** | https://vercel.com/dashboard                               |
-| **Fly.io Dashboard** | https://fly.io/dashboard                                   |
-| **Render Dashboard** | https://dashboard.render.com                               |
+| **Live API**         | <https://infamous-freight-api.fly.dev>                       |
+| **Health Check**     | <https://infamous-freight-api.fly.dev/api/health>            |
+| **GitHub Repo**      | <https://github.com/MrMiless44/Infamous-freight-enterprises> |
+| **Vercel Dashboard** | <https://vercel.com/dashboard>                               |
+| **Fly.io Dashboard** | <https://fly.io/dashboard>                                   |
+| **Render Dashboard** | <https://dashboard.render.com>                               |
 
 ---
 
@@ -316,7 +316,7 @@ ec015cf feat: prepare web frontend for Vercel deployment with live API URL
 
 **Deployment Status**: 🟢 **PRODUCTION READY**
 
-- ✅ API: Live at https://infamous-freight-api.fly.dev
+- ✅ API: Live at <https://infamous-freight-api.fly.dev>
 - ✅ Database: Connected to Render PostgreSQL
 - ✅ Tests: All passing on live infrastructure
 - ✅ Documentation: Complete and comprehensive

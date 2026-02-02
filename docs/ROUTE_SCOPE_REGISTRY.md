@@ -89,6 +89,7 @@ router.post(
 ```
 
 Then in registry:
+
 ```javascript
 'POST /api/new-feature': ['new-feature:write'],
 ```
@@ -151,6 +152,7 @@ pnpm --filter api test -- --testNamePattern="auth/org/scope enforcement"
 ```
 
 This runs tests that verify:
+
 - ✅ 401 on missing bearer token
 - ✅ 401 on missing `org_id` claim
 - ✅ 403 on insufficient scope

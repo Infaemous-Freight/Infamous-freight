@@ -12,7 +12,7 @@
 - [x] All tests passing (79+ tests)
 - [x] Coverage targets met (91-94% for core services)
 - [x] Code committed and pushed to GitHub (commit: 26fb08a)
-- [x] Web app deployed to Vercel (https://infamous-freight-enterprises-git-f34b9b-santorio-miles-projects.vercel.app)
+- [x] Web app deployed to Vercel (<https://infamous-freight-enterprises-git-f34b9b-santorio-miles-projects.vercel.app>)
 - [x] Railway deployment guide created (RAILWAY_DEPLOY_IPHONE.md)
 - [ ] Environment variables prepared
 - [ ] Database migration plan ready
@@ -22,17 +22,20 @@
 ## 📋 Deployment Steps
 
 ### 1. Access Railway Dashboard
+
 - [ ] Open Safari on iPhone
-- [ ] Navigate to https://railway.app
+- [ ] Navigate to <https://railway.app>
 - [ ] Login with GitHub (MrMiless44 account)
 
 ### 2. Create New Project
+
 - [ ] Tap "New Project"
 - [ ] Select "Deploy from GitHub repo"
 - [ ] Choose `MrMiless44/Infamous-freight-enterprises`
 - [ ] Wait for Railway to analyze repository
 
 ### 3. Configure API Service
+
 - [ ] Tap on the service Railway created
 - [ ] Go to Settings tab
 - [ ] Set Root Directory: `src/apps/api`
@@ -41,12 +44,14 @@
 - [ ] Set Port: 4000 (or use Railway default)
 
 ### 4. Add PostgreSQL Database
+
 - [ ] Tap "+ New" button in project
 - [ ] Select "Database" → "Add PostgreSQL"
 - [ ] Wait for provisioning (~30 seconds)
 - [ ] Verify `DATABASE_URL` is auto-added to variables
 
 ### 5. Configure Environment Variables
+
 Copy these to Railway Variables tab:
 
 ```env
@@ -61,12 +66,14 @@ SENTRY_DSN=<IF_USING_SENTRY>
 ```
 
 **Required Actions:**
-- [ ] Generate JWT_SECRET (use: https://generate-secret.vercel.app/32)
+
+- [ ] Generate JWT_SECRET (use: <https://generate-secret.vercel.app/32>)
 - [ ] Copy JWT_SECRET and save securely
 - [ ] Add all environment variables
 - [ ] Verify DATABASE_URL is present
 
 ### 6. Run Database Migrations
+
 - [ ] Once deployed, open Railway service logs
 - [ ] Check for successful database connection
 - [ ] Run migrations via Railway CLI or manual Prisma commands
@@ -74,6 +81,7 @@ SENTRY_DSN=<IF_USING_SENTRY>
   - Option B: Run from local: `DATABASE_URL=<railway-url> pnpm prisma:migrate:deploy`
 
 ### 7. Deploy & Monitor
+
 - [ ] Tap "Deploy" or wait for auto-deploy
 - [ ] Monitor deployment logs for errors
 - [ ] Check build completes successfully
@@ -81,12 +89,14 @@ SENTRY_DSN=<IF_USING_SENTRY>
 - [ ] Note the generated Railway URL (e.g., `*.up.railway.app`)
 
 ### 8. Test Deployed API
+
 - [ ] Open Railway URL in browser
 - [ ] Test health endpoint: `GET https://<railway-url>/api/health`
 - [ ] Expected response: `{"status":"ok","uptime":...}`
 - [ ] Test from web app (update `NEXT_PUBLIC_API_URL` in Vercel)
 
 ### 9. Update Web App Configuration
+
 - [ ] Go to Vercel dashboard
 - [ ] Open project settings
 - [ ] Add environment variable: `NEXT_PUBLIC_API_URL=https://<railway-url>`
@@ -94,6 +104,7 @@ SENTRY_DSN=<IF_USING_SENTRY>
 - [ ] Test full integration (web → API → database)
 
 ### 10. Post-Deployment Verification
+
 - [ ] Check API health endpoint responds
 - [ ] Verify database connection works
 - [ ] Test authentication endpoints
@@ -107,27 +118,32 @@ SENTRY_DSN=<IF_USING_SENTRY>
 ## 🔧 Troubleshooting
 
 ### Build Fails
+
 - **Issue:** `pnpm: not found`
 - **Fix:** Railway should auto-detect pnpm from `package.json` engines field
 - **Alternative:** Use `npm install && npm run build`
 
 ### Database Connection Fails
+
 - **Issue:** `Can't connect to database`
 - **Fix:** Verify `DATABASE_URL` is set correctly
 - **Check:** Railway PostgreSQL service is running
 - **Format:** `postgresql://user:pass@host:port/db?sslmode=require`
 
 ### Port Binding Errors
+
 - **Issue:** `Port 4000 already in use`
 - **Fix:** Use Railway's `${{RAILWAY_PORT}}` variable instead
 - **Update:** `PORT=${{RAILWAY_PORT}}` in environment
 
 ### CORS Errors
+
 - **Issue:** Web app can't reach API
 - **Fix:** Add web app URL to `CORS_ORIGINS`
 - **Format:** Comma-separated, no trailing slashes
 
 ### JWT Authentication Fails
+
 - **Issue:** `Invalid token` errors
 - **Fix:** Ensure `JWT_SECRET` matches between deploys
 - **Note:** Changing secret invalidates all existing tokens
@@ -150,9 +166,9 @@ Record these after successful deployment:
 
 ## 🔗 Important URLs
 
-- **GitHub Repo:** https://github.com/MrMiless44/Infamous-freight-enterprises
-- **Railway Dashboard:** https://railway.app/dashboard
-- **Web App (Vercel):** https://infamous-freight-enterprises-git-f34b9b-santorio-miles-projects.vercel.app
+- **GitHub Repo:** <https://github.com/MrMiless44/Infamous-freight-enterprises>
+- **Railway Dashboard:** <https://railway.app/dashboard>
+- **Web App (Vercel):** <https://infamous-freight-enterprises-git-f34b9b-santorio-miles-projects.vercel.app>
 - **API Deployed URL:** _________________ (fill after deployment)
 - **Database Dashboard:** _________________ (from Railway)
 
@@ -173,6 +189,7 @@ Record these after successful deployment:
 Once all steps above are checked, your API is live! 🎉
 
 **Next Steps:**
+
 1. Monitor Railway dashboard for 24-48 hours
 2. Check error rates and response times
 3. Set up alerts for downtime (if on paid plan)

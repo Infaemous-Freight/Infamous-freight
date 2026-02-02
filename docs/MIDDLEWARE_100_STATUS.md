@@ -75,6 +75,7 @@ Successfully integrated comprehensive middleware stack across all API routes wit
 **docs/API_MIDDLEWARE_INTEGRATION.md** (800+ lines)
 
 Comprehensive guide covering:
+
 - Middleware stack architecture
 - Execution order (limiters → authenticate → requireScope → validators → handleValidationErrors → auditLog → handler → next(err))
 - Rate limiters (4 types with configuration)
@@ -110,35 +111,43 @@ Comprehensive guide covering:
 Protected routes require specific scopes:
 
 **Shipments:**
+
 - `shipments:read` - Read operations
 - `shipments:write` - Write operations
 
 **Metrics:**
+
 - `metrics:read` - View metrics
 - `metrics:export` - Export data
 
 **AI:**
+
 - `ai:command` - Execute AI commands
 - `ai:history` - View AI history
 
 **Billing:**
+
 - `billing:read` - View subscriptions
 - `billing:write` - Manage subscriptions
 
 **Voice:**
+
 - `voice:ingest` - Upload audio
 - `voice:command` - Process commands
 
 **Users:**
+
 - `users:read` - View profile
 - `users:write` - Update profile
 
 **Admin:**
+
 - `admin` - Full administrative access
 
 ### 4. Request Validation
 
 Express-validator integration with helpers:
+
 - `validateString(field, { maxLength })` - String validation
 - `validateEmail(field)` - Email format + normalization
 - `validatePhone(field)` - Phone number validation
@@ -148,6 +157,7 @@ Express-validator integration with helpers:
 ### 5. Audit Logging
 
 Structured request logging via `auditLog` middleware:
+
 ```javascript
 {
   method: 'POST',
@@ -163,6 +173,7 @@ Structured request logging via `auditLog` middleware:
 ### 6. Global Error Handler
 
 Centralized error handling with:
+
 - Status code extraction (`err.status` or `err.statusCode`)
 - Structured logging (console + Sentry)
 - Consistent JSON error responses
@@ -171,6 +182,7 @@ Centralized error handling with:
 ## Dependencies Added
 
 Routes now require these packages (already in package.json):
+
 - `express-rate-limit` - Rate limiting
 - `jsonwebtoken` - JWT validation
 - `express-validator` - Request validation
@@ -180,6 +192,7 @@ Routes now require these packages (already in package.json):
 ## Environment Variables
 
 Required for full functionality:
+
 ```bash
 JWT_SECRET=your-secret-key-here              # Required for auth
 VOICE_MAX_FILE_SIZE_MB=10                    # Voice upload limit (default: 10)
@@ -192,6 +205,7 @@ SENTRY_ENVIRONMENT=production                # Optional
 **Total Routes:** 24 endpoints across 8 route files
 
 **By Middleware:**
+
 - ✅ **24/24** (100%) have `auditLog` for observability
 - ✅ **20/24** (83%) have authentication via `authenticate`
 - ✅ **20/24** (83%) have scope enforcement via `requireScope`
@@ -200,14 +214,17 @@ SENTRY_ENVIRONMENT=production                # Optional
 - ✅ **24/24** (100%) use global error handler via `next(err)`
 
 **Public Endpoints (No Auth):**
+
 - 4 health check endpoints (`/health`, `/health/detailed`, `/health/ready`, `/health/live`)
 
 **Internal Endpoints (No Auth):**
+
 - 2 internal simulator endpoints (`/internal/ai/simulate`, `/internal/ai/batch`)
 
 ## Testing Recommendations
 
 ### 1. Authentication Testing
+
 ```bash
 # Without token
 curl http://localhost:4000/api/shipments
@@ -220,6 +237,7 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:4000/api/shipments
 ```
 
 ### 2. Scope Testing
+
 ```bash
 # Token without required scope
 curl -H "Authorization: Bearer $TOKEN" http://localhost:4000/api/metrics/revenue/live
@@ -227,6 +245,7 @@ curl -H "Authorization: Bearer $TOKEN" http://localhost:4000/api/metrics/revenue
 ```
 
 ### 3. Rate Limiting Testing
+
 ```bash
 # Exceed 100 requests in 15 minutes
 for i in {1..101}; do curl http://localhost:4000/api/shipments; done
@@ -234,6 +253,7 @@ for i in {1..101}; do curl http://localhost:4000/api/shipments; done
 ```
 
 ### 4. Validation Testing
+
 ```bash
 # Invalid data
 curl -X POST http://localhost:4000/api/shipments \
@@ -244,6 +264,7 @@ curl -X POST http://localhost:4000/api/shipments \
 ```
 
 ### 5. File Upload Testing
+
 ```bash
 # Valid audio file
 curl -X POST http://localhost:4000/api/voice/ingest \
@@ -278,6 +299,7 @@ curl -X POST http://localhost:4000/api/voice/ingest \
 **Deletions:** 3,332 lines  
 
 **Summary:**
+
 - 5 new route files created
 - 3 existing route files updated
 - 1 comprehensive documentation file added
@@ -286,20 +308,24 @@ curl -X POST http://localhost:4000/api/voice/ingest \
 ## Performance Impact
 
 **Rate Limiting:**
+
 - Minimal overhead (~1-2ms per request)
 - In-memory store (production should use Redis)
 - Per-user tracking when authenticated
 
 **JWT Validation:**
+
 - ~2-3ms per request
 - Synchronous verification with `jwt.verify()`
 - Cached in memory once decoded
 
 **Validation:**
+
 - ~1-2ms per validated field
 - Only runs on routes with user input
 
 **Audit Logging:**
+
 - ~0.5-1ms per request
 - Non-blocking via `res.on('finish')`
 
@@ -318,6 +344,7 @@ curl -X POST http://localhost:4000/api/voice/ingest \
 ## Next Steps (Optional)
 
 ### Production Hardening
+
 1. [ ] Replace in-memory rate limiter with Redis
 2. [ ] Add request ID correlation for distributed tracing
 3. [ ] Implement JWT refresh token rotation
@@ -327,6 +354,7 @@ curl -X POST http://localhost:4000/api/voice/ingest \
 7. [ ] Implement circuit breaker for external services
 
 ### Testing
+
 1. [ ] Add unit tests for middleware functions
 2. [ ] Add integration tests for route handlers
 3. [ ] Add E2E tests for authentication flows
@@ -334,6 +362,7 @@ curl -X POST http://localhost:4000/api/voice/ingest \
 5. [ ] Add security tests (OWASP Top 10)
 
 ### Monitoring
+
 1. [ ] Configure Datadog APM for request tracing
 2. [ ] Set up Sentry alerts for error spikes
 3. [ ] Create Grafana dashboards for metrics

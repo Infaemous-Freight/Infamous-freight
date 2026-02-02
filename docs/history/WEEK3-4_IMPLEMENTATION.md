@@ -278,6 +278,7 @@ Caching: Speeds up subsequent scans
    ```
 
 2. **Optional: Run Tests Locally**:
+
    ```bash
    npx playwright test --ui
    npx playwright show-report

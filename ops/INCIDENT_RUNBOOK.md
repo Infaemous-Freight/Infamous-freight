@@ -3,12 +3,14 @@
 ## Incident Response Procedure
 
 ### Phase 1: Detection & Initial Response (5 mins)
+
 1. **Verify the issue**
    - Is service down? (`curl /api/health`)
    - Error rate > 10%? (Check Sentry)
    - Response time elevated? (Check Datadog)
 
 2. **Alert the team**
+
    ```
    @channel INCIDENT: [Service Name] - [Brief Description]
    Severity: [Critical/High/Medium]
@@ -22,6 +24,7 @@
 ### Phase 2: Stabilization (15-30 mins)
 
 #### If Payment Processing Down
+
 ```bash
 # Check Stripe connectivity
 curl -H "Authorization: Bearer $STRIPE_KEY" \
@@ -35,6 +38,7 @@ curl -H "Authorization: Bearer $STRIPE_KEY" \
 ```
 
 #### If Database Down
+
 ```bash
 # Check DB connection
 psql $DATABASE_URL -c "SELECT 1"
@@ -50,6 +54,7 @@ SELECT count(*) FROM pg_stat_activity;
 ```
 
 #### If API Service Down
+
 ```bash
 # Check status
 flyctl status -a infamous-freight-api
@@ -97,6 +102,7 @@ pnpm test:e2e --grep "critical"
 ## Common Issues & Quick Fixes
 
 ### Issue: High CPU Usage
+
 ```bash
 # Identify the culprit
 flyctl logs -a infamous-freight-api | grep CPU
@@ -115,6 +121,7 @@ flyctl scale count web=3 -a infamous-freight-api
 ```
 
 ### Issue: Database Disk Space Full
+
 ```bash
 # Check usage
 SELECT pg_size_pretty(pg_database_size('infamous_freight'));
@@ -131,6 +138,7 @@ VACUUM ANALYZE;
 ```
 
 ### Issue: Memory Leak in API
+
 ```bash
 # Signs:
 # - Memory usage grows over time
@@ -150,6 +158,7 @@ flyctl scale vm shared-cpu-2x -a infamous-freight-api
 ```
 
 ### Issue: Rate Limiting Too Strict
+
 ```bash
 # If legitimate users blocked:
 # 1. Check rate limit config
@@ -167,6 +176,7 @@ flyctl secrets set RATE_LIMIT_GENERAL_MAX=500 \
 ## Communication Template
 
 ### Initial Alert
+
 ```
 INCIDENT: [Service] - [Brief description]
 Severity: [Critical/High/Medium/Low]
@@ -176,6 +186,7 @@ Status: [Investigating/Stabilizing/Monitoring/Resolved]
 ```
 
 ### Status Update (Every 15 mins)
+
 ```
 Status: [Latest status]
 Actions Taken: [List of troubleshooting steps]
@@ -184,6 +195,7 @@ ETA: [Revised time estimate]
 ```
 
 ### Post-Incident
+
 ```
 Timeline:
 - [Time] Incident detected
@@ -202,6 +214,7 @@ Action Items:
 ## Prevention
 
 ### Weekly Health Checks
+
 ```bash
 # Run these to catch issues early
 pnpm test:performance
@@ -216,6 +229,7 @@ curl $API_BASE/api/health/detailed
 ```
 
 ### Monthly Reviews
+
 - Database maintenance (VACUUM, ANALYZE)
 - Log rotation and cleanup
 - Dependency security updates
@@ -225,12 +239,14 @@ curl $API_BASE/api/health/detailed
 ---
 
 ## Escalation Path
+
 1. On-call engineer investigates (15 mins)
 2. Escalate to tech lead if unresolved (20 mins)
 3. Escalate to CTO if still unresolved (30 mins)
 4. Customer communication if ETA > 1 hour
 
 ## Post-Mortem Template
+
 - What happened?
 - Timeline of events
 - Impact assessment

@@ -6,7 +6,7 @@ This guide enables branch protection to enforce code quality standards on the `m
 
 ### 1. Navigate to Repository Settings
 
-- Go to: **https://github.com/MrMiless44/Infamous-freight-enterprises/settings/branches**
+- Go to: **<https://github.com/MrMiless44/Infamous-freight-enterprises/settings/branches>**
 - Or: Repository → Settings → Branches (left sidebar)
 
 ### 2. Add Branch Protection Rule

@@ -173,7 +173,7 @@ if [ -z "$PROJECT_URL" ]; then
 else
     echo -e "${GREEN}✅ Project URL: $PROJECT_URL${NC}"
     echo ""
-    echo "Testing Edge Middleware headers..."
+    echo "Testing Edge Proxy headers..."
     curl -I "https://$PROJECT_URL" 2>/dev/null | grep -i "x-geo\|x-feature-flags" || echo "Headers check: Run manually with 'curl -I https://$PROJECT_URL'"
 fi
 echo ""

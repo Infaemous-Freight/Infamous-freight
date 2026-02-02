@@ -12,7 +12,7 @@
 
 🚀 **Production API Live**
 
-- Deployed to Fly.io at https://infamous-freight-api.fly.dev
+- Deployed to Fly.io at <https://infamous-freight-api.fly.dev>
 - Machine running in iad region
 - Health check responding
 - Ready for secrets configuration
@@ -52,7 +52,7 @@
 | 2   | Implement Search Endpoint | ✅ COMPLETE | [api/src/routes/users.js](api/src/routes/users.js#L42-L112) (70 lines)                   |
 | 3   | Validate Edge Cases       | 🟡 READY    | [validation-edge-cases.test.js](api/__tests__/validation-edge-cases.test.js) (40+ tests) |
 | 4   | Run E2E Tests             | ⏳ READY    | Can run: `pnpm e2e --baseURL=https://infamous-freight-api.fly.dev`                       |
-| 5   | Verify GitHub Actions     | ⏳ READY    | Check: https://github.com/MrMiless44/Infamous-freight-enterprises/actions                |
+| 5   | Verify GitHub Actions     | ⏳ READY    | Check: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>                |
 | 6   | Generate API Docs         | ✅ COMPLETE | [API_REFERENCE.md](API_REFERENCE.md) (500+ lines)                                        |
 | 7   | Create Deployment Guide   | ✅ COMPLETE | [DEPLOYMENT_RUNBOOK.md](DEPLOYMENT_RUNBOOK.md) (400+ lines)                              |
 | 8   | Create Testing Examples   | ✅ COMPLETE | [API_TESTING_GUIDE.md](API_TESTING_GUIDE.md) (400+ lines)                                |
@@ -129,7 +129,7 @@ Status: Complete and merged
 
 ✅ **API Deployed** (Production)
 
-- URL: https://infamous-freight-api.fly.dev
+- URL: <https://infamous-freight-api.fly.dev>
 - Region: iad (US East)
 - Status: Running and responding
 - Health: Checking every request
@@ -404,10 +404,10 @@ Response: Success or 401/403 error
 
 | Resource           | Link                                                               | Purpose             |
 | ------------------ | ------------------------------------------------------------------ | ------------------- |
-| **Live API**       | https://infamous-freight-api.fly.dev                               | Production endpoint |
-| **GitHub Repo**    | https://github.com/MrMiless44/Infamous-freight-enterprises         | Source code         |
-| **Fly.io App**     | https://fly.io/apps/infamous-freight-api                           | Infrastructure      |
-| **GitHub Actions** | https://github.com/MrMiless44/Infamous-freight-enterprises/actions | CI/CD               |
+| **Live API**       | <https://infamous-freight-api.fly.dev>                               | Production endpoint |
+| **GitHub Repo**    | <https://github.com/MrMiless44/Infamous-freight-enterprises>         | Source code         |
+| **Fly.io App**     | <https://fly.io/apps/infamous-freight-api>                           | Infrastructure      |
+| **GitHub Actions** | <https://github.com/MrMiless44/Infamous-freight-enterprises/actions> | CI/CD               |
 | **API Docs**       | [API_REFERENCE.md](API_REFERENCE.md)                               | Endpoint reference  |
 
 ---
@@ -480,7 +480,7 @@ docker run -v $(pwd):/app api npm test
 
 ✅ **Fully documented** - Every endpoint has examples and explanations
 ✅ **Tested** - 40+ edge case tests written, ready to run
-✅ **Deployed** - Live at https://infamous-freight-api.fly.dev
+✅ **Deployed** - Live at <https://infamous-freight-api.fly.dev>
 ✅ **Secure** - JWT auth, rate limiting, input validation
 ✅ **Observable** - Error tracking, health checks, audit logs configured
 ✅ **Maintainable** - Clear code, architecture documented, operations guide provided

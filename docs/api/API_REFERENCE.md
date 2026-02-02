@@ -102,6 +102,7 @@ Search users with filtering, sorting, and pagination.
 **Rate Limit**: 100/15min
 
 **Query Parameters**:
+
 | Parameter | Type | Default | Max | Description |
 |-----------|------|---------|-----|-------------|
 | `q` | string | "" | 100 | Search query (email/name, case-insensitive) |
@@ -693,4 +694,4 @@ curl -X POST \
 
 **Last Updated**: December 16, 2025  
 **API Version**: 1.0.0  
-**Status**: Production (https://infamous-freight-api.fly.dev)
+**Status**: Production (<https://infamous-freight-api.fly.dev>)

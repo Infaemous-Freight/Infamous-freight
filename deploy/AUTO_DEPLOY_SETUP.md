@@ -30,7 +30,7 @@ Auto-deploy only detects and deploys what changed:
 git push origin main
 ```
 
-### What Happens:
+### What Happens
 
 1. **Change Detection** - Analyzes which apps changed
 2. **CI Checks** - Runs tests, linting, builds
@@ -123,12 +123,12 @@ vercel env add NEXT_PUBLIC_API_URL production
 
 ### View Live Deployments
 
-- **Web**: https://infamous-freight-enterprises.vercel.app
-- **API**: https://infamous-freight-api.fly.dev/api/health
+- **Web**: <https://infamous-freight-enterprises.vercel.app>
+- **API**: <https://infamous-freight-api.fly.dev/api/health>
 
 ### GitHub Actions Dashboard
 
-https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+<https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
 
 ## 📊 Deployment Workflows
 
@@ -288,6 +288,7 @@ Add to workflow:
    - Never commit secrets to git
 
 3. **Enable branch protection**
+
    ```bash
    # Require PR reviews before merging to main
    # Require status checks to pass
@@ -300,8 +301,8 @@ After setup, you should have:
 - ✅ Auto-deploy on push to main
 - ✅ CI checks pass before deployment
 - ✅ Change detection working
-- ✅ API live at https://infamous-freight-api.fly.dev
-- ✅ Web live at https://infamous-freight-enterprises.vercel.app
+- ✅ API live at <https://infamous-freight-api.fly.dev>
+- ✅ Web live at <https://infamous-freight-enterprises.vercel.app>
 - ✅ Deployment status in GitHub Actions
 - ✅ Health checks passing
 

@@ -1099,18 +1099,21 @@ retention:
 ## 7. IMPLEMENTATION CHECKLIST
 
 ### Phase 1: Detection (Weeks 1-3)
+
 - [ ] Deploy WAF with bot detection
 - [ ] Implement auth threat detection
 - [ ] Deploy data exfiltration monitoring
 - [ ] Set up SIEM integration
 
 ### Phase 2: Response (Weeks 4-5)
+
 - [ ] Build incident response engine
 - [ ] Create automated response playbooks
 - [ ] Test response workflows
 - [ ] Train security team
 
 ### Phase 3: Tuning (Weeks 6-8)
+
 - [ ] Reduce false positives <5%
 - [ ] Validate detection accuracy
 - [ ] Optimize MTTR <15 minutes
@@ -1120,13 +1123,13 @@ retention:
 
 ## 8. SUCCESS METRICS
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Threat detection rate | >99% | Security Review |
-| MTTR (critical threats) | <15 min | Incident logs |
-| False positive rate | <5% | Detection tuning |
-| Incident response time | <5 min | Automation logs |
-| Coverage | 100% | Log review |
+| Metric                  | Target  | Measurement      |
+| ----------------------- | ------- | ---------------- |
+| Threat detection rate   | >99%    | Security Review  |
+| MTTR (critical threats) | <15 min | Incident logs    |
+| False positive rate     | <5%     | Detection tuning |
+| Incident response time  | <5 min  | Automation logs  |
+| Coverage                | 100%    | Log review       |
 
 ---
 

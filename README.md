@@ -1,6 +1,7 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/f6837275-9828-47d7-86ce-da52f48b6a84/deploy-status)](https://app.netlify.com/projects/infamousfreight/deploys)
 
 ## Infamous Freight Enterprises ♊️
+
 **AI-Powered Freight & Logistics Automation Platform**
 
 ## Deployment Architecture
@@ -8,6 +9,7 @@
 Infamous Freight operates a multi-platform, enterprise-grade CI/CD pipeline designed for reliability, scalability, and zero-drift builds.
 
 ### 🌐 Web Frontend (Netlify primary, Vercel secondary)
+
 - Auto-deploys on every push to `main`
 - pnpm workspace monorepo support
 - Locked dependency installs via `pnpm install --frozen-lockfile`
@@ -17,17 +19,20 @@ Infamous Freight operates a multi-platform, enterprise-grade CI/CD pipeline desi
 - Cache-safe builds using Corepack + pinned pnpm
 
 ### 🔌 API (Fly.io)
+
 - Deployed via GitHub Actions
 - Prisma migrations validated per release
 - Zero-downtime rolling deployments
 - Health-checked with automatic rollback
 
 ### 📱 Mobile (Expo EAS)
+
 - OTA updates enabled
 - Release channels synced to GitHub environments
 - Store builds aligned with CI pipeline
 
 ### 🔐 CI Integrity
+
 - All platforms share version-locked tooling
 - No environment drift between local and CI
 - Build reproducibility enforced across pipelines
@@ -60,12 +65,14 @@ Infamous Freight operates a multi-platform, enterprise-grade CI/CD pipeline desi
 - 📱 **Mobile**: [Expo EAS](https://expo.dev/@infamous-freight/mobile)
 
 **China CDN Integration (Netlify):**
+
 - Adds `@21yunbox/netlify-plugin-21yunbox-deploy-to-china-cdn` to publish static assets to a mainland China CDN.
 - Configure required env vars in Netlify:
-   - `YUNBOX_TOKEN` and `YUNBOX_SITE_ID` (per plugin docs)
-   - Optionally set `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_API_BASE` to your public API.
+  - `YUNBOX_TOKEN` and `YUNBOX_SITE_ID` (per plugin docs)
+  - Optionally set `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_API_BASE` to your public API.
 
 ### 🗄️ Netlify + Neon Database Access
+
 - Netlify can auto-provide `NETLIFY_DATABASE_URL` for Neon.
 - Example query using the Netlify Neon client:
 
@@ -157,6 +164,7 @@ Infæmous Freight + Genesis AI are operating as a unified global logistics + fin
 ## 📋 Project Overview
 
 Infæmous Freight is a comprehensive logistics and fleet management solution built as a monorepo with:
+
 - `api/` – Express.js backend (Fly.io, Docker, PostgreSQL via Prisma)
 - `web/` – Next.js 14 frontend (Netlify/Vercel, TypeScript, ESM)
 - `mobile/` – React Native / Expo mobile app
@@ -611,4 +619,5 @@ For issues or questions, please open a GitHub issue or contact the development t
 - `[optional] TEAMS_WEBHOOK_URL`: To receive deploy/promotion/rollback notifications in Microsoft Teams.
 
 See docs/ENVIRONMENT_PROTECTION_CHECKLIST.md for environment-scoped setup.
+
 # Auto-deploy test

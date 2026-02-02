@@ -1,0 +1,38 @@
+# robots.txt - Production SEO Configuration
+
+# Allow all search engines
+User-agent: *
+Allow: /
+
+# Disallow admin and internal pages
+Disallow: /admin/
+Disallow: /api/
+Disallow: /debug-sentry
+Disallow: /_next/
+Disallow: /ops
+
+# Allow specific API endpoints that should be indexed
+Allow: /api/health
+
+# Sitemap location
+Sitemap: https://infamous-freight-as-3gw.fly.dev/sitemap.xml
+
+# Crawl delay (optional - remove if too restrictive)
+Crawl-delay: 1
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Block unwanted bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

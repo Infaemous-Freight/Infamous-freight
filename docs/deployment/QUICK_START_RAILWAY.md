@@ -69,7 +69,7 @@ Expected response:
 - Add env var: `NEXT_PUBLIC_API_URL=https://<your-railway-url>`
 - Redeploy
 
-## ✅ Done!
+## ✅ Done
 
 You now have:
 

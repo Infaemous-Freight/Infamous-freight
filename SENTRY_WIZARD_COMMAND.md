@@ -8,6 +8,7 @@ npx @sentry/wizard@latest -i nextjs --saas --org infamous-freight-enterprise --p
 ```
 
 **Why from apps/web?**
+
 - Wizard needs to detect Next.js project in current directory
 - Will patch the correct `next.config.*` file
 - Ensures monorepo structure is respected
@@ -40,6 +41,7 @@ When run correctly, it will:
 8. ✅ Prompt for DSN (or use from flags)
 
 **Files it modifies:**
+
 ```
 apps/web/
 ├── sentry.client.config.ts      (created/updated)

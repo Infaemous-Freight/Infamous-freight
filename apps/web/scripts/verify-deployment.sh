@@ -42,14 +42,14 @@ Deployment URL: $DEPLOYMENT_URL
 
 **Status**: Configuration files present and correct
 
-### Middleware
-- [ ] middleware.ts at web root
+### Edge Proxy
+- [ ] proxy.ts at web root
 - [ ] Geolocation extraction
 - [ ] CORS headers configured
 - [ ] Security headers added
 - [ ] Cache control headers
 
-**Status**: Edge middleware deployed
+**Status**: Edge proxy deployed
 
 ## 📊 Performance Metrics
 
@@ -173,7 +173,7 @@ All scripts are executable and located in `web/scripts/`:
 
 ### Medium-term (First Week)
 1. [ ] Verify ISR revalidation (60s)
-2. [ ] Confirm edge middleware working
+2. [ ] Confirm edge proxy working
 3. [ ] Review Web Vitals data
 4. [ ] Analyze error rates
 5. [ ] Check cost per deployment
@@ -210,7 +210,7 @@ All scripts are executable and located in `web/scripts/`:
 - [Vercel Analytics Docs](https://vercel.com/docs/analytics)
 - [Next.js Performance](https://nextjs.org/docs/advanced-features/web-vitals)
 - [Lighthouse CI Guide](https://github.com/GoogleChrome/lighthouse-ci)
-- [Edge Middleware](https://nextjs.org/docs/advanced-features/middleware)
+- [Edge Proxy](https://nextjs.org/docs/advanced-features/middleware)
 
 ## ✅ Final Checklist
 
@@ -220,7 +220,7 @@ All 12 optimization tasks:
 - [x] 3. Build Duration Tracking
 - [x] 4. Build Credit Monitoring
 - [x] 5. ISR Implementation
-- [x] 6. Edge Middleware
+- [x] 6. Edge Proxy
 - [x] 7. Preview Branch Aliases
 - [x] 8. Lighthouse CI Thresholds
 - [x] 9. Bundle Size Audit

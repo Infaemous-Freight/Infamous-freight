@@ -3,6 +3,7 @@
 ## 1. Rate Limiting Architecture ✅
 
 ### Current Limits (Global)
+
 ```
 general:     100 requests / 15 minutes
 auth:        5 requests / 15 minutes  

@@ -1,6 +1,7 @@
 # Fraud & Abuse Policy
 
 Any attempt to:
+
 - Misrepresent transactions
 - Abuse disputes
 - Evade payments

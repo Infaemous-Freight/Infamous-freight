@@ -390,6 +390,7 @@ kubectl logs deployment/api | grep "database\|connected"
 ## Security Best Practices
 
 ✅ **Do**:
+
 - Store secrets in Kubernetes Secrets or AWS Secrets Manager
 - Rotate secrets every 90 days
 - Use 32+ character random strings for secrets
@@ -397,6 +398,7 @@ kubectl logs deployment/api | grep "database\|connected"
 - Audit all secret access
 
 ❌ **Don't**:
+
 - Commit `.env.local` or `.env.production` to git
 - Log secrets to console (even in error messages)
 - Share secrets via Slack/email

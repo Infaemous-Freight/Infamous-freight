@@ -152,7 +152,7 @@ git push origin main
 
 ### ✅ Completed
 
-- Web frontend: https://infamous-freight-enterprises.fly.dev (LIVE)
+- Web frontend: <https://infamous-freight-enterprises.fly.dev> (LIVE)
 - Web Dockerfile: Optimized multi-stage build
 - CI/CD workflows: Configured and tested
 - API configuration: Ready to deploy
@@ -168,9 +168,9 @@ git push origin main
 
 ### 📝 Requires External Setup
 
-- Sentry DSN: Sign up at https://sentry.io
-- Datadog API Key: Sign up at https://datadoghq.com
-- Uptime Robot: Sign up at https://uptimerobot.com
+- Sentry DSN: Sign up at <https://sentry.io>
+- Datadog API Key: Sign up at <https://datadoghq.com>
+- Uptime Robot: Sign up at <https://uptimerobot.com>
 - AI Provider keys: OpenAI or Anthropic (or use synthetic mode)
 
 ---
@@ -334,7 +334,7 @@ curl -H "Origin: https://evil.com" https://infamous-freight-api.fly.dev/api/heal
 
 ### API Documentation
 
-- **Live API Docs**: https://infamous-freight-api.fly.dev/api/docs (when deployed)
+- **Live API Docs**: <https://infamous-freight-api.fly.dev/api/docs> (when deployed)
 - **Swagger Config**: [api/src/config/swagger.js](../api/src/config/swagger.js)
 
 ### Configuration Files
@@ -395,14 +395,14 @@ curl -H "Origin: https://evil.com" https://infamous-freight-api.fly.dev/api/heal
 These require external account setup or permissions:
 
 1. **Create Fly.io apps** (requires full account, not builder token):
-   - Visit https://fly.io/dashboard
+   - Visit <https://fly.io/dashboard>
    - Create app: `infamous-freight-api`
    - Create Postgres: `infamous-freight-db`
 
 2. **Set up monitoring services**:
-   - Sentry: https://sentry.io/signup/
-   - Datadog: https://www.datadoghq.com/
-   - Uptime Robot: https://uptimerobot.com/
+   - Sentry: <https://sentry.io/signup/>
+   - Datadog: <https://www.datadoghq.com/>
+   - Uptime Robot: <https://uptimerobot.com/>
 
 3. **Add GitHub Secrets**:
    - Navigate to repo settings
@@ -457,8 +457,8 @@ These require external account setup or permissions:
 ## 📞 Support
 
 - **Documentation**: See [DOCUMENTATION_INDEX.md](../DOCUMENTATION_INDEX.md)
-- **Issues**: https://github.com/MrMiless44/Infamous-freight-enterprises/issues
-- **Security**: Report privately to security@infamous-freight.com
+- **Issues**: <https://github.com/MrMiless44/Infamous-freight-enterprises/issues>
+- **Security**: Report privately to <security@infamous-freight.com>
 
 ---
 

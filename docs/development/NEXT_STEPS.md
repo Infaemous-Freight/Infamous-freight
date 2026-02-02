@@ -353,7 +353,7 @@ curl https://yourflyio.app/api/health | jq '.data'
 
 ---
 
-## 🚀 You're Ready!
+## 🚀 You're Ready
 
 Everything is complete:
 

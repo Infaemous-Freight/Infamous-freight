@@ -97,10 +97,10 @@
 
 ### Dashboard Access
 
-- ✅ Validation Dashboard: http://localhost:3000/admin/validation-dashboard
-- ✅ Sign-Off Dashboard: http://localhost:3000/admin/signoff-dashboard
-- ✅ Feature Flags: http://localhost:3000/admin/feature-flags
-- ✅ A/B Testing: http://localhost:3000/admin/ab-tests
+- ✅ Validation Dashboard: <http://localhost:3000/admin/validation-dashboard>
+- ✅ Sign-Off Dashboard: <http://localhost:3000/admin/signoff-dashboard>
+- ✅ Feature Flags: <http://localhost:3000/admin/feature-flags>
+- ✅ A/B Testing: <http://localhost:3000/admin/ab-tests>
 
 ### Documentation
 
@@ -222,9 +222,9 @@ The sign-off process is fully automated:
 ## Contact Information
 
 **Sign-Off Coordinator**: Automated System  
-**Dashboard**: http://localhost:3000/admin/signoff-dashboard  
-**Questions**: support@infamousfreight.com  
-**Escalation**: devops@infamousfreight.com
+**Dashboard**: <http://localhost:3000/admin/signoff-dashboard>  
+**Questions**: <support@infamousfreight.com>  
+**Escalation**: <devops@infamousfreight.com>
 
 ---
 

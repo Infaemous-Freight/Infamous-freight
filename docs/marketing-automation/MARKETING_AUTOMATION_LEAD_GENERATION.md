@@ -150,6 +150,7 @@ STAGE 4: RETENTION & ADVOCACY
 **Target Audience**: Operations managers, logistics coordinators
 
 **Content Types**:
+
 ```
 BLOG POSTS (2 per month):
   • "10 Ways to Reduce Freight Costs in 2026"
@@ -177,6 +178,7 @@ SEO KEYWORDS:
 **Target Audience**: CTOs, IT managers, tech-forward operators
 
 **Content Types**:
+
 ```
 BLOG POSTS (2 per month):
   • "How AI is Transforming Freight Management"
@@ -204,6 +206,7 @@ SEO KEYWORDS:
 **Target Audience**: CEOs, CFOs, business owners
 
 **Content Types**:
+
 ```
 BLOG POSTS (1-2 per month):
   • "The True Cost of Manual Logistics Management"
@@ -689,6 +692,7 @@ PAID ADVERTISING:
 ### Objective: Build Scalable Inbound Marketing Engine
 
 **Key Results**:
+
 ```
 KR1: Generate 2,000 qualified leads in Q1
   • Current: 800 leads/month (organic only)
@@ -716,6 +720,7 @@ KR4: Publish 24 SEO-optimized blog posts
 ## Success Metrics
 
 **Marketing Automation Targets (EOY 2026)**:
+
 - ✅ 30,000 total users (3x from 10K)
 - ✅ 2,500 leads/month (vs 800 baseline)
 - ✅ <$200 blended CAC
@@ -726,6 +731,7 @@ KR4: Publish 24 SEO-optimized blog posts
 - ✅ Marketing ROI: 10:1 or better
 
 **Long-Term Vision (2027+)**:
+
 - ✅ Predictable, scalable acquisition machine
 - ✅ Multi-channel marketing (SEO, paid, content, social)
 - ✅ Brand leadership in logistics tech space
@@ -737,4 +743,3 @@ KR4: Publish 24 SEO-optimized blog posts
 
 Comprehensive inbound marketing strategy with content, SEO, paid acquisition,
 and marketing automation to scale from 10K to 30K users in 2026.
-

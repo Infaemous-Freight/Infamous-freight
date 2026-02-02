@@ -386,13 +386,13 @@ Every security-relevant event is logged:
 
 **Security Team:**
 
-- Security Lead: security@infamousfreight.com
-- Incident Response: incidents@infamousfreight.com
-- Bug Bounty: bugbounty@infamousfreight.com
+- Security Lead: <security@infamousfreight.com>
+- Incident Response: <incidents@infamousfreight.com>
+- Bug Bounty: <bugbounty@infamousfreight.com>
 
 **Responsible Disclosure:**
 
-- Report vulnerabilities to security@infamousfreight.com
+- Report vulnerabilities to <security@infamousfreight.com>
 - Use PGP key (available on website) for sensitive reports
 - We respond to all reports within 48 hours
 - See [SECURITY.md](../SECURITY.md) for full disclosure policy
@@ -408,10 +408,10 @@ Every security-relevant event is logged:
 
 ### External Standards
 
-- **OWASP Top 10**: https://owasp.org/www-project-top-ten/
-- **CWE Top 25**: https://cwe.mitre.org/top25/
-- **NIST Cybersecurity Framework**: https://www.nist.gov/cyberframework
-- **SOC2 Controls**: https://www.aicpa.org/
+- **OWASP Top 10**: <https://owasp.org/www-project-top-ten/>
+- **CWE Top 25**: <https://cwe.mitre.org/top25/>
+- **NIST Cybersecurity Framework**: <https://www.nist.gov/cyberframework>
+- **SOC2 Controls**: <https://www.aicpa.org/>
 
 ---
 

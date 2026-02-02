@@ -144,7 +144,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 ## Next Steps (What's Remaining)
 
-### 🎯 Immediate (Done by you):
+### 🎯 Immediate (Done by you)
 
 1. ✅ Generate JWT secret ← **DONE**
 2. ✅ Provide PostgreSQL URL ← **DONE**
@@ -153,29 +153,29 @@ curl -H "Authorization: Bearer $TOKEN" \
    - Run: `curl https://infamous-freight-api.fly.dev/api/health`
    - Look for: `"database": "connected"`
 
-### 🎯 Short-term (Next 30 minutes):
+### 🎯 Short-term (Next 30 minutes)
 
-5. ⏳ **Run edge case tests** (Optional but recommended)
+1. ⏳ **Run edge case tests** (Optional but recommended)
    - Command: `npm test -- validation-edge-cases.test.js`
    - Expected: 40+ tests pass
    - Status: Ready to run
 
-6. ⏳ **Run E2E tests** (Optional but recommended)
+2. ⏳ **Run E2E tests** (Optional but recommended)
    - Command: `pnpm e2e --baseURL=https://infamous-freight-api.fly.dev`
    - Expected: All user workflows pass
 
-7. ⏳ **Check GitHub Actions** (Automatic)
-   - Visit: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+3. ⏳ **Check GitHub Actions** (Automatic)
+   - Visit: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
    - Should be: All green ✅
 
-### 🎯 Medium-term (Next 1-2 hours):
+### 🎯 Medium-term (Next 1-2 hours)
 
-8. ⏳ **Deploy web frontend**
+1. ⏳ **Deploy web frontend**
    - Set in Vercel: `API_BASE_URL=https://infamous-freight-api.fly.dev`
    - Push to main: `git push origin main`
    - Vercel auto-deploys
 
-9. ⏳ **Monitor production**
+2. ⏳ **Monitor production**
    - Check logs: `flyctl logs -a infamous-freight-api`
    - Monitor metrics: Response times, error rates
 
@@ -197,7 +197,7 @@ curl -H "Authorization: Bearer $TOKEN" \
    - Solution: Wait and retry the health check
 
 2. **PostgreSQL service down**
-   - Check Render dashboard: https://dashboard.render.com
+   - Check Render dashboard: <https://dashboard.render.com>
    - Verify your PostgreSQL service is "Running"
 
 3. **Connection string incorrect**
@@ -212,7 +212,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 ## Success Criteria ✅
 
-### You'll know it's working when:
+### You'll know it's working when
 
 - [x] Secrets are set in Fly.io
 - [x] Health check shows `"database": "connected"`

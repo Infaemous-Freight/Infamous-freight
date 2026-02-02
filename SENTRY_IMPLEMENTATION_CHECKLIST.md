@@ -203,21 +203,27 @@ pnpm --filter web start
 Based on volume and environment:
 
 ### Development
+
 ```env
 NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE=1.0
 ```
+
 (100% - capture all for investigation)
 
 ### Staging
+
 ```env
 NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE=0.5
 ```
+
 (50% - balance between data and noise)
 
 ### Production
+
 ```env
 NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE=0.1
 ```
+
 (10% - capture critical issues, reduce noise)
 
 Adjust as needed based on event volume in Sentry dashboard.
@@ -225,23 +231,27 @@ Adjust as needed based on event volume in Sentry dashboard.
 ## 🔒 Security Considerations
 
 ✅ **DSN Security**:
+
 - Public DSN (`NEXT_PUBLIC_SENTRY_DSN`) is safe to expose (public key only)
 - Server DSN (`SENTRY_DSN`) should never be committed to repo
 - Auth token (`SENTRY_AUTH_TOKEN`) must be secret and not committed
 
 ✅ **Source Maps**:
+
 - Generated during build
 - Uploaded to Sentry securely
 - Deleted from deployment bundle
 - Vercel integration handles automatic upload
 
 ✅ **Privacy**:
+
 - User emails/PII masked in replays
 - Text content masked in session replays
 - Images blocked in replays
 - Custom filtering available in `beforeSend()`
 
 ✅ **Rate Limiting**:
+
 - No rate limits from Sentry until paid plan limits
 - Internal rate limiting via sample rates
 - Can filter additional error types to reduce volume
@@ -261,9 +271,9 @@ Once properly configured, the team will have:
 
 Share with the team:
 
-1. **Sentry Dashboard URL**: https://sentry.io/organizations/infamous-freight-enterprise/
+1. **Sentry Dashboard URL**: <https://sentry.io/organizations/infamous-freight-enterprise/>
 2. **Documentation**: See [SENTRY_INTEGRATION_GUIDE.md](../SENTRY_INTEGRATION_GUIDE.md)
-3. **Testing Page**: http://localhost:3000/debug-sentry (dev/staging only)
+3. **Testing Page**: <http://localhost:3000/debug-sentry> (dev/staging only)
 4. **API Endpoint**: Fully instrumented and error-aware
 5. **Alerts**: Set up in Sentry Settings → Alerts
 
@@ -295,18 +305,21 @@ These can be added later as needs arise.
 ## 🎯 Success Criteria
 
 ✅ **Short Term (1-2 weeks)**:
+
 - [ ] All team members aware of Sentry setup
 - [ ] First errors captured and viewable
 - [ ] Performance metrics appearing
 - [ ] Team trained on Sentry dashboard
 
 ✅ **Medium Term (1 month)**:
+
 - [ ] Critical errors identified and prioritized
 - [ ] Performance bottlenecks identified
 - [ ] Alerts configured and working
 - [ ] Release tracking operational
 
 ✅ **Long Term (3+ months)**:
+
 - [ ] Consistent error reduction
 - [ ] Performance improvements implemented
 - [ ] Session replay insights used for UX improvements

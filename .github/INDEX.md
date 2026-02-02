@@ -513,11 +513,11 @@
 
 ## 📚 Other Resources
 
-- **GitHub Actions Docs:** https://docs.github.com/actions
-- **Workflow Syntax Reference:** https://docs.github.com/actions/using-workflows/workflow-syntax-for-github-actions
-- **Secrets Documentation:** https://docs.github.com/actions/security-guides/encrypted-secrets
-- **act - Run Actions Locally:** https://github.com/nektos/act
-- **actionlint - Workflow Linter:** https://github.com/rhysd/actionlint
+- **GitHub Actions Docs:** <https://docs.github.com/actions>
+- **Workflow Syntax Reference:** <https://docs.github.com/actions/using-workflows/workflow-syntax-for-github-actions>
+- **Secrets Documentation:** <https://docs.github.com/actions/security-guides/encrypted-secrets>
+- **act - Run Actions Locally:** <https://github.com/nektos/act>
+- **actionlint - Workflow Linter:** <https://github.com/rhysd/actionlint>
 
 ---
 

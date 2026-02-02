@@ -1,13 +1,14 @@
 # 🚀 Vercel Environment Variables Setup - READY TO DEPLOY
 
-## ✅ STATUS: All credentials ready - 95% complete!
+## ✅ STATUS: All credentials ready - 95% complete
 
 ---
 
 ## 📋 STEP 1: Add Environment Variables to Vercel (3 minutes)
 
 ### Go to Vercel Dashboard
-👉 **https://vercel.com/dashboard**
+
+👉 **<https://vercel.com/dashboard>**
 
 1. Click on your project: **"Infamous Freight Enterprises"** or **"infamous-freight-enterprises"**
 2. Click **"Settings"** tab (top navigation)
@@ -20,6 +21,7 @@
 **Copy-paste each variable exactly as shown below:**
 
 ### Variable 1: NEXT_PUBLIC_SUPABASE_URL
+
 ```
 Key:   NEXT_PUBLIC_SUPABASE_URL
 Value: https://wnaievjffghrzjtuvutp.supabase.co
@@ -27,6 +29,7 @@ Environments: ✅ Production ✅ Preview ✅ Development
 ```
 
 ### Variable 2: NEXT_PUBLIC_SUPABASE_ANON_KEY
+
 ```
 Key:   NEXT_PUBLIC_SUPABASE_ANON_KEY
 Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduYWlldmpmZmdocnp0anV2dXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4MTk5ODYsImV4cCI6MjA4NTM5NTk4Nn0.59SaifUYbMp2UASCyz_Qk4LUhzvARb2_biOqqZfV8f0
@@ -34,6 +37,7 @@ Environments: ✅ Production ✅ Preview ✅ Development
 ```
 
 ### Variable 3: SUPABASE_SERVICE_ROLE_KEY
+
 ```
 Key:   SUPABASE_SERVICE_ROLE_KEY
 Value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduYWlldmpmZmdocnp0anV2dXRwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTgxOTk4NiwiZXhwIjoyMDg1Mzk1OTg2fQ.9caFrLVAmPzcPrqfvYMAJO9r2jGMX8nXElcBOuEUwuw
@@ -41,6 +45,7 @@ Environments: ✅ Production (only - this is sensitive!)
 ```
 
 ### Variable 4: DATABASE_URL
+
 ```
 Key:   DATABASE_URL
 Value: postgresql://postgres.wnaievjffghrztjuvutp:Ssmm022587$$@aws-1-us-east-2.pooler.supabase.com:6543/postgres
@@ -48,6 +53,7 @@ Environments: ✅ Production ✅ Preview ✅ Development
 ```
 
 ### Variable 5: NODE_ENV
+
 ```
 Key:   NODE_ENV
 Value: production
@@ -55,6 +61,7 @@ Environments: ✅ Production
 ```
 
 ### Variable 6: JWT_SECRET
+
 ```
 Key:   JWT_SECRET
 Value: ZYBpTP8D2oMg78DUZfmkVbNol2z5P9xRhrjSdSEkS5s=
@@ -73,6 +80,7 @@ Environments: ✅ Production
 6. Wait 2-4 minutes - watch the build logs
 
 **You'll see:**
+
 - ⏳ Building...
 - ⏳ Deploying...
 - ✅ **Ready** ← This means 100% deployed!
@@ -82,17 +90,21 @@ Environments: ✅ Production
 ## ✅ STEP 4: Verify Deployment (30 seconds)
 
 ### Check Web Application
-Open: **https://infamous-freight-enterprises.vercel.app**
+
+Open: **<https://infamous-freight-enterprises.vercel.app>**
 
 Expected result:
+
 - ✅ Page loads successfully
 - ✅ No "Application Error" messages
 - ✅ Infamous Freight Enterprises homepage visible
 
 ### Check API Health
-Open: **https://infamous-freight-enterprises.vercel.app/api/health**
+
+Open: **<https://infamous-freight-enterprises.vercel.app/api/health>**
 
 Expected result:
+
 ```json
 {
   "status": "ok",
@@ -109,6 +121,7 @@ If you see `"database": "connected"` → **🎉 100% SUCCESS!**
 ## 🎯 SUMMARY
 
 **What you're doing:**
+
 1. Adding 6 environment variables to Vercel (tells the app how to connect to Supabase)
 2. Redeploying Vercel (rebuilds the app with new database connection)
 3. Verifying it works (check that database is connected)
@@ -121,19 +134,22 @@ If you see `"database": "connected"` → **🎉 100% SUCCESS!**
 
 ## 🆘 Troubleshooting
 
-### If deployment fails:
+### If deployment fails
+
 - Check that all 6 variables are added correctly (no typos)
 - Make sure `SUPABASE_SERVICE_ROLE_KEY` is set to Production only
 - Check deployment logs for specific errors
 
-### If database shows "disconnected":
+### If database shows "disconnected"
+
 - Verify DATABASE_URL has the correct password
 - Check that Supabase project is active (not paused)
 - Wait 1-2 minutes and refresh (connection pooling can take time)
 
 ### Need help?
+
 - Check Vercel deployment logs (click deployment → "View Function Logs")
-- Check Supabase logs at: https://supabase.com/dashboard/project/wnaievjffghrztjuvutp/logs/postgres-logs
+- Check Supabase logs at: <https://supabase.com/dashboard/project/wnaievjffghrztjuvutp/logs/postgres-logs>
 
 ---
 

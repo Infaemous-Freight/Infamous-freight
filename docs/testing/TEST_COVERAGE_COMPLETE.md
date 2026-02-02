@@ -200,8 +200,8 @@ These are difficult to test without actually killing the process:
 
 ### Tests
 
-4. `api/__tests__/routes.validation.test.js` - Updated error expectations
-5. `api/__tests__/config.test.js` - Fixed module caching issues (2 tests)
+1. `api/__tests__/routes.validation.test.js` - Updated error expectations
+2. `api/__tests__/config.test.js` - Fixed module caching issues (2 tests)
 
 ## ✅ Verification
 

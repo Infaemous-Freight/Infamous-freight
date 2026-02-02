@@ -8,7 +8,7 @@
 
 ### ✅ API Deployment
 
-- Live at: https://infamous-freight-api.fly.dev
+- Live at: <https://infamous-freight-api.fly.dev>
 - Database: Connected to Render PostgreSQL
 - Status: Operating, E2E tests passing
 
@@ -69,7 +69,7 @@ flyctl status -a infamous-freight-api
 
 | Resource         | Link                                                           | Purpose          |
 | ---------------- | -------------------------------------------------------------- | ---------------- |
-| **API Live**     | https://infamous-freight-api.fly.dev                           | Production API   |
+| **API Live**     | <https://infamous-freight-api.fly.dev>                           | Production API   |
 | **API Docs**     | [API_REFERENCE.md](API_REFERENCE.md)                           | All endpoints    |
 | **Deployment**   | [DEPLOYMENT_RUNBOOK.md](DEPLOYMENT_RUNBOOK.md)                 | Operations       |
 | **Testing**      | [API_TESTING_GUIDE.md](API_TESTING_GUIDE.md)                   | Test examples    |

@@ -9,6 +9,7 @@
 ## 🚨 When to Use This Runbook
 
 Use this if experiencing:
+
 - [ ] "Database connection failed" errors
 - [ ] Connection pool exhausted
 - [ ] Query timeouts (> 30 seconds)
@@ -17,7 +18,8 @@ Use this if experiencing:
 - [ ] Replication lag > 5 minutes
 
 **Not this runbook if:**
-- Single query is slow (see slow-query runbook) 
+
+- Single query is slow (see slow-query runbook)
 - Specific table locked (see deadlock runbook)
 - Accidental data deletion (see recovery runbook)
 
@@ -86,18 +88,21 @@ curl https://api.your-domain.com/api/health
 ### Step 3: ASSESS Severity
 
 **Critical (Execute Triage A):**
+
 - All database queries failing
 - Connection refused errors
 - Database completely unreachable
 - **Action: 🔴 Emergency Response**
 
 **High (Execute Triage B):**
+
 - Some queries timing out
 - High latency (> 10s)
 - Connection pool occasionally exhausted
 - **Action: ⚠️ Stabilization**
 
 **Medium (Execute Triage C):**
+
 - Specific queries slow
 - Occasional timeouts
 - High connection count but responding
@@ -144,6 +149,7 @@ slack #incidents "✅ Database connection restored. Verifying stability..."
 ```
 
 **Expected timeline:**
+
 - Supabase downtime: 5-15 minutes (managed by Supabase)
 - Automatic API failover: Immediate (returns 503)
 - Service verification: 2-3 minutes after recovery
@@ -188,6 +194,7 @@ curl https://your-domain.vercel.app/api/health
 ```
 
 **Expected timeline:**
+
 - Automatic recovery: 1-2 minutes
 - Supabase compute upgrade: 5-10 minutes
 - Service verification: 2-3 minutes
@@ -245,6 +252,7 @@ watch -n 5 'curl -s https://your-domain.com/api/health | jq .response_time'
 ```
 
 **Expected timeline:**
+
 - Identify slow query: 3-5 minutes
 - Deploy fix: 5-15 minutes (requires new deployment)
 - Verify improvement: 2-3 minutes
@@ -257,6 +265,7 @@ watch -n 5 'curl -s https://your-domain.com/api/health | jq .response_time'
 **If standard steps don't worky, escalate:**
 
 ### Level 1: Supabase Connection Pool Reset
+
 ```bash
 # Supabase dashboard will automatically handle this
 # Go to: https://supabase.com/dashboard/project/[ID]/logs
@@ -265,6 +274,7 @@ watch -n 5 'curl -s https://your-domain.com/api/health | jq .response_time'
 ```
 
 ### Level 2: Supabase Compute Upgrade
+
 ```bash
 # In Supabase Dashboard:
 # Project → Database → Settings → Compute Size
@@ -273,6 +283,7 @@ watch -n 5 'curl -s https://your-domain.com/api/health | jq .response_time'
 ```
 
 ### Level 3: Supabase Cluster Restart
+
 ```bash
 # In Supabase Dashboard:
 # Project → Settings → Infrastructure
@@ -282,6 +293,7 @@ watch -n 5 'curl -s https://your-domain.com/api/health | jq .response_time'
 ```
 
 ### Level 4: Restore from Backup
+
 ```bash
 # Last resort - restore from backup
 # Estimated downtime: 30-60 minutes
@@ -333,6 +345,7 @@ watch -n 5 'curl -s https://your-domain.com/api/health | jq .response_time'
 ## Communication Template
 
 **Immediately (when issue detected):**
+
 ```
 🔴 INCIDENT: Database issues detected
 ├─ Service: API & Web
@@ -342,6 +355,7 @@ watch -n 5 'curl -s https://your-domain.com/api/health | jq .response_time'
 ```
 
 **During resolution:**
+
 ```
 🟡 INCIDENT: Working on database recovery
 ├─ Root cause: [Connection pool exhausted / slow queries / replication lag]
@@ -350,6 +364,7 @@ watch -n 5 'curl -s https://your-domain.com/api/health | jq .response_time'
 ```
 
 **After recovery:**
+
 ```
 ✅ INCIDENT RESOLVED
 ├─ Service: Fully operational

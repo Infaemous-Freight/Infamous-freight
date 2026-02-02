@@ -28,24 +28,28 @@
 ## ✅ COMPLETED STEPS
 
 ### 1. ✅ **Source Code & Version Control**
-- Repository: https://github.com/MrMiless44/Infamous-freight
+
+- Repository: <https://github.com/MrMiless44/Infamous-freight>
 - Latest commit pushed to `main`
 - All files synced and committed
 - Git hooks bypassed for deployment
 
 ### 2. ✅ **GitHub Actions CI/CD**
+
 - Workflow `deploy-production.yml` triggered
 - Test suite initiated
 - Build pipeline started
-- View progress: https://github.com/MrMiless44/Infamous-freight/actions
+- View progress: <https://github.com/MrMiless44/Infamous-freight/actions>
 
 ### 3. ✅ **Vercel Web App Integration**
+
 - Vercel webhook received push notification
 - Auto-deploy initiated
 - Building Next.js application
-- Dashboard: https://vercel.com/dashboard
+- Dashboard: <https://vercel.com/dashboard>
 
 ### 4. ✅ **Documentation & Scripts**
+
 - `DEPLOYMENT_SUCCESS.md` created
 - `verify-deployment.sh` script created and made executable
 - All deployment guides updated
@@ -61,6 +65,7 @@
 **Platform**: Vercel
 
 **Build Steps**:
+
 1. ✅ Received GitHub webhook
 2. 🟡 Installing dependencies (pnpm)
 3. ⏳ Building Next.js application
@@ -69,6 +74,7 @@
 6. ⏳ Assigning production domain
 
 **What It's Doing**:
+
 ```bash
 # Vercel is running:
 cd apps/web
@@ -78,7 +84,8 @@ pnpm build
 ```
 
 **Monitor At**:
-- https://vercel.com/dashboard
+
+- <https://vercel.com/dashboard>
 - Look for "Building" → "Ready" status change
 
 ### 6. 🟡 **API Backend Deployment** (Fly.io via GitHub Actions)
@@ -90,6 +97,7 @@ pnpm build
 **Current Blocker**: Needs `FLY_API_TOKEN` secret
 
 **What's Happening**:
+
 - GitHub Actions detected no `FLY_API_TOKEN`
 - Deployment skipped with warning
 - Needs manual configuration to proceed
@@ -103,28 +111,30 @@ pnpm build
 **Required**: Add Fly.io API token to GitHub Secrets
 
 **Steps**:
+
 1. **Get Fly.io Token**:
+
    ```bash
    # On a machine with flyctl installed:
    flyctl auth token
    ```
-   
+
    OR create free account:
-   - Visit: https://fly.io/app/sign-up
+   - Visit: <https://fly.io/app/sign-up>
    - Complete registration
    - Run: `flyctl auth login`
    - Run: `flyctl auth token`
    - Copy the token
 
 2. **Add to GitHub**:
-   - Go to: https://github.com/MrMiless44/Infamous-freight/settings/secrets/actions
+   - Go to: <https://github.com/MrMiless44/Infamous-freight/settings/secrets/actions>
    - Click "New repository secret"
    - Name: `FLY_API_TOKEN`
    - Value: [paste token from step 1]
    - Click "Add secret"
 
 3. **Re-trigger Deployment**:
-   - Go to: https://github.com/MrMiless44/Infamous-freight/actions
+   - Go to: <https://github.com/MrMiless44/Infamous-freight/actions>
    - Find latest "Deploy to Production" workflow
    - Click "Re-run all jobs"
 
@@ -135,13 +145,15 @@ pnpm build
 1. Get API URL from Fly.io (will be like: `https://infamous-freight-api.fly.dev`)
 
 2. Update Vercel environment:
-   - Go to: https://vercel.com/dashboard
+   - Go to: <https://vercel.com/dashboard>
    - Select project "Infamous Freight Enterprises"
    - Settings → Environment Variables
    - Add/Update:
+
      ```
      NEXT_PUBLIC_API_URL=https://infamous-freight-api.fly.dev
      ```
+
    - Click "Save"
    - Redeploy from main branch
 
@@ -160,6 +172,7 @@ flyctl ssh console -C "cd /app/api && npx prisma migrate deploy"
 ### 10. ⏳ **End-to-End Verification**
 
 **Test Checklist**:
+
 ```bash
 # 1. Web app loads
 curl -I https://infamous-freight-enterprises.vercel.app
@@ -179,15 +192,15 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 ## 🎯 CURRENT ACTION ITEMS
 
-### **Right Now (Next 5 minutes)**:
+### **Right Now (Next 5 minutes)**
 
 1. ✅ **Monitor GitHub Actions**:
-   - https://github.com/MrMiless44/Infamous-freight/actions
+   - <https://github.com/MrMiless44/Infamous-freight/actions>
    - Watch for test/build completion
    - Check for any errors
 
 2. ✅ **Monitor Vercel Deployment**:
-   - https://vercel.com/dashboard
+   - <https://vercel.com/dashboard>
    - Watch "Building" → "Ready" transition
    - Should complete in ~5-10 minutes
 
@@ -196,26 +209,26 @@ curl https://infamous-freight-api.fly.dev/api/health
    - Tests should pass in GitHub Actions
    - Once Vercel shows "Ready", test the URL
 
-### **Next (15-30 minutes)**:
+### **Next (15-30 minutes)**
 
-4. ⏳ **Configure Fly.io API Deployment**:
+1. ⏳ **Configure Fly.io API Deployment**:
    - Get Fly.io account if you don't have one
    - Generate API token
    - Add to GitHub Secrets
    - Re-run deployment workflow
 
-5. ⏳ **Update Environment Variables**:
+2. ⏳ **Update Environment Variables**:
    - Get API URL from Fly.io
    - Update Vercel with `NEXT_PUBLIC_API_URL`
    - Trigger Vercel redeploy
 
-### **Final (30-60 minutes)**:
+### **Final (30-60 minutes)**
 
-6. ⏳ **Run Database Migrations**:
+1. ⏳ **Run Database Migrations**:
    - Via Fly.io CLI or GitHub Actions
    - Verify database connection
 
-7. ⏳ **End-to-End Testing**:
+2. ⏳ **End-to-End Testing**:
    - Test web app loads
    - Test API responds
    - Test login flow
@@ -227,13 +240,13 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 | Component            | URL                                                                              | Status     |
 | -------------------- | -------------------------------------------------------------------------------- | ---------- |
-| **Main Web App**     | https://infamous-freight-enterprises.vercel.app                                  | 🟡 Building |
-| **Git Branch URL**   | https://infamous-freight-enterprises-git-main-santorio-miles-projects.vercel.app | 🟡 Building |
-| **API Backend**      | https://infamous-freight-api.fly.dev                                             | ⏳ Pending  |
-| **API Health**       | https://infamous-freight-api.fly.dev/api/health                                  | ⏳ Pending  |
-| **GitHub Repo**      | https://github.com/MrMiless44/Infamous-freight                                   | ✅ Live     |
-| **GitHub Actions**   | https://github.com/MrMiless44/Infamous-freight/actions                           | ✅ Running  |
-| **Vercel Dashboard** | https://vercel.com/dashboard                                                     | ✅ Active   |
+| **Main Web App**     | <https://infamous-freight-enterprises.vercel.app>                                  | 🟡 Building |
+| **Git Branch URL**   | <https://infamous-freight-enterprises-git-main-santorio-miles-projects.vercel.app> | 🟡 Building |
+| **API Backend**      | <https://infamous-freight-api.fly.dev>                                             | ⏳ Pending  |
+| **API Health**       | <https://infamous-freight-api.fly.dev/api/health>                                  | ⏳ Pending  |
+| **GitHub Repo**      | <https://github.com/MrMiless44/Infamous-freight>                                   | ✅ Live     |
+| **GitHub Actions**   | <https://github.com/MrMiless44/Infamous-freight/actions>                           | ✅ Running  |
+| **Vercel Dashboard** | <https://vercel.com/dashboard>                                                     | ✅ Active   |
 
 ---
 
@@ -254,26 +267,31 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 ## 🔍 MONITORING DASHBOARD
 
-### **Check These URLs Every 2-3 Minutes**:
+### **Check These URLs Every 2-3 Minutes**
 
 1. **GitHub Actions Progress**:
+
    ```
    https://github.com/MrMiless44/Infamous-freight/actions
    ```
+
    Watch for:
    - ✅ Tests passed
    - ✅ Build successful
    - 🟡 Deploy in progress
 
 2. **Vercel Deployment Status**:
+
    ```
    https://vercel.com/dashboard
    ```
+
    Watch for:
    - Building → Ready
    - Check deployment logs if errors
 
 3. **Live Web App** (once Vercel shows "Ready"):
+
    ```
    https://infamous-freight-enterprises.vercel.app
    ```
@@ -282,21 +300,24 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 ## 🆘 TROUBLESHOOTING
 
-### **If Vercel Build Fails**:
-1. Check logs at https://vercel.com/dashboard
+### **If Vercel Build Fails**
+
+1. Check logs at <https://vercel.com/dashboard>
 2. Look for TypeScript or dependency errors
 3. Common fixes:
    - Ensure `pnpm-lock.yaml` is committed
    - Check `vercel.json` configuration
    - Verify workspace structure
 
-### **If GitHub Actions Fails**:
-1. Go to https://github.com/MrMiless44/Infamous-freight/actions
+### **If GitHub Actions Fails**
+
+1. Go to <https://github.com/MrMiless44/Infamous-freight/actions>
 2. Click failed workflow
 3. Review error logs
 4. Fix issues and push new commit
 
-### **If API Won't Deploy**:
+### **If API Won't Deploy**
+
 1. Verify `FLY_API_TOKEN` is correct
 2. Check Fly.io billing is active
 3. Review Fly.io logs: `flyctl logs`
@@ -310,7 +331,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 - [x] ✅ GitHub Actions shows all green checkmarks
 - [ ] ⏳ Vercel dashboard shows "Ready"
-- [ ] ⏳ Web app loads at https://infamous-freight-enterprises.vercel.app
+- [ ] ⏳ Web app loads at <https://infamous-freight-enterprises.vercel.app>
 - [ ] ⏳ API health returns 200 OK
 - [ ] ⏳ Database connected (health check shows it)
 - [ ] ⏳ Login page accessible
@@ -344,19 +365,22 @@ curl https://infamous-freight-api.fly.dev/api/health
 ## 📞 SUPPORT & RESOURCES
 
 **Deployment Documentation**:
+
 - [DEPLOYMENT_SUCCESS.md](DEPLOYMENT_SUCCESS.md)
 - [GO_LIVE_NOW.md](GO_LIVE_NOW.md)
 - [DEPLOYMENT_100_COMPLETE.md](DEPLOYMENT_100_COMPLETE.md)
 
 **External Dashboards**:
-- GitHub: https://github.com/MrMiless44/Infamous-freight
-- Vercel: https://vercel.com/dashboard
-- Fly.io: https://fly.io/dashboard
+
+- GitHub: <https://github.com/MrMiless44/Infamous-freight>
+- Vercel: <https://vercel.com/dashboard>
+- Fly.io: <https://fly.io/dashboard>
 
 **Get Help**:
-- GitHub Issues: https://github.com/MrMiless44/Infamous-freight/issues
-- Vercel Support: https://vercel.com/support
-- Fly.io Community: https://community.fly.io
+
+- GitHub Issues: <https://github.com/MrMiless44/Infamous-freight/issues>
+- Vercel Support: <https://vercel.com/support>
+- Fly.io Community: <https://community.fly.io>
 
 ---
 

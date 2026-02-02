@@ -1,6 +1,7 @@
 # Fly.io Deployment Guide
 
 ## Why Fly.io?
+
 - ✅ Docker-based (handles monorepos perfectly)
 - ✅ Global deployment (available in 30+ regions)
 - ✅ Very fast cold starts
@@ -31,7 +32,8 @@ flyctl auth login
 ```
 
 This will:
-1. Open browser to https://fly.io/app/sign-up
+
+1. Open browser to <https://fly.io/app/sign-up>
 2. Create a new account or sign in
 3. Return authorization token to CLI
 
@@ -43,11 +45,13 @@ flyctl launch --no-deploy
 ```
 
 When prompted:
+
 - **App Name**: `infamous-freight` (or choose a name)
 - **Region**: Select closest to your users (e.g., `iad` for US East)
 - **Would you like to tweak these settings before proceeding**: `n`
 
 This creates:
+
 - ✅ `fly.toml` configuration file
 - ✅ Dockerfile (auto-generated)
 - ✅ Remote app on Fly.io (not yet deployed)
@@ -60,7 +64,7 @@ flyctl secrets set NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGc..."
 flyctl secrets set SUPABASE_SERVICE_ROLE_KEY="eyJhbGc..."
 ```
 
-**Get values from:** https://supabase.com/dashboard → Settings → API
+**Get values from:** <https://supabase.com/dashboard> → Settings → API
 
 ### Step 4: Deploy to Production
 
@@ -69,6 +73,7 @@ flyctl deploy --remote-only
 ```
 
 This will:
+
 1. Build Docker image
 2. Push to Fly.io registry
 3. Deploy 2 instances globally
@@ -83,6 +88,7 @@ flyctl info
 ```
 
 Look for:
+
 ```
 Hostname: infamous-freight.fly.dev
 ```
@@ -94,26 +100,31 @@ Visit: `https://infamous-freight.fly.dev`
 ## Verification
 
 ### Check Deployment Status
+
 ```bash
 flyctl status
 ```
 
 Should show:
+
 ```
 ✓ app-servers: 2 desired, 2 running, 2 healthy
 ```
 
 ### View Logs
+
 ```bash
 flyctl logs
 ```
 
 Should show:
+
 ```
 2026-02-01T12:00:00Z nodejs app ready on port 3000
 ```
 
 ### Test the App
+
 ```bash
 flyctl open
 # Opens your app in browser
@@ -148,6 +159,7 @@ jobs:
 ### Option B: Manual Deploy
 
 After pushing to GitHub:
+
 ```bash
 flyctl deploy --remote-only
 ```
@@ -190,20 +202,24 @@ flyctl releases
 ## Troubleshooting
 
 **Build Failed**
+
 - Check logs: `flyctl logs`
 - Common issue: Dockerfile references wrong node version
 - Solution: Check `Dockerfile` was generated to handle monorepo
 
 **App Won't Start**
+
 - `flyctl logs` to see error
 - `flyctl ssh console` to debug inside instance
 - Likely: Environment variables not set correctly
 
 **Out of Memory**
+
 - `flyctl scale memory 512`  (increase to 512MB)
 - Default is 256MB per instance
 
 **High Latency in Your Region**
+
 - `flyctl regions list`
 - `flyctl regions add xxx` to add closer region
 - `flyctl scale count 2` in that region
@@ -213,11 +229,13 @@ flyctl releases
 ## Cost Estimation
 
 **Free tier includes:**
+
 - 3 shared-cpu-1x 256MB VMs
 - 10GB egress bandwidth
 - Perfect for hobby/testing
 
 **Production pricing (if needed):**
+
 - ~$5.70/month per instance
 - Recommended: 2 instances for high availability
 - ~$12-15/month total

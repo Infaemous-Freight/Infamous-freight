@@ -9,6 +9,7 @@
 ## Authentication & Authorization (30 min)
 
 ### JWT & Token Security
+
 - [ ] JWT secret is 32+ characters, cryptographically random
 - [ ] JWT expiry is appropriate (7-30 days)
 - [ ] Token rotation is tested (if enabled)
@@ -17,6 +18,7 @@
 - [ ] HTTPS enforced (no HTTP)
 
 ### Scope Enforcement
+
 - [ ] All sensitive endpoints require scopes
 - [ ] Scopes are granular (not just "admin")
 - [ ] Routes validate required scopes
@@ -24,6 +26,7 @@
 - [ ] Scope registry documented in ROUTE_SCOPE_REGISTRY.md
 
 ### Organization Isolation
+
 - [ ] Users can only access their organization
 - [ ] Organization ID in JWT claim (org_id)
 - [ ] All queries filtered by org_id
@@ -35,6 +38,7 @@
 ## Input Validation (30 min)
 
 ### Data Validation
+
 - [ ] All user inputs validated (strings, emails, phones, UUIDs)
 - [ ] Enum values validated against shared constants
 - [ ] No SQL injection possible (Prisma handles escaping)
@@ -43,6 +47,7 @@
 - [ ] Test: Try malicious inputs (SQL, XSS, etc.)
 
 ### Business Logic Validation
+
 - [ ] Shipment dates: start < end
 - [ ] Amounts: > 0, within reason (not $999,999)
 - [ ] Rates: within industry standards
@@ -53,6 +58,7 @@
 ## CORS & Headers (20 min)
 
 ### CORS Configuration
+
 - [ ] CORS_ORIGINS set correctly (no wildcards in production)
 - [ ] Only necessary origins allowed
 - [ ] Credentials: true only if needed
@@ -60,6 +66,7 @@
 - [ ] Test: API call from unauthorized origin blocked
 
 ### Security Headers
+
 - [ ] Content-Security-Policy set
 - [ ] X-Content-Type-Options: nosniff
 - [ ] X-Frame-Options: DENY
@@ -68,6 +75,7 @@
 - [ ] Referrer-Policy: strict-origin-when-cross-origin
 
 ### HTTPS
+
 - [ ] All endpoints require HTTPS
 - [ ] Certificate is valid and not expired
 - [ ] Certificate renewal automated (ACME/Let's Encrypt)
@@ -79,6 +87,7 @@
 ## Rate Limiting (20 min)
 
 ### Endpoint Protection
+
 - [ ] General limiter: 100 requests/15 min per user
 - [ ] Auth limiter: 5 requests/15 min per IP (prevents brute force)
 - [ ] AI limiter: 20 requests/1 min per user
@@ -86,6 +95,7 @@
 - [ ] Export limiter: 5 requests/hour per user (expensive ops)
 
 ### Testing
+
 - [ ] Exceed limit 1x: get 429 response
 - [ ] Exceed limit 5x: stays blocked until window resets
 - [ ] Health check /api/health: bypass rate limiter
@@ -96,6 +106,7 @@
 ## Database Security (30 min)
 
 ### Credentials
+
 - [ ] Database password is 32+ characters
 - [ ] Password stored in Kubernetes secret (not code)
 - [ ] Database URL uses encrypted connection (postgresql:// with SSL)
@@ -103,18 +114,21 @@
 - [ ] Database user has minimal privileges (not superuser)
 
 ### Queries & Injections
+
 - [ ] All queries use Prisma (parameterized)
 - [ ] No raw SQL (unless absolutely necessary & parameterized)
 - [ ] Slow queries monitored (SLOW_QUERY_THRESHOLD_MS)
 - [ ] Query logs don't expose sensitive data (no passwords, tokens)
 
 ### Access Control
+
 - [ ] Database only accessible from API (not from web)
 - [ ] Network policies restrict access
 - [ ] Database backups encrypted
 - [ ] Backup retention appropriate (30+ days)
 
 ### Monitoring
+
 - [ ] Failed login attempts logged
 - [ ] Long-running queries tracked
 - [ ] Connection count monitored
@@ -125,6 +139,7 @@
 ## Logging & Monitoring (20 min)
 
 ### Sensitive Data
+
 - [ ] No passwords logged
 - [ ] No JWT tokens logged
 - [ ] No API keys logged
@@ -132,12 +147,14 @@
 - [ ] Audit logs capture: who, what, when, where, why
 
 ### Log Retention
+
 - [ ] Application logs: 30 days
 - [ ] Audit logs: 90 days (for compliance)
 - [ ] Error logs: searchable in Sentry/DataDog
 - [ ] Logs encrypted at rest
 
 ### Alerting
+
 - [ ] High error rate alert (> 0.1%)
 - [ ] Failed auth attempts alert (> 5 in 5 min)
 - [ ] Rate limit blocks alert
@@ -149,6 +166,7 @@
 ## Secrets Management (20 min)
 
 ### Secrets Storage
+
 - [ ] .env files in .gitignore (never in git)
 - [ ] Production secrets in Kubernetes Secrets or AWS Secrets Manager
 - [ ] Secrets encrypted at rest
@@ -156,6 +174,7 @@
 - [ ] Secrets access audited
 
 ### Secrets Rotation
+
 - [ ] JWT secret rotation plan documented
 - [ ] Database password rotation plan documented
 - [ ] API key rotation plan documented
@@ -167,6 +186,7 @@
 ## Dependency Security (20 min)
 
 ### Package Vulnerabilities
+
 - [ ] Run `npm audit` or `pnpm audit`
 - [ ] No high/critical vulnerabilities
 - [ ] All dependencies have known versions (no wildcards)
@@ -174,6 +194,7 @@
 - [ ] Dependabot/Snyk enabled in GitHub
 
 ### Supply Chain
+
 - [ ] Verify npm packages authenticity
 - [ ] Use npm registry, not GitHub raw files
 - [ ] Peer dependencies verified
@@ -184,6 +205,7 @@
 ## Third-Party Integrations (15 min)
 
 ### Stripe/PayPal
+
 - [ ] API keys stored in Kubernetes Secret
 - [ ] Webhook signatures verified
 - [ ] Webhook URLs use HTTPS
@@ -191,6 +213,7 @@
 - [ ] PCI compliance: let Stripe handle payment data
 
 ### AI Services (OpenAI/Anthropic)
+
 - [ ] API keys stored in Kubernetes Secret
 - [ ] Rate limiting per user
 - [ ] User inputs sanitized (no injection attacks)
@@ -198,6 +221,7 @@
 - [ ] Cost controls in place (prevent abuse)
 
 ### Email/SMS
+
 - [ ] API keys stored securely
 - [ ] Rate limiting on sends
 - [ ] Opt-out/unsubscribe respected
@@ -208,6 +232,7 @@
 ## Infrastructure Security (30 min)
 
 ### Network
+
 - [ ] Database only accessible from API pods
 - [ ] API only accessible from web/external clients
 - [ ] Ingress rules enforce HTTPS
@@ -215,6 +240,7 @@
 - [ ] VPC/private networks used (not public)
 
 ### Container Security
+
 - [ ] Images scanned for vulnerabilities
 - [ ] No secrets in Dockerfile (use build args)
 - [ ] Minimal base images (alpine, distroless)
@@ -222,6 +248,7 @@
 - [ ] Resource limits set (CPU, memory)
 
 ### Kubernetes
+
 - [ ] RBAC configured (least privilege)
 - [ ] NetworkPolicies define allowed traffic
 - [ ] PodSecurityPolicies enforced
@@ -233,18 +260,21 @@
 ## Deployment & CI/CD (20 min)
 
 ### Code Review
+
 - [ ] All code reviewed before merge (pull requests)
 - [ ] Security team approves security-related changes
 - [ ] No secrets in commits (scan with git-secrets)
 - [ ] Branch protection: require reviews, status checks
 
 ### Automated Testing
+
 - [ ] Unit tests cover auth/validation
 - [ ] Integration tests cover cross-org isolation
 - [ ] Security tests cover common attacks
 - [ ] Tests run in CI before deploy
 
 ### Deployment
+
 - [ ] Deployments use container registry (not git)
 - [ ] Containers signed/verified
 - [ ] Blue-green deployments (zero downtime)
@@ -255,6 +285,7 @@
 ## Compliance & Regulations (15 min)
 
 ### Data Protection
+
 - [ ] GDPR: User can request/delete data
 - [ ] SOC 2: Audit trails maintained
 - [ ] Data residency: Stored in correct region
@@ -262,6 +293,7 @@
 - [ ] Data classification: Know what's sensitive
 
 ### Privacy
+
 - [ ] Privacy policy updated
 - [ ] Terms of service updated
 - [ ] User consent for data use obtained
@@ -273,6 +305,7 @@
 ## Testing & Validation (1 hour)
 
 ### Manual Testing
+
 - [ ] Login with invalid credentials: fails
 - [ ] Login with valid credentials: succeeds
 - [ ] Access resource from different org: fails
@@ -282,6 +315,7 @@
 - [ ] Unencrypted (HTTP) request: redirected to HTTPS
 
 ### Automated Security Testing
+
 ```bash
 # Run OWASP ZAP scan
 docker run -t owasp/zap2docker-stable zap-baseline.py \
@@ -295,6 +329,7 @@ snyk test --severity-threshold=high
 ```
 
 ### Penetration Testing (Optional)
+
 - [ ] Hire external security firm (if high-security domain)
 - [ ] Test for common vulnerabilities (OWASP Top 10)
 - [ ] Document findings & remediation
@@ -304,6 +339,7 @@ snyk test --severity-threshold=high
 ## Post-Launch Monitoring (Ongoing)
 
 ### Security Metrics
+
 - [ ] Failed auth attempts: 0-5/hour (normal)
 - [ ] Rate limit blocks: < 1% of traffic
 - [ ] Error rate: < 0.1%
@@ -311,6 +347,7 @@ snyk test --severity-threshold=high
 - [ ] No SQL errors (indicates injection attempt?)
 
 ### Incident Response
+
 - [ ] Security team on-call 24/7
 - [ ] Incident response plan documented
 - [ ] Communication templates prepared
@@ -328,6 +365,7 @@ snyk test --severity-threshold=high
 **Approved for Launch**: Yes [ ] No [ ]  
 
 **Comments**:
+
 ```
 [Add any notes, exceptions, or follow-up items]
 ```
@@ -352,6 +390,7 @@ snyk test --severity-threshold=high
 ---
 
 **Reference Documentation**:
+
 - [ENV_SETUP_SECRETS_GUIDE.md](ENV_SETUP_SECRETS_GUIDE.md)
 - [docs/CORS_AND_SECURITY.md](docs/CORS_AND_SECURITY.md)
 - [docs/ROUTE_SCOPE_REGISTRY.md](docs/ROUTE_SCOPE_REGISTRY.md)

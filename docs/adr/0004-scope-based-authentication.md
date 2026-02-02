@@ -75,6 +75,7 @@ router.post(
 - Examples: `ai:command`, `billing:write`, `voice:ingest`, `admin:users`
 
 **Current scopes:**
+
 | Scope | Description | Used By |
 |-------|-------------|---------|
 | `ai:command` | Execute AI inference | Driver app, web dashboard |
@@ -166,5 +167,5 @@ If scope management becomes complex:
 ## Related
 
 - [ADR-0001: Monorepo Architecture](0001-monorepo-architecture.md)
-- JWT Best Practices: https://datatracker.ietf.org/doc/html/rfc8725
-- OAuth 2.0 Scopes: https://datatracker.ietf.org/doc/html/rfc6749#section-3.3
+- JWT Best Practices: <https://datatracker.ietf.org/doc/html/rfc8725>
+- OAuth 2.0 Scopes: <https://datatracker.ietf.org/doc/html/rfc6749#section-3.3>

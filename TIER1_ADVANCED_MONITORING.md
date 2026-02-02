@@ -3,6 +3,7 @@
 ## 1. Enhanced Sentry Configuration ✅
 
 ### Current Status
+
 - ✅ Sentry initialized in API and Web
 - ✅ Basic error tracking active
 - ✅ User context integration ready
@@ -268,6 +269,7 @@ curl -X POST https://api.uptimerobot.com/v2/monitorNew \
 **Expected Uptime SLA**: 99.9% (max 43 minutes downtime/month)
 
 **Alert Thresholds**:
+
 - 1 minute of downtime → SMS alert
 - 5 minutes of downtime → Page on-call engineer
 - 3 consecutive failures → Auto-escalate
@@ -381,22 +383,22 @@ module.exports = { sendAlert };
 
 ### Recommended Tools
 
-1. **Vercel Dashboard**: https://vercel.com/infamousfreight
+1. **Vercel Dashboard**: <https://vercel.com/infamousfreight>
    - Deploy status
    - Performance metrics
    - Error tracking
 
-2. **Sentry Dashboard**: https://sentry.io/
+2. **Sentry Dashboard**: <https://sentry.io/>
    - Error trends
    - Release tracking
    - Performance monitoring
 
-3. **Datadog Dashboard**: https://app.datadoghq.com/
+3. **Datadog Dashboard**: <https://app.datadoghq.com/>
    - Real user monitoring
    - API performance
    - Synthetics
 
-4. **Fly.io Dashboard**: https://fly.io/
+4. **Fly.io Dashboard**: <https://fly.io/>
    - API deployment status
    - Resource usage
    - Logs
@@ -404,18 +406,21 @@ module.exports = { sendAlert };
 ## 8. Monitoring Schedule ✅
 
 ### Daily Checks (5 min)
+
 - [ ] Health endpoint responding
 - [ ] Error rate < 1%
 - [ ] API response time p95 < 500ms
 - [ ] Database connections: OK
 
 ### Weekly Review (30 min)
+
 - [ ] Review error logs in Sentry
 - [ ] Check performance trends
 - [ ] Review cost metrics
 - [ ] Update runbooks if needed
 
 ### Monthly Review (1 hour)
+
 - [ ] SLA compliance (99.9%+)
 - [ ] Performance baselines
 - [ ] Alert tuning

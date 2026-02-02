@@ -9,14 +9,14 @@
 
 ## 📝 YOUR CONFIGURATION VALUES
 
-### **For Vercel Environment Variables**:
+### **For Vercel Environment Variables**
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://wnaievjffghrzjtuvutp.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduYWlldmpmZmdocnp0anV2dXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4MTk5ODYsImV4cCI6MjA4NTM5NTk4Nn0.59SaifUYbMp2UASCyz_Qk4LUhzvARb2_biOqqZfV8f0
 ```
 
-### **For Database Connection** (get from Supabase):
+### **For Database Connection** (get from Supabase)
 
 You also need the **service role key** and **database connection string**.
 
@@ -26,7 +26,7 @@ You also need the **service role key** and **database connection string**.
 
 ### **STEP 1: Get Remaining Supabase Credentials**
 
-1. Go to: https://wnaievjffghrzjtuvutp.supabase.co
+1. Go to: <https://wnaievjffghrzjtuvutp.supabase.co>
 2. **Settings** → **API**
 3. Copy:
    - **Project URL**: `https://wnaievjffghrzjtuvutp.supabase.co`
@@ -42,7 +42,7 @@ You also need the **service role key** and **database connection string**.
 
 ### **STEP 2: Configure Vercel**
 
-Go to: https://vercel.com/dashboard
+Go to: <https://vercel.com/dashboard>
 
 1. Select: **Infamous Freight Enterprises**
 2. **Settings** → **Environment Variables**
@@ -74,13 +74,15 @@ Go to: https://vercel.com/dashboard
 ### **STEP 4: Verify 100%**
 
 Run:
+
 ```bash
 ./verify-deployment.sh
 ```
 
 Or check manually:
-- **Web App**: https://infamous-freight-enterprises.vercel.app
-- **Health Check**: https://infamous-freight-enterprises.vercel.app/api/health
+
+- **Web App**: <https://infamous-freight-enterprises.vercel.app>
+- **Health Check**: <https://infamous-freight-enterprises.vercel.app/api/health>
 - **Expected**: `{"status":"ok","database":"connected"}`
 
 ---
@@ -99,11 +101,13 @@ Or check manually:
 ## 🎯 QUICK COPY-PASTE VALUES
 
 **Your Supabase URL**:
+
 ```
 https://wnaievjffghrzjtuvutp.supabase.co
 ```
 
 **Your Anon Key** (for client-side):
+
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduYWlldmpmZmdocnp0anV2dXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4MTk5ODYsImV4cCI6MjA4NTM5NTk4Nn0.59SaifUYbMp2UASCyz_Qk4LUhzvARb2_biOqqZfV8f0
 ```
@@ -112,9 +116,9 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduYWlldmp
 
 ## ⚡ NEXT IMMEDIATE ACTION
 
-1. **Get Service Role Key**: https://wnaievjffghrzjtuvutp.supabase.co → Settings → API
-2. **Get Database URL**: https://wnaievjffghrzjtuvutp.supabase.co → Settings → Database
-3. **Add to Vercel**: https://vercel.com/dashboard → Environment Variables
+1. **Get Service Role Key**: <https://wnaievjffghrzjtuvutp.supabase.co> → Settings → API
+2. **Get Database URL**: <https://wnaievjffghrzjtuvutp.supabase.co> → Settings → Database
+3. **Add to Vercel**: <https://vercel.com/dashboard> → Environment Variables
 4. **Redeploy**: Click "Redeploy" button
 
 ---

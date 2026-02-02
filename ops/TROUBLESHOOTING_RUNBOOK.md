@@ -5,6 +5,7 @@
 ### Database Connection Issues
 
 **Problem: "ECONNREFUSED 127.0.0.1:5432"**
+
 ```bash
 # Solution 1: Start database
 docker-compose up -d postgres
@@ -18,6 +19,7 @@ echo $DATABASE_URL
 ```
 
 **Problem: "too many connections"**
+
 ```bash
 # Check current connections
 psql $DATABASE_URL -c "SELECT count(*) FROM pg_stat_activity;"
@@ -36,6 +38,7 @@ psql $DATABASE_URL -c "
 ### API Runtime Errors
 
 **Problem: "Cannot find module '@infamous-freight/shared'"**
+
 ```bash
 # Solution: Build shared package first
 pnpm --filter @infamous-freight/shared build
@@ -45,6 +48,7 @@ pnpm api:dev
 ```
 
 **Problem: "JWT_SECRET not set"**
+
 ```bash
 # Solution: Set environment variable
 export JWT_SECRET=$(openssl rand -base64 32)
@@ -55,6 +59,7 @@ echo "JWT_SECRET=your-secret-here" >> .env
 ```
 
 **Problem: "Port 4000 already in use"**
+
 ```bash
 # Find process using port 4000
 lsof -ti:4000
@@ -69,6 +74,7 @@ API_PORT=5000 pnpm api:dev
 ### Web Build Issues
 
 **Problem: "next build fails"**
+
 ```bash
 # Solution 1: Clear cache
 cd web
@@ -84,6 +90,7 @@ pnpm build:analyze
 ```
 
 **Problem: "ReferenceError: window is not defined"**
+
 ```bash
 # Cause: Server-side code using browser APIs
 # Solution: Use dynamic imports with ssr: false
@@ -97,6 +104,7 @@ const Component = dynamic(() => import('./component'), {
 ### Authentication Issues
 
 **Problem: "Invalid bearer token"**
+
 ```bash
 # Solution 1: Verify token format
 # Should be: Bearer <token>
@@ -111,6 +119,7 @@ curl -X POST http://localhost:4000/api/auth/login \
 ```
 
 **Problem: "Insufficient scope"**
+
 ```bash
 # Solution: Verify user has required scope
 # Edit JWT token generation to include scopes
@@ -125,6 +134,7 @@ const token = jwt.sign({
 ### Rate Limiting Issues
 
 **Problem: "Too many requests" error**
+
 ```bash
 # Solution 1: Wait for window to reset (check error message)
 # Default windows: auth 15min, ai 1min, billing 15min
@@ -140,6 +150,7 @@ if (req.ip === '127.0.0.1') return next();
 ### Performance Issues
 
 **Problem: "Shipment list query is slow"**
+
 ```bash
 # Verify indexes exist
 psql $DATABASE_URL -c "
@@ -161,6 +172,7 @@ LIMIT 100;
 ```
 
 **Problem: "Web bundle too large"**
+
 ```bash
 # Analyze bundle
 cd web && pnpm build:analyze
@@ -178,6 +190,7 @@ npm ls stripe
 ### Testing Issues
 
 **Problem: "Tests failing locally but passing in CI"**
+
 ```bash
 # Solution: Ensure consistent environment
 # 1. Use same Node version
@@ -191,6 +204,7 @@ NODE_ENV=test jest --coverage
 ```
 
 **Problem: "Tests timeout"**
+
 ```bash
 # Increase timeout in jest.config.js
 testTimeout: 30000 // milliseconds
@@ -204,6 +218,7 @@ test('...', async () => {
 ### Caching Issues
 
 **Problem: "Cached data is stale"**
+
 ```bash
 # Solution 1: Check TTL
 # Default cache TTL: 300 seconds (5 mins)
@@ -218,6 +233,7 @@ CACHE_DISABLED=true pnpm api:dev
 ### Email/Notification Issues
 
 **Problem: "Reset token email not sent"**
+
 ```bash
 # Solution 1: Check email provider config
 echo $SMTP_HOST
@@ -238,6 +254,7 @@ npm install --save-dev ethereal-email
 ### Docker Issues
 
 **Problem: "Container won't start"**
+
 ```bash
 # Check logs
 docker-compose logs api
@@ -255,6 +272,7 @@ lsof -ti:3000 -ti:4000 -ti:5432
 ## Diagnostic Commands
 
 ### Check System Health
+
 ```bash
 # Database health
 psql $DATABASE_URL -c "SELECT 1"
@@ -270,6 +288,7 @@ printenv | grep -E "DATABASE|JWT|STRIPE|API"
 ```
 
 ### Collect Debug Info
+
 ```bash
 # Node version
 node --version && npm --version
@@ -286,6 +305,7 @@ df -h
 ```
 
 ### Generate Support Bundle
+
 ```bash
 #!/bin/bash
 # Collect diagnostics for support

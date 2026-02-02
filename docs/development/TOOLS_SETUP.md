@@ -124,6 +124,7 @@ pnpm prepare
    ```
 
 4. **Build for production**
+
    ```bash
    pnpm -r build
    ```

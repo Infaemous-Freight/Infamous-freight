@@ -285,4 +285,3 @@ TOTAL PARTNERSHIP PERFORMANCE (2026):
 
 Strategic partnerships with NetSuite, Shopify, QuickBooks, and others to
 drive 1,000+ warm leads/month and $2M+ partnership revenue by EOY 2026.
-

@@ -27,7 +27,7 @@ ls api/node_modules/compression
 
 ### 1.1 Go to Vercel
 
-- Open: https://vercel.com
+- Open: <https://vercel.com>
 - Click: **Login** (or Sign Up)
 - Select: **GitHub** authentication
 
@@ -71,7 +71,7 @@ Your web app is now at: https://infamous-freight-enterprises-XXXXX.vercel.app
 
 ### 2.1 Go to Fly.io
 
-- Open: https://fly.io
+- Open: <https://fly.io>
 - Click: **Sign Up** or **Login** with GitHub
 - Authorize GitHub access
 
@@ -297,7 +297,7 @@ After deployment, you should see:
 
 ### ✅ Web (Vercel)
 
-- [x] Site loads at https://infamous-freight-enterprises-XXXXX.vercel.app
+- [x] Site loads at <https://infamous-freight-enterprises-XXXXX.vercel.app>
 - [x] No console errors
 - [x] Images load correctly
 - [x] Can navigate between pages
@@ -465,15 +465,15 @@ flyctl secrets set DATABASE_URL=correct-string
 
 ### Links
 
-- **Vercel Dashboard**: https://vercel.com/dashboard
-- **Fly.io Dashboard**: https://fly.io/dashboard
-- **GitHub Repo**: https://github.com/MrMiless44/Infamous-freight-enterprises
+- **Vercel Dashboard**: <https://vercel.com/dashboard>
+- **Fly.io Dashboard**: <https://fly.io/dashboard>
+- **GitHub Repo**: <https://github.com/MrMiless44/Infamous-freight-enterprises>
 
 ### After Deployment
 
-- **Web URL**: https://infamous-freight-enterprises-XXXXX.vercel.app
-- **API URL**: https://infamous-freight-api-prod.fly.dev
-- **Health Check**: https://infamous-freight-api-prod.fly.dev/api/health
+- **Web URL**: <https://infamous-freight-enterprises-XXXXX.vercel.app>
+- **API URL**: <https://infamous-freight-api-prod.fly.dev>
+- **Health Check**: <https://infamous-freight-api-prod.fly.dev/api/health>
 
 ### Environment Variables (Remember These)
 
@@ -491,14 +491,14 @@ API (Fly.io):
 
 ---
 
-## 🎉 You're Done!
+## 🎉 You're Done
 
 Once all 5 steps are complete:
 
 ✅ **Your application is LIVE!**
 
-- Web: https://infamous-freight-enterprises-XXXXX.vercel.app
-- API: https://infamous-freight-api-prod.fly.dev
+- Web: <https://infamous-freight-enterprises-XXXXX.vercel.app>
+- API: <https://infamous-freight-api-prod.fly.dev>
 - Database: Connected and indexed
 - Monitoring: Active (Datadog, Vercel Analytics)
 - Updates: Auto-deploy on git push

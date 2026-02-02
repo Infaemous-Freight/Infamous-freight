@@ -132,8 +132,8 @@ pnpm check:types       # TypeScript checking
 
 ## Port Mappings
 
-- **API**: 3001 (http://localhost:3001)
-- **Web**: 3000 (http://localhost:3000)
+- **API**: 3001 (<http://localhost:3001>)
+- **Web**: 3000 (<http://localhost:3000>)
 - **Database**: 5432 (PostgreSQL)
 
 ## Troubleshooting
@@ -193,6 +193,7 @@ When starting next session:
    ```
 
 3. **Start developing**:
+
    ```bash
    pnpm dev       # Start all services
    ```

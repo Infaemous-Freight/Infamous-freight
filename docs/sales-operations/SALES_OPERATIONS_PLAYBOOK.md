@@ -701,6 +701,7 @@ TEMPLATES:
 ### Objective: Scale Sales from Founder-Led to Team-Driven
 
 **Key Results**:
+
 ```
 KR1: Hire and onboard 1 additional sales rep
   • Current: 2 people (CEO + 1 rep)
@@ -728,6 +729,7 @@ KR4: Reduce sales cycle from 14 → 10 days
 ## Success Metrics
 
 **Sales Operations Targets (EOY 2026)**:
+
 - ✅ ARR: $5.4M (3x from $1.8M)
 - ✅ New customers: 200/month (vs 12 baseline)
 - ✅ Sales team: 6 people (vs 2)
@@ -737,6 +739,7 @@ KR4: Reduce sales cycle from 14 → 10 days
 - ✅ Quota attainment: 100%+
 
 **Long-Term Vision (2027+)**:
+
 - ✅ Predictable, repeatable sales process
 - ✅ Scalable team (10+ reps)
 - ✅ Enterprise deals ($20K+ ARR)

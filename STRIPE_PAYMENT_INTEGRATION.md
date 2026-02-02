@@ -3,21 +3,26 @@
 ## Quick Setup (15 minutes)
 
 ### Step 1: Create Stripe Account
-1. Go to: https://stripe.com
+
+1. Go to: <https://stripe.com>
 2. Click **"Sign up"** (or sign in if you have account)
 3. **Verify email** + phone number
 4. Add your **business bank account** (money goes here)
 5. Get your **API keys** (live mode)
 
 ### Step 2: Get Your API Keys
+
 ```
 Dashboard → Settings → API Keys
 ```
+
 Copy these (KEEP SECRET):
+
 - **Publishable Key**: `pk_live_xxx...`
 - **Secret Key**: `sk_live_xxx...`
 
 ### Step 3: Add to Environment
+
 ```bash
 # .env (production)
 STRIPE_SECRET_KEY=sk_live_your_actual_key_here
@@ -469,12 +474,14 @@ function PricingCard({ name, price, period, features, onSelect, loading }) {
 2. Click **"+ Add product"**
 
 **Product 1: Pro**
+
 - Name: `Infamous Freight Pro`
 - Price: `$99.00`
 - Billing period: `Monthly`
 - Copy the **Price ID**: `price_xxx` (save this)
 
 **Product 2: Enterprise**
+
 - Name: `Infamous Freight Enterprise`
 - Price: `$999.00`
 - Billing period: `Monthly`
@@ -502,6 +509,7 @@ $99/mo   Holds for    Deposits weekly/daily
 ```
 
 ### Example: 100 Paying Customers
+
 - 90 on **Pro** ($99/month): $8,910/month
 - 10 on **Enterprise** ($999/month): $9,990/month
 - **Total**: $18,900/month = **$226,800/year** ✅ to your bank
@@ -511,17 +519,20 @@ $99/mo   Holds for    Deposits weekly/daily
 ## Webhook Setup (Critical for Payment Updates)
 
 ### 1. Generate Webhook Signing Secret
+
 - **Settings** → **Webhooks** → **Add endpoint**
 - URL: `https://yourapp.com/api/billing/webhook`
 - Events: `invoice.payment_succeeded`, `invoice.payment_failed`, `customer.subscription.deleted`
 - Copy **Signing secret**: `whsec_xxx`
 
 ### 2. Add to .env
+
 ```bash
 STRIPE_WEBHOOK_SECRET=whsec_your_secret_here
 ```
 
 ### 3. Test Webhook
+
 ```bash
 stripe listen --forward-to localhost:4000/api/billing/webhook
 ```
@@ -592,16 +603,19 @@ CREATE TABLE refunds (
 ## Verification
 
 **Money will appear in your bank account:**
+
 - Non-SCA charges (US): 1-2 business days
 - SCA charges (EU/UK): 3-5 business days
 - Check your Stripe dashboard **Payments** section for all transactions
 
 **Test charge (doesn't cost you):**
+
 ```bash
 Card: 4242 4242 4242 4242
 Expiry: 12/25
 CVC: 123
 ```
+
 This charges $1 and auto-refunds for testing.
 
 ---

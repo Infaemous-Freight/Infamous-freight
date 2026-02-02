@@ -5,6 +5,7 @@ Next.js 14 frontend application for the Infamous Freight platform.
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js >= 20.0.0
 - pnpm >= 9.15.0
 
@@ -22,7 +23,7 @@ cp .env.example .env
 pnpm dev
 ```
 
-Development server runs at: http://localhost:3000
+Development server runs at: <http://localhost:3000>
 
 ### Development
 
@@ -62,7 +63,7 @@ web/
 ├── public/            # Static assets
 ├── styles/            # Global styles
 ├── utils/             # Helper functions
-├── middleware.ts      # Next.js middleware
+├── proxy.ts           # Next.js edge proxy
 └── package.json
 ```
 
@@ -93,6 +94,7 @@ pnpm add -D @testing-library/react @testing-library/jest-dom jest-environment-js
 ```
 
 Example test:
+
 ```typescript
 import { render, screen } from '@testing-library/react';
 import { Button } from './Button';
@@ -114,6 +116,7 @@ describe('Button', () => {
 ## 🔧 Environment Variables
 
 See `.env.example` for required environment variables:
+
 - `NEXT_PUBLIC_API_URL`: Backend API URL
 - `NEXT_PUBLIC_STRIPE_PUBLIC_KEY`: Stripe publishable key
 - `DATADOG_CLIENT_TOKEN`: Datadog RUM token
@@ -124,12 +127,15 @@ See `.env.example` for required environment variables:
 ## 📊 Performance
 
 ### Bundle Analysis
+
 ```bash
 pnpm build:analyze
 ```
+
 Opens bundle analyzer to identify large dependencies.
 
 ### Key Optimizations
+
 - Automatic code splitting by route
 - Image optimization with Next.js Image
 - Font optimization with next/font
@@ -138,11 +144,13 @@ Opens bundle analyzer to identify large dependencies.
 ## 🌐 Routing
 
 Next.js 14 uses file-based routing:
+
 - `pages/index.tsx` → `/`
 - `pages/about.tsx` → `/about`
 - `pages/shipments/[id].tsx` → `/shipments/:id`
 
 ### Dynamic Routes
+
 ```typescript
 // pages/shipments/[id].tsx
 import { useRouter } from 'next/router';
@@ -157,6 +165,7 @@ export default function Shipment() {
 ## 🔄 Data Fetching
 
 ### Server-Side Rendering (SSR)
+
 ```typescript
 export async function getServerSideProps() {
   const res = await fetch(`${process.env.API_BASE_URL}/api/shipments`);
@@ -166,6 +175,7 @@ export async function getServerSideProps() {
 ```
 
 ### Client-Side Fetching
+
 ```typescript
 import { useEffect, useState } from 'react';
 
@@ -199,17 +209,21 @@ export function ShipmentCard({ shipment }: Props) {
 ## 📦 Build & Deploy
 
 ### Production Build
+
 ```bash
 pnpm build
 ```
+
 Outputs to `.next/` directory.
 
 ### Deployment
+
 - **Vercel**: Automatic deployment on push (recommended)
 - **Docker**: Use provided Dockerfile
 - **Static Export**: Not supported (uses SSR features)
 
 ### Docker Deployment
+
 ```bash
 docker build -t infamous-freight-web .
 docker run -p 3000:3000 infamous-freight-web
@@ -227,19 +241,25 @@ docker run -p 3000:3000 infamous-freight-web
 ## 🔍 Common Issues
 
 ### "Cannot find module '@infamous-freight/shared'"
+
 Build the shared package first:
+
 ```bash
 cd ../packages/shared && pnpm build
 ```
 
 ### Port 3000 already in use
+
 Change port in package.json or set PORT environment variable:
+
 ```bash
 PORT=3001 pnpm dev
 ```
 
 ### Type errors after shared package update
+
 Restart TypeScript server in your IDE or run:
+
 ```bash
 pnpm typecheck
 ```

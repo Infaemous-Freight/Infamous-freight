@@ -9,6 +9,7 @@
 ## 1️⃣ Error Tracking with Sentry
 
 ### Setup
+
 ```bash
 # Install Sentry SDK
 pnpm add @sentry/node @sentry/react @sentry/nextjs
@@ -21,6 +22,7 @@ pnpm add @sentry/node @sentry/react @sentry/nextjs
 ### Configuration
 
 **API (apps/api/src/index.js)**:
+
 ```javascript
 const Sentry = require("@sentry/node");
 
@@ -41,6 +43,7 @@ app.use(Sentry.Handlers.errorHandler());
 ```
 
 **Web (apps/web/pages/_app.tsx)**:
+
 ```typescript
 import * as Sentry from "@sentry/nextjs";
 
@@ -58,6 +61,7 @@ Sentry.init({
 ```
 
 ### Environment Variables
+
 ```bash
 # .env.local
 SENTRY_DSN=https://xxxxx@sentry.io/1234567
@@ -65,7 +69,8 @@ NEXT_PUBLIC_SENTRY_DSN=https://xxxxx@sentry.io/1234567
 ```
 
 ### Monitoring
-- **Dashboard**: https://sentry.io/organizations/your-org/issues/
+
+- **Dashboard**: <https://sentry.io/organizations/your-org/issues/>
 - **Setup alerts**: Performance alerts, Release tracking, Custom thresholds
 
 ---
@@ -73,6 +78,7 @@ NEXT_PUBLIC_SENTRY_DSN=https://xxxxx@sentry.io/1234567
 ## 2️⃣ Performance Monitoring with Datadog
 
 ### Setup
+
 ```bash
 # Install Datadog RUM & Logs
 pnpm add @datadog/browser-rum @datadog/browser-logs
@@ -84,6 +90,7 @@ pnpm add @datadog/browser-rum @datadog/browser-logs
 ### Configuration
 
 **Web (apps/web/pages/_app.tsx)**:
+
 ```typescript
 import { datadogRum } from "@datadog/browser-rum";
 import { datadogLogs } from "@datadog/browser-logs";
@@ -116,6 +123,7 @@ if (process.env.NEXT_PUBLIC_ENV === "production") {
 ```
 
 ### API Monitoring
+
 ```javascript
 // apps/api/src/middleware/datadog.js
 const StatsD = require("hot-shots");
@@ -145,6 +153,7 @@ app.use((req, res, next) => {
 ```
 
 ### Environment Variables
+
 ```bash
 # .env.local
 NEXT_PUBLIC_DD_APP_ID=xxxxx
@@ -155,7 +164,8 @@ DD_AGENT_PORT=8125
 ```
 
 ### Dashboards
-- **RUM Dashboard**: https://app.datadoghq.com/rum/explorer
+
+- **RUM Dashboard**: <https://app.datadoghq.com/rum/explorer>
 - **Metrics**: Response times, Error rates, User interactions
 - **Session Replays**: Video playback of user sessions
 - **Custom Dashboards**: Create custom metric views
@@ -167,6 +177,7 @@ DD_AGENT_PORT=8125
 ### Implementation
 
 **apps/api/src/routes/health.js**:
+
 ```javascript
 router.get("/health", async (req, res) => {
   const checks = {
@@ -228,6 +239,7 @@ router.get("/health/live", (req, res) => {
 ```
 
 ### Kubernetes Integration
+
 ```yaml
 # k8s/deployment.yaml (if using K8s)
 livenessProbe:
@@ -250,6 +262,7 @@ readinessProbe:
 ## 4️⃣ Alerting Strategy
 
 ### Sentry Alerts
+
 1. Go to Project Settings → Alerts
 2. Create rules:
    - **New JavaScript Error**: Notify #alerts
@@ -258,6 +271,7 @@ readinessProbe:
    - **Resolving**: Update on ticket resolution
 
 ### Datadog Alerts
+
 ```python
 # Monitor and create via Datadog UI
 # Or use API:
@@ -274,6 +288,7 @@ curl -X POST https://api.datadoghq.com/api/v1/monitor \
 ```
 
 ### Custom Alerts with GitHub Actions
+
 ```yaml
 # .github/workflows/monitor-errors.yml
 name: Error Monitoring
@@ -305,6 +320,7 @@ jobs:
 ## 5️⃣ Logging Strategy
 
 ### Structured Logging
+
 ```javascript
 // apps/api/src/middleware/logger.js
 const winston = require("winston");
@@ -340,6 +356,7 @@ module.exports = logger;
 ```
 
 ### Log Levels
+
 ```javascript
 logger.error("Payment processing failed", {
   shipmentId: "123",
@@ -372,24 +389,28 @@ logger.debug("Database query", {
 ### Recommended Dashboards
 
 **Performance Dashboard**:
+
 - API response time (p50, p95, p99)
 - Database query performance
 - Cache hit rate
 - Deployment frequency
 
 **Error Dashboard**:
+
 - Error rate by endpoint
 - Top errors (Sentry integration)
 - Error trend over time
 - Error recovery time
 
 **Business Dashboard**:
+
 - Shipment count by day
 - Revenue by region
 - Customer acquisition cost
 - Platform uptime percentage
 
 ### Creating Custom Dashboards
+
 ```javascript
 // Use Datadog UI or API
 const dashboard = {
@@ -412,6 +433,7 @@ const dashboard = {
 ## 7️⃣ Verification Checklist
 
 ### Setup Verification
+
 - [ ] Sentry project created & DSN configured
 - [ ] Datadog account setup with API keys
 - [ ] Environment variables in all environments
@@ -421,6 +443,7 @@ const dashboard = {
 - [ ] Test error sent to Sentry
 
 ### Post-Deployment
+
 - [ ] Monitor error rates for 24 hours
 - [ ] Verify alert triggers working
 - [ ] Review performance baseline
@@ -429,6 +452,7 @@ const dashboard = {
 - [ ] Document runbooks for key metrics
 
 ### Ongoing
+
 - [ ] Review dashboards daily
 - [ ] Archive old logs (monthly)
 - [ ] Update alert thresholds based on trends

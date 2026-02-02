@@ -1,6 +1,7 @@
 # Dependencies
-node_modules
-**/node_modules
+node_modules/
+!apps/*/node_modules/
+!packages/*/node_modules/
 .pnpm-store
 
 # Testing
@@ -12,50 +13,53 @@ coverage
 **/*.spec.ts
 tests/e2e
 
-# Next.js
-src/apps/web/.next
-src/apps/web/out
+# Next.js build artifacts (keep source)
+apps/web/.next/
+!apps/web/.next/standalone/
+!apps/web/.next/static/
+apps/web/out/
 
 # Build artifacts
-dist
-build
+dist/
+build/
 *.log
 
 # Git
-.git
+.git/
 .gitignore
 .gitattributes
 
 # IDE
-.vscode
-.idea
+.vscode/
+.idea/
 *.swp
 *.swo
 *~
 
 # Environment files
-.env
 .env.local
 .env.*.local
 .env.development
 .env.test
 
-# Documentation
-docs
+# Documentation (keep README)
+docs/
 *.md
 !README.md
+!apps/*/README.md
+!packages/*/README.md
 
 # Archives
-archive
+archive/
 
 # CI/CD
-.github
-.husky
+.github/
+.husky/
 
 # Misc
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .DS_Store
+

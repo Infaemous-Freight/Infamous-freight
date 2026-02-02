@@ -5,6 +5,7 @@ Comprehensive guide to the Continuous Integration and Continuous Deployment work
 ## 📋 Overview
 
 The project uses GitHub Actions for CI/CD with the following workflows:
+
 - **CI (Main)**: Linting, type checking, testing, and building
 - **Security**: Dependency audits and secret scanning
 - **CodeQL**: Advanced code analysis and vulnerability detection
@@ -16,24 +17,28 @@ The project uses GitHub Actions for CI/CD with the following workflows:
 **CI/CD** stands for **Continuous Integration** and **Continuous Deployment**. It’s the practice of automatically testing and deploying code changes so problems are caught early and releases stay consistent.
 
 ### Continuous Integration (CI)
+
 **Traditional approach**: developers work in isolation for long stretches, then merge large changes. Conflicts and bugs show up late.  
 **Continuous Integration**: developers merge changes frequently (often multiple times per day). Every merge runs automated tests to catch issues quickly.
 
 **Analogy**: Instead of proofreading a whole book at the end, you check each page as you write it.
 
 ### Continuous Deployment (CD)
+
 **Traditional approach**: deployments are manual (copy files, restart servers, cross fingers).  
 **Continuous Deployment**: code that passes tests automatically deploys, removing manual steps and reducing human error.
 
 **Analogy**: Instead of manually mailing each order, the system automatically ships it as soon as it’s processed.
 
 ### Why CI/CD Matters for Testing
+
 - **Without CI/CD**: tests are manual, easy to forget, and bugs can sit undetected.  
 - **With CI/CD**: tests run on every change, problems are caught in minutes, and deployments become predictable.
 
 ## 🧪 Autonoma in the CI/CD Pipeline
 
 Autonoma can run tests at key checkpoints:
+
 1. Developer opens a PR → Autonoma tests run.
 2. Code merges to `main` → Autonoma tests run again.
 3. Deployment completes → Autonoma tests validate production.
@@ -41,7 +46,9 @@ Autonoma can run tests at key checkpoints:
 This catches issues **before** users see them.
 
 ### Prerequisite: Generate an Autonoma API Key
+
 In the Autonoma dashboard, generate a key and record:
+
 - **Client ID**
 - **Client Secret** (keep this secure)
 
@@ -55,6 +62,7 @@ In the Autonoma dashboard, generate a key and record:
    - `AUTONOMA_CLIENT_SECRET`
 
 **Example workflow step:**
+
 ```yaml
 jobs:
   run_autonoma_tests:
@@ -79,6 +87,7 @@ jobs:
 ```
 
 **Customize when tests run:**
+
 ```yaml
 on:
   pull_request:
@@ -88,6 +97,7 @@ on:
 ```
 
 **Example: Fail the job on a failed curl test run:**
+
 ```yaml
 - name: Run Tests
   run: curl -f https://example.test/run
@@ -101,6 +111,7 @@ on:
    - `CLIENT_ID`
    - `CLIENT_SECRET` (masked)
 2. Add this to `.gitlab-ci.yml`:
+
 ```yaml
 stages:
   - test
@@ -126,6 +137,7 @@ autonoma_tests:
    - `CLIENT_ID`
    - `CLIENT_SECRET`
 2. Add this to `.circleci/config.yml`:
+
 ```yaml
 jobs:
   test:
@@ -150,6 +162,7 @@ jobs:
    - `CLIENT_ID`
    - `CLIENT_SECRET`
 2. Add to `bitbucket-pipelines.yml`:
+
 ```yaml
 pipelines:
   default:
@@ -169,6 +182,7 @@ pipelines:
 ## 🌍 Universal cURL Integration
 
 For Jenkins, CircleCI, Travis CI, or any CI system:
+
 ```bash
 curl -X POST \
   --silent \
@@ -182,6 +196,7 @@ curl -X POST \
 
 Replace the placeholders above with your real values. If you prefer environment
 variables, set them and run:
+
 ```bash
 FOLDER_ID="your-folder-id" \
 CLIENT_ID="your-client-id" \
@@ -220,26 +235,27 @@ curl -X POST \
 **Trigger**: Push to `main`/`develop`, PRs to `main`/`develop`
 
 **Jobs**:
+
 1. **Validate** (5 min)
    - Check for `package-lock.json` (pnpm only)
    - Verify no committed `node_modules`
-   
+
 2. **Lint** (10 min)
    - ESLint with `--max-warnings=0`
    - Prettier format check
    - Runs on: API package
-   
+
 3. **Type Check** (10 min)
    - Build shared package
    - TypeScript compilation check
    - Runs on: All TypeScript packages
-   
+
 4. **Test** (15 min)
    - Jest unit/integration tests
    - Coverage report generation
    - Upload to Codecov
    - Threshold: 80-88% coverage
-   
+
 5. **Build** (20 min)
    - Build shared package
    - Build API package
@@ -249,28 +265,31 @@ curl -X POST \
 **Success Criteria**: All jobs must pass
 
 **Environment Variables**:
+
 - `NODE_VERSION`: 22.16.0
 - `PNPM_VERSION`: 9.15.0
 
 ### 2. Security Workflow (`.github/workflows/security.yml`)
 
-**Trigger**: 
+**Trigger**:
+
 - Push to `main`/`develop` (code changes)
 - PR to `main`/`develop`
 - Weekly schedule (Sunday 2 AM UTC)
 - Manual trigger
 
 **Jobs**:
+
 1. **Dependency Audit**
    - `pnpm audit --audit-level=high`
    - Checks for known vulnerabilities
    - Fails on high/critical issues
-   
+
 2. **Secret Scan**
    - TruffleHog OSS for secret detection
    - Pattern matching for API keys, tokens, passwords
    - Verifies `.env` files not committed
-   
+
 3. **Security Summary**
    - Reports overall security status
    - Aggregates results from all checks
@@ -280,6 +299,7 @@ curl -X POST \
 ### 3. CodeQL Workflow (`.github/workflows/codeql.yml`)
 
 **Trigger**:
+
 - Push to `main`/`develop`
 - PR to `main`/`develop`
 - Weekly schedule
@@ -288,12 +308,14 @@ curl -X POST \
 **Languages**: JavaScript, TypeScript
 
 **Analysis**:
+
 - Security vulnerability detection
 - Code quality issues
 - CWE (Common Weakness Enumeration) violations
 - OWASP Top 10 coverage
 
-**Queries**: 
+**Queries**:
+
 - Security and quality queries
 - Extended suite in `codeql.config.yml`
 
@@ -302,6 +324,7 @@ curl -X POST \
 **Trigger**: PR to `main`/`develop`, manual
 
 **Setup**:
+
 - Start PostgreSQL database
 - Start Redis
 - Seed test data
@@ -309,12 +332,14 @@ curl -X POST \
 - Start web server
 
 **Tests**:
+
 - Playwright tests on Chrome, Firefox, Safari
 - Screenshots on failure
 - Video recording on failure
 - HTML report generation
 
 **Artifacts**:
+
 - Test reports (7 days retention)
 - Screenshots
 - Videos
@@ -324,10 +349,12 @@ curl -X POST \
 **Trigger**: Push to `main`, manual
 
 **Environments**:
+
 - Staging (automatic)
 - Production (manual approval)
 
 **Steps**:
+
 1. Build all packages
 2. Run security checks
 3. Deploy API
@@ -353,6 +380,7 @@ Never use: `permissions: write-all`
 ### Secrets Management
 
 **Required Secrets**:
+
 - `DATABASE_URL`: PostgreSQL connection string
 - `REDIS_URL`: Redis connection string
 - `JWT_SECRET`: JWT signing key
@@ -361,6 +389,7 @@ Never use: `permissions: write-all`
 - `VERCEL_TOKEN`: Vercel deployment token (if using Vercel)
 
 **Setting Secrets**:
+
 ```bash
 # GitHub CLI
 gh secret set SECRET_NAME
@@ -370,6 +399,7 @@ Settings → Secrets and variables → Actions → New repository secret
 ```
 
 **Never commit**:
+
 - `.env` files
 - API keys
 - Passwords
@@ -381,24 +411,28 @@ Settings → Secrets and variables → Actions → New repository secret
 **Target**: 100% (configured in `codecov.yml`)
 
 **Current Thresholds** (API):
+
 - Branches: 80%
 - Functions: 85%
 - Lines: 88%
 - Statements: 88%
 
 **Viewing Coverage**:
+
 1. **Local**:
+
    ```bash
    cd api && pnpm test:coverage
    # Open: coverage/lcov-report/index.html
    ```
 
-2. **CI**: 
+2. **CI**:
    - Codecov comment on PRs
    - Badge in README
-   - Dashboard: https://codecov.io/gh/MrMiless44/Infamous-freight
+   - Dashboard: <https://codecov.io/gh/MrMiless44/Infamous-freight>
 
 **Improving Coverage**:
+
 1. Identify uncovered lines in report
 2. Add unit tests for missing cases
 3. Add integration tests for workflows
@@ -409,6 +443,7 @@ Settings → Secrets and variables → Actions → New repository secret
 ### Staging Deployment
 
 **Automatic** on merge to `main`:
+
 1. CI passes all checks
 2. Build artifacts created
 3. Deploy to staging environment
@@ -418,6 +453,7 @@ Settings → Secrets and variables → Actions → New repository secret
 ### Production Deployment
 
 **Manual approval required**:
+
 1. Staging deployment successful
 2. QA approval
 3. Product owner approval
@@ -463,6 +499,7 @@ docker-compose up -d
 ### Debugging Workflows
 
 **View Logs**:
+
 ```bash
 # GitHub CLI
 gh run view <run-id>
@@ -473,6 +510,7 @@ Actions → Select workflow → Select run → View logs
 ```
 
 **Enable Debug Logging**:
+
 ```yaml
 env:
   ACTIONS_STEP_DEBUG: true
@@ -480,6 +518,7 @@ env:
 ```
 
 **Common Issues**:
+
 1. **Timeout**: Increase `timeout-minutes`
 2. **Permission denied**: Check `permissions` block
 3. **Cache miss**: Verify cache key
@@ -490,11 +529,13 @@ env:
 ### GitHub Actions Status
 
 **Check Status**:
+
 - Repository → Actions tab
 - Commit → Checks
 - PR → Checks section
 
 **Status Badge**:
+
 ```markdown
 ![CI](https://github.com/MrMiless44/Infamous-freight/workflows/CI/badge.svg)
 ```
@@ -502,6 +543,7 @@ env:
 ### Email Notifications
 
 Automatic for:
+
 - Workflow failures
 - Security alerts
 - Scheduled jobs
@@ -522,30 +564,35 @@ Configure: Settings → Notifications
 ## 🎯 Best Practices
 
 ### 1. Fast Feedback
+
 - Run quick checks first (lint, type check)
 - Parallelize independent jobs
 - Cache dependencies
 - Fail fast on errors
 
 ### 2. Reproducible Builds
+
 - Pin versions (`NODE_VERSION`, `PNPM_VERSION`)
 - Use lockfiles (`pnpm-lock.yaml`)
 - Consistent environments
 - Docker for complex setups
 
 ### 3. Security First
+
 - Minimal permissions
 - Secret scanning
 - Dependency audits
 - Signed commits (optional)
 
 ### 4. Clear Reporting
+
 - Descriptive job names
 - Summary comments on PRs
 - Upload artifacts for debugging
 - Structured logs
 
 ### 5. Cost Optimization
+
 - Timeout limits
 - Cancel in-progress runs
 - Efficient caching
@@ -561,6 +608,7 @@ Configure: Settings → Notifications
 ## 🤝 Contributing
 
 When adding/modifying workflows:
+
 1. Follow naming conventions
 2. Document changes here
 3. Test thoroughly

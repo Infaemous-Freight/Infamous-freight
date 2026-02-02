@@ -391,7 +391,7 @@ flyctl logs -a infamous-freight-api --no-tail > logs-$(date +%Y%m%d).txt
 
 - **On-Call**: [Team Slack Channel]
 - **Database Admin**: [DBA Contact]
-- **Fly.io Support**: support@fly.io
+- **Fly.io Support**: <support@fly.io>
 - **Sentry Alerts**: [Email/Slack Integration]
 
 ---

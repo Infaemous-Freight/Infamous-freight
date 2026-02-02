@@ -6,7 +6,7 @@
 
 ## ✅ Phase 1: Web Deployment (5 min)
 
-- [ ] Visit Vercel dashboard: https://vercel.com
+- [ ] Visit Vercel dashboard: <https://vercel.com>
 - [ ] Find "Infamous-freight" project
 - [ ] Confirm **Status**: "Ready" (green badge)
 - [ ] Copy deployed URL (e.g., `infamous-freight.vercel.app`)
@@ -18,6 +18,7 @@
 
 - [ ] Visit: `https://<your-url>/api/health`
 - [ ] Response shows:
+
   ```json
   {
     "status": "ok",
@@ -25,6 +26,7 @@
     "uptime": 123.45
   }
   ```
+
 - [ ] Status code: **200**
 
 ---
@@ -33,7 +35,7 @@
 
 ### Check Migrations
 
-- [ ] Go to Supabase: https://supabase.com/dashboard
+- [ ] Go to Supabase: <https://supabase.com/dashboard>
 - [ ] Open project: `wnaievjffghrztjuvutp`
 - [ ] View **Table Editor** → confirm tables exist:
   - [ ] `users`
@@ -86,13 +88,13 @@
 
 ### UptimeRobot (optional)
 
-- [ ] Visit: https://uptimerobot.com
+- [ ] Visit: <https://uptimerobot.com>
 - [ ] Confirm monitor created for `/api/health`
 - [ ] Status: **Up**
 
 ### Sentry (optional)
 
-- [ ] https://sentry.io → Project settings
+- [ ] <https://sentry.io> → Project settings
 - [ ] Errors captured > 0 (or 0 if no errors)
 
 ---
@@ -166,6 +168,7 @@ Expected output: **✅ DEPLOYMENT OK**
 ---
 
 **Questions?** Reference these files:
+
 - Credentials: [CREDENTIALS_READY_100.md](CREDENTIALS_READY_100.md)
 - Security: [SECURITY_CHECKLIST.md](SECURITY_CHECKLIST.md)
 - RLS: [supabase/rls-policies.sql](supabase/rls-policies.sql)

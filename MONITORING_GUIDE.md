@@ -20,8 +20,8 @@ Infamous Freight implements comprehensive production monitoring using:
 | Prometheus Endpoint | `/api/marketplace/metrics/prometheus` | Prometheus scrape target           | Public (for Prometheus) |
 | Bull Board          | `/ops/queues`                         | Queue operations UI                | Admin access            |
 | API Health          | `/api/health`                         | API liveness check                 | Public                  |
-| Datadog Dashboard   | https://app.datadoghq.com             | Full observability                 | Datadog login           |
-| Sentry Dashboard    | https://sentry.io                     | Error tracking                     | Sentry login            |
+| Datadog Dashboard   | <https://app.datadoghq.com>             | Full observability                 | Datadog login           |
+| Sentry Dashboard    | <https://sentry.io>                     | Error tracking                     | Sentry login            |
 
 ## 🔧 Configuration
 

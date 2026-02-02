@@ -32,21 +32,25 @@ open "https://github.com/MrMiless44/Infamous-freight-enterprises/security/code-s
 ## 🚀 Getting Started (5 minutes)
 
 ### 1. View Security Results
+
 ```
 Repository → Security → Code scanning alerts
 ```
 
 ### 2. Run Local Scan
+
 ```bash
 ./scripts/security-scan.sh full
 ```
 
 ### 3. Check Workflow Status
+
 ```
 Repository → Actions → CodeQL Security Analysis 100%
 ```
 
 ### 4. Configure Notifications
+
 ```
 Settings → Notifications → Enable security alerts
 ```
@@ -88,17 +92,20 @@ Settings → Notifications → Enable security alerts
 ## 🔐 Security Checklist
 
 ### Before Every Commit
+
 - [ ] Run: `./scripts/security-scan.sh quick`
 - [ ] No high/critical findings
 - [ ] All tests passing
 
 ### Before Every PR
+
 - [ ] CodeQL analysis complete
 - [ ] Dependencies audited
 - [ ] Security headers verified
 - [ ] No secrets exposed
 
 ### Before Every Release
+
 - [ ] Full security scan: `./scripts/security-scan.sh full`
 - [ ] All alerts resolved
 - [ ] Compliance verified
@@ -106,8 +113,8 @@ Settings → Notifications → Enable security alerts
 
 ## 📞 Emergency Contacts
 
-**Security Team**: security@infamous-freight.com  
-**On-Call**: security-oncall@infamous-freight.com  
+**Security Team**: <security@infamous-freight.com>  
+**On-Call**: <security-oncall@infamous-freight.com>  
 **Critical Issues**: Slack #security-incidents
 
 ## 🔗 Useful Links
@@ -138,24 +145,28 @@ Settings → Notifications → Enable security alerts
 ## 🚨 Common Alerts & Fixes
 
 ### SQL Injection
+
 ```javascript
 ❌ const query = `SELECT * FROM users WHERE id = ${id}`;
 ✅ const query = `SELECT * FROM users WHERE id = $1`;
 ```
 
 ### XSS Vulnerability
+
 ```javascript
 ❌ innerHTML = userInput;
 ✅ textContent = userInput;  // or use DOMPurify
 ```
 
 ### CSRF Token Missing
+
 ```javascript
 ❌ POST /api/transfer without token
 ✅ POST /api/transfer with X-CSRF-Token header
 ```
 
 ### Sensitive Data Exposure
+
 ```javascript
 ❌ console.log(password);
 ✅ // Remove all sensitive logging

@@ -213,6 +213,7 @@ All errors now return consistent format:
 **Route**: `GET /api/users/search`
 
 **Query Parameters**:
+
 | Param | Type | Required | Default | Max | Purpose |
 |-------|------|----------|---------|-----|---------|
 | q | string | No | - | 100 | Search query (email/name, partial match) |

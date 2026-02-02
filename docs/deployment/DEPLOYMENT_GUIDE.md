@@ -277,7 +277,7 @@ If you encounter issues:
 You'll know everything is working when:
 
 - ✅ `curl http://localhost/api/health` returns `{"ok":true}`
-- ✅ http://localhost opens the web UI
+- ✅ <http://localhost> opens the web UI
 - ✅ Dashboard shows API status
 - ✅ Voice panel accepts commands
 - ✅ Billing buttons work

@@ -5,7 +5,9 @@ This folder contains operational and compliance artifacts for SOC2-lite enterpri
 ## Directory Structure
 
 ### `policies/`
+
 Security, incident response, and operational policies:
+
 - `SECURITY_POLICY.md` - Security controls and standards
 - `INCIDENT_RESPONSE_PLAN.md` - Incident response procedures
 - `ACCESS_CONTROL_POLICY.md` - RBAC and authorization
@@ -14,7 +16,9 @@ Security, incident response, and operational policies:
 - `DATA_RETENTION.md` - Data lifecycle policies
 
 ### `logs/`
+
 System and audit logs (sanitized for customer delivery):
+
 - `audit_chain_sample.log` - Sample tamper-evident audit chain
 - `sentry_errors_summary.json` - Error tracking summary
 - `access_logs_summary.json` - API access patterns
@@ -22,7 +26,9 @@ System and audit logs (sanitized for customer delivery):
 - `system_health.log` - System health check logs
 
 ### `screenshots/`
+
 Visual evidence of security controls:
+
 - `dashboard_monitoring.png` - Sentry/monitoring dashboard
 - `rbac_enforcement.png` - RBAC role configuration
 - `audit_chain_verification.png` - Audit verification run
@@ -31,7 +37,9 @@ Visual evidence of security controls:
 - `csp_report.png` - Content Security Policy reports
 
 ### `artifacts/`
+
 Configuration and test artifacts:
+
 - `security_headers.json` - Current security headers
 - `api_capabilities.json` - API security capabilities
 - `test_results.json` - Security test results
@@ -41,12 +49,14 @@ Configuration and test artifacts:
 ## Usage
 
 ### For Audits
+
 1. Share appropriate files with auditors/customers
 2. Redact sensitive data (IPs, internal hostnames, user details)
 3. Include attestations of procedures followed
 4. Provide verification scripts (e.g., `verify_headers.sh`)
 
 ### For CI/CD Integration
+
 ```bash
 # Generate evidence artifacts
 pnpm generate:evidence

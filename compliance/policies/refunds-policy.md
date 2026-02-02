@@ -1,10 +1,12 @@
 # Refunds & Chargebacks Policy
 
 Refunds are issued only when:
+
 - Fraud is confirmed by the processor, **or**
 - A platform billing error is verified.
 
 No refunds are provided for:
+
 - Delivered services
 - AI usage
 - Digital goods

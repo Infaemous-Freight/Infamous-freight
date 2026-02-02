@@ -523,6 +523,7 @@ const queries = {
    ```
 
 5. **Monitor Slow Queries** (5 min)
+
    ```bash
    # Enable query logging in Prisma
    # Review slow queries daily

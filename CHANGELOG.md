@@ -78,6 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Impact Summary (Triple 100%)
 
 **Combined Developer Impact:**
+
 - ⏱️ **17 hours/week** time savings per developer
   - 8h from better tooling (extensions)
   - 9h from faster deployments and better docs

@@ -15,22 +15,22 @@
 
 ### For Deploying
 
-3. 📋 **[COMMIT_INSTRUCTIONS.md](./COMMIT_INSTRUCTIONS.md)** - How to commit and push (15 min read)
-4. 🔧 **[api/Dockerfile](./api/Dockerfile)** - Review port changes (2 min read)
+1. 📋 **[COMMIT_INSTRUCTIONS.md](./COMMIT_INSTRUCTIONS.md)** - How to commit and push (15 min read)
+2. 🔧 **[api/Dockerfile](./api/Dockerfile)** - Review port changes (2 min read)
 
 ### For Implementation
 
-5. 📖 **[VALIDATION.md](./VALIDATION.md)** - Input validation patterns (20 min read)
-6. 📖 **[api/src/routes/users.search.example.js](./api/src/routes/users.search.example.js)** - Search endpoint spec (15 min read)
-7. 📖 **[docs/SENTRY_MONITORING.md](./docs/SENTRY_MONITORING.md)** - Monitoring setup (20 min read)
+1. 📖 **[VALIDATION.md](./VALIDATION.md)** - Input validation patterns (20 min read)
+2. 📖 **[api/src/routes/users.search.example.js](./api/src/routes/users.search.example.js)** - Search endpoint spec (15 min read)
+3. 📖 **[docs/SENTRY_MONITORING.md](./docs/SENTRY_MONITORING.md)** - Monitoring setup (20 min read)
 
 ### For Testing
 
-8. 🧪 **[api/**tests**/validation-edge-cases.test.js](./api/**tests**/validation-edge-cases.test.js)** - Edge case tests (10 min read)
+1. 🧪 **[api/**tests**/validation-edge-cases.test.js](./api/**tests**/validation-edge-cases.test.js)** - Edge case tests (10 min read)
 
 ### Complete Reference
 
-9. 📋 **[ALL_6_TASKS_DELIVERABLES_MANIFEST.md](./ALL_6_TASKS_DELIVERABLES_MANIFEST.md)** - Detailed breakdown of all deliverables
+1. 📋 **[ALL_6_TASKS_DELIVERABLES_MANIFEST.md](./ALL_6_TASKS_DELIVERABLES_MANIFEST.md)** - Detailed breakdown of all deliverables
 
 ---
 

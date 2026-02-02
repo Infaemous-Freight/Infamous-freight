@@ -9,6 +9,8 @@
   "scripts": {
     "install:ci": "pnpm install --frozen-lockfile",
     "dev": "pnpm -r --parallel run dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api dev",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:restart": "supabase stop && supabase start",
@@ -23,6 +25,9 @@
     "supabase:logs": "supabase logs",
     "lint": "pnpm -r run lint",
     "lint:web": "pnpm --filter web lint",
+    "lint:fix": "pnpm -r run lint --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
     "typecheck": "pnpm -r run typecheck",
     "typecheck:web": "pnpm --filter web typecheck",
     "build": "pnpm -r run build",
@@ -33,7 +38,16 @@
     "build:mobile": "pnpm --filter mobile build",
     "build:ai": "pnpm --filter ai build",
     "test": "pnpm -r run test",
-    "test:coverage": "pnpm --filter api test:coverage"
+    "test:coverage": "pnpm --filter api test:coverage",
+    "deploy:vercel": "cd apps/web && npx vercel deploy --prod --yes --scope infaemous",
+    "deploy:fly": "flyctl deploy --config api/fly.toml --remote-only",
+    "deploy:all": "pnpm run deploy:vercel && pnpm run deploy:fly",
+    "status": "pnpm run status:vercel && pnpm run status:fly",
+    "status:vercel": "curl -sf https://infamous.vercel.app/api/health | jq .",
+    "status:fly": "flyctl status --app infamous-freight-as-3gw",
+    "logs:vercel": "cd apps/web && npx vercel logs --scope infaemous",
+    "logs:fly": "flyctl logs --app infamous-freight-as-3gw",
+    "prepare": "husky"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1"
@@ -50,6 +64,22 @@
     "@eslint/js": "^9.39.2",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
-    "eslint-config-prettier": "^10.1.8"
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "markdownlint-cli2": "^0.20.0",
+    "next": "^16.1.6"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.md": [
+      "markdownlint-cli2 --fix"
+    ]
   }
 }

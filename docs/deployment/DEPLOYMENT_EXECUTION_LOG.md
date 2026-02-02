@@ -57,6 +57,7 @@
 - Run the build on a host/runner with full Docker privileges (including `CAP_SYS_ADMIN` and iptables/NAT support).
 - Alternatively, use a remote builder (e.g., GitHub Actions, Fly.io, or another CI runner) to produce and push the `infamous-api` image.
 - Once on a privileged host, the standard command should work:
+
   ```bash
   docker build -t infamous-api ./api
   ```

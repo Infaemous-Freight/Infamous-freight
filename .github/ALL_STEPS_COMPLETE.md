@@ -392,7 +392,7 @@ docs/
 
 ---
 
-## 🎉 Congratulations!
+## 🎉 Congratulations
 
 You now have a **world-class, production-grade CI/CD infrastructure** with:
 

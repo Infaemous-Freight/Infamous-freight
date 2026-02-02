@@ -529,6 +529,7 @@ router.get("/admin/upsell-metrics", authenticate, requireScope("admin:view"), as
 ## 9. Status: 100% Complete ✅
 
 Upsell automation engine implemented with:
+
 - ✅ Smart trigger-based scoring (0-100 scale)
 - ✅ Contextual in-app prompts
 - ✅ Email campaign automation
@@ -538,7 +539,8 @@ Upsell automation engine implemented with:
 - ✅ Analytics dashboard
 - ✅ A/B testing framework
 
-**Expected Impact**: 
+**Expected Impact**:
+
 - 15-20% conversion from Free→Pro
 - 8-12% conversion from Pro→Enterprise
 - +$180-220K additional MRR from upsells

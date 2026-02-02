@@ -4,7 +4,7 @@ GitHub's Dependabot automatically scans your repository for vulnerable dependenc
 
 ## Enable Dependabot Alerts
 
-1. Go to your repository: https://github.com/MrMiless44/Infamous-freight-enterprises
+1. Go to your repository: <https://github.com/MrMiless44/Infamous-freight-enterprises>
 2. Click **Settings** (top navigation)
 3. Navigate to **Code security and analysis** (left sidebar)
 4. Enable the following toggles:

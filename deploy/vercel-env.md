@@ -4,8 +4,8 @@
 
 NEXT_PUBLIC_APP_NAME=Infamous Freight
 NEXT_PUBLIC_ENV=production
-NEXT_PUBLIC_API_BASE_URL=https://your-api.fly.dev/api
-NEXT_PUBLIC_API_URL=https://your-api.fly.dev/api
+NEXT_PUBLIC_API_BASE_URL=<https://your-api.fly.dev/api>
+NEXT_PUBLIC_API_URL=<https://your-api.fly.dev/api>
 
 ## Optional
 

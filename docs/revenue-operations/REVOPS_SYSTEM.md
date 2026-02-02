@@ -272,4 +272,3 @@ OPTIONAL:
 
 Unified metrics, quarterly forecasting, and cross-functional alignment
 to scale revenue predictably from $1.8M to $5.4M ARR in 2026.
-

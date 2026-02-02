@@ -3,7 +3,7 @@
 ## Step 1: Visit Railway Website
 
 Open Safari on your iPhone and go to:
-**https://railway.app**
+**<https://railway.app>**
 
 ## Step 2: Sign In with GitHub
 
@@ -47,7 +47,7 @@ LOG_LEVEL=info
 
 **Important:** Change `JWT_SECRET` to a strong random string!
 
-## Step 7: Deploy!
+## Step 7: Deploy
 
 1. Tap **"Deploy"** button at the top
 2. Wait 2-3 minutes for deployment
@@ -83,7 +83,7 @@ Should see:
 
 Your Vercel frontend needs the new API URL:
 
-1. Go to https://vercel.com/dashboard
+1. Go to <https://vercel.com/dashboard>
 2. Select **"infamous-freight-enterprises"** project
 3. Go to **Settings** → **Environment Variables**
 4. Add: `NEXT_PUBLIC_API_URL` = `https://your-app.railway.app`
@@ -91,12 +91,12 @@ Your Vercel frontend needs the new API URL:
 
 ---
 
-## 🎉 Done!
+## 🎉 Done
 
 Your full stack is now live:
 
-- ✅ Frontend: https://infamousfreight.vercel.app
-- ✅ Backend: https://your-app.railway.app
+- ✅ Frontend: <https://infamousfreight.vercel.app>
+- ✅ Backend: <https://your-app.railway.app>
 - ✅ Database: PostgreSQL on Railway
 
 ---
@@ -119,8 +119,8 @@ Your full stack is now live:
 
 **Need help?**
 
-- Railway Discord: https://discord.gg/railway
-- Railway Docs: https://docs.railway.app
+- Railway Discord: <https://discord.gg/railway>
+- Railway Docs: <https://docs.railway.app>
 
 ---
 

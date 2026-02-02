@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Edge Middleware - Runs on Vercel Edge Network
+ * Edge Proxy - Runs on Vercel Edge Network
  *
  * Features:
  * - Geolocation headers
@@ -13,7 +13,7 @@ import type { NextRequest } from "next/server";
  * - Feature flags (Edge Config ready)
  */
 
-// Paths that should skip middleware
+// Paths that should skip edge proxy
 // CRITICAL: Include /monitoring for Sentry tunnel route (prevents 401/403 errors)
 const SKIP_PATHS = [
   "/_next",
@@ -27,7 +27,7 @@ const SKIP_PATHS = [
 // API routes that need extra protection
 const PROTECTED_API_ROUTES = ["/api/admin", "/api/internal"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
   // Skip middleware for static assets and health checks
@@ -74,6 +74,23 @@ export function middleware(request: NextRequest) {
   response.headers.set(
     "Permissions-Policy",
     "camera=(), microphone=(), geolocation=(), payment=()",
+  );
+
+  // Strengthen Content Security Policy
+  response.headers.set(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https: blob:",
+      "font-src 'self' data:",
+      "connect-src 'self' https://*.vercel.app https://*.supabase.co https://vitals.vercel-insights.com https://*.fly.dev",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "upgrade-insecure-requests",
+    ].join("; "),
   );
 
   // Add CORS headers for API routes
@@ -132,7 +149,10 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-// Configure which routes use the middleware
+// Backwards-compatible alias if middleware is still referenced internally.
+export const middleware = proxy;
+
+// Configure which routes use the proxy
 export const config = {
   matcher: [
     /*

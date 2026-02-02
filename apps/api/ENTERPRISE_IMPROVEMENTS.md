@@ -9,6 +9,7 @@ This document describes the new standardized utilities added to improve code qua
 Centralized constants to eliminate magic values throughout the codebase.
 
 **Categories:**
+
 - **RATE_LIMITS**: Rate limiting configuration for different endpoints
 - **PAGINATION**: Default pagination values
 - **GEO_BOUNDS**: Geographic coordinate validation bounds
@@ -24,6 +25,7 @@ Centralized constants to eliminate magic values throughout the codebase.
 - **FILE_UPLOAD**: File upload limits and constraints
 
 **Usage Example:**
+
 ```javascript
 const { HTTP_STATUS, PAGINATION, ERROR_MESSAGES } = require('./config/constants');
 
@@ -42,6 +44,7 @@ res.status(HTTP_STATUS.OK).json({
 Standardized error classes and response utilities.
 
 **Error Classes:**
+
 - `ApiError`: Base error class with structured response
 - `ValidationError`: For input validation failures (400)
 - `AuthenticationError`: For authentication failures (401)
@@ -51,11 +54,13 @@ Standardized error classes and response utilities.
 - `ConflictError`: For resource conflicts (409)
 
 **Utilities:**
+
 - `createSuccessResponse(data, message, statusCode)`: Standard success response
 - `createErrorResponse(error, statusCode)`: Standard error response
 - `asyncHandler(fn)`: Wraps async route handlers to catch errors
 
 **Usage Example:**
+
 ```javascript
 const { NotFoundError, asyncHandler, createSuccessResponse } = require('./lib/errors');
 
@@ -77,6 +82,7 @@ router.get('/shipments/:id', asyncHandler(async (req, res) => {
 Type-safe input validation using Zod schemas.
 
 **Available Schemas:**
+
 - `uuidSchema`: UUID validation
 - `emailSchema`: Email validation (RFC 5321 compliant)
 - `phoneSchema`: Phone number validation
@@ -94,6 +100,7 @@ Type-safe input validation using Zod schemas.
 - `featureFlagSchema`: Feature flag configuration validation
 
 **Validation Middleware:**
+
 ```javascript
 const { validateRequest, createShipmentSchema } = require('./lib/validation');
 
@@ -122,6 +129,7 @@ router.get('/shipments',
 Updated to support new error classes and provide consistent error responses.
 
 **Features:**
+
 - Handles `ApiError` instances with proper structure
 - Integrates with Sentry for error tracking
 - Provides detailed logs via Pino
@@ -133,6 +141,7 @@ Updated to support new error classes and provide consistent error responses.
 ### Step 1: Replace Magic Values
 
 **Before:**
+
 ```javascript
 router.get('/items', async (req, res) => {
   const limit = req.query.limit || 50;
@@ -142,6 +151,7 @@ router.get('/items', async (req, res) => {
 ```
 
 **After:**
+
 ```javascript
 const { PAGINATION } = require('./config/constants');
 
@@ -155,6 +165,7 @@ router.get('/items', async (req, res) => {
 ### Step 2: Add Input Validation
 
 **Before:**
+
 ```javascript
 router.post('/shipments', async (req, res) => {
   if (!req.body.trackingNumber) {
@@ -165,6 +176,7 @@ router.post('/shipments', async (req, res) => {
 ```
 
 **After:**
+
 ```javascript
 const { validateRequest, createShipmentSchema } = require('./lib/validation');
 const { asyncHandler } = require('./lib/errors');
@@ -182,6 +194,7 @@ router.post('/shipments',
 ### Step 3: Use Standardized Error Handling
 
 **Before:**
+
 ```javascript
 router.get('/shipments/:id', async (req, res) => {
   try {
@@ -201,6 +214,7 @@ router.get('/shipments/:id', async (req, res) => {
 ```
 
 **After:**
+
 ```javascript
 const { NotFoundError, asyncHandler, createSuccessResponse } = require('./lib/errors');
 

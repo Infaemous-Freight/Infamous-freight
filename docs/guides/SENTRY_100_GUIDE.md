@@ -94,6 +94,7 @@ Sentry Backend (sentry.io)
 ### Web App (Next.js)
 
 **Environment Variables:**
+
 ```bash
 NEXT_PUBLIC_SENTRY_DSN=https://xxxxx@sentry.io/xxxxx
 NEXT_PUBLIC_ENV=production
@@ -101,17 +102,20 @@ NEXT_PUBLIC_SENTRY_RELEASE=v1.0.0
 ```
 
 **Wizard setup (pnpm monorepo-safe):**
+
 ```bash
 cd apps/web
 npx @sentry/wizard@latest -i nextjs --saas --org infamous-freight-enterprise --project javascript-nextjs
 ```
 
 **Expected wizard changes:**
+
 - Creates `sentry.client.config.(js|ts)`, `sentry.server.config.(js|ts)`, and possibly `sentry.edge.config.(js|ts)`
 - Updates `next.config.*` to wrap the config with `withSentryConfig`
 - Adds a tunnel route (commonly `/monitoring`) to bypass ad blockers
 
 **Vercel environment variables (source maps):**
+
 ```bash
 SENTRY_AUTH_TOKEN= # Create in Sentry → User Settings → Auth Tokens
 SENTRY_ORG=infamous-freight-enterprise
@@ -120,6 +124,7 @@ SENTRY_PROJECT=javascript-nextjs
 
 **Middleware tunnel exclusions:**
 If Next.js middleware matches all routes, exclude the Sentry tunnel path to avoid 401/403/500 errors:
+
 ```ts
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|public|monitoring).*)"],
@@ -127,11 +132,13 @@ export const config = {
 ```
 
 **Auto-initialized via:**
+
 - `apps/web/src/lib/sentry.client.config.ts` - Client SDK setup
 - `apps/web/pages/_app.tsx` - Automatic initialization on app boot
 - Next.js SDK handles server-side errors automatically
 
 **Features:**
+
 - ✅ Client-side error capture
 - ✅ Server-side error capture (via Next.js API routes)
 - ✅ Performance monitoring (Web Vitals)
@@ -142,6 +149,7 @@ export const config = {
 ### API Server (Express)
 
 **Environment Variables:**
+
 ```bash
 SENTRY_DSN=https://xxxxx@sentry.io/xxxxx
 SENTRY_TRACES_SAMPLE_RATE=0.1  # 10% of transactions
@@ -150,6 +158,7 @@ NODE_ENV=production
 ```
 
 **Initialization Order (critical):**
+
 ```javascript
 // 1. First line of apps/api/src/server.js
 require("./instrument.js");
@@ -165,6 +174,7 @@ attachErrorHandler(app);
 ```
 
 **Features:**
+
 - ✅ Unhandled exception capture
 - ✅ Unhandled rejection capture
 - ✅ Request/response tracking
@@ -179,6 +189,7 @@ attachErrorHandler(app);
 ### What Gets Tracked
 
 **Web App:**
+
 - Page load performance
 - React component rendering
 - RPC/API call duration
@@ -186,6 +197,7 @@ attachErrorHandler(app);
 - User session replay
 
 **API Server:**
+
 - Endpoint response time
 - Database query duration
 - External API calls
@@ -207,14 +219,17 @@ Sentry Dashboard → Performance → Transactions
 ### Sample Rate Configuration
 
 **Web App:**
+
 - Development: 100% of transactions (full visibility)
 - Production: 10% of transactions (cost control)
 
 **API Server:**
+
 - Development: 100% of transactions
 - Production: 10% of transactions
 
 Adjust in environment variables or code:
+
 ```javascript
 // apps/web/src/lib/sentry.client.config.ts
 tracesSampleRate: isDevelopment ? 1.0 : 0.1,
@@ -230,6 +245,7 @@ tracesSampleRate: isDevelopment ? 1.0 : Number(process.env.SENTRY_TRACES_SAMPLE_
 ### Automatic Capture (no code needed)
 
 ✅ Handled automatically:
+
 - Uncaught exceptions
 - Promise rejections
 - React render errors
@@ -240,6 +256,7 @@ tracesSampleRate: isDevelopment ? 1.0 : Number(process.env.SENTRY_TRACES_SAMPLE_
 ### Manual Error Capture (when needed)
 
 **In Web App:**
+
 ```typescript
 import { captureException, captureMessage } from "@/lib/sentry.client.config";
 
@@ -258,6 +275,7 @@ captureMessage("Important business event", "info");
 ```
 
 **In API Server:**
+
 ```javascript
 const Sentry = require("./config/sentry-enhanced.js");
 
@@ -316,6 +334,7 @@ try {
 ### Create Alert in Sentry
 
 **Alert for Error Spike:**
+
 ```
 1. Sentry Dashboard → Alerts → Create Alert Rule
 2. Filter: All Events
@@ -326,6 +345,7 @@ try {
 ```
 
 **Alert for Critical Errors:**
+
 ```
 1. Filter: All Events
 2. Condition: When level is 'error'
@@ -335,6 +355,7 @@ try {
 ```
 
 **Slack Integration:**
+
 ```
 1. Sentry Settings → Integrations → Slack
 2. Click "Install"
@@ -346,6 +367,7 @@ try {
 ### Recommended Alerts
 
 For production, create alerts:
+
 - [ ] Error spike (5+ errors in 5 minutes)
 - [ ] Critical errors (tagged with severity=critical)
 - [ ] 5xx errors on API
@@ -359,12 +381,14 @@ For production, create alerts:
 ### Why Source Maps?
 
 Without source maps:
+
 ```
 Error at line 12345 in chunk-abc123.js
 (unhelpful - minified code)
 ```
 
 With source maps:
+
 ```
 Error in ShipmentForm.tsx line 45: "Cannot read property 'id' of null"
 (helpful - original code with exact location)
@@ -387,6 +411,7 @@ Already configured in `.github/workflows/deploy.yml`:
 ```
 
 **Manual Upload (for development):**
+
 ```bash
 # Install Sentry CLI
 npm install -g @sentry/cli
@@ -408,6 +433,7 @@ sentry-cli releases files upload-sourcemaps \
 ### Data Collection
 
 **Web App Collects:**
+
 - Error messages and stack traces
 - Browser info (not user data)
 - URL path (not query params)
@@ -415,6 +441,7 @@ sentry-cli releases files upload-sourcemaps \
 - Session replay (sanitized)
 
 **API Server Collects:**
+
 - Error messages and stack traces
 - Request headers (sanitized)
 - Database error info (not passwords)
@@ -423,12 +450,14 @@ sentry-cli releases files upload-sourcemaps \
 ### Sensitive Data Handling
 
 **Automatically Redacted:**
+
 - API keys and tokens
 - Passwords and credentials
 - Email addresses (unless explicitly set)
 - File paths with sensitive names
 
 **Custom Filtering in Sentry:**
+
 ```javascript
 // apps/web/src/lib/sentry.client.config.ts
 beforeSend(event, hint) {
@@ -445,11 +474,13 @@ beforeSend(event, hint) {
 ### GDPR Compliance
 
 **Data Retention:**
+
 - Development: 30 days
 - Production: 90 days (default)
 - Can be configured in Sentry Settings
 
 **Data Deletion:**
+
 - Per-event deletion in Sentry dashboard
 - Bulk deletion via API
 - Automatic purging after retention period
@@ -461,6 +492,7 @@ beforeSend(event, hint) {
 ### Key Metrics to Monitor
 
 **Daily:**
+
 ```
 Sentry Dashboard → Issues
 ├→ Unresolved issues: should trend down
@@ -470,6 +502,7 @@ Sentry Dashboard → Issues
 ```
 
 **Weekly:**
+
 ```
 Sentry Dashboard → Analytics
 ├→ Error trends
@@ -479,6 +512,7 @@ Sentry Dashboard → Analytics
 ```
 
 **Monthly:**
+
 ```
 Review → Sentry Reports
 ├→ Error summary
@@ -490,6 +524,7 @@ Review → Sentry Reports
 ### Custom Dashboards
 
 **Create Dashboard:**
+
 ```
 1. Sentry → Dashboards → Create Dashboard
 2. Add charts:
@@ -508,6 +543,7 @@ Review → Sentry Reports
 ### Test Error Capture
 
 **Web App:**
+
 ```bash
 # In browser console
 throw new Error("Test error from browser");
@@ -516,6 +552,7 @@ throw new Error("Test error from browser");
 ```
 
 **API:**
+
 ```bash
 # Via curl
 curl -X POST https://your-api.vercel.app/api/test-error \
@@ -528,6 +565,7 @@ curl -X POST https://your-api.vercel.app/api/test-error \
 ### Verify Configuration
 
 **Checklist:**
+
 - [ ] Sentry DSN is set in GitHub secrets
 - [ ] Web app shows Sentry in devtools (check for "_sf_async_config")
 - [ ] API server logs "Sentry initialized" on startup
@@ -583,23 +621,27 @@ curl -X POST https://your-app.vercel.app/api/test-error
 ## 📚 Configuration Files Reference
 
 ### Web App (`apps/web/src/lib/sentry.client.config.ts`)
+
 - Client-side SDK initialization
 - Performance monitoring setup
 - Session replay configuration
 - Error filtering logic
 
 ### API Server (`apps/api/src/config/sentry-enhanced.js`)
+
 - Server-side SDK initialization
 - Request/response tracking
 - Performance transaction setup
 - Error filtering logic
 
 ### Next.js Config (`apps/web/next.config.mjs`)
+
 - Webpack plugin for source map generation
 - SDK loader configuration
 - Release tracking setup
 
 ### Environment Variables
+
 ```bash
 # Web App
 NEXT_PUBLIC_SENTRY_DSN=https://xxxxx@sentry.io/xxxxx
@@ -618,20 +660,23 @@ SENTRY_RELEASE=v1.0.0
 ## 🔗 Links & Resources
 
 **Sentry Documentation:**
+
 - [Sentry Next.js Guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/)
 - [Sentry Node.js Guide](https://docs.sentry.io/platforms/node/)
 - [Performance Monitoring](https://docs.sentry.io/product/performance/)
 - [Session Replay](https://docs.sentry.io/product/session-replay/)
 
 **Our Setup:**
+
 - Web App Config: `apps/web/src/lib/sentry.client.config.ts`
 - API Config: `apps/api/src/config/sentry-enhanced.js`
 - Setup Script: `scripts/setup-sentry.sh`
 
 **Sentry Dashboard:**
-- Organization: https://sentry.io/organizations/infamousfreight/
-- Web Project: https://sentry.io/organizations/infamousfreight/issues/?project=xxxxx
-- API Project: https://sentry.io/organizations/infamousfreight/issues/?project=yyyyy
+
+- Organization: <https://sentry.io/organizations/infamousfreight/>
+- Web Project: <https://sentry.io/organizations/infamousfreight/issues/?project=xxxxx>
+- API Project: <https://sentry.io/organizations/infamousfreight/issues/?project=yyyyy>
 
 ---
 

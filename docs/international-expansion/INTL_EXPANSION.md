@@ -381,4 +381,3 @@ ROI PROJECTION:
 
 Multi-currency, localization, compliance infrastructure to expand from US-only
 to global presence with 30%+ international revenue by 2027.
-

@@ -1,6 +1,7 @@
 # Lighthouse CI 100% Configuration Profiles
 
 ## Production Profile
+
 ```json
 {
   "ci": {
@@ -39,6 +40,7 @@
 ```
 
 ## Mobile Profile
+
 ```json
 {
   "ci": {
@@ -68,6 +70,7 @@
 ```
 
 ## Desktop Profile
+
 ```json
 {
   "ci": {

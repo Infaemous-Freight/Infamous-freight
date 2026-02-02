@@ -71,33 +71,33 @@
 
 ## Deployment Status
 
-### Current State:
+### Current State
 
 - **Commits Pushed**: ✅ 3 commits to main (90c479d...b5d69eb)
 - **Repository**: GitHub - MrMiless44/Infamous-freight-enterprises
 - **Branch**: main
 
-### Services Status:
+### Services Status
 
 #### Fly.io API (infamous-freight-ai)
 
 - **Status**: ⏳ Rebuilding (502 errors)
 - **Expected**: Should pickup new commits soon
-- **Health Check**: https://infamous-freight-ai.fly.dev/api/health
+- **Health Check**: <https://infamous-freight-ai.fly.dev/api/health>
 - **Region**: 65+ machines across 15+ regions (sjc, syd, sin, ewr, iad, yyz, nrt, arn, gru, cdg, ams)
 
 #### Vercel Web App
 
 - **Status**: ⚠️ SSO Protected (HTTP 401)
-- **URL**: https://infamous-freight-enterprises-e1mn358un-santorio-miles-projects.vercel.app
+- **URL**: <https://infamous-freight-enterprises-e1mn358un-santorio-miles-projects.vercel.app>
 - **Issue**: SSO authentication required - needs manual dashboard disable
-- **Dashboard**: https://vercel.com/santorio-miles-projects/infamous-freight-enterprises/settings/deployment-protection
+- **Dashboard**: <https://vercel.com/santorio-miles-projects/infamous-freight-enterprises/settings/deployment-protection>
 
 ---
 
 ## Next Steps
 
-### Immediate (Optional):
+### Immediate (Optional)
 
 1. **Disable Vercel SSO** (Manual Step):
 
@@ -120,7 +120,7 @@
    - Check Sentry dashboard for error trends
    - Verify profiling data is being collected
 
-### Coverage Improvements (When Needed):
+### Coverage Improvements (When Needed)
 
 - Current test coverage: ~43% (need 55% for full CI pass)
 - Pre-push hook bypassed with `--no-verify` for deployment
@@ -185,7 +185,7 @@ jest.mock("./src/db/prisma.js", () => {
 
 ## Deployment Pipeline
 
-### What Gets Deployed:
+### What Gets Deployed
 
 1. **Fly.io**: Automatically deploys latest main branch
    - Builds Docker image
@@ -196,14 +196,14 @@ jest.mock("./src/db/prisma.js", () => {
    - Web app builds
    - SSO currently protecting endpoint (needs manual disable)
 
-### What's Been Fixed:
+### What's Been Fixed
 
 - ✅ API validation now properly handles edge cases
 - ✅ Sentry initialized before anything else for complete tracing
 - ✅ Error responses follow standard ApiResponse format
 - ✅ All 29 validation tests passing
 
-### What Still Needs:
+### What Still Needs
 
 - ⚠️ Vercel SSO should be disabled (manual step)
 - ⚠️ Additional route tests for CI coverage pass
@@ -240,7 +240,7 @@ Coverage:    43.07% statements (need 55% for CI pass)
 - **Deployment**: Push to main with `git push origin main --no-verify`
 - **API Health**: `curl https://infamous-freight-ai.fly.dev/api/health`
 - **Logs**: `flyctl logs -a infamous-freight-ai -n`
-- **Sentry Dashboard**: https://sentry.io/ (SENTRY_DSN configured)
+- **Sentry Dashboard**: <https://sentry.io/> (SENTRY_DSN configured)
 - **Git Commits**: `git log --oneline` to see all changes
 
 ---

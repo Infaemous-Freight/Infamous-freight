@@ -9,6 +9,7 @@
 ## 📚 Documentation Index
 
 ### 🚀 Getting Started (Start Here)
+
 - **[Quick Reference Card](.github/CODEQL_QUICK_REFERENCE.md)** - 5 min read
   - Common commands
   - 7 security layers overview
@@ -16,6 +17,7 @@
   - Emergency contacts
 
 ### 📖 Comprehensive Guides
+
 - **[Full Implementation Guide](.github/CODEQL_100_GUIDE.md)** - 30 min read
   - Architecture overview
   - Complete workflow details
@@ -38,6 +40,7 @@
   - Enforcement matrix
 
 ### 📊 Status & Reports
+
 - **[Implementation Status Report](CODEQL_100_IMPLEMENTATION_STATUS.md)** - 20 min read
   - Executive summary
   - File deliverables
@@ -74,28 +77,33 @@
 ## 📋 Security Layers
 
 ### Layer 1: CodeQL Analysis
+
 - **50+ Security Queries**
 - Detection: XSS, SQL Injection, CSRF, Auth bypass, Data exposure, etc.
 - Status: ✅ On every push, PR, daily, weekly
 
 ### Layer 2: Dependency Scanning
+
 - **npm audit Integration**
 - Checks: Known vulnerabilities, outdated packages, license compliance
 - Status: ✅ Every push with auto-merge for critical
 
 ### Layer 3: Supply Chain Security
+
 - **SBOM Generation** (CycloneDX v1.4)
 - **Secret Detection** (TruffleHog)
 - **Signature Verification** (Signed commits required)
 - Status: ✅ On every push
 
 ### Layer 4: Code Quality
+
 - **ESLint** (100+ rules)
 - **TypeScript** (Strict mode)
 - **Complexity Analysis**
 - Status: ✅ Every push
 
 ### Layer 5: Security Configuration Audit
+
 - **HTTP Headers** (HSTS, CSP, X-Frame-Options, etc.)
 - **CORS Policies**
 - **Rate Limiting** (100/15min general, 5/15min auth)
@@ -103,6 +111,7 @@
 - Status: ✅ Daily audit
 
 ### Layer 6: Automated Reporting
+
 - **GitHub Dashboard Integration**
 - **SARIF Export** (Machine-readable)
 - **PR Comments** (With auto-blocking on critical)
@@ -111,6 +120,7 @@
 - Status: ✅ Continuous
 
 ### Layer 7: Continuous Monitoring
+
 - **Daily Comprehensive Scans** (3 AM UTC)
 - **Weekly Deep Audits** (Sundays)
 - **Dependabot Updates** (Daily)
@@ -122,6 +132,7 @@
 ## 🔐 Coverage Matrix
 
 ### Vulnerability Detection (100%)
+
 ```
 ✅ OWASP Top 10
    ├─ A01: Broken Access Control
@@ -141,6 +152,7 @@
 ```
 
 ### Compliance Coverage (100%)
+
 ```
 ✅ SOC 2 Type II
 ✅ GDPR
@@ -200,8 +212,8 @@ open "https://github.com/MrMiless44/Infamous-freight-enterprises/security"
 
 ## 📞 Support & Escalation
 
-**Primary**: security@infamous-freight.com  
-**On-Call**: security-oncall@infamous-freight.com (24/7)  
+**Primary**: <security@infamous-freight.com>  
+**On-Call**: <security-oncall@infamous-freight.com> (24/7)  
 **GitHub**: @MrMiless44
 
 ---

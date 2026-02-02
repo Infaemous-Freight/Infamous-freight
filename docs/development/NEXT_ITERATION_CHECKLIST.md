@@ -76,10 +76,10 @@ flyctl secrets list -a infamous-freight-api
 Expected output:
 
 ```
-NAME              	DIGEST                  CREATED AT
-CORS_ORIGINS      	sha256:abc123...        2025-12-16T19:00:00Z
-DATABASE_URL      	sha256:def456...        2025-12-16T19:00:00Z
-JWT_SECRET        	sha256:ghi789...        2025-12-16T19:00:00Z
+NAME               DIGEST                  CREATED AT
+CORS_ORIGINS       sha256:abc123...        2025-12-16T19:00:00Z
+DATABASE_URL       sha256:def456...        2025-12-16T19:00:00Z
+JWT_SECRET         sha256:ghi789...        2025-12-16T19:00:00Z
 ```
 
 #### Step 4: Verify API Now Has Database Access
@@ -138,7 +138,7 @@ Tests will run automatically when you push to GitHub:
 
 1. Commit changes: `git commit -m "message"`
 2. Push to main: `git push origin main`
-3. GitHub Actions runs: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+3. GitHub Actions runs: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
 4. Check results: All workflows should show ✅ green
 
 #### Option C: Docker Environment
@@ -260,7 +260,7 @@ Once database is configured, CI should automatically:
 
 **Via GitHub**:
 
-1. Go to: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+1. Go to: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
 2. Look for latest run on `main` branch
 3. All checks should show ✅ (green)
 

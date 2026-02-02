@@ -7,6 +7,7 @@ Embedded insurance can be powered by partner integrations. Supported examples:
 - **Direct broker referrals**: custom URLs or email workflows.
 
 ## Integration Approach
+
 - Capture quote requests in `InsuranceQuoteRequest`.
 - Store partner metadata and payload for easy follow-up.
 - Log referral events for revenue tracking.

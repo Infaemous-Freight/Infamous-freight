@@ -34,7 +34,7 @@
 
 ---
 
-## 🚀 Ready to Start Development!
+## 🚀 Ready to Start Development
 
 ### Option 1: Start All Services
 
@@ -123,22 +123,22 @@ pnpm prisma:studio
 ## 🎯 What's Next?
 
 1. **Start Development**: Run `pnpm dev`
-2. **Visit Web App**: http://localhost:3000
-3. **Check API**: http://localhost:4000/api/health
+2. **Visit Web App**: <http://localhost:3000>
+3. **Check API**: <http://localhost:4000/api/health>
 4. **Start Coding**: Make changes and see hot-reload in action!
 
 ---
 
 ## 🔧 Troubleshooting
 
-### If `pnpm` commands fail:
+### If `pnpm` commands fail
 
 Use `npm run <command>` instead. Example:
 
 - `npm run dev` instead of `pnpm dev`
 - `npm run api:dev` instead of `pnpm api:dev`
 
-### If port already in use:
+### If port already in use
 
 ```bash
 # Kill processes on ports
@@ -146,7 +146,7 @@ lsof -ti:4000 | xargs kill -9  # API
 lsof -ti:3000 | xargs kill -9  # Web
 ```
 
-### To rebuild shared package:
+### To rebuild shared package
 
 ```bash
 cd packages/shared

@@ -150,7 +150,7 @@ process.on("SIGTERM", shutdown);
 
 ## Recommended Approach
 
-### Instead of Chasing 100% Unit Test Coverage:
+### Instead of Chasing 100% Unit Test Coverage
 
 **1. Integration Tests** (High Value)
 

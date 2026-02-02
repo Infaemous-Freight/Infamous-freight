@@ -9,10 +9,11 @@
 ## 📋 Weekly Operations Checklist
 
 ### Every Monday Morning
-- [ ] Review **Sentry errors** from past week (https://sentry.io)
+
+- [ ] Review **Sentry errors** from past week (<https://sentry.io>)
   - [ ] Triage critical issues (P0 = respond immediately)
   - [ ] Create tickets for P1/P2 issues
-- [ ] Check **Vercel Analytics** (https://vercel.com/dashboard)
+- [ ] Check **Vercel Analytics** (<https://vercel.com/dashboard>)
   - [ ] HTTP error rates < 1%
   - [ ] API response time < 500ms
   - [ ] No 5xx errors spike
@@ -21,6 +22,7 @@
   - [ ] Check uptime > 99.9%
 
 ### Every Friday End-of-Day
+
 - [ ] Generate **weekly deployment report**:
   - Error count, request volume, latency metrics
   - Share with team
@@ -36,10 +38,13 @@
 **Timeline**: Next rotation due **May 2, 2026**
 
 **Steps:**
+
 1. Generate new secret:
+
    ```bash
    python3 -c "import secrets; print(secrets.token_urlsafe(32))"
    ```
+
 2. Update in Vercel:
    - Dashboard → Settings → Environment Variables
    - Replace `JWT_SECRET` with new value
@@ -55,6 +60,7 @@
 **Timeline**: Next rotation due **August 2, 2026**
 
 **Steps:**
+
 1. In Supabase Dashboard:
    - Project Settings → Database → Password
    - Click "Reset Database Password"
@@ -76,15 +82,17 @@
 
 ## 📊 Monitoring & Observability
 
-### Sentry Error Tracking (https://sentry.io)
+### Sentry Error Tracking (<https://sentry.io>)
 
 **Setup:**
+
 ```bash
 # Verify in Vercel env vars
 NEXT_PUBLIC_SENTRY_DSN=<your-dsn>
 ```
 
 **Weekly Review Targets:**
+
 - **Critical (P0)**: Must fix within 24 hours
   - Auth failures, database errors, deployment issues
 - **High (P1)**: Fix within 1 week
@@ -93,6 +101,7 @@ NEXT_PUBLIC_SENTRY_DSN=<your-dsn>
   - Deprecation warnings, performance issues
 
 **Alert Rules:**
+
 - [ ] Enable alerts for "New Issue" in project
 - [ ] Set email notifications to team
 - [ ] Configure Slack webhook for critical errors
@@ -100,6 +109,7 @@ NEXT_PUBLIC_SENTRY_DSN=<your-dsn>
 ### Vercel Analytics (Built-In)
 
 **Weekly Metrics to Track:**
+
 - **Page Load Time**: Target < 2s (Lighthouse)
 - **Core Web Vitals**:
   - LCP (Largest Contentful Paint) < 2.5s
@@ -109,6 +119,7 @@ NEXT_PUBLIC_SENTRY_DSN=<your-dsn>
 - **Request Volume**: Growing trend?
 
 **Optimization Actions:**
+
 - If LCP degrades: Review image optimization, font loading
 - If error rate spikes: Check Sentry simultaneously
 - If latency increases: Check database queries, API endpoints
@@ -116,6 +127,7 @@ NEXT_PUBLIC_SENTRY_DSN=<your-dsn>
 ### UptimeRobot Monitoring (Optional)
 
 **Setup Health Check:**
+
 ```
 Monitor URL: https://<your-url>/api/health
 Frequency: Every 5 minutes
@@ -123,6 +135,7 @@ Alert: SMS + Email on failure
 ```
 
 **Expected Response:**
+
 ```json
 {
   "status": "ok",
@@ -132,6 +145,7 @@ Alert: SMS + Email on failure
 ```
 
 **Acceptable Downtime:**
+
 - Planned: Schedule at 2-4 AM UTC
 - Unplanned: < 15 minutes = OK, > 1 hour = page on-call team
 
@@ -167,10 +181,12 @@ Alert: SMS + Email on failure
 ### Rollback (If Deployment Fails)
 
 1. **Revert last commit**:
+
    ```bash
    git revert HEAD
    git push
    ```
+
 2. GitHub Actions auto-redeploys previous version
 3. Monitor health endpoint for recovery
 
@@ -183,15 +199,19 @@ Alert: SMS + Email on failure
 ### First of Each Month
 
 - [ ] Update dependencies:
+
   ```bash
   pnpm up --latest
   pnpm --filter @infamous-freight/shared up --latest
   ```
+
 - [ ] Run security audit:
+
   ```bash
   pnpm audit
   npm audit --audit-level=moderate
   ```
+
 - [ ] Review cost optimization:
   - Vercel usage
   - Supabase request count
@@ -234,7 +254,7 @@ Alert: SMS + Email on failure
 
 ### If Database is Down
 
-1. **Check Supabase status**: https://supabase.com/status
+1. **Check Supabase status**: <https://supabase.com/status>
 2. **If regional outage**: Contact Supabase support
 3. **If connection issue**:
    - Verify `DATABASE_URL` in Vercel is correct
@@ -270,10 +290,11 @@ Track these metrics over time:
 ## 📞 Escalation Contacts
 
 **For Issues:**
+
 - **Slack**: #incidents channel
 - **On-Call**: Check rotation schedule
-- **Vercel Support**: https://vercel.com/support
-- **Supabase Support**: https://supabase.com/support
+- **Vercel Support**: <https://vercel.com/support>
+- **Supabase Support**: <https://supabase.com/support>
 
 ---
 

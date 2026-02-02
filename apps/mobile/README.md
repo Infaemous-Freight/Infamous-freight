@@ -5,6 +5,7 @@ React Native mobile application for the Infamous Freight platform using Expo.
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js >= 20.0.0
 - pnpm >= 9.15.0
 - Expo CLI
@@ -65,11 +66,13 @@ mobile/
 ### Adding Tests
 
 Install testing dependencies:
+
 ```bash
 pnpm add -D @testing-library/react-native jest-expo
 ```
 
 Configure Jest in `package.json`:
+
 ```json
 {
   "jest": {
@@ -82,6 +85,7 @@ Configure Jest in `package.json`:
 ```
 
 Example test:
+
 ```typescript
 import { render } from '@testing-library/react-native';
 import { Button } from './Button';
@@ -95,6 +99,7 @@ describe('Button', () => {
 ```
 
 ### Running Tests
+
 ```bash
 pnpm test
 ```
@@ -106,6 +111,7 @@ pnpm test
 - Responsive design with Dimensions API
 
 Example:
+
 ```typescript
 import { StyleSheet } from 'react-native';
 
@@ -121,6 +127,7 @@ const styles = StyleSheet.create({
 ## 🔧 Environment Variables
 
 See `.env.example` for required variables:
+
 - `EXPO_PUBLIC_API_URL`: Backend API URL
 - `EXPO_PUBLIC_STRIPE_KEY`: Stripe publishable key
 
@@ -129,6 +136,7 @@ See `.env.example` for required variables:
 ## 📱 Navigation
 
 Using React Navigation:
+
 ```typescript
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -177,6 +185,7 @@ export function ShipmentCard({ shipment }: Props) {
 ## 📦 Build & Deploy
 
 ### Development Build
+
 ```bash
 # iOS
 eas build --profile development --platform ios
@@ -186,6 +195,7 @@ eas build --profile development --platform android
 ```
 
 ### Production Build
+
 ```bash
 # iOS
 eas build --profile production --platform ios
@@ -198,6 +208,7 @@ eas build --profile production --platform all
 ```
 
 ### Submit to Stores
+
 ```bash
 # iOS App Store
 eas submit -p ios
@@ -209,6 +220,7 @@ eas submit -p android
 ## 🔍 Debugging
 
 ### React Native Debugger
+
 ```bash
 # Install React Native Debugger
 brew install --cask react-native-debugger
@@ -218,6 +230,7 @@ brew install --cask react-native-debugger
 ```
 
 ### Expo DevTools
+
 ```bash
 # Start with DevTools
 pnpm start
@@ -227,7 +240,9 @@ pnpm start
 ```
 
 ### Console Logs
+
 View logs in terminal:
+
 ```bash
 # iOS
 pnpm ios --reset-cache
@@ -247,24 +262,30 @@ pnpm android --reset-cache
 ## 🔧 Common Issues
 
 ### "Cannot find module '@infamous-freight/shared'"
+
 Build the shared package first:
+
 ```bash
 cd ../packages/shared && pnpm build
 ```
 
 ### Metro bundler issues
+
 Clear cache:
+
 ```bash
 pnpm start --clear
 ```
 
 ### iOS build errors
+
 ```bash
 cd ios && pod install && cd ..
 pnpm ios
 ```
 
 ### Android build errors
+
 ```bash
 cd android && ./gradlew clean && cd ..
 pnpm android

@@ -28,6 +28,7 @@
 CodeQL is GitHub's **semantic code analysis engine** that finds vulnerabilities in your code before deployment.
 
 **Key Features:**
+
 - 🔍 Detects 150+ security and quality issues
 - ⚡ Runs automatically on every push/PR
 - 📊 Generates detailed SARIF reports
@@ -177,12 +178,14 @@ cat results.sarif | jq
 ### GitHub Actions Integration
 
 CodeQL runs automatically on:
+
 - ✅ Every push to `main` or `develop`
 - ✅ Every pull request
 - ✅ Daily schedule (3 AM UTC)
 - ✅ Weekly schedule (Sundays)
 
 **Check status:**
+
 ```
 Repository → Actions → CodeQL Security Analysis
 ```
@@ -198,6 +201,7 @@ Repository → Actions → CodeQL Security Analysis
 **Output:** Security alerts + artifacts
 
 **View workflow run:**
+
 ```
 Actions → CodeQL Security Analysis 100% → Latest run
 ```
@@ -304,6 +308,7 @@ cat results.csv
 ### Analysis Report Format
 
 **GitHub Dashboard:**
+
 ```
 Security → Code scanning alerts
 
@@ -316,6 +321,7 @@ Filters:
 ```
 
 **SARIF Format:**
+
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
@@ -406,12 +412,14 @@ diff before.csv after.csv
 ### GitHub Security Dashboard
 
 **Features:**
+
 - 📊 Real-time vulnerability dashboard
 - 🔔 Email notifications for new alerts
 - 🔗 Link code locations to pull requests
 - 📈 Trend analysis and reports
 
 **Setup:**
+
 1. Go to `Settings → Security & analysis`
 2. Enable `Code scanning → CodeQL analysis`
 3. Configure notifications
@@ -420,12 +428,14 @@ diff before.csv after.csv
 ### Pull Request Integration
 
 **Automatic:**
+
 - ✅ Runs on every PR
 - ✅ Comments with results
 - ✅ Blocks merge on critical issues
 - ✅ Shows inline code annotations
 
 **Configuration:**
+
 ```yaml
 # .github/workflows/codeql.yml
 
@@ -462,10 +472,12 @@ diff before.csv after.csv
 ### Email Notifications
 
 **GitHub Built-in:**
+
 - Settings → Notifications → Enable security alerts
 - CodeQL results sent to registered email
 
 **Custom Email:**
+
 ```yaml
 - name: Send email
   uses: dawidd6/action-send-mail@v3
@@ -536,6 +548,7 @@ timeout-minutes: 360  # 6 hours max
 #### Issue: CodeQL workflow times out
 
 **Solution:**
+
 ```yaml
 # Increase timeout
 timeout-minutes: 360  # was 60
@@ -553,6 +566,7 @@ on:
 #### Issue: "No database found"
 
 **Solution:**
+
 ```bash
 # Rebuild database
 codeql database create ./codeql-db \
@@ -566,6 +580,7 @@ ls -la ./codeql-db/
 #### Issue: Out of memory
 
 **Solution:**
+
 ```yaml
 # Reduce workers
 env:
@@ -578,6 +593,7 @@ runs-on: ubuntu-latest-x2
 #### Issue: False positives
 
 **Solution:**
+
 ```yaml
 # Dismiss irrelevant alerts
 # In GitHub UI: Security → Code scanning alerts → Dismiss
@@ -590,6 +606,7 @@ const result = dangerousFunction();
 ### Debugging
 
 **Enable debug logging:**
+
 ```yaml
 - name: Debug CodeQL
   env:
@@ -598,6 +615,7 @@ const result = dangerousFunction();
 ```
 
 **Inspect artifacts:**
+
 ```bash
 # Download SARIF file
 ls -la security-artifacts/
@@ -639,6 +657,7 @@ echo "✅ Security check passed"
 ### Code Review
 
 **Security checklist:**
+
 - [ ] No hardcoded secrets
 - [ ] Input validation on all endpoints
 - [ ] SQL injection prevention
@@ -699,16 +718,19 @@ cd codeql && git pull origin main
 ## Resources
 
 ### Official Documentation
+
 - [GitHub CodeQL](https://codeql.github.com/)
 - [CodeQL Query Language](https://codeql.github.com/docs/ql-language-reference/)
 - [GitHub Actions Security](https://docs.github.com/en/actions/security)
 
 ### Security Standards
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
 - [CWE Top 25](https://cwe.mitre.org/top25/)
 
 ### Community
+
 - [CodeQL GitHub](https://github.com/github/codeql)
 - [CodeQL Queries](https://github.com/github/codeql-js)
 - [Security Advisories](https://github.com/advisories)

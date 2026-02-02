@@ -70,9 +70,9 @@ This landing page provides quick access to all deployment documentation and runb
 
 | Component     | Platform | Environment | Access                                          |
 | ------------- | -------- | ----------- | ----------------------------------------------- |
-| Web Dashboard | Vercel   | Production  | https://infamous-freight-enterprises.vercel.app |
-| API (Primary) | Render   | Production  | https://infamous-freight-api.onrender.com       |
-| API (Backup)  | Fly.io   | Production  | https://infamous-freight-api.fly.dev            |
+| Web Dashboard | Vercel   | Production  | <https://infamous-freight-enterprises.vercel.app> |
+| API (Primary) | Render   | Production  | <https://infamous-freight-api.onrender.com>       |
+| API (Backup)  | Fly.io   | Production  | <https://infamous-freight-api.fly.dev>            |
 | Database      | Supabase | Production  | Managed PostgreSQL                              |
 | Redis Cache   | Upstash  | Production  | Managed Redis                                   |
 
@@ -189,8 +189,8 @@ pnpm test:e2e --grep "@smoke"
 
 ### Monitoring Dashboards
 
-- **Vercel Dashboard**: https://vercel.com/dashboard
-- **Render Dashboard**: https://dashboard.render.com
+- **Vercel Dashboard**: <https://vercel.com/dashboard>
+- **Render Dashboard**: <https://dashboard.render.com>
 - **Uptime Monitor**: Check status of all endpoints
 - **Error Tracking**: Sentry dashboard for errors
 
@@ -318,10 +318,10 @@ Via Render dashboard → Environment → Environment Variables
 
 ### External Documentation
 
-- **Vercel Docs**: https://vercel.com/docs
-- **Render Docs**: https://render.com/docs
-- **Prisma Deployment**: https://www.prisma.io/docs/guides/deployment
-- **Next.js Deployment**: https://nextjs.org/docs/deployment
+- **Vercel Docs**: <https://vercel.com/docs>
+- **Render Docs**: <https://render.com/docs>
+- **Prisma Deployment**: <https://www.prisma.io/docs/guides/deployment>
+- **Next.js Deployment**: <https://nextjs.org/docs/deployment>
 
 ### Internal Resources
 
@@ -334,4 +334,4 @@ Via Render dashboard → Environment → Environment Variables
 
 **Last Updated:** December 28, 2025  
 **Maintained By:** DevOps Team  
-**Questions?** Contact devops@infamousfreight.com
+**Questions?** Contact <devops@infamousfreight.com>

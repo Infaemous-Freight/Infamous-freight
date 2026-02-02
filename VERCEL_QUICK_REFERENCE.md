@@ -12,6 +12,7 @@
 ## ⚙️ Vercel Dashboard Settings (Copy/Paste Ready)
 
 ### General Settings → Root Directory
+
 ```
 apps/web
 ```
@@ -19,21 +20,25 @@ apps/web
 ### Build & Development Settings
 
 **Install Command:**
+
 ```bash
 cd ../.. && corepack enable && pnpm -w install --frozen-lockfile
 ```
 
 **Build Command:**
+
 ```bash
 cd ../.. && pnpm -w --filter web build
 ```
 
 **Output Directory:**
+
 ```
 apps/web/.next
 ```
 
 **Framework Preset:**
+
 ```
 Next.js (should auto-detect)
 ```
@@ -49,8 +54,9 @@ Copy these variable names to Vercel dashboard:
 | `NEXT_PUBLIC_SUPABASE_URL`      | Supabase Dashboard → Settings → API | ✅ Yes    |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Dashboard → Settings → API | ✅ Yes    |
 
-### How to Get Supabase Values:
-1. Go to https://supabase.com/dashboard
+### How to Get Supabase Values
+
+1. Go to <https://supabase.com/dashboard>
 2. Select your project
 3. Navigate to **Settings** → **API**
 4. Copy **Project URL** and **anon (public) key**
@@ -76,12 +82,14 @@ Copy these variable names to Vercel dashboard:
 ## ✅ Success Criteria
 
 Build log shows:
+
 - ✅ `Detected Next.js version`
 - ✅ `Using pnpm 9.15.0`
 - ✅ `Node.js version: 20.x`
 - ✅ `Build completed successfully`
 
 Health endpoint returns:
+
 - ✅ HTTP 200 status
 - ✅ `ok: true`
 - ✅ Both Supabase flags `true`
@@ -104,8 +112,8 @@ Health endpoint returns:
 
 - Full Guide: [VERCEL_DEPLOYMENT_SETUP.md](VERCEL_DEPLOYMENT_SETUP.md)
 - Verification Script: `./scripts/verify-vercel-setup.sh`
-- Supabase Docs: https://supabase.com/docs/guides/getting-started/quickstarts/nextjs
-- Vercel Monorepo Guide: https://vercel.com/docs/concepts/monorepos
+- Supabase Docs: <https://supabase.com/docs/guides/getting-started/quickstarts/nextjs>
+- Vercel Monorepo Guide: <https://vercel.com/docs/concepts/monorepos>
 
 ---
 

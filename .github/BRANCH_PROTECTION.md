@@ -1,4 +1,5 @@
 # 🔒 Branch Protection Configuration
+
 # GitHub Organization Settings for Enhanced Security
 
 ## Main Branch Protection Rules
@@ -71,27 +72,32 @@ branch-protection-rules:
 ## GitHub Organization Security Settings
 
 ### Secret Scanning
+
 - ✅ Enable secret scanning for organization
 - ✅ Enable secret scanning push protection
 - ✅ Automatic secrets rotation
 
 ### Dependency Management
+
 - ✅ Enable Dependabot alerts
 - ✅ Enable Dependabot security updates
 - ✅ Enable Dependabot version updates
 
 ### CodeQL Analysis
+
 - ✅ Enable default CodeQL queries
 - ✅ Enable security and quality queries
 - ✅ Enforce code scanning
 
 ### Advanced Security Features
+
 - ✅ Require two-factor authentication
 - ✅ Restrict repository creation
 - ✅ Enforce signed commits
 - ✅ Enable audit logging
 
 ### Member Permissions
+
 ```
 Organization:
 ├─ Owner (MrMiless44)
@@ -113,6 +119,7 @@ Repository:
 ## Automation Rules
 
 ### Auto-Merge Rules
+
 ```yaml
 # Auto-merge dependency updates
 - condition: "branch == 'dependabot/**' && status == 'success'"
@@ -128,6 +135,7 @@ Repository:
 ```
 
 ### Dismiss Rules
+
 ```yaml
 # Dismiss alerts (only after review)
 - alert: "sql-injection"
@@ -153,6 +161,7 @@ Repository:
 ## Implementation Steps
 
 ### 1. Enable Organization Settings
+
 ```bash
 # Navigate to Organization Settings
 https://github.com/organizations/MrMiless44/settings/security
@@ -166,6 +175,7 @@ https://github.com/organizations/MrMiless44/settings/security
 ```
 
 ### 2. Configure Branch Protection
+
 ```bash
 # Navigate to Settings → Branches
 https://github.com/MrMiless44/Infamous-freight-enterprises/settings/branches
@@ -176,6 +186,7 @@ https://github.com/MrMiless44/Infamous-freight-enterprises/settings/branches
 ```
 
 ### 3. Setup CodeQL Enforcement
+
 ```bash
 # In CodeQL workflow, add check requirement
 required_status_checks:
@@ -183,6 +194,7 @@ required_status_checks:
 ```
 
 ### 4. Enable Audit Logging
+
 ```bash
 # All organization and repository events logged
 # Retention: 90 days
@@ -192,18 +204,21 @@ required_status_checks:
 ## Monitoring & Alerts
 
 ### Real-Time Alerts
+
 - 🔴 Critical: Email + Slack + On-call
 - 🟠 High: Email + Slack
 - 🟡 Medium: Email
 - 🔵 Low: GitHub notification
 
 ### Weekly Reports
+
 - Security score
 - Vulnerability trends
 - Dependency updates
 - Code scanning results
 
 ### Monthly Review
+
 - Branch protection effectiveness
 - False positive rate
 - Security incident count
@@ -212,18 +227,21 @@ required_status_checks:
 ## Compliance & Auditing
 
 ### Regulatory Requirements
+
 - ✅ SOC 2 compliance
 - ✅ HIPAA audit logging
 - ✅ GDPR data protection
 - ✅ ISO 27001 certification
 
 ### Audit Trail
+
 - All security events logged
 - Who made what change
 - When and why it was made
 - Approval trail maintained
 
 ### Certification
+
 - Annual security audit
 - Third-party vulnerability assessment
 - Penetration testing

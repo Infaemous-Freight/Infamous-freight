@@ -391,6 +391,7 @@ async function trackLeadConversion(leadId, status) {
 ## Partner Tier Progression
 
 ```
+
 Free Trial
     ↓
 Authorized Reseller (Tier 1)
@@ -400,6 +401,7 @@ Preferred Partner (Tier 2) - Higher commission
 Platinum Partner (Tier 3) - Highest benefits
     ↓
 Strategic Partner (Custom terms)
+
 ```
 
 ## Certification Levels
@@ -460,6 +462,7 @@ const PARTNER_KPIs = {
 ## 8. Partnership Agreement Template ✅
 
 **Key Terms**:
+
 - Duration: 1-3 years
 - Termination: 30-day notice
 - Commission: Based on tier (15-50%)
@@ -487,6 +490,7 @@ Year 1 Partner Channel Contribution:
 ## Status: 100% Complete ✅
 
 Comprehensive partner program designed to:
+
 - ✅ Build 50+ active partners in Year 1
 - ✅ Generate $1.5-2M additional ARR
 - ✅ Create recurring commission revenue stream

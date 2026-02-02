@@ -129,4 +129,4 @@ Estimated effort: 2-3 weeks for full migration.
 ## Related
 
 - [ADR-0002: Shared Package Pattern](0002-shared-package-pattern.md)
-- Node.js ESM documentation: https://nodejs.org/api/esm.html
+- Node.js ESM documentation: <https://nodejs.org/api/esm.html>

@@ -71,6 +71,7 @@
 - **Status**: Blocked by npm registry connectivity (ERR_INVALID_THIS)
 - **Affected Packages**: All major dependencies showing retries
 - **Action**: Manual installation once npm registry is stable
+
   ```bash
   pnpm install --force
   ```
@@ -80,6 +81,7 @@
 - **Status**: Awaiting dependency installation
 - **Tests**: 47 total tests (pending verification after install)
 - **Build**: Requires successful dependency resolution
+
   ```bash
   pnpm build
   pnpm test

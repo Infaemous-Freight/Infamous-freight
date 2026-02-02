@@ -68,12 +68,14 @@ Production Environment Secrets (GitHub → Settings → Secrets and variables �
 ```
 
 **Action Items:**
+
 - [ ] Verify all secrets are configured correctly
 - [ ] Rotate secrets if any have been exposed
 - [ ] Enable GitHub branch protection: require status checks before merge
 - [ ] Set up secret scanning alerts in GitHub
 
 **Commands to verify:**
+
 ```bash
 # List configured secrets (view-only)
 gh secret list --env production
@@ -89,12 +91,14 @@ git log --name-only | grep -E "\.env|secrets"
 **Status:** ✅ Documented | **Action:** Implement checks
 
 **Never commit:**
+
 - `.env.local` (use `.env.example` instead)
 - Private keys or credentials
 - API keys or tokens
 - Real database URLs
 
 **Verify with:**
+
 ```bash
 # Check for any env files in repo
 find . -name ".env*" -not -name ".env.example" | grep -v node_modules
@@ -104,6 +108,7 @@ git log --all --name-status | grep "\.env\|secrets"
 ```
 
 **Recommended:**
+
 ```bash
 # Add pre-commit hook to prevent env commits
 echo '*.env.local' >> .gitignore
@@ -128,6 +133,7 @@ npm audit --audit-level=moderate
 ```
 
 **Setup GitHub Advanced Security:**
+
 - [ ] Go to GitHub → Repository Settings → Security
 - [ ] Enable "Dependabot alerts"
 - [ ] Enable "Dependabot security updates"
@@ -147,6 +153,7 @@ npm audit --audit-level=moderate
 **No action needed** - Vercel handles HTTPS automatically.
 
 **Verify with:**
+
 ```bash
 # Test SSL certificate
 openssl s_client -connect your-domain:443 < /dev/null | grep -A5 "subject="
@@ -173,6 +180,7 @@ curl -i https://your-domain.com | head -20
 ```
 
 **Verify with:**
+
 ```bash
 curl -i https://your-domain.com | grep -E "X-|Strict|Referrer"
 ```
@@ -186,6 +194,7 @@ All headers are already configured ✅
 ### 2.1 Build Optimization
 
 **Current Setup:**
+
 - ✅ Next.js 16 with SWC compiler (fast)
 - ✅ Code splitting enabled
 - ✅ Image optimization configured
@@ -208,6 +217,7 @@ pnpm add -D bundlesize
 ```
 
 **Target metrics:**
+
 ```
 First Contentful Paint (FCP): < 1.8s
 Largest Contentful Paint (LCP): < 2.5s
@@ -220,6 +230,7 @@ First Input Delay (FID): < 100ms
 ### 2.2 Database Query Optimization
 
 **Current Setup:**
+
 - ✅ Prisma with query caching
 - ✅ Connection pooling via Supabase pgBouncer
 
@@ -306,6 +317,7 @@ done
 ```
 
 **Recommendations:**
+
 - [ ] Monitor rate limit hits in production
 - [ ] Adjust limits based on actual usage patterns
 - [ ] Implement per-user vs per-IP rate limiting
@@ -322,6 +334,7 @@ done
 Sentry provides complete end-to-end error tracking, performance monitoring, and incident management.
 
 **Sentry 100% Includes:**
+
 - ✅ Web app error capture (Next.js)
 - ✅ API error capture (Express + Node.js)
 - ✅ Performance monitoring (transactions)
@@ -361,6 +374,7 @@ curl -X POST https://your-app.vercel.app/api/test-error \
 ```
 
 **Configuration Files:**
+
 - `apps/web/src/lib/sentry.client.config.ts` - Web SDK setup
 - `apps/api/src/config/sentry-enhanced.js` - API SDK setup
 - `apps/api/src/instrument.js` - Bootstrap instrumentation
@@ -368,6 +382,7 @@ curl -X POST https://your-app.vercel.app/api/test-error \
 
 **For Complete Setup Details:**
 👉 See [SENTRY_100_GUIDE.md](docs/guides/SENTRY_100_GUIDE.md) for:
+
 - Architecture overview
 - Environment configuration
 - Performance monitoring setup
@@ -412,6 +427,7 @@ Sentry.captureException(error, {
 ```
 
 **Alerts to Configure:**
+
 - [ ] Error spike (5+ errors in 5 minutes)
 - [ ] Critical errors (severity=critical tag)
 - [ ] 5xx errors on API
@@ -459,6 +475,7 @@ echo "📈 View metrics at: https://app.${DD_SITE}/apm"
 ```
 
 **Enable Datadog RUM in your app:**
+
 ```typescript
 // apps/web/pages/_app.tsx
 import { datadogRum } from '@datadog/browser-rum';
@@ -482,6 +499,7 @@ if (process.env.NEXT_PUBLIC_DD_APP_ID && process.env.NODE_ENV === 'production') 
 ```
 
 **Run setup:**
+
 ```bash
 bash scripts/setup-datadog.sh
 ```
@@ -541,18 +559,22 @@ curl https://your-domain.vercel.app/api/health
 # View in Vercel Dashboard:
 # Project → Analytics → Uptime (last 30 days)
 ```
+
 echo "  - Configure health endpoint: /api/health"
 echo "  - Set alert email: ${ALERT_EMAIL}"
 
 # 4. Alternative: Use GitHub Actions for monitoring
+
 echo "\n🤖 For GitHub Actions monitoring (free):"
 echo "  - See .github/workflows/uptime-check.yml (auto-created below)"
 
 # 5. Store configuration
+
 gh secret set UPTIME_ALERT_EMAIL --env production "$ALERT_EMAIL"
 gh secret set UPTIME_DOMAIN --env production "$DOMAIN"
 
 echo "✅ Uptime monitoring configured!"
+
 ```
 
 **GitHub Actions uptime check (create this file):**
@@ -589,11 +611,13 @@ jobs:
 ```
 
 **Run setup:**
+
 ```bash
 bash scripts/setup-uptime-monitoring.sh
 ```
 
 **Recommended monitoring frequency:**
+
 - ✅ Every 5 minutes for production
 - ✅ Every 15 minutes for staging
 - ✅ Timeout after 30 seconds
@@ -654,6 +678,7 @@ Vercel automatically handles deployment ✅
 **Status:** ✅ Built-in to Vercel
 
 **Vercel handles deployment safety automatically:**
+
 1. Test deployment created for every PR
 2. Preview URL for testing before merge
 3. Production deployment on main merge
@@ -672,6 +697,7 @@ Vercel automatically handles deployment ✅
 ```
 
 **Verify deployment:**
+
 ```bash
 # Check current production deployment
 vercel --prod
@@ -708,6 +734,7 @@ git push origin main
 ```
 
 **Communicate status:**
+
 ```bash
 # Post to Slack during rollback
 curl -X POST $SLACK_WEBHOOK_URL \
@@ -735,6 +762,7 @@ echo $PROD_FREEZE
 ```
 
 **Recommended freeze periods:**
+
 - [ ] During major events/campaigns
 - [ ] Holiday periods
 - [ ] Known infrastructure maintenance windows
@@ -773,6 +801,7 @@ pnpm test:integration
 ```
 
 **Dangerous operations to avoid:**
+
 - ❌ Renaming columns without backward compatibility
 - ❌ Dropping tables without archive
 - ❌ Changing column types without safe conversion
@@ -991,19 +1020,22 @@ FIRST HOUR:
 ## 8️⃣ KEY CONTACTS & RESOURCES
 
 ### Documentation
+
 - [VERCEL_DEPLOYMENT_SETUP.md](VERCEL_DEPLOYMENT_SETUP.md) - Complete guide
 - [VERCEL_QUICK_REFERENCE.md](VERCEL_QUICK_REFERENCE.md) - Cheat sheet
 - [BRANCHES_CLEANUP_REPORT.md](BRANCHES_CLEANUP_REPORT.md) - Branch history
 - [scripts/verify-vercel-setup.sh](scripts/verify-vercel-setup.sh) - Validation
 
 ### External Resources
-- Vercel Docs: https://vercel.com/docs
-- Supabase Docs: https://supabase.com/docs
-- Next.js Docs: https://nextjs.org/docs
-- Prisma Docs: https://www.prisma.io/docs
-- Sentry Docs: https://docs.sentry.io
+
+- Vercel Docs: <https://vercel.com/docs>
+- Supabase Docs: <https://supabase.com/docs>
+- Next.js Docs: <https://nextjs.org/docs>
+- Prisma Docs: <https://www.prisma.io/docs>
+- Sentry Docs: <https://docs.sentry.io>
 
 ### Tools
+
 - Error Tracking: [Sentry.io](https://sentry.io)
 - Monitoring: [Vercel Analytics](https://vercel.com/docs/analytics)
 - Database: [Supabase](https://supabase.com)
@@ -1071,20 +1103,27 @@ curl -X POST https://your-domain.vercel.app/api/test-error
 # 6. Announce in Slack
 # "🎉 Production live! Vercel + Supabase running smoothly."
 ```
-curl https://your-domain.vercel.app/api/health
+
+curl <https://your-domain.vercel.app/api/health>
 
 # 3. Verify Sentry is capturing errors
-curl -X POST https://your-domain.vercel.app/api/test-error
+
+curl -X POST <https://your-domain.vercel.app/api/test-error>
+
 # Check Sentry dashboard in 30 seconds
 
 # 4. Monitor in Vercel dashboard
+
 # Dashboard → Analytics → Uptime should show 100%
 
 # 5. Check Supabase status
+
 # Dashboard → Project → Database → Status
 
 # 6. Announce in Slack
+
 # "🎉 Production 100/100 ready! Vercel + Supabase running smoothly."
+
 ```
 
 ---
@@ -1154,6 +1193,7 @@ CI/CD:         GitHub Actions → Vercel auto-deploy
 ```
 
 **Deployment flow:**
+
 ```
 GitHub Push → GitHub Actions (test/lint) → Vercel auto-deploy → Live!
 Rollback:    Vercel Dashboard button (1-2 minutes)

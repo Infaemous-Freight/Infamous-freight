@@ -230,9 +230,9 @@ flyctl scale vm dedicated-cpu-1x -a infamous-freight-api
 
 ## Support Resources
 
-- Fly.io Status: https://status.flyio.net/
-- Community Forum: https://community.fly.io/
-- Documentation: https://fly.io/docs/
+- Fly.io Status: <https://status.flyio.net/>
+- Community Forum: <https://community.fly.io/>
+- Documentation: <https://fly.io/docs/>
 
 ## Verification Checklist
 

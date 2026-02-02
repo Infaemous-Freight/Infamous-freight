@@ -139,6 +139,7 @@
 **Endpoint**: `GET /api/users/search`
 
 **Query Parameters**:
+
 | Param | Type | Default | Max | Purpose |
 |-------|------|---------|-----|---------|
 | q | string | - | 100 | Search query (email/name) |

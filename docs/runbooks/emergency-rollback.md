@@ -9,6 +9,7 @@
 ## 🚨 When to Trigger Emergency Rollback
 
 Immediate rollback if:
+
 - [ ] Site returns 500 errors (> 50% of requests)
 - [ ] Database connection completely down
 - [ ] Authentication broken for all users
@@ -17,6 +18,7 @@ Immediate rollback if:
 - [ ] Critical feature broken/unusable
 
 **Do NOT rollback for:**
+
 - Single user issues
 - Minor visual bugs
 - Non-critical feature problems
@@ -40,6 +42,7 @@ Status updates: Every 2 minutes
 ```
 
 **Example:**
+
 ```
 🚨 INCIDENT: Rolling back due to database connection failures
 Severity: CRITICAL
@@ -246,6 +249,7 @@ EOF
 ### Scenario 1: Database Connection Failed
 
 **Symptoms:**
+
 - All API requests return 500
 - Logs show "Connection timeout"
 - Health endpoint returns 500
@@ -265,6 +269,7 @@ EOF
 ### Scenario 2: Memory Leak (Slow Degradation)
 
 **Symptoms:**
+
 - Response times increasing over 30 minutes
 - Some requests timeout
 - Error rate gradually increasing
@@ -282,6 +287,7 @@ EOF
 ### Scenario 3: Authentication Broken
 
 **Symptoms:**
+
 - Users cannot log in
 - 401 errors on all authenticated endpoints
 - JWT validation failing
@@ -302,6 +308,7 @@ git log -p -1 | grep "JWT_SECRET\|NEXTAUTH"
 ### Scenario 4: Memory/CPU Exhaustion
 
 **Symptoms:**
+
 - Server becomes unresponsive
 - Requests hanging (no response)
 - CPU at 100%, Memory at 100%
@@ -323,6 +330,7 @@ git log -p -1 | grep "JWT_SECRET\|NEXTAUTH"
 ## What NOT to Do
 
 ❌ **Don't:**
+
 - Wait too long to rollback (> 10 minutes of downtime)
 - Rollback without verification (check health first)
 - Deploy a fix without testing (skip the fix, rollback is safer)
@@ -330,6 +338,7 @@ git log -p -1 | grep "JWT_SECRET\|NEXTAUTH"
 - Skip the post-mortem (we learn from incidents)
 
 ✅ **Do:**
+
 - Act quickly and decisively
 - Verify health before moving forward
 - Over-communicate status
@@ -412,9 +421,10 @@ ETA: 5-10 minutes total
 ---
 
 **Need Help?**
+
 - On-call engineer: [on-call number]
 - Slack: #incidents
 - Documentation: PRODUCTION_READINESS_100.md
-- Sentry: https://sentry.io/organizations/infamousfreight/
+- Sentry: <https://sentry.io/organizations/infamousfreight/>
 
 **Remember:** Rollbacks are safe and expected. It's OK to rollback. Better to be safe than sorry! ✅

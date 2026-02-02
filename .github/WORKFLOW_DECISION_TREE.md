@@ -203,7 +203,7 @@ graph TD
 
 **Command:** `pnpm run build:pages`
 
-**URL:** https://MrMiless44.github.io/Infamous-freight-enterprises/
+**URL:** <https://MrMiless44.github.io/Infamous-freight-enterprises/>
 
 ---
 
@@ -266,7 +266,7 @@ Push to main
 
 ## Preventing Workflow Runs
 
-### Don't Trigger CI:
+### Don't Trigger CI
 
 - Commit message with `[skip ci]` or `[ci skip]`
 
@@ -274,7 +274,7 @@ Push to main
 git commit -m "docs: Update README [skip ci]"
 ```
 
-### Don't Trigger E2E:
+### Don't Trigger E2E
 
 - Scheduled runs can't be skipped
 - Manual runs must be triggered explicitly

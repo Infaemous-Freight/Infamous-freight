@@ -99,6 +99,7 @@
 ## 🔥 Top 10 Time-Saving Features
 
 ### 1. Auto Import with NPM IntelliSense
+
 **Time Saved**: 1-2 hours/week
 
 ```typescript
@@ -107,6 +108,7 @@ import express from 'express'; // ✅ Auto-imported
 ```
 
 ### 2. Format on Save (Prettier)
+
 **Time Saved**: 2-3 hours/week
 
 ```json
@@ -115,6 +117,7 @@ import express from 'express'; // ✅ Auto-imported
 ```
 
 ### 3. ESLint Fix on Save
+
 **Time Saved**: 1-2 hours/week
 
 ```json
@@ -124,6 +127,7 @@ import express from 'express'; // ✅ Auto-imported
 ```
 
 ### 4. Import Cost Bundle Warnings
+
 **Time Saved**: Prevents production issues
 
 ```typescript
@@ -132,6 +136,7 @@ import debounce from 'lodash/debounce'; // 🟢 2KB
 ```
 
 ### 5. GitLens Inline Blame
+
 **Time Saved**: 30 min/week debugging
 
 ```typescript
@@ -140,6 +145,7 @@ const result = await service.doAction(); // Changed by @john 2 days ago
 ```
 
 ### 6. Error Lens Real-Time Errors
+
 **Time Saved**: 1 hour/week
 
 ```typescript
@@ -147,6 +153,7 @@ const x: number = "hello"; // ❌ Type 'string' is not assignable to type 'numbe
 ```
 
 ### 7. Path IntelliSense
+
 **Time Saved**: 30 min/week
 
 ```typescript
@@ -154,6 +161,7 @@ import { User } from './models/user'; // ✅ Autocompletes path
 ```
 
 ### 8. Auto Rename Tag
+
 **Time Saved**: 15 min/week
 
 ```jsx
@@ -161,6 +169,7 @@ import { User } from './models/user'; // ✅ Autocompletes path
 ```
 
 ### 9. TODO Tree Sidebar
+
 **Time Saved**: 30 min/week
 
 ```typescript
@@ -170,6 +179,7 @@ import { User } from './models/user'; // ✅ Autocompletes path
 ```
 
 ### 10. REST Client HTTP Files
+
 **Time Saved**: 1-2 hours/week vs Postman
 
 ```http
@@ -235,12 +245,14 @@ Content-Type: application/json
 ## 📦 Extension Categories Quick Access
 
 ### Core Development (4 Extensions)
+
 - **Remote Server** → Dev containers
 - **GitHub Codespaces** → Cloud development
 - **TypeScript Next** → Latest TS features
 - **IntelliCode** → AI suggestions
 
 ### Code Quality (5 Extensions)
+
 - **Prettier** → Auto-format on save
 - **ESLint** → Fix on save
 - **Error Lens** → Inline errors
@@ -248,22 +260,26 @@ Content-Type: application/json
 - **Spell Checker** → Catch typos
 
 ### Database (3 Extensions)
+
 - **Prisma** → ORM with IntelliSense
 - **Database Client** → Query editor
 - **SQLTools** → Query execution
 
 ### Testing (3 Extensions)
+
 - **Playwright** → E2E testing
 - **Jest** → Unit tests
 - **Test Explorer** → Unified test UI
 
 ### Git (4 Extensions)
+
 - **GitLens** → Blame & history
 - **GitHub PR** → PR management
 - **Git Graph** → Visual history
 - **Git History** → Advanced search
 
 ### Productivity (5 Extensions)
+
 - **Import Cost** → Bundle size
 - **TODO Highlight** → Track TODOs
 - **Better Comments** → Color-coded
@@ -275,6 +291,7 @@ Content-Type: application/json
 ## 🔧 Configuration Quick Fixes
 
 ### Issue: Prettier Not Formatting on Save
+
 **Fix**: Check default formatter
 
 ```json
@@ -284,6 +301,7 @@ Content-Type: application/json
 ```
 
 ### Issue: ESLint Not Working
+
 **Fix**: Set working directories
 
 ```json
@@ -295,6 +313,7 @@ Content-Type: application/json
 ```
 
 ### Issue: Import Cost Not Showing
+
 **Fix**: Reload window
 
 ```
@@ -302,6 +321,7 @@ Cmd/Ctrl+Shift+P → "Developer: Reload Window"
 ```
 
 ### Issue: Prisma IntelliSense Not Working
+
 **Fix**: Generate Prisma Client
 
 ```bash
@@ -309,6 +329,7 @@ cd api && pnpm prisma:generate
 ```
 
 ### Issue: Tests Not Appearing in Explorer
+
 **Fix**: Set Jest root path
 
 ```json
@@ -320,6 +341,7 @@ cd api && pnpm prisma:generate
 ## 🚀 Pro Tips & Hidden Features
 
 ### 1. Multi-Cursor Editing
+
 **Shortcut**: `Cmd/Ctrl+D` (select next occurrence)
 
 ```typescript
@@ -330,6 +352,7 @@ return user;
 ```
 
 ### 2. Code Snippets (ES7 React)
+
 ```
 rafce → React arrow function component export
 nfn → Named function
@@ -338,24 +361,28 @@ clg → console.log()
 ```
 
 ### 3. GitLens Interactive Rebase
+
 ```
 > GitLens: Open Interactive Rebase Editor
 # Reorder commits visually
 ```
 
 ### 4. Playwright Code Generation
+
 ```
 > Playwright: Record New Test
 # Browser opens, record actions, code auto-generated
 ```
 
 ### 5. Database Client Query History
+
 ```
 Right-click connection → "Query History"
 # See all previous queries
 ```
 
 ### 6. REST Client with Variables
+
 ```http
 @baseUrl = http://localhost:4000
 @token = {{login.response.body.token}}
@@ -370,31 +397,37 @@ Authorization: Bearer {{token}}
 ```
 
 ### 7. TODO Tree Custom Tags
+
 ```
 Add custom tags in settings:
 "todo-tree.general.tags": ["BUG", "HACK", "REFACTOR"]
 ```
 
 ### 8. Import Cost Custom Thresholds
+
 ```json
 "importCost.largePackageSize": 100, // KB
 "importCost.mediumPackageSize": 50 // KB
 ```
 
 ### 9. GitLens Blame in Status Bar
+
 ```
 Shows current line blame at bottom of screen:
 "Changed 2 days ago by John • Fix validation error"
 ```
 
 ### 10. Markdown Mermaid Diagrams
+
 ```markdown
 ```mermaid
 graph TD
     A[User] --> B[API]
     B --> C[Database]
 ```
+
 # Renders interactive diagram in preview
+
 ```
 
 ---

@@ -72,7 +72,7 @@ flyctl status --app infamous-freight-enterprises
 
 ### Current Deployment Status
 
-✅ **Web Frontend**: https://infamous-freight-enterprises.fly.dev
+✅ **Web Frontend**: <https://infamous-freight-enterprises.fly.dev>
 
 - Next.js 14.2.4
 - Port: 3000
@@ -113,21 +113,21 @@ openssl version
 ### Required Accounts
 
 1. **Fly.io** (Production hosting)
-   - Sign up: https://fly.io/app/sign-up
+   - Sign up: <https://fly.io/app/sign-up>
    - Free tier: $5/month credit
    - Recommended: Add payment method for higher limits
 
 2. **Sentry** (Error tracking)
-   - Sign up: https://sentry.io/signup/
+   - Sign up: <https://sentry.io/signup/>
    - Free tier: 5K errors/month
    - Get DSN from project settings
 
 3. **Vercel** (Alternative web hosting)
-   - Sign up: https://vercel.com/signup
+   - Sign up: <https://vercel.com/signup>
    - Free tier: Unlimited hobby projects
 
 4. **Datadog** (Optional - APM monitoring)
-   - Sign up: https://www.datadoghq.com/
+   - Sign up: <https://www.datadoghq.com/>
    - 14-day trial, then $15/host/month
 
 ### Optional Services
@@ -344,19 +344,21 @@ flyctl postgres db list --app infamous-freight-db
 
 ### Sentry Setup
 
-1. Create Sentry account: https://sentry.io/signup/
+1. Create Sentry account: <https://sentry.io/signup/>
 2. Create new project: `infamous-freight-api`
 3. Copy DSN
 4. Set secret:
+
    ```bash
    flyctl secrets set SENTRY_DSN="https://..." --app infamous-freight-api
    ```
 
 ### Datadog APM Setup
 
-1. Sign up: https://www.datadoghq.com/
+1. Sign up: <https://www.datadoghq.com/>
 2. Get API key
 3. Enable APM:
+
    ```bash
    flyctl secrets set \
      DD_TRACE_ENABLED="true" \
@@ -368,10 +370,10 @@ flyctl postgres db list --app infamous-freight-db
 
 ### Uptime Monitoring
 
-1. Sign up: https://uptimerobot.com/
+1. Sign up: <https://uptimerobot.com/>
 2. Add monitors:
-   - **API**: https://infamous-freight-api.fly.dev/api/health
-   - **Web**: https://infamous-freight-enterprises.fly.dev/
+   - **API**: <https://infamous-freight-api.fly.dev/api/health>
+   - **Web**: <https://infamous-freight-enterprises.fly.dev/>
 3. Configure alerts (email/SMS/Slack)
 
 ---
@@ -428,7 +430,7 @@ flyctl postgres db restore --backup-id <id> --app infamous-freight-db
 
 **Code Backups**:
 
-- Git repository: https://github.com/MrMiless44/Infamous-freight-enterprises
+- Git repository: <https://github.com/MrMiless44/Infamous-freight-enterprises>
 - Automatic with every commit
 - Keep main branch protected
 
@@ -622,23 +624,23 @@ flyctl secrets set REDIS_URL="redis://..." --app infamous-freight-api
 
 ---
 
-## 🎉 Success!
+## 🎉 Success
 
 Your production environment is now fully configured and ready to operate at scale.
 
 ### Quick Links
 
-- **API**: https://infamous-freight-api.fly.dev
-- **Web**: https://infamous-freight-enterprises.fly.dev
-- **Docs**: https://infamous-freight-api.fly.dev/api/docs
-- **Monitoring**: https://fly.io/dashboard
-- **Repository**: https://github.com/MrMiless44/Infamous-freight-enterprises
+- **API**: <https://infamous-freight-api.fly.dev>
+- **Web**: <https://infamous-freight-enterprises.fly.dev>
+- **Docs**: <https://infamous-freight-api.fly.dev/api/docs>
+- **Monitoring**: <https://fly.io/dashboard>
+- **Repository**: <https://github.com/MrMiless44/Infamous-freight-enterprises>
 
 ### Support
 
 - **Documentation**: See [DOCUMENTATION_INDEX.md](../DOCUMENTATION_INDEX.md)
-- **Issues**: https://github.com/MrMiless44/Infamous-freight-enterprises/issues
-- **Security**: security@infamous-freight.com
+- **Issues**: <https://github.com/MrMiless44/Infamous-freight-enterprises/issues>
+- **Security**: <security@infamous-freight.com>
 
 ---
 

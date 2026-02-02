@@ -20,24 +20,24 @@
   - App Name: `infamous-freight-api`
   - Region: `iad` (US East)
   - Database: `infamous-freight-db` (already exists)
-  - URL: https://infamous-freight-api.fly.dev
+  - URL: <https://infamous-freight-api.fly.dev>
 
 - [x] **Vercel (Web Frontend)**: Pending authentication
   - Status: Waiting for device authentication
   - Auth Code: MFCQ-SBKQ
-  - Auth URL: https://vercel.com/oauth/device?user_code=MFCQ-SBKQ
+  - Auth URL: <https://vercel.com/oauth/device?user_code=MFCQ-SBKQ>
   - Need to complete authentication to proceed
 
 - [x] **Render (Backup)**: Ready to deploy
   - Status: Configuration complete, awaiting GitHub connection
-  - Repository: https://github.com/MrMiless44/Infamous-freight-enterprises
+  - Repository: <https://github.com/MrMiless44/Infamous-freight-enterprises>
   - Services: Web + API + Database
 
 ## Deployment URLs
 
 ### Production
 
-- **API**: https://infamous-freight-api.fly.dev
+- **API**: <https://infamous-freight-api.fly.dev>
 - **Web**: (Pending Vercel deployment)
 - **Database**: PostgreSQL on Fly.io
 
@@ -60,7 +60,7 @@ flyctl secrets set \
 
 ### Vercel (Web)
 
-- `NEXT_PUBLIC_API_BASE` = https://infamous-freight-api.fly.dev
+- `NEXT_PUBLIC_API_BASE` = <https://infamous-freight-api.fly.dev>
 - `NEXT_PUBLIC_APP_NAME` = Infamous Freight Enterprises
 - `NEXT_PUBLIC_ENV` = production
 - `CODECOV_TOKEN` = 783fc031-97bd-407e-9f95-130193429347
@@ -73,7 +73,7 @@ Environment variables auto-configured via `render.yaml`
 
 1. ✅ **Wait for Fly.io deployment to complete** (currently building)
 2. 🔄 **Complete Vercel authentication**:
-   - Visit: https://vercel.com/oauth/device?user_code=MFCQ-SBKQ
+   - Visit: <https://vercel.com/oauth/device?user_code=MFCQ-SBKQ>
    - Then run: `vercel --prod`
 3. 📊 **Test API endpoints**: `curl https://infamous-freight-api.fly.dev/health`
 4. 🌐 **Connect Render** (optional backup): Connect GitHub repo at render.com
@@ -110,10 +110,10 @@ docker compose -f docker-compose.prod.yml up -d
 
 ## Monitoring & Health Checks
 
-- **API Health**: https://infamous-freight-api.fly.dev/health
-- **Fly.io Dashboard**: https://fly.io/dashboard
-- **Vercel Dashboard**: https://vercel.com/dashboard
-- **GitHub Actions**: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+- **API Health**: <https://infamous-freight-api.fly.dev/health>
+- **Fly.io Dashboard**: <https://fly.io/dashboard>
+- **Vercel Dashboard**: <https://vercel.com/dashboard>
+- **GitHub Actions**: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
 
 ---
 

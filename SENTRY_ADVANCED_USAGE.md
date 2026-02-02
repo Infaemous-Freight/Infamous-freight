@@ -519,6 +519,7 @@ throw new ShipmentError(
 ## 📊 What Gets Tracked Automatically
 
 ### Performance Events
+
 - ✅ Page navigations
 - ✅ Route changes
 - ✅ API requests (if using sentryFetch)
@@ -527,6 +528,7 @@ throw new ShipmentError(
 - ✅ Web Vitals
 
 ### Error Events
+
 - ✅ Unhandled exceptions
 - ✅ React error boundaries
 - ✅ API errors
@@ -535,6 +537,7 @@ throw new ShipmentError(
 - ✅ Validation errors
 
 ### User Data
+
 - ✅ User ID (when logged in)
 - ✅ User email (when logged in)
 - ✅ Session replay (on errors)
@@ -616,6 +619,7 @@ monitorNavigationTiming()
 ### sentry-errors.ts
 
 Custom error classes with auto-capture:
+
 - `ApiError` - API/HTTP errors
 - `AuthError` - Authentication failures
 - `ShipmentError` - Shipment operations
@@ -643,7 +647,7 @@ A: Everything still works - errors are just logged to console, not sent to Sentr
 A: Yes, just don't set `NEXT_PUBLIC_SENTRY_DSN` in development.
 
 **Q: How do I see what's being tracked?**  
-A: Visit http://localhost:3000/debug-sentry to trigger test events.
+A: Visit <http://localhost:3000/debug-sentry> to trigger test events.
 
 ---
 

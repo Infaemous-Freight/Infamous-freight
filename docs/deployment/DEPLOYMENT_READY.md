@@ -231,11 +231,11 @@ pnpm test
 
 ### Dashboard URLs
 
-- **Datadog**: https://app.datadoghq.com
-- **Sentry**: https://sentry.io
-- **Vercel**: https://vercel.com/analytics
-- **API Health**: http://localhost:4000/api/health
-- **Swagger Docs**: http://localhost:4000/api/docs
+- **Datadog**: <https://app.datadoghq.com>
+- **Sentry**: <https://sentry.io>
+- **Vercel**: <https://vercel.com/analytics>
+- **API Health**: <http://localhost:4000/api/health>
+- **Swagger Docs**: <http://localhost:4000/api/docs>
 
 ### Performance Thresholds
 

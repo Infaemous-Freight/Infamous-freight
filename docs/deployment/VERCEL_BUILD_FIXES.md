@@ -105,7 +105,7 @@ Expected Duration: ~45-60s
 
 ## 🚀 Deployment Ready
 
-### Next Deployment Will:
+### Next Deployment Will
 
 1. ✅ Install dependencies with pnpm (fast & consistent)
 2. ✅ Build shared package first (available for web)
@@ -168,7 +168,7 @@ pnpm build
 To trigger deployment:
 
 1. Push changes to `main` (any new commit)
-2. Visit https://vercel.com/dashboard
+2. Visit <https://vercel.com/dashboard>
 3. Redeploy the project or wait for automatic deployment
 
 ---

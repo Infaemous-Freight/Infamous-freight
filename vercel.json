@@ -1,17 +1,13 @@
 {
   "$schema": "https://vercel.com/schemas/vercel.json",
   "framework": "nextjs",
-  "nodeVersion": "20.x",
-  "installCommand": "cd ../.. && corepack enable && pnpm -w install --frozen-lockfile",
-  "buildCommand": "cd ../.. && pnpm -w --filter web build",
+  "installCommand": "npm i -g pnpm@9.15.0 --prefix $HOME/.local && export PATH=$HOME/.local/bin:$PATH && pnpm -w install --frozen-lockfile",
+  "buildCommand": "pnpm -r --filter @infamous-freight/shared build && pnpm --filter web build",
   "outputDirectory": "apps/web/.next",
   "regions": [
-    "sfo1",
     "iad1",
-    "cdg1",
-    "hnd1",
-    "syd1",
-    "gru1"
+    "sfo1",
+    "cdg1"
   ],
   "git": {
     "deploymentEnabled": {

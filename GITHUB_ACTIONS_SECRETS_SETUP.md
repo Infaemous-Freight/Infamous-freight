@@ -62,7 +62,7 @@ The CI/CD pipeline needs to push Docker images to GitHub Container Registry (GHC
 
 If you want to also push to Docker Hub:
 
-1. Create Docker Hub access token at https://hub.docker.com/settings/security
+1. Create Docker Hub access token at <https://hub.docker.com/settings/security>
 2. Add to GitHub secrets:
    - Name: `DOCKERHUB_USERNAME`
    - Name: `DOCKERHUB_TOKEN`

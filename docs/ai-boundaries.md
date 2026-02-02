@@ -346,9 +346,9 @@ Every AI decision must log:
 
 **For AI Boundary Concerns:**
 
-- Engineering Lead: engineering@infamousfreight.com
-- Operations Manager: operations@infamousfreight.com
-- Compliance Officer: compliance@infamousfreight.com
+- Engineering Lead: <engineering@infamousfreight.com>
+- Operations Manager: <operations@infamousfreight.com>
+- Compliance Officer: <compliance@infamousfreight.com>
 
 **Emergency Override:**
 

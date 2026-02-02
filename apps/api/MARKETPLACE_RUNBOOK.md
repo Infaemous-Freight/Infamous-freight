@@ -62,7 +62,7 @@ MATCH_RADIUS_MILES=10
 
 **Create Products & Prices in Stripe Dashboard:**
 
-1. Go to https://dashboard.stripe.com/test/products
+1. Go to <https://dashboard.stripe.com/test/products>
 2. Create 3 products:
    - **Starter Plan** - $29/month
    - **Pro Plan** - $99/month
@@ -71,7 +71,7 @@ MATCH_RADIUS_MILES=10
 
 **Configure Webhook:**
 
-1. Go to https://dashboard.stripe.com/test/webhooks
+1. Go to <https://dashboard.stripe.com/test/webhooks>
 2. Add endpoint: `https://your-api-domain.com/api/webhooks/stripe`
 3. Select events:
    - `checkout.session.completed`
@@ -400,6 +400,6 @@ api/
 
 **Need Help?**
 
-- Stripe Docs: https://stripe.com/docs
-- Prisma Docs: https://www.prisma.io/docs
-- Test Cards: https://stripe.com/docs/testing
+- Stripe Docs: <https://stripe.com/docs>
+- Prisma Docs: <https://www.prisma.io/docs>
+- Test Cards: <https://stripe.com/docs/testing>

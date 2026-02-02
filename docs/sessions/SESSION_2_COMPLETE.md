@@ -12,7 +12,7 @@
 
 | Task                   | Status      | Completion                                          |
 | ---------------------- | ----------- | --------------------------------------------------- |
-| **Fly.io Deployment**  | ✅ Complete | API live at https://infamous-freight-api.fly.dev    |
+| **Fly.io Deployment**  | ✅ Complete | API live at <https://infamous-freight-api.fly.dev>    |
 | **Search Endpoint**    | ✅ Complete | GET /api/users/search implemented (70-line feature) |
 | **API Documentation**  | ✅ Complete | API_REFERENCE.md (500+ lines)                       |
 | **Deployment Runbook** | ✅ Complete | DEPLOYMENT_RUNBOOK.md (400+ lines)                  |
@@ -194,7 +194,7 @@ GET /api/users/search
 
 ✅ **API Server**
 
-- Running 24/7 at https://infamous-freight-api.fly.dev
+- Running 24/7 at <https://infamous-freight-api.fly.dev>
 - Health monitoring enabled
 - Rate limiting active
 - Error tracking ready (via Sentry if configured)
@@ -295,14 +295,14 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 **3️⃣ VERIFICATION (Do Third)**
 
-- Check GitHub Actions all pass: https://github.com/MrMiless44/Infamous-freight-enterprises/actions
+- Check GitHub Actions all pass: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>
 - Review test results
 - Verify error scenarios work
 
 **4️⃣ DEPLOYMENT (Do Fourth)**
 
 - Deploy web frontend to Vercel
-- Set API_BASE_URL=https://infamous-freight-api.fly.dev
+- Set API_BASE_URL=<https://infamous-freight-api.fly.dev>
 - Test web ↔ API integration
 
 **5️⃣ MONITORING (Do Fifth)**
@@ -500,12 +500,12 @@ bc4f8ab fix: improve securityHeaders tests
 
 | Resource         | Link                                                       |
 | ---------------- | ---------------------------------------------------------- |
-| **Live API**     | https://infamous-freight-api.fly.dev                       |
+| **Live API**     | <https://infamous-freight-api.fly.dev>                       |
 | **API Docs**     | [API_REFERENCE.md](API_REFERENCE.md)                       |
 | **Test Guide**   | [API_TESTING_GUIDE.md](API_TESTING_GUIDE.md)               |
 | **Deploy Guide** | [DEPLOYMENT_RUNBOOK.md](DEPLOYMENT_RUNBOOK.md)             |
 | **Main README**  | [README.md](README.md)                                     |
-| **GitHub**       | https://github.com/MrMiless44/Infamous-freight-enterprises |
+| **GitHub**       | <https://github.com/MrMiless44/Infamous-freight-enterprises> |
 
 ---
 
@@ -513,7 +513,7 @@ bc4f8ab fix: improve securityHeaders tests
 
 ### What You Get Right Now
 
-✅ **Production-Ready API** at https://infamous-freight-api.fly.dev  
+✅ **Production-Ready API** at <https://infamous-freight-api.fly.dev>  
 ✅ **New Search Feature** fully implemented and documented  
 ✅ **1,600+ Lines of Documentation** for operations and testing  
 ✅ **100+ curl Examples** for every endpoint  

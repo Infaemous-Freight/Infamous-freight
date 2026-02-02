@@ -9,15 +9,18 @@
 ## 🎯 Top 10 Recommendations to Implement NOW
 
 ### 1. GitHub Secrets ✅ CRITICAL
+
 ```bash
 # Verify all production secrets are set
 gh secret list --env production
 ```
+
 **Check:** DATABASE_URL, JWT_SECRET, AI_KEYS, STRIPE_KEYS
 
 ---
 
 ### 2. Branch Protection ✅ CRITICAL
+
 - GitHub → Settings → Branches
 - Select `main` branch
 - Enable: "Require status checks to pass before merging"
@@ -26,6 +29,7 @@ gh secret list --env production
 ---
 
 ### 3. Enable Secret Scanning ✅ CRITICAL
+
 - GitHub → Settings → Code security and analysis
 - Enable: "Secret scanning"
 - Enable: "Push protection"
@@ -33,6 +37,7 @@ gh secret list --env production
 ---
 
 ### 4. Verify Health Endpoint ✅ CRITICAL
+
 ```bash
 curl https://your-domain.vercel.app/api/health
 # Should return 200 with: {"ok":true,"supabaseUrlPresent":true,...}
@@ -41,14 +46,16 @@ curl https://your-domain.vercel.app/api/health
 ---
 
 ### 5. Configure Uptime Monitoring ✅ HIGH
+
 - Use Uptimerobot.com or Vercel monitoring
 - Monitor: `/api/health`
 - Frequency: Every 5 minutes
-- Alert email: devops@infamousfreight.com
+- Alert email: <devops@infamousfreight.com>
 
 ---
 
 ### 6. Enable Dependabot ✅ HIGH
+
 - GitHub → Settings → Code security and analysis
 - Click "Enable" for Dependabot alerts & updates
 - Review PRs from Dependabot weekly
@@ -56,6 +63,7 @@ curl https://your-domain.vercel.app/api/health
 ---
 
 ### 7. Set Up Sentry Error Tracking ✅ HIGH
+
 ```bash
 # 1. Create account at sentry.io
 # 2. Get DSN from Project Settings
@@ -66,6 +74,7 @@ gh secret set SENTRY_DSN --env production "https://...@sentry.io/..."
 ---
 
 ### 8. Configure Slack Notifications ✅ MEDIUM
+
 ```bash
 # 1. Create Slack webhook
 # 2. Set GitHub secret
@@ -75,7 +84,9 @@ gh secret set SLACK_WEBHOOK_URL --env production "https://hooks.slack.com/..."
 ---
 
 ### 9. Document Incident Response ✅ MEDIUM
+
 Create runbook with:
+
 - [ ] Who to notify (on-call engineer)
 - [ ] How to assess severity
 - [ ] Rollback procedures
@@ -84,6 +95,7 @@ Create runbook with:
 ---
 
 ### 10. Train Team ✅ MEDIUM
+
 - [ ] Cover deployment process
 - [ ] Cover incident response
 - [ ] Cover rollback procedures
@@ -168,7 +180,7 @@ Check these daily:
 
 ---
 
-## ✅ You're Ready!
+## ✅ You're Ready
 
 **Repository Status: 100% PRODUCTION READY** 🚀
 

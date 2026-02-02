@@ -317,6 +317,7 @@ echo "Secrets rotated at $(date)" >> /var/log/security.log
 ```
 
 Run quarterly:
+
 ```bash
 0 0 1 */3 * /app/scripts/rotate-secrets.sh
 ```
@@ -464,6 +465,7 @@ setInterval(() => {
 ## 7️⃣ Security Checklist
 
 ### Before Production Launch
+
 - [ ] All dependencies audited & no high/critical vulns
 - [ ] Rate limiting configured on all APIs
 - [ ] HTTPS/TLS enabled on all endpoints
@@ -476,6 +478,7 @@ setInterval(() => {
 - [ ] CORS configured correctly
 
 ### Ongoing
+
 - [ ] Weekly dependency audit
 - [ ] Monthly penetration testing
 - [ ] Quarterly security training
@@ -485,6 +488,7 @@ setInterval(() => {
 - [ ] Database backups tested (monthly)
 
 ### Compliance
+
 - [ ] GDPR (if EU users): Data deletion, export
 - [ ] SOC 2: Logging, monitoring, backups
 - [ ] PCI DSS (if payment): Encryption, no storage of sensitive data

@@ -27,6 +27,7 @@ pnpm test:webkit
 ## 📋 Test Suites
 
 ### 1. Payment Flow Tests (`payment-flow.spec.ts`)
+
 - Pricing page display
 - Plan selection
 - Stripe checkout integration
@@ -43,6 +44,7 @@ pnpm test:webkit
 **Coverage**: 15+ test cases
 
 ### 2. Authentication Tests (`auth-flow.spec.ts`)
+
 - Login page display
 - Email validation
 - Login success/failure
@@ -62,6 +64,7 @@ pnpm test:webkit
 **Coverage**: 18+ test cases
 
 ### 3. Shipment Management Tests (`shipments.spec.ts`)
+
 - List shipments
 - Create shipment
 - Search functionality
@@ -80,6 +83,7 @@ pnpm test:webkit
 **Coverage**: 14+ test cases
 
 ### 4. API Integration Tests (`api.spec.ts`)
+
 - Health check endpoints
 - Authentication API
 - Shipments CRUD
@@ -160,6 +164,7 @@ pnpm test -g "should login"
 ### CI/CD
 
 Tests run automatically on:
+
 - Every pull request
 - Every push to main
 - Daily at 2 AM UTC
@@ -176,6 +181,7 @@ pnpm report
 ```
 
 Opens interactive HTML report with:
+
 - Test results
 - Screenshots
 - Videos
@@ -278,6 +284,7 @@ test('should handle API error', async ({ page }) => {
 ### Tests Failing Locally
 
 1. **Check services are running**:
+
    ```bash
    # Terminal 1: Start web
    cd web && pnpm dev
@@ -287,11 +294,13 @@ test('should handle API error', async ({ page }) => {
    ```
 
 2. **Clear browser state**:
+
    ```bash
    rm -rf test-results playwright-report
    ```
 
 3. **Update browsers**:
+
    ```bash
    pnpm exec playwright install
    ```

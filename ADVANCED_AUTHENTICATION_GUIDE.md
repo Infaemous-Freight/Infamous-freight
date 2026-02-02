@@ -889,4 +889,3 @@ describe('Authentication', () => {
 6. **Password policy** - Enforce complexity and prevent reuse
 7. **Audit logging** - Track all authentication events
 8. **Token rotation** - Automatically rotate long-lived tokens
-
