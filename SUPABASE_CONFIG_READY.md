@@ -48,16 +48,16 @@ Go to: https://vercel.com/dashboard
 2. **Settings** → **Environment Variables**
 3. **Add each variable**:
 
-| Variable Name | Value | Environment |
-|--------------|-------|-------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://wnaievjffghrzjtuvutp.supabase.co` | All |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduYWlldmpmZmdocnp0anV2dXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4MTk5ODYsImV4cCI6MjA4NTM5NTk4Nn0.59SaifUYbMp2UASCyz_Qk4LUhzvARb2_biOqqZfV8f0` | All |
-| `SUPABASE_SERVICE_ROLE_KEY` | [Get from Supabase Settings → API] | Production only |
-| `DATABASE_URL` | [Get from Supabase Settings → Database] | All |
-| `NODE_ENV` | `production` | Production |
-| `JWT_SECRET` | `ZYBpTP8D2oMg78DUZfmkVbNol2z5P9xRhrjSdSEkS5s=` | All |
-| `AI_PROVIDER` | `synthetic` | All |
-| `CORS_ORIGINS` | `https://infamous-freight-enterprises.vercel.app` | Production |
+| Variable Name                   | Value                                                                                                                                                                                                              | Environment     |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | `https://wnaievjffghrzjtuvutp.supabase.co`                                                                                                                                                                         | All             |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduYWlldmpmZmdocnp0anV2dXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk4MTk5ODYsImV4cCI6MjA4NTM5NTk4Nn0.59SaifUYbMp2UASCyz_Qk4LUhzvARb2_biOqqZfV8f0` | All             |
+| `SUPABASE_SERVICE_ROLE_KEY`     | [Get from Supabase Settings → API]                                                                                                                                                                                 | Production only |
+| `DATABASE_URL`                  | [Get from Supabase Settings → Database]                                                                                                                                                                            | All             |
+| `NODE_ENV`                      | `production`                                                                                                                                                                                                       | Production      |
+| `JWT_SECRET`                    | `ZYBpTP8D2oMg78DUZfmkVbNol2z5P9xRhrjSdSEkS5s=`                                                                                                                                                                     | All             |
+| `AI_PROVIDER`                   | `synthetic`                                                                                                                                                                                                        | All             |
+| `CORS_ORIGINS`                  | `https://infamous-freight-enterprises.vercel.app`                                                                                                                                                                  | Production      |
 
 ---
 
