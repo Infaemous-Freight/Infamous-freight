@@ -136,16 +136,16 @@ Expected output: **✅ DEPLOYMENT OK**
 
 ## 🎉 Summary
 
-| Item | Status | Notes |
-|------|--------|-------|
-| Vercel Deploy | ✅ | Green badge |
-| API Health | ✅ | 200 response |
-| Database Migrations | ✅ | Tables created |
-| RLS Policies | ✅ | Policies active |
-| Auth Flow | ✅ | Sign up/in/out works |
-| CRUD Tests | ✅ | Create/read/update works |
-| Monitoring | ✅ | Analytics + optional services |
-| Security | ✅ | Headers + no exposed keys |
+| Item                | Status | Notes                         |
+| ------------------- | ------ | ----------------------------- |
+| Vercel Deploy       | ✅      | Green badge                   |
+| API Health          | ✅      | 200 response                  |
+| Database Migrations | ✅      | Tables created                |
+| RLS Policies        | ✅      | Policies active               |
+| Auth Flow           | ✅      | Sign up/in/out works          |
+| CRUD Tests          | ✅      | Create/read/update works      |
+| Monitoring          | ✅      | Analytics + optional services |
+| Security            | ✅      | Headers + no exposed keys     |
 
 ---
 

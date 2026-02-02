@@ -257,13 +257,13 @@ Alert: SMS + Email on failure
 
 Track these metrics over time:
 
-| Metric | Target | Action if Exceeded |
-|--------|--------|-------------------|
-| API Response Time | < 500ms | Profile slow queries |
-| Error Rate | < 1% | Review Sentry immediately |
-| Database CPU | < 80% | Optimize queries or upgrade |
-| Request Latency P95 | < 2s | Check CDN cache strategy |
-| Uptime | > 99.9% | Investigate SLA breach |
+| Metric              | Target  | Action if Exceeded          |
+| ------------------- | ------- | --------------------------- |
+| API Response Time   | < 500ms | Profile slow queries        |
+| Error Rate          | < 1%    | Review Sentry immediately   |
+| Database CPU        | < 80%   | Optimize queries or upgrade |
+| Request Latency P95 | < 2s    | Check CDN cache strategy    |
+| Uptime              | > 99.9% | Investigate SLA breach      |
 
 ---
 

@@ -10,14 +10,14 @@
 
 ### Environment Variables
 
-| Variable | Status | Location | Notes |
-|----------|--------|----------|-------|
-| `NEXT_PUBLIC_SUPABASE_URL` | ✅ Set | Vercel | Public, safe to expose |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ Set | Vercel | RLS-protected queries only |
-| `DATABASE_URL` | ✅ Set | Vercel | Includes new password |
-| `SUPABASE_SERVICE_ROLE_KEY` | ✅ Set | Vercel | Server-side only |
-| `JWT_SECRET` | ✅ Rotated | Vercel | New secret: `_x19eDv21H_QpQD3RaETWOiqbuy5tYyeK8AZHcwCYYg` |
-| `NODE_ENV` | ✅ Set | Vercel | `production` |
+| Variable                        | Status    | Location | Notes                                                     |
+| ------------------------------- | --------- | -------- | --------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | ✅ Set     | Vercel   | Public, safe to expose                                    |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ Set     | Vercel   | RLS-protected queries only                                |
+| `DATABASE_URL`                  | ✅ Set     | Vercel   | Includes new password                                     |
+| `SUPABASE_SERVICE_ROLE_KEY`     | ✅ Set     | Vercel   | Server-side only                                          |
+| `JWT_SECRET`                    | ✅ Rotated | Vercel   | New secret: `_x19eDv21H_QpQD3RaETWOiqbuy5tYyeK8AZHcwCYYg` |
+| `NODE_ENV`                      | ✅ Set     | Vercel   | `production`                                              |
 
 **Verification Script:**
 ```bash

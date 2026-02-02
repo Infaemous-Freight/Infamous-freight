@@ -7,9 +7,7 @@ import { z } from "zod";
 
 const envSchema = z.object({
   // Core
-  NODE_ENV: z
-    .enum(["development", "production", "test"])
-    .default("development"),
+  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   PORT: z.string().default("4000"),
   API_PORT: z.string().default("4000"),
 
@@ -18,10 +16,7 @@ const envSchema = z.object({
   PERSISTENCE_MODE: z.enum(["auto", "json"]).default("auto"),
 
   // JWT & Auth
-  JWT_SECRET: z
-    .string()
-    .min(12)
-    .default("dev_insecure_change_me_please_update"),
+  JWT_SECRET: z.string().min(12).default("dev_insecure_change_me_please_update"),
   JWT_EXPIRY: z.string().default("7d"),
 
   // Avatar Storage (local disk or s3-compatible)
@@ -49,9 +44,7 @@ const envSchema = z.object({
   S3_PUBLIC_BASE_URL: z.string().optional(),
 
   // CORS & Security
-  CORS_ORIGINS: z
-    .string()
-    .default("http://localhost:3000,http://localhost:3001"),
+  CORS_ORIGINS: z.string().default("http://localhost:3000,http://localhost:3001"),
 
   // Logging
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
@@ -103,8 +96,7 @@ export const env = {
   avatarDataStore: parsedEnv.AVATAR_DATA_STORE,
 
   // Rate Limiting
-  rateLimitAvatarWindowMs:
-    parseInt(parsedEnv.RATE_LIMIT_AVATAR_WINDOW_MS, 10) * 60 * 1000,
+  rateLimitAvatarWindowMs: parseInt(parsedEnv.RATE_LIMIT_AVATAR_WINDOW_MS, 10) * 60 * 1000,
   rateLimitAvatarMax: parseInt(parsedEnv.RATE_LIMIT_AVATAR_MAX, 10),
 
   // S3-compatible
