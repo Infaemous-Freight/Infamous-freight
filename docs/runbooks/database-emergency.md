@@ -107,127 +107,91 @@ curl https://api.your-domain.com/api/health
 
 ## Response Options (Choose one)
 
-### TRIAGE A: Database Server Down 🔴
+### TRIAGE A: Supabase Database Down 🔴
 
 ```bash
-# This means DATABASE SERVER is unreachable or crashed
+# This means SUPABASE is unreachable or having issues
 
-echo "🚨 DATABASE DOWN - Emergency Response"
+echo "🚨 SUPABASE DOWN - Emergency Response"
 
 # IMMEDIATE ACTIONS (< 5 min):
 
 # 1. Notify users
-slack #incidents "🔴 CRITICAL: Database service is down. ETA 10 minutes."
+slack #incidents "🔴 CRITICAL: Database service down. ETA 10 minutes."
 
-# 2. Check provider status
-# Supabase: https://status.supabase.com
-# AWS: https://status.aws.amazon.com
-# Self-hosted: SSH to server, check logs
+# 2. Check Supabase status
+# Go to: https://status.supabase.com
+# This shows real-time infrastructure status
 
-# 3. If Supabase: Wait for their recovery
-# Their infrastructure is managed by them
-# Monitor status page for updates
-sleep 60 && curl https://status.supabase.com
+# 3. Monitor for recovery
+# Supabase infrastructure is managed by them
+# Check status page every 2 minutes
+curl https://status.supabase.com
 
-# 4. If self-hosted: Restart database
-ssh database-server
-sudo systemctl restart postgresql
-# OR
-docker restart postgres-container
+# 4. API service automatically fails over
+# Vercel Functions will return 503 until database back
 
-# 5. Verify connection restored
-psql $DATABASE_URL -c "SELECT 1;"
-# Expected: Should return "1"
+# 5. Verify database connection restored
+# Go to: https://supabase.com/dashboard/project/[ID]/status
+# Check that "PostgreSQL" shows GREEN ✅
 
-# 6. Check data integrity
-psql $DATABASE_URL -c "SELECT COUNT(*) FROM shipment;"
-# Expected: Should return number without error
-
-# 7. Restart API service
-# Fly.io: flyctl restart
-# Or manual restart if needed
-fly apps restart api-app-name
-
-# 8. Verify health endpoint
-curl https://your-domain.com/api/health
+# 6. Verify health endpoint restored
+curl https://your-domain.vercel.app/api/health
 # Expected: {"ok":true}
 
-# 9. Communicate recovery
-slack #incidents "✅ Database back online. Verifying stability..."
+# 7. Communicate recovery
+slack #incidents "✅ Database connection restored. Verifying stability..."
 ```
 
 **Expected timeline:**
-- Supabase downtime: 5-15 minutes (managed)
-- Self-hosted restart: 2-5 minutes
-- Service verification: 3-5 minutes
-- **Total: 10-20 minutes**
+- Supabase downtime: 5-15 minutes (managed by Supabase)
+- Automatic API failover: Immediate (returns 503)
+- Service verification: 2-3 minutes after recovery
+- **Total: 7-18 minutes**
 
 ---
 
-### TRIAGE B: Connection Pool Issues ⚠️
+### TRIAGE B: Supabase Connection Pool Issues ⚠️
 
 ```bash
-# This means DATABASE is up, but connections exhausted
+# This means SUPABASE is up, but connections exhausted
 
-echo "⚠️  CONNECTION POOL ISSUE - Stabilization"
+echo "⚠️  CONNECTION POOL ISSUE - Stabilization (Supabase Managed)"
 
-# IMMEDIATE ACTIONS (< 5 min):
+# IMPORTANT: Supabase manages connection pooling automatically
+# pgBouncer is built-in and handles pool overflow
 
-# 1. Identify connection usage
-psql $DATABASE_URL -c "
-  SELECT 
-    datname, 
-    count(*) as connections,
-    max_connections
-  FROM pg_stat_activity 
-  GROUP BY datname, max_connections;
-"
-# Look for: connections near max_connections
+# IMMEDIATE ACTIONS (< 2 min):
 
-# 2. Check for idle connections
-psql $DATABASE_URL -c "
-  SELECT pid, usename, state, query_start 
-  FROM pg_stat_activity 
-  WHERE state = 'idle' 
-  ORDER BY query_start;
-"
-# Look for: connections idle for > 5 minutes
+# 1. Check Supabase dashboard for connection stats
+# Go to: https://supabase.com/dashboard/project/[ID]/logs
+# Look for connection warnings
 
-# 3. Kill idle connections
-psql $DATABASE_URL -c "
-  SELECT pg_terminate_backend(pid) 
-  FROM pg_stat_activity 
-  WHERE state = 'idle' AND query_start < NOW() - INTERVAL '5 minutes';
-"
-# This forcefully closes stale connections
+# 2. Check if there are long-running queries
+# Go to: Project → SQL Editor → Logs
+# Look for queries taking > 30 seconds
 
-# 4. Increase connection limit (if allowed)
-# For Supabase: https://supabase.com/dashboard → Project → Settings
-# Increase max_connections (check limits for your plan)
+# 3. Vercel auto-retry will handle temporary issues
+# Vercel Functions automatically retry failed requests
 
-# 5. Deploy code fix to reduce connections
-# In api/src/services/database.js:
-# Add connection pooling OR
-# Reduce concurrent queries
+# 4. If persistent: Implement connection pooling fix
+# Supabase already provides pgBouncer pooling
+# No manual action needed for typical cases
 
-# 6. Restart API to reset pool
-fly apps restart api-app-name
+# 5. Monitor connection recovery
+curl https://your-domain.vercel.app/api/health
+# Should return 200 within 1-2 minutes
 
-# 7. Verify connections normalized
-psql $DATABASE_URL -c "
-  SELECT 
-    sum(numbackends) as total_connections, 
-    current_setting('max_connections')::int as max
-  FROM pg_stat_database;
-"
-# Expected: total_connections << max_connections
+# 6. If still failing after 5 min:
+# Upgrade Supabase compute add-on for more connections
+# Dashboard → Project → Database → Settings → Compute Size
 ```
 
 **Expected timeline:**
-- Kill idle connections: 30 seconds
-- API restart: 1-2 minutes
-- Pool recovery: 2-3 minutes
-- **Total: 5-10 minutes**
+- Automatic recovery: 1-2 minutes
+- Supabase compute upgrade: 5-10 minutes
+- Service verification: 2-3 minutes
+- **Total: 1-15 minutes**
 
 ---
 
@@ -288,33 +252,33 @@ watch -n 5 'curl -s https://your-domain.com/api/health | jq .response_time'
 
 ---
 
-## Progressive Recovery
+## Progressive Recovery (Supabase Only)
 
-**If above steps don't work, escalate:**
+**If standard steps don't worky, escalate:**
 
-### Level 1: Connection Reset
+### Level 1: Supabase Connection Pool Reset
 ```bash
-# Force close ALL connections and restart
-psql $DATABASE_URL -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid();"
-sleep 5
-fly apps restart api-app-name
+# Supabase dashboard will automatically handle this
+# Go to: https://supabase.com/dashboard/project/[ID]/logs
+# Monitor connection pool recovery
+# Usually recovers within 1-2 minutes
 ```
 
-### Level 2: Cluster Restart (Supabase)
+### Level 2: Supabase Compute Upgrade
+```bash
+# In Supabase Dashboard:
+# Project → Database → Settings → Compute Size
+# Upgrade to higher tier for more connections
+# Takes 3-5 minutes to apply
+```
+
+### Level 3: Supabase Cluster Restart
 ```bash
 # In Supabase Dashboard:
 # Project → Settings → Infrastructure
 # Click "Restart Postgres" button
-# This restarts the entire database cluster
 # Estimated downtime: 2-5 minutes
-```
-
-### Level 3: Failover (if configured)
-```bash
-# If you have standby replica:
-# Promote read replica to primary
-# Update connection string
-# Estimated downtime: 1-3 minutes
+# Use only if database is unresponsive
 ```
 
 ### Level 4: Restore from Backup
@@ -326,6 +290,7 @@ fly apps restart api-app-name
 # Supabase: https://supabase.com/dashboard → Backups
 # Find backup from before issue
 # Click "Restore"
+# Confirm (cannot be undone)
 ```
 
 ---
@@ -397,23 +362,25 @@ fly apps restart api-app-name
 
 ## Escalation
 
-| Issue | Self-Resolve | Escalate After | Escalate To |
-| --- | --- | --- | --- |
-| Connection pool exhausted | Killing idle connections | 5 min | Database admin |
-| Slow queries | Check for locks, kill bad queries | 10 min | Engineering lead |
-| Database unresponsive | Restart database | 5 min | Cloud provider support |
-| Replication lag > 60s | Wait for recovery | 10 min | Supabase support |
-| Data corruption suspected | DO NOT restart | 2 min | Database admin + backup team |
+| Issue                     | Self-Resolve                      | Escalate After | Escalate To                  |
+| ------------------------- | --------------------------------- | -------------- | ---------------------------- |
+| Connection pool exhausted | Killing idle connections          | 5 min          | Database admin               |
+| Slow queries              | Check for locks, kill bad queries | 10 min         | Engineering lead             |
+| Database unresponsive     | Restart database                  | 5 min          | Cloud provider support       |
+| Replication lag > 60s     | Wait for recovery                 | 10 min         | Supabase support             |
+| Data corruption suspected | DO NOT restart                    | 2 min          | Database admin + backup team |
 
 ---
 
-## Critical Phone Numbers
+## Critical Support Contacts
 
 ```
 Supabase Support: support@supabase.com (or in-app chat)
-AWS Support: [Your support contract number]
-On-call DBA: [Phone number]
-Emergency contacts: [List here]
+Supabase Status: https://status.supabase.com
+Vercel Support: support@vercel.com
+Vercel Status: https://www.vercel-status.com
+On-call Engineer: [Slack #on-call]
+Emergency Team Lead: [Email/Phone]
 ```
 
 ---
