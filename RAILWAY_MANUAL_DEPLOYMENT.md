@@ -36,17 +36,17 @@ Railway will auto-detect your repo and show deployment options.
 
 Click **"Add Variable"** and paste these values:
 
-| Variable | Value |
-|----------|-------|
-| `NODE_ENV` | `production` |
-| `PORT` | `3001` |
-| `API_PORT` | `3001` |
-| `JWT_SECRET` | `ZYBpTP8D2oMg78DUZfmkVbNol2z5P9xRhrjSdSEkS5s=` |
-| `DB_PASSWORD` | `yChsWR2m1HKfAIVtsrWF` |
-| `CORS_ORIGINS` | `https://infamous-freight-enterprises.vercel.app` |
-| `AI_PROVIDER` | `synthetic` |
-| `LOG_LEVEL` | `info` |
-| `SENTRY_DSN` | `https://examplePublicKey@o0.ingest.sentry.io/0` (or leave blank) |
+| Variable       | Value                                                             |
+| -------------- | ----------------------------------------------------------------- |
+| `NODE_ENV`     | `production`                                                      |
+| `PORT`         | `3001`                                                            |
+| `API_PORT`     | `3001`                                                            |
+| `JWT_SECRET`   | `ZYBpTP8D2oMg78DUZfmkVbNol2z5P9xRhrjSdSEkS5s=`                    |
+| `DB_PASSWORD`  | `yChsWR2m1HKfAIVtsrWF`                                            |
+| `CORS_ORIGINS` | `https://infamous-freight-enterprises.vercel.app`                 |
+| `AI_PROVIDER`  | `synthetic`                                                       |
+| `LOG_LEVEL`    | `info`                                                            |
+| `SENTRY_DSN`   | `https://examplePublicKey@o0.ingest.sentry.io/0` (or leave blank) |
 
 **✅ Environment variables set!**
 

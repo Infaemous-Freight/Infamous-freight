@@ -160,13 +160,13 @@ https://infamous-freight-enterprises.vercel.app/auth/sign-in
 
 ## 📊 **DEPLOYMENT SUMMARY**
 
-| Component | Status | Where |
-|-----------|--------|-------|
-| **Web App** | ✅ LIVE | https://infamous-freight-enterprises.vercel.app |
-| **API** | ⏳ DEPLOYING (your action) | Railway |
-| **Database** | ⏳ AUTO-PROVISIONED | Railway PostgreSQL |
-| **Monitoring** | ✅ ACTIVE | Sentry |
-| **Domain** | ✅ READY | Vercel + Railway |
+| Component      | Status                    | Where                                           |
+| -------------- | ------------------------- | ----------------------------------------------- |
+| **Web App**    | ✅ LIVE                    | https://infamous-freight-enterprises.vercel.app |
+| **API**        | ⏳ DEPLOYING (your action) | Railway                                         |
+| **Database**   | ⏳ AUTO-PROVISIONED        | Railway PostgreSQL                              |
+| **Monitoring** | ✅ ACTIVE                  | Sentry                                          |
+| **Domain**     | ✅ READY                   | Vercel + Railway                                |
 
 ---
 
