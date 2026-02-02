@@ -330,7 +330,7 @@ Sentry.captureException(new Error("Infamous Freight test error"));
 
 **If events do not appear**
 
-1. **Client config missing**: confirm `apps/web/sentry.client.config.ts` exists and initializes Sentry.
+1. **Client config missing**: confirm `apps/web/src/lib/sentry.client.config.ts` exists and that `apps/web/pages/_app.tsx` imports and initializes Sentry via `initSentry()`.
 2. **Public DSN missing**: ensure `NEXT_PUBLIC_SENTRY_DSN` is set in Vercel and matches the project.
 3. **Tunnel route blocked**: if using a tunnel (for example `/monitoring`), ensure middleware excludes it:
 
