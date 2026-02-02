@@ -1,22 +1,71 @@
 {
   "recommendations": [
+    // === Core Development ===
     "ms-vscode.remote-server",
     "github.codespaces",
+    "ms-vscode.vscode-typescript-next",
+    "VisualStudioExptTeam.vscodeintellicode",
+    // === Code Quality & Formatting ===
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "prisma.prisma",
-    "ms-playwright.playwright",
-    "bradlc.vscode-tailwindcss",
-    "christian-kohler.npm-intellisense",
-    "christian-kohler.path-intellisense",
-    "eamodio.gitlens",
+    "usernamehw.errorlens",
+    "yoavbls.pretty-ts-errors",
+    "streetsidesoftware.code-spell-checker",
+    // === AI Assistance ===
     "github.copilot",
     "github.copilot-chat",
-    "ms-vscode.vscode-typescript-next",
-    "usernamehw.errorlens",
+    // === Database & ORM ===
+    "prisma.prisma",
+    "cweijan.vscode-database-client2",
+    "mtxr.sqltools",
+    // === Testing ===
+    "ms-playwright.playwright",
+    "orta.vscode-jest",
+    "hbenl.vscode-test-explorer",
+    // === Frontend Development ===
+    "bradlc.vscode-tailwindcss",
+    "dsznajder.es7-react-js-snippets",
+    "styled-components.vscode-styled-components",
+    "formulahendry.auto-rename-tag",
+    "pranaygp.vscode-css-peek",
+    // === DevOps & Containers ===
+    "ms-azuretools.vscode-docker",
+    "ms-vscode-remote.remote-containers",
+    // === Git & Version Control ===
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
+    "mhutchie.git-graph",
+    "donjayamanne.githistory",
+    // === IntelliSense & Navigation ===
+    "christian-kohler.npm-intellisense",
+    "christian-kohler.path-intellisense",
+    "zignd.html-css-class-completion",
+    // === File & Data Formats ===
     "mikestead.dotenv",
-    "yoavbls.pretty-ts-errors",
-    "VisualStudioExptTeam.vscodeintellicode",
+    "redhat.vscode-yaml",
+    "tamasfe.even-better-toml",
+    "jock.svg",
+    // === Productivity & Utilities ===
+    "wix.vscode-import-cost",
+    "wayou.vscode-todo-highlight",
+    "aaron-bond.better-comments",
+    "gruntfuggly.todo-tree",
+    "naumovs.color-highlight",
+    // === Documentation ===
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    "bierner.markdown-mermaid",
+    // === Accessibility & Performance ===
+    "deque-systems.vscode-axe-linter",
+    "webhint.vscode-webhint",
+    // === API Development ===
+    "humao.rest-client",
+    "rangav.vscode-thunder-client",
+    // === Monitoring & Debugging ===
+    "waderyan.nodejs-extension-pack",
+    "ms-vscode.js-debug-nightly"
+  ],
+  "unwantedRecommendations": [
     "ms-dotnettools.vscode-dotnet-pack",
     "sarthikbhat.json-server"
   ]
