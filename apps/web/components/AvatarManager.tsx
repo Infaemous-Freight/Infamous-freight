@@ -101,9 +101,7 @@ export default function AvatarManager() {
       });
       const json = await res.json();
       if (!res.ok || json.ok === false || !json.token) {
-        throw new Error(
-          json.error || json.message || "Failed to get dev token",
-        );
+        throw new Error(json.error || json.message || "Failed to get dev token");
       }
       setToken(json.token);
       setInfo(`Signed in as ${desiredId}`);
@@ -114,8 +112,7 @@ export default function AvatarManager() {
     }
   }
 
-  const buildUserImageUrl = (fileName: string) =>
-    `${apiBase}/uploads/${fileName}`;
+  const buildUserImageUrl = (fileName: string) => `${apiBase}/uploads/${fileName}`;
 
   async function refresh() {
     setLoading(true);
@@ -125,9 +122,7 @@ export default function AvatarManager() {
       // System avatars (public)
       const sysRes = await fetch(`${apiBase}/v1/avatars/system`);
       const sysJson = await sysRes.json();
-      setSystemAvatars(
-        sysJson.avatars || sysJson.featured || sysJson?.data?.featured || [],
-      );
+      setSystemAvatars(sysJson.avatars || sysJson.featured || sysJson?.data?.featured || []);
 
       if (!authHeaders) {
         setInfo("Add a JWT to upload and select your personal avatar.");
@@ -178,8 +173,7 @@ export default function AvatarManager() {
       });
 
       const body = await res.json();
-      if (!res.ok)
-        throw new Error(body?.message || body?.error || "Upload failed");
+      if (!res.ok) throw new Error(body?.message || body?.error || "Upload failed");
       await refresh();
     } catch (err) {
       setError((err as Error).message || "Upload failed");
@@ -196,16 +190,12 @@ export default function AvatarManager() {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(
-        `${apiBase}/v1/avatars/me/select/${encodeURIComponent(fileName)}`,
-        {
-          method: "POST",
-          headers: authHeaders,
-        },
-      );
+      const res = await fetch(`${apiBase}/v1/avatars/me/select/${encodeURIComponent(fileName)}`, {
+        method: "POST",
+        headers: authHeaders,
+      });
       const body = await res.json();
-      if (!res.ok)
-        throw new Error(body?.message || body?.error || "Select failed");
+      if (!res.ok) throw new Error(body?.message || body?.error || "Select failed");
       await refresh();
     } catch (err) {
       setError((err as Error).message || "Select failed");
@@ -219,16 +209,12 @@ export default function AvatarManager() {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(
-        `${apiBase}/v1/avatars/me/${encodeURIComponent(fileName)}`,
-        {
-          method: "DELETE",
-          headers: authHeaders,
-        },
-      );
+      const res = await fetch(`${apiBase}/v1/avatars/me/${encodeURIComponent(fileName)}`, {
+        method: "DELETE",
+        headers: authHeaders,
+      });
       const body = await res.json();
-      if (!res.ok)
-        throw new Error(body?.message || body?.error || "Delete failed");
+      if (!res.ok) throw new Error(body?.message || body?.error || "Delete failed");
       await refresh();
     } catch (err) {
       setError((err as Error).message || "Delete failed");
@@ -251,8 +237,8 @@ export default function AvatarManager() {
         <header style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <h1 style={{ margin: 0 }}>Avatar Settings</h1>
           <p style={{ margin: 0, color: red.sub }}>
-            Choose a main avatar (system defaults) or upload a personal avatar.
-            JWT is required for uploads and selection.
+            Choose a main avatar (system defaults) or upload a personal avatar. JWT is required for
+            uploads and selection.
           </p>
         </header>
 
@@ -354,9 +340,7 @@ export default function AvatarManager() {
         <section style={{ marginTop: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <h2 style={{ margin: 0, color: red.accent }}>Main Avatars</h2>
-            {loading && (
-              <span style={{ color: red.sub, fontSize: 13 }}>Loading…</span>
-            )}
+            {loading && <span style={{ color: red.sub, fontSize: 13 }}>Loading…</span>}
           </div>
           <div
             style={{
@@ -380,9 +364,7 @@ export default function AvatarManager() {
                   }}
                 />
                 <div style={{ marginTop: 10, fontWeight: 700 }}>{a.name}</div>
-                <div style={{ color: red.sub, fontSize: 13 }}>
-                  {a.description || a.id}
-                </div>
+                <div style={{ color: red.sub, fontSize: 13 }}>{a.description || a.id}</div>
               </article>
             ))}
           </div>
@@ -483,8 +465,7 @@ export default function AvatarManager() {
                       {a.fileName.split("/").pop()}
                     </div>
                     <div style={{ color: red.sub, fontSize: 12 }}>
-                      {new Date(a.uploadedAt).toLocaleString()} •{" "}
-                      {formatBytes(a.fileSize)}
+                      {new Date(a.uploadedAt).toLocaleString()} • {formatBytes(a.fileSize)}
                     </div>
                     <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
                       <button

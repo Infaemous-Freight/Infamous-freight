@@ -56,22 +56,17 @@ export default function GenesisPage() {
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [status, setStatus] = useState(
-    "Add a JWT with user:avatar scope to chat as yourself.",
-  );
+  const [status, setStatus] = useState("Add a JWT with user:avatar scope to chat as yourself.");
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [sending, setSending] = useState(false);
   const [userIdInput, setUserIdInput] = useState("demo-user");
   const [signingIn, setSigningIn] = useState(false);
-  const [providerInfo, setProviderInfo] = useState<ChatResponseMeta | null>(
-    null,
-  );
+  const [providerInfo, setProviderInfo] = useState<ChatResponseMeta | null>(null);
 
   useEffect(() => {
     const saved =
       typeof window !== "undefined"
-        ? window.localStorage.getItem("genesisToken") ||
-          window.localStorage.getItem("avatarToken")
+        ? window.localStorage.getItem("genesisToken") || window.localStorage.getItem("avatarToken")
         : null;
     if (saved) {
       setToken(saved);
@@ -102,9 +97,7 @@ export default function GenesisPage() {
       });
       const json = await res.json();
       if (!res.ok || json.ok === false || !json.token) {
-        throw new Error(
-          json.error || json.message || "Failed to get dev token",
-        );
+        throw new Error(json.error || json.message || "Failed to get dev token");
       }
       setToken(json.token);
       setStatus(`Signed in as ${desiredId}`);
@@ -202,9 +195,7 @@ export default function GenesisPage() {
         fontFamily: "'Space Grotesk', 'Sora', 'Segoe UI', sans-serif",
       }}
     >
-      <div
-        style={{ maxWidth: 1180, margin: "0 auto", display: "grid", gap: 18 }}
-      >
+      <div style={{ maxWidth: 1180, margin: "0 auto", display: "grid", gap: 18 }}>
         <header
           style={{
             display: "flex",
@@ -233,9 +224,7 @@ export default function GenesisPage() {
               G
             </div>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700 }}>
-                {t(locale, "genesis.title")}
-              </div>
+              <div style={{ fontSize: 24, fontWeight: 700 }}>{t(locale, "genesis.title")}</div>
               <div style={{ color: palette.muted, fontSize: 14 }}>
                 {t(locale, "genesis.subtitle")}
               </div>
@@ -293,8 +282,7 @@ export default function GenesisPage() {
                 {signingIn ? "Signing in..." : "Get dev token"}
               </button>
               <span style={{ color: palette.muted, fontSize: 12 }}>
-                Calls /v1/auth/dev-token (dev-only) and stores token in
-                localStorage.
+                Calls /v1/auth/dev-token (dev-only) and stores token in localStorage.
               </span>
             </div>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -305,9 +293,7 @@ export default function GenesisPage() {
                   padding: "10px 16px",
                   borderRadius: 12,
                   border: `1px solid ${palette.borderStrong}`,
-                  background: loadingProfile
-                    ? palette.panel
-                    : palette.accentSoft,
+                  background: loadingProfile ? palette.panel : palette.accentSoft,
                   color: palette.text,
                   cursor: loadingProfile || !token ? "not-allowed" : "pointer",
                   opacity: loadingProfile || !token ? 0.6 : 1,
@@ -315,9 +301,7 @@ export default function GenesisPage() {
               >
                 {loadingProfile ? "Loading..." : "Load Profile"}
               </button>
-              <span style={{ color: palette.muted, fontSize: 13 }}>
-                {status}
-              </span>
+              <span style={{ color: palette.muted, fontSize: 13 }}>{status}</span>
             </div>
           </div>
         </header>
@@ -368,9 +352,7 @@ export default function GenesisPage() {
                 }}
               />
               <div>
-                <div style={{ fontWeight: 700, fontSize: 18 }}>
-                  {profile?.name || "Genesis"}
-                </div>
+                <div style={{ fontWeight: 700, fontSize: 18 }}>{profile?.name || "Genesis"}</div>
                 <div style={{ color: palette.muted, fontSize: 13 }}>
                   {profile?.avatar?.label || "System Avatar"}
                 </div>
@@ -383,9 +365,7 @@ export default function GenesisPage() {
               </div>
             </div>
             <div style={{ display: "grid", gap: 8 }}>
-              <div style={{ color: palette.muted, fontSize: 13 }}>
-                Capabilities
-              </div>
+              <div style={{ color: palette.muted, fontSize: 13 }}>Capabilities</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {(
                   profile?.capabilities || [
@@ -422,9 +402,7 @@ export default function GenesisPage() {
               gap: 12,
             }}
           >
-            <div style={{ fontWeight: 700, fontSize: 16 }}>
-              Chat with Genesis
-            </div>
+            <div style={{ fontWeight: 700, fontSize: 16 }}>Chat with Genesis</div>
             <div
               style={{
                 borderRadius: 12,
@@ -441,24 +419,20 @@ export default function GenesisPage() {
             >
               {history.length === 0 && (
                 <div style={{ color: palette.muted, fontSize: 14 }}>
-                  No messages yet. Ask about deployment, avatars, or freight
-                  ops.
+                  No messages yet. Ask about deployment, avatars, or freight ops.
                 </div>
               )}
               {history.map((msg, idx) => (
                 <div
                   key={`${msg.ts || idx}-${idx}`}
                   style={{
-                    alignSelf:
-                      msg.role === "assistant" ? "flex-start" : "flex-end",
+                    alignSelf: msg.role === "assistant" ? "flex-start" : "flex-end",
                     maxWidth: "88%",
                     padding: "10px 12px",
                     borderRadius: 12,
                     border: `1px solid ${palette.border}`,
                     background:
-                      msg.role === "assistant"
-                        ? "rgba(255,69,69,0.08)"
-                        : "rgba(255,255,255,0.04)",
+                      msg.role === "assistant" ? "rgba(255,69,69,0.08)" : "rgba(255,255,255,0.04)",
                     color: palette.text,
                     whiteSpace: "pre-wrap",
                   }}
@@ -509,16 +483,14 @@ export default function GenesisPage() {
                     border: `1px solid ${palette.borderStrong}`,
                     background: sending ? palette.panel : palette.accentSoft,
                     color: palette.text,
-                    cursor:
-                      sending || !message.trim() ? "not-allowed" : "pointer",
+                    cursor: sending || !message.trim() ? "not-allowed" : "pointer",
                     opacity: sending || !message.trim() ? 0.6 : 1,
                   }}
                 >
                   {sending ? "Sending..." : "Send"}
                 </button>
                 <span style={{ color: palette.muted, fontSize: 12 }}>
-                  Deterministic, in-memory replies. No external AI keys
-                  required.
+                  Deterministic, in-memory replies. No external AI keys required.
                 </span>
               </div>
             </div>
