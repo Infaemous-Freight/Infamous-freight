@@ -122,7 +122,7 @@ SENTRY_PROJECT=javascript-nextjs
 If Next.js middleware matches all routes, exclude the Sentry tunnel path to avoid 401/403/500 errors:
 ```ts
 export const config = {
-  matcher: ["/((?!monitoring).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|public|monitoring).*)"],
 };
 ```
 
