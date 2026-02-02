@@ -303,6 +303,45 @@ groups:
 - Configure alert rules for each project (API, Web, Mobile)
 - Set appropriate thresholds based on traffic
 
+### Sentry Test Events & Troubleshooting
+
+**Quick client-side test**
+
+Add a deliberate client error to confirm the pipeline:
+
+```ts
+myUndefinedFunction();
+```
+
+Expected:
+
+- Browser console shows `Uncaught ReferenceError: myUndefinedFunction is not defined`
+- Sentry event appears within ~5–20 seconds with a stack trace pointing at the source
+
+**Recommended smoke test (no crash)**
+
+Use a controlled capture in the browser:
+
+```ts
+import * as Sentry from "@sentry/nextjs";
+
+Sentry.captureException(new Error("Infamous Freight test error"));
+```
+
+**If events do not appear**
+
+1. **Client config missing**: confirm `apps/web/sentry.client.config.ts` exists and initializes Sentry.
+2. **Public DSN missing**: ensure `NEXT_PUBLIC_SENTRY_DSN` is set in Vercel and matches the project.
+3. **Tunnel route blocked**: if using a tunnel (for example `/monitoring`), ensure middleware excludes it:
+
+   ```ts
+   export const config = {
+     matcher: ["/((?!monitoring).*)"],
+   };
+   ```
+
+4. **Server-only errors**: if the error is thrown in a server route, also configure `sentry.server.config.ts`.
+
 ## 📊 Dashboards
 
 ### Grafana Dashboard (Prometheus)
