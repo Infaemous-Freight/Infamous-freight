@@ -303,6 +303,49 @@ groups:
 - Configure alert rules for each project (API, Web, Mobile)
 - Set appropriate thresholds based on traffic
 
+### Sentry Test Events & Troubleshooting
+
+**Quick client-side test**
+
+Add a deliberate client error to confirm the pipeline:
+
+```ts
+myUndefinedFunction();
+```
+
+Expected:
+
+- Browser console shows `Uncaught ReferenceError: myUndefinedFunction is not defined`
+- Sentry event appears within ~5–20 seconds with a stack trace pointing at the source
+
+**Recommended smoke test (no crash)**
+
+Use a controlled capture in the browser:
+
+```ts
+import * as Sentry from "@sentry/nextjs";
+
+Sentry.captureException(new Error("Infamous Freight test error"));
+```
+
+**If events do not appear**
+
+1. **Client config missing**: confirm `apps/web/src/lib/sentry.client.config.ts` exists and that `apps/web/pages/_app.tsx` imports and initializes Sentry via `initSentry()`.
+2. **Public DSN missing**: ensure `NEXT_PUBLIC_SENTRY_DSN` is set in Vercel and matches the project.
+3. **Tunnel route blocked**: if using a tunnel (for example `/monitoring`), ensure middleware excludes it (merge with your existing matcher, do not replace it):
+
+   ```ts
+   // apps/web/middleware.ts
+   // Add `monitoring` to your existing negative lookahead while keeping other exclusions.
+   export const config = {
+     matcher: [
+       "/((?!monitoring|_next/static|_next/image|favicon.ico).*)",
+     ],
+   };
+   ```
+
+4. **Server-only errors**: to capture errors from Next.js server routes (API routes, route handlers, middleware), add an optional server config such as `web/sentry.server.config.(ts|js)` (or `apps/web/sentry.server.config.(ts|js)` depending on your app path) per Sentry’s Next.js conventions. This file is not required unless you want Sentry to record server-only errors.
+
 ## 📊 Dashboards
 
 ### Grafana Dashboard (Prometheus)
