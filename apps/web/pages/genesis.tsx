@@ -147,7 +147,6 @@ export default function GenesisPage() {
 
   useEffect(() => {
     loadProfile().catch((err) => setError((err as Error).message));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   async function sendMessage() {

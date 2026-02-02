@@ -20,9 +20,7 @@ export function initDatadogRUM() {
   // Only initialize in production with valid credentials
   if (!isProduction || !appId || !clientToken) {
     // eslint-disable-next-line no-console
-    console.info(
-      "[Datadog RUM] Skipping initialization (not production or credentials missing)",
-    );
+    console.info("[Datadog RUM] Skipping initialization (not production or credentials missing)");
     return;
   }
 
@@ -75,12 +73,7 @@ export function initDatadogRUM() {
  * Set user context for Datadog RUM
  * Call this after user authentication
  */
-export function setDatadogUser(user: {
-  id: string;
-  email?: string;
-  name?: string;
-  role?: string;
-}) {
+export function setDatadogUser(user: { id: string; email?: string; name?: string; role?: string }) {
   if (process.env.NEXT_PUBLIC_ENV !== "production") {
     return;
   }
@@ -111,7 +104,6 @@ export function clearDatadogUser() {
     datadogRum.clearUser();
   } catch (error) {
     // eslint-disable-next-line no-console
-    // eslint-disable-next-line no-console
     console.error("[Datadog RUM] Failed to clear user:", error);
   }
 }
@@ -128,7 +120,6 @@ export function addDatadogContext(key: string, value: any) {
     datadogRum.setGlobalContextProperty(key, value);
   } catch (error) {
     // eslint-disable-next-line no-console
-    // eslint-disable-next-line no-console
     console.error("[Datadog RUM] Failed to add context:", error);
   }
 }
@@ -136,10 +127,7 @@ export function addDatadogContext(key: string, value: any) {
 /**
  * Track custom action in Datadog RUM
  */
-export function trackDatadogAction(
-  name: string,
-  context?: Record<string, any>,
-) {
+export function trackDatadogAction(name: string, context?: Record<string, any>) {
   if (process.env.NEXT_PUBLIC_ENV !== "production") {
     return;
   }
@@ -147,7 +135,6 @@ export function trackDatadogAction(
   try {
     datadogRum.addAction(name, context);
   } catch (error) {
-    // eslint-disable-next-line no-console
     // eslint-disable-next-line no-console
     console.error("[Datadog RUM] Failed to track action:", error);
   }
@@ -162,10 +149,7 @@ function sanitizeMessage(message: string): string {
   // Remove phone numbers
   message = message.replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, "[PHONE]");
   // Remove credit card numbers
-  message = message.replace(
-    /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g,
-    "[CARD]",
-  );
+  message = message.replace(/\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, "[CARD]");
   // Remove SSN
   message = message.replace(/\b\d{3}-\d{2}-\d{4}\b/g, "[SSN]");
   return message;

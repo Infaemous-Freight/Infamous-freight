@@ -6,7 +6,7 @@
  * Manage Edge Config feature flags via CLI
  */
 
-// eslint-disable-next-line no-undef
+
 const { URL } = require('url');
 
 const COLORS = {
@@ -50,16 +50,16 @@ const commands = {
   list: async () => {
     log('📋 Current Feature Flags', 'blue');
     log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    
+
     try {
       const { getAll } = await import('@vercel/edge-config');
       const flags = await getAll();
-      
+
       if (!flags || Object.keys(flags).length === 0) {
         log('No feature flags configured', 'yellow');
         return;
       }
-      
+
       Object.entries(flags).forEach(([key, value]) => {
         const status = value === true ? '✅' : value === false ? '❌' : '📝';
         const color = value === true ? 'green' : value === false ? 'red' : 'yellow';
@@ -76,11 +76,11 @@ const commands = {
       log('❌ Usage: node manage-feature-flags.js get <key>', 'red');
       return;
     }
-    
+
     try {
       const { get } = await import('@vercel/edge-config');
       const value = await get(key);
-      
+
       if (value === undefined) {
         log(`❌ Flag '${key}' not found`, 'red');
       } else {
@@ -130,7 +130,7 @@ const commands = {
 };
 
 // Main
-const [,, command, ...args] = process.argv;
+const [, , command, ...args] = process.argv;
 
 if (!command || !commands[command]) {
   commands.help();

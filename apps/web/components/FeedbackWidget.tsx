@@ -55,7 +55,7 @@ export default function FeedbackWidget() {
           });
         }, 2000);
       }
-    } catch (_err) {
+    } catch {
       alert("Failed to submit feedback. Please try again.");
     }
   };
@@ -76,10 +76,7 @@ export default function FeedbackWidget() {
       {/* Header */}
       <div className="bg-blue-600 text-white px-4 py-3 rounded-t-lg flex justify-between items-center">
         <h3 className="font-semibold">Send Feedback</h3>
-        <button
-          onClick={() => setIsOpen(false)}
-          className="text-white hover:text-gray-200"
-        >
+        <button onClick={() => setIsOpen(false)} className="text-white hover:text-gray-200">
           ✕
         </button>
       </div>
@@ -95,9 +92,7 @@ export default function FeedbackWidget() {
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           {/* Category */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Category
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
             <select
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
@@ -114,9 +109,7 @@ export default function FeedbackWidget() {
 
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Title
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
             <input
               type="text"
               value={form.title}
@@ -130,23 +123,17 @@ export default function FeedbackWidget() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea
               value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
               className="w-full border border-gray-300 rounded px-3 py-2"
               rows={4}
               placeholder="Tell us more..."
               maxLength={5000}
               required
             />
-            <div className="text-xs text-gray-500 mt-1">
-              {form.description.length}/5000
-            </div>
+            <div className="text-xs text-gray-500 mt-1">{form.description.length}/5000</div>
           </div>
 
           {/* Rating */}
@@ -161,9 +148,7 @@ export default function FeedbackWidget() {
                   type="button"
                   onClick={() => setForm({ ...form, rating: star })}
                   className={`text-3xl transition-transform hover:scale-110 ${
-                    form.rating && star <= form.rating
-                      ? "text-yellow-400"
-                      : "text-gray-300"
+                    form.rating && star <= form.rating ? "text-yellow-400" : "text-gray-300"
                   }`}
                 >
                   ★

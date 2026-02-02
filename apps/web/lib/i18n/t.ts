@@ -18,11 +18,7 @@ export function t(locale: Locale, key: string): string {
 }
 
 /** Locale-aware formatting helpers (global-friendly) */
-export function formatCurrency(
-  locale: Locale,
-  amount: number,
-  currency: string,
-) {
+export function formatCurrency(locale: Locale, amount: number, currency: string) {
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency,

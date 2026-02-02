@@ -9,7 +9,6 @@
       "argsIgnorePattern": "^_",
       "varsIgnorePattern": "^_"
     }],
-    "react/no-unescaped-entities": "warn",
-    "react-hooks/exhaustive-deps": "warn"
+    "react/no-unescaped-entities": "warn"
   }
 }

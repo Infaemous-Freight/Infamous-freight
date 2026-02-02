@@ -157,7 +157,6 @@ export default function AvatarManager() {
 
   useEffect(() => {
     refresh().catch((err) => setError((err as Error).message));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   async function upload(file: File) {
