@@ -4,10 +4,16 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useEffect } from "react";
 import GlobalLayout from "../components/GlobalLayout";
 import { initDatadogRUM } from "../src/lib/datadog";
+import { initSentry } from "../src/lib/sentry.client.config";
 import { AuthProvider } from "../src/context/AuthContext";
 import "../src/styles/design-system.css";
 import "../src/styles/tokens.css";
 import "../src/styles/god-mode.css";
+
+// Initialize Sentry on app load (before any errors can occur)
+if (typeof window !== "undefined") {
+  initSentry();
+}
 
 export default function App({ Component, pageProps }: AppProps) {
   const isProduction = process.env.NEXT_PUBLIC_ENV === "production";
