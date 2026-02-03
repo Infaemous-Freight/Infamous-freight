@@ -8,9 +8,14 @@ import GlobalLayout from "../components/GlobalLayout";
 import { initDatadogRUM } from "../src/lib/datadog";
 import SentryErrorBoundary from "../components/SentryErrorBoundary";
 import { AuthProvider } from "../src/context/AuthContext";
-import "../src/styles/design-system.css";
-import "../src/styles/tokens.css";
-import "../src/styles/god-mode.css";
+// Modern Design System (New)
+import "../src/styles/design-tokens.css";
+import "../src/styles/modern-design-system.css";
+
+// Legacy styles (can be removed after migration)
+// import "../src/styles/design-system.css";
+// import "../src/styles/tokens.css";
+// import "../src/styles/god-mode.css";
 
 // Initialize Sentry is handled by next.config.mjs automatically
 // No manual initialization needed here
