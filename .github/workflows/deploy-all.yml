@@ -148,7 +148,8 @@ jobs:
           fi
 
       - name: Slack notification
-        if: secrets.SLACK_WEBHOOK_URL != ''
+        if: success()
+        continue-on-error: true
         uses: slackapi/slack-github-action@v1
         with:
           payload: |
@@ -169,7 +170,8 @@ jobs:
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Discord notification
-        if: secrets.DISCORD_WEBHOOK_URL != ''
+        if: success()
+        continue-on-error: true
         run: |
           STATUS_EMOJI="${{ steps.status.outputs.emoji }}"
           STATUS="${{ steps.status.outputs.status }}"
