@@ -20,13 +20,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate Supabase secrets
+        run: |
+          if [ -z "$SUPABASE_ACCESS_TOKEN" ]; then
+            echo "Missing SUPABASE_ACCESS_TOKEN secret"
+            exit 1
+          fi
+          if [ -z "$SUPABASE_PROJECT_REF" ]; then
+            echo "Missing SUPABASE_PROJECT_REF secret"
+            exit 1
+          fi
+          if [ -z "$SUPABASE_DB_PASSWORD" ]; then
+            echo "Missing SUPABASE_DB_PASSWORD secret"
+            exit 1
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
       - name: Install Supabase CLI
-        run: npm install -g supabase@latest
+        run: |
+          curl -sL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.tar.gz |
+            tar -xz -C /usr/local/bin supabase
 
       - name: Link project
         run: supabase link --project-ref "$SUPABASE_PROJECT_REF"

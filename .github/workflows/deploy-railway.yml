@@ -23,6 +23,7 @@ concurrency:
 
 env:
   RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+  RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
 
 jobs:
   migrate-db:
@@ -33,6 +34,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Validate Railway secrets
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "Missing RAILWAY_TOKEN secret"
+            exit 1
+          fi
+          if [ -z "$RAILWAY_PROJECT_ID" ]; then
+            echo "Missing RAILWAY_PROJECT_ID secret"
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -51,11 +63,8 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Authenticate with Railway
-        run: railway login --token "$RAILWAY_TOKEN"
-
       - name: Select Railway project
-        run: railway project "${{ secrets.RAILWAY_PROJECT_ID }}"
+        run: railway project "$RAILWAY_PROJECT_ID"
 
       - name: Select Railway environment
         run: |
