@@ -99,16 +99,15 @@ infrastructure/
 my-neon-app/
 examples/
 load-tests/
-src/
-api/
-web/
-mobile/
-services/
-payments/
 observability/
 deploy/
 configs/
-scripts/
+
+# Keep these for build:
+# apps/ - REQUIRED (contains api/ and web/)
+# packages/ - REQUIRED (contains shared packages)
+# scripts/ - REQUIRED for builds
+# Do NOT exclude api/, web/, or mobile/ - they're subdirectories of apps/
 
 # Large files
 *.rdb
