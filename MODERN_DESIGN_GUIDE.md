@@ -243,15 +243,15 @@ Apply new design system to other pages using utility classes:
 
 ### Colors
 
-| Token | Value | Usage |
-|-------|-------|-------|
+| Token           | Value     | Usage               |
+| --------------- | --------- | ------------------- |
 | `--crimson-600` | `#e10600` | Primary brand color |
-| `--gold-500` | `#d4af37` | Accent/premium |
-| `--void-950` | `#07070a` | Background |
-| `--void-50` | `#fafafa` | Text |
-| `--success-500` | `#22c55e` | Success states |
-| `--warning-500` | `#f59e0b` | Warning states |
-| `--danger-500` | `#ef4444` | Error states |
+| `--gold-500`    | `#d4af37` | Accent/premium      |
+| `--void-950`    | `#07070a` | Background          |
+| `--void-50`     | `#fafafa` | Text                |
+| `--success-500` | `#22c55e` | Success states      |
+| `--warning-500` | `#f59e0b` | Warning states      |
+| `--danger-500`  | `#ef4444` | Error states        |
 
 ### Spacing
 

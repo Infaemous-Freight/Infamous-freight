@@ -176,19 +176,95 @@ docker push ghcr.io/your-org/infamous-freight/test:latest
 
 ---
 
-## 7. Production Secrets (Optional)
+## 7. Production Deployment Secrets (REQUIRED for 100%)
 
-For production deployments, also configure:
+### 🚀 Fly.io Deployment (REQUIRED)
 
-| Secret              | Purpose                        | Setup                        |
-| ------------------- | ------------------------------ | ---------------------------- |
-| `API_PORT`          | API server port override       | Set to `4000` or custom      |
-| `DATABASE_URL`      | Production database connection | PostgreSQL connection string |
-| `JWT_SECRET`        | JWT signing key                | 32-character random string   |
-| `STRIPE_SECRET_KEY` | Stripe API key                 | From Stripe Dashboard        |
-| `SENDGRID_API_KEY`  | Email service                  | From SendGrid Dashboard      |
+**To deploy to Fly.io**, you **MUST** configure:
+
+| Secret          | Purpose                        | How to Get                    | Required |
+| --------------- | ------------------------------ | ----------------------------- | -------- |
+| `FLY_API_TOKEN` | Deploy API to Fly.io           | `flyctl auth token`           | ✅ YES    |
+| `DATABASE_URL`  | Production database connection | From Fly Postgres or Supabase | ✅ YES    |
+| `JWT_SECRET`    | JWT signing key                | `openssl rand -base64 32`     | ✅ YES    |
+
+**Step-by-Step: Get FLY_API_TOKEN**
+
+```bash
+# 1. Install Fly.io CLI
+curl -L https://fly.io/install.sh | sh
+export PATH="$HOME/.fly/bin:$PATH"
+
+# 2. Login to Fly.io
+flyctl auth login
+
+# 3. Get your token
+flyctl auth token
+
+# 4. Copy the token and add to GitHub Secrets
+# Go to: https://github.com/YOUR-ORG/YOUR-REPO/settings/secrets/actions
+# Name: FLY_API_TOKEN
+# Value: [paste token]
+```
+
+**Step-by-Step: Get DATABASE_URL**
+
+Option A - Fly Postgres (Recommended):
+```bash
+# Create database
+flyctl postgres create --name infamous-freight-db --region ord
+
+# Attach to app
+flyctl postgres attach infamous-freight-db -a infamous-freight
+
+# Get connection string
+flyctl postgres db list -a infamous-freight-db
+# Copy the DATABASE_URL and add to GitHub Secrets
+```
+
+Option B - Supabase (Free Tier):
+```bash
+# 1. Go to: https://supabase.com/dashboard
+# 2. Create project: "infamous-freight"
+# 3. Settings → Database → Connection String
+# 4. Copy and add to GitHub Secrets
+```
+
+**Step-by-Step: Generate JWT_SECRET**
+
+```bash
+# Generate secure random key
+openssl rand -base64 32
+
+# Copy output and add to GitHub Secrets
+# Name: JWT_SECRET
+# Value: [paste generated key]
+```
+
+### Additional Production Secrets (Optional)
+
+| Secret              | Purpose                  | Setup                     |
+| ------------------- | ------------------------ | ------------------------- |
+| `FLY_APP_NAME`      | Fly.io app name override | Set to `infamous-freight` |
+| `API_PORT`          | API server port override | Set to `4000` or custom   |
+| `STRIPE_SECRET_KEY` | Stripe API key           | From Stripe Dashboard     |
+| `SENDGRID_API_KEY`  | Email service            | From SendGrid Dashboard   |
+| `SENTRY_AUTH_TOKEN` | Error tracking           | From Sentry.io            |
+| `SLACK_WEBHOOK_URL` | Deployment notifications | From Slack Workspace      |
 
 **⚠️ Never commit secrets to version control!**
+
+### Verify Secrets Are Set
+
+```bash
+# Using GitHub CLI
+gh secret list
+
+# Expected output should include:
+# FLY_API_TOKEN     Updated 2026-02-03
+# DATABASE_URL      Updated 2026-02-03
+# JWT_SECRET        Updated 2026-02-03
+```
 
 ---
 
