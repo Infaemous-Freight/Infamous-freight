@@ -3,12 +3,22 @@ name: Deploy API (Fly.io)
 on:
   workflow_dispatch:
   workflow_call:
+    outputs:
+      app_url:
+        description: "Deployed Fly.io app URL"
+        value: ${{ jobs.deploy-api.outputs.app_url }}
+      health_url:
+        description: "Fly.io health check URL"
+        value: ${{ jobs.deploy-api.outputs.health_url }}
 
 jobs:
   deploy-api:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      app_url: ${{ steps.get-url.outputs.app_url }}
+      health_url: ${{ steps.get-url.outputs.health_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -29,6 +39,32 @@ jobs:
       - name: Deploy to Fly.io
         uses: superfly/flyctl-actions@1.5
         with:
-          args: "deploy --config api/fly.toml --remote-only"
+          args: "deploy --config apps/api/fly.toml --remote-only"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Get app URLs
+        id: get-url
+        run: |
+          APP_NAME=$(grep -E '^app\s*=\s*' apps/api/fly.toml | head -1 | sed -E 's/.*=\s*"?([^" ]+)"?/\1/')
+          if [ -z "$APP_NAME" ]; then
+            echo "Fly app name not found in apps/api/fly.toml"
+            exit 1
+          fi
+          echo "app_url=https://$APP_NAME.fly.dev" >> $GITHUB_OUTPUT
+          echo "health_url=https://$APP_NAME.fly.dev/api/health" >> $GITHUB_OUTPUT
+
+      - name: Health check
+        run: |
+          echo "Checking ${{ steps.get-url.outputs.health_url }}"
+          curl -sf "${{ steps.get-url.outputs.health_url }}" | jq .
+
+      - name: Deployment summary
+        run: |
+          APP_NAME=$(grep -E '^app\s*=\s*' apps/api/fly.toml | head -1 | sed -E 's/.*=\s*"?([^" ]+)"?/\1/')
+          echo "## 🪁 Fly.io Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **App**: $APP_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: ${{ steps.get-url.outputs.app_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Health Check**: ${{ steps.get-url.outputs.health_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dashboard**: https://fly.io/apps/$APP_NAME" >> $GITHUB_STEP_SUMMARY

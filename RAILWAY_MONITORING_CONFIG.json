@@ -1,0 +1,207 @@
+{
+    "monitoring": {
+        "enabled": true,
+        "version": "1.0.0",
+        "updated": "2026-02-03",
+        "description": "Production monitoring configuration for Infamous Freight on Railway"
+    },
+    "health_checks": {
+        "api": {
+            "enabled": true,
+            "endpoint": "/api/health",
+            "method": "GET",
+            "interval_seconds": 30,
+            "timeout_seconds": 5,
+            "expected_status": 200,
+            "required_fields": [
+                "status",
+                "uptime",
+                "database",
+                "timestamp"
+            ]
+        },
+        "web": {
+            "enabled": true,
+            "endpoint": "/",
+            "method": "GET",
+            "interval_seconds": 60,
+            "timeout_seconds": 5,
+            "expected_status": 200
+        },
+        "database": {
+            "enabled": true,
+            "type": "connection_test",
+            "interval_seconds": 300,
+            "expected_response_time_ms": 100
+        },
+        "redis": {
+            "enabled": true,
+            "type": "ping_test",
+            "interval_seconds": 300,
+            "expected_response_time_ms": 50
+        }
+    },
+    "error_tracking": {
+        "sentry": {
+            "enabled": true,
+            "dsn": "${SENTRY_DSN}",
+            "environment": "production",
+            "sample_rate": 1.0,
+            "traces_sample_rate": 0.1,
+            "replays_sample_rate": 0.1,
+            "integrations": [
+                "httpClient",
+                "console",
+                "postHogIntegration",
+                "breadcrumbs"
+            ],
+            "capture_levels": [
+                "warning",
+                "error",
+                "fatal"
+            ]
+        }
+    },
+    "performance_monitoring": {
+        "enabled": true,
+        "metrics": {
+            "api_response_time": {
+                "threshold_ms": 500,
+                "percentile": 95,
+                "alert_if_exceeded": true
+            },
+            "web_page_load": {
+                "threshold_ms": 2000,
+                "percentile": 75,
+                "alert_if_exceeded": true
+            },
+            "database_query_time": {
+                "threshold_ms": 100,
+                "percentile": 95,
+                "alert_if_exceeded": true
+            },
+            "error_rate": {
+                "threshold_percent": 0.1,
+                "alert_if_exceeded": true
+            }
+        }
+    },
+    "logging": {
+        "enabled": true,
+        "level": "info",
+        "structured_logging": true,
+        "retention_days": 30,
+        "providers": [
+            "railway_logs",
+            "sentry",
+            "application_logs"
+        ]
+    },
+    "alerts": {
+        "enabled": true,
+        "channels": {
+            "slack": {
+                "enabled": false,
+                "webhook_url": "${SLACK_WEBHOOK_URL}",
+                "critical_mentions": "@devops-oncall"
+            },
+            "sentry": {
+                "enabled": true,
+                "alert_rules": [
+                    {
+                        "name": "high_error_rate",
+                        "condition": "error_rate > 1%",
+                        "notify": "team"
+                    },
+                    {
+                        "name": "critical_errors",
+                        "condition": "error.level = critical",
+                        "notify": "team"
+                    },
+                    {
+                        "name": "performance_degradation",
+                        "condition": "transaction.duration > 5000ms",
+                        "notify": "team"
+                    }
+                ]
+            }
+        }
+    },
+    "dashboards": {
+        "railway": {
+            "enabled": true,
+            "url": "https://railway.app/project/[PROJECT_ID]/analytics",
+            "metrics": [
+                "uptime",
+                "cpu_usage",
+                "memory_usage",
+                "network_in_out",
+                "deployment_history",
+                "build_duration"
+            ]
+        },
+        "sentry": {
+            "enabled": true,
+            "url": "https://sentry.io/organizations/[ORG]/issues",
+            "metrics": [
+                "error_trends",
+                "performance_monitoring",
+                "release_tracking",
+                "session_replay"
+            ]
+        }
+    },
+    "backup_monitoring": {
+        "enabled": true,
+        "database": {
+            "frequency": "daily",
+            "retention_days": 30,
+            "alert_on_failure": true,
+            "alert_on_slow_backup": true,
+            "slow_threshold_minutes": 30
+        },
+        "configuration": {
+            "frequency": "hourly",
+            "backup_type": "git_commits"
+        }
+    },
+    "scaling_configuration": {
+        "enabled": true,
+        "triggers": [
+            {
+                "name": "cpu_high",
+                "metric": "cpu_usage",
+                "threshold": 80,
+                "action": "scale_up",
+                "cooldown_minutes": 5
+            },
+            {
+                "name": "memory_high",
+                "metric": "memory_usage",
+                "threshold": 85,
+                "action": "scale_up",
+                "cooldown_minutes": 5
+            },
+            {
+                "name": "error_rate_high",
+                "metric": "error_rate",
+                "threshold": 1.0,
+                "action": "alert_only",
+                "cooldown_minutes": 10
+            }
+        ]
+    },
+    "performance_targets": {
+        "api_response_time_p95ms": 500,
+        "web_page_load_ms": 2000,
+        "db_query_ms": 100,
+        "uptime_percent": 99.9,
+        "error_rate_percent": 0.1
+    },
+    "maintenance_windows": {
+        "enabled": true,
+        "schedule": "Sundays 02:00 UTC",
+        "duration_minutes": 30,
+        "alerts_during_maintenance": false
+    }
+}

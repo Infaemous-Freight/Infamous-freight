@@ -3,10 +3,16 @@ name: Deploy Web (Vercel)
 on:
   workflow_dispatch:
   workflow_call:
+    outputs:
+      deploy_url:
+        description: "Deployed Vercel app URL"
+        value: ${{ jobs.deploy-web.outputs.deploy_url }}
 
 jobs:
   deploy-web:
     runs-on: ubuntu-latest
+    outputs:
+      deploy_url: ${{ steps.deploy.outputs.deploy_url }}
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -18,12 +24,32 @@ jobs:
 
       - name: Pull Vercel env (Production)
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: web
+        working-directory: apps/web
 
       - name: Build (Prod)
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: web
+        working-directory: apps/web
 
       - name: Deploy (Prod)
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: web
+        id: deploy
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} | tail -n 1)
+          echo "deploy_url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+        working-directory: apps/web
+
+      - name: Health check
+        run: |
+          DEPLOY_URL="${{ steps.deploy.outputs.deploy_url }}"
+          if [ -z "$DEPLOY_URL" ]; then
+            echo "Vercel deploy URL not found"
+            exit 1
+          fi
+          echo "Checking $DEPLOY_URL"
+          curl -I -sf "$DEPLOY_URL" > /dev/null
+
+      - name: Deployment summary
+        run: |
+          echo "## ▲ Vercel Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: ${{ steps.deploy.outputs.deploy_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dashboard**: https://vercel.com/dashboard" >> $GITHUB_STEP_SUMMARY

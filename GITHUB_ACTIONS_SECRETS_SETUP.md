@@ -176,17 +176,46 @@ docker push ghcr.io/your-org/infamous-freight/test:latest
 
 ---
 
-## 7. Production Deployment Secrets (REQUIRED for 100%)
+## 7. Multi-Platform Deployment Secrets (REQUIRED for 100%)
 
-### 🚀 Fly.io Deployment (REQUIRED)
+### 🚀 Fly.io API Deployment (REQUIRED)
 
-**To deploy to Fly.io**, you **MUST** configure:
+**Deploy Express API to Fly.io**
 
-| Secret          | Purpose                        | How to Get                    | Required |
-| --------------- | ------------------------------ | ----------------------------- | -------- |
-| `FLY_API_TOKEN` | Deploy API to Fly.io           | `flyctl auth token`           | ✅ YES    |
-| `DATABASE_URL`  | Production database connection | From Fly Postgres or Supabase | ✅ YES    |
-| `JWT_SECRET`    | JWT signing key                | `openssl rand -base64 32`     | ✅ YES    |
+| Secret          | Purpose                        | How to Get                | Required |
+| --------------- | ------------------------------ | ------------------------- | -------- |
+| `FLY_API_TOKEN` | Deploy API to Fly.io           | `flyctl auth token`       | ✅ YES    |
+| `DATABASE_URL`  | Production database connection | From Railway or Supabase  | ✅ YES    |
+| `JWT_SECRET`    | JWT signing key                | `openssl rand -base64 32` | ✅ YES    |
+
+### ▲ Vercel Web Deployment (REQUIRED)
+
+**Deploy Next.js web app to Vercel**
+
+| Secret              | Purpose                | How to Get                            | Required |
+| ------------------- | ---------------------- | ------------------------------------- | -------- |
+| `VERCEL_TOKEN`      | Deploy to Vercel       | Vercel Dashboard → Settings → Tokens  | ✅ YES    |
+| `VERCEL_ORG_ID`     | Vercel organization ID | Vercel Dashboard → Settings → General | ✅ YES    |
+| `VERCEL_PROJECT_ID` | Vercel project ID      | Project Settings → General            | ✅ YES    |
+
+### 🛤️ Railway Database (REQUIRED)
+
+**Run Prisma migrations on Railway Postgres**
+
+| Secret               | Purpose            | How to Get                           | Required |
+| -------------------- | ------------------ | ------------------------------------ | -------- |
+| `RAILWAY_TOKEN`      | Railway API token  | Railway Dashboard → Account → Tokens | ✅ YES    |
+| `RAILWAY_PROJECT_ID` | Railway project ID | Railway Project → Settings           | ✅ YES    |
+
+### 🧩 Supabase Deployment (REQUIRED)
+
+**Deploy Edge Functions and DB migrations to Supabase**
+
+| Secret                  | Purpose              | How to Get                                | Required |
+| ----------------------- | -------------------- | ----------------------------------------- | -------- |
+| `SUPABASE_ACCESS_TOKEN` | Supabase API token   | Supabase Dashboard → Settings → Tokens    | ✅ YES    |
+| `SUPABASE_PROJECT_REF`  | Supabase project ref | Project Settings → General → Reference ID | ✅ YES    |
+| `SUPABASE_DB_PASSWORD`  | Database password    | Project Settings → Database               | ✅ YES    |
 
 **Step-by-Step: Get FLY_API_TOKEN**
 
@@ -207,26 +236,96 @@ flyctl auth token
 # Value: [paste token]
 ```
 
-**Step-by-Step: Get DATABASE_URL**
+**Step-by-Step: Get Vercel Secrets**
 
-Option A - Fly Postgres (Recommended):
 ```bash
-# Create database
-flyctl postgres create --name infamous-freight-db --region ord
+# 1. Install Vercel CLI
+npm install -g vercel
 
-# Attach to app
-flyctl postgres attach infamous-freight-db -a infamous-freight
+# 2. Login to Vercel
+vercel login
 
-# Get connection string
-flyctl postgres db list -a infamous-freight-db
-# Copy the DATABASE_URL and add to GitHub Secrets
+# 3. Get your token
+# Go to: https://vercel.com/account/tokens
+# Create token → Copy
+
+# 4. Get Organization ID
+# Go to: https://vercel.com/[your-org]/settings
+# Copy Organization ID from Settings → General
+
+# 5. Get Project ID
+# Go to: https://vercel.com/[your-org]/[project]/settings
+# Copy Project ID from Settings → General
+
+# 6. Add all three to GitHub Secrets:
+# - VERCEL_TOKEN
+# - VERCEL_ORG_ID
+# - VERCEL_PROJECT_ID
 ```
 
-Option B - Supabase (Free Tier):
+**Step-by-Step: Get Railway Secrets**
+
+```bash
+# 1. Install Railway CLI
+npm install -g @railway/cli
+
+# 2. Login to Railway
+railway login
+
+# 3. Get your token
+# Go to: https://railway.app/account/tokens
+# Create token → Copy
+
+# 4. Get Project ID
+# Go to your Railway project → Settings → General
+# Copy Project ID
+
+# 5. Add to GitHub Secrets:
+# - RAILWAY_TOKEN
+# - RAILWAY_PROJECT_ID
+```
+
+**Step-by-Step: Get Supabase Secrets**
+
+```bash
+# 1. Go to Supabase Dashboard
+# https://supabase.com/dashboard
+
+# 2. Create or select project
+
+# 3. Get Access Token
+# Go to: https://supabase.com/dashboard/account/tokens
+# Create token → Copy
+
+# 4. Get Project Reference ID
+# Project Settings → General → Reference ID
+
+# 5. Get Database Password
+# Project Settings → Database → Connection String
+# Password is in the connection string or reset in Database settings
+
+# 6. Add to GitHub Secrets:
+# - SUPABASE_ACCESS_TOKEN
+# - SUPABASE_PROJECT_REF
+# - SUPABASE_DB_PASSWORD
+```
+
+**Step-by-Step: Get DATABASE_URL**
+
+Option A - Railway Postgres (Recommended for this setup):
+```bash
+# 1. Go to Railway project
+# 2. Add New → Database → PostgreSQL
+# 3. Click on the Postgres service
+# 4. Variables tab → Copy DATABASE_URL
+# 5. Add to GitHub Secrets (also used by Railway workflow)
+```
+
+Option B - Supabase (Alternative):
 ```bash
 # 1. Go to: https://supabase.com/dashboard
 # 2. Create project: "infamous-freight"
-# 3. Settings → Database → Connection String
+# 3. Settings → Database → Connection String (Direct)
 # 4. Copy and add to GitHub Secrets
 ```
 
@@ -243,32 +342,180 @@ openssl rand -base64 32
 
 ### Additional Production Secrets (Optional)
 
-| Secret              | Purpose                  | Setup                     |
-| ------------------- | ------------------------ | ------------------------- |
-| `FLY_APP_NAME`      | Fly.io app name override | Set to `infamous-freight` |
-| `API_PORT`          | API server port override | Set to `4000` or custom   |
-| `STRIPE_SECRET_KEY` | Stripe API key           | From Stripe Dashboard     |
-| `SENDGRID_API_KEY`  | Email service            | From SendGrid Dashboard   |
-| `SENTRY_AUTH_TOKEN` | Error tracking           | From Sentry.io            |
-| `SLACK_WEBHOOK_URL` | Deployment notifications | From Slack Workspace      |
+| Secret                | Purpose                  | Setup                                           |
+| --------------------- | ------------------------ | ----------------------------------------------- |
+| `FLY_APP_NAME`        | Fly.io app name override | Set to `infamous-freight`                       |
+| `API_PORT`            | API server port override | Set to `4000` or custom                         |
+| `STRIPE_SECRET_KEY`   | Stripe API key           | From Stripe Dashboard                           |
+| `SENDGRID_API_KEY`    | Email service            | From SendGrid Dashboard                         |
+| `SENTRY_AUTH_TOKEN`   | Error tracking           | From Sentry.io                                  |
+| `SLACK_WEBHOOK_URL`   | Deployment notifications | From Slack Workspace → Apps → Incoming Webhooks |
+| `DISCORD_WEBHOOK_URL` | Deployment notifications | Server Settings → Integrations → Create Webhook |
 
 **⚠️ Never commit secrets to version control!**
 
-### Verify Secrets Are Set
+### Setup Notification Webhooks (Optional)
+
+**Quick Setup (Recommended):**
+```bash
+# Run interactive setup script
+./scripts/setup-notifications.sh
+
+# The script guides you through:
+# - Slack webhook setup
+# - Discord webhook setup
+# - Automatic secret configuration
+# - URL validation
+```
+
+**Manual Setup:**
+
+**Slack Webhook:**
+```bash
+# 1. Go to: https://api.slack.com/apps
+# 2. Create New App → From scratch
+# 3. Name: "Deployment Notifier", select workspace
+# 4. Features → Incoming Webhooks → Activate
+# 5. Add New Webhook to Workspace
+# 6. Select channel (e.g., #deployments)
+# 7. Copy webhook URL and set secret:
+gh secret set SLACK_WEBHOOK_URL
+```
+
+**Discord Webhook:**
+```bash
+# 1. Go to your Discord server
+# 2. Server Settings → Integrations → Webhooks
+# 3. Create Webhook
+# 4. Name: "Deployment Notifier", select channel
+# 5. Copy webhook URL and set secret:
+gh secret set DISCORD_WEBHOOK_URL
+```
+
+**⚠️ Never commit secrets to version control!**
+
+### Verify All Secrets Are Set
 
 ```bash
 # Using GitHub CLI
 gh secret list
 
-# Expected output should include:
-# FLY_API_TOKEN     Updated 2026-02-03
-# DATABASE_URL      Updated 2026-02-03
-# JWT_SECRET        Updated 2026-02-03
+# Expected output for multi-platform deploy:
+# FLY_API_TOKEN           Updated 2026-02-03
+# VERCEL_TOKEN            Updated 2026-02-03
+# VERCEL_ORG_ID           Updated 2026-02-03
+# VERCEL_PROJECT_ID       Updated 2026-02-03
+# RAILWAY_TOKEN           Updated 2026-02-03
+# RAILWAY_PROJECT_ID      Updated 2026-02-03
+# SUPABASE_ACCESS_TOKEN   Updated 2026-02-03
+# SUPABASE_PROJECT_REF    Updated 2026-02-03
+# SUPABASE_DB_PASSWORD    Updated 2026-02-03
+# DATABASE_URL            Updated 2026-02-03
+# JWT_SECRET              Updated 2026-02-03
+# GHCR_TOKEN              Updated 2026-02-03
+```
+
+**Run automated validation script:**
+
+```bash
+# Check if all required secrets are configured
+./scripts/validate-secrets.sh
 ```
 
 ---
 
-## 8. Quick Reference: Commands
+## 8. Trigger Multi-Platform Deployment
+
+### Automated Validation & Deployment
+
+Once all secrets are configured, use the automated scripts:
+
+**Step 1: Validate Secrets**
+
+```bash
+# Run validation script
+./scripts/validate-secrets.sh
+
+# Expected output:
+# ✓ All required secrets are configured! (11/11)
+# ✓ Optional secrets configured: 4/4
+# 🚀 Ready to deploy!
+```
+
+**Step 2: Trigger Deployment**
+
+```bash
+# Trigger manual deployment
+./scripts/trigger-deploy.sh
+
+# This will:
+# 1. Validate secrets
+# 2. Confirm deployment targets
+# 3. Trigger GitHub Actions workflow
+# 4. Provide links to watch progress
+```
+
+### Manual Deployment via GitHub UI
+
+1. Go to: https://github.com/YOUR-ORG/YOUR-REPO/actions
+2. Select "Deploy ALL Platforms" workflow
+3. Click "Run workflow" button
+4. Select branch: `main`
+5. Click green "Run workflow" button
+
+### Manual Deployment via GitHub CLI
+
+```bash
+# Trigger workflow
+gh workflow run deploy-all.yml --ref main
+
+# Watch progress
+gh run watch
+
+# View latest run
+gh run list --workflow=deploy-all.yml --limit 1
+```
+
+### Verify Deployment
+
+After workflow completes, check each platform:
+
+**Fly.io API:**
+```bash
+# Check health
+curl https://infamous-freight-api.fly.dev/api/health | jq .
+
+# View logs
+flyctl logs -a infamous-freight-api
+```
+
+**Vercel Web:**
+```bash
+# Visit deployed site
+open https://YOUR-PROJECT.vercel.app
+
+# Check Vercel logs
+vercel logs
+```
+
+**Railway Database:**
+```bash
+# Check migrations
+railway run pnpm --filter api prisma:migrate:status
+```
+
+**Supabase:**
+```bash
+# Check edge functions
+supabase functions list
+
+# Check database
+supabase db remote status
+```
+
+---
+
+## 9. Quick Reference: Commands
 
 ```bash
 # Generate a secure random secret
@@ -287,7 +534,7 @@ gh secret delete SECRET_NAME -R your-org/your-repo
 
 ---
 
-## 9. Troubleshooting
+## 10. Troubleshooting
 
 ### Secret Not Found Error
 
@@ -312,7 +559,38 @@ Error: Unauthorized: authentication required
 
 ---
 
-## 10. Monitoring & Maintenance
+## 11. Deployment Checklist
+
+### Pre-Deployment
+
+- [ ] All 11 required secrets configured
+- [ ] Secrets validated with `./scripts/validate-secrets.sh`
+- [ ] Local changes committed and pushed
+- [ ] Code passes tests locally (`pnpm test`)
+- [ ] No open GitHub Issues blocking deployment
+
+### During Deployment
+
+- [ ] Workflow triggered (manual or push to main)
+- [ ] Fly.io deployment completed without errors
+- [ ] Vercel deployment completed without errors
+- [ ] Railway migrations completed successfully
+- [ ] Supabase edge functions deployed
+- [ ] All health checks passed
+
+### Post-Deployment
+
+- [ ] API health check: `curl https://APP-NAME.fly.dev/api/health`
+- [ ] Web app loads: Visit Vercel URL
+- [ ] Database accessible from API
+- [ ] Edge functions responding
+- [ ] Monitor logs for errors (first 5 minutes)
+- [ ] Test critical user flows
+- [ ] Update team/stakeholders
+
+---
+
+## 12. Monitoring & Maintenance
 
 ### Rotate Secrets Regularly
 
@@ -339,7 +617,7 @@ View in: Repo → Settings → Audit log
 
 ---
 
-## 11. Security Best Practices
+## 13. Security Best Practices
 
 ✅ **DO:**
 
@@ -358,7 +636,7 @@ View in: Repo → Settings → Audit log
 
 ---
 
-## Need Help?
+## 14. Need Help?
 
 ### Resources
 

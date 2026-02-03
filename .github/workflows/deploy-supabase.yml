@@ -1,0 +1,50 @@
+name: Deploy Supabase
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Supabase CLI
+        run: npm install -g supabase@latest
+
+      - name: Link project
+        run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
+
+      - name: Apply database migrations
+        run: supabase db push
+
+      - name: Deploy Edge Functions
+        run: |
+          supabase functions deploy analytics
+          supabase functions deploy shipment-tracking
+          supabase functions deploy thread-summary
+
+      - name: Deployment summary
+        run: |
+          echo "## 🧩 Supabase Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Project**: $SUPABASE_PROJECT_REF" >> $GITHUB_STEP_SUMMARY
+          echo "- **Database**: ✅ Migrations applied" >> $GITHUB_STEP_SUMMARY
+          echo "- **Edge Functions**: ✅ analytics, shipment-tracking, thread-summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dashboard**: https://supabase.com/dashboard/project/$SUPABASE_PROJECT_REF" >> $GITHUB_STEP_SUMMARY

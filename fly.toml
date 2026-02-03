@@ -3,8 +3,8 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'infamous-freight-942'
-primary_region = 'ord'
+app = "infamous-freight-as-3gw"
+primary_region = "ord"
 
 [build]
   dockerfile = "Dockerfile"
@@ -13,14 +13,14 @@ primary_region = 'ord'
   API_PORT = "3001"
 
 [http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = 'stop'
   auto_start_machines = true
+  auto_stop_machines = true
+  force_https = true
+  internal_port = 3000
   min_machines_running = 0
-  processes = ['app']
+  processes = ["app"]
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
+  cpu_kind = "shared"
   cpus = 1
+  memory = "1gb"

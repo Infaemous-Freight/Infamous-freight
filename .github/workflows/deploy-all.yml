@@ -44,5 +44,3 @@ jobs:
           echo "| Vercel Web | ${{ needs.deploy-vercel-web.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Railway DB | ${{ needs.deploy-railway-db.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Supabase | ${{ needs.deploy-supabase.result }} |" >> $GITHUB_STEP_SUMMARY
-
-

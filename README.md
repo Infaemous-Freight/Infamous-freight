@@ -50,18 +50,21 @@ Infamous Freight operates a multi-platform, enterprise-grade CI/CD pipeline desi
 
 ## Deployment Status
 
-[![Auto Deploy](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/auto-deploy.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/auto-deploy.yml)
+[![Deploy ALL Platforms](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/deploy-all.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/deploy-all.yml)
 [![Deploy API (Fly.io)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/fly-deploy.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/fly-deploy.yml)
 [![Deploy Web (Vercel)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/vercel-deploy.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/vercel-deploy.yml)
-[![Deploy Mobile (Expo)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/mobile-deploy.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/mobile-deploy.yml)
+[![Railway DB](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/deploy-railway.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/deploy-railway.yml)
+[![Supabase](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/deploy-supabase.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight-enterprises/actions/workflows/deploy-supabase.yml)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/ea96723a-5981-4a9b-a2fc-9c5a367e0313/deploy-status)](https://app.netlify.com/projects/infamousfreight/deploys)
 
 **Recommendation:** Aim for 100% completion across deployment checks, monitoring, and validation before go-live to keep the release path predictable and auditable.
 
 **Live Deployments:**
 
-- 🌐 **Web**: [infamous-freight-enterprises.vercel.app](https://infamous-freight-enterprises.vercel.app) | Netlify Project: [infamousfreight](https://app.netlify.com/projects/infamousfreight/deploys)
+- 🌐 **Web**: [infamous-freight-enterprises.vercel.app](https://infamous-freight-enterprises.vercel.app) | Netlify: [infamousfreight](https://app.netlify.com/projects/infamousfreight/deploys)
 - 🔌 **API**: [infamous-freight-api.fly.dev](https://infamous-freight-api.fly.dev/api/health)
+- 🛤️ **Database**: Railway (Postgres + Prisma migrations)
+- 🧩 **Backend Services**: Supabase (Edge Functions + Database)
 - 📱 **Mobile**: [Expo EAS](https://expo.dev/@infamous-freight/mobile)
 
 **China CDN Integration (Netlify):**
@@ -83,22 +86,37 @@ const sql = neon(); // automatically uses env NETLIFY_DATABASE_URL
 const [post] = await sql`SELECT * FROM posts WHERE id = ${postId}`;
 ```
 
-> **🎉 100% AUTO-DEPLOYMENT READY!** All platforms configured with smart change detection. Push to `main` to deploy automatically!
+> **🎉 100% MULTI-PLATFORM AUTO-DEPLOYMENT!** Automated deployment to Fly.io, Vercel, Railway, and Supabase with smoke tests. Push to `main` to deploy automatically!
 
-**Quick Start:**
+**Quick Deployment:**
 
 ```bash
-# 🚀 DEPLOY TO 100% WORLDWIDE (NEW!)
-./deploy-to-world-100.sh
+# 🚀 Validate secrets and deploy (RECOMMENDED)
+./scripts/validate-secrets.sh
+./scripts/trigger-deploy.sh
 
-# Verify 100% deployment status
-./verify-100-deployment.sh
+# 🔔 Optional: Setup deployment notifications (Slack/Discord)
+./scripts/setup-notifications.sh
 
-# Or use existing automation scripts
-./scripts/verify-auto-deploy.sh
-./scripts/check-deployments.sh
-./scripts/setup-auto-deploy.sh
+# Or trigger via GitHub CLI
+gh workflow run deploy-all.yml --ref main
+
+# Watch deployment progress
+gh run watch
 ```
+
+**Deployment Features:**
+- ✅ Parallel deployment to 4 platforms
+- ✅ Automated health checks (API + Web)
+- ✅ Smoke tests with response time measurement
+- ✅ Real-time deployment summaries with actual URLs
+- ✅ Auto-rollback on failed health checks
+- 🔔 Optional Slack/Discord notifications
+
+**Documentation:**
+- [5-Minute Deploy Guide](QUICK_DEPLOY.md)
+- [Secrets Setup](GITHUB_ACTIONS_SECRETS_SETUP.md)
+- [Deployment Status](DEPLOYMENT_100_COMPLETE.md)
 
 ## 🌍 100% Worldwide Deployment
 
