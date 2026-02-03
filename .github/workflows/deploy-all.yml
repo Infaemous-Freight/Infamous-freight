@@ -1,18 +1,179 @@
 name: Deploy ALL Platforms
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
-  workflow_call:
 
 concurrency:
   group: deploy-all
   cancel-in-progress: false
 
 jobs:
-  deploy-api:
-    uses: ./.github/workflows/deploy-api.yml
+  deploy-fly-api:
+    uses: ./.github/workflows/fly-deploy.yml
     secrets: inherit
 
-  deploy-mobile:
-    uses: ./.github/workflows/deploy-mobile.yml
+  deploy-vercel-web:
+    uses: ./.github/workflows/vercel-deploy.yml
     secrets: inherit
+
+  deploy-railway-db:
+    uses: ./.github/workflows/deploy-railway.yml
+    with:
+      environment: production
+    secrets: inherit
+
+  deploy-supabase:
+    uses: ./.github/workflows/deploy-supabase.yml
+    secrets: inherit
+
+  smoke-test:
+    name: Post-Deploy Smoke Tests
+    runs-on: ubuntu-latest
+    needs: [deploy-fly-api, deploy-vercel-web]
+    if: needs.deploy-fly-api.result == 'success' && needs.deploy-vercel-web.result == 'success'
+    steps:
+      - name: Test Fly.io API Health
+        id: test-api
+        run: |
+          API_HEALTH_URL="${{ needs.deploy-fly-api.outputs.health_url }}"
+          echo "Testing API: $API_HEALTH_URL"
+
+          RESPONSE=$(curl -sf "$API_HEALTH_URL" || echo '{"error":"failed"}')
+          echo "Response: $RESPONSE"
+
+          if echo "$RESPONSE" | jq -e '.success == true or .data.status == "ok"' > /dev/null; then
+            echo "✅ API health check passed"
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ API health check failed"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Test Vercel Web App
+        id: test-web
+        run: |
+          WEB_URL="${{ needs.deploy-vercel-web.outputs.deploy_url }}"
+          echo "Testing Web: $WEB_URL"
+
+          HTTP_CODE=$(curl -o /dev/null -s -w "%{http_code}" "$WEB_URL")
+          echo "HTTP Status: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" -eq 200 ]; then
+            echo "✅ Web app is accessible"
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Web app returned HTTP $HTTP_CODE"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Test API Response Time
+        run: |
+          API_HEALTH_URL="${{ needs.deploy-fly-api.outputs.health_url }}"
+          echo "Measuring API response time..."
+
+          TIME=$(curl -o /dev/null -s -w "%{time_total}" "$API_HEALTH_URL")
+          echo "Response time: ${TIME}s"
+
+          if (( $(echo "$TIME < 2.0" | bc -l) )); then
+            echo "✅ Response time acceptable (<2s)"
+          else
+            echo "⚠️  Response time slow (>2s)"
+          fi
+
+      - name: Smoke test summary
+        if: always()
+        run: |
+          echo "## 🧪 Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Test | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| API Health Check | ${{ steps.test-api.outputs.status || 'failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Web App Accessibility | ${{ steps.test-web.outputs.status || 'failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| API Response Time | See logs |" >> $GITHUB_STEP_SUMMARY
+
+  summary:
+    runs-on: ubuntu-latest
+    needs: [deploy-fly-api, deploy-vercel-web, deploy-railway-db, deploy-supabase, smoke-test]
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Publish summary
+        run: |
+          APP_NAME=$(grep -E '^app\s*=\s*' apps/api/fly.toml | head -1 | sed -E 's/.*=\s*"?([^" ]+)"?/\1/')
+          echo "## 🌍 Multi-Platform Deploy Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Platform | Status | Link |" >> $GITHUB_STEP_SUMMARY
+          echo "| --- | --- | --- |" >> $GITHUB_STEP_SUMMARY
+          echo "| Fly.io API | ${{ needs.deploy-fly-api.result }} | ${{ needs.deploy-fly-api.outputs.app_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Vercel Web | ${{ needs.deploy-vercel-web.result }} | ${{ needs.deploy-vercel-web.outputs.deploy_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Railway DB | ${{ needs.deploy-railway-db.result }} | https://railway.app/project/${{ secrets.RAILWAY_PROJECT_ID }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Supabase | ${{ needs.deploy-supabase.result }} | https://supabase.com/dashboard/project/${{ secrets.SUPABASE_PROJECT_REF }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Smoke Tests | ${{ needs.smoke-test.result }} | See above |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Quick Access" >> $GITHUB_STEP_SUMMARY
+          echo "- **API Health**: ${{ needs.deploy-fly-api.outputs.health_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Web App**: ${{ needs.deploy-vercel-web.outputs.deploy_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Fly Dashboard**: https://fly.io/apps/$APP_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "- **Vercel Dashboard**: https://vercel.com/dashboard" >> $GITHUB_STEP_SUMMARY
+
+  notify:
+    name: Send Notifications
+    runs-on: ubuntu-latest
+    needs:
+      [deploy-fly-api, deploy-vercel-web, deploy-railway-db, deploy-supabase, smoke-test, summary]
+    if: always()
+    steps:
+      - name: Determine overall status
+        id: status
+        run: |
+          if [ "${{ needs.deploy-fly-api.result }}" = "success" ] && \
+             [ "${{ needs.deploy-vercel-web.result }}" = "success" ] && \
+             [ "${{ needs.deploy-railway-db.result }}" = "success" ] && \
+             [ "${{ needs.deploy-supabase.result }}" = "success" ] && \
+             [ "${{ needs.smoke-test.result }}" = "success" ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "emoji=🎉" >> $GITHUB_OUTPUT
+            echo "color=good" >> $GITHUB_OUTPUT
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "emoji=❌" >> $GITHUB_OUTPUT
+            echo "color=danger" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Slack notification
+        if: secrets.SLACK_WEBHOOK_URL != ''
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "${{ steps.status.outputs.emoji }} Multi-Platform Deployment ${{ steps.status.outputs.status }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.status.outputs.emoji }} *Multi-Platform Deployment ${{ steps.status.outputs.status }}*\n\n*Platforms:*\n• Fly.io: ${{ needs.deploy-fly-api.result }}\n• Vercel: ${{ needs.deploy-vercel-web.result }}\n• Railway: ${{ needs.deploy-railway-db.result }}\n• Supabase: ${{ needs.deploy-supabase.result }}\n• Smoke Tests: ${{ needs.smoke-test.result }}\n\n*Branch:* ${{ github.ref_name }}\n*Commit:* <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>\n*Workflow:* <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - name: Discord notification
+        if: secrets.DISCORD_WEBHOOK_URL != ''
+        run: |
+          STATUS_EMOJI="${{ steps.status.outputs.emoji }}"
+          STATUS="${{ steps.status.outputs.status }}"
+
+          curl -H "Content-Type: application/json" \
+            -d "{\"content\": \"${STATUS_EMOJI} **Multi-Platform Deployment ${STATUS}**\n\n**Platforms:**\n• Fly.io: ${{ needs.deploy-fly-api.result }}\n• Vercel: ${{ needs.deploy-vercel-web.result }}\n• Railway: ${{ needs.deploy-railway-db.result }}\n• Supabase: ${{ needs.deploy-supabase.result }}\n• Smoke Tests: ${{ needs.smoke-test.result }}\n\n**Branch:** ${{ github.ref_name }}\n**Commit:** ${{ github.sha }}\n**Workflow:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+            "${{ secrets.DISCORD_WEBHOOK_URL }}"
