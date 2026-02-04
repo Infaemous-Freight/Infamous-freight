@@ -61,6 +61,13 @@ function getAppUrl() {
   );
 }
 
+function buildIdempotencyKey(scope, tenantId, suffix = "") {
+  const bucket = new Date().toISOString().slice(0, 10);
+  const safeTenant = tenantId || "unknown";
+  const tail = suffix ? `:${suffix}` : "";
+  return `${scope}:${safeTenant}:${bucket}${tail}`;
+}
+
 function resolvePlanPriceId(plan) {
   const normalizedPlan = plan === "business" ? "enterprise" : plan;
   const entry = planCatalog.find((item) => item.key === normalizedPlan);
@@ -83,11 +90,14 @@ async function getOrCreateStripeCustomer({
     return existingCustomerId;
   }
 
-  const customer = await stripe.customers.create({
-    email: email || undefined,
-    name: name || undefined,
-    metadata: { tenantId },
-  });
+  const customer = await stripe.customers.create(
+    {
+      email: email || undefined,
+      name: name || undefined,
+      metadata: { tenantId },
+    },
+    { idempotencyKey: buildIdempotencyKey("stripe_customer", tenantId, email) }
+  );
 
   await persist.setEntitlement(tenantId, "stripe_customer_id", customer.id);
 
@@ -381,18 +391,27 @@ stripeRouter.post(
         }
       }
 
-      const subscription = await stripe.subscriptions.create({
-        customer: customerId,
-        items: lineItems,
-        payment_behavior: "default_incomplete",
-        expand: ["latest_invoice.payment_intent", "items.data.price"],
-        metadata: {
-          tenantId,
-          plan: body.plan || "custom",
-          seats: String(body.seats || 1),
-          addOns: body.addOns?.join(",") || "",
+      const subscription = await stripe.subscriptions.create(
+        {
+          customer: customerId,
+          items: lineItems,
+          payment_behavior: "default_incomplete",
+          expand: ["latest_invoice.payment_intent", "items.data.price"],
+          metadata: {
+            tenantId,
+            plan: body.plan || "custom",
+            seats: String(body.seats || 1),
+            addOns: body.addOns?.join(",") || "",
+          },
         },
-      });
+        {
+          idempotencyKey: buildIdempotencyKey(
+            "stripe_subscription",
+            tenantId,
+            body.plan || body.priceId || "custom"
+          ),
+        }
+      );
 
       const paymentIntent = subscription.latest_invoice?.payment_intent;
       const clientSecret = paymentIntent?.client_secret || null;
@@ -496,13 +515,21 @@ stripeRouter.post(
       const tenantId =
         body.tenantId || req.auth?.organizationId || req.user?.sub || "";
 
-      const session = await stripe.checkout.sessions.create({
-        mode: "subscription",
-        customer_email: body.customerEmail,
-        line_items: lineItems,
-        success_url: `${getAppUrl()}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${getAppUrl()}/billing/cancel`,
-        subscription_data: {
+      const session = await stripe.checkout.sessions.create(
+        {
+          mode: "subscription",
+          customer_email: body.customerEmail,
+          line_items: lineItems,
+          success_url: `${getAppUrl()}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${getAppUrl()}/billing/cancel`,
+          subscription_data: {
+            metadata: {
+              tenantId,
+              plan: body.plan,
+              seats: String(body.seats),
+              addOns: body.addOns.join(","),
+            },
+          },
           metadata: {
             tenantId,
             plan: body.plan,
@@ -510,13 +537,14 @@ stripeRouter.post(
             addOns: body.addOns.join(","),
           },
         },
-        metadata: {
-          tenantId,
-          plan: body.plan,
-          seats: String(body.seats),
-          addOns: body.addOns.join(","),
-        },
-      });
+        {
+          idempotencyKey: buildIdempotencyKey(
+            "stripe_checkout",
+            tenantId,
+            body.plan
+          ),
+        }
+      );
 
       return res.json({ ok: true, url: session.url });
     } catch (err) {
@@ -665,20 +693,34 @@ stripeRouter.post(
         });
       }
 
-      for (const line of body.lines) {
-        await stripe.invoiceItems.create({
-          customer: body.customerId,
-          amount: line.amountCents,
-          currency: line.currency,
-          description: line.description,
-        });
+      for (const [index, line] of body.lines.entries()) {
+        await stripe.invoiceItems.create(
+          {
+            customer: body.customerId,
+            amount: line.amountCents,
+            currency: line.currency,
+            description: line.description,
+          },
+          {
+            idempotencyKey: buildIdempotencyKey(
+              "stripe_invoice_item",
+              body.customerId,
+              `${index}-${line.amountCents}`
+            ),
+          }
+        );
       }
 
-      const invoice = await stripe.invoices.create({
-        customer: body.customerId,
-        auto_advance: body.autoAdvance,
-        collection_method: "charge_automatically",
-      });
+      const invoice = await stripe.invoices.create(
+        {
+          customer: body.customerId,
+          auto_advance: body.autoAdvance,
+          collection_method: "charge_automatically",
+        },
+        {
+          idempotencyKey: buildIdempotencyKey("stripe_invoice", body.customerId),
+        }
+      );
 
       return res.json({
         ok: true,
@@ -839,6 +881,35 @@ stripeWebhookRouter.post(
         default:
           break;
       }
+
+      try {
+        const prisma = getPrisma();
+        if (prisma?.webhookEvent) {
+          const obj = event.data?.object || {};
+          await prisma.webhookEvent.upsert({
+            where: { id: event.id },
+            update: { type: event.type },
+            create: {
+              id: event.id,
+              type: event.type,
+              stripeObjId: obj.id ? String(obj.id) : null,
+              jobId: obj.metadata?.jobId ? String(obj.metadata.jobId) : null,
+            },
+          });
+        }
+      } catch (dbErr) {
+        console.warn("Failed to persist Stripe webhook event", {
+          eventId: event.id,
+          error: dbErr?.message || dbErr,
+        });
+      }
+
+      console.info("Stripe webhook processed", {
+        eventId: event.id,
+        type: event.type,
+        livemode: event.livemode,
+        requestId: event.request?.id,
+      });
 
       return res.json({ received: true });
     } catch (err) {

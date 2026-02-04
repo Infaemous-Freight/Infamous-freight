@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api } from "../lib/api";
 import { getBrowserLocation, getToken } from "../lib/session";
+import { isGetTrucknEnabled } from "../lib/feature-flags";
 
 export default function DriverDashboard() {
   const [token, setToken] = useState("");
   const [err, setErr] = useState("");
   const [msg, setMsg] = useState("");
+  const getTrucknEnabled = isGetTrucknEnabled();
 
   useEffect(() => setToken(getToken()), []);
 
@@ -73,14 +75,18 @@ export default function DriverDashboard() {
               <h3>Stripe Connect</h3>
               <p>Start onboarding or check payout readiness.</p>
             </Link>
-            <Link href="/loads/active" className="card">
-              <h3>Active Load</h3>
-              <p>Upload POD and finalize delivery.</p>
-            </Link>
-            <Link href="/loads" className="card">
-              <h3>Available Loads</h3>
-              <p>Review and accept new assignments.</p>
-            </Link>
+            {getTrucknEnabled ? (
+              <>
+                <Link href="/loads/active" className="card">
+                  <h3>Active Load</h3>
+                  <p>Upload POD and finalize delivery.</p>
+                </Link>
+                <Link href="/loads" className="card">
+                  <h3>Available Loads</h3>
+                  <p>Review and accept new assignments.</p>
+                </Link>
+              </>
+            ) : null}
           </div>
 
           <div className="card" style={{ marginTop: 24 }}>

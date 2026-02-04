@@ -8,9 +8,29 @@ const {
     handleValidationErrors,
 } = require("../middleware/validation");
 const { logger } = require("../middleware/logger");
+const { recordTwilioStatus } = require("../services/notificationTelemetry");
 
 const prisma = new PrismaClient();
 const notifyRouter = express.Router();
+
+// Twilio status callbacks (no auth, webhook limiter)
+notifyRouter.post(
+    "/twilio/status",
+    limiters.webhook,
+    async (req, res) => {
+        const payload = {
+            messageSid: req.body.MessageSid || req.body.messageSid,
+            to: req.body.To || req.body.to,
+            from: req.body.From || req.body.from,
+            status: req.body.MessageStatus || req.body.status,
+            errorCode: req.body.ErrorCode || req.body.errorCode || null,
+        };
+
+        recordTwilioStatus(payload);
+        logger.info("Twilio status callback received", payload);
+        res.json({ ok: true });
+    },
+);
 
 // All notification routes require authentication
 notifyRouter.use(authenticate);
@@ -68,6 +88,8 @@ notifyRouter.post(
 // Send a quick test notification using stored or provided channels
 notifyRouter.post(
     "/test",
+    limiters.smsUser,
+    limiters.smsOrg,
     limiters.general,
     async (req, res, next) => {
         try {

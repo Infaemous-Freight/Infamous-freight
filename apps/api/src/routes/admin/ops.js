@@ -4,6 +4,7 @@ const { authenticate, auditLog, rateLimitMetrics } = require("../../middleware/s
 const { requirePerm } = require("../../auth/authorize");
 const { prisma, getPrisma } = require("../../db/prisma");
 const { getSlowQueries } = require("../../lib/queryMetrics");
+const { getLastTwilioStatus } = require("../../services/notificationTelemetry");
 
 const router = express.Router();
 
@@ -61,6 +62,60 @@ router.get(
         }
 
         res.status(details.status === 'ok' ? 200 : 503).json(details);
+    },
+);
+
+router.get(
+    "/admin/readiness",
+    authenticate,
+    requireAdmin,
+    requirePerm("admin:ops"),
+    auditLog,
+    async (_req, res) => {
+        const details = {
+            status: "ok",
+            timestamp: new Date().toISOString(),
+            version: process.env.APP_VERSION || process.env.npm_package_version || "unknown",
+            gitSha: process.env.GIT_SHA || process.env.GITHUB_SHA || "unknown",
+            uptimeSeconds: Math.round(process.uptime()),
+            database: { ok: false, latencyMs: null, error: null, skipped: false },
+            stripe: { lastWebhookId: null, lastWebhookAt: null },
+            twilio: { lastStatus: null },
+        };
+
+        try {
+            const client = getPrisma?.() || prisma;
+            if (!client) {
+                details.database.ok = true;
+                details.database.skipped = true;
+                details.database.error = "db_not_configured";
+            } else {
+                const dbStart = Date.now();
+                await client.$queryRaw`SELECT 1`;
+                details.database.ok = true;
+                details.database.latencyMs = Date.now() - dbStart;
+            }
+        } catch (error) {
+            details.status = "degraded";
+            details.database.error = error.message;
+        }
+
+        try {
+            const client = getPrisma?.() || prisma;
+            if (client?.webhookEvent) {
+                const lastWebhook = await client.webhookEvent.findFirst({
+                    orderBy: { createdAt: "desc" },
+                });
+                details.stripe.lastWebhookId = lastWebhook?.id || null;
+                details.stripe.lastWebhookAt = lastWebhook?.createdAt || null;
+            }
+        } catch (error) {
+            details.stripe.error = error.message;
+        }
+
+        details.twilio.lastStatus = getLastTwilioStatus();
+
+        res.status(details.status === "ok" ? 200 : 503).json(details);
     },
 );
 

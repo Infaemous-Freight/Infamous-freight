@@ -13,6 +13,15 @@ if (process.env.DD_TRACE_ENABLED === "true") {
     // Fail open if dd-trace is not installed
   }
 }
+
+process.on("unhandledRejection", (reason) => {
+  console.error("unhandledRejection", reason);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("uncaughtException", err);
+  process.exit(1);
+});
 const express = require("express");
 const { corsMiddleware } = require("./middleware/cors");
 const path = require("path");
@@ -62,7 +71,9 @@ const satelliteRouter = require("./satellite/routes");
 const billingRouter = require("./billing/routes");
 const authRouter = require("./auth/routes");
 const marketplaceEnabled =
-  String(process.env.MARKETPLACE_ENABLED ?? "true").toLowerCase() === "true";
+  String(
+    process.env.FEATURE_GET_TRUCKN ?? process.env.MARKETPLACE_ENABLED ?? "true"
+  ).toLowerCase() === "true";
 let marketplaceRouter;
 let marketplaceBillingRouter;
 let marketplaceWebhooks;
@@ -150,6 +161,7 @@ if (stripeWebhookRouter) {
 }
 
 app.use(express.json({ limit: "12mb" }));
+app.use(express.urlencoded({ extended: true }));
 
 // Swagger API Documentation
 app.use(

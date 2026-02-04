@@ -24,6 +24,7 @@
     "test:coverage": "jest --coverage",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate deploy",
+    "prisma:migrate:deploy": "npx prisma migrate deploy",
     "prisma:migrate:dev": "npx prisma migrate dev",
     "prisma:studio": "npx prisma studio",
     "prisma:seed": "node prisma/seed.js",

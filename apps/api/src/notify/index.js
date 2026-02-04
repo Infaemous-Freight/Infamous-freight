@@ -27,6 +27,7 @@ async function postJson(url, payload, headers = {}) {
 function notifier() {
     const expoEnabled = envBool(process.env.EXPO_PUSH_ENABLED, true);
     const twilioEnabled = envBool(process.env.TWILIO_ENABLED, false);
+    const { recordTwilioSend } = require("../services/notificationTelemetry");
 
     return {
         async pushExpo(expoPushToken, msg) {
@@ -71,22 +72,48 @@ function notifier() {
 
             const auth = Buffer.from(`${sid}:${token}`).toString("base64");
 
-            const res = await fetchImpl(url, {
-                method: "POST",
-                headers: {
-                    Authorization: `Basic ${auth}`,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: form.toString(),
-            });
-
-            const text = await res.text();
-            if (!res.ok) throw new Error(`Twilio HTTP ${res.status}: ${text}`);
-
             try {
-                return JSON.parse(text);
-            } catch (_err) {
-                return text;
+                const res = await fetchImpl(url, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Basic ${auth}`,
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: form.toString(),
+                });
+
+                const text = await res.text();
+                if (!res.ok) throw new Error(`Twilio HTTP ${res.status}: ${text}`);
+
+                try {
+                    const parsed = JSON.parse(text);
+                    recordTwilioSend({
+                        messageSid: parsed.sid,
+                        to: parsed.to || to,
+                        from: parsed.from || from,
+                        status: parsed.status || "queued",
+                        errorCode: parsed.error_code || null,
+                    });
+                    return parsed;
+                } catch (_err) {
+                    recordTwilioSend({
+                        messageSid: null,
+                        to,
+                        from,
+                        status: "queued",
+                        errorCode: null,
+                    });
+                    return text;
+                }
+            } catch (error) {
+                recordTwilioSend({
+                    messageSid: null,
+                    to,
+                    from,
+                    status: "failed",
+                    errorCode: error?.code || null,
+                });
+                throw error;
             }
         },
     };

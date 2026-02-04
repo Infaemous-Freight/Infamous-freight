@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { api, putToPresignedUrl } from "../../lib/api";
 import { getToken } from "../../lib/session";
+import { isGetTrucknEnabled } from "../../lib/feature-flags";
 
 type Active = {
   assignmentId: string;
@@ -21,6 +22,7 @@ export default function ActiveLoadPage() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [msg, setMsg] = useState("");
+  const getTrucknEnabled = isGetTrucknEnabled();
 
   useEffect(() => setToken(getToken()), []);
   useEffect(() => {
@@ -141,7 +143,11 @@ export default function ActiveLoadPage() {
             </div>
           ) : null}
 
-          {!active ? (
+          {!getTrucknEnabled ? (
+            <div className="card" style={{ marginTop: 16 }}>
+              Get Truck’N marketplace is currently disabled.
+            </div>
+          ) : !active ? (
             <div className="card" style={{ marginTop: 16 }}>
               <p style={{ color: "var(--muted-400)" }}>No active load.</p>
               <Link href="/loads" className="btn btn-primary">

@@ -1,6 +1,6 @@
 const express = require("express");
 const { version } = require("../../package.json");
-const { prisma } = require("../db/prisma");
+const { getPrisma, prisma } = require("../db/prisma");
 const { getStats: getCacheStats } = require("../services/cache");
 const { getConnectedClientsCount } = require("../services/websocket");
 const { auditLog } = require("../middleware/security");
@@ -11,16 +11,49 @@ const router = express.Router();
 
 // Basic health check
 router.get("/health", auditLog, asyncHandler(async (_req, res) => {
+  const startedAt = Date.now();
+  const dbCheck = {
+    ok: false,
+    latency_ms: null,
+    error: null,
+    skipped: false,
+  };
+
+  try {
+    const client = getPrisma?.() || prisma;
+    if (!client) {
+      dbCheck.ok = true;
+      dbCheck.skipped = true;
+      dbCheck.error = "db_not_configured";
+    } else {
+      const t0 = Date.now();
+      await client.$queryRaw`SELECT 1`;
+      dbCheck.latency_ms = Date.now() - t0;
+      dbCheck.ok = true;
+    }
+  } catch (error) {
+    dbCheck.error = error?.message || "db_error";
+  }
+
+  const overallStatus = dbCheck.ok ? "ok" : "degraded";
+
   const healthData = {
-    status: "ok",
+    status: overallStatus,
     service: "infamous-freight-api",
-    version: version || "2.0.0",
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
+    version: process.env.APP_VERSION || version || "2.0.0",
+    git_sha: process.env.GIT_SHA || "unknown",
+    uptime_s: Math.floor(process.uptime()),
     environment: process.env.NODE_ENV || "development",
+    checks: {
+      db: dbCheck,
+    },
+    latency_ms: Date.now() - startedAt,
+    timestamp: new Date().toISOString(),
   };
   
-  res.status(HTTP_STATUS.OK).json(createSuccessResponse(healthData));
+  res
+    .status(dbCheck.ok ? HTTP_STATUS.OK : HTTP_STATUS.SERVICE_UNAVAILABLE)
+    .json(createSuccessResponse(healthData));
 }));
 
 // Detailed health check with service dependencies

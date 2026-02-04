@@ -5,10 +5,12 @@ import { ProtectedRoute } from "../src/hooks/ProtectedRoute";
 import { useAuthContext } from "../src/context/AuthContext";
 import { trackEvent } from "../src/lib/analytics";
 import { useEffect } from "react";
+import { isGetTrucknEnabled } from "../lib/feature-flags";
 
 function DashboardContent() {
   const { user, signOut } = useAuthContext();
   const router = useRouter();
+  const getTrucknEnabled = isGetTrucknEnabled();
 
   useEffect(() => {
     trackEvent("dashboard_view", user?.id ? { userId: user.id } : {});
@@ -38,9 +40,11 @@ function DashboardContent() {
             <h2>Infamous Freight</h2>
           </div>
           <nav className="sidebar-nav">
-            <Link href="/loads" className="nav-link">
-              📦 Loads
-            </Link>
+            {getTrucknEnabled ? (
+              <Link href="/loads" className="nav-link">
+                📦 Loads
+              </Link>
+            ) : null}
             <Link href="/account" className="nav-link">
               👤 Account
             </Link>
@@ -76,9 +80,11 @@ function DashboardContent() {
                     Manage your freight operations, view loads, and track billing all in one place.
                   </p>
                   <div className="hero-actions">
-                    <Link href="/loads" className="btn btn-primary">
-                      View Available Loads
-                    </Link>
+                    {getTrucknEnabled ? (
+                      <Link href="/loads" className="btn btn-primary">
+                        View Available Loads
+                      </Link>
+                    ) : null}
                     <Link href="/account/billing" className="btn btn-secondary">
                       View Billing
                     </Link>
@@ -87,9 +93,11 @@ function DashboardContent() {
                 <div className="hero-card">
                   <h3>Quick Links</h3>
                   <ul style={{ listStyle: "none", padding: 0 }}>
-                    <li>
-                      <Link href="/loads">📦 Available Loads</Link>
-                    </li>
+                    {getTrucknEnabled ? (
+                      <li>
+                        <Link href="/loads">📦 Available Loads</Link>
+                      </li>
+                    ) : null}
                     <li>
                       <Link href="/account">👤 Account Settings</Link>
                     </li>

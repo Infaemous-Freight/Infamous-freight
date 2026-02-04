@@ -33,6 +33,14 @@ const prisma = new PrismaClient();
 const router = express.Router();
 // Phase 14: Central state machine
 const { transitionJob } = require("./state/transition");
+const getTrucknEnabled =
+    String(process.env.FEATURE_GET_TRUCKN ?? "true").toLowerCase() === "true";
+
+router.use((req, res, next) => {
+    if (getTrucknEnabled) return next();
+    if (req.path === "/health") return next();
+    return res.status(404).json({ error: "Marketplace is disabled" });
+});
 
 function centsFromPrice(priceUsd) {
     const n = Number(priceUsd);
