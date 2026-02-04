@@ -6,6 +6,7 @@
 const twilio = require('twilio');
 const admin = require('firebase-admin');
 const logger = require('../lib/structuredLogging');
+const { recordTwilioSend } = require('./notificationTelemetry');
 
 class NotificationService {
     constructor() {
@@ -142,12 +143,28 @@ class NotificationService {
                 correlationId,
             });
 
+            recordTwilioSend({
+                messageSid: result.sid,
+                to: phoneNumber,
+                from: process.env.TWILIO_PHONE_NUMBER,
+                status: result.status || "queued",
+                errorCode: result.error_code || null,
+            });
+
             return { success: true, messageId: result.sid };
         } catch (error) {
             logger.error('Failed to send SMS', {
                 phone: phoneNumber.slice(-4),
                 error: error.message,
                 correlationId,
+            });
+
+            recordTwilioSend({
+                messageSid: null,
+                to: phoneNumber,
+                from: process.env.TWILIO_PHONE_NUMBER,
+                status: "failed",
+                errorCode: error.code || null,
             });
 
             return { success: false, error: error.message };

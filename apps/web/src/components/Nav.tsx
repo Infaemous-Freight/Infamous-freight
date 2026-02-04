@@ -1,7 +1,10 @@
 import Link from "next/link";
 import AuthButton from "@/components/AuthButton";
+import { isGetTrucknEnabled } from "@/lib/feature-flags";
 
 export default function Nav() {
+  const getTrucknEnabled = isGetTrucknEnabled();
+
   return (
     <header className="marketplace-header">
       <div className="container marketplace-nav">
@@ -12,9 +15,11 @@ export default function Nav() {
           <Link href="/dashboard" className="nav-link">
             Dashboard
           </Link>
-          <Link href="/loads" className="nav-link">
-            Loads
-          </Link>
+          {getTrucknEnabled ? (
+            <Link href="/loads" className="nav-link">
+              Loads
+            </Link>
+          ) : null}
           <AuthButton />
         </nav>
       </div>

@@ -70,6 +70,18 @@ const limiters = {
     keyGenerator: (req) => req.user?.sub || req.ip,
     message: { error: 'Billing rate limit exceeded.' },
   }),
+  smsUser: createLimiter('smsUser', {
+    windowMs: parseInt(process.env.RATE_LIMIT_SMS_USER_WINDOW_MS || '60') * 60 * 1000,
+    max: parseInt(process.env.RATE_LIMIT_SMS_USER_MAX || '20'),
+    keyGenerator: (req) => req.user?.sub || req.ip,
+    message: { error: 'SMS rate limit exceeded for user.' },
+  }),
+  smsOrg: createLimiter('smsOrg', {
+    windowMs: parseInt(process.env.RATE_LIMIT_SMS_ORG_WINDOW_MS || '1440') * 60 * 1000,
+    max: parseInt(process.env.RATE_LIMIT_SMS_ORG_MAX || '200'),
+    keyGenerator: (req) => req.auth?.organizationId || req.headers['x-org-id'] || req.ip,
+    message: { error: 'SMS rate limit exceeded for organization.' },
+  }),
   voice: createLimiter('voice', {
     windowMs: parseInt(process.env.RATE_LIMIT_VOICE_WINDOW_MS || '1') * 60 * 1000,
     max: parseInt(process.env.RATE_LIMIT_VOICE_MAX || '10'),
