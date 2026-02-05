@@ -4,6 +4,13 @@ import { BILLING } from "@/config/billing";
 import { stripePromise } from "@/lib/stripe-web";
 
 async function createSubscriptionServer(params: { tierKey: string; addon?: string }) {
+  const isDemoEnvironment = process.env.NODE_ENV !== "production";
+
+  if (!isDemoEnvironment) {
+    throw new Error(
+      "Demo checkout cannot be used in production. Please provide authenticated user data instead.",
+    );
+  }
   const userId = "demo_user";
   const email = "demo@infaemousfreight.ai";
   const name = "Demo User";
