@@ -182,7 +182,7 @@ Enable:
 - Automatic card updates
 - Customer portal
 - Invoice reminders
-- Tax configuration (for multi-state expansion)
+- Tax configuration using **Stripe Tax (automated)** for US multi-state and initial international expansion (avoid manual tax rates)
 
 ## 9) Pricing Page Structure (Final Messaging)
 
