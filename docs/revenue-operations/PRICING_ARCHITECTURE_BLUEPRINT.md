@@ -1,4 +1,4 @@
-# Infæmous Freight Pricing Architecture (Production Blueprint)
+# Infamous Freight Pricing Architecture (Production Blueprint)
 
 This blueprint converts the finalized pricing, monetization, and governance
 decisions into production-ready structure. It is designed to be copy-pasteable
