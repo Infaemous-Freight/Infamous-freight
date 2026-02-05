@@ -248,9 +248,6 @@ function EnterpriseCard() {
 
       <div className="mt-8 grid gap-3">
         <PricingButton href="/contact-sales">Contact Sales</PricingButton>
-        <PricingButton href={tier.stripeMinimumSpendLink} variant="secondary">
-          (Internal) Minimum Spend Link
-        </PricingButton>
       </div>
     </div>
   );
