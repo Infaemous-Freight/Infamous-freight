@@ -199,21 +199,23 @@ Replace generic tier names with:
 - Overage pricing visible
 - Annual billing option (15% discount)
 
-## 10) Example Revenue Projection (Conservative)
+## 10) Example Revenue Projection (Illustrative Only)
+
+_Note: The figures below are illustrative for modeling structure and do **not** represent actual business targets or commitments._
 
 If you reach:
 
-- 200 Operator seats → $3,800
-- 150 Fleet seats → $7,350
-- 50 Enterprise seats → $7,450
+- A few hundred Operator seats
+- A low hundreds number of Fleet seats
+- A few dozen Enterprise seats
 
-**Base MRR:** ≈ $18,600
+**Base MRR:** mid–five-figure range (from seats alone)
 
-**Add moderate AI overage:** Avg $12/user → ≈ $4,800
+**Add moderate AI overage:** e.g., a modest per-user uplift on top of base MRR
 
-**Add 40 Intelligence add-ons:** → ≈ $11,960
+**Add Intelligence add-ons:** additional uplift from a subset of active accounts
 
-**Total:** ≈ **$35,000+ / month** (before marketplace)
+**Illustrative total:** a healthy mid–five-figure **+ / month** opportunity before any marketplace or additional revenue vectors
 
 ## 11) Final Strategic Configuration
 
