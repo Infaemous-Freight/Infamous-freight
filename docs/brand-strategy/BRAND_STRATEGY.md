@@ -8,6 +8,14 @@
 
 ## Brand Positioning
 
+### Brand Lock (Consistency)
+
+- **Single Brand**: Infæmous Freight Enterprises
+- **Sub-brands**:
+  - Genesis AI → AI system
+  - Get Truck’N → Marketplace (future)
+- Remove all other name variants in external-facing materials.
+
 ### Brand Essence
 
 ```
@@ -201,7 +209,7 @@ Tagline: "Freight Management for Companies That Demand Better"
 
 Hero section:
   "Stop Accepting Freight Chaos.
-   
+
    80% of companies overpay on freight and have no idea why.
    Infamous Freight finds the hidden money, automates the chaos,
    and gives you back 10 hours per week."
@@ -279,19 +287,15 @@ REVENUE IMPACT:
 
 ## Metrics (EOY 2026)
 
-✅ CEO LinkedIn followers: 50K
-✅ Monthly blog visitors: 50K
-✅ Newsletter subscribers: 10K
-✅ Podcast appearances: 10+
-✅ Speaking engagements: 5-10
-✅ Press mentions: 20+
-✅ Annual "State of Freight" report: 1,000+ downloads
-✅ Brand-driven leads: 500-1,000/month
-✅ Brand awareness among ICP: 40%+
+✅ CEO LinkedIn followers: 50K ✅ Monthly blog visitors: 50K ✅ Newsletter
+subscribers: 10K ✅ Podcast appearances: 10+ ✅ Speaking engagements: 5-10 ✅
+Press mentions: 20+ ✅ Annual "State of Freight" report: 1,000+ downloads ✅
+Brand-driven leads: 500-1,000/month ✅ Brand awareness among ICP: 40%+
 
 ---
 
 **Status**: ✅ BRAND & THOUGHT LEADERSHIP STRATEGY READY
 
 CEO visibility, content authority, analyst relations, and press to establish
-Infamous Freight as industry thought leader and trusted expert in freight/logistics.
+Infamous Freight as industry thought leader and trusted expert in
+freight/logistics.

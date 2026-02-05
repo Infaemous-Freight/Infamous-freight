@@ -6,6 +6,22 @@
 
 ---
 
+## Incident Response Summary (Internal - 1 Page)
+
+**Trigger**: Security incident, outage, or data exposure.
+
+**Response SLA**
+
+- **Acknowledge**: ≤ 24 hours
+- **Contain**: ≤ 48 hours
+- **Notify customers (if required)**: ≤ 72 hours
+
+**Owners (in order)**
+
+- CTO → Security Lead → Customer Success
+
+---
+
 ## Quick Reference: When Things Break
 
 ```
@@ -480,12 +496,12 @@ git log --oneline api/src -10
 
 ## Rollback Decision Matrix
 
-| Error Rate | Duration | Action |
-|-----------|----------|--------|
-| > 1% | > 2 min | **ROLLBACK NOW** |
-| > 0.5% | > 5 min | Rollback if fix > 10 min |
-| > 0.1% | > 30 min | Investigate, fix, OR rollback |
-| < 0.1% | Any | Continue monitoring, no rollback |
+| Error Rate | Duration | Action                           |
+| ---------- | -------- | -------------------------------- |
+| > 1%       | > 2 min  | **ROLLBACK NOW**                 |
+| > 0.5%     | > 5 min  | Rollback if fix > 10 min         |
+| > 0.1%     | > 30 min | Investigate, fix, OR rollback    |
+| < 0.1%     | Any      | Continue monitoring, no rollback |
 
 ### How to Rollback
 
@@ -521,6 +537,7 @@ kubectl logs deployment/api --tail=50
 # Incident Report: [Date] [Time Duration]
 
 ## Timeline
+
 - 15:23 UTC: Issue detected (error spike to 1.2%)
 - 15:25 UTC: Root cause identified (slow database query)
 - 15:28 UTC: Fix deployed (database index added)
@@ -528,21 +545,25 @@ kubectl logs deployment/api --tail=50
 - **Total downtime: 7 minutes**
 
 ## Impact
+
 - Users affected: ~500
 - Requests failed: ~150
 - Revenue lost: $X (if applicable)
 
 ## Root Cause
-```[Detailed explanation]```
+
+`[Detailed explanation]`
 
 ## Why Wasn't It Caught?
+
 - [ ] No test coverage for this scenario
 - [ ] Monitoring didn't catch it
 - [ ] Slow degradation (not immediate failure)
 - [ ] External service change
-- [ ] Other: _____
+- [ ] Other: **\_**
 
 ## Prevention
+
 - [ ] Add test case for this scenario
 - [ ] Update monitoring/alert threshold
 - [ ] Code optimization
@@ -551,6 +572,7 @@ kubectl logs deployment/api --tail=50
 - [ ] Team training
 
 ## Action Items
+
 - [ ] John: Write test case (by tomorrow)
 - [ ] Jane: Add Prometheus alert (by tomorrow)
 - [ ] Bob: Optimize database query (this week)
@@ -610,12 +632,12 @@ If still broken → All-hands standup + war room
 
 ## Emergency Contacts
 
-| Role | Name | Phone | Slack |
-|------|------|-------|-------|
+| Role           | Name   | Phone   | Slack    |
+| -------------- | ------ | ------- | -------- |
 | VP Engineering | [Name] | [Phone] | @[slack] |
-| DevOps Lead | [Name] | [Phone] | @[slack] |
+| DevOps Lead    | [Name] | [Phone] | @[slack] |
 | Database Admin | [Name] | [Phone] | @[slack] |
-| Security Lead | [Name] | [Phone] | @[slack] |
+| Security Lead  | [Name] | [Phone] | @[slack] |
 
 ---
 

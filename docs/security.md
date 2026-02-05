@@ -1,6 +1,33 @@
 # Security & Compliance
 
-Infæmous Freight Enterprise follows enterprise-grade security principles with a comprehensive security posture designed for SOC2 compliance and enterprise trust.
+Infæmous Freight Enterprise follows enterprise-grade security principles with a
+comprehensive security posture designed for SOC2 compliance and enterprise
+trust.
+
+## Security & Privacy at Infæmous Freight Enterprises
+
+This page summarizes the SOC2-lite controls we publish for early enterprise
+procurement.
+
+**Controls in place**
+
+- **Access Control**: RBAC (owner/admin/dispatcher/driver/viewer)
+- **Authentication**: Supabase Auth (JWT, row-level security)
+- **Data Isolation**: Company-scoped data (RLS enforced)
+- **Encryption**: TLS in transit; encrypted storage at rest
+- **Logging**: Immutable audit logs for ops, billing, AI actions
+- **Billing Safety**: Stripe-managed PCI compliance
+- **AI Governance**: Usage caps, alerts, hard stops
+
+**Availability & Disaster Recovery**
+
+- Multi-region cloud infrastructure
+- Automated database backups
+- Kill switches for AI, marketplace, and checkout
+
+**Contact**
+
+- security@infaemousfreight.ai
 
 ## Security Posture Summary
 
@@ -8,7 +35,8 @@ Infæmous Freight Enterprise follows enterprise-grade security principles with a
 
 - **Zero Trust Architecture**: Never trust, always verify
 - **Defense in Depth**: Multiple layers of security controls
-- **Least Privilege Access**: Users and systems have minimum required permissions
+- **Least Privilege Access**: Users and systems have minimum required
+  permissions
 - **Audit Everything**: Complete audit trails for compliance and forensics
 - **Human-in-the-Loop**: Critical AI decisions require human approval
 - **Secure by Default**: Security built-in, not bolted-on
@@ -193,7 +221,8 @@ All user inputs are validated using express-validator:
 
 ### Environment Variables
 
-Required secrets documented in [ENVIRONMENT_VARIABLES.md](ENVIRONMENT_VARIABLES.md).
+Required secrets documented in
+[ENVIRONMENT_VARIABLES.md](ENVIRONMENT_VARIABLES.md).
 
 **Critical Secrets:**
 
@@ -386,13 +415,13 @@ Every security-relevant event is logged:
 
 **Security Team:**
 
-- Security Lead: <security@infamousfreight.com>
+- Security Lead: <security@infaemousfreight.ai>
 - Incident Response: <incidents@infamousfreight.com>
 - Bug Bounty: <bugbounty@infamousfreight.com>
 
 **Responsible Disclosure:**
 
-- Report vulnerabilities to <security@infamousfreight.com>
+- Report vulnerabilities to <security@infaemousfreight.ai>
 - Use PGP key (available on website) for sensitive reports
 - We respond to all reports within 48 hours
 - See [SECURITY.md](../SECURITY.md) for full disclosure policy
@@ -401,8 +430,10 @@ Every security-relevant event is logged:
 
 ### Internal Documentation
 
-- **[API Security Checklist](API_SECURITY_CHECKLIST.md)**: API-specific security controls
-- **[Container Security](CONTAINER_SECURITY.md)**: Docker and container security practices
+- **[API Security Checklist](API_SECURITY_CHECKLIST.md)**: API-specific security
+  controls
+- **[Container Security](CONTAINER_SECURITY.md)**: Docker and container security
+  practices
 - **[Environment Variables](ENVIRONMENT_VARIABLES.md)**: Secret management guide
 - **[AI Boundaries](ai-boundaries.md)**: AI system security and governance
 

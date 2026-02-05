@@ -1,10 +1,23 @@
 # Ongoing Monitoring & Maintenance Guide
 
-This guide documents the continuous monitoring and maintenance procedures for the Infamous Freight Enterprises platform. Success requires consistent attention to code quality, security, and performance metrics.
+This guide documents the continuous monitoring and maintenance procedures for
+the Infamous Freight Enterprises platform. Success requires consistent attention
+to code quality, security, and performance metrics.
 
 ## Overview
 
-Effective ongoing monitoring ensures early detection of issues, prevents technical debt accumulation, and maintains system reliability. This guide provides actionable procedures for daily, weekly, and monthly tasks.
+Effective ongoing monitoring ensures early detection of issues, prevents
+technical debt accumulation, and maintains system reliability. This guide
+provides actionable procedures for daily, weekly, and monthly tasks.
+
+## Minimum Ops Stack (Locked)
+
+- **Central Logs**: API request + error logs
+- **Error Tracking**: Sentry-class tool
+- **Cost Visibility**: AI usage aggregated per company/month
+- **Audit Logs**: Immutable audit logs for operations and AI actions
+
+**Internal Rule**: If you can’t see it, you can’t scale it.
 
 ---
 

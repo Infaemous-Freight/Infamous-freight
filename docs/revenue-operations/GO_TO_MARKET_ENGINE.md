@@ -2,8 +2,8 @@
 
 ## 1) Market Positioning (How We Win)
 
-**Infæmous Freight — the AI-first Freight Intelligence Platform**
-Dispatch. Finance. AI. Compliance. All in one system.
+**Infæmous Freight — the AI-first Freight Intelligence Platform** Dispatch.
+Finance. AI. Compliance. All in one system.
 
 **Core Differentiators**
 
@@ -15,7 +15,9 @@ Dispatch. Finance. AI. Compliance. All in one system.
 
 **Positioning Message**
 
-> We are not another TMS. Infæmous Freight is the AI-native control plane for freight operations and finance, built to compound revenue and operational intelligence.
+> We are not another TMS. Infæmous Freight is the AI-native control plane for
+> freight operations and finance, built to compound revenue and operational
+> intelligence.
 
 ---
 
@@ -49,7 +51,8 @@ Dispatch. Finance. AI. Compliance. All in one system.
 
 ## 3) Funnel Architecture (Stranger → Enterprise Client)
 
-Traffic → Landing Page (Value Prop) → Free Tool / Demo → Trial Account → AI wow moment → Paid Plan → Expansion (AI usage, more seats, enterprise)
+Traffic → Landing Page (Value Prop) → Free Tool / Demo → Trial Account → AI wow
+moment → Paid Plan → Expansion (AI usage, more seats, enterprise)
 
 **AI Wow Moment Definition**
 
@@ -79,13 +82,17 @@ Every shared artifact becomes a marketing surface.
 
 ## 5) Sales System (Enterprise-Ready)
 
+### ICP Lock
+
+- **Primary ICP**: Small fleets (3–20 trucks)
+
 ### A) Sales Motion Types
 
-| Client Type | Motion |
-| --- | --- |
-| SMBs | Self-serve + inside sales |
-| Mid-Market | Demo + sales rep |
-| Enterprise | Contract + pilots + SLA |
+| Client Type | Motion                    |
+| ----------- | ------------------------- |
+| SMBs        | Self-serve + inside sales |
+| Mid-Market  | Demo + sales rep          |
+| Enterprise  | Contract + pilots + SLA   |
 
 ### B) Enterprise Deal Flow
 
@@ -94,6 +101,32 @@ Every shared artifact becomes a marketing surface.
 3. Custom AI + integrations
 4. Contract + rollout
 5. Expansion + upsell
+
+### C) Sales Deck Outlines
+
+**Small Fleet Deck (Outline)**
+
+1. Problem: Dispatch delays cost money
+2. Solution: Faster dispatch + fewer surprises
+3. Demo: AI-assisted assignment
+4. ROI: Saved time, fewer delays
+5. Pricing: Fleet plan
+6. Next step: Trial / onboarding
+
+**Enterprise Deck (Outline)**
+
+1. Operational complexity at scale
+2. AI governance + billing control
+3. Security & compliance
+4. Custom workflows
+5. Invoicing & reporting
+6. Contract + onboarding
+
+**“Not a Fit” Slide**
+
+- One-off shippers
+- Fleets unwilling to use software
+- Customers expecting unlimited AI for free
 
 ---
 
@@ -182,7 +215,8 @@ Publish:
 
 **Story**
 
-> We built the first AI-native Freight Intelligence System with built-in monetization, fintech, and autonomous ops.
+> We built the first AI-native Freight Intelligence System with built-in
+> monetization, fintech, and autonomous ops.
 
 **Target**
 

@@ -9,8 +9,10 @@
 ## Onboarding Philosophy
 
 **Problem**: 40% of free trials never activate (no action in first 7 days)
-**Root Cause**: Confusing setup, unclear value proposition
-**Solution**: Guided onboarding to first "aha moment" in <7 days, anchored on the AI-first Freight Intelligence Platform promise (dispatch + finance + AI + compliance in one system).
+**Root Cause**: Confusing setup, unclear value proposition **Solution**: Guided
+onboarding to first "aha moment" in <7 days, anchored on the AI-first Freight
+Intelligence Platform promise (dispatch + finance + AI + compliance in one
+system).
 
 ### Time-to-Value Timeline
 
@@ -34,6 +36,16 @@ FAILURE: Inactive customer (no aha moment) churns at 70%
 ---
 
 ## Onboarding Flow (7-Day Journey)
+
+### 5-Step In-App Onboarding Checklist (Time-to-Value)
+
+1. Create company
+2. Add drivers/users
+3. Create first load
+4. Assign with AI
+5. Complete delivery + upload POD
+
+**Success message**: “You’ve completed your first AI-assisted delivery.”
 
 ### Day 1: Welcome & Setup
 
@@ -71,17 +83,17 @@ TOUCHPOINT 3: In-App Tutorials (Onboarding experience)
   • Lesson 1: "Dashboard Overview" (3 min video)
     - What each widget does
     - Key metrics
-  
+
   • Lesson 2: "Creating Shipments" (interactive)
     - Step-by-step walkthrough
     - Copy-paste from spreadsheet demo
     - API integration primer
-  
+
   • Lesson 3: "Reports & Analytics" (guided tour)
     - Cost analysis report
     - On-time delivery report
     - Custom report builder
-  
+
   • Lesson 4: "Team Management" (quick setup)
     - Invite team members
     - Set permissions
@@ -279,15 +291,13 @@ CONVERSION RATE:
 
 ## Onboarding Success Metrics (EOY 2026)
 
-✅ Activation rate: 60%+ (4/4 milestones completed)
-✅ Time-to-value: <7 days (median)
-✅ Trial-to-paid conversion: 20-25% (overall)
-✅ Customer NPS: 8.5+ (by 90 days)
-✅ 30-day retention: 85%+ (activated customers)
+✅ Activation rate: 60%+ (4/4 milestones completed) ✅ Time-to-value: <7 days
+(median) ✅ Trial-to-paid conversion: 20-25% (overall) ✅ Customer NPS: 8.5+ (by
+90 days) ✅ 30-day retention: 85%+ (activated customers)
 
 ---
 
 **Status**: ✅ CUSTOMER ONBOARDING SYSTEM READY
 
-Guided 7-day activation journey with milestones, segmented paths, and
-metrics to achieve 60%+ activation rate and 20%+ trial-to-paid conversion.
+Guided 7-day activation journey with milestones, segmented paths, and metrics to
+achieve 60%+ activation rate and 20%+ trial-to-paid conversion.
