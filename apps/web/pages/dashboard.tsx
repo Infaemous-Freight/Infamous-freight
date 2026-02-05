@@ -40,6 +40,12 @@ function DashboardContent() {
             <h2>Infamous Freight</h2>
           </div>
           <nav className="sidebar-nav">
+            <Link href="/dashboard/usage" className="nav-link">
+              📊 AI Usage
+            </Link>
+            <Link href="/dashboard/billing" className="nav-link">
+              💳 Billing State
+            </Link>
             {getTrucknEnabled ? (
               <Link href="/loads" className="nav-link">
                 📦 Loads
@@ -47,9 +53,6 @@ function DashboardContent() {
             ) : null}
             <Link href="/account" className="nav-link">
               👤 Account
-            </Link>
-            <Link href="/account/billing" className="nav-link">
-              💳 Billing
             </Link>
             <Link href="/settings" className="nav-link">
               ⚙️ Settings
@@ -74,25 +77,34 @@ function DashboardContent() {
             <section className="hero">
               <div className="container hero-inner">
                 <div>
-                  <p className="section-subtitle">Welcome to Infamous Freight</p>
-                  <h1 className="hero-title">Your Dashboard</h1>
+                  <p className="section-subtitle">Enterprise overview</p>
+                  <h1 className="hero-title">Command Dashboard</h1>
                   <p className="hero-copy">
-                    Manage your freight operations, view loads, and track billing all in one place.
+                    Track AI usage, billing state, and governance controls for every company.
                   </p>
                   <div className="hero-actions">
+                    <Link href="/dashboard/usage" className="btn btn-primary">
+                      View AI Usage
+                    </Link>
                     {getTrucknEnabled ? (
-                      <Link href="/loads" className="btn btn-primary">
+                      <Link href="/loads" className="btn btn-secondary">
                         View Available Loads
                       </Link>
                     ) : null}
-                    <Link href="/account/billing" className="btn btn-secondary">
-                      View Billing
+                    <Link href="/dashboard/billing" className="btn btn-secondary">
+                      View Billing State
                     </Link>
                   </div>
                 </div>
                 <div className="hero-card">
                   <h3>Quick Links</h3>
                   <ul style={{ listStyle: "none", padding: 0 }}>
+                    <li>
+                      <Link href="/dashboard/usage">📊 AI Usage</Link>
+                    </li>
+                    <li>
+                      <Link href="/dashboard/billing">💳 Billing State</Link>
+                    </li>
                     {getTrucknEnabled ? (
                       <li>
                         <Link href="/loads">📦 Available Loads</Link>

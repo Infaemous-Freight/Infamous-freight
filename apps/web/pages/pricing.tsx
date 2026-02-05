@@ -6,7 +6,7 @@ import { trackEvent } from "../src/lib/analytics";
 
 const apiBase = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001").replace(
   /\/api\/?$/,
-  ""
+  "",
 );
 
 type Plan = {
@@ -22,61 +22,47 @@ type PricingProps = {
 
 const planCopy = [
   {
-    key: "free",
-    name: "Free",
-    price: "$0",
+    key: "operator",
+    name: "Operator",
+    price: "$19/seat",
     cadence: "per month",
-    description: "Perfect for evaluating Infæmous Freight.",
+    description: "Ideal for lean operator teams.",
     features: [
-      "10 shipments/month",
-      "2 active shipments",
-      "1 user seat",
-      "Community support",
+      "Seat-based access",
+      "Company-level billing",
+      "RBAC + audit logs",
+      "AI governance controls",
     ],
-    metered: "No API access or metered usage",
+    metered: "100 AI actions included • $0.01/action overage",
   },
   {
-    key: "starter",
-    name: "Starter",
-    price: "$79",
-    cadence: "per month • 20% off annually",
-    description: "For small teams running local freight operations.",
+    key: "fleet",
+    name: "Fleet",
+    price: "$49/seat",
+    cadence: "per month",
+    description: "For growing fleets running daily ops.",
     features: [
-      "500 shipments/month",
-      "20 active shipments",
-      "3 users + 5 drivers",
-      "Basic analytics + tracking",
+      "500 AI actions included",
+      "AI usage alerts + hard cap",
+      "Billing kill-switches",
+      "Feature flag controls",
     ],
-    metered: "API calls (10k/day), tracking events, invoices",
-  },
-  {
-    key: "pro",
-    name: "Professional",
-    price: "$199",
-    cadence: "per month • 20% off annually",
-    description: "For growing networks that need AI optimization.",
-    features: [
-      "2,500 shipments/month",
-      "100 active shipments",
-      "10 users + 25 drivers",
-      "Advanced analytics + AI routing",
-    ],
-    metered: "AI actions, tracking events, invoices",
+    metered: "500 AI actions included • $0.008/action overage",
     featured: true,
   },
   {
     key: "enterprise",
     name: "Enterprise",
-    price: "$599",
-    cadence: "per month • 20% off annually",
-    description: "For enterprise fleets with SSO, SLA, and dedicated support.",
+    price: "$149+/seat",
+    cadence: "invoice-first",
+    description: "Enterprise invoicing with custom terms.",
     features: [
-      "Unlimited shipments",
-      "Unlimited users + drivers",
-      "5TB storage",
-      "Dedicated success + 99.95% SLA",
+      "2,000 AI actions included",
+      "SSO + compliance controls",
+      "Priority onboarding",
+      "Dedicated success",
     ],
-    metered: "AI actions, tracking events, invoices",
+    metered: "2,000 AI actions included • $0.005/action overage",
   },
 ];
 
@@ -151,21 +137,21 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
         <div className="container hero-inner">
           <div>
             <p className="section-subtitle">Pricing</p>
-            <h1 className="hero-title">Four tiers. One operating system.</h1>
+            <h1 className="hero-title">Three tiers. One enterprise stack.</h1>
             <p className="hero-copy">
-              Free gets teams started. Starter and Professional scale operations
-              with metered AI. Enterprise brings SSO, SLA, and dedicated support.
+              Company-level billing, RBAC, audit logs, and AI governance with metered usage, alerts,
+              and hard caps.
             </p>
           </div>
           <div className="hero-card">
             <h3>Metered transparency</h3>
             <p>
-              AI calls, tracking events, and invoices are metered and visible in
-              every billing summary.
+              AI calls, tracking events, and invoices are metered and visible in every billing
+              summary.
             </p>
             <div className="metric-grid">
               <div className="metric-card">
-                <div className="metric-label">AI calls</div>
+                <div className="metric-label">AI actions</div>
                 <div className="metric-value">Metered</div>
               </div>
               <div className="metric-card">
@@ -185,8 +171,8 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
         <div className="container">
           <h2 className="section-title">Plans</h2>
           <p className="section-subtitle">
-            Choose a plan, seat count, and optional add-ons. Stripe checkout is
-            enabled when billing is configured.
+            Choose a plan, seat count, and optional add-ons. Stripe checkout is enabled when billing
+            is configured.
           </p>
           {err ? (
             <div className="status-message error" style={{ marginTop: "16px" }}>
@@ -198,13 +184,9 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
             {planCopy.map((tier) => (
               <section
                 key={tier.key}
-                className={`card pricing-card${
-                  tier.featured ? " is-featured" : ""
-                }`}
+                className={`card pricing-card${tier.featured ? " is-featured" : ""}`}
               >
-                {tier.featured ? (
-                  <span className="pricing-badge">Most chosen</span>
-                ) : null}
+                {tier.featured ? <span className="pricing-badge">Most chosen</span> : null}
                 <h3>{tier.name}</h3>
                 <p className="pricing-meta">{tier.description}</p>
                 <div className="metric-value" style={{ fontSize: "2rem" }}>
@@ -217,25 +199,21 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
                   ))}
                 </div>
                 <div className="metered">Metered: {tier.metered}</div>
-                {tier.key === "free" ? (
-                  <Link href="/signup" className="btn btn-secondary">
-                    Start Free
+                {tier.key === "enterprise" ? (
+                  <Link href="/dashboard/billing" className="btn btn-secondary">
+                    Request invoice
                   </Link>
                 ) : (
                   <button
                     onClick={() => checkout(tier.key)}
                     disabled={
                       busy === tier.key ||
-                      (availablePlanKeys.size > 0 &&
-                        !availablePlanKeys.has(tier.key))
+                      (availablePlanKeys.size > 0 && !availablePlanKeys.has(tier.key))
                     }
-                    className={`btn ${
-                      tier.featured ? "btn-primary" : "btn-secondary"
-                    }`}
+                    className={`btn ${tier.featured ? "btn-primary" : "btn-secondary"}`}
                     aria-disabled={
                       busy === tier.key ||
-                      (availablePlanKeys.size > 0 &&
-                        !availablePlanKeys.has(tier.key))
+                      (availablePlanKeys.size > 0 && !availablePlanKeys.has(tier.key))
                     }
                   >
                     {busy === tier.key ? "Preparing..." : "Start plan"}
@@ -244,12 +222,10 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
                 {busy === tier.key ? (
                   <div className="helper-text">Creating checkout session…</div>
                 ) : null}
-                {tier.key !== "free" &&
+                {tier.key !== "enterprise" &&
                 availablePlanKeys.size > 0 &&
                 !availablePlanKeys.has(tier.key) ? (
-                  <div className="helper-text">
-                    Unavailable in current billing setup.
-                  </div>
+                  <div className="helper-text">Unavailable in current billing setup.</div>
                 ) : null}
               </section>
             ))}
@@ -259,10 +235,21 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
 
       <section className="section">
         <div className="container">
+          <div className="card">
+            <h2 className="section-title">Intelligence Add-On — $299/mo</h2>
+            <p className="section-subtitle">
+              Weather disruption modeling, delay prediction, and route risk scoring.
+            </p>
+            <div className="helper-text">Enabled by feature flag and billing state.</div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
           <h2 className="section-title">Billing setup</h2>
           <p className="section-subtitle">
-            Use the configuration panel to match seats, add-ons, and billing
-            email before checkout.
+            Use the configuration panel to match seats, add-ons, and billing email before checkout.
           </p>
           <div className="card" style={{ marginTop: "24px" }}>
             <div className="form-grid">
@@ -288,7 +275,7 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
                         setAddOns((prev) =>
                           event.target.checked
                             ? [...prev, "voice"]
-                            : prev.filter((item) => item !== "voice")
+                            : prev.filter((item) => item !== "voice"),
                         );
                       }}
                     />{" "}
@@ -304,7 +291,7 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
                         setAddOns((prev) =>
                           event.target.checked
                             ? [...prev, "white_label"]
-                            : prev.filter((item) => item !== "white_label")
+                            : prev.filter((item) => item !== "white_label"),
                         );
                       }}
                     />{" "}
@@ -320,11 +307,27 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
                         setAddOns((prev) =>
                           event.target.checked
                             ? [...prev, "analytics_export"]
-                            : prev.filter((item) => item !== "analytics_export")
+                            : prev.filter((item) => item !== "analytics_export"),
                         );
                       }}
                     />{" "}
                     Analytics export (flat)
+                  </span>
+                </label>
+                <label className="form-control">
+                  <span>
+                    <input
+                      type="checkbox"
+                      checked={addOns.includes("intelligence")}
+                      onChange={(event) => {
+                        setAddOns((prev) =>
+                          event.target.checked
+                            ? [...prev, "intelligence"]
+                            : prev.filter((item) => item !== "intelligence"),
+                        );
+                      }}
+                    />{" "}
+                    Intelligence add-on ($299/mo)
                   </span>
                 </label>
                 <div className="helper-text">
@@ -356,8 +359,7 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
             <div className="card">
               <h2 className="section-title">Complete your subscription</h2>
               <p className="section-subtitle">
-                Selected plan:{" "}
-                <strong>{activePlan ? activePlan : "custom"}</strong>
+                Selected plan: <strong>{activePlan ? activePlan : "custom"}</strong>
               </p>
               <StripeSubscriptionCheckout clientSecret={clientSecret} />
             </div>
@@ -376,19 +378,20 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
  */
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const apiUrl = (
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"
-    ).replace(/\/api\/?$/, "");
+    const apiUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001").replace(
+      /\/api\/?$/,
+      "",
+    );
     const res = await fetch(`${apiUrl}/api/stripe/plans`, {
-      headers: { 'User-Agent': 'Next.js-ISR' },
+      headers: { "User-Agent": "Next.js-ISR" },
     });
-    
+
     if (!res.ok) {
       throw new Error(`API responded with ${res.status}`);
     }
-    
+
     const data = await res.json();
-    
+
     return {
       props: {
         initialPlans: data.plans || [],
@@ -399,8 +402,8 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.warn('ISR: Failed to fetch plans, using fallback', error);
-    
+    console.warn("ISR: Failed to fetch plans, using fallback", error);
+
     // Fallback to empty state on error
     return {
       props: {
