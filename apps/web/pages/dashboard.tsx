@@ -45,6 +45,12 @@ function DashboardContent() {
                 📦 Loads
               </Link>
             ) : null}
+            <Link href="/dashboard/usage" className="nav-link">
+              📈 AI Usage
+            </Link>
+            <Link href="/dashboard/billing" className="nav-link">
+              💼 Company Billing
+            </Link>
             <Link href="/account" className="nav-link">
               👤 Account
             </Link>
@@ -98,6 +104,12 @@ function DashboardContent() {
                         <Link href="/loads">📦 Available Loads</Link>
                       </li>
                     ) : null}
+                    <li>
+                      <Link href="/dashboard/usage">📈 AI Usage</Link>
+                    </li>
+                    <li>
+                      <Link href="/dashboard/billing">💼 Company Billing</Link>
+                    </li>
                     <li>
                       <Link href="/account">👤 Account Settings</Link>
                     </li>
