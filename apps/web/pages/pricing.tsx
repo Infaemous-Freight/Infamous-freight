@@ -115,9 +115,6 @@ export default function PricingPage() {
             </p>
             <div className="mt-6 grid gap-3">
               <PricingButton href="/contact-sales">Contact Sales</PricingButton>
-              <PricingButton href={tiers.enterprise.stripeMinimumSpendLink} variant="secondary">
-                (Internal) Minimum Spend Link
-              </PricingButton>
             </div>
             <div className="mt-5 text-xs text-white/60">
               Note: Enterprise is intentionally not self-serve.
