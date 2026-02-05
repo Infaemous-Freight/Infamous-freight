@@ -171,4 +171,4 @@ Pick one and go deep, step-by-step:
 2. Build revenue dashboard
 3. Create enterprise sales deck
 4. Prepare investor pitch
-5. Design Get Truck’N marketplace (Stripe Connect)
+5. Design Get Truck’N marketplace (Stripe Connect) — a carrier-facing marketplace within the Infæmous Freight platform where vetted trucking companies and owner-operators can offer and purchase freight services and related tools using Stripe Connect for payments and payouts.
