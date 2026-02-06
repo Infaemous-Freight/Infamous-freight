@@ -21,7 +21,7 @@
     "clean": "rm -rf dist node_modules"
   },
   "devDependencies": {
-    "@types/node": "^25.2.0",
+    "@types/node": "^25.2.1",
     "typescript": "^5.9.3"
   }
 }
