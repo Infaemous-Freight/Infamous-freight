@@ -560,7 +560,7 @@ kubectl logs deployment/api --tail=50
 - [ ] Monitoring didn't catch it
 - [ ] Slow degradation (not immediate failure)
 - [ ] External service change
-- [ ] Other: **\_**
+- [ ] Other: _____
 
 ## Prevention
 
