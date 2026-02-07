@@ -16,13 +16,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const { companyName, ownerUserId } = req.body ?? {};
 
-  if (!companyName || !ownerUserId) {
+  const trimmedCompanyName =
+    typeof companyName === "string" ? companyName.trim() : "";
+
+  if (typeof ownerUserId !== "string" || !ownerUserId.trim()) {
     return res.status(400).json({ error: "companyName and ownerUserId required" });
+  }
+
+  // Validate companyName: non-empty, reasonable length, and safe characters
+  const COMPANY_NAME_MIN_LENGTH = 2;
+  const COMPANY_NAME_MAX_LENGTH = 100;
+  const companyNamePattern = /^[a-zA-Z0-9 .,&'_-]+$/;
+
+  if (
+    !trimmedCompanyName ||
+    trimmedCompanyName.length < COMPANY_NAME_MIN_LENGTH ||
+    trimmedCompanyName.length > COMPANY_NAME_MAX_LENGTH ||
+    !companyNamePattern.test(trimmedCompanyName)
+  ) {
+    return res.status(400).json({
+      error:
+        "Invalid companyName: must be 2-100 characters and contain only letters, numbers, spaces, and . , & ' _ - characters",
+    });
   }
 
   const { data: company, error: companyError } = await supabaseAdmin
     .from("companies")
-    .insert({ name: companyName })
+    .insert({ name: trimmedCompanyName })
     .select("*")
     .single();
 
