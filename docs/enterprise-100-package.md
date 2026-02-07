@@ -634,7 +634,7 @@ async function recordAiAction(companyId: string, qty = 1) {
     .from("ai_usage_aggregates")
     .upsert(
       { company_id: companyId, month_key: mKey, actions_used: 0 },
-      { onConflict: "company_id,month_key" },
+      { onConflict: "company_id, month_key" },
     )
     .select("*")
     .single();
