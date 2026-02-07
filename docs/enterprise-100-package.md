@@ -285,6 +285,9 @@ create or replace function public.audit_log(
   p_meta jsonb
 ) returns void language plpgsql as $$
 begin
+  if not public.is_member(p_company_id) then
+    raise exception 'Not authorized';
+  end if;
   insert into public.audit_logs(company_id, actor_user_id, action, entity_type, entity_id, meta)
   values (p_company_id, auth.uid(), p_action, p_entity_type, p_entity_id, coalesce(p_meta, '{}'::jsonb));
 end $$;
