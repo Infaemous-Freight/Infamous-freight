@@ -158,6 +158,10 @@ create table if not exists public.assignments (
   updated_at timestamptz not null default now()
 );
 
+alter table public.assignments
+  add constraint assignments_driver_company_fk
+  foreign key (company_id, driver_user_id)
+  references public.memberships(company_id, user_id);
 drop trigger if exists trg_assignments_updated on public.assignments;
 create trigger trg_assignments_updated
 before update on public.assignments
