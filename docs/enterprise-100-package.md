@@ -501,15 +501,35 @@ export async function stripeWebhook(rawBody: string, sig: string) {
     }
     if (!billing?.company_id) return;
 
-    const status =
-      sub.status === "active"
-        ? "active"
-        : sub.status === "past_due"
-          ? "past_due"
-          : sub.status === "canceled"
-            ? "canceled"
-            : "trial";
+    const mapStripeSubscriptionStatus = (
+      stripeStatus: Stripe.Subscription.Status,
+    ): "active" | "past_due" | "canceled" | "trial" => {
+      switch (stripeStatus) {
+        case "active":
+          return "active";
+        case "past_due":
+          return "past_due";
+        case "canceled":
+          return "canceled";
+        case "trialing":
+        case "incomplete":
+          // Treat these as trial/limited access until fully paid or expired
+          return "trial";
+        case "incomplete_expired":
+          // Subscription never completed; treat as fully canceled
+          return "canceled";
+        case "unpaid":
+          // Keep in degraded state with limited access
+          return "past_due";
+        default:
+          // Surface unexpected or new statuses early instead of granting access
+          throw new Error(
+            `Unhandled Stripe subscription status: ${stripeStatus}`,
+          );
+      }
+    };
 
+    const status = mapStripeSubscriptionStatus(sub.status);
     await supabase
       .from("company_billing")
       .update({
