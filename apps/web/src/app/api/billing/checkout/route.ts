@@ -13,31 +13,47 @@ const Body = z.object({
 });
 
 export async function POST(req: Request) {
-  const { user, activeCompanyId } = await requireActiveCompany(req);
-  const { plan, seats } = Body.parse(await req.json());
+  try {
+    const { user, activeCompanyId } = await requireActiveCompany(req);
+    const { plan, seats } = Body.parse(await req.json());
 
-  const { data: company } = await supabaseAdmin
-    .from("companies")
-    .select("name")
-    .eq("id", activeCompanyId)
-    .single();
-  const customerId = await ensureStripeCustomer(activeCompanyId, company?.name ?? "Company");
+    const { data: company } = await supabaseAdmin
+      .from("companies")
+      .select("name")
+      .eq("id", activeCompanyId)
+      .single();
+    const customerId = await ensureStripeCustomer(
+      activeCompanyId,
+      company?.name ?? "Company",
+    );
 
-  const priceId =
-    plan === "operator" ? process.env.STRIPE_PRICE_OPERATOR! : process.env.STRIPE_PRICE_FLEET!;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
+    const priceId =
+      plan === "operator"
+        ? process.env.STRIPE_PRICE_OPERATOR!
+        : process.env.STRIPE_PRICE_FLEET!;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    customer: customerId,
-    line_items: [{ price: priceId, quantity: seats }],
-    success_url: `${appUrl}/dashboard?billing=success`,
-    cancel_url: `${appUrl}/pricing?billing=cancel`,
-    subscription_data: {
-      metadata: { company_id: activeCompanyId },
-    },
-    metadata: { company_id: activeCompanyId, actor_user_id: user.id },
-  });
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      customer: customerId,
+      line_items: [{ price: priceId, quantity: seats }],
+      success_url: `${appUrl}/dashboard?billing=success`,
+      cancel_url: `${appUrl}/pricing?billing=cancel`,
+      subscription_data: {
+        metadata: { company_id: activeCompanyId },
+      },
+      metadata: { company_id: activeCompanyId, actor_user_id: user.id },
+    });
 
-  return jsonWithRequestId(req, { ok: true, url: session.url });
+    return jsonWithRequestId(req, { ok: true, url: session.url });
+  } catch (error) {
+    console.error("Error creating billing checkout session", error);
+    return new Response(
+      JSON.stringify({ ok: false, error: "Internal Server Error" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
 }
