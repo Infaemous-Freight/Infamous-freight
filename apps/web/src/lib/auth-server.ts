@@ -25,8 +25,35 @@ export async function getActiveCompanyId(userId: string) {
     .eq("user_id", userId)
     .maybeSingle();
 
-  if (prof?.active_company_id) return prof.active_company_id as string;
+  if (prof?.active_company_id) {
+    const activeCompanyId = prof.active_company_id as string;
 
+    // Validate that the user is still a member of the active company.
+    const { data: membership, error: membershipError } = await supabaseAdmin
+      .from("company_memberships")
+      .select("company_id")
+      .eq("user_id", userId)
+      .eq("company_id", activeCompanyId)
+      .maybeSingle();
+
+    if (membershipError) {
+      throw new Error(membershipError.message);
+    }
+
+    if (membership) {
+      return activeCompanyId;
+    }
+
+    // Clear stale active_company_id if the membership no longer exists.
+    const { error: clearError } = await supabaseAdmin
+      .from("profiles")
+      .update({ active_company_id: null })
+      .eq("user_id", userId);
+
+    if (clearError) {
+      throw new Error(clearError.message);
+    }
+  }
   const companies = await getUserCompanies(userId);
   const first = companies[0]?.company_id;
   if (!first) return null;
