@@ -291,9 +291,11 @@ CONVERSION RATE:
 
 ## Onboarding Success Metrics (EOY 2026)
 
-✅ Activation rate: 60%+ (4/4 milestones completed) ✅ Time-to-value: <7 days
-(median) ✅ Trial-to-paid conversion: 20-25% (overall) ✅ Customer NPS: 8.5+ (by
-90 days) ✅ 30-day retention: 85%+ (activated customers)
+- ✅ Activation rate: 60%+ (4/4 milestones completed)
+- ✅ Time-to-value: <7 days (median)
+- ✅ Trial-to-paid conversion: 20-25% (overall)
+- ✅ Customer NPS: 8.5+ (by 90 days)
+- ✅ 30-day retention: 85%+ (activated customers)
 
 ---
 
