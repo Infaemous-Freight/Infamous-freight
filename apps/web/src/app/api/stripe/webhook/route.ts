@@ -39,10 +39,19 @@ export async function POST(req: Request) {
     return jsonWithRequestId(req, { error: "Missing stripe-signature" }, { status: 400 });
   }
 
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    return jsonWithRequestId(
+      req,
+      { error: "STRIPE_WEBHOOK_SECRET not configured on server" },
+      { status: 500 },
+    );
+  }
+
   const rawBody = await req.text();
   let event;
   try {
-    event = stripe.webhooks.constructEvent(rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET!);
+    event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Webhook error";
     return jsonWithRequestId(req, { error: `Webhook error: ${message}` }, { status: 400 });
