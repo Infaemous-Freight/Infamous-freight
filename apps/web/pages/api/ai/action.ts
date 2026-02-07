@@ -26,7 +26,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     await requireFeature(companyId, "enable_ai");
     await requireFeature(companyId, "enable_ai_automation");
 
-    const usage = await recordAiActions(companyId, Number(actions) || 1, actorUserId ?? null);
+    const rawActions = actions ?? 1;
+    const parsedActions = Number(rawActions);
+
+    if (
+      !Number.isFinite(parsedActions) ||
+      !Number.isInteger(parsedActions) ||
+      parsedActions < 1 ||
+      parsedActions > 1000
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Invalid 'actions' value. Must be an integer between 1 and 1000." });
+    }
+
+    const usage = await recordAiActions(companyId, parsedActions, actorUserId ?? null);
     return res.status(200).json({ ok: true, usage });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
