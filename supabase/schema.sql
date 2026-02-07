@@ -77,12 +77,31 @@ alter table audit_logs enable row level security;
 -- Helpers
 create or replace function is_member(cid uuid)
 returns boolean language sql stable as $$
-  exists(select 1 from company_memberships where company_id=cid and user_id=auth.uid())
+  select
+    case
+      when auth.uid() is null then false
+      else exists(
+        select 1
+        from company_memberships
+        where company_id = cid
+          and user_id = auth.uid()
+      )
+    end;
 $$;
 
 create or replace function is_adminish(cid uuid)
 returns boolean language sql stable as $$
-  exists(select 1 from company_memberships where company_id=cid and user_id=auth.uid() and role in ('owner','admin'))
+  select
+    case
+      when auth.uid() is null then false
+      else exists(
+        select 1
+        from company_memberships
+        where company_id = cid
+          and user_id = auth.uid()
+          and role in ('owner','admin')
+      )
+    end;
 $$;
 
 -- Policies
