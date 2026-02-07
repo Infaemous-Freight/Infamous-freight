@@ -7,11 +7,25 @@ import { jsonWithRequestId } from "@/lib/request-id";
 
 export const runtime = "nodejs";
 
-function mapStripeStatus(s: string): "trial" | "active" | "past_due" | "suspended" | "canceled" {
-  if (s === "active") return "active";
-  if (s === "past_due") return "past_due";
-  if (s === "canceled") return "canceled";
-  return "trial";
+function mapStripeStatus(
+  s: Stripe.Subscription.Status,
+): "trial" | "active" | "past_due" | "suspended" | "canceled" {
+  switch (s) {
+    case "active":
+      return "active";
+    case "past_due":
+      return "past_due";
+    case "canceled":
+      return "canceled";
+    case "incomplete":
+    case "incomplete_expired":
+    case "trialing":
+    case "unpaid":
+    case "paused":
+    default:
+      // Treat all other or future statuses as "trial" to preserve existing behavior.
+      return "trial";
+  }
 }
 
 export async function POST(req: Request) {
