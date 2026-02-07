@@ -151,3 +151,8 @@ drop policy if exists audit_admin_read on public.audit_logs;
 create policy audit_admin_read
 on public.audit_logs for select
 using (public.is_adminish(company_id));
+
+drop policy if exists audit_admin_insert on public.audit_logs;
+create policy audit_admin_insert
+on public.audit_logs for insert
+with check (public.is_adminish(company_id));
