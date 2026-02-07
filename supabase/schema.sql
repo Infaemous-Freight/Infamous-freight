@@ -97,16 +97,43 @@ before update on public.ai_usage_aggregates
 for each row execute function public.set_updated_at();
 
 -- RBAC helpers
+-- Treat Supabase service-role JWTs as fully privileged for RBAC helpers.
+-- This prevents auth.uid() = NULL from causing RLS helpers to deny admin operations
+-- when called under a service-role context.
+create or replace function public.is_service_role()
+returns boolean
+language sql
+stable
+as $$
+  current_setting('request.jwt.claim.role', true) = 'service_role'
+$$;
+
 create or replace function public.is_member(cid uuid)
-returns boolean language sql stable as $$
-  exists(select 1 from public.company_memberships where company_id = cid and user_id = auth.uid())
+returns boolean
+language sql
+stable
+as $$
+  public.is_service_role()
+  or exists(
+    select 1
+    from public.company_memberships
+    where company_id = cid
+      and user_id = auth.uid()
+  )
 $$;
 
 create or replace function public.is_adminish(cid uuid)
-returns boolean language sql stable as $$
-  exists(
-    select 1 from public.company_memberships
-    where company_id = cid and user_id = auth.uid() and role in ('owner','admin')
+returns boolean
+language sql
+stable
+as $$
+  public.is_service_role()
+  or exists(
+    select 1
+    from public.company_memberships
+    where company_id = cid
+      and user_id = auth.uid()
+      and role in ('owner','admin')
   )
 $$;
 
