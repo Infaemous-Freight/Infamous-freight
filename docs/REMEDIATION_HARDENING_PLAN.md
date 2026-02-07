@@ -208,7 +208,7 @@ No duplicate pages. No hidden features.
 - **Production Web**: Netlify (primary)
 - **Preview / Secondary Web**: Vercel
 - **API**: Fly.io only
-- **DB/Auth**: Supabase only
+- **DB/Auth**: PostgreSQL via Prisma (Fly Postgres, Railway, Supabase supported)
 
 No duplicates.
 
