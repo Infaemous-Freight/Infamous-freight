@@ -25,24 +25,24 @@ export async function recordAiActionsAndReport(
 
   const month_key = utcMonthKey();
 
-  const { data: aggregate } = await supabaseAdmin
-    .from("ai_usage_aggregates")
-    .upsert(
-      { company_id: companyId, month_key, actions_used: 0 },
-      { onConflict: "company_id,month_key" },
-    )
-    .select("*")
-    .single();
+  const { data: aggregate, error: aggregateError } = await supabaseAdmin.rpc(
+    "increment_ai_usage_aggregate",
+    {
+      company_id: companyId,
+      month_key,
+      qty,
+    },
+  );
 
-  const used = (aggregate?.actions_used ?? 0) + qty;
+  if (aggregateError) {
+    throw new Error(`Failed to record AI usage: ${aggregateError.message}`);
+  }
 
-  await supabaseAdmin
-    .from("ai_usage_aggregates")
-    .update({ actions_used: used })
-    .eq("company_id", companyId)
-    .eq("month_key", month_key);
+  const used = aggregate?.actions_used ?? 0;
 
   const included = billing.ai_included;
+  const pct = included > 0 ? used / included : 0;
+  const hardCap = included * billing.ai_hard_cap_multiplier;
   const pct = included > 0 ? used / included : 0;
   const hardCap = included * billing.ai_hard_cap_multiplier;
 
