@@ -116,6 +116,17 @@ export async function POST(req: Request) {
           await upsertSubscriptionItem(companyId, priceId, subItemId);
         }
       }
+    } else {
+      console.warn(
+        "[stripe:webhook] Unable to resolve company_id for subscription event",
+        {
+          eventType: event.type,
+          subscriptionId: sub.id,
+          customerId,
+          billingCompanyId: billing?.company_id ?? null,
+          metadataCompanyId: sub.metadata?.company_id ?? null,
+        },
+      );
     }
   }
 
