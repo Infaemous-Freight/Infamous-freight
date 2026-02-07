@@ -235,6 +235,10 @@ create table if not exists public.messages (
   created_at timestamptz not null default now()
 );
 
+-- indexes for frequently queried foreign keys
+create index if not exists idx_status_events_load_id on public.status_events(load_id);
+create index if not exists idx_threads_load_id on public.threads(load_id);
+create index if not exists idx_messages_thread_id on public.messages(thread_id);
 -- RLS
 alter table public.companies enable row level security;
 alter table public.company_memberships enable row level security;
