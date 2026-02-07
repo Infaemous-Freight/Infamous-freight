@@ -246,7 +246,7 @@ create policy profiles_self_rw on public.profiles for all using (user_id = auth.
 
 -- no client access to stripe webhook event store
 drop policy if exists stripe_events_none on public.stripe_webhook_events;
-create policy stripe_events_none on public.stripe_webhook_events for select using (false);
+create policy stripe_events_none on public.stripe_webhook_events for all using (false) with check (false);
 
 drop policy if exists subitems_admin_read on public.stripe_subscription_items;
 create policy subitems_admin_read on public.stripe_subscription_items for select using (public.is_adminish(company_id));
