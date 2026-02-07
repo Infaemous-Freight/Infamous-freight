@@ -426,6 +426,11 @@ drop policy if exists "audit_adminish_read" on public.audit_logs;
 create policy "audit_adminish_read"
 on public.audit_logs for select
 using (public.is_adminish(company_id));
+
+drop policy if exists "audit_service_write" on public.audit_logs;
+create policy "audit_service_write"
+on public.audit_logs for insert
+using (auth.jwt()->>'role' = 'service_role');
 ```
 
 ## C) Stripe Billing State Machine + Webhook Gating
