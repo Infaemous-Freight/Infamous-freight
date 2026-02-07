@@ -181,6 +181,8 @@ create table if not exists public.assignments (
   updated_at timestamptz not null default now()
 );
 
+create index if not exists idx_assignments_load_id
+  on public.assignments(load_id);
 alter table public.assignments
   add constraint assignments_driver_company_fk
   foreign key (company_id, driver_user_id)
