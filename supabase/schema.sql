@@ -106,8 +106,8 @@ $$;
 
 -- Policies
 create policy if not exists companies_read on companies for select using (is_member(id));
-create policy if not exists memberships_rw on company_memberships for all using (is_adminish(company_id)) with check (is_adminish(company_id));
-create policy if not exists features_admin on company_features for all using (is_adminish(company_id)) with check (is_adminish(company_id));
-create policy if not exists billing_admin on company_billing for all using (is_adminish(company_id)) with check (is_adminish(company_id));
-create policy if not exists usage_admin on ai_usage_aggregates for select using (is_adminish(company_id));
-create policy if not exists audit_admin on audit_logs for select using (is_adminish(company_id));
+create policy if not exists memberships_admin_all on company_memberships for all using (is_adminish(company_id)) with check (is_adminish(company_id));
+create policy if not exists features_admin_all on company_features for all using (is_adminish(company_id)) with check (is_adminish(company_id));
+create policy if not exists billing_admin_all on company_billing for all using (is_adminish(company_id)) with check (is_adminish(company_id));
+create policy if not exists usage_admin_select on ai_usage_aggregates for select using (is_adminish(company_id));
+create policy if not exists audit_admin_select on audit_logs for select using (is_adminish(company_id));
