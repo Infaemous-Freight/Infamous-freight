@@ -50,19 +50,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(500).json({ error: companyError?.message ?? "Company create failed" });
   }
 
-  await supabaseAdmin.from("company_memberships").insert({
-    company_id: company.id,
-    user_id: ownerUserId,
-    role: "owner",
-  });
+  const { error: membershipError } = await supabaseAdmin
+    .from("company_memberships")
+    .insert({
+      company_id: company.id,
+      user_id: ownerUserId,
+      role: "owner",
+    });
 
-  await supabaseAdmin.from("company_features").insert({ company_id: company.id });
+  if (membershipError) {
+    // Best-effort cleanup of the created company if membership creation fails
+    await supabaseAdmin.from("companies").delete().eq("id", company.id);
+    return res.status(500).json({ error: membershipError.message ?? "Company membership create failed" });
+  }
 
-  await supabaseAdmin.from("company_billing").insert({
-    company_id: company.id,
-    status: "trial",
-    ...ENTERPRISE_DEFAULTS,
-  });
+  const { error: featuresError } = await supabaseAdmin
+    .from("company_features")
+    .insert({ company_id: company.id });
 
+  if (featuresError) {
+    // Best-effort cleanup of prior records if feature creation fails
+    await supabaseAdmin.from("company_memberships").delete().eq("company_id", company.id);
+    await supabaseAdmin.from("companies").delete().eq("id", company.id);
+    return res.status(500).json({ error: featuresError.message ?? "Company features create failed" });
+  }
+
+  const { error: billingError } = await supabaseAdmin
+    .from("company_billing")
+    .insert({
+      company_id: company.id,
+      status: "trial",
+      ...ENTERPRISE_DEFAULTS,
+    });
+
+  if (billingError) {
+    // Best-effort cleanup of prior records if billing creation fails
+    await supabaseAdmin.from("company_features").delete().eq("company_id", company.id);
+    await supabaseAdmin.from("company_memberships").delete().eq("company_id", company.id);
+    await supabaseAdmin.from("companies").delete().eq("id", company.id);
+    return res.status(500).json({ error: billingError.message ?? "Company billing create failed" });
+  }
   return res.status(200).json({ ok: true, companyId: company.id });
 }
