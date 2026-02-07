@@ -122,7 +122,17 @@ create table if not exists public.profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   active_company_id uuid references public.companies(id) on delete set null,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  constraint profiles_active_company_membership_check
+    check (
+      active_company_id is null
+      or exists (
+        select 1
+        from public.company_memberships cm
+        where cm.company_id = active_company_id
+          and cm.user_id = user_id
+      )
+    )
 );
 
 drop trigger if exists trg_profiles_updated on public.profiles;
