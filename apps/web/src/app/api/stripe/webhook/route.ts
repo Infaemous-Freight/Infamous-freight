@@ -29,7 +29,7 @@ function mapStripeStatus(
 }
 
 export async function POST(req: Request) {
-  const rl = rateLimit(`wh:${req.headers.get("x-forwarded-for") ?? "local"}`, 600, 60_000);
+  const rl = rateLimit("wh:stripe-webhook", 600, 60_000);
   if (!rl.ok) {
     return jsonWithRequestId(req, { error: "Rate limited" }, { status: 429 });
   }
