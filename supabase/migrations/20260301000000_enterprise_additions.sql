@@ -17,7 +17,7 @@ create table if not exists public.profiles (
 drop trigger if exists trg_profiles_updated on public.profiles;
 create trigger trg_profiles_updated
 before update on public.profiles
-for each row execute function public.set_updated_at();
+for each row execute function public.update_updated_at_column();
 
 alter table public.profiles enable row level security;
 
