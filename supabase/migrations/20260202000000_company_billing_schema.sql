@@ -61,15 +61,11 @@ create table if not exists public.ai_usage_aggregates (
   primary key (company_id, month_key)
 );
 
-create table if not exists public.audit_logs (
-  id uuid primary key default gen_random_uuid(),
-  company_id uuid not null references public.companies(id) on delete cascade,
-  actor_user_id uuid references auth.users(id) on delete set null,
-  action text not null,
-  meta jsonb not null default '{}'::jsonb,
-  created_at timestamptz not null default now()
-);
-
+-- extend existing audit_logs table with company-specific fields
+alter table if exists public.audit_logs
+  add column if not exists company_id uuid references public.companies(id) on delete cascade,
+  add column if not exists actor_user_id uuid references auth.users(id) on delete set null,
+  add column if not exists meta jsonb not null default '{}'::jsonb;
 -- updated_at helper
 create or replace function public.set_updated_at()
 returns trigger language plpgsql as $$
