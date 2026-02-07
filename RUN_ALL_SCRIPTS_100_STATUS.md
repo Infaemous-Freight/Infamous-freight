@@ -4,14 +4,14 @@
 
 **Total Scripts Found**: 133 scripts across multiple categories
 
-| Category | Count | Status |
-|----------|-------|--------|
-| Setup Scripts | 47 | ⏳ Blocked (Node.js unavailable) |
-| Deployment Scripts | 25 | ⏳ Blocked (Node.js unavailable) |
-| Validation Scripts | 21 | ⏳ Blocked (Node.js unavailable) |
-| Monitoring Scripts | 9 | ⏳ Blocked (Node.js unavailable) |
-| Development Scripts | 15+ | ⏳ Blocked (Node.js unavailable) |
-| Other Scripts | 16+ | ⏳ Blocked (Node.js unavailable) |
+| Category            | Count | Status                          |
+| ------------------- | ----- | ------------------------------- |
+| Setup Scripts       | 47    | ⏳ Blocked (Node.js unavailable) |
+| Deployment Scripts  | 25    | ⏳ Blocked (Node.js unavailable) |
+| Validation Scripts  | 21    | ⏳ Blocked (Node.js unavailable) |
+| Monitoring Scripts  | 9     | ⏳ Blocked (Node.js unavailable) |
+| Development Scripts | 15+   | ⏳ Blocked (Node.js unavailable) |
+| Other Scripts       | 16+   | ⏳ Blocked (Node.js unavailable) |
 
 ---
 
@@ -413,18 +413,18 @@ EOF
 
 ## 📊 Execution Metrics (Projected After Rebuild)
 
-| Metric | Value |
-|--------|-------|
-| Total Scripts | 133 |
-| Expected Success | 95%+ |
-| Estimated Time | 20-45 minutes |
-| Critical Scripts | 25 |
-| Optional Scripts | 108 |
-| Setup Scripts | 47 |
-| Deployment Scripts | 25 |
-| Validation Scripts | 21 |
-| Monitoring Scripts | 9 |
-| Other Scripts | 31 |
+| Metric             | Value         |
+| ------------------ | ------------- |
+| Total Scripts      | 133           |
+| Expected Success   | 95%+          |
+| Estimated Time     | 20-45 minutes |
+| Critical Scripts   | 25            |
+| Optional Scripts   | 108           |
+| Setup Scripts      | 47            |
+| Deployment Scripts | 25            |
+| Validation Scripts | 21            |
+| Monitoring Scripts | 9             |
+| Other Scripts      | 31            |
 
 ---
 

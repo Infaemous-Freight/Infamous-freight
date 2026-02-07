@@ -45,35 +45,35 @@ Looks like pnpm CLI is missing at
 
 ### Core Platform Versions
 
-| Component | Required | Current | Status |
-|-----------|----------|---------|--------|
-| **pnpm** | ^9.15.0 | 10.28.2 | ✅ FIXED |
-| **Node.js** | >=20.0.0 | 24 | ✅ OK |
-| **Next.js** | ^16.1.6 | ^16.1.6 | ✅ OK |
-| **TypeScript** | ^5.9.3 | ^5.9.3 | ✅ OK |
-| **Express.js** | - | - | ✅ OK |
-| **React** | - | - | ✅ OK |
-| **Prisma** | - | - | ✅ OK |
+| Component      | Required | Current | Status  |
+| -------------- | -------- | ------- | ------- |
+| **pnpm**       | ^9.15.0  | 10.28.2 | ✅ FIXED |
+| **Node.js**    | >=20.0.0 | 24      | ✅ OK    |
+| **Next.js**    | ^16.1.6  | ^16.1.6 | ✅ OK    |
+| **TypeScript** | ^5.9.3   | ^5.9.3  | ✅ OK    |
+| **Express.js** | -        | -       | ✅ OK    |
+| **React**      | -        | -       | ✅ OK    |
+| **Prisma**     | -        | -       | ✅ OK    |
 
 ### Database & Services
 
-| Service | Version | Status |
-|---------|---------|--------|
-| PostgreSQL | 16-alpine | ✅ OK |
-| Redis | 7-alpine | ✅ OK |
-| Docker Compose | 3.9 | ✅ OK |
+| Service        | Version   | Status |
+| -------------- | --------- | ------ |
+| PostgreSQL     | 16-alpine | ✅ OK   |
+| Redis          | 7-alpine  | ✅ OK   |
+| Docker Compose | 3.9       | ✅ OK   |
 
 ### Development Environment
 
-| Tool | Required | Installed | Status |
-|------|----------|-----------|--------|
-| pnpm | 9.15.0 | 10.28.2 (now: 9.15.0) | ✅ FIXED |
-| Node.js | >=20.0.0 | 24 | ✅ OK |
-| git | latest | ✅ | ✅ OK |
-| docker | latest | ✅ | ✅ OK |
-| GitHub CLI | - | ✅ | ✅ OK |
-| Azure CLI | - | ✅ | ✅ OK |
-| AWS CLI | - | ✅ | ✅ OK |
+| Tool       | Required | Installed             | Status  |
+| ---------- | -------- | --------------------- | ------- |
+| pnpm       | 9.15.0   | 10.28.2 (now: 9.15.0) | ✅ FIXED |
+| Node.js    | >=20.0.0 | 24                    | ✅ OK    |
+| git        | latest   | ✅                     | ✅ OK    |
+| docker     | latest   | ✅                     | ✅ OK    |
+| GitHub CLI | -        | ✅                     | ✅ OK    |
+| Azure CLI  | -        | ✅                     | ✅ OK    |
+| AWS CLI    | -        | ✅                     | ✅ OK    |
 
 ---
 
