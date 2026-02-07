@@ -241,6 +241,15 @@ export default function Pricing({ initialPlans, initialConfigured }: PricingProp
               Weather disruption modeling, delay prediction, and route risk scoring.
             </p>
             <div className="helper-text">Enabled by feature flag and billing state.</div>
+            <div style={{ marginTop: "16px" }}>
+              <Link
+                href="/dashboard/billing"
+                className="btn btn-primary"
+                onClick={() => trackEvent("pricing_intelligence_addon_cta_clicked")}
+              >
+                Manage Intelligence Add-On in billing
+              </Link>
+            </div>
           </div>
         </div>
       </section>
