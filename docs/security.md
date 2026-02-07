@@ -27,7 +27,7 @@ procurement.
 
 **Contact**
 
-- security@infaemousfreight.ai
+- security@infamousfreight.com
 
 ## Security Posture Summary
 
