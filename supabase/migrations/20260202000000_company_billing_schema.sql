@@ -251,24 +251,96 @@ create policy stripe_events_none on public.stripe_webhook_events for select usin
 drop policy if exists subitems_admin_read on public.stripe_subscription_items;
 create policy subitems_admin_read on public.stripe_subscription_items for select using (public.is_adminish(company_id));
 
--- ops member rw
+-- ops member/admin policies
 drop policy if exists loads_member_rw on public.loads;
-create policy loads_member_rw on public.loads for all using (public.is_member(company_id)) with check (public.is_member(company_id));
+create policy loads_member_read on public.loads
+  for select
+  using (public.is_member(company_id));
+create policy loads_admin_insert on public.loads
+  for insert
+  with check (public.is_adminish(company_id));
+create policy loads_admin_update on public.loads
+  for update
+  using (public.is_adminish(company_id))
+  with check (public.is_adminish(company_id));
+create policy loads_admin_delete on public.loads
+  for delete
+  using (public.is_adminish(company_id));
 
 drop policy if exists assignments_member_rw on public.assignments;
-create policy assignments_member_rw on public.assignments for all using (public.is_member(company_id)) with check (public.is_member(company_id));
+create policy assignments_member_read on public.assignments
+  for select
+  using (public.is_member(company_id));
+create policy assignments_admin_insert on public.assignments
+  for insert
+  with check (public.is_adminish(company_id));
+create policy assignments_admin_update on public.assignments
+  for update
+  using (public.is_adminish(company_id))
+  with check (public.is_adminish(company_id));
+create policy assignments_admin_delete on public.assignments
+  for delete
+  using (public.is_adminish(company_id));
 
 drop policy if exists documents_member_rw on public.documents;
-create policy documents_member_rw on public.documents for all using (public.is_member(company_id)) with check (public.is_member(company_id));
+create policy documents_member_read on public.documents
+  for select
+  using (public.is_member(company_id));
+create policy documents_admin_insert on public.documents
+  for insert
+  with check (public.is_adminish(company_id));
+create policy documents_admin_update on public.documents
+  for update
+  using (public.is_adminish(company_id))
+  with check (public.is_adminish(company_id));
+create policy documents_admin_delete on public.documents
+  for delete
+  using (public.is_adminish(company_id));
 
 drop policy if exists status_events_member_rw on public.status_events;
-create policy status_events_member_rw on public.status_events for all using (public.is_member(company_id)) with check (public.is_member(company_id));
+create policy status_events_member_read on public.status_events
+  for select
+  using (public.is_member(company_id));
+create policy status_events_admin_insert on public.status_events
+  for insert
+  with check (public.is_adminish(company_id));
+create policy status_events_admin_update on public.status_events
+  for update
+  using (public.is_adminish(company_id))
+  with check (public.is_adminish(company_id));
+create policy status_events_admin_delete on public.status_events
+  for delete
+  using (public.is_adminish(company_id));
 
 drop policy if exists threads_member_rw on public.threads;
-create policy threads_member_rw on public.threads for all using (public.is_member(company_id)) with check (public.is_member(company_id));
+create policy threads_member_read on public.threads
+  for select
+  using (public.is_member(company_id));
+create policy threads_admin_insert on public.threads
+  for insert
+  with check (public.is_adminish(company_id));
+create policy threads_admin_update on public.threads
+  for update
+  using (public.is_adminish(company_id))
+  with check (public.is_adminish(company_id));
+create policy threads_admin_delete on public.threads
+  for delete
+  using (public.is_adminish(company_id));
 
 drop policy if exists messages_member_rw on public.messages;
-create policy messages_member_rw on public.messages for all using (public.is_member(company_id)) with check (public.is_member(company_id));
+create policy messages_member_read on public.messages
+  for select
+  using (public.is_member(company_id));
+create policy messages_admin_insert on public.messages
+  for insert
+  with check (public.is_adminish(company_id));
+create policy messages_admin_update on public.messages
+  for update
+  using (public.is_adminish(company_id))
+  with check (public.is_adminish(company_id));
+create policy messages_admin_delete on public.messages
+  for delete
+  using (public.is_adminish(company_id));
 
 -- storage policies (requires bucket named 'documents')
 drop policy if exists "documents_read_company" on storage.objects;
