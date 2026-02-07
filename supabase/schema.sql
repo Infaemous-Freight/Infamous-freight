@@ -174,6 +174,16 @@ create policy usage_admin_read
 on public.ai_usage_aggregates for select
 using (public.is_adminish(company_id));
 
+drop policy if exists usage_admin_insert on public.ai_usage_aggregates;
+create policy usage_admin_insert
+on public.ai_usage_aggregates for insert
+with check (public.is_adminish(company_id));
+
+drop policy if exists usage_admin_update on public.ai_usage_aggregates;
+create policy usage_admin_update
+on public.ai_usage_aggregates for update
+using (public.is_adminish(company_id))
+with check (public.is_adminish(company_id));
 drop policy if exists audit_admin_read on public.audit_logs;
 create policy audit_admin_read
 on public.audit_logs for select
