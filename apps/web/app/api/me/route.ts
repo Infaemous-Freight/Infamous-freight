@@ -4,8 +4,15 @@ import { requireUser, getUserCompanies, getActiveCompanyId } from "@/lib/auth-se
 export const runtime = "nodejs";
 
 export async function GET(req: Request) {
-  const user = await requireUser(req);
-  const companies = await getUserCompanies(user.id);
-  const activeCompanyId = await getActiveCompanyId(user.id);
-  return NextResponse.json({ userId: user.id, companies, activeCompanyId });
+  try {
+    const user = await requireUser(req);
+    const companies = await getUserCompanies(user.id);
+    const activeCompanyId = await getActiveCompanyId(user.id);
+    return NextResponse.json({ userId: user.id, companies, activeCompanyId });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 },
+    );
+  }
 }
