@@ -1362,7 +1362,7 @@ async def websocket_messages(websocket: WebSocket, thread_id: str):
     await manager.connect(websocket, f"thread_{thread_id}")
     try:
         while True:
-            data = await websocket.receive_text()
+            await websocket.receive_text()
             # Handle incoming messages if needed
     except WebSocketDisconnect:
         manager.disconnect(websocket, f"thread_{thread_id}")
@@ -1372,9 +1372,9 @@ async def websocket_tracking(websocket: WebSocket, assignment_id: str):
     await manager.connect(websocket, f"tracking_{assignment_id}")
     try:
         while True:
-            data = await websocket.receive_text()
+            await websocket.receive_text()
     except WebSocketDisconnect:
-        manager.disconnect(websocket, f"tracking_{assignment_id}")
+        manager.disconnect(websocket, f"tracking_{assignment_id})")
 
 # ============= HEALTH CHECK =============
 @api_router.get("/")
