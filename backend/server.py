@@ -1031,9 +1031,13 @@ async def get_thread_by_load(load_id: str, user: dict = Depends(get_current_user
 async def get_thread_messages(thread_id: str, user: dict = Depends(get_current_user)):
     messages = await db.messages.find({"thread_id": thread_id}, {"_id": 0}).sort("created_at", 1).limit(200).to_list(200)
     
-    for msg in messages:
-        sender = await db.users.find_one({"id": msg["sender_id"]}, {"_id": 0, "display_name": 1})
-        msg["sender_name"] = sender.get("display_name") if sender else None
+    # Batch fetch sender names (avoid N+1 queries)
+    sender_ids = list(set(msg["sender_id"] for msg in messages))
+    if sender_ids:
+        senders = await db.users.find({"id": {"$in": sender_ids}}, {"_id": 0, "id": 1, "display_name": 1}).to_list(len(sender_ids))
+        sender_map = {s["id"]: s.get("display_name") for s in senders}
+        for msg in messages:
+            msg["sender_name"] = sender_map.get(msg["sender_id"])
     
     return [MessageResponse(**msg) for msg in messages]
 
