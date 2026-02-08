@@ -1202,14 +1202,14 @@ async def get_payment_status(session_id: str, user: dict = Depends(get_current_u
     stripe_key = os.environ.get('STRIPE_API_KEY')
     stripe_checkout = StripeCheckout(api_key=stripe_key, webhook_url="")
     
-    status = await stripe_checkout.get_checkout_status(session_id)
+    payment_status = await stripe_checkout.get_checkout_status(session_id)
     
     # Update transaction
     tx = await db.payment_transactions.find_one({"session_id": session_id}, {"_id": 0})
-    if tx and tx["payment_status"] != "paid" and status.payment_status == "paid":
+    if tx and tx["payment_status"] != "paid" and payment_status.payment_status == "paid":
         await db.payment_transactions.update_one(
             {"session_id": session_id},
-            {"$set": {"status": status.status, "payment_status": status.payment_status}}
+            {"$set": {"status": payment_status.status, "payment_status": payment_status.payment_status}}
         )
         
         # Apply package benefits
