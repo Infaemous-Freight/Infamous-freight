@@ -331,7 +331,7 @@ async def get_optional_user(credentials: HTTPAuthorizationCredentials = Depends(
         payload = decode_token(credentials.credentials)
         user = await db.users.find_one({"id": payload["user_id"]}, {"_id": 0})
         return user
-    except:
+    except Exception:
         return None
 
 # ============= WEBSOCKET MANAGER =============
