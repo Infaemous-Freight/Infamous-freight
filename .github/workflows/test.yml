@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         node-version: [24]
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -65,7 +65,7 @@ jobs:
             const global = coverage.total;
             const comment = `
             ## 📊 Coverage Report
-            
+
             | Metric | Coverage |
             |--------|----------|
             | Statements | ${global.statements.pct}% |
