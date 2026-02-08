@@ -21,9 +21,9 @@ jobs:
 
       - name: Set up pnpm
         if: steps.igfx-assets.outputs.igfx_present == 'true'
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 9
+          run_install: false
 
       - name: Set up Node.js
         if: steps.igfx-assets.outputs.igfx_present == 'true'
