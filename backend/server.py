@@ -560,7 +560,7 @@ async def create_load(load_data: LoadCreate, user: dict = Depends(get_current_us
 
 @api_router.get("/loads", response_model=List[LoadResponse])
 async def list_loads(
-    status: Optional[str] = None,
+    status_filter: Optional[str] = None,
     pickup_state: Optional[str] = None,
     dropoff_state: Optional[str] = None,
     equipment: Optional[str] = None,
@@ -572,7 +572,7 @@ async def list_loads(
 ):
     query = {"status": {"$in": ["posted", "booked", "in_transit", "delivered"]}}
     
-    if status:
+    if status_filter:
         query["status"] = status
     if pickup_state:
         query["pickup_state"] = pickup_state.upper()
