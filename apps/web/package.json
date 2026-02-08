@@ -10,19 +10,20 @@
   },
   "copyright": "Copyright © 2025 Infæmous Freight. All Rights Reserved.",
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev",
     "build": "next build",
     "build:analyze": "ANALYZE=true next build",
     "build:sentry": "SENTRY_RELEASE=$(git rev-parse HEAD) next build",
-    "start": "next start -p 3000",
+    "start": "next start",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest",
     "test:security": "vitest run tests/security.test.ts",
     "test:watch": "vitest watch",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings 0",
+    "lint": "next lint",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "sentry:sourcemaps": "sentry-cli sourcemaps upload --release=$SENTRY_RELEASE .next",
-    "sentry:release": "sentry-cli releases new $SENTRY_RELEASE && sentry-cli releases set-commits $SENTRY_RELEASE --auto && sentry-cli releases finalize $SENTRY_RELEASE"
+    "sentry:release": "sentry-cli releases new $SENTRY_RELEASE && sentry-cli releases set-commits $SENTRY_RELEASE --auto && sentry-cli releases finalize $SENTRY_RELEASE",
+    "prebuild": "pnpm -w --filter @infamous-freight/shared build"
   },
   "dependencies": {
     "@datadog/browser-rum": "^6.26.0",

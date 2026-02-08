@@ -1,0 +1,12 @@
+{
+  "name": "api",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "node -e \"console.log('api dev not configured')\"",
+    "build": "node -e \"console.log('api build ok')\"",
+    "start": "node -e \"console.log('api start ok')\"",
+    "lint": "echo \"api: lint not configured\"",
+    "typecheck": "echo \"api: typecheck not configured\""
+  }
+}

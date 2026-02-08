@@ -1,27 +1,16 @@
 {
   "name": "@infamous-freight/shared",
-  "version": "2.2.0",
+  "version": "1.0.0",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "license": "Proprietary",
-  "author": {
-    "name": "Santorio Djuan Miles",
-    "email": "237955567+MrMiless44@users.noreply.github.com"
-  },
-  "copyright": "Copyright © 2025 Infæmous Freight. All Rights Reserved.",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit --pretty false",
-    "lint": "echo \"(shared) lint not configured\"",
-    "test": "echo \"(shared) no tests\"",
-    "clean": "rm -rf dist node_modules"
-  },
-  "devDependencies": {
-    "@types/node": "^25.2.0",
-    "typescript": "^5.9.3"
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "echo \"shared: lint not configured\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   }
 }
