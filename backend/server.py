@@ -33,7 +33,7 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 72
 
 # Create the main app
-app = FastAPI(title="Infæmous Freight API")
+app = FastAPI(title="IMFÆMOUS FREIGHT API")
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer(auto_error=False)
 
@@ -1379,7 +1379,7 @@ async def websocket_tracking(websocket: WebSocket, assignment_id: str):
 # ============= HEALTH CHECK =============
 @api_router.get("/")
 async def root():
-    return {"message": "Infæmous Freight API", "status": "running", "version": "2.0"}
+    return {"message": "IMFÆMOUS FREIGHT API", "status": "running", "version": "2.0"}
 
 @api_router.get("/health")
 async def health_check():

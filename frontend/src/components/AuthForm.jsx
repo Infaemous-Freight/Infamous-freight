@@ -63,7 +63,7 @@ export const AuthForm = ({ mode = 'signin' }) => {
             </h1>
             <p className="text-zinc-500 mt-2">
               {mode === 'signin'
-                ? 'Welcome back to Infæmous Freight'
+                ? 'Welcome back to IMFÆMOUS FREIGHT'
                 : 'Join the freight marketplace'}
             </p>
           </div>

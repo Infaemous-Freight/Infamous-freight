@@ -63,7 +63,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="font-heading text-4xl font-bold uppercase tracking-tight mb-4">
-              Why Choose Infæmous Freight?
+              Why Choose IMFÆMOUS FREIGHT?
             </h2>
             <p className="text-zinc-500 max-w-xl mx-auto">
               The freight marketplace built for speed, transparency, and results.
@@ -165,7 +165,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <Truck className="h-5 w-5 text-amber-500" />
-            <span className="font-heading text-sm uppercase tracking-tight">Infæmous Freight</span>
+            <span className="font-heading text-sm uppercase tracking-tight">IMFÆMOUS FREIGHT</span>
           </div>
           <p className="text-zinc-600 text-sm font-mono">
             © {new Date().getFullYear()} Get Truck'N MVP

@@ -40,7 +40,7 @@ export const Navbar = () => {
             </div>
             <div className="hidden sm:block">
               <span className="font-heading text-xl font-bold tracking-tight uppercase">
-                Infæmous Freight
+                IMFÆMOUS FREIGHT
               </span>
               <span className="ml-2 text-xs font-mono text-amber-500 border border-amber-800 px-2 py-0.5 rounded-sm">
                 GET TRUCK'N
