@@ -15,10 +15,11 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.json --noEmit --pretty false",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "echo \"(shared) lint not configured\"",
     "test": "echo \"(shared) no tests\"",
-    "clean": "rm -rf dist node_modules"
+    "clean": "rm -rf dist node_modules",
+    "dev": "tsc -p tsconfig.json --watch"
   },
   "devDependencies": {
     "@types/node": "^25.2.0",
