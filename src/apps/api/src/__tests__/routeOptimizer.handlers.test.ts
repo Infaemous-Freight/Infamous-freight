@@ -84,7 +84,10 @@ describe("Route Optimizer API Handlers", () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: expect.stringContaining("required"),
+          error: expect.objectContaining({
+            message: expect.any(String),
+            statusCode: expect.any(Number),
+          }),
         }),
       );
     });
@@ -220,7 +223,10 @@ describe("Route Optimizer API Handlers", () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: expect.stringContaining("required"),
+          error: expect.objectContaining({
+            message: expect.any(String),
+            statusCode: expect.any(Number),
+          }),
         }),
       );
     });

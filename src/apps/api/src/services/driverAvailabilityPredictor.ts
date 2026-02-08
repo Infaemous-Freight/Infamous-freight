@@ -253,18 +253,22 @@ export async function predictDriverAvailability(req: Request, res: Response) {
     currentTime,
   } = req.body ?? {};
 
-  if (!driverId) {
-    return res.status(400).json({
-      error: "driverId is required",
+  const respondWithError = (statusCode: number, message: string) =>
+    res.status(statusCode).json({
+      error: {
+        message,
+        statusCode,
+      },
     });
+
+  if (!driverId) {
+    return respondWithError(400, "driverId is required");
   }
 
   try {
     const predictionTime = currentTime ? new Date(currentTime) : new Date();
     if (Number.isNaN(predictionTime.getTime())) {
-      return res.status(400).json({
-        error: "currentTime must be a valid date string",
-      });
+      return respondWithError(400, "currentTime must be a valid date string");
     }
 
     const predictor = new DriverAvailabilityPredictor();
@@ -282,10 +286,7 @@ export async function predictDriverAvailability(req: Request, res: Response) {
       data: prediction,
     });
   } catch (error) {
-    res.status(500).json({
-      error: "Prediction failed",
-      message: error instanceof Error ? error.message : "Unknown error",
-    });
+    respondWithError(500, "Prediction failed");
   }
 }
 
@@ -305,18 +306,23 @@ export async function getDispatchRecommendations(
       trafficLevel = 50,
     } = req.body ?? {};
 
-    if (!targetTime) {
-      res.status(400).json({
-        error: "targetTime is required",
+    const respondWithError = (statusCode: number, message: string) => {
+      res.status(statusCode).json({
+        error: {
+          message,
+          statusCode,
+        },
       });
+    };
+
+    if (!targetTime) {
+      respondWithError(400, "targetTime is required");
       return;
     }
 
     const parsedTargetTime = new Date(targetTime);
     if (Number.isNaN(parsedTargetTime.getTime())) {
-      res.status(400).json({
-        error: "targetTime must be a valid date string",
-      });
+      respondWithError(400, "targetTime must be a valid date string");
       return;
     }
 
@@ -367,7 +373,10 @@ export async function getDispatchRecommendations(
     });
   } catch (error) {
     res.status(500).json({
-      error: "Failed to get recommendations",
+      error: {
+        message: "Failed to get recommendations",
+        statusCode: 500,
+      },
     });
   }
 }

@@ -236,7 +236,10 @@ export async function updateLocation(req: Request, res: Response): Promise<void>
 
   if (!driverId || latitude === undefined || longitude === undefined) {
     res.status(400).json({
-      error: 'driverId, latitude, and longitude are required',
+      error: {
+        message: 'driverId, latitude, and longitude are required',
+        statusCode: 400,
+      },
     });
     return;
   }
@@ -264,7 +267,10 @@ export async function updateLocation(req: Request, res: Response): Promise<void>
     });
   } catch (error) {
     res.status(500).json({
-      error: 'Location update failed',
+      error: {
+        message: 'Location update failed',
+        statusCode: 500,
+      },
     });
   }
 }
@@ -277,7 +283,10 @@ export async function getETA(req: Request, res: Response): Promise<void> {
 
   if (!driverId || destinationLat === undefined || destinationLng === undefined) {
     res.status(400).json({
-      error: 'driverId, destinationLat, and destinationLng are required',
+      error: {
+        message: 'driverId, destinationLat, and destinationLng are required',
+        statusCode: 400,
+      },
     });
     return;
   }
@@ -291,7 +300,10 @@ export async function getETA(req: Request, res: Response): Promise<void> {
 
     if (!eta) {
       res.status(404).json({
-        error: 'Driver location not found',
+        error: {
+          message: 'Driver location not found',
+          statusCode: 404,
+        },
       });
       return;
     }
@@ -302,7 +314,10 @@ export async function getETA(req: Request, res: Response): Promise<void> {
     });
   } catch (error) {
     res.status(500).json({
-      error: 'ETA calculation failed',
+      error: {
+        message: 'ETA calculation failed',
+        statusCode: 500,
+      },
     });
   }
 }
@@ -333,7 +348,10 @@ export async function getActiveDrivers(req: Request, res: Response): Promise<voi
     });
   } catch (error) {
     res.status(500).json({
-      error: 'Failed to fetch active drivers',
+      error: {
+        message: 'Failed to fetch active drivers',
+        statusCode: 500,
+      },
     });
   }
 }

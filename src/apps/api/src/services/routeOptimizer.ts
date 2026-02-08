@@ -218,7 +218,10 @@ export async function optimizeRoute(req: any, res: any) {
 
   if (!start || !end) {
     return res.status(400).json({
-      error: "start and end locations are required",
+      error: {
+        message: "start and end locations are required",
+        statusCode: 400,
+      },
     });
   }
 
@@ -240,8 +243,10 @@ export async function optimizeRoute(req: any, res: any) {
     });
   } catch (error) {
     res.status(500).json({
-      error: "Route optimization failed",
-      message: error instanceof Error ? error.message : "Unknown error",
+      error: {
+        message: "Route optimization failed",
+        statusCode: 500,
+      },
     });
   }
 }
@@ -254,7 +259,10 @@ export async function optimizeMultiStop(req: any, res: any) {
 
   if (!start || !stops || !Array.isArray(stops) || stops.length === 0) {
     return res.status(400).json({
-      error: "start and stops array are required",
+      error: {
+        message: "start and stops array are required",
+        statusCode: 400,
+      },
     });
   }
 
@@ -276,7 +284,10 @@ export async function optimizeMultiStop(req: any, res: any) {
     });
   } catch (error) {
     res.status(500).json({
-      error: "Multi-stop optimization failed",
+      error: {
+        message: "Multi-stop optimization failed",
+        statusCode: 500,
+      },
     });
   }
 }

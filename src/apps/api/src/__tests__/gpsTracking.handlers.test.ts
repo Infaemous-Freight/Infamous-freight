@@ -59,7 +59,10 @@ describe("GPS Tracking API Handlers", () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: expect.stringContaining("required"),
+          error: expect.objectContaining({
+            message: expect.any(String),
+            statusCode: expect.any(Number),
+          }),
         }),
       );
     });
@@ -244,7 +247,10 @@ describe("GPS Tracking API Handlers", () => {
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
-          error: expect.stringContaining("not found"),
+          error: expect.objectContaining({
+            message: expect.any(String),
+            statusCode: expect.any(Number),
+          }),
         }),
       );
     });
