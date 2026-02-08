@@ -32,9 +32,9 @@ export default function LanePreferencesPage() {
   const [adding, setAdding] = useState(false);
 
   const [newPref, setNewPref] = useState({
-    pickup_state: '',
-    dropoff_state: '',
-    equipment: '',
+    pickup_state: undefined,
+    dropoff_state: undefined,
+    equipment: undefined,
     min_rate_cents: '',
   });
 
