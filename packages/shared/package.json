@@ -12,5 +12,9 @@
     "dev": "tsc -p tsconfig.json --watch",
     "lint": "echo \"shared: lint not configured\"",
     "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
   }
 }
