@@ -704,9 +704,13 @@ async def get_load_bids(load_id: str, user: dict = Depends(get_current_user)):
     else:
         bids = await db.bids.find({"load_id": load_id}, {"_id": 0}).sort("created_at", -1).to_list(100)
     
-    for bid in bids:
-        carrier = await db.users.find_one({"id": bid["carrier_id"]}, {"_id": 0})
-        if carrier:
+    # Batch fetch carrier details (avoid N+1 queries)
+    carrier_ids = list(set(bid["carrier_id"] for bid in bids))
+    if carrier_ids:
+        carriers = await db.users.find({"id": {"$in": carrier_ids}}, {"_id": 0, "id": 1, "display_name": 1, "rating": 1, "is_verified": 1}).to_list(len(carrier_ids))
+        carrier_map = {c["id"]: c for c in carriers}
+        for bid in bids:
+            carrier = carrier_map.get(bid["carrier_id"], {})
             bid["carrier_name"] = carrier.get("display_name")
             bid["carrier_rating"] = carrier.get("rating")
             bid["carrier_verified"] = carrier.get("is_verified", False)
