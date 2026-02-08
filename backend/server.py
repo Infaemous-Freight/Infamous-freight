@@ -573,7 +573,7 @@ async def list_loads(
     query = {"status": {"$in": ["posted", "booked", "in_transit", "delivered"]}}
     
     if status_filter:
-        query["status"] = status
+        query["status"] = status_filter
     if pickup_state:
         query["pickup_state"] = pickup_state.upper()
     if dropoff_state:
