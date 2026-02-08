@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-08T02:04:40.119449",
+  "timestamp": "2026-02-08T03:03:23.401818",
   "base_url": "https://truck-marketplace-6.preview.emergentagent.com",
   "summary": {
     "tests_run": 26,
@@ -10,9 +10,9 @@
     {
       "name": "Root endpoint (/api/)",
       "success": true,
-      "details": "{\"message\":\"Inf\u00e6mous Freight API\",\"status\":\"running\",\"version\":\"2.0\"}",
+      "details": "{\"message\":\"IMF\u00c6MOUS FREIGHT API\",\"status\":\"running\",\"version\":\"2.0\"}",
       "response_data": {
-        "message": "Inf\u00e6mous Freight API",
+        "message": "IMF\u00c6MOUS FREIGHT API",
         "status": "running",
         "version": "2.0"
       }
@@ -20,10 +20,10 @@
     {
       "name": "Health check (/api/health)",
       "success": true,
-      "details": "{\"ok\":true,\"time\":\"2026-02-08T02:04:34.080224+00:00\"}",
+      "details": "{\"ok\":true,\"time\":\"2026-02-08T03:03:18.272109+00:00\"}",
       "response_data": {
         "ok": true,
-        "time": "2026-02-08T02:04:34.080224+00:00"
+        "time": "2026-02-08T03:03:18.272109+00:00"
       }
     },
     {
@@ -31,10 +31,10 @@
       "success": true,
       "details": "",
       "response_data": {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzE5YjJjMzQtZjYwYS00OWUyLWI4ODAtNGViMjNmY2NiYjk5IiwiZW1haWwiOiJzaGlwcGVyXzE3NzA1MTYyNzNAdGVzdC5jb20iLCJleHAiOjE3NzA3NzU0NzR9.YZlQ78YkJegnVLkHnkV7YG_9Cc_ts2alqJ33ig5ngJM",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZjY3ZTBmYjktODk2OS00ZGNiLTllOWUtNWYzYzVmZGM2N2IyIiwiZW1haWwiOiJzaGlwcGVyXzE3NzA1MTk3OThAdGVzdC5jb20iLCJleHAiOjE3NzA3Nzg5OTh9.wnKtRrCBa4sKA9MPBYC-K_CMEnurorO1cteATnfgfKc",
         "user": {
-          "id": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
-          "email": "shipper_1770516273@test.com",
+          "id": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
+          "email": "shipper_1770519798@test.com",
           "display_name": "Test Shipper Co",
           "role": "shipper"
         }
@@ -45,10 +45,10 @@
       "success": true,
       "details": "",
       "response_data": {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMWY2MmFhMzAtNjBlNy00N2Q4LWI4ZTktZDEzZGMwZWI3MDRlIiwiZW1haWwiOiJjYXJyaWVyXzE3NzA1MTYyNzNAdGVzdC5jb20iLCJleHAiOjE3NzA3NzU0NzR9.X_4kSLbKAVUcetEAGUkuHMUCP8Vy7QK5QpqbPNHS0To",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjE3MmMzNjAtM2M4OS00ZDE1LWIxOWItZTA0NDY0ODMzZDg5IiwiZW1haWwiOiJjYXJyaWVyXzE3NzA1MTk3OThAdGVzdC5jb20iLCJleHAiOjE3NzA3Nzg5OTh9.Qyuw66YyVnwsY3dbPw20ToAqM6HReekhyAV_76lkEPM",
         "user": {
-          "id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
-          "email": "carrier_1770516273@test.com",
+          "id": "6172c360-3c89-4d15-b19b-e04464833d89",
+          "email": "carrier_1770519798@test.com",
           "display_name": "Test Carrier LLC",
           "role": "carrier"
         }
@@ -59,10 +59,10 @@
       "success": true,
       "details": "",
       "response_data": {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMzE5YjJjMzQtZjYwYS00OWUyLWI4ODAtNGViMjNmY2NiYjk5IiwiZW1haWwiOiJzaGlwcGVyXzE3NzA1MTYyNzNAdGVzdC5jb20iLCJleHAiOjE3NzA3NzU0NzR9.YZlQ78YkJegnVLkHnkV7YG_9Cc_ts2alqJ33ig5ngJM",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZjY3ZTBmYjktODk2OS00ZGNiLTllOWUtNWYzYzVmZGM2N2IyIiwiZW1haWwiOiJzaGlwcGVyXzE3NzA1MTk3OThAdGVzdC5jb20iLCJleHAiOjE3NzA3Nzg5OTl9.TjM3OwWIGmwrLMCraBbJC29lODeNDQneIjrmYhB4Kvw",
         "user": {
-          "id": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
-          "email": "shipper_1770516273@test.com",
+          "id": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
+          "email": "shipper_1770519798@test.com",
           "display_name": "Test Shipper Co",
           "role": "shipper"
         }
@@ -73,10 +73,10 @@
       "success": true,
       "details": "",
       "response_data": {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMWY2MmFhMzAtNjBlNy00N2Q4LWI4ZTktZDEzZGMwZWI3MDRlIiwiZW1haWwiOiJjYXJyaWVyXzE3NzA1MTYyNzNAdGVzdC5jb20iLCJleHAiOjE3NzA3NzU0NzV9.xaOmSNI-r1ZVx7eU1KX7BVnCtOi28cWLEtbjuWXuq_M",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjE3MmMzNjAtM2M4OS00ZDE1LWIxOWItZTA0NDY0ODMzZDg5IiwiZW1haWwiOiJjYXJyaWVyXzE3NzA1MTk3OThAdGVzdC5jb20iLCJleHAiOjE3NzA3Nzg5OTl9.rQ9KEOkD76oIFBa8Ho_ZSFnJJFE-3HYk1F8WCLO7gPk",
         "user": {
-          "id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
-          "email": "carrier_1770516273@test.com",
+          "id": "6172c360-3c89-4d15-b19b-e04464833d89",
+          "email": "carrier_1770519798@test.com",
           "display_name": "Test Carrier LLC",
           "role": "carrier"
         }
@@ -85,10 +85,10 @@
     {
       "name": "Shipper /auth/me",
       "success": true,
-      "details": "{\"id\":\"319b2c34-f60a-49e2-b880-4eb23fccbb99\",\"email\":\"shipper_1770516273@test.com\",\"display_name\":\"Test Shipper Co\",\"role\":\"shipper\",\"company_name\":null,\"phone\":null,\"dot_number\":null,\"mc_number\":null,\"home_city\":null,\"home_state\":null,\"is_verified\":false,\"verified_until\":null,\"rating\":null,\"rating_count\":0,\"created_at\":\"2026-02-08T02:04:34.119098+00:00\"}",
+      "details": "{\"id\":\"f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2\",\"email\":\"shipper_1770519798@test.com\",\"display_name\":\"Test Shipper Co\",\"role\":\"shipper\",\"company_name\":null,\"phone\":null,\"dot_number\":null,\"mc_number\":null,\"home_city\":null,\"home_state\":null,\"is_verified\":false,\"verified_until\":null,\"rating\":null,\"rating_count\":0,\"created_at\":\"2026-02-08T03:03:18.308728+00:00\"}",
       "response_data": {
-        "id": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
-        "email": "shipper_1770516273@test.com",
+        "id": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
+        "email": "shipper_1770519798@test.com",
         "display_name": "Test Shipper Co",
         "role": "shipper",
         "company_name": null,
@@ -101,16 +101,16 @@
         "verified_until": null,
         "rating": null,
         "rating_count": 0,
-        "created_at": "2026-02-08T02:04:34.119098+00:00"
+        "created_at": "2026-02-08T03:03:18.308728+00:00"
       }
     },
     {
       "name": "Carrier /auth/me",
       "success": true,
-      "details": "{\"id\":\"1f62aa30-60e7-47d8-b8e9-d13dc0eb704e\",\"email\":\"carrier_1770516273@test.com\",\"display_name\":\"Test Carrier LLC\",\"role\":\"carrier\",\"company_name\":null,\"phone\":null,\"dot_number\":null,\"mc_number\":null,\"home_city\":null,\"home_state\":null,\"is_verified\":false,\"verified_until\":null,\"rating\":null,\"rating_count\":0,\"created_at\":\"2026-02-08T02:04:34.381409+00:00\"}",
+      "details": "{\"id\":\"6172c360-3c89-4d15-b19b-e04464833d89\",\"email\":\"carrier_1770519798@test.com\",\"display_name\":\"Test Carrier LLC\",\"role\":\"carrier\",\"company_name\":null,\"phone\":null,\"dot_number\":null,\"mc_number\":null,\"home_city\":null,\"home_state\":null,\"is_verified\":false,\"verified_until\":null,\"rating\":null,\"rating_count\":0,\"created_at\":\"2026-02-08T03:03:18.566594+00:00\"}",
       "response_data": {
-        "id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
-        "email": "carrier_1770516273@test.com",
+        "id": "6172c360-3c89-4d15-b19b-e04464833d89",
+        "email": "carrier_1770519798@test.com",
         "display_name": "Test Carrier LLC",
         "role": "carrier",
         "company_name": null,
@@ -123,7 +123,7 @@
         "verified_until": null,
         "rating": null,
         "rating_count": 0,
-        "created_at": "2026-02-08T02:04:34.381409+00:00"
+        "created_at": "2026-02-08T03:03:18.566594+00:00"
       }
     },
     {
@@ -131,8 +131,8 @@
       "success": true,
       "details": "",
       "response_data": {
-        "id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
-        "created_by": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
+        "id": "49d20177-4088-4a71-a9e9-57849615120b",
+        "created_by": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
         "created_by_name": "Test Shipper Co",
         "status": "posted",
         "pickup_city": "Los Angeles",
@@ -149,18 +149,40 @@
         "is_premium": false,
         "premium_until": null,
         "distance_miles": 370,
-        "created_at": "2026-02-08T02:04:35.265105+00:00",
-        "updated_at": "2026-02-08T02:04:35.265105+00:00"
+        "created_at": "2026-02-08T03:03:19.414843+00:00",
+        "updated_at": "2026-02-08T03:03:19.414843+00:00"
       }
     },
     {
       "name": "List all loads",
       "success": true,
-      "details": "[{\"id\":\"5c65fe50-5503-4b82-8b8d-a1edf4981738\",\"created_by\":\"319b2c34-f60a-49e2-b880-4eb23fccbb99\",\"created_by_name\":\"Test Shipper Co\",\"status\":\"posted\",\"pickup_city\":\"Los Angeles\",\"pickup_state\":\"CA\",\"pickup_date\":\"2026-02-11\",\"dropoff_city\":\"Phoenix\",\"dropoff_state\":\"AZ\",\"dropoff_date\":\"2026-02-13\",\"commodity\":\"Electronics\",\"weight_lbs\":25000,\"equipment\":\"van\",\"target_rate_cents\":250000,\"notes\":\"Fragile cargo, handle with care\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":370,\"created_at\":\"2026-02-08T02:04:35.265105+00:00\",\"updated_at\":\"2026-02-08T02:04:35.265105+00:00\"},{\"id\":\"3d851aa0-016a-4460-b384-cc2bd50080b5\",\"created_by\":\"a8c1bc20-a468-4ee7-a321-7ef334a58d6c\",\"created_by_name\":\"Test Shipper Co\",\"status\":\"booked\",\"pickup_city\":\"Los Angeles\",\"pickup_state\":\"CA\",\"pickup_date\":\"2026-02-10\",\"dropoff_city\":\"Phoenix\",\"dropoff_state\":\"AZ\",\"dropoff_date\":\"2026-02-12\",\"commodity\":\"Electronics\",\"weight_lbs\":25000,\"equipment\":\"van\",\"target_rate_cents\":250000,\"notes\":\"Fragile cargo, handle with care\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":null,\"created_at\":\"2026-02-07T13:27:17.037857+00:00\",\"updated_at\":\"2026-02-07T13:27:17.312464+00:00\"},{\"id\":\"13413b6a-1a07-4cbd-b166-67e1d32d0e18\",\"created_by\":\"50b83652-27d9-4483-bccd-cd196f55e506\",\"created_by_name\":\"Demo Shipper\",\"status\":\"booked\",\"pickup_city\":\"Chicago\",\"pickup_state\":\"IL\",\"pickup_date\":\"2026-02-15\",\"dropoff_city\":\"Detroit\",\"dropoff_state\":\"MI\",\"dropoff_date\":\"2026-02-16\",\"commodity\":\"Steel Beams\",\"weight_lbs\":35000,\"equipment\":\"flatbed\",\"target_rate_cents\":180000,\"notes\":\"Requires tarping\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":null,\"created_at\":\"2026-02-07T13:34:05.642085+00:00\",\"updated_at\":\"2026-02-07T13:34:06.056130+00:00\"}]",
+      "details": "[{\"id\":\"5c65fe50-5503-4b82-8b8d-a1edf4981738\",\"created_by\":\"319b2c34-f60a-49e2-b880-4eb23fccbb99\",\"created_by_name\":\"Test Shipper Co\",\"status\":\"booked\",\"pickup_city\":\"Los Angeles\",\"pickup_state\":\"CA\",\"pickup_date\":\"2026-02-11\",\"dropoff_city\":\"Phoenix\",\"dropoff_state\":\"AZ\",\"dropoff_date\":\"2026-02-13\",\"commodity\":\"Electronics\",\"weight_lbs\":25000,\"equipment\":\"van\",\"target_rate_cents\":250000,\"notes\":\"Fragile cargo, handle with care\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":370,\"created_at\":\"2026-02-08T02:04:35.265105+00:00\",\"updated_at\":\"2026-02-08T02:04:35.517402+00:00\"},{\"id\":\"49d20177-4088-4a71-a9e9-57849615120b\",\"created_by\":\"f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2\",\"created_by_name\":\"Test Shipper Co\",\"status\":\"posted\",\"pickup_city\":\"Los Angeles\",\"pickup_state\":\"CA\",\"pickup_date\":\"2026-02-11\",\"dropoff_city\":\"Phoenix\",\"dropoff_state\":\"AZ\",\"dropoff_date\":\"2026-02-13\",\"commodity\":\"Electronics\",\"weight_lbs\":25000,\"equipment\":\"van\",\"target_rate_cents\":250000,\"notes\":\"Fragile cargo, handle with care\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":370,\"created_at\":\"2026-02-08T03:03:19.414843+00:00\",\"updated_at\":\"2026-02-08T03:03:19.414843+00:00\"},{\"id\":\"3d851aa0-016a-4460-b384-cc2bd50080b5\",\"created_by\":\"a8c1bc20-a468-4ee7-a321-7ef334a58d6c\",\"created_by_name\":\"Test Shipper Co\",\"status\":\"booked\",\"pickup_city\":\"Los Angeles\",\"pickup_state\":\"CA\",\"pickup_date\":\"2026-02-10\",\"dropoff_city\":\"Phoenix\",\"dropoff_state\":\"AZ\",\"dropoff_date\":\"2026-02-12\",\"commodity\":\"Electronics\",\"weight_lbs\":25000,\"equipment\":\"van\",\"target_rate_cents\":250000,\"notes\":\"Fragile cargo, handle with care\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":null,\"created_at\":\"2026-02-07T13:27:17.037857+00:00\",\"updated_at\":\"2026-02-07T13:27:17.312464+00:00\"},{\"id\":\"13413b6a-1a07-4cbd-b166-67e1d32d0e18\",\"created_by\":\"50b83652-27d9-4483-bccd-cd196f55e506\",\"created_by_name\":\"Demo Shipper\",\"status\":\"booked\",\"pickup_city\":\"Chicago\",\"pickup_state\":\"IL\",\"pickup_date\":\"2026-02-15\",\"dropoff_city\":\"Detroit\",\"dropoff_state\":\"MI\",\"dropoff_date\":\"2026-02-16\",\"commodity\":\"Steel Beams\",\"weight_lbs\":35000,\"equipment\":\"flatbed\",\"target_rate_cents\":180000,\"notes\":\"Requires tarping\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":null,\"created_at\":\"2026-02-07T13:34:05.642085+00:00\",\"updated_at\":\"2026-02-07T13:34:06.056130+00:00\"}]",
       "response_data": [
         {
           "id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
           "created_by": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
+          "created_by_name": "Test Shipper Co",
+          "status": "booked",
+          "pickup_city": "Los Angeles",
+          "pickup_state": "CA",
+          "pickup_date": "2026-02-11",
+          "dropoff_city": "Phoenix",
+          "dropoff_state": "AZ",
+          "dropoff_date": "2026-02-13",
+          "commodity": "Electronics",
+          "weight_lbs": 25000,
+          "equipment": "van",
+          "target_rate_cents": 250000,
+          "notes": "Fragile cargo, handle with care",
+          "is_premium": false,
+          "premium_until": null,
+          "distance_miles": 370,
+          "created_at": "2026-02-08T02:04:35.265105+00:00",
+          "updated_at": "2026-02-08T02:04:35.517402+00:00"
+        },
+        {
+          "id": "49d20177-4088-4a71-a9e9-57849615120b",
+          "created_by": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
           "created_by_name": "Test Shipper Co",
           "status": "posted",
           "pickup_city": "Los Angeles",
@@ -177,8 +199,8 @@
           "is_premium": false,
           "premium_until": null,
           "distance_miles": 370,
-          "created_at": "2026-02-08T02:04:35.265105+00:00",
-          "updated_at": "2026-02-08T02:04:35.265105+00:00"
+          "created_at": "2026-02-08T03:03:19.414843+00:00",
+          "updated_at": "2026-02-08T03:03:19.414843+00:00"
         },
         {
           "id": "3d851aa0-016a-4460-b384-cc2bd50080b5",
@@ -229,10 +251,10 @@
     {
       "name": "Get specific load",
       "success": true,
-      "details": "{\"id\":\"5c65fe50-5503-4b82-8b8d-a1edf4981738\",\"created_by\":\"319b2c34-f60a-49e2-b880-4eb23fccbb99\",\"created_by_name\":\"Test Shipper Co\",\"status\":\"posted\",\"pickup_city\":\"Los Angeles\",\"pickup_state\":\"CA\",\"pickup_date\":\"2026-02-11\",\"dropoff_city\":\"Phoenix\",\"dropoff_state\":\"AZ\",\"dropoff_date\":\"2026-02-13\",\"commodity\":\"Electronics\",\"weight_lbs\":25000,\"equipment\":\"van\",\"target_rate_cents\":250000,\"notes\":\"Fragile cargo, handle with care\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":370,\"created_at\":\"2026-02-08T02:04:35.265105+00:00\",\"updated_at\":\"2026-02-08T02:04:35.265105+00:00\"}",
+      "details": "{\"id\":\"49d20177-4088-4a71-a9e9-57849615120b\",\"created_by\":\"f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2\",\"created_by_name\":\"Test Shipper Co\",\"status\":\"posted\",\"pickup_city\":\"Los Angeles\",\"pickup_state\":\"CA\",\"pickup_date\":\"2026-02-11\",\"dropoff_city\":\"Phoenix\",\"dropoff_state\":\"AZ\",\"dropoff_date\":\"2026-02-13\",\"commodity\":\"Electronics\",\"weight_lbs\":25000,\"equipment\":\"van\",\"target_rate_cents\":250000,\"notes\":\"Fragile cargo, handle with care\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":370,\"created_at\":\"2026-02-08T03:03:19.414843+00:00\",\"updated_at\":\"2026-02-08T03:03:19.414843+00:00\"}",
       "response_data": {
-        "id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
-        "created_by": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
+        "id": "49d20177-4088-4a71-a9e9-57849615120b",
+        "created_by": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
         "created_by_name": "Test Shipper Co",
         "status": "posted",
         "pickup_city": "Los Angeles",
@@ -249,18 +271,18 @@
         "is_premium": false,
         "premium_until": null,
         "distance_miles": 370,
-        "created_at": "2026-02-08T02:04:35.265105+00:00",
-        "updated_at": "2026-02-08T02:04:35.265105+00:00"
+        "created_at": "2026-02-08T03:03:19.414843+00:00",
+        "updated_at": "2026-02-08T03:03:19.414843+00:00"
       }
     },
     {
       "name": "Get shipper's loads",
       "success": true,
-      "details": "[{\"id\":\"5c65fe50-5503-4b82-8b8d-a1edf4981738\",\"created_by\":\"319b2c34-f60a-49e2-b880-4eb23fccbb99\",\"created_by_name\":\"Test Shipper Co\",\"status\":\"posted\",\"pickup_city\":\"Los Angeles\",\"pickup_state\":\"CA\",\"pickup_date\":\"2026-02-11\",\"dropoff_city\":\"Phoenix\",\"dropoff_state\":\"AZ\",\"dropoff_date\":\"2026-02-13\",\"commodity\":\"Electronics\",\"weight_lbs\":25000,\"equipment\":\"van\",\"target_rate_cents\":250000,\"notes\":\"Fragile cargo, handle with care\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":370,\"created_at\":\"2026-02-08T02:04:35.265105+00:00\",\"updated_at\":\"2026-02-08T02:04:35.265105+00:00\"}]",
+      "details": "[{\"id\":\"49d20177-4088-4a71-a9e9-57849615120b\",\"created_by\":\"f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2\",\"created_by_name\":\"Test Shipper Co\",\"status\":\"posted\",\"pickup_city\":\"Los Angeles\",\"pickup_state\":\"CA\",\"pickup_date\":\"2026-02-11\",\"dropoff_city\":\"Phoenix\",\"dropoff_state\":\"AZ\",\"dropoff_date\":\"2026-02-13\",\"commodity\":\"Electronics\",\"weight_lbs\":25000,\"equipment\":\"van\",\"target_rate_cents\":250000,\"notes\":\"Fragile cargo, handle with care\",\"is_premium\":false,\"premium_until\":null,\"distance_miles\":370,\"created_at\":\"2026-02-08T03:03:19.414843+00:00\",\"updated_at\":\"2026-02-08T03:03:19.414843+00:00\"}]",
       "response_data": [
         {
-          "id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
-          "created_by": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
+          "id": "49d20177-4088-4a71-a9e9-57849615120b",
+          "created_by": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
           "created_by_name": "Test Shipper Co",
           "status": "posted",
           "pickup_city": "Los Angeles",
@@ -277,8 +299,8 @@
           "is_premium": false,
           "premium_until": null,
           "distance_miles": 370,
-          "created_at": "2026-02-08T02:04:35.265105+00:00",
-          "updated_at": "2026-02-08T02:04:35.265105+00:00"
+          "created_at": "2026-02-08T03:03:19.414843+00:00",
+          "updated_at": "2026-02-08T03:03:19.414843+00:00"
         }
       ]
     },
@@ -287,53 +309,53 @@
       "success": true,
       "details": "",
       "response_data": {
-        "id": "c65a8e2b-34aa-4ce9-a972-b49767516e88",
-        "load_id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
-        "carrier_id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
+        "id": "2396742b-8cdb-453e-bfd1-b8a797f89889",
+        "load_id": "49d20177-4088-4a71-a9e9-57849615120b",
+        "carrier_id": "6172c360-3c89-4d15-b19b-e04464833d89",
         "carrier_name": "Test Carrier LLC",
         "carrier_rating": null,
         "carrier_verified": false,
         "status": "submitted",
         "offer_rate_cents": 240000,
         "message": "Experienced carrier, can handle this route efficiently",
-        "created_at": "2026-02-08T02:04:35.411688+00:00"
+        "created_at": "2026-02-08T03:03:19.554646+00:00"
       }
     },
     {
       "name": "Get load bids (shipper)",
       "success": true,
-      "details": "[{\"id\":\"c65a8e2b-34aa-4ce9-a972-b49767516e88\",\"load_id\":\"5c65fe50-5503-4b82-8b8d-a1edf4981738\",\"carrier_id\":\"1f62aa30-60e7-47d8-b8e9-d13dc0eb704e\",\"carrier_name\":\"Test Carrier LLC\",\"carrier_rating\":null,\"carrier_verified\":false,\"status\":\"submitted\",\"offer_rate_cents\":240000,\"message\":\"Experienced carrier, can handle this route efficiently\",\"created_at\":\"2026-02-08T02:04:35.411688+00:00\"}]",
+      "details": "[{\"id\":\"2396742b-8cdb-453e-bfd1-b8a797f89889\",\"load_id\":\"49d20177-4088-4a71-a9e9-57849615120b\",\"carrier_id\":\"6172c360-3c89-4d15-b19b-e04464833d89\",\"carrier_name\":\"Test Carrier LLC\",\"carrier_rating\":null,\"carrier_verified\":false,\"status\":\"submitted\",\"offer_rate_cents\":240000,\"message\":\"Experienced carrier, can handle this route efficiently\",\"created_at\":\"2026-02-08T03:03:19.554646+00:00\"}]",
       "response_data": [
         {
-          "id": "c65a8e2b-34aa-4ce9-a972-b49767516e88",
-          "load_id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
-          "carrier_id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
+          "id": "2396742b-8cdb-453e-bfd1-b8a797f89889",
+          "load_id": "49d20177-4088-4a71-a9e9-57849615120b",
+          "carrier_id": "6172c360-3c89-4d15-b19b-e04464833d89",
           "carrier_name": "Test Carrier LLC",
           "carrier_rating": null,
           "carrier_verified": false,
           "status": "submitted",
           "offer_rate_cents": 240000,
           "message": "Experienced carrier, can handle this route efficiently",
-          "created_at": "2026-02-08T02:04:35.411688+00:00"
+          "created_at": "2026-02-08T03:03:19.554646+00:00"
         }
       ]
     },
     {
       "name": "Get carrier's bids",
       "success": true,
-      "details": "[{\"id\":\"c65a8e2b-34aa-4ce9-a972-b49767516e88\",\"load_id\":\"5c65fe50-5503-4b82-8b8d-a1edf4981738\",\"carrier_id\":\"1f62aa30-60e7-47d8-b8e9-d13dc0eb704e\",\"carrier_name\":\"Test Carrier LLC\",\"carrier_rating\":null,\"carrier_verified\":false,\"status\":\"submitted\",\"offer_rate_cents\":240000,\"message\":\"Experienced carrier, can handle this route efficiently\",\"created_at\":\"2026-02-08T02:04:35.411688+00:00\"}]",
+      "details": "[{\"id\":\"2396742b-8cdb-453e-bfd1-b8a797f89889\",\"load_id\":\"49d20177-4088-4a71-a9e9-57849615120b\",\"carrier_id\":\"6172c360-3c89-4d15-b19b-e04464833d89\",\"carrier_name\":\"Test Carrier LLC\",\"carrier_rating\":null,\"carrier_verified\":false,\"status\":\"submitted\",\"offer_rate_cents\":240000,\"message\":\"Experienced carrier, can handle this route efficiently\",\"created_at\":\"2026-02-08T03:03:19.554646+00:00\"}]",
       "response_data": [
         {
-          "id": "c65a8e2b-34aa-4ce9-a972-b49767516e88",
-          "load_id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
-          "carrier_id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
+          "id": "2396742b-8cdb-453e-bfd1-b8a797f89889",
+          "load_id": "49d20177-4088-4a71-a9e9-57849615120b",
+          "carrier_id": "6172c360-3c89-4d15-b19b-e04464833d89",
           "carrier_name": "Test Carrier LLC",
           "carrier_rating": null,
           "carrier_verified": false,
           "status": "submitted",
           "offer_rate_cents": 240000,
           "message": "Experienced carrier, can handle this route efficiently",
-          "created_at": "2026-02-08T02:04:35.411688+00:00"
+          "created_at": "2026-02-08T03:03:19.554646+00:00"
         }
       ]
     },
@@ -342,53 +364,53 @@
       "success": true,
       "details": "",
       "response_data": {
-        "id": "ddcf3bf2-7569-483d-8646-3cad34a8e1f2",
-        "load_id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
-        "shipper_id": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
-        "carrier_id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
+        "id": "50af565f-8de3-4ddc-a8f9-62e688ec25d6",
+        "load_id": "49d20177-4088-4a71-a9e9-57849615120b",
+        "shipper_id": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
+        "carrier_id": "6172c360-3c89-4d15-b19b-e04464833d89",
         "driver_id": null,
         "status": "active",
         "booked_rate_cents": 240000,
         "platform_fee_cents": 6000,
         "escrow_status": "held",
-        "created_at": "2026-02-08T02:04:35.517402+00:00"
+        "created_at": "2026-02-08T03:03:19.657879+00:00"
       }
     },
     {
       "name": "Get shipper assignments",
       "success": true,
-      "details": "[{\"id\":\"ddcf3bf2-7569-483d-8646-3cad34a8e1f2\",\"load_id\":\"5c65fe50-5503-4b82-8b8d-a1edf4981738\",\"shipper_id\":\"319b2c34-f60a-49e2-b880-4eb23fccbb99\",\"carrier_id\":\"1f62aa30-60e7-47d8-b8e9-d13dc0eb704e\",\"driver_id\":null,\"status\":\"active\",\"booked_rate_cents\":240000,\"platform_fee_cents\":6000,\"escrow_status\":\"held\",\"created_at\":\"2026-02-08T02:04:35.517402+00:00\"}]",
+      "details": "[{\"id\":\"50af565f-8de3-4ddc-a8f9-62e688ec25d6\",\"load_id\":\"49d20177-4088-4a71-a9e9-57849615120b\",\"shipper_id\":\"f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2\",\"carrier_id\":\"6172c360-3c89-4d15-b19b-e04464833d89\",\"driver_id\":null,\"status\":\"active\",\"booked_rate_cents\":240000,\"platform_fee_cents\":6000,\"escrow_status\":\"held\",\"created_at\":\"2026-02-08T03:03:19.657879+00:00\"}]",
       "response_data": [
         {
-          "id": "ddcf3bf2-7569-483d-8646-3cad34a8e1f2",
-          "load_id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
-          "shipper_id": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
-          "carrier_id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
+          "id": "50af565f-8de3-4ddc-a8f9-62e688ec25d6",
+          "load_id": "49d20177-4088-4a71-a9e9-57849615120b",
+          "shipper_id": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
+          "carrier_id": "6172c360-3c89-4d15-b19b-e04464833d89",
           "driver_id": null,
           "status": "active",
           "booked_rate_cents": 240000,
           "platform_fee_cents": 6000,
           "escrow_status": "held",
-          "created_at": "2026-02-08T02:04:35.517402+00:00"
+          "created_at": "2026-02-08T03:03:19.657879+00:00"
         }
       ]
     },
     {
       "name": "Get carrier assignments",
       "success": true,
-      "details": "[{\"id\":\"ddcf3bf2-7569-483d-8646-3cad34a8e1f2\",\"load_id\":\"5c65fe50-5503-4b82-8b8d-a1edf4981738\",\"shipper_id\":\"319b2c34-f60a-49e2-b880-4eb23fccbb99\",\"carrier_id\":\"1f62aa30-60e7-47d8-b8e9-d13dc0eb704e\",\"driver_id\":null,\"status\":\"active\",\"booked_rate_cents\":240000,\"platform_fee_cents\":6000,\"escrow_status\":\"held\",\"created_at\":\"2026-02-08T02:04:35.517402+00:00\"}]",
+      "details": "[{\"id\":\"50af565f-8de3-4ddc-a8f9-62e688ec25d6\",\"load_id\":\"49d20177-4088-4a71-a9e9-57849615120b\",\"shipper_id\":\"f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2\",\"carrier_id\":\"6172c360-3c89-4d15-b19b-e04464833d89\",\"driver_id\":null,\"status\":\"active\",\"booked_rate_cents\":240000,\"platform_fee_cents\":6000,\"escrow_status\":\"held\",\"created_at\":\"2026-02-08T03:03:19.657879+00:00\"}]",
       "response_data": [
         {
-          "id": "ddcf3bf2-7569-483d-8646-3cad34a8e1f2",
-          "load_id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
-          "shipper_id": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
-          "carrier_id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
+          "id": "50af565f-8de3-4ddc-a8f9-62e688ec25d6",
+          "load_id": "49d20177-4088-4a71-a9e9-57849615120b",
+          "shipper_id": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
+          "carrier_id": "6172c360-3c89-4d15-b19b-e04464833d89",
           "driver_id": null,
           "status": "active",
           "booked_rate_cents": 240000,
           "platform_fee_cents": 6000,
           "escrow_status": "held",
-          "created_at": "2026-02-08T02:04:35.517402+00:00"
+          "created_at": "2026-02-08T03:03:19.657879+00:00"
         }
       ]
     },
@@ -397,58 +419,58 @@
       "success": true,
       "details": "",
       "response_data": {
-        "id": "4273b9e1-32da-4aee-a817-13aa7d85546a",
-        "load_id": "5c65fe50-5503-4b82-8b8d-a1edf4981738",
-        "created_at": "2026-02-08T02:04:35.517402+00:00",
+        "id": "da0a5af7-3bfc-4136-ae66-25622f70c926",
+        "load_id": "49d20177-4088-4a71-a9e9-57849615120b",
+        "created_at": "2026-02-08T03:03:19.657879+00:00",
         "summary": null
       }
     },
     {
       "name": "Send message (shipper)",
       "success": true,
-      "details": "{\"id\":\"64e7bc3c-b16f-4b4f-b968-ec5e8dd91579\",\"thread_id\":\"4273b9e1-32da-4aee-a817-13aa7d85546a\",\"sender_id\":\"319b2c34-f60a-49e2-b880-4eb23fccbb99\",\"sender_name\":\"Test Shipper Co\",\"body\":\"Hi, when can you pick up the load?\",\"created_at\":\"2026-02-08T02:04:35.663488+00:00\"}",
+      "details": "{\"id\":\"fab34032-c431-4c9e-ba40-317150fda8b5\",\"thread_id\":\"da0a5af7-3bfc-4136-ae66-25622f70c926\",\"sender_id\":\"f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2\",\"sender_name\":\"Test Shipper Co\",\"body\":\"Hi, when can you pick up the load?\",\"created_at\":\"2026-02-08T03:03:19.797760+00:00\"}",
       "response_data": {
-        "id": "64e7bc3c-b16f-4b4f-b968-ec5e8dd91579",
-        "thread_id": "4273b9e1-32da-4aee-a817-13aa7d85546a",
-        "sender_id": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
+        "id": "fab34032-c431-4c9e-ba40-317150fda8b5",
+        "thread_id": "da0a5af7-3bfc-4136-ae66-25622f70c926",
+        "sender_id": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
         "sender_name": "Test Shipper Co",
         "body": "Hi, when can you pick up the load?",
-        "created_at": "2026-02-08T02:04:35.663488+00:00"
+        "created_at": "2026-02-08T03:03:19.797760+00:00"
       }
     },
     {
       "name": "Send message (carrier)",
       "success": true,
-      "details": "{\"id\":\"67040959-1c8d-4993-b01b-2f0eeeb35873\",\"thread_id\":\"4273b9e1-32da-4aee-a817-13aa7d85546a\",\"sender_id\":\"1f62aa30-60e7-47d8-b8e9-d13dc0eb704e\",\"sender_name\":\"Test Carrier LLC\",\"body\":\"I can pick it up tomorrow morning at 8 AM.\",\"created_at\":\"2026-02-08T02:04:35.700170+00:00\"}",
+      "details": "{\"id\":\"fbf940d3-d95e-4cf1-9f59-3f391048adf1\",\"thread_id\":\"da0a5af7-3bfc-4136-ae66-25622f70c926\",\"sender_id\":\"6172c360-3c89-4d15-b19b-e04464833d89\",\"sender_name\":\"Test Carrier LLC\",\"body\":\"I can pick it up tomorrow morning at 8 AM.\",\"created_at\":\"2026-02-08T03:03:19.832530+00:00\"}",
       "response_data": {
-        "id": "67040959-1c8d-4993-b01b-2f0eeeb35873",
-        "thread_id": "4273b9e1-32da-4aee-a817-13aa7d85546a",
-        "sender_id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
+        "id": "fbf940d3-d95e-4cf1-9f59-3f391048adf1",
+        "thread_id": "da0a5af7-3bfc-4136-ae66-25622f70c926",
+        "sender_id": "6172c360-3c89-4d15-b19b-e04464833d89",
         "sender_name": "Test Carrier LLC",
         "body": "I can pick it up tomorrow morning at 8 AM.",
-        "created_at": "2026-02-08T02:04:35.700170+00:00"
+        "created_at": "2026-02-08T03:03:19.832530+00:00"
       }
     },
     {
       "name": "Get thread messages",
       "success": true,
-      "details": "[{\"id\":\"64e7bc3c-b16f-4b4f-b968-ec5e8dd91579\",\"thread_id\":\"4273b9e1-32da-4aee-a817-13aa7d85546a\",\"sender_id\":\"319b2c34-f60a-49e2-b880-4eb23fccbb99\",\"sender_name\":\"Test Shipper Co\",\"body\":\"Hi, when can you pick up the load?\",\"created_at\":\"2026-02-08T02:04:35.663488+00:00\"},{\"id\":\"67040959-1c8d-4993-b01b-2f0eeeb35873\",\"thread_id\":\"4273b9e1-32da-4aee-a817-13aa7d85546a\",\"sender_id\":\"1f62aa30-60e7-47d8-b8e9-d13dc0eb704e\",\"sender_name\":\"Test Carrier LLC\",\"body\":\"I can pick it up tomorrow morning at 8 AM.\",\"created_at\":\"2026-02-08T02:04:35.700170+00:00\"}]",
+      "details": "[{\"id\":\"fab34032-c431-4c9e-ba40-317150fda8b5\",\"thread_id\":\"da0a5af7-3bfc-4136-ae66-25622f70c926\",\"sender_id\":\"f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2\",\"sender_name\":\"Test Shipper Co\",\"body\":\"Hi, when can you pick up the load?\",\"created_at\":\"2026-02-08T03:03:19.797760+00:00\"},{\"id\":\"fbf940d3-d95e-4cf1-9f59-3f391048adf1\",\"thread_id\":\"da0a5af7-3bfc-4136-ae66-25622f70c926\",\"sender_id\":\"6172c360-3c89-4d15-b19b-e04464833d89\",\"sender_name\":\"Test Carrier LLC\",\"body\":\"I can pick it up tomorrow morning at 8 AM.\",\"created_at\":\"2026-02-08T03:03:19.832530+00:00\"}]",
       "response_data": [
         {
-          "id": "64e7bc3c-b16f-4b4f-b968-ec5e8dd91579",
-          "thread_id": "4273b9e1-32da-4aee-a817-13aa7d85546a",
-          "sender_id": "319b2c34-f60a-49e2-b880-4eb23fccbb99",
+          "id": "fab34032-c431-4c9e-ba40-317150fda8b5",
+          "thread_id": "da0a5af7-3bfc-4136-ae66-25622f70c926",
+          "sender_id": "f67e0fb9-8969-4dcb-9e9e-5f3c5fdc67b2",
           "sender_name": "Test Shipper Co",
           "body": "Hi, when can you pick up the load?",
-          "created_at": "2026-02-08T02:04:35.663488+00:00"
+          "created_at": "2026-02-08T03:03:19.797760+00:00"
         },
         {
-          "id": "67040959-1c8d-4993-b01b-2f0eeeb35873",
-          "thread_id": "4273b9e1-32da-4aee-a817-13aa7d85546a",
-          "sender_id": "1f62aa30-60e7-47d8-b8e9-d13dc0eb704e",
+          "id": "fbf940d3-d95e-4cf1-9f59-3f391048adf1",
+          "thread_id": "da0a5af7-3bfc-4136-ae66-25622f70c926",
+          "sender_id": "6172c360-3c89-4d15-b19b-e04464833d89",
           "sender_name": "Test Carrier LLC",
           "body": "I can pick it up tomorrow morning at 8 AM.",
-          "created_at": "2026-02-08T02:04:35.700170+00:00"
+          "created_at": "2026-02-08T03:03:19.832530+00:00"
         }
       ]
     },
@@ -458,8 +480,8 @@
       "details": "",
       "response_data": {
         "ok": true,
-        "thread_id": "4273b9e1-32da-4aee-a817-13aa7d85546a",
-        "summary": "**Key decisions:**\n- Carrier has committed to picking up the load tomorrow morning at 8 AM.\n\n**Rates/terms:**\n- No rates or terms discussed in the thread.\n\n**Next actions:**\n- Confirm the pick-up time and details with the shipper.\n\n**Risks/issues:**\n- None identified in the current conversation."
+        "thread_id": "da0a5af7-3bfc-4136-ae66-25622f70c926",
+        "summary": "- **Key decisions**: Carrier confirmed pickup time.\n- **Rates/terms**: Not discussed in this thread.\n- **Next actions**: Carrier to pick up load tomorrow morning at 8 AM.\n- **Risks/issues**: None identified in this thread."
       }
     },
     {
