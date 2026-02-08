@@ -41,11 +41,11 @@ export const authApi = {
 };
 
 export const loadsApi = {
-  list: (params) => api.get('/loads', { params }),
+  list: (params) => api.get('/loads', { params: params ? { status_filter: params.status, ...params } : undefined }),
   myLoads: () => api.get('/loads/my'),
   get: (id) => api.get(`/loads/${id}`),
   create: (data) => api.post('/loads', data),
-  updateStatus: (id, status) => api.put(`/loads/${id}/status`, null, { params: { status } }),
+  updateStatus: (id, status) => api.put(`/loads/${id}/status`, null, { params: { new_status: status } }),
 };
 
 export const bidsApi = {
