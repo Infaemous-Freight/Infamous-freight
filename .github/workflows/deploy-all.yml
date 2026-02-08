@@ -120,6 +120,7 @@ jobs:
         uses: slackapi/slack-github-action@v2
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
               "text": "${{ steps.status.outputs.emoji }} Multi-Platform Deployment ${{ steps.status.outputs.status }}",
