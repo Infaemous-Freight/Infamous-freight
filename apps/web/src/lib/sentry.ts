@@ -38,7 +38,7 @@ if (sentryDSN) {
     enabled: !isDevelopment || !!sentryDSN,
 
     // Transport options
-    beforeBreadcrumb(breadcrumb, hint) {
+    beforeBreadcrumb(breadcrumb, _hint) {
       // Filter out certain breadcrumb types
       if (breadcrumb.category === "console" && breadcrumb.level === "debug") {
         return null;
