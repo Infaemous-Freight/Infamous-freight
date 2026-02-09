@@ -1,8 +1,10 @@
 const express = require('express');
+const { body } = require('express-validator');
 const { prisma } = require('../db/prisma');
 const { cacheMiddleware } = require('../middleware/cache');
 const { limiters, authenticate, requireScope, auditLog } = require('../middleware/security');
 const { validateString, handleValidationErrors } = require('../middleware/validation');
+const { predictProfit } = require('../services/aiProfitService');
 
 const router = express.Router();
 
@@ -54,6 +56,48 @@ router.post(
             next(err);
         }
     }
+);
+
+/**
+ * POST /api/ai/profit-predict
+ * Predict profit for a load using AI-inspired heuristics
+ * Scope: ai:predict
+ */
+router.post(
+    '/ai/profit-predict',
+    limiters.ai,
+    authenticate,
+    requireScope('ai:predict'),
+    auditLog,
+    [
+        body('origin').optional().isObject(),
+        body('origin.lat').optional().isFloat({ min: -90, max: 90 }),
+        body('origin.lng').optional().isFloat({ min: -180, max: 180 }),
+        body('destination').optional().isObject(),
+        body('destination.lat').optional().isFloat({ min: -90, max: 90 }),
+        body('destination.lng').optional().isFloat({ min: -180, max: 180 }),
+        body('distanceMiles').optional().isFloat({ min: 1 }),
+        body('weight').optional().isFloat({ min: 0 }),
+        body('ratePerMile').optional().isFloat({ min: 0 }),
+        body('fuelPricePerGallon').optional().isFloat({ min: 0 }),
+        body('mpg').optional().isFloat({ min: 1 }),
+        body('maintenancePerMile').optional().isFloat({ min: 0 }),
+        body('insurancePerMile').optional().isFloat({ min: 0 }),
+        body('handlingFee').optional().isFloat({ min: 0 }),
+        handleValidationErrors,
+    ],
+    async (req, res, next) => {
+        try {
+            const prediction = predictProfit(req.body || {});
+            res.json({
+                ok: true,
+                prediction,
+                timestamp: new Date().toISOString(),
+            });
+        } catch (err) {
+            next(err);
+        }
+    },
 );
 
 /**
