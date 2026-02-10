@@ -43,8 +43,10 @@ export default async function handler(
   const record = body.record ?? body;
 
   try {
+    const encodedBaseId = encodeURIComponent(airtableBaseId);
+    const encodedTableId = encodeURIComponent(airtableTableId);
     const airtableResponse = await fetch(
-      `https://api.airtable.com/v0/${airtableBaseId}/${airtableTableId}`,
+      `https://api.airtable.com/v0/${encodedBaseId}/${encodedTableId}`,
       {
         method: "POST",
         headers: {
