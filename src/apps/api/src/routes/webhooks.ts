@@ -159,7 +159,16 @@ router.post(
   authenticate,
   requireScope("webhooks:write"),
   (req: Request, res: Response) => {
-    const { url, events } = req.body;
+    if (!req.body || typeof req.body !== "object") {
+      return res.status(400).json({
+        error: "Invalid request body. Send JSON with url and events.",
+      });
+    }
+
+    const { url, events } = req.body as {
+      url?: string;
+      events?: string[];
+    };
 
     if (!url || !events || events.length === 0) {
       return res.status(400).json({ error: "URL and events required" });
@@ -263,7 +272,17 @@ router.patch(
       return res.status(403).json({ error: "Forbidden" });
     }
 
-    const { url, events, active } = req.body;
+    if (!req.body || typeof req.body !== "object") {
+      return res.status(400).json({
+        error: "Invalid request body. Send JSON to update webhook fields.",
+      });
+    }
+
+    const { url, events, active } = req.body as {
+      url?: string;
+      events?: string[];
+      active?: boolean;
+    };
 
     if (url) {
       try {
