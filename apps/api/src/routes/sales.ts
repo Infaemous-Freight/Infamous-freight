@@ -62,6 +62,68 @@ import {
 
 const router = Router();
 
+const publicLeadCaptureAttempts = new Map<
+  string,
+  { count: number; resetAt: number }
+>();
+
+function getRequesterIp(req: any): string {
+  const forwardedFor = req.headers["x-forwarded-for"];
+  if (typeof forwardedFor === "string" && forwardedFor.trim()) {
+    return forwardedFor.split(",")[0].trim();
+  }
+
+  return req.ip || req.socket?.remoteAddress || "unknown";
+}
+
+function enforcePublicLeadCaptureProtection(req: any, res: any, next: any): void {
+  const sharedSecret = process.env.SALES_LEAD_CAPTURE_SECRET;
+  if (sharedSecret) {
+    const providedSecret = req.headers["x-lead-capture-secret"];
+    if (providedSecret !== sharedSecret) {
+      res.status(401).json({ error: "Unauthorized lead capture request" });
+      return;
+    }
+  }
+
+  const allowedOrigins = (process.env.SALES_LEAD_CAPTURE_ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  if (allowedOrigins.length > 0) {
+    const requestOrigin = req.headers.origin;
+    if (!requestOrigin || !allowedOrigins.includes(requestOrigin)) {
+      res.status(403).json({ error: "Origin not allowed" });
+      return;
+    }
+  }
+
+  const now = Date.now();
+  const ip = getRequesterIp(req);
+  const maxRequests = Number(process.env.SALES_LEAD_CAPTURE_MAX_REQUESTS || 10);
+  const windowMs = Number(process.env.SALES_LEAD_CAPTURE_WINDOW_MS || 15 * 60 * 1000);
+
+  const current = publicLeadCaptureAttempts.get(ip);
+  if (!current || current.resetAt <= now) {
+    publicLeadCaptureAttempts.set(ip, {
+      count: 1,
+      resetAt: now + windowMs,
+    });
+    next();
+    return;
+  }
+
+  if (current.count >= maxRequests) {
+    res.status(429).json({ error: "Too many lead capture attempts. Try again later." });
+    return;
+  }
+
+  current.count += 1;
+  publicLeadCaptureAttempts.set(ip, current);
+  next();
+}
+
 // ============================================
 // Lead Capture (21.2)
 // ============================================
@@ -73,6 +135,7 @@ const router = Router();
 router.post(
   "/leads",
   limiters.general,
+  enforcePublicLeadCaptureProtection,
   [
     body("name").isString().notEmpty().withMessage("Name is required"),
     body("email").isEmail().withMessage("Valid email is required"),
