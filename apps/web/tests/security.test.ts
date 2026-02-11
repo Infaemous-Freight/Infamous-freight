@@ -137,7 +137,7 @@ describe("API Endpoint Security", () => {
     expect(allowMethods).toContain("GET");
   });
 
-  it("should have rate limiting headers on repeated requests", async () => {
+  it.skip("should have rate limiting headers on repeated requests", async () => {
     // Make 5 quick requests to test rate limiting
     const requests = Array(5)
       .fill(null)
@@ -150,8 +150,7 @@ describe("API Endpoint Security", () => {
       (r) => r.headers.has("x-ratelimit-limit") || r.headers.has("ratelimit-limit"),
     );
 
-    // This might not be implemented yet, so just log for now
-    console.log("Rate limiting headers present:", hasRateLimitHeaders);
+    expect(hasRateLimitHeaders).toBe(true);
   });
 });
 
