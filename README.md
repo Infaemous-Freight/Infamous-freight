@@ -4,6 +4,14 @@
 
 **AI-Powered Freight & Logistics Automation Platform**
 
+## GENESIS / GENIUS Avatar Governance
+
+The authoritative system definition for the GENESIS intelligence layer and GENIUS Avatar governance model is locked in:
+
+- [`GENESIS_GENIUS_SYSTEM_OF_RECORD.md`](./GENESIS_GENIUS_SYSTEM_OF_RECORD.md)
+
+This document is the system of record for `/E-LAW` approval requirements and deployment posture.
+
 ## Deployment Architecture
 
 Infamous Freight operates a multi-platform, enterprise-grade CI/CD pipeline designed for reliability, scalability, and zero-drift builds.
