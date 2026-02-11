@@ -8,7 +8,18 @@ import { ApiResponse } from "@infamous-freight/shared";
 
 // API configuration
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "http://localhost:4000/api";
+
+const AI_API_BASE_URL =
+  process.env.NEXT_PUBLIC_AI_API_URL ||
+  process.env.NEXT_PUBLIC_AI_BASE_URL ||
+  API_BASE_URL;
+
+const AI_OPTIMIZATION_ENDPOINT =
+  process.env.NEXT_PUBLIC_AI_OPTIMIZATION_ENDPOINT ||
+  "/ai/shipment-optimization";
 
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
@@ -38,10 +49,22 @@ async function apiRequest<T>(
   endpoint: string,
   options: RequestOptions = {},
 ): Promise<ApiResponse<T>> {
+  return requestWithBase<T>(API_BASE_URL, endpoint, options);
+}
+
+async function requestWithBase<T>(
+  baseUrl: string,
+  endpoint: string,
+  options: RequestOptions = {},
+): Promise<ApiResponse<T>> {
   const { method = "GET", body, params, headers = {} } = options;
 
   // Build URL with query params
-  let url = `${API_BASE_URL}${endpoint}`;
+  const normalizedBaseUrl = baseUrl.replace(/\/+$/, "");
+  const normalizedEndpoint = endpoint.startsWith("/")
+    ? endpoint
+    : `/${endpoint}`;
+  let url = `${normalizedBaseUrl}${normalizedEndpoint}`;
   if (params) {
     const searchParams = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {
@@ -345,8 +368,9 @@ interface OptimizationSuggestion {
 async function getShipmentOptimization(
   shipmentId: string,
 ): Promise<OptimizationSuggestion> {
-  const response = await apiRequest<OptimizationSuggestion>(
-    "/ai/shipment-optimization",
+  const response = await requestWithBase<OptimizationSuggestion>(
+    AI_API_BASE_URL,
+    AI_OPTIMIZATION_ENDPOINT,
     { method: "POST", body: { shipmentId } },
   );
 
