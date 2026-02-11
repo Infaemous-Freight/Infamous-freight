@@ -118,10 +118,10 @@ function predictProfit(input) {
     const totalCost = variableCost + handlingFee;
     const predictedProfit = revenue - totalCost;
 
-    const confidence =
-        input.distanceMiles || milesBetween(input.origin, input.destination)
-            ? 0.78
-            : 0.62;
+    const hasDistance =
+        toNumber(input.distanceMiles) !== null ||
+        (input.origin && input.destination);
+    const confidence = hasDistance ? 0.78 : 0.62;
 
     return {
         predictedProfit: Number(predictedProfit.toFixed(2)),
