@@ -221,13 +221,31 @@ async function getOptimizedDirections(
 /**
  * Calculate fuel cost based on distance
  */
-function calculateFuelCost(distanceMeters: number): number {
-  const distanceMiles = distanceMeters * 0.000621371; // meters to miles
-  const mpg = 8; // Truck fuel efficiency
-  const gasPrice = 3.5; // USD per gallon
+function calculateFuelCost(
+  distanceMeters: number,
+  options?: { mpg?: number; gasPricePerGallon?: number },
+): number {
+  const distanceMiles = Math.max(0, distanceMeters) * 0.000621371; // meters to miles
+  const mpg = normalizeMpg(options?.mpg ?? 8); // Truck fuel efficiency
+  const gasPrice = options?.gasPricePerGallon ?? 3.5; // USD per gallon
 
   const gallons = distanceMiles / mpg;
   return gallons * gasPrice;
+}
+
+/**
+ * Guard MPG inside the service layer so internal callers cannot accidentally
+ * produce Infinity/-Infinity fuel costs.
+ */
+function normalizeMpg(mpg: number): number {
+  const DEFAULT_MPG = 8;
+  const MIN_MPG = 1;
+
+  if (!Number.isFinite(mpg) || mpg <= 0) {
+    return DEFAULT_MPG;
+  }
+
+  return Math.max(MIN_MPG, mpg);
 }
 
 /**
