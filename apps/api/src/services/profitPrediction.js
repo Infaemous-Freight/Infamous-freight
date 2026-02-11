@@ -9,7 +9,9 @@ function toNumber(value, fallback = 0) {
 }
 
 function roundCurrency(value) {
-    return Math.round((value + Number.EPSILON) * 100) / 100;
+    const sign = value < 0 ? -1 : 1;
+    const absValue = Math.abs(value);
+    return sign * (Math.round((absValue + Number.EPSILON) * 100) / 100);
 }
 
 function predictProfit(input = {}) {
