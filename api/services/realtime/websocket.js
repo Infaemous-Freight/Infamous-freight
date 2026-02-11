@@ -33,6 +33,12 @@ const logger = require("../../middleware/logger");
 
 class NotificationManager {
     constructor(server) {
+        this.jwtSecret = process.env.JWT_SECRET;
+        if (!this.jwtSecret) {
+            logger.error("WebSocket service misconfigured: JWT_SECRET is not set");
+            throw new Error("Server auth misconfiguration");
+        }
+
         this.io = new Server(server, {
             cors: {
                 origin: (process.env.WEB_URL || "http://localhost:3000").split(","),
@@ -61,10 +67,12 @@ class NotificationManager {
             }
 
             try {
-                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                const decoded = jwt.verify(token, this.jwtSecret);
                 socket.userId = decoded.sub;
                 socket.email = decoded.email;
-                socket.scope = decoded.scope || [];
+                const scopes = decoded.scopes || decoded.scope || [];
+                socket.scopes = scopes;
+                socket.scope = scopes; // backward compatibility if existing code reads `socket.scope`
                 next();
             } catch (error) {
                 logger.warn("WebSocket authentication failed", {
