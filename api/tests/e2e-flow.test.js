@@ -57,24 +57,32 @@ describe('End-to-End Flows', () => {
 
         // Setup authentication routes
         app.post('/api/auth/register', async (req, res) => {
-            const { email, password, name } = req.body;
+            try {
+                const { email, password, name } = req.body;
 
-            const existingUser = await prisma.user.findUnique({ where: { email } });
-            if (existingUser) {
-                return res.status(400).json({ error: 'Email already exists' });
+                const existingUser = await prisma.user.findUnique({ where: { email } });
+                if (existingUser) {
+                    return res.status(400).json({ error: 'Email already exists' });
+                }
+
+                const user = await prisma.user.create({
+                    data: { id: 'user-' + Date.now(), email, name, passwordHash: 'hashed-' + password }
+                });
+
+                const token = jwt.sign(
+                    { sub: user.id, email: user.email, scopes: ['read:shipments', 'write:shipments'] },
+                    process.env.JWT_SECRET || 'test-secret',
+                    { expiresIn: '1h' }
+                );
+
+                res.json({ success: true, token, user: { id: user.id, email, name } });
+            } catch (error) {
+                if (error?.code === 'P2002') {
+                    return res.status(409).json({ error: 'Email already exists' });
+                }
+
+                return res.status(500).json({ error: 'Registration failed' });
             }
-
-            const user = await prisma.user.create({
-                data: { id: 'user-' + Date.now(), email, name, passwordHash: 'hashed-' + password }
-            });
-
-            const token = jwt.sign(
-                { sub: user.id, email: user.email, scopes: ['read:shipments', 'write:shipments'] },
-                process.env.JWT_SECRET || 'test-secret',
-                { expiresIn: '1h' }
-            );
-
-            res.json({ success: true, token, user: { id: user.id, email, name } });
         });
 
         app.post('/api/auth/login', async (req, res) => {
@@ -297,6 +305,22 @@ describe('End-to-End Flows', () => {
                 });
 
             expect(response.status).toBe(400);
+            expect(response.body.error).toBe('Email already exists');
+        });
+
+        test('should handle duplicate email write errors during registration', async () => {
+            prisma.user.findUnique.mockResolvedValue(null);
+            prisma.user.create.mockRejectedValue({ code: 'P2002' });
+
+            const response = await request(app)
+                .post('/api/auth/register')
+                .send({
+                    email: 'existing@example.com',
+                    password: 'password123',
+                    name: 'Existing User'
+                });
+
+            expect(response.status).toBe(409);
             expect(response.body.error).toBe('Email already exists');
         });
 
