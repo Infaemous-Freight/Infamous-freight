@@ -29,9 +29,14 @@ async function isDeploymentAccessible(url: string): Promise<boolean> {
 let vercelAccessible = false;
 let flyAccessible = false;
 
-beforeAll(async () => {
-  vercelAccessible = await isDeploymentAccessible(VERCEL_URL);
-  flyAccessible = await isDeploymentAccessible(`${FLY_URL}/api/health`);
+await (async () => {
+  const [vercelOk, flyOk] = await Promise.all([
+    isDeploymentAccessible(VERCEL_URL),
+    isDeploymentAccessible(`${FLY_URL}/api/health`),
+  ]);
+
+  vercelAccessible = vercelOk;
+  flyAccessible = flyOk;
 
   if (!vercelAccessible) {
     console.warn(
@@ -39,9 +44,11 @@ beforeAll(async () => {
     );
   }
   if (!flyAccessible) {
-    console.warn(`⚠️  Fly.io deployment at ${FLY_URL} is not accessible - skipping related tests`);
+    console.warn(
+      `⚠️  Fly.io deployment at ${FLY_URL} is not accessible - skipping related tests`,
+    );
   }
-});
+})();
 
 describe("Security Headers - Vercel Deployment", () => {
   let response: Response | undefined;
