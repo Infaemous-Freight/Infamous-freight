@@ -4,11 +4,7 @@
   "installCommand": "npm i -g pnpm@9.15.0 --prefix $HOME/.local && export PATH=$HOME/.local/bin:$PATH && pnpm -w install --frozen-lockfile",
   "buildCommand": "pnpm -r --filter @infamous-freight/shared build && pnpm --filter web build",
   "outputDirectory": "apps/web/.next",
-  "regions": [
-    "iad1",
-    "sfo1",
-    "cdg1"
-  ],
+  "regions": ["iad1"],
   "git": {
     "deploymentEnabled": {
       "main": true,
