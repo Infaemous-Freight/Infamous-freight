@@ -2,7 +2,7 @@
   "name": "infaemous-freight-enterprises",
   "private": true,
   "version": "1.0.0",
-  "description": "Infæmous Freight Enterprises ♊️ — AI-Powered Freight & Logistics Automation Platform",
+  "description": "Inf\u00e6mous Freight Enterprises \u264a\ufe0f \u2014 AI-Powered Freight & Logistics Automation Platform",
   "author": "Santorio Djuan Miles",
   "license": "UNLICENSED",
   "packageManager": "pnpm@9.15.0",
@@ -16,7 +16,8 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "ci:install": "corepack enable && pnpm install --frozen-lockfile",
-    "ci:build": "pnpm -r build"
+    "ci:build": "pnpm -r build",
+    "go-live:verify": "bash scripts/genesis-go-live-verify.sh"
   },
   "pnpm": {
     "overrides": {
