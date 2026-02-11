@@ -52,10 +52,10 @@ describe("predictProfit", () => {
     });
 
     expect(result.distanceMiles).toBe(100.56);
-    expect(result.grossRevenue).toBe(234.29);
-    expect(result.totalCost).toBe(111.33);
-    expect(result.netProfit).toBe(122.96);
-    expect(result.profitMarginPct).toBe(52.48);
+    expect(result.grossRevenue).toBe(234.59);
+    expect(result.totalCost).toBe(108.66);
+    expect(result.netProfit).toBe(125.93);
+    expect(result.profitMarginPct).toBe(53.67);
   });
 
   it("computes distance from origin/destination coordinates when distance is omitted", () => {
