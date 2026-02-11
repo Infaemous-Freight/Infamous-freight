@@ -37,7 +37,7 @@ export class Config {
   }
 
   getApiConfig(): ApiConfig {
-    const port = this.getEnv("API_PORT", "4000");
+    const port = this.getEnv("PORT", this.getEnv("API_PORT", "4000"));
     const host = this.getEnv("API_HOST", "0.0.0.0");
     const basePath = this.getEnv("API_BASE_PATH", "/api");
     const url = this.getEnv("API_URL", `http://localhost:${port}`);
