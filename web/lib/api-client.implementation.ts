@@ -7,8 +7,39 @@
 import { ApiResponse } from "@infamous-freight/shared";
 
 // API configuration
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+function resolveApiBaseUrl(): string {
+  const raw =
+    process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  // Default to same-origin API routing so production, Docker, and reverse
+  // proxies can route API traffic without hard-coded hosts or CORS issues.
+  if (!raw) {
+    return "/api";
+  }
+
+  const trimmed = raw.replace(/\/+$/, "");
+
+  try {
+    const url = new URL(trimmed);
+    if (url.pathname === "/" || !url.pathname) {
+      url.pathname = "/api";
+    }
+
+    return url.toString().replace(/\/+$/, "");
+  } catch {
+    if (trimmed === "" || trimmed === "/") {
+      return "/api";
+    }
+
+    if (trimmed.endsWith("/api") || trimmed.includes("/api/")) {
+      return trimmed;
+    }
+
+    return `${trimmed}/api`;
+  }
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
