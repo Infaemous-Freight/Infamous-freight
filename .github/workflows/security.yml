@@ -81,9 +81,9 @@ jobs:
       - name: Check for secrets in code (Fallback)
         run: |
           echo "Scanning for potential secrets..."
-          # Check for common secret patterns
-          if git grep -E "(?i)(password|secret|key|token|api_key)\s*=\s*['\"][^'\"]{8,}" -- '*.js' '*.ts' '*.env*' || true; then
-            echo "⚠️ Potential secrets found - please review"
+          # Check for common hardcoded-secret patterns in source files.
+          if git grep -nE "(?i)(password|secret|key|token|api_key)\s*=\s*['\"][^'\"]{8,}" -- '*.js' '*.jsx' '*.ts' '*.tsx' '*.env*'; then
+            echo "⚠️ Potential hardcoded secrets found - please review"
           fi
 
       - name: Verify .env files are not committed
