@@ -15,6 +15,10 @@ import {
 const router = Router();
 const mapsClient = new Client({});
 
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 /**
  * Waypoint for route optimization
  */
@@ -58,16 +62,28 @@ router.post(
   requireScope("routes:optimize"),
   async (req: Request, res: Response) => {
     try {
-      const { driverId, origin, waypoints } = req.body as {
-        driverId: string;
-        origin: string;
-        waypoints: Waypoint[];
-      };
-
-      if (!origin || !waypoints || waypoints.length === 0) {
+      if (!isPlainObject(req.body)) {
         return res.status(400).json({
           success: false,
-          error: "Origin and waypoints required",
+          error: "Invalid payload: expected a JSON object",
+        });
+      }
+
+      const { driverId, origin, waypoints } = req.body as {
+        driverId?: string;
+        origin?: string;
+        waypoints?: Waypoint[];
+      };
+
+      if (
+        !driverId ||
+        typeof origin !== "string" ||
+        !Array.isArray(waypoints) ||
+        waypoints.length === 0
+      ) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid payload: driverId, origin, and waypoints are required",
         });
       }
 
@@ -336,9 +352,32 @@ router.post(
   async (req: Request, res: Response) => {
     try {
       const { routeId } = req.params;
+      if (!isPlainObject(req.body)) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid payload: expected a JSON object",
+        });
+      }
+
       const { currentLocation } = req.body as {
-        currentLocation: { lat: number; lng: number };
+        currentLocation?: { lat?: number; lng?: number };
       };
+
+      if (
+        !isPlainObject(currentLocation) ||
+        !Number.isFinite(currentLocation.lat) ||
+        !Number.isFinite(currentLocation.lng) ||
+        currentLocation.lat < -90 ||
+        currentLocation.lat > 90 ||
+        currentLocation.lng < -180 ||
+        currentLocation.lng > 180
+      ) {
+        return res.status(400).json({
+          success: false,
+          error:
+            "Invalid payload: currentLocation.lat and currentLocation.lng must be finite numbers within valid latitude/longitude ranges",
+        });
+      }
 
       const route = await prisma.route.findUnique({
         where: { id: routeId },
