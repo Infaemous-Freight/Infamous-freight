@@ -72,7 +72,7 @@ function computePriceUsd(input) {
   };
 
   const discount = discountsByPlan[shipperPlanTier] || 0;
-  const finalPrice = clamp(subtotal * (1 - discount), 0, 50000);
+  const finalPrice = Math.min(subtotal * (1 - discount), 50000);
 
   // Enforce minimum (base rate) and round to nearest cent
   return Math.max(base, Math.round(finalPrice * 100) / 100);
