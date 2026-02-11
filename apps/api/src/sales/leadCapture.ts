@@ -347,15 +347,25 @@ async function syncToSalesforce(lead: any): Promise<void> {
     );
   }
 
-  const accessToken =
+  const rawAccessToken =
     tokenBody && typeof tokenBody === "object" && "access_token" in tokenBody
-      ? (tokenBody as { access_token?: string }).access_token
+      ? (tokenBody as { access_token?: unknown }).access_token
       : undefined;
 
-  if (!accessToken) {
-    throw new Error("Salesforce token response did not include access_token");
+  if (typeof rawAccessToken !== "string" || rawAccessToken.trim().length === 0) {
+    const bodyShape =
+      tokenBody && typeof tokenBody === "object"
+        ? { keys: Object.keys(tokenBody as Record<string, unknown>).slice(0, 10) }
+        : tokenBody;
+
+    throw new Error(
+      `Salesforce token response did not include a valid non-empty string access_token (received type=${typeof rawAccessToken}). Body snippet: ${JSON.stringify(
+        bodyShape,
+      )}`,
+    );
   }
 
+  const accessToken = rawAccessToken.trim();
   // Create Lead record
   const leadData = {
     FirstName: lead.name.split(" ")[0],
