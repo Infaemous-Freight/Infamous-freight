@@ -62,6 +62,53 @@ import {
 
 const router = Router();
 
+function parseAllowedOrigins(rawOrigins?: string): Set<string> {
+  if (!rawOrigins) {
+    return new Set();
+  }
+
+  return new Set(
+    rawOrigins
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean),
+  );
+}
+
+/**
+ * Restrict browser origins for public lead capture when configured.
+ *
+ * Notes:
+ * - Missing Origin is allowed to support server-to-server submissions.
+ * - When Origin is present, it must be on the explicit allowlist.
+ */
+function validateLeadCaptureOrigin(req, res, next) {
+  const allowedOrigins = parseAllowedOrigins(
+    process.env.SALES_LEAD_CAPTURE_ALLOWED_ORIGINS,
+  );
+
+  // No allowlist configured => do not apply route-level Origin restrictions.
+  if (allowedOrigins.size === 0) {
+    return next();
+  }
+
+  const origin = req.get("origin");
+
+  // Keep parity with API-wide CORS behavior: allow server-to-server requests.
+  if (!origin) {
+    return next();
+  }
+
+  if (!allowedOrigins.has(origin)) {
+    return res.status(403).json({
+      error: "Forbidden origin",
+      message: "Origin is not allowed for lead capture",
+    });
+  }
+
+  return next();
+}
+
 // ============================================
 // Lead Capture (21.2)
 // ============================================
@@ -73,6 +120,7 @@ const router = Router();
 router.post(
   "/leads",
   limiters.general,
+  validateLeadCaptureOrigin,
   [
     body("name").isString().notEmpty().withMessage("Name is required"),
     body("email").isEmail().withMessage("Valid email is required"),
