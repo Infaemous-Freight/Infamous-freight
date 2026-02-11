@@ -41,6 +41,16 @@
 - Setup instructions
 - ~10 min read
 
+### [GENIUS_ARCHITECTURE_VALIDATION.md](./GENIUS_ARCHITECTURE_VALIDATION.md)
+
+**Architecture Validation & Execution Plan**
+
+- Layer-by-layer validation of frontend, backend, realtime, AI core, and compliance architecture
+- Compliance-gated AI control flow and required audit payload definitions
+- 3-phase implementation roadmap from interfaces → MVP → production scale
+- Production readiness definition of done
+- ~12 min read
+
 ### [CHANGELOG.md](./CHANGELOG.md)
 
 **Version History**
