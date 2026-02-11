@@ -11,7 +11,7 @@ describe("Legacy API Test Suite", () => {
   });
 
   // Test utilities
-  function makeRequest(server, method, path, body = null, headers = {}) {
+  function makeRequest(method, path, body = null, headers = {}) {
     return new Promise((resolve, reject) => {
       const options = {
         hostname: "localhost",
