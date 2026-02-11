@@ -365,12 +365,17 @@ router.post(
 
       if (
         !isPlainObject(currentLocation) ||
-        typeof currentLocation.lat !== "number" ||
-        typeof currentLocation.lng !== "number"
+        !Number.isFinite(currentLocation.lat) ||
+        !Number.isFinite(currentLocation.lng) ||
+        currentLocation.lat < -90 ||
+        currentLocation.lat > 90 ||
+        currentLocation.lng < -180 ||
+        currentLocation.lng > 180
       ) {
         return res.status(400).json({
           success: false,
-          error: "Invalid payload: currentLocation.lat and currentLocation.lng are required",
+          error:
+            "Invalid payload: currentLocation.lat and currentLocation.lng must be finite numbers within valid latitude/longitude ranges",
         });
       }
 
