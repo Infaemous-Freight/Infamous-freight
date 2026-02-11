@@ -1,12 +1,22 @@
 import { supabaseAnon, supabaseAdmin } from "@/lib/supabase";
 
+export class AuthError extends Error {
+  status: number;
+
+  constructor(message: string, status = 401) {
+    super(message);
+    this.name = "AuthError";
+    this.status = status;
+  }
+}
+
 export async function requireUser(req: Request) {
   const auth = req.headers.get("authorization") || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
-  if (!token) throw new Error("Missing Authorization bearer token");
+  if (!token) throw new AuthError("Authentication required", 401);
 
   const { data, error } = await supabaseAnon.auth.getUser(token);
-  if (error || !data?.user) throw new Error("Invalid token");
+  if (error || !data?.user) throw new AuthError("Invalid or expired token", 401);
   return data.user;
 }
 
@@ -50,6 +60,8 @@ export async function getActiveCompanyId(userId: string) {
 export async function requireActiveCompany(req: Request) {
   const user = await requireUser(req);
   const activeCompanyId = await getActiveCompanyId(user.id);
-  if (!activeCompanyId) throw new Error("No company membership");
+  if (!activeCompanyId) {
+    throw new AuthError("No active company membership", 403);
+  }
   return { user, activeCompanyId };
 }
