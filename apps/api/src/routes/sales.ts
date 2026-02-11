@@ -17,6 +17,7 @@ import {
   limiters,
 } from "../middleware/security";
 import { handleValidationErrors } from "../middleware/validation";
+import { createSalesLeadProtection } from "../middleware/salesLeadProtection";
 
 import {
   createLead,
@@ -61,6 +62,7 @@ import {
 } from "../sales/metrics";
 
 const router = Router();
+const protectLeadCapture = createSalesLeadProtection();
 
 // ============================================
 // Lead Capture (21.2)
@@ -73,6 +75,7 @@ const router = Router();
 router.post(
   "/leads",
   limiters.general,
+  protectLeadCapture,
   [
     body("name").isString().notEmpty().withMessage("Name is required"),
     body("email").isEmail().withMessage("Valid email is required"),
