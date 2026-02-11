@@ -10,6 +10,27 @@ import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog";
 
 const prisma = new PrismaClient();
 
+async function parseResponseBody(response: any): Promise<unknown> {
+  const rawBody = await response.text();
+
+  if (!rawBody) {
+    return undefined;
+  }
+
+  const contentType = response.headers.get("content-type") || "";
+  const isJson = contentType.toLowerCase().includes("application/json");
+
+  if (!isJson) {
+    return rawBody;
+  }
+
+  try {
+    return JSON.parse(rawBody);
+  } catch {
+    return rawBody;
+  }
+}
+
 // ============================================
 // Lead Capture
 // ============================================
@@ -344,8 +365,34 @@ async function syncToSalesforce(lead: any): Promise<void> {
     }).toString(),
   });
 
-  const { access_token } = await tokenResponse.json();
+  const tokenBody = await parseResponseBody(tokenResponse);
 
+  if (!tokenResponse.ok) {
+    const details = typeof tokenBody === "string" ? tokenBody : JSON.stringify(tokenBody);
+    throw new Error(
+      `Salesforce token request failed (${tokenResponse.status} ${tokenResponse.statusText}): ${details || "No response body"}`
+    );
+  }
+
+  const rawAccessToken =
+    tokenBody && typeof tokenBody === "object" && "access_token" in tokenBody
+      ? (tokenBody as { access_token?: unknown }).access_token
+      : undefined;
+
+  if (typeof rawAccessToken !== "string" || rawAccessToken.trim().length === 0) {
+    const bodyShape =
+      tokenBody && typeof tokenBody === "object"
+        ? { keys: Object.keys(tokenBody as Record<string, unknown>).slice(0, 10) }
+        : tokenBody;
+
+    throw new Error(
+      `Salesforce token response did not include a valid non-empty string access_token (received type=${typeof rawAccessToken}). Body snippet: ${JSON.stringify(
+        bodyShape,
+      )}`,
+    );
+  }
+
+  const accessToken = rawAccessToken.trim();
   // Create Lead record
   const leadData = {
     FirstName: lead.name.split(" ")[0],
@@ -359,14 +406,20 @@ async function syncToSalesforce(lead: any): Promise<void> {
   const response = await fetch(`${instanceUrl}/services/data/v57.0/sobjects/Lead`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${access_token}`,
+      Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(leadData),
   });
 
   if (!response.ok) {
-    throw new Error(`Salesforce API error: ${response.statusText}`);
+    const responseBody = await parseResponseBody(response);
+    const details =
+      typeof responseBody === "string" ? responseBody : JSON.stringify(responseBody);
+
+    throw new Error(
+      `Salesforce API error (${response.status} ${response.statusText}): ${details || "No response body"}`
+    );
   }
 
   console.log(`[CrmSync] Lead synced to Salesforce: ${lead.email}`);
