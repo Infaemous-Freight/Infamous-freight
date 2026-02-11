@@ -3,11 +3,10 @@ set -euo pipefail
 
 required_env=(
   "AI_PROVIDER"
-  "OPENAI_API_KEY"
-  "AI_DETERMINISTIC"
-  "AI_LOG_LEVEL"
 )
 
+# Provider-specific keys (e.g., OPENAI_API_KEY, ANTHROPIC_API_KEY) are validated
+# at runtime based on AI_PROVIDER and are not universally required here.
 required_services=(
   "api-gateway"
   "ai-core"
