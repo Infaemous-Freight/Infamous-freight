@@ -10,7 +10,8 @@ export default (prisma) => {
     const hash = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
-      data: { email, password: hash, role }
+      data: { email, password: hash, role },
+      select: { id: true, email: true, role: true }
     });
 
     res.json(user);
