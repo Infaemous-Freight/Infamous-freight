@@ -13,7 +13,7 @@ This document codifies the final, locked architecture and execution reality for 
 
 ## Immutable Rule
 
-> No AI action exists without a GENIUS Avatar, and no GENIUS Avatar acts without E-LAW approval.
+> No AI action exists without a GENIUS Avatar, and no GENIUS Avatar acts without /E-LAW approval.
 
 This rule is treated as mandatory across:
 
