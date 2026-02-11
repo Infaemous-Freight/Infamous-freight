@@ -19,7 +19,7 @@ export default function Dashboard() {
   return (
     <div className="p-10">
       <button onClick={runAI}>Run AI Optimization</button>
-      {profit && <p>Estimated Profit: ${profit}</p>}
+      {profit !== null && <p>Estimated Profit: ${profit}</p>}
     </div>
   );
 }
