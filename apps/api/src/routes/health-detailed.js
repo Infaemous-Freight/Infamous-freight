@@ -294,9 +294,28 @@ router.get('/health/dashboard', (req, res) => {
             html += '</div>';
             
             html += '</div>';
-            document.getElementById('health').innerHTML = html;
+            
+            // Use DOMParser to safely parse HTML and prevent XSS
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const healthEl = document.getElementById('health');
+            if (healthEl) {
+              healthEl.textContent = ''; // Clear existing content
+              healthEl.appendChild(doc.body.firstChild);
+            }
           } catch (error) {
-            document.getElementById('health').innerHTML = '<div class="card"><div style="color: red;">Error loading health data: ' + error.message + '</div></div>';
+            // Safely create error element without innerHTML
+            const healthEl = document.getElementById('health');
+            if (healthEl) {
+              healthEl.textContent = ''; // Clear existing content
+              const card = document.createElement('div');
+              card.className = 'card';
+              const errorDiv = document.createElement('div');
+              errorDiv.style.color = 'red';
+              errorDiv.textContent = 'Error loading health data: ' + error.message;
+              card.appendChild(errorDiv);
+              healthEl.appendChild(card);
+            }
           }
         }
         

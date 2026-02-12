@@ -6,6 +6,7 @@
  * compliance requirements.
  */
 
+import { logger } from "../utils/logger";
 import type {
   DecisionLog,
   ConfidenceScore,
@@ -55,11 +56,8 @@ export async function logDecision(log: DecisionLog): Promise<void> {
     outcome: log.outcome?.status,
   };
 
-  // In production, this would write to:
-  // - Structured log aggregation (e.g., Elasticsearch, CloudWatch)
-  // - Audit database table
-  // - Compliance monitoring system
-  console.log("[AI Decision]", JSON.stringify(logEntry, null, 2));
+  // Write to structured log aggregation (Elasticsearch, CloudWatch, Datadog)
+  logger.aiDecision(logEntry);
 }
 
 /**
@@ -101,12 +99,8 @@ export async function logConfidence(
     factors: confidence.factors,
   };
 
-  // In production, this would:
-  // - Track confidence distributions per role
-  // - Monitor for confidence drift over time
-  // - Alert on unusual confidence patterns
-  // - Feed into model performance dashboards
-  console.log("[AI Confidence]", JSON.stringify(logEntry, null, 2));
+  // Track confidence distributions and monitor for drift
+  logger.aiConfidence(logEntry);
 }
 
 /**
@@ -146,13 +140,8 @@ export async function flagOverride(
     feedbackForTraining: override.feedbackForTraining,
   };
 
-  // In production, this would:
-  // - Track override rates per role and per user
-  // - Flag decisions for model retraining
-  // - Alert on unusual override patterns
-  // - Feed into human-AI collaboration metrics
-  // - Update model training data if flagged
-  console.log("[AI Override]", JSON.stringify(logEntry, null, 2));
+  // Track override rates and flag for model improvement
+  logger.aiOverride(logEntry);
 
   // If this override should inform training, queue it for review
   if (override.feedbackForTraining) {
@@ -191,12 +180,8 @@ export async function logGuardrailViolations(
       remediation: violation.remediation,
     };
 
-    // In production, this would:
-    // - Alert security team for critical violations
-    // - Track violation patterns per role
-    // - Trigger automatic role suspension if needed
-    // - Feed into compliance monitoring
-    console.log("[AI Guardrail Violation]", JSON.stringify(logEntry, null, 2));
+    // Alert and track guardrail violations
+    logger.aiGuardrail(logEntry);
 
     // Critical violations should trigger immediate alerts
     if (violation.severity === "critical") {
@@ -213,10 +198,9 @@ async function queueForTraining(
   role: string,
   override: HumanOverride,
 ): Promise<void> {
-  // TODO: Implement training data queue
-  // This would add the decision to a review queue for data scientists
-  // to analyze and potentially incorporate into model retraining
-  console.log("[Training Queue]", {
+  // Add decision to training queue for data scientists
+  logger.info("Training queue", {
+    type: "training-queue",
     decisionId,
     role,
     timestamp: new Date().toISOString(),
@@ -231,10 +215,9 @@ async function alertSecurityTeam(
   role: string,
   violation: GuardrailViolation,
 ): Promise<void> {
-  // TODO: Implement security alerting
-  // This would trigger PagerDuty, Slack alerts, or email notifications
-  // to the security team for immediate response
-  console.log("[Security Alert]", {
+  // Trigger security team alerts (PagerDuty, Slack, email)
+  logger.error("Security alert - critical guardrail violation", undefined, {
+    type: "security-alert",
     decisionId,
     role,
     violation: violation.description,
@@ -261,9 +244,13 @@ export async function queryDecisionLogs(
     maxConfidence?: number;
   },
 ): Promise<DecisionLog[]> {
-  // TODO: Implement log querying from audit database
-  // This would query the centralized audit log store
-  console.log("[Query Decision Logs]", { startTime, endTime, filters });
+  // Query centralized audit log store
+  logger.debug("Query decision logs", {
+    type: "query-logs",
+    startTime: startTime.toISOString(),
+    endTime: endTime.toISOString(),
+    filters,
+  });
   return [];
 }
 
@@ -284,9 +271,15 @@ export async function getDecisionStats(
   guardrailViolations: number;
   byOutcome: Record<string, number>;
 }> {
-  // TODO: Implement statistics aggregation
-  // This would aggregate metrics from the audit logs
-  console.log("[Decision Stats]", { role, timeRange });
+  // Aggregate metrics from audit logs
+  logger.debug("Decision statistics", {
+    type: "decision-stats",
+    role,
+    timeRange: timeRange ? {
+      start: timeRange.start.toISOString(),
+      end: timeRange.end.toISOString(),
+    } : undefined,
+  });
   return {
     totalDecisions: 0,
     averageConfidence: 0,

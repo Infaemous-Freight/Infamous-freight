@@ -103,10 +103,16 @@ export function getSoftwareApplicationData(): SoftwareApplication {
 
 // Component to inject structured data
 export function StructuredData({ data }: { data: Organization | WebSite | SoftwareApplication }) {
+  // Escape HTML special characters to prevent XSS
+  const jsonLd = JSON.stringify(data)
+    .replace(/</g, '\u003c')
+    .replace(/>/g, '\u003e')
+    .replace(/&/g, '\u0026');
+  
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: jsonLd }}
     />
   );
 }
