@@ -178,7 +178,7 @@ This package follows the main monorepo version. Version bumps should be coordina
 
 - **Always import from package root**: `@infamous-freight/shared`, not `@infamous-freight/shared/dist/types`
 - **Rebuild after changes**: Types aren't hot-reloaded
-- **No circular dependencies**: This package must not depend on api/web/mobile
+- **No circular dependencies**: This package must not depend on apps/api/web/mobile
 - **Keep it lean**: Only add truly shared code
 
 ## 📄 License

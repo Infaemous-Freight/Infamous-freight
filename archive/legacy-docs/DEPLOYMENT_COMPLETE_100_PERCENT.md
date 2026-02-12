@@ -22,14 +22,14 @@ All 4 framework components have been successfully implemented, integrated, and v
 | File                             | Lines | Purpose                                                          |
 | -------------------------------- | ----- | ---------------------------------------------------------------- |
 | `packages/shared/src/rbac.ts`    | 150+  | Type-safe RBAC definitions (roles, permissions, utilities)       |
-| `api/src/middleware/rbac.js`     | 180+  | Express middleware guards (requirePermission, requireRole, etc.) |
-| `api/src/middleware/authRBAC.js` | 80+   | Enhanced JWT auth with automatic permission resolution           |
-| `api/src/routes/dispatch.js`     | 320+  | 8 REST endpoints for dispatch management                         |
-| `api/src/queue/agents.js`        | 300+  | 4 BullMQ workers (dispatch, invoice, ETA, analytics)             |
+| `apps/api/src/middleware/rbac.js`     | 180+  | Express middleware guards (requirePermission, requireRole, etc.) |
+| `apps/api/src/middleware/authRBAC.js` | 80+   | Enhanced JWT auth with automatic permission resolution           |
+| `apps/api/src/routes/dispatch.js`     | 320+  | 8 REST endpoints for dispatch management                         |
+| `apps/api/src/queue/agents.js`        | 300+  | 4 BullMQ workers (dispatch, invoice, ETA, analytics)             |
 | `.github/workflows/deploy.yml`   | 100+  | CI/CD pipeline (Vercel + Fly.io deployment)                      |
-| `api/Dockerfile`                 | 40+   | Optimized Docker image (Node 20, OpenSSL, pnpm)                  |
+| `apps/api/Dockerfile`                 | 40+   | Optimized Docker image (Node 20, OpenSSL, pnpm)                  |
 | `fly.toml`                       | 50+   | Fly.io configuration (API service, health checks)                |
-| `web/vercel.json`                | 30+   | Vercel configuration (Next.js, rewrites)                         |
+| `apps/web/vercel.json`                | 30+   | Vercel configuration (Next.js, rewrites)                         |
 | `FRAMEWORK_INTEGRATION_GUIDE.md` | 500+  | Complete integration documentation                               |
 | `FRAMEWORK_SETUP_GUIDE.md`       | 400+  | Setup & onboarding guide                                         |
 | `scripts/verify-deployment.js`   | 200+  | Deployment verification checklist                                |
@@ -40,9 +40,9 @@ All 4 framework components have been successfully implemented, integrated, and v
 
 | File              | Changes                                                            |
 | ----------------- | ------------------------------------------------------------------ |
-| `api/Dockerfile`  | Updated to Node 20, added OpenSSL, pnpm support, Prisma generation |
+| `apps/api/Dockerfile`  | Updated to Node 20, added OpenSSL, pnpm support, Prisma generation |
 | `fly.toml`        | Updated port to 3001, added health checks, configured services     |
-| `web/vercel.json` | Updated environment variables, added rewrites for API proxy        |
+| `apps/web/vercel.json` | Updated environment variables, added rewrites for API proxy        |
 
 ---
 
@@ -54,7 +54,7 @@ All 4 framework components have been successfully implemented, integrated, and v
 ├─────────────────────────────────────────────────────────────┤
 │                                                              │
 │  ┌──────────────────────────────────────────────────────┐   │
-│  │  web/ (Next.js 14)                                   │   │
+│  │  apps/web/ (Next.js 14)                                   │   │
 │  │  - TypeScript, React, Tailwind                       │   │
 │  │  - Deployed to Vercel                               │   │
 │  │  - Auto-deployed on main branch                      │   │
@@ -62,7 +62,7 @@ All 4 framework components have been successfully implemented, integrated, and v
 │                 │ HTTP/REST (JWT + RBAC)                    │
 │                 ↓                                             │
 │  ┌──────────────────────────────────────────────────────┐   │
-│  │  api/ (Express.js + Node.js)                         │   │
+│  │  apps/api/ (Express.js + Node.js)                         │   │
 │  │  ├── middleware/                                     │   │
 │  │  │   ├── security.js (rate limiting)                │   │
 │  │  │   ├── rbac.js (permission guards)                │   │
@@ -263,7 +263,7 @@ export interface JWTClaims {
 }
 ```
 
-### Component 2: Dispatch (`api/src/routes/dispatch.js`)
+### Component 2: Dispatch (`apps/api/src/routes/dispatch.js`)
 
 ```javascript
 // Authentication + Permission checks
@@ -281,7 +281,7 @@ router.get(
 // - Optimization triggers (3 algorithms: NEAREST, LOAD_BALANCE, TIME_WINDOW)
 ```
 
-### Component 3: Agents (`api/src/queue/agents.js`)
+### Component 3: Agents (`apps/api/src/queue/agents.js`)
 
 ```javascript
 // 4 BullMQ workers with database persistence
@@ -474,7 +474,7 @@ git push origin main
 
 1. Check [FRAMEWORK_INTEGRATION_GUIDE.md](FRAMEWORK_INTEGRATION_GUIDE.md) for detailed usage
 2. See [FRAMEWORK_SETUP_GUIDE.md](FRAMEWORK_SETUP_GUIDE.md) for setup/troubleshooting
-3. Review example routes in `api/src/routes/dispatch.js`
+3. Review example routes in `apps/api/src/routes/dispatch.js`
 
 **Deployment Help:**
 

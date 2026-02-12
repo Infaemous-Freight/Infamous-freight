@@ -63,7 +63,7 @@ This starts:
 The API uses Prisma ORM. Generate Prisma client and run migrations:
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:generate
 pnpm prisma:migrate:dev
 ```
@@ -72,18 +72,18 @@ pnpm prisma:migrate:dev
 
 ```
 infamous-freight-enterprise/
-├── api/                 # Express.js backend (CommonJS)
+├── apps/api/                 # Express.js backend (CommonJS)
 │   ├── src/
 │   │   ├── routes/     # API routes
 │   │   ├── middleware/ # Auth, validation, error handling
 │   │   ├── services/   # Business logic
 │   │   └── server.ts   # Server entry point
 │   └── prisma/         # Database schema and migrations
-├── web/                # Next.js 14 frontend (TypeScript/ESM)
+├── apps/web/                # Next.js 14 frontend (TypeScript/ESM)
 │   ├── pages/          # Next.js pages
 │   ├── components/     # React components
 │   └── lib/            # Utilities
-├── mobile/             # React Native/Expo app
+├── apps/mobile/             # React Native/Expo app
 │   └── App.tsx         # Mobile app entry point
 ├── packages/
 │   └── shared/         # Shared TypeScript types and utilities
@@ -159,11 +159,11 @@ import {
 
 When you need to modify the database schema:
 
-1. Edit `api/prisma/schema.prisma`
+1. Edit `apps/api/prisma/schema.prisma`
 2. Create a migration:
 
    ```bash
-   cd api
+   cd apps/api
    pnpm prisma:migrate:dev --name <migration_name>
    ```
 
@@ -172,7 +172,7 @@ When you need to modify the database schema:
 To view the database in a GUI:
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:studio
 ```
 
@@ -187,7 +187,7 @@ The API uses:
 
 ### Adding a New API Route
 
-1. Create route file in `api/src/routes/`
+1. Create route file in `apps/api/src/routes/`
 2. Apply middleware in order:
 
    ```javascript
@@ -206,7 +206,7 @@ The API uses:
 3. Use `ApiResponse` for responses
 4. Delegate errors with `next(err)` to global error handler
 
-See [API Reference](api/API_REFERENCE.md) for more details.
+See [API Reference](apps/api/API_REFERENCE.md) for more details.
 
 ## Web Development
 
@@ -218,9 +218,9 @@ The web frontend uses:
 
 ### Adding a New Page
 
-1. Create a new file in `web/pages/` (e.g., `new-page.tsx`)
+1. Create a new file in `apps/web/pages/` (e.g., `new-page.tsx`)
 2. Export a React component
-3. Use Next.js API routes in `web/pages/api/` for backend communication
+3. Use Next.js API routes in `apps/web/pages/api/` for backend communication
 
 ## Mobile Development
 
@@ -228,7 +228,7 @@ The mobile app uses **React Native** with **Expo**.
 
 ```bash
 # Start the development server
-cd mobile
+cd apps/mobile
 pnpm start
 
 # Run on Android
@@ -292,7 +292,7 @@ If you get port conflicts:
 If you get Prisma client errors:
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:generate
 ```
 

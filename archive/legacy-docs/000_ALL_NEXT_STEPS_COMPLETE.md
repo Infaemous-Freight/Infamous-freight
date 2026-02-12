@@ -79,8 +79,8 @@
 ### API Endpoints & Code ✅
 
 - [x] /api/health endpoints (basic, live, ready, details, dashboard)
-- [x] api/src/routes/health-detailed.js (370 lines)
-- [x] api/src/config/secrets.js (90 lines)
+- [x] apps/api/src/routes/health-detailed.js (370 lines)
+- [x] apps/api/src/config/secrets.js (90 lines)
 - [x] Error handler integration
 
 ### CI/CD Pipeline ✅
@@ -217,8 +217,8 @@ curl http://localhost:4000/api/health/dashboard
 
 ### Application Code (2)
 
-- api/src/routes/health-detailed.js (370 lines)
-- api/src/config/secrets.js (90 lines)
+- apps/api/src/routes/health-detailed.js (370 lines)
+- apps/api/src/config/secrets.js (90 lines)
 
 ### CI/CD (2)
 

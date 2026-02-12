@@ -13,7 +13,7 @@
 npm install --save-dev @next/bundle-analyzer
 
 # Run analysis
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 ```
 
 ### Current Targets
@@ -28,7 +28,7 @@ cd web && ANALYZE=true pnpm build
 #### 1.1 Implement Code Splitting
 
 ```typescript
-// web/pages/dashboard.tsx
+// apps/web/pages/dashboard.tsx
 import dynamic from 'next/dynamic';
 
 // Lazy load heavy analytics component
@@ -519,7 +519,7 @@ const queries = {
 4. **Database Indexes** (10 min)
 
    ```bash
-   cd api && pnpm prisma migrate dev --name add_performance_indexes
+   cd apps/api && pnpm prisma migrate dev --name add_performance_indexes
    ```
 
 5. **Monitor Slow Queries** (5 min)

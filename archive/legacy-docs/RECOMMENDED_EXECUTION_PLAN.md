@@ -452,7 +452,7 @@ nano .env.production
 # Save: Ctrl+O, Enter, Ctrl+X
 
 # Step 6: Database setup (2 min)
-cd api
+cd apps/api
 pnpm install
 pnpm prisma:generate
 pnpm prisma:migrate:deploy

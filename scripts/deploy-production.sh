@@ -7,8 +7,8 @@ echo "🚀 Starting Production Deployment..."
 
 # Configuration
 export NODE_ENV=production
-API_DIR="/workspaces/Infamous-freight-enterprises/src/apps/api"
-WEB_DIR="/workspaces/Infamous-freight-enterprises/src/apps/web"
+API_DIR="/workspaces/Infamous-freight-enterprises/apps/api"
+WEB_DIR="/workspaces/Infamous-freight-enterprises/apps/web"
 
 # Colors
 GREEN='\033[0;32m'

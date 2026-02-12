@@ -1,19 +1,19 @@
 /**
  * INTEGRATION GUIDE - Phase 2 Avatar System
  *
- * The avatar system has been successfully integrated into api/src/server.js
+ * The avatar system has been successfully integrated into apps/api/src/server.js
  *
  * ✅ WHAT'S ALREADY DONE:
  *
  * 1. Static File Serving (lines ~108-109 in server.js)
- *    - /uploads → api/public/uploads (user avatar storage)
- *    - /avatars/main → web/public/avatars/main (Phase 1 system defaults)
+ *    - /uploads → apps/api/public/uploads (user avatar storage)
+ *    - /avatars/main → apps/web/public/avatars/main (Phase 1 system defaults)
  *
  * 2. Avatar Routes Mounted (lines ~108-111 in server.js)
  *    - /v1/avatars (primary)
  *    - /api/avatars (legacy support)
  *
- * 3. Data Store (api/data/avatars.json)
+ * 3. Data Store (apps/api/data/avatars.json)
  *    - CI-safe JSON persistence
  *    - Atomic writes with temp file pattern
  *    - Auto-initialization on first load
@@ -21,7 +21,7 @@
  * 4. Authentication Integration
  *    - JWT extraction via getUserId(req)
  *    - Scope-based access control (user:avatar scope required)
- *    - Reuses existing security middleware from api/src/middleware/security.js
+ *    - Reuses existing security middleware from apps/api/src/middleware/security.js
  *
  * ================================================================================
  *
@@ -31,7 +31,7 @@
  * ────────────────────────────────
  * GET /v1/avatars/system
  * Get Phase 1 default system avatars (no auth required)
- * Returns: manifest.json from web/public/avatars/main/
+ * Returns: manifest.json from apps/web/public/avatars/main/
  *
  * Phase 2: User Avatars (Auth Required - Scopes: user:avatar)
  * ────────────────────────────────────────────────────────────
@@ -68,11 +68,11 @@
  *
  * 🔧 ENVIRONMENT VARIABLES (in .env):
  *
- * AVATAR_UPLOAD_DIR=api/public/uploads
+ * AVATAR_UPLOAD_DIR=apps/api/public/uploads
  * AVATAR_MAX_FILE_SIZE_MB=5
  * AVATAR_MAX_DIMENSIONS=2048x2048
  * AVATAR_ALLOWED_TYPES=image/jpeg,image/png,image/webp
- * AVATAR_DATA_STORE=api/data/avatars.json
+ * AVATAR_DATA_STORE=apps/api/data/avatars.json
  * RATE_LIMIT_AVATAR_WINDOW_MS=15
  * RATE_LIMIT_AVATAR_MAX=20
  *
@@ -80,10 +80,10 @@
  *
  * 📁 FILE STRUCTURE:
  *
- * api/src/
+ * apps/api/src/
  *   └── avatars/
  *       ├── routes.ts           ← Express route handlers (mounted at /v1/avatars)
- *       └── store.ts            ← JSON persistence layer (api/data/avatars.json)
+ *       └── store.ts            ← JSON persistence layer (apps/api/data/avatars.json)
  *   └── auth/
  *       └── userId.ts           ← JWT token extraction (getUserId, requireUserId)
  *   └── config/
@@ -93,7 +93,7 @@
  *   └── data/
  *       └── avatars.json        ← Store persistence (atomic writes)
  *
- * web/public/
+ * apps/web/public/
  *   └── avatars/
  *       └── main/
  *           ├── manifest.json   ← Phase 1 system defaults
@@ -143,7 +143,7 @@
  * ✨ NEXT STEPS:
  *
  * 1. Copy Phase 1 Avatar Images:
- *    Place these files in web/public/avatars/main/:
+ *    Place these files in apps/web/public/avatars/main/:
  *    - main-01.png (Infinity Operator)
  *    - main-02.png (Crimson Neural)
  *    - main-03.png (Golden Sphinx Core)
@@ -159,7 +159,7 @@
  *    Use cURL examples above to verify system and user avatar operations
  *
  * 5. Deploy to Production:
- *    git add api/src/avatars api/src/auth api/src/config api/public/uploads api/data
+ *    git add apps/api/src/avatars apps/api/src/auth apps/api/src/config apps/api/public/uploads apps/api/data
  *    git commit -m "feat: Phase 2 avatar system (user uploads + system defaults)"
  *    git push origin main
  *

@@ -17,7 +17,7 @@
 ```bash
 # 1. Update schema.prisma with new models/changes
 # 2. Create and apply migration
-cd api
+cd apps/api
 pnpm prisma:migrate:dev --name describe_your_change
 
 # 3. Review generated SQL in migrations folder
@@ -32,7 +32,7 @@ pnpm prisma:studio
 
 ```bash
 # 1. Review pending migrations
-cd api
+cd apps/api
 pnpm prisma:migrate:status
 
 # 2. Apply all pending migrations (non-interactive)
@@ -60,14 +60,14 @@ curl http://localhost:4000/api/health/detailed
 
 ```bash
 # Reset local database (DESTRUCTIVE!)
-cd api
+cd apps/api
 pnpm prisma:migrate:resolve --rolled-back migration_name
 ```
 
 ## Checking migration status
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:migrate:status
 # Output shows:
 # - Pending migrations (not yet applied)
@@ -135,7 +135,7 @@ LIMIT 10;
 ## Vacuum and Analyze (weekly)
 
 ```bash
-cd api
+cd apps/api
 # Run via Prisma
 pnpm prisma db execute --stdin < vacuum.sql
 
@@ -155,7 +155,7 @@ For replicated databases, ensure migrations are applied to all replicas before c
 Your migration likely wasn't applied. Run:
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:migrate:deploy
 ```
 
@@ -164,7 +164,7 @@ pnpm prisma:migrate:deploy
 Migration tried to create duplicate index. Resolve:
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:migrate:resolve --rolled-back migration_name
 # Then update schema.prisma and retry
 ```

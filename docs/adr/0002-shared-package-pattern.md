@@ -67,7 +67,7 @@ import { User, SHIPMENT_STATUSES } from "@infamous-freight/shared";
 **Negative:**
 
 - ❌ Must rebuild shared package when types change
-- ❌ Build order dependency (shared → api/web/mobile)
+- ❌ Build order dependency (shared → apps/api/web/mobile)
 - ❌ Can't version shared code independently
 - ❌ Breaking changes affect all consumers immediately
 
@@ -94,10 +94,10 @@ pnpm --filter @infamous-freight/shared dev
 **Before (duplicated types):**
 
 ```javascript
-// api/src/types.js
+// apps/api/src/types.js
 const User = { id: String, email: String, ... };
 
-// web/types/user.ts
+// apps/web/types/user.ts
 interface User { id: string; email: string; ... }
 // Risk: Definitions drift over time
 ```

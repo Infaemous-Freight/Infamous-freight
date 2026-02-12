@@ -71,9 +71,9 @@
 
 ```
 Infamous-freight-enterprises/
-├── api/                    ✅ Express.js backend (100% complete)
-├── web/                    ✅ Next.js frontend (100% complete)
-├── mobile/                 ✅ React Native app (100% complete)
+├── apps/api/                    ✅ Express.js backend (100% complete)
+├── apps/web/                    ✅ Next.js frontend (100% complete)
+├── apps/mobile/                 ✅ React Native app (100% complete)
 ├── packages/shared/        ✅ Shared types/utils (100% complete)
 ├── e2e/                    ✅ E2E tests (100% complete)
 ├── .github/workflows/      ✅ 34 CI/CD workflows (100% complete)

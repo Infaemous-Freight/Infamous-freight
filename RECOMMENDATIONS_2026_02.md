@@ -300,7 +300,7 @@ pnpm dlx markdownlint-cli2 "**/*.md"
 
 ### 8. Enable Real Rate Limiting with Redis
 
-**Current**: [api/src/middleware/security.js](api/src/middleware/security.js#L32) has in-memory rate limiters
+**Current**: [apps/api/src/middleware/security.js](apps/api/src/middleware/security.js#L32) has in-memory rate limiters
 
 **Problem**: In-memory limiters don't work across multiple instances (each machine has its own counter)
 
@@ -319,7 +319,7 @@ pnpm add rate-limit-redis redis
 **Update security.js**:
 
 ```javascript
-// api/src/middleware/security.js
+// apps/api/src/middleware/security.js
 import RedisStore from 'rate-limit-redis';
 import { createClient } from 'redis';
 
@@ -409,7 +409,7 @@ flyctl secrets set SENTRY_DSN=https://xxx@sentry.io/xxx --app infamous-freight-a
 
 **Cost**: Free tier (5,000 errors/month), paid starts at $29/month
 
-**File**: [api/src/middleware/errorHandler.js](api/src/middleware/errorHandler.js) already has Sentry integration
+**File**: [apps/api/src/middleware/errorHandler.js](apps/api/src/middleware/errorHandler.js) already has Sentry integration
 
 ---
 
@@ -639,7 +639,7 @@ import Image from 'next/image';
 **Benefits**:
 
 - Automatic WebP/AVIF conversion (already enabled in config)
-- Responsive images (different sizes for mobile/desktop)
+- Responsive images (different sizes for apps/mobile/desktop)
 - Lazy loading (images below fold load on scroll)
 - Blur placeholder while loading
 
@@ -733,7 +733,7 @@ const exportToExcel = async () => {
 
 **Current**: JWT tokens don't expire/rotate
 
-**Add to [api/src/middleware/security.js](api/src/middleware/security.js)**:
+**Add to [apps/api/src/middleware/security.js](apps/api/src/middleware/security.js)**:
 
 ```javascript
 // Generate new JWT secret every 30 days

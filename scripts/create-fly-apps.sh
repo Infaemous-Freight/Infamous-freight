@@ -131,7 +131,7 @@ echo -e "${BLUE}═════════════════════�
 echo ""
 echo "Opening SSH console to run migrations..."
 echo "When connected, run:"
-echo "  cd api && npx prisma migrate deploy"
+echo "  cd apps/api && npx prisma migrate deploy"
 echo "  exit"
 echo ""
 read -p "Press Enter to open SSH console..."

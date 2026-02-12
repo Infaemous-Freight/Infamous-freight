@@ -231,14 +231,14 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          files: ./api/coverage/lcov.info
+          files: ./apps/api/coverage/lcov.info
           flags: api
           name: api-coverage
           fail_ci_if_error: false
 
       - name: Check coverage thresholds
         run: |
-          cd api
+          cd apps/api
           node -e "
           const coverage = require('./coverage/coverage-summary.json');
           const totals = coverage.total;

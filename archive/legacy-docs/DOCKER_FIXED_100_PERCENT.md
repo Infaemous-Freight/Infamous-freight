@@ -13,8 +13,8 @@ All Docker configurations have been completely overhauled and optimized for prod
 | File                                               | Changes                                                   | Status        |
 | -------------------------------------------------- | --------------------------------------------------------- | ------------- |
 | [Dockerfile.fly](Dockerfile.fly)                   | ✅ Multi-stage, security hardened, shared package support | 100% Complete |
-| [src/apps/api/Dockerfile](src/apps/api/Dockerfile) | ✅ Complete rewrite with 4-stage build                    | 100% Complete |
-| [src/apps/web/Dockerfile](src/apps/web/Dockerfile) | ✅ Next.js standalone mode, optimized layers              | 100% Complete |
+| [apps/api/Dockerfile](apps/api/Dockerfile) | ✅ Complete rewrite with 4-stage build                    | 100% Complete |
+| [apps/web/Dockerfile](apps/web/Dockerfile) | ✅ Next.js standalone mode, optimized layers              | 100% Complete |
 
 ### Docker Compose Files
 

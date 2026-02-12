@@ -264,7 +264,7 @@ Artifacts: Uploaded for 1 day
 Prerequisites:
   - Build passed
   - Fly.io token available
-  - Changes detected in api/
+  - Changes detected in apps/api/
   
 Command:
   flyctl deploy --remote-only \
@@ -280,7 +280,7 @@ Validation:
 Prerequisites:
   - Build passed
   - Vercel token available
-  - Changes detected in web/
+  - Changes detected in apps/web/
   
 Command:
   vercel deploy --prod \

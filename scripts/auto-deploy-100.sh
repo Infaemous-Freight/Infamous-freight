@@ -153,9 +153,9 @@ detect_changes() {
         # Check for changes in the last commit
         local last_commit=$(git diff --name-only HEAD~1..HEAD 2>/dev/null || git diff --name-only HEAD)
         
-        [[ $last_commit =~ api/ ]] && api_changed=true
-        [[ $last_commit =~ web/ ]] && web_changed=true
-        [[ $last_commit =~ mobile/ ]] && mobile_changed=true
+        [[ $last_commit =~ apps/api/ ]] && api_changed=true
+        [[ $last_commit =~ apps/web/ ]] && web_changed=true
+        [[ $last_commit =~ apps/mobile/ ]] && mobile_changed=true
         [[ $last_commit =~ packages/shared/ ]] && shared_changed=true
     fi
     
@@ -312,7 +312,7 @@ deploy_api() {
     
     # Deploy using flyctl
     if command -v flyctl &> /dev/null; then
-        cd api || return 1
+        cd apps/api || return 1
         flyctl deploy --remote-only --build-arg NODE_ENV="$ENVIRONMENT" 2>&1 | tee -a "$LOG_FILE"
         cd - || return 1
     else

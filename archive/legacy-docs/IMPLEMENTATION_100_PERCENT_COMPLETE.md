@@ -17,7 +17,7 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
 #### CRITICAL Priority (3/3 COMPLETE)
 
 - ✅ **#1: WebSocket Event Handlers for Real-Time Features**
-  - File: `src/apps/api/src/services/websocket-events.ts`
+  - File: `apps/api/src/services/websocket-events.ts`
   - Features:
     - Shipment tracking (subscribe/unsubscribe/update)
     - Driver location tracking
@@ -28,7 +28,7 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
   - Status: **COMPLETE & TESTED**
 
 - ✅ **#2: Payment Processing Verification (Stripe/PayPal)**
-  - Integration verified in: `src/apps/api/src/routes/billing.ts`
+  - Integration verified in: `apps/api/src/routes/billing.ts`
   - Supports:
     - Stripe payment integration
     - PayPal payment integration
@@ -38,7 +38,7 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
   - Status: **VERIFIED & OPERATIONAL**
 
 - ✅ **#3: Notification System (Email/SMS)**
-  - File: `src/apps/api/src/services/notification.service.ts`
+  - File: `apps/api/src/services/notification.service.ts`
   - Features:
     - Email notifications (SMTP with HTML templates)
     - SMS notifications (Twilio-ready)
@@ -52,7 +52,7 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
 #### HIGH Priority (4/4 COMPLETE)
 
 - ✅ **#4: Database Seeding Script**
-  - File: `src/apps/api/prisma/seed.ts`
+  - File: `apps/api/prisma/seed.ts`
   - Features:
     - Organizations, Users, Customers seeding
     - Driver profiles with realistic data
@@ -61,12 +61,12 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
     - Route events for tracking
     - Invoice and payment records
     - Uses Faker.js for realistic data
-  - Status: **COMPLETE - Ready to run: `cd api && npm run seed`**
+  - Status: **COMPLETE - Ready to run: `cd apps/api && npm run seed`**
 
 - ✅ **#5: Comprehensive API Tests**
-  - Health Routes: `src/apps/api/__tests__/routes/health.spec.ts`
-  - Auth Routes: `src/apps/api/__tests__/routes/auth.spec.ts`
-  - Shipment Routes: `src/apps/api/__tests__/routes/shipment.spec.ts`
+  - Health Routes: `apps/api/__tests__/routes/health.spec.ts`
+  - Auth Routes: `apps/api/__tests__/routes/auth.spec.ts`
+  - Shipment Routes: `apps/api/__tests__/routes/shipment.spec.ts`
   - Coverage includes:
     - GET/POST/PATCH/DELETE operations
     - Input validation
@@ -76,7 +76,7 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
   - Status: **COMPLETE - Ready to run: `npm test`**
 
 - ✅ **#6: OpenAPI/Swagger Documentation**
-  - File: `src/apps/api/src/swagger.config.ts`
+  - File: `apps/api/src/swagger.config.ts`
   - Features:
     - Full API specification (OpenAPI 3.0)
     - 15+ endpoint documentations
@@ -87,7 +87,7 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
   - Status: **COMPLETE - Accessible at `/api/docs`**
 
 - ✅ **#7: Enhanced Request/Response Logging**
-  - File: `src/apps/api/src/middleware/enhanced-logging.ts`
+  - File: `apps/api/src/middleware/enhanced-logging.ts`
   - Features:
     - Request/Response lifecycle logging
     - Unique request ID correlation
@@ -104,7 +104,7 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
 #### MEDIUM Priority (3/3 COMPLETE)
 
 - ✅ **#8: File Upload Validation**
-  - File: `src/apps/api/src/middleware/file-upload-validation.ts`
+  - File: `apps/api/src/middleware/file-upload-validation.ts`
   - Features:
     - MIME type validation
     - File size enforcement
@@ -117,7 +117,7 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
   - Status: **COMPLETE - Ready to use in routes**
 
 - ✅ **#9: Rate Limiting Load Testing**
-  - File: `src/apps/api/src/tests/rate-limiting.test.ts`
+  - File: `apps/api/src/tests/rate-limiting.test.ts`
   - Features:
     - Configurable load test execution
     - RPS (Requests Per Second) testing
@@ -129,7 +129,7 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
   - Status: **COMPLETE - Ready to run load tests**
 
 - ✅ **#10: Monitoring Dashboards (Prometheus/Grafana)**
-  - File: `src/apps/api/src/monitoring/dashboards.ts`
+  - File: `apps/api/src/monitoring/dashboards.ts`
   - Features:
     - Prometheus metrics registration
     - 11 custom metrics implemented:
@@ -165,7 +165,7 @@ All 10 identified gaps have been systematically implemented to achieve **100% pr
 ### Run Database Seed
 
 ```bash
-cd api
+cd apps/api
 npm run seed
 ```
 
@@ -200,47 +200,47 @@ http://localhost:4000/api/metrics
 ## 📁 Files Created
 
 1. **WebSocket Events Handler**
-   - Path: `src/apps/api/src/services/websocket-events.ts`
+   - Path: `apps/api/src/services/websocket-events.ts`
    - Lines: ~200
    - Complexity: High
 
 2. **Notification Service**
-   - Path: `src/apps/api/src/services/notification.service.ts`
+   - Path: `apps/api/src/services/notification.service.ts`
    - Lines: ~280
    - Complexity: High
 
 3. **Database Seed Script**
-   - Path: `src/apps/api/prisma/seed.ts`
+   - Path: `apps/api/prisma/seed.ts`
    - Lines: ~280
    - Complexity: Medium
 
 4. **Test Suites** (3 files)
-   - Health Tests: `src/apps/api/__tests__/routes/health.spec.ts` (~80 lines)
-   - Auth Tests: `src/apps/api/__tests__/routes/auth.spec.ts` (~180 lines)
-   - Shipment Tests: `src/apps/api/__tests__/routes/shipment.spec.ts` (~220 lines)
+   - Health Tests: `apps/api/__tests__/routes/health.spec.ts` (~80 lines)
+   - Auth Tests: `apps/api/__tests__/routes/auth.spec.ts` (~180 lines)
+   - Shipment Tests: `apps/api/__tests__/routes/shipment.spec.ts` (~220 lines)
 
 5. **Swagger Configuration**
-   - Path: `src/apps/api/src/swagger.config.ts`
+   - Path: `apps/api/src/swagger.config.ts`
    - Lines: ~450
    - Complexity: Medium
 
 6. **Enhanced Logging Middleware**
-   - Path: `src/apps/api/src/middleware/enhanced-logging.ts`
+   - Path: `apps/api/src/middleware/enhanced-logging.ts`
    - Lines: ~350
    - Complexity: High
 
 7. **File Upload Validation**
-   - Path: `src/apps/api/src/middleware/file-upload-validation.ts`
+   - Path: `apps/api/src/middleware/file-upload-validation.ts`
    - Lines: ~350
    - Complexity: Medium
 
 8. **Rate Limiting Tests**
-   - Path: `src/apps/api/src/tests/rate-limiting.test.ts`
+   - Path: `apps/api/src/tests/rate-limiting.test.ts`
    - Lines: ~320
    - Complexity: High
 
 9. **Monitoring Dashboards**
-   - Path: `src/apps/api/src/monitoring/dashboards.ts`
+   - Path: `apps/api/src/monitoring/dashboards.ts`
    - Lines: ~400
    - Complexity: Medium
 
@@ -250,7 +250,7 @@ http://localhost:4000/api/metrics
 
 ### WebSocket Events
 
-- Integrates with: `src/apps/api/src/server.ts`
+- Integrates with: `apps/api/src/server.ts`
 - Uses: Prisma ORM, Socket.IO
 - Requires: NotificationService
 
@@ -378,13 +378,13 @@ The implementation includes monitoring for:
 3. **Database Population**
 
    ```bash
-   cd api && npm run seed
+   cd apps/api && npm run seed
    ```
 
 4. **Monitoring Setup**
    - Deploy Prometheus: `docker-compose up prometheus`
    - Deploy Grafana: `docker-compose up grafana`
-   - Import dashboard from `src/apps/api/src/monitoring/dashboards.ts`
+   - Import dashboard from `apps/api/src/monitoring/dashboards.ts`
 
 5. **Staging Deployment**
    - All features ready for staging

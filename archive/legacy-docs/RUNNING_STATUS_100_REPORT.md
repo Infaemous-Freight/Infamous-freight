@@ -216,7 +216,7 @@ export API_URL="https://infamous-freight-api.fly.dev"
 export DATABASE_URL="postgresql://user:pass@cloud-provider.com:5432/db"
 
 # 3. Start API with cloud database
-cd api
+cd apps/api
 export PATH="/home/vscode/.local/bin:$PATH"
 node src/server.js
 

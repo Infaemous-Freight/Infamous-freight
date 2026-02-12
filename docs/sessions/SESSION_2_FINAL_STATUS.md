@@ -48,7 +48,7 @@
 
 | File                                               | Change    | Impact                                         |
 | -------------------------------------------------- | --------- | ---------------------------------------------- |
-| [api/src/routes/users.js](api/src/routes/users.js) | +70 lines | Added GET /api/users/search endpoint           |
+| [apps/api/src/routes/users.js](apps/api/src/routes/users.js) | +70 lines | Added GET /api/users/search endpoint           |
 | [README.md](README.md)                             | +20 lines | Added production API section with health check |
 
 ### 🔗 Documentation Links Updated
@@ -63,7 +63,7 @@
 
 ### Search Endpoint (`GET /api/users/search`)
 
-**Location**: [api/src/routes/users.js](api/src/routes/users.js#L42-L112)
+**Location**: [apps/api/src/routes/users.js](apps/api/src/routes/users.js#L42-L112)
 
 **Functionality**:
 
@@ -205,10 +205,10 @@ Health check (`/api/health`) will still work but show `"database": "disconnected
 
 ```bash
 # Run unit tests
-npm test -- api/__tests__/routes.users.test.js
+npm test -- apps/api/__tests__/routes.users.test.js
 
 # Run integration tests
-npm test -- api/__tests__/validation-edge-cases.test.js
+npm test -- apps/api/__tests__/validation-edge-cases.test.js
 
 # Run with coverage
 npm run test:coverage
@@ -338,9 +338,9 @@ pnpm e2e --baseURL=https://infamous-freight-api.fly.dev
 
 | File                       | Coverage | Target | Status  |
 | -------------------------- | -------- | ------ | ------- |
-| api/src/routes/users.js    | 85%      | ≥80%   | ✅ Pass |
-| api/src/middleware/auth.js | 90%      | ≥80%   | ✅ Pass |
-| api/src/services/db.js     | 78%      | ≥75%   | ✅ Pass |
+| apps/api/src/routes/users.js    | 85%      | ≥80%   | ✅ Pass |
+| apps/api/src/middleware/auth.js | 90%      | ≥80%   | ✅ Pass |
+| apps/api/src/services/db.js     | 78%      | ≥75%   | ✅ Pass |
 
 ### Validation Implemented
 
@@ -471,8 +471,8 @@ Session 2 Final Phase (This Session):
 
 | File                                                             | Purpose                               |
 | ---------------------------------------------------------------- | ------------------------------------- |
-| [api/src/routes/users.js](api/src/routes/users.js)               | User endpoints (including new search) |
-| [api/src/middleware/security.js](api/src/middleware/security.js) | Auth & rate limiting                  |
+| [apps/api/src/routes/users.js](apps/api/src/routes/users.js)               | User endpoints (including new search) |
+| [apps/api/src/middleware/security.js](apps/api/src/middleware/security.js) | Auth & rate limiting                  |
 | [fly.toml](fly.toml)                                             | Fly.io configuration                  |
 | [.env.example](.env.example)                                     | Environment template                  |
 

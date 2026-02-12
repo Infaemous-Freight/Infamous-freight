@@ -178,7 +178,7 @@
 ### Created (1 file)
 
 ```
-api/src/lib/jobStateMachine.js        NEW
+apps/api/src/lib/jobStateMachine.js        NEW
 ├── VALID_TRANSITIONS constant
 ├── canTransition() function
 ├── getAllowedTransitions() function
@@ -188,7 +188,7 @@ api/src/lib/jobStateMachine.js        NEW
 ### Modified (4 files)
 
 ```
-api/src/marketplace/router.js          +80 lines
+apps/api/src/marketplace/router.js          +80 lines
 ├── Authentication middleware added
 ├── Scope-based authorization added
 ├── Database transactions added
@@ -197,19 +197,19 @@ api/src/marketplace/router.js          +80 lines
 ├── Idempotency keys added
 └── User ownership validation added
 
-api/src/marketplace/billingRouter.js    +30 lines
+apps/api/src/marketplace/billingRouter.js    +30 lines
 ├── Global authenticate middleware
 ├── Scope-based authorization
 └── User self-access validation
 
-api/src/marketplace/webhooks.js         +120 lines
+apps/api/src/marketplace/webhooks.js         +120 lines
 ├── Correlation ID generation
 ├── Event deduplication
 ├── Retry logic (exponential backoff)
 ├── State machine validation
 └── Database transactions
 
-api/src/middleware/security.js          UNCHANGED
+apps/api/src/middleware/security.js          UNCHANGED
 ├── Already exports: limiters, authenticate, requireScope
 └── Used by all marketplace routes
 ```
@@ -343,7 +343,7 @@ After running the testing guide and deployment checklist.
 2. [MARKETPLACE_ENHANCEMENTS_COMPLETE.md](MARKETPLACE_ENHANCEMENTS_COMPLETE.md) - 30 min
 3. [MARKETPLACE_PHASE_2_TESTING_GUIDE.md](MARKETPLACE_PHASE_2_TESTING_GUIDE.md) - 45 min (run tests)
 4. [PHASE_2_DEPLOYMENT_VERIFICATION.md](PHASE_2_DEPLOYMENT_VERIFICATION.md) - 20 min
-5. Read the code: `api/src/lib/jobStateMachine.js` + `api/src/marketplace/router.js` - 20 min
+5. Read the code: `apps/api/src/lib/jobStateMachine.js` + `apps/api/src/marketplace/router.js` - 20 min
 
 ---
 
@@ -375,7 +375,7 @@ After running the testing guide and deployment checklist.
 
 ### To Code Files
 
-- All docs link to actual code in `api/src/marketplace/`
+- All docs link to actual code in `apps/api/src/marketplace/`
 - jobStateMachine.js is the new file created in Phase 2
 - router.js and webhooks.js have ~200 lines of Phase 2 changes
 

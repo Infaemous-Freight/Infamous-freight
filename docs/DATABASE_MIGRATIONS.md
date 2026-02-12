@@ -43,7 +43,7 @@ Migrations move your database schema from one state to another in a controlled w
 
 ```bash
 # Create a new migration based on schema changes
-cd api
+cd apps/api
 npx prisma migrate dev --name add_user_roles
 
 # This will:
@@ -488,7 +488,7 @@ Before every migration:
 ### Development
 
 ```bash
-cd api
+cd apps/api
 
 # Create and apply migration
 npx prisma migrate dev --name description
@@ -503,7 +503,7 @@ npx prisma generate
 ### Staging
 
 ```bash
-cd api
+cd apps/api
 
 # Preview pending migrations
 npx prisma migrate status
@@ -518,7 +518,7 @@ npx prisma db execute --stdin < verify.sql
 ### Production
 
 ```bash
-cd api
+cd apps/api
 
 # Check status (read-only)
 npx prisma migrate status

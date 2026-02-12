@@ -15,7 +15,7 @@
 - Type definitions with 6 roles + 24 permissions
 - Express middleware guards (requirePermission, requireRole, etc.)
 - Enhanced JWT auth with automatic permission resolution
-- **Files**: `packages/shared/src/rbac.ts` + `api/src/middleware/rbac.js` + `api/src/middleware/authRBAC.js`
+- **Files**: `packages/shared/src/rbac.ts` + `apps/api/src/middleware/rbac.js` + `apps/api/src/middleware/authRBAC.js`
 
 #### Component 2: Dispatch Management ✅
 
@@ -23,7 +23,7 @@
 - Real-time location tracking
 - Automatic agent triggering on assignments
 - Permission-protected routes
-- **File**: `api/src/routes/dispatch.js`
+- **File**: `apps/api/src/routes/dispatch.js`
 
 #### Component 3: Agent-Based Processing ✅
 
@@ -31,7 +31,7 @@
 - Database persistence for agent runs
 - Error handling with exponential backoff
 - Concurrency controls per worker type
-- **File**: `api/src/queue/agents.js`
+- **File**: `apps/api/src/queue/agents.js`
 
 #### Component 4: Production Deployment ✅
 
@@ -39,7 +39,7 @@
 - Fly.io configuration (Node.js API service)
 - GitHub Actions CI/CD pipeline
 - Optimized Docker image (Node 20, OpenSSL, pnpm)
-- **Files**: `fly.toml`, `web/vercel.json`, `.github/workflows/deploy.yml`, `api/Dockerfile`
+- **Files**: `fly.toml`, `apps/web/vercel.json`, `.github/workflows/deploy.yml`, `apps/api/Dockerfile`
 
 ---
 
@@ -183,7 +183,7 @@ POST   /api/dispatch/optimize             // Trigger optimization
 
 ## ⚙️ Configuration Files
 
-### Vercel (`web/vercel.json`)
+### Vercel (`apps/web/vercel.json`)
 
 - Next.js 14 framework
 - Auto-deployment on push to main

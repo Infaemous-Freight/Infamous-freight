@@ -14,7 +14,7 @@ You requested **"auto deployment entire repo 100%"** and it's **DONE**! ✨
 | --- | ------------ | ------------ | ----------------------------------------------------------- | -------- |
 | 1   | **Fly.io**   | API Backend  | [fly.toml](fly.toml) + [Dockerfile.fly](Dockerfile.fly)     | ✅ Ready |
 | 2   | **Vercel**   | Web Frontend | [vercel.json](vercel.json) + [.vercelignore](.vercelignore) | ✅ Ready |
-| 3   | **Expo EAS** | Mobile App   | [src/apps/mobile/eas.json](src/apps/mobile/eas.json)        | ✅ Ready |
+| 3   | **Expo EAS** | Mobile App   | [apps/mobile/eas.json](apps/mobile/eas.json)        | ✅ Ready |
 
 ### 🤖 Smart Auto-Deployment Workflow
 
@@ -40,9 +40,9 @@ Notify you of results
 
 | Files Changed            | What Deploys           |
 | ------------------------ | ---------------------- |
-| `src/apps/api/**`        | API only (Fly.io)      |
-| `src/apps/web/**`        | Web only (Vercel)      |
-| `src/apps/mobile/**`     | Mobile only (Expo EAS) |
+| `apps/api/**`        | API only (Fly.io)      |
+| `apps/web/**`        | Web only (Vercel)      |
+| `apps/mobile/**`     | Mobile only (Expo EAS) |
 | `src/packages/shared/**` | All 3 services         |
 | `.github/workflows/**`   | All 3 services         |
 
@@ -234,7 +234,7 @@ eas build:list
 - ✅ `/Dockerfile.fly` - Multi-stage optimized build
 - ✅ `/vercel.json` - Vercel monorepo config
 - ✅ `/.vercelignore` - Optimized build excludes
-- ✅ `/src/apps/mobile/eas.json` - Expo build profiles
+- ✅ `/apps/mobile/eas.json` - Expo build profiles
 
 ### Workflows (4 files)
 

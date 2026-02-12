@@ -2,7 +2,7 @@
 
 ## ✅ All Components Successfully Integrated
 
-### Express Server Integration (`api/src/server.js`)
+### Express Server Integration (`apps/api/src/server.js`)
 
 ```
 Line 17:   const path = require("path");                    ✅ Path import
@@ -16,27 +16,27 @@ Line 119:  app.use("/api/avatars", avatarsRouter);          ✅ Legacy route sup
 ### Core Files Created (5)
 
 ```
-✅ api/src/avatars/routes.ts       (320+ lines) - 6 API endpoints
-✅ api/src/avatars/store.ts        (220+ lines) - JSON persistence layer
-✅ api/src/auth/userId.ts          (50+ lines)  - JWT extraction utilities
-✅ api/src/config/env.ts           (70+ lines)  - Environment validation
-✅ api/src/avatars/MOUNT_SNIPPET.ts (200+ lines) - Integration documentation
+✅ apps/api/src/avatars/routes.ts       (320+ lines) - 6 API endpoints
+✅ apps/api/src/avatars/store.ts        (220+ lines) - JSON persistence layer
+✅ apps/api/src/auth/userId.ts          (50+ lines)  - JWT extraction utilities
+✅ apps/api/src/config/env.ts           (70+ lines)  - Environment validation
+✅ apps/api/src/avatars/MOUNT_SNIPPET.ts (200+ lines) - Integration documentation
 ```
 
 ### Data Files Created (1)
 
 ```
-✅ api/data/avatars.json          - Store initialization (v1.0.0)
+✅ apps/api/data/avatars.json          - Store initialization (v1.0.0)
 ```
 
 ### Directories Created (5)
 
 ```
-✅ api/public/uploads/             - User avatar storage root
-✅ api/data/                       - Persistent store directory
-✅ api/src/avatars/                - Avatar module
-✅ api/src/auth/                   - Auth utilities
-✅ api/src/config/                 - Configuration (env.ts added)
+✅ apps/api/public/uploads/             - User avatar storage root
+✅ apps/api/data/                       - Persistent store directory
+✅ apps/api/src/avatars/                - Avatar module
+✅ apps/api/src/auth/                   - Auth utilities
+✅ apps/api/src/config/                 - Configuration (env.ts added)
 ```
 
 ### Documentation Created (2)
@@ -53,7 +53,7 @@ Line 119:  app.use("/api/avatars", avatarsRouter);          ✅ Legacy route sup
 ### Phase 1: System Avatars (Public)
 
 ```
-GET /v1/avatars/system              → Returns manifest from web/public/avatars/main/
+GET /v1/avatars/system              → Returns manifest from apps/web/public/avatars/main/
 GET /avatars/main/:filename         → Static file serving (no auth)
 ```
 
@@ -94,12 +94,12 @@ GET /v1/avatars/stats               → Store statistics
 
 ```bash
 # File upload configuration
-AVATAR_UPLOAD_DIR=api/public/uploads
+AVATAR_UPLOAD_DIR=apps/api/public/uploads
 AVATAR_MAX_FILE_SIZE_MB=5
 AVATAR_ALLOWED_TYPES=image/jpeg,image/png,image/webp
 
 # Data persistence
-AVATAR_DATA_STORE=api/data/avatars.json
+AVATAR_DATA_STORE=apps/api/data/avatars.json
 
 # Rate limiting
 RATE_LIMIT_AVATAR_WINDOW_MS=15
@@ -112,7 +112,7 @@ RATE_LIMIT_AVATAR_MAX=20
 
 ### 1️⃣ Phase 1: Add System Avatar Images
 
-Place 4 PNG files in `web/public/avatars/main/`:
+Place 4 PNG files in `apps/web/public/avatars/main/`:
 
 - `main-01.png` (Infinity Operator)
 - `main-02.png` (Crimson Neural)
@@ -138,9 +138,9 @@ curl -H "Authorization: Bearer <token>" http://localhost:4000/v1/avatars/me
 ### 4️⃣ Deploy
 
 ```bash
-git add api/src/avatars api/src/auth api/src/config api/public/uploads api/data
-git add api/src/server.js
-git add web/public/avatars/main/*.png  # After adding images
+git add apps/api/src/avatars apps/api/src/auth apps/api/src/config apps/api/public/uploads apps/api/data
+git add apps/api/src/server.js
+git add apps/web/public/avatars/main/*.png  # After adding images
 git commit -m "feat: Phase 1 & Phase 2 avatar system"
 git push origin main
 ```
@@ -203,11 +203,11 @@ git push origin main
 | ----------------- | ---------------------------------- | -------------------------- |
 | Integration Guide | `PHASE_2_AVATAR_INTEGRATION.md`    | Complete setup & testing   |
 | Setup Checklist   | `PHASE_2_SETUP_CHECKLIST.md`       | Step-by-step deployment    |
-| Code Comments     | `api/src/avatars/routes.ts`        | Endpoint documentation     |
-| Store Docs        | `api/src/avatars/store.ts`         | Persistence implementation |
-| Auth Docs         | `api/src/auth/userId.ts`           | Token extraction           |
-| Env Docs          | `api/src/config/env.ts`            | Configuration options      |
-| Mount Guide       | `api/src/avatars/MOUNT_SNIPPET.ts` | Integration details        |
+| Code Comments     | `apps/api/src/avatars/routes.ts`        | Endpoint documentation     |
+| Store Docs        | `apps/api/src/avatars/store.ts`         | Persistence implementation |
+| Auth Docs         | `apps/api/src/auth/userId.ts`           | Token extraction           |
+| Env Docs          | `apps/api/src/config/env.ts`            | Configuration options      |
+| Mount Guide       | `apps/api/src/avatars/MOUNT_SNIPPET.ts` | Integration details        |
 
 ---
 

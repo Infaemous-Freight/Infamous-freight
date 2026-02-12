@@ -12,7 +12,7 @@
 
 ## 🆕 NEW CODE FILES (1)
 
-### api/src/lib/jobStateMachine.js
+### apps/api/src/lib/jobStateMachine.js
 
 **Status:** ✅ Created  
 **Size:** 45 lines  
@@ -39,7 +39,7 @@ jobStateMachine.validateTransition("OPEN", "COMPLETED"); // Error!
 
 ## ✏️ MODIFIED CODE FILES (4)
 
-### api/src/marketplace/router.js
+### apps/api/src/marketplace/router.js
 
 **Status:** ✅ Modified  
 **Original:** ~400 lines  
@@ -79,7 +79,7 @@ jobStateMachine.validateTransition("OPEN", "COMPLETED"); // Error!
 
 ---
 
-### api/src/marketplace/billingRouter.js
+### apps/api/src/marketplace/billingRouter.js
 
 **Status:** ✅ Modified  
 **Original:** ~150 lines  
@@ -106,7 +106,7 @@ jobStateMachine.validateTransition("OPEN", "COMPLETED"); // Error!
 
 ---
 
-### api/src/marketplace/webhooks.js
+### apps/api/src/marketplace/webhooks.js
 
 **Status:** ✅ Modified  
 **Original:** ~300 lines  
@@ -145,7 +145,7 @@ jobStateMachine.validateTransition("OPEN", "COMPLETED"); // Error!
 
 ---
 
-### api/src/middleware/security.js
+### apps/api/src/middleware/security.js
 
 **Status:** ✅ Unchanged (already has all exports needed)  
 **Original:** 174 lines  
@@ -403,15 +403,15 @@ jobStateMachine.validateTransition("OPEN", "COMPLETED"); // Error!
 
 ```
 CREATED:
-  ✅ api/src/lib/jobStateMachine.js                        45 lines
+  ✅ apps/api/src/lib/jobStateMachine.js                        45 lines
 
 MODIFIED:
-  ✅ api/src/marketplace/router.js                        +80 lines
-  ✅ api/src/marketplace/billingRouter.js                 +30 lines
-  ✅ api/src/marketplace/webhooks.js                     +120 lines
+  ✅ apps/api/src/marketplace/router.js                        +80 lines
+  ✅ apps/api/src/marketplace/billingRouter.js                 +30 lines
+  ✅ apps/api/src/marketplace/webhooks.js                     +120 lines
 
 UNCHANGED (but used):
-  ℹ️  api/src/middleware/security.js                      174 lines
+  ℹ️  apps/api/src/middleware/security.js                      174 lines
 
 TOTAL CODE: 449 lines (new code added: 275 lines)
 ```
@@ -437,38 +437,38 @@ TOTAL DOCUMENTATION: 3,050+ lines
 ## 🔗 File Dependencies
 
 ```
-api/src/lib/jobStateMachine.js
+apps/api/src/lib/jobStateMachine.js
   ├─ No dependencies (standalone)
   └─ Used by:
-     ├─ api/src/marketplace/router.js
-     └─ api/src/marketplace/webhooks.js
+     ├─ apps/api/src/marketplace/router.js
+     └─ apps/api/src/marketplace/webhooks.js
 
-api/src/marketplace/router.js
+apps/api/src/marketplace/router.js
   ├─ Imports from:
-  │  ├─ api/src/lib/stripe.js
-  │  ├─ api/src/lib/pricing.js
-  │  ├─ api/src/lib/geo.js
-  │  ├─ api/src/lib/jobStateMachine.js
-  │  ├─ api/src/middleware/security.js
-  │  ├─ api/src/marketplace/validators.js
+  │  ├─ apps/api/src/lib/stripe.js
+  │  ├─ apps/api/src/lib/pricing.js
+  │  ├─ apps/api/src/lib/geo.js
+  │  ├─ apps/api/src/lib/jobStateMachine.js
+  │  ├─ apps/api/src/middleware/security.js
+  │  ├─ apps/api/src/marketplace/validators.js
   │  └─ prisma
-  └─ Used by: api/src/server.js
+  └─ Used by: apps/api/src/server.js
 
-api/src/marketplace/billingRouter.js
+apps/api/src/marketplace/billingRouter.js
   ├─ Imports from:
-  │  ├─ api/src/middleware/security.js
-  │  ├─ api/src/marketplace/validators.js
+  │  ├─ apps/api/src/middleware/security.js
+  │  ├─ apps/api/src/marketplace/validators.js
   │  └─ prisma
-  └─ Used by: api/src/server.js
+  └─ Used by: apps/api/src/server.js
 
-api/src/marketplace/webhooks.js
+apps/api/src/marketplace/webhooks.js
   ├─ Imports from:
-  │  ├─ api/src/lib/stripe.js
-  │  ├─ api/src/lib/jobStateMachine.js
+  │  ├─ apps/api/src/lib/stripe.js
+  │  ├─ apps/api/src/lib/jobStateMachine.js
   │  ├─ uuid
   │  ├─ logger
   │  └─ prisma
-  └─ Used by: api/src/server.js (webhook handler)
+  └─ Used by: apps/api/src/server.js (webhook handler)
 ```
 
 ---
@@ -521,9 +521,9 @@ Read: `MARKETPLACE_PHASE_2_DOCUMENTATION_INDEX.md`
 
 ### Step 3: Review Code
 
-- Check: `api/src/lib/jobStateMachine.js` (new file)
-- Review: `api/src/marketplace/router.js` (main changes)
-- Verify: `api/src/marketplace/webhooks.js` (retry logic)
+- Check: `apps/api/src/lib/jobStateMachine.js` (new file)
+- Review: `apps/api/src/marketplace/router.js` (main changes)
+- Verify: `apps/api/src/marketplace/webhooks.js` (retry logic)
 
 ### Step 4: Test & Deploy
 

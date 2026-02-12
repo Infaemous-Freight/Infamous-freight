@@ -23,12 +23,12 @@
 
 #### Created Files
 ```
-✅ api/prisma/seed.js (new - 167 lines)
+✅ apps/api/prisma/seed.js (new - 167 lines)
 ```
 
 #### Updated Files
 ```
-✅ api/prisma/schema.prisma (models with relationships)
+✅ apps/api/prisma/schema.prisma (models with relationships)
 ```
 
 #### Capabilities
@@ -122,8 +122,8 @@
 
 #### Created Files
 ```
-✅ api/Dockerfile (new - 60 lines)
-✅ web/Dockerfile (new - 45 lines)
+✅ apps/api/Dockerfile (new - 60 lines)
+✅ apps/web/Dockerfile (new - 45 lines)
 ```
 
 #### Updated Files
@@ -133,7 +133,7 @@
 
 #### Docker Images
 
-**API Image** (`api/Dockerfile`)
+**API Image** (`apps/api/Dockerfile`)
 - Base: node:20-alpine
 - Multi-stage build (builder + runtime)
 - Size: ~200MB
@@ -145,7 +145,7 @@
   - Memory limit: 512MB
   - Logging: JSON format
 
-**Web Image** (`web/Dockerfile`)
+**Web Image** (`apps/web/Dockerfile`)
 - Base: node:20-alpine
 - Multi-stage Next.js build
 - Size: ~300MB
@@ -311,16 +311,16 @@ SKIP_TESTS=true ./scripts/deploy-week2.sh prod # Skip test suite
 ## 📊 IMPLEMENTATION STATISTICS
 
 ### Files Created: 7
-- `api/prisma/seed.js`
-- `api/Dockerfile`
-- `web/Dockerfile`
+- `apps/api/prisma/seed.js`
+- `apps/api/Dockerfile`
+- `apps/web/Dockerfile`
 - `e2e/load-tests/scenario-1-ramp-up.js`
 - `e2e/load-tests/scenario-2-spike.js`
 - `.github/workflows/week-2-database-testing.yml`
 - `scripts/deploy-week2.sh`
 
 ### Files Modified: 6
-- `api/prisma/schema.prisma`
+- `apps/api/prisma/schema.prisma`
 - `e2e/tests/auth.spec.ts`
 - `e2e/tests/shipments.spec.ts`
 - `docker-compose.prod.yml`
@@ -469,7 +469,7 @@ PostgreSQL:            ~100MB (dynamic)
 | Week 2 Complete Guide | Detailed implementation | `WEEK_2_COMPLETE_GUIDE.md` |
 | Week 2 Status Report | Completion checklist | `WEEK_2_ALL_TASKS_100_COMPLETE.md` |
 | This Document | Delivery summary | This file |
-| Prisma Schema | Database design | `api/prisma/schema.prisma` |
+| Prisma Schema | Database design | `apps/api/prisma/schema.prisma` |
 | E2E Tests | Test scenarios | `e2e/tests/` |
 | Load Tests | Performance tests | `e2e/load-tests/` |
 | Deployment Script | Automation | `scripts/deploy-week2.sh` |

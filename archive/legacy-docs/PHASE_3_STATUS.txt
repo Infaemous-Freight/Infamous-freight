@@ -13,7 +13,7 @@ IMPLEMENTATION SUMMARY
    • JobEvent model with composite indexing
    • Enhanced WebhookEvent with jobId + stripeObjId
 
-✅ Audit Helper Layer (api/src/marketplace/audit.ts)
+✅ Audit Helper Layer (apps/api/src/marketplace/audit.ts)
    • logJobEvent() — Create audit records
    • getJobTimeline() — Fetch chronological events
    • getLatestJobEvent() — Get current job state
@@ -23,7 +23,7 @@ IMPLEMENTATION SUMMARY
    • POST /marketplace/jobs/:jobId/checkout — Logs PAYMENT_INITIATED
    • GET /marketplace/jobs/:jobId/timeline — NEW endpoint
 
-✅ Webhook Hardening (api/src/marketplace/webhooks.js)
+✅ Webhook Hardening (apps/api/src/marketplace/webhooks.js)
    • Metadata capture (stripeObjId + jobId)
    • handleCheckoutExpired() — Logs PAYMENT_FAILED
    • Transactional safety (atomic state + events)
@@ -60,16 +60,16 @@ EVENT TYPES (12 Total)
 
 FILES MODIFIED
 
-api/prisma/schema.prisma
+apps/api/prisma/schema.prisma
   └─ +45 lines (JobEventType enum, JobEvent model, WebhookEvent enhancement)
 
-api/src/marketplace/audit.ts [NEW]
+apps/api/src/marketplace/audit.ts [NEW]
   └─ 47 lines (3 helper functions: logJobEvent, getJobTimeline, getLatestJobEvent)
 
-api/src/marketplace/router.js
+apps/api/src/marketplace/router.js
   └─ +60 lines (logging in job creation + checkout + timeline endpoint)
 
-api/src/marketplace/webhooks.js
+apps/api/src/marketplace/webhooks.js
   └─ +35 lines (metadata capture + handleCheckoutExpired + transaction logging)
 
 Total: ~187 lines of production code

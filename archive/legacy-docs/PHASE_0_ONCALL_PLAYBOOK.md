@@ -258,7 +258,7 @@ parallel**
 ```
 1. Go to: https://fly.io/apps/infamous-freight-api
 2. Save as browser bookmark
-3. Bookmark the logs page: https://fly.io/apps/infamous-freight-api/logs
+3. Bookmark the logs page: https://fly.io/apps/infamous-freight-apps/api/logs
 ```
 
 ### On Call During Sleep

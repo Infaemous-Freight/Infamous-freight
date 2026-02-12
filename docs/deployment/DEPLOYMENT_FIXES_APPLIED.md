@@ -15,7 +15,7 @@ Two critical Docker build issues have been identified and fixed:
 
 ```dockerfile
 # Added this line to ensure Prisma schema is available in production
-COPY api/prisma ./api/prisma
+COPY apps/api/prisma ./apps/api/prisma
 ```
 
 - Also improved the HEALTHCHECK to use Node.js http module instead of wget
@@ -48,8 +48,8 @@ pnpm install --no-frozen-lockfile
 
 ## Files Modified
 
-1. **api/Dockerfile**
-   - Added `COPY api/prisma ./api/prisma` to include schema
+1. **apps/api/Dockerfile**
+   - Added `COPY apps/api/prisma ./apps/api/prisma` to include schema
    - Improved HEALTHCHECK (Node.js http instead of wget)
    - Increased start-period to 30s
 

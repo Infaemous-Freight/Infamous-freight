@@ -14,7 +14,7 @@ git log --oneline | head -5
 # Should show your deployment commits
 
 # ✅ All dependencies installed
-ls api/node_modules/compression
+ls apps/api/node_modules/compression
 # Should exist
 
 # ✅ Repository is public
@@ -42,7 +42,7 @@ ls api/node_modules/compression
 
 ```
 Framework: Next.js ✅ (auto-detected)
-Root Directory: ./web ✅ (auto-detected)
+Root Directory: ./apps/web ✅ (auto-detected)
 Environment Variables:
   - NEXT_PUBLIC_API_URL: (leave blank for now, add later)
   - NEXT_PUBLIC_ENV: production
@@ -220,7 +220,7 @@ Once DATABASE_URL is set on Fly.io:
 ```bash
 # Option 1: Use Fly CLI (if installed)
 flyctl ssh console --app infamous-freight-api-prod
-cd api && pnpm prisma:migrate:prod
+cd apps/api && pnpm prisma:migrate:prod
 
 # Option 2: Via GitHub Actions (if configured)
 # Just push to main and it runs automatically
@@ -374,7 +374,7 @@ After deployment, you should see:
 
 ```bash
 # Check build locally
-cd web
+cd apps/web
 pnpm build
 
 # Fix any errors

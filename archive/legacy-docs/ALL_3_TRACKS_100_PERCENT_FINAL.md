@@ -46,31 +46,31 @@
    - Certificate issuance
    - Final certification report
 
-3. **api/src/routes/signoffs.js** (450 lines)
+3. **apps/api/src/routes/signoffs.js** (450 lines)
    - Create/manage sign-off requests
    - Track stakeholder signatures
    - Handle rejections
    - Automated notifications
 
-4. **api/src/routes/feedback.js** (380 lines)
+4. **apps/api/src/routes/feedback.js** (380 lines)
    - Submit/retrieve feedback
    - Category classification
    - Rating system (1-5 stars)
    - Statistics dashboard
 
-5. **web/pages/admin/validation-dashboard.tsx** (420 lines)
+5. **apps/web/pages/admin/validation-dashboard.tsx** (420 lines)
    - Real-time progress tracking (0-100%)
    - Live metrics display
    - Anomaly alerts
    - Auto-refresh
 
-6. **web/pages/admin/signoff-dashboard.tsx** (380 lines)
+6. **apps/web/pages/admin/signoff-dashboard.tsx** (380 lines)
    - Manage sign-off requests
    - Track signatures
    - Visual progress bars
    - Approve/reject workflows
 
-7. **web/components/FeedbackWidget.tsx** (180 lines)
+7. **apps/web/components/FeedbackWidget.tsx** (180 lines)
    - Embeddable feedback widget
    - Category selection
    - Rating interface

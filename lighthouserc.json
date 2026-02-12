@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "cd web && npm run start",
+      "startServerCommand": "cd apps/web && npm run start",
       "url": ["http://localhost:3000"],
       "numberOfRuns": 3,
       "settings": {

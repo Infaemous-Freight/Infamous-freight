@@ -10,13 +10,13 @@
 
 ### 2. ✅ Incorrect Dockerfile Path
 
-**Problem**: Original fly.toml pointed to `api/Dockerfile` which doesn't exist
+**Problem**: Original fly.toml pointed to `apps/api/Dockerfile` which doesn't exist
 
 **Solution**: Created optimized `Dockerfile.fly` at project root that properly handles the monorepo structure
 
 ### 3. ✅ Monorepo Build Context
 
-**Problem**: The project uses pnpm workspaces with API at `src/apps/api/`, requiring special Docker build handling
+**Problem**: The project uses pnpm workspaces with API at `apps/api/`, requiring special Docker build handling
 
 **Solution**: New Dockerfile properly:
 
@@ -172,7 +172,7 @@ flyctl scale count 2 -a infamous-freight-api
 │   └── deploy-fly.sh         # Deployment helper (NEW)
 ├── src/
 │   └── apps/
-│       └── api/              # API source code
+│       └── apps/api/              # API source code
 │           ├── Dockerfile    # Original Dockerfile (still works)
 │           ├── package.json
 │           ├── prisma/

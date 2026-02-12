@@ -26,11 +26,11 @@ Deletions: 80
 ### Files Included in Push
 
 #### New Test Files (5)
-✅ api/__tests__/middleware/logger.test.js  
-✅ api/__tests__/middleware/securityHeaders.test.js  
-✅ api/__tests__/middleware/errorTracking.test.js  
-✅ api/__tests__/middleware/performance.test.js  
-✅ api/__tests__/middleware/securityHardening.test.js  
+✅ apps/api/__tests__/middleware/logger.test.js  
+✅ apps/api/__tests__/middleware/securityHeaders.test.js  
+✅ apps/api/__tests__/middleware/errorTracking.test.js  
+✅ apps/api/__tests__/middleware/performance.test.js  
+✅ apps/api/__tests__/middleware/securityHardening.test.js  
 
 #### New Documentation Files (14)
 ✅ TEST_COVERAGE_100_COMPLETE.md  
@@ -50,15 +50,15 @@ Deletions: 80
 #### Modified Files (15)
 ✅ .env.example  
 ✅ DEPLOYMENT_INSTRUCTIONS.md  
-✅ api/jest.config.js  
-✅ api/src/config/sentry.js  
-✅ api/src/middleware/errorHandler.js  
-✅ api/src/middleware/logger.js  
-✅ api/src/middleware/security.js  
-✅ api/src/middleware/securityHeaders.js  
-✅ api/src/routes/ai.commands.js  
-✅ api/src/routes/health.js  
-✅ api/src/routes/voice.js  
+✅ apps/api/jest.config.js  
+✅ apps/api/src/config/sentry.js  
+✅ apps/api/src/middleware/errorHandler.js  
+✅ apps/api/src/middleware/logger.js  
+✅ apps/api/src/middleware/security.js  
+✅ apps/api/src/middleware/securityHeaders.js  
+✅ apps/api/src/routes/ai.commands.js  
+✅ apps/api/src/routes/health.js  
+✅ apps/api/src/routes/voice.js  
 
 ---
 
@@ -216,7 +216,7 @@ git checkout main
 
 ### Run Tests Locally
 ```bash
-cd api
+cd apps/api
 pnpm install
 pnpm test:coverage
 ```
@@ -274,7 +274,7 @@ See: `/TEST_COVERAGE_DOCUMENTATION_INDEX.md` for complete navigation
 
 ### For Code Review
 1. View commit: 1cbe8a4
-2. Review test files in: api/__tests__/middleware/
+2. Review test files in: apps/api/__tests__/middleware/
 3. Review documentation for context
 4. Verify security patterns in securityHardening.test.js
 
@@ -288,8 +288,8 @@ See: `/TEST_COVERAGE_DOCUMENTATION_INDEX.md` for complete navigation
 - [TEST_COVERAGE_COMPLETION_CERTIFICATE.md](TEST_COVERAGE_COMPLETION_CERTIFICATE.md) - Certification
 
 **Test Files**:
-- [api/__tests__/middleware/](api/__tests__/middleware/) - All middleware tests
-- [api/jest.config.js](api/jest.config.js) - Test configuration
+- [apps/api/__tests__/middleware/](apps/api/__tests__/middleware/) - All middleware tests
+- [apps/api/jest.config.js](apps/api/jest.config.js) - Test configuration
 
 **Implementation Guides**:
 - [FEATURE_FLAGS_GUIDE.md](FEATURE_FLAGS_GUIDE.md) - Feature flag usage

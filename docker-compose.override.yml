@@ -11,8 +11,8 @@ services:
       target: builder # Development stage for hot reload
     command: pnpm --filter api dev
     volumes:
-      - ./api/src:/app/api/src:ro # Read-only hot reload
-      - ./api/prisma:/app/api/prisma:ro
+      - ./apps/api/src:/app/apps/api/src:ro # Read-only hot reload
+      - ./apps/api/prisma:/app/apps/api/prisma:ro
       - ./packages/shared/src:/app/packages/shared/src:ro
     environment:
       NODE_ENV: development
@@ -26,10 +26,10 @@ services:
       target: builder # Development stage
     command: pnpm --filter web dev
     volumes:
-      - ./web/pages:/app/web/pages:ro
-      - ./web/components:/app/web/components:ro
-      - ./web/public:/app/web/public:ro
-      - ./web/styles:/app/web/styles:ro
+      - ./apps/web/pages:/app/apps/web/pages:ro
+      - ./apps/web/components:/app/apps/web/components:ro
+      - ./apps/web/public:/app/apps/web/public:ro
+      - ./apps/web/styles:/app/apps/web/styles:ro
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_DEBUG: "true"

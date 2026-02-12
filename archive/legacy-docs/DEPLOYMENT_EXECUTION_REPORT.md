@@ -92,21 +92,21 @@ pnpm test
 
 | Suite               | Location                                              | Tests | Status   |
 | ------------------- | ----------------------------------------------------- | ----- | -------- |
-| Health Checks       | `api/__tests__/routes/health.test.js`                 | 3     | ✅ Ready |
-| AI Commands         | `api/__tests__/routes/ai.commands.test.js`            | 8     | ✅ Ready |
-| Billing             | `api/__tests__/routes/billing.test.js`                | 6     | ✅ Ready |
-| Voice               | `api/__tests__/routes/voice.test.js`                  | 5     | ✅ Ready |
-| Users               | `api/__tests__/routes/users.test.js`                  | 7     | ✅ Ready |
-| Shipments           | `api/__tests__/routes/shipments.test.js`              | 8     | ✅ Ready |
-| AI Synthetic Client | `api/__tests__/services/aiSynthetic.internal.test.js` | 4     | ✅ Ready |
-| Metrics             | `api/__tests__/middleware/metrics.test.js`            | 2     | ✅ Ready |
-| Validation          | `api/__tests__/middleware/validation.test.js`         | 4     | ✅ Ready |
-| Error Handler       | `api/__tests__/middleware/errorHandler.test.js`       | 3     | ✅ Ready |
+| Health Checks       | `apps/api/__tests__/routes/health.test.js`                 | 3     | ✅ Ready |
+| AI Commands         | `apps/api/__tests__/routes/ai.commands.test.js`            | 8     | ✅ Ready |
+| Billing             | `apps/api/__tests__/routes/billing.test.js`                | 6     | ✅ Ready |
+| Voice               | `apps/api/__tests__/routes/voice.test.js`                  | 5     | ✅ Ready |
+| Users               | `apps/api/__tests__/routes/users.test.js`                  | 7     | ✅ Ready |
+| Shipments           | `apps/api/__tests__/routes/shipments.test.js`              | 8     | ✅ Ready |
+| AI Synthetic Client | `apps/api/__tests__/services/aiSynthetic.internal.test.js` | 4     | ✅ Ready |
+| Metrics             | `apps/api/__tests__/middleware/metrics.test.js`            | 2     | ✅ Ready |
+| Validation          | `apps/api/__tests__/middleware/validation.test.js`         | 4     | ✅ Ready |
+| Error Handler       | `apps/api/__tests__/middleware/errorHandler.test.js`       | 3     | ✅ Ready |
 
 **Total**: 50+ tests configured  
 **Expected coverage**: ≥80% (enforced in CI)  
 **Runtime**: ~20 seconds  
-**Jest config**: `api/jest.config.js` (Node environment, coverage thresholds)
+**Jest config**: `apps/api/jest.config.js` (Node environment, coverage thresholds)
 
 ### 4. **E2E Tests** ✅
 
@@ -141,7 +141,7 @@ pnpm test:e2e
 | -------------------- | ------ | ----------------------------------------------- |
 | **Live URL**         | ✅     | https://mrmiless44-genesis.vercel.app           |
 | **Build command**    | ✅     | `pnpm --filter web build`                       |
-| **Output directory** | ✅     | `web/.next`                                     |
+| **Output directory** | ✅     | `apps/web/.next`                                     |
 | **Framework**        | ✅     | Next.js 14.2.35                                 |
 | **Node version**     | ✅     | 22.16.0                                         |
 | **Analytics**        | ✅     | Vercel Analytics + Speed Insights + Datadog RUM |
@@ -181,8 +181,8 @@ pnpm test:e2e
 | ---------------------------- | ------ | ----------------------------------- |
 | **ORM**                      | ✅     | Prisma 5.20+                        |
 | **Database**                 | ✅     | PostgreSQL                          |
-| **Migrations**               | ✅     | `api/prisma/migrations/`            |
-| **Schema validation**        | ✅     | `api/prisma/schema.prisma`          |
+| **Migrations**               | ✅     | `apps/api/prisma/migrations/`            |
+| **Schema validation**        | ✅     | `apps/api/prisma/schema.prisma`          |
 | **Client generation**        | ✅     | `pnpm prisma:generate` (auto in CI) |
 | **Health check integration** | ✅     | `SELECT 1` query in `/api/health`   |
 
@@ -259,8 +259,8 @@ API Security Stack:
 
 ### Error Tracking (Sentry) ✅
 
-- **Integration**: api/src/config/sentry.js
-- **Bootstrap**: Early in api/src/instrument.js
+- **Integration**: apps/api/src/config/sentry.js
+- **Bootstrap**: Early in apps/api/src/instrument.js
 - **Scope**: All errors, exceptions, warnings
 - **Context**: User ID, email, role, shipment details
 - **Rate limiting**: Intelligent event deduplication

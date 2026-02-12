@@ -20,7 +20,7 @@ https://railway.app → Login with GitHub (MrMiless44)
 
 Railway will detect your monorepo. Configure:
 
-- **Root Directory**: `src/apps/api`
+- **Root Directory**: `apps/api`
 - **Build Command**: `pnpm install && pnpm build`
 - **Start Command**: `node src/server.js`
 - **Port**: 4000 (or use Railway's ${{RAILWAY_PORT}})

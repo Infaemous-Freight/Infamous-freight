@@ -1,4 +1,4 @@
-// api/auth.js - JWT Authentication Module
+// apps/api/auth.js - JWT Authentication Module
 const crypto = require('crypto');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-change-in-production';

@@ -40,7 +40,7 @@
 
 ### 4. ✅ API Documentation
 
-- **File**: [api/src/config/swagger.js](../api/src/config/swagger.js)
+- **File**: [apps/api/src/config/swagger.js](../apps/api/src/config/swagger.js)
 - **Features**:
   - OpenAPI 3.0 specification
   - Complete schema definitions
@@ -58,7 +58,7 @@
 
 ### 6. ✅ Redis Caching
 
-- **File**: [api/src/services/cache.js](../api/src/services/cache.js)
+- **File**: [apps/api/src/services/cache.js](../apps/api/src/services/cache.js)
 - **Features**:
   - Full ioredis integration
   - Automatic fallback to memory cache
@@ -130,8 +130,8 @@
 ### Code Enhancements (2 files)
 
 ```
-✅ api/src/config/swagger.js       # OpenAPI documentation (180 lines)
-✅ api/src/services/cache.js       # Enhanced Redis caching (180 lines)
+✅ apps/api/src/config/swagger.js       # OpenAPI documentation (180 lines)
+✅ apps/api/src/services/cache.js       # Enhanced Redis caching (180 lines)
 ```
 
 ### Configuration Updates (1 file)
@@ -312,7 +312,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 ```bash
 # 1. Migrate to Vercel (free tier)
-cd web && vercel --prod
+cd apps/web && vercel --prod
 
 # 2. Use Neon database (free tier)
 # Sign up → Get connection string → Update secret
@@ -340,7 +340,7 @@ cd web && vercel --prod
 ### API Reference
 
 7. `/api/docs` - Live Swagger documentation (when deployed)
-8. [api/src/config/swagger.js](../api/src/config/swagger.js) - OpenAPI config
+8. [apps/api/src/config/swagger.js](../apps/api/src/config/swagger.js) - OpenAPI config
 
 ---
 

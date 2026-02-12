@@ -42,7 +42,7 @@ npx prisma generate
 After updating the schema, regenerate the Prisma client:
 
 ```bash
-cd api
+cd apps/api
 npx prisma generate
 ```
 
@@ -77,10 +77,10 @@ FROM node:20-alpine
 RUN apk add --no-cache openssl
 
 # Copy your schema with the correct binaryTargets
-COPY api/prisma ./api/prisma
+COPY apps/api/prisma ./apps/api/prisma
 
 # Generate Prisma client
-RUN cd api && npx prisma generate
+RUN cd apps/api && npx prisma generate
 ```
 
 ## Related Issues
@@ -117,7 +117,7 @@ Ensure your CI/CD pipeline regenerates the Prisma client:
 # .github/workflows/ci.yml
 - name: Generate Prisma Client
   run: |
-    cd api
+    cd apps/api
     npx prisma generate
 ```
 
@@ -133,7 +133,7 @@ Ensure your CI/CD pipeline regenerates the Prisma client:
    ```bash
    rm -rf node_modules
    pnpm install
-   cd api && npx prisma generate
+   cd apps/api && npx prisma generate
    ```
 
 **Binary target not found?**

@@ -34,14 +34,14 @@ TOTAL DELIVERY                              🟢 80% COMPLETE
 
 ### Files
 
-- `api/src/lib/stripe.js` - Stripe client
-- `api/src/lib/geo.js` - Geolocation
-- `api/src/lib/pricing.js` - Price computation
-- `api/src/marketplace/router.js` - 9 endpoints
-- `api/src/marketplace/billingRouter.js` - 2 endpoints
-- `api/src/marketplace/webhooks.js` - 6 handlers
-- `api/src/marketplace/validators.js` - Zod validation
-- `api/prisma/schema.prisma` - Database models
+- `apps/api/src/lib/stripe.js` - Stripe client
+- `apps/api/src/lib/geo.js` - Geolocation
+- `apps/api/src/lib/pricing.js` - Price computation
+- `apps/api/src/marketplace/router.js` - 9 endpoints
+- `apps/api/src/marketplace/billingRouter.js` - 2 endpoints
+- `apps/api/src/marketplace/webhooks.js` - 6 handlers
+- `apps/api/src/marketplace/validators.js` - Zod validation
+- `apps/api/prisma/schema.prisma` - Database models
 - Documentation guides (4 files)
 
 ### Testing
@@ -76,10 +76,10 @@ TOTAL DELIVERY                              🟢 80% COMPLETE
 
 ### Files Modified
 
-- `api/src/lib/jobStateMachine.js` - NEW (state validation)
-- `api/src/marketplace/router.js` - Enhanced auth/transactions/pagination
-- `api/src/marketplace/billingRouter.js` - Enhanced auth/scopes
-- `api/src/marketplace/webhooks.js` - Enhanced retry/dedup/logging
+- `apps/api/src/lib/jobStateMachine.js` - NEW (state validation)
+- `apps/api/src/marketplace/router.js` - Enhanced auth/transactions/pagination
+- `apps/api/src/marketplace/billingRouter.js` - Enhanced auth/scopes
+- `apps/api/src/marketplace/webhooks.js` - Enhanced retry/dedup/logging
 
 ### Testing
 
@@ -132,11 +132,11 @@ TOTAL DELIVERY                              🟢 80% COMPLETE
 
 ### Files Created
 
-- `api/src/lib/redis.js` (275 lines)
-- `api/src/lib/circuitBreaker.js` (270 lines)
-- `api/src/lib/structuredLogging.js` (400 lines)
-- `api/src/scripts/optimizeDatabase.js` (400 lines)
-- `api/src/lib/__tests__/*` (86 test cases)
+- `apps/api/src/lib/redis.js` (275 lines)
+- `apps/api/src/lib/circuitBreaker.js` (270 lines)
+- `apps/api/src/lib/structuredLogging.js` (400 lines)
+- `apps/api/src/scripts/optimizeDatabase.js` (400 lines)
+- `apps/api/src/lib/__tests__/*` (86 test cases)
 - `PHASE_3_PRODUCTION_HARDENING_GUIDE.md` (500+ lines)
 - `PHASE_3_COMPLETION_SUMMARY.md` (300 lines)
 
@@ -201,7 +201,7 @@ pnpm check:types
 
 ```bash
 # Configure staging environment
-cp api/.env.example api/.env.staging
+cp apps/api/.env.example apps/api/.env.staging
 # Edit with staging values
 
 # Run migrations

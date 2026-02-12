@@ -88,7 +88,7 @@ router.get(
 ### **Refactored Version**
 
 ```javascript
-// File: api/src/routes/ai.commands.refactored.js
+// File: apps/api/src/routes/ai.commands.refactored.js
 
 const express = require("express");
 const { prisma } = require("../db/prisma");
@@ -236,7 +236,7 @@ module.exports = router;
 ### **Complete Test Suite for AI Command**
 
 ```javascript
-// File: api/tests/routes/ai.command.refactored.test.js
+// File: apps/api/tests/routes/ai.command.refactored.test.js
 
 describe("POST /api/ai/command - Refactored", () => {
   // All 7 test categories + 2 AI-specific categories
@@ -456,7 +456,7 @@ After Refactor (Target):
 
 ```bash
 # 1. Analyze current bundle
-cd web
+cd apps/web
 ANALYZE=true pnpm build
 # Record: initial JS, CSS, total sizes
 

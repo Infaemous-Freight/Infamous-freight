@@ -265,8 +265,8 @@ After successful zero-downtime deployment of v2.0.0, Track 1 focuses on comprehe
 
    ```bash
    # Verify secrets not exposed
-   grep -r "password" api/src/ | grep -v "process.env"
-   grep -r "api_key" web/pages/ | grep -v "process.env"
+   grep -r "password" apps/api/src/ | grep -v "process.env"
+   grep -r "api_key" apps/web/pages/ | grep -v "process.env"
 
    # Expected: No hardcoded secrets
 

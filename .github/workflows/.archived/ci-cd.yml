@@ -131,7 +131,7 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          files: ./src/apps/api/coverage/coverage-final.json
+          files: ./apps/api/coverage/coverage-final.json
           flags: api-node-${{ matrix.node-version }}
         continue-on-error: true
 
@@ -178,7 +178,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: api-build-${{ github.run_id }}
-          path: src/apps/api/dist
+          path: apps/api/dist
           retention-days: 5
         continue-on-error: true
 
@@ -224,7 +224,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: web-build-${{ github.run_id }}
-          path: src/apps/web/.next
+          path: apps/web/.next
           retention-days: 5
         continue-on-error: true
 

@@ -72,7 +72,7 @@ jobs:
 
 **Implementation:**
 ```javascript
-// api/src/middleware/errorTracking.js
+// apps/api/src/middleware/errorTracking.js
 const Sentry = require('@sentry/node');
 const { ProfilingIntegration } = require('@sentry/profiling-node');
 
@@ -129,7 +129,7 @@ try {
 
 **Implementation:**
 ```javascript
-// api/src/services/revenueMonitor.js
+// apps/api/src/services/revenueMonitor.js
 const { sendSlackNotification } = require('./notifications');
 
 class RevenueMonitor {
@@ -388,7 +388,7 @@ jobs:
 
 **Implementation:**
 ```typescript
-// web/components/RevenueMonitorDashboard.tsx
+// apps/web/components/RevenueMonitorDashboard.tsx
 import React, { useEffect, useState } from 'react';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 
@@ -529,7 +529,7 @@ function getLast12Months(): string[] {
 
 **Backend API:**
 ```javascript
-// api/src/routes/metrics.js
+// apps/api/src/routes/metrics.js
 const express = require('express');
 const router = express.Router();
 const { authenticate, requireScope } = require('../middleware/security');
@@ -712,7 +712,7 @@ export const pricingPageExperiment: Experiment = {
 
 **Usage in React:**
 ```typescript
-// web/pages/pricing.tsx
+// apps/web/pages/pricing.tsx
 import { ABTestingService, pricingPageExperiment } from '@infamous-freight/shared';
 
 const abTesting = new ABTestingService();
@@ -933,7 +933,7 @@ optimizeImages();
 
 **b) Code Splitting & Lazy Loading:**
 ```typescript
-// web/components/LazyComponents.tsx
+// apps/web/components/LazyComponents.tsx
 import dynamic from 'next/dynamic';
 
 // Lazy load heavy components
@@ -1007,7 +1007,7 @@ self.addEventListener('fetch', (event) => {
 
 **Implementation:**
 ```javascript
-// api/src/services/customerSuccess.js
+// apps/api/src/services/customerSuccess.js
 class CustomerSuccessAutomation {
   constructor() {
     this.triggers = {
@@ -1152,7 +1152,7 @@ module.exports = CustomerSuccessAutomation;
 
 **a) Rate Limiting by User/IP:**
 ```javascript
-// api/src/middleware/advancedRateLimiting.js
+// apps/api/src/middleware/advancedRateLimiting.js
 const Redis = require('ioredis');
 const redis = new Redis(process.env.REDIS_URL);
 
@@ -1223,7 +1223,7 @@ router.post('/shipments', sanitizeInput, async (req, res) => {
 
 **c) XSS Protection:**
 ```javascript
-// api/src/middleware/xssProtection.js
+// apps/api/src/middleware/xssProtection.js
 const xss = require('xss');
 
 const xssProtection = (req, res, next) => {

@@ -14,8 +14,8 @@
     "source.fixAll.eslint": "explicit"
   },
   "eslint.workingDirectories": [
-    "./api",
-    "./web",
+    "./apps/api",
+    "./apps/web",
     "./packages/shared"
   ],
   "terminal.integrated.shellIntegration.enabled": true,

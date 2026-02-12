@@ -26,8 +26,8 @@ git tag -a v1.0.0 -m "Production release"
 git push origin v1.0.0
 
 # 3. Build Docker images
-docker build -t infamous-freight-api:1.0.0 ./api
-docker build -t infamous-freight-web:1.0.0 ./web
+docker build -t infamous-freight-api:1.0.0 ./apps/api
+docker build -t infamous-freight-web:1.0.0 ./apps/web
 
 # 4. Push to registry (e.g., ECR, Docker Hub)
 docker tag infamous-freight-api:1.0.0 YOUR_REGISTRY/infamous-freight-api:1.0.0

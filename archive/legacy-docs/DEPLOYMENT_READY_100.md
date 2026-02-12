@@ -103,7 +103,7 @@ Once API is deployed and DATABASE_URL is set:
 flyctl ssh console -C "cd /app/api && pnpm prisma:migrate:deploy"
 
 # Or manually from local machine (if connected to DB):
-cd api
+cd apps/api
 pnpm prisma migrate deploy
 ```
 

@@ -78,9 +78,9 @@ import { User, formatDate, SHIPMENT_STATUSES } from "@infamous-freight/shared";
 
 ```
 infamous-freight-enterprises/
-├── api/                    # Backend API
-├── web/                    # Frontend
-├── mobile/                 # Mobile app
+├── apps/api/                    # Backend API
+├── apps/web/                    # Frontend
+├── apps/mobile/                 # Mobile app
 ├── packages/shared/        # Shared code
 ├── e2e/                    # E2E tests
 └── docs/                   # Documentation
@@ -104,7 +104,7 @@ pnpm install
 ### Database Operations
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:migrate:dev     # Run migrations
 pnpm prisma:generate        # Generate client
 pnpm prisma:studio          # Open GUI
@@ -149,7 +149,7 @@ lsof -ti:3000 | xargs kill -9  # Web
 ### Prisma client issues
 
 ```bash
-cd api && pnpm prisma:generate
+cd apps/api && pnpm prisma:generate
 ```
 
 ### Git hooks not running

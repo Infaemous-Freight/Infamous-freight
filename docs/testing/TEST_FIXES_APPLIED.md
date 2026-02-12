@@ -9,7 +9,7 @@ The security fuzzing tests revealed several issues with input validation in the 
 ### 1. SQL Injection Tests Failing (6 tests)
 
 **Error**: `TypeError: Cannot read properties of undefined (reading 'user')`
-**Location**: `api/src/routes/users.js:85`
+**Location**: `apps/api/src/routes/users.js:85`
 **Status**: 500 (Internal Server Error)
 **Expected**: 400 (Bad Request)
 
@@ -44,7 +44,7 @@ The security fuzzing tests revealed several issues with input validation in the 
 
 ### Fix 1: Add Email Validation to POST /users
 
-**File**: `api/src/routes/users.js`
+**File**: `apps/api/src/routes/users.js`
 
 **Changes**:
 
@@ -93,7 +93,7 @@ The security fuzzing tests revealed several issues with input validation in the 
 
 ### Fix 2: Update Header Injection Test
 
-**File**: `api/__tests__/security/input-fuzzing.test.js`
+**File**: `apps/api/__tests__/security/input-fuzzing.test.js`
 
 **Changes**:
 Changed test to expect Node.js to throw an error for invalid headers:
@@ -124,7 +124,7 @@ await expect(
 
 ### Fix 3: Update NoSQL Injection Test
 
-**File**: `api/__tests__/security/input-fuzzing.test.js`
+**File**: `apps/api/__tests__/security/input-fuzzing.test.js`
 
 **Changes**:
 Updated expected status codes to include 403:
@@ -227,13 +227,13 @@ These fixes enhance the API's security posture:
 1. **Run Full Test Suite**: Verify all 197+ tests still pass
 
    ```bash
-   cd api && npm test
+   cd apps/api && npm test
    ```
 
 2. **Check Coverage**: Ensure coverage thresholds are maintained
 
    ```bash
-   cd api && npm run test:coverage
+   cd apps/api && npm run test:coverage
    ```
 
 3. **Manual Testing**: Test the fixed endpoints with actual requests:

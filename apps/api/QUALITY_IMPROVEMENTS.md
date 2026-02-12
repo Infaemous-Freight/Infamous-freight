@@ -6,7 +6,7 @@ This document tracks enterprise-grade improvements to the API codebase for produ
 
 ### 1. Standardized Constants (Phase 1)
 
-**File**: `api/src/config/constants.js`
+**File**: `apps/api/src/config/constants.js`
 
 **What Changed:**
 
@@ -28,7 +28,7 @@ This document tracks enterprise-grade improvements to the API codebase for produ
 
 ### 2. Error Handling Framework (Phase 1)
 
-**File**: `api/src/lib/errors.js`
+**File**: `apps/api/src/lib/errors.js`
 
 **What Changed:**
 
@@ -51,7 +51,7 @@ This document tracks enterprise-grade improvements to the API codebase for produ
 
 ### 3. Zod Input Validation (Phase 1)
 
-**File**: `api/src/lib/validation.js`
+**File**: `apps/api/src/lib/validation.js`
 
 **What Changed:**
 
@@ -75,7 +75,7 @@ This document tracks enterprise-grade improvements to the API codebase for produ
 
 ### 4. Enhanced Error Middleware (Phase 1)
 
-**File**: `api/src/middleware/errorHandler.js`
+**File**: `apps/api/src/middleware/errorHandler.js`
 
 **What Changed:**
 
@@ -96,7 +96,7 @@ This document tracks enterprise-grade improvements to the API codebase for produ
 
 **Files**:
 
-- `api/src/routes/health.js` ✅
+- `apps/api/src/routes/health.js` ✅
 
 **What Changed:**
 
@@ -168,10 +168,10 @@ This document tracks enterprise-grade improvements to the API codebase for produ
 
 **Files Affected** (sample):
 
-- `api/database.js` - 3 console statements
-- `api/logger.js` - 2 console statements
-- `api/src/billing/invoicing.ts` - 7 console statements
-- `api/src/services/revenueMonitor.js` - 13 console statements
+- `apps/api/database.js` - 3 console statements
+- `apps/api/logger.js` - 2 console statements
+- `apps/api/src/billing/invoicing.ts` - 7 console statements
+- `apps/api/src/services/revenueMonitor.js` - 13 console statements
 - Many more...
 
 ### Phase 3: Route Migration (Priority: HIGH)

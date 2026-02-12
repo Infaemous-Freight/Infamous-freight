@@ -250,8 +250,8 @@ curl -X GET http://localhost:4000/api/marketplace/drivers/{driverId}/jobs \
 
 | File | Changes | Lines |
 |------|---------|-------|
-| `api/src/marketplace/router.js` | Upgraded accept endpoint with race-safe logic + added my jobs endpoint | +100 |
-| `api/src/marketplace/validators.js` | (Already had acceptJobSchema) | — |
+| `apps/api/src/marketplace/router.js` | Upgraded accept endpoint with race-safe logic + added my jobs endpoint | +100 |
+| `apps/api/src/marketplace/validators.js` | (Already had acceptJobSchema) | — |
 
 **Total**: ~100 lines of production code
 

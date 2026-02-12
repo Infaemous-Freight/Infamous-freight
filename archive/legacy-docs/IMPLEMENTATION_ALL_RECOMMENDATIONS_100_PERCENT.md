@@ -42,11 +42,11 @@ pnpm web:dev          # Web only
 # Verify shared package builds
 pnpm --filter @infamous-freight/shared build
 
-# Check that api/src can import from shared
-grep -r "@infamous-freight/shared" api/src/routes/ | head -5
+# Check that apps/api/src can import from shared
+grep -r "@infamous-freight/shared" apps/api/src/routes/ | head -5
 
 # Verify no hardcoded constants
-grep -r "SHIPMENT_STATUSES\|RATE_LIMIT" api/src/routes/*.js | grep -v "@infamous-freight/shared"
+grep -r "SHIPMENT_STATUSES\|RATE_LIMIT" apps/api/src/routes/*.js | grep -v "@infamous-freight/shared"
 ```
 
 ### Documentation Added
@@ -65,7 +65,7 @@ grep -r "SHIPMENT_STATUSES\|RATE_LIMIT" api/src/routes/*.js | grep -v "@infamous
 ### Audit Findings
 
 - API has Jest test suite with coverage thresholds (~75-84%)
-- Coverage reports generated to `api/coverage/`
+- Coverage reports generated to `apps/api/coverage/`
 - CI enforces coverage minimums
 
 ### Implementation Checklist
@@ -81,14 +81,14 @@ pnpm --filter api test
 pnpm --filter api test -- --coverage
 
 # View coverage HTML
-open api/coverage/index.html
+open apps/api/coverage/index.html
 ```
 
 ### Key Test Files to Maintain
 
-- `api/tests/` - API unit & integration tests
+- `apps/api/tests/` - API unit & integration tests
 - `e2e/` - End-to-end Playwright tests
-- Coverage thresholds in `api/jest.config.js`
+- Coverage thresholds in `apps/api/jest.config.js`
 
 ### Required Coverage Levels
 
@@ -112,9 +112,9 @@ open api/coverage/index.html
 
 ### Audit Findings
 
-- `web/` uses TypeScript with strict mode
+- `apps/web/` uses TypeScript with strict mode
 - `packages/shared/` exports proper types: `types.ts`
-- `api/` uses CommonJS but can benefit from type comments
+- `apps/api/` uses CommonJS but can benefit from type comments
 
 ### Implementation Checklist
 
@@ -218,13 +218,13 @@ router.post(
 
 ```bash
 # Check all routes follow pattern
-grep -r "router\.\(post\|get\|put\|patch\|delete\)" api/src/routes/*.js | wc -l
+grep -r "router\.\(post\|get\|put\|patch\|delete\)" apps/api/src/routes/*.js | wc -l
 
 # Verify authenticate is present
-grep -r "authenticate" api/src/routes/*.js | grep -c "router\."
+grep -r "authenticate" apps/api/src/routes/*.js | grep -c "router\."
 
 # Verify requireScope is present
-grep -r "requireScope" api/src/routes/*.js | wc -l
+grep -r "requireScope" apps/api/src/routes/*.js | wc -l
 ```
 
 ### Documentation Added
@@ -243,7 +243,7 @@ grep -r "requireScope" api/src/routes/*.js | wc -l
 
 ### Audit Findings
 
-#### Current Rate Limiters in [security.js](./api/src/middleware/security.js)
+#### Current Rate Limiters in [security.js](./apps/api/src/middleware/security.js)
 
 - `general`: 100/15min
 - `auth`: 5/15min (auth-specific)
@@ -328,7 +328,7 @@ router.post(
 
 ### Monitoring Rate Limit Metrics
 
-The system tracks rate limit metrics via [rateLimitMetrics.js](./api/src/lib/rateLimitMetrics.js):
+The system tracks rate limit metrics via [rateLimitMetrics.js](./apps/api/src/lib/rateLimitMetrics.js):
 
 ```javascript
 // Metrics available in monitoring
@@ -363,7 +363,7 @@ for i in {1..10}; do curl -X POST http://localhost:4000/api/auth/login; done
 
 ### Audit Findings
 
-#### Validation Middleware ([validation.js](./api/src/middleware/validation.js))
+#### Validation Middleware ([validation.js](./apps/api/src/middleware/validation.js))
 
 - `validateString(field, opts)` - String with trim/length checks
 - `validateEmail(field)` - Email format validation
@@ -374,7 +374,7 @@ for i in {1..10}; do curl -X POST http://localhost:4000/api/auth/login; done
 - `validatePaginationQuery(opts)` - Pagination validators
 - `handleValidationErrors` - Error formatting middleware
 
-#### Error Handler ([errorHandler.js](./api/src/middleware/errorHandler.js))
+#### Error Handler ([errorHandler.js](./apps/api/src/middleware/errorHandler.js))
 
 - Centralized error catching
 - Sentry integration for error tracking
@@ -549,13 +549,13 @@ const shipments = await prisma.shipment.findMany({
 
 ```bash
 # Search for potential N+1 patterns
-grep -r "findMany()" api/src/routes/*.js | grep -v "include\|select"
+grep -r "findMany()" apps/api/src/routes/*.js | grep -v "include\|select"
 
 # Find all findUnique calls
-grep -r "findUnique" api/src/routes/*.js | wc -l
+grep -r "findUnique" apps/api/src/routes/*.js | wc -l
 
 # Check for loops with database queries
-grep -B5 -A5 "for\|forEach" api/src/routes/*.js | grep -E "prisma\.|findMany|findUnique"
+grep -B5 -A5 "for\|forEach" apps/api/src/routes/*.js | grep -E "prisma\.|findMany|findUnique"
 ```
 
 ### Optimization Priorities
@@ -580,15 +580,15 @@ grep -B5 -A5 "for\|forEach" api/src/routes/*.js | grep -E "prisma\.|findMany|fin
 
 ### Audit Findings
 
-- Schema file: `api/prisma/schema.prisma`
-- Migrations directory: `api/prisma/migrations/`
+- Schema file: `apps/api/prisma/schema.prisma`
+- Migrations directory: `apps/api/prisma/migrations/`
 - Prisma client properly generated
 
 ### Implementation Checklist
 
 ```bash
 # After modifying schema.prisma:
-cd api
+cd apps/api
 
 # Create migration (interactive)
 pnpm prisma:migrate:dev --name describe_your_change
@@ -622,9 +622,9 @@ pnpm prisma:migrate:reset --force  # ⚠️ Only in development!
 
 ### Workflow for Schema Changes
 
-1. Edit `api/prisma/schema.prisma`
+1. Edit `apps/api/prisma/schema.prisma`
 2. Run `pnpm prisma:migrate:dev --name <change_description>`
-3. Review generated migration file in `api/prisma/migrations/`
+3. Review generated migration file in `apps/api/prisma/migrations/`
 4. Test locally: `pnpm test`
 5. Deploy migration: `pnpm prisma:migrate:deploy`
 
@@ -645,13 +645,13 @@ pnpm prisma:migrate:reset --force  # ⚠️ Only in development!
 ### Audit Findings
 
 - Next.js bundle analyzer installed (`next-bundle-analyzer`)
-- Configuration ready in `web/next.config.mjs`
+- Configuration ready in `apps/web/next.config.mjs`
 - No current performance bottlenecks identified
 
 ### Implementation Steps
 
 ```bash
-cd web
+cd apps/web
 
 # Run bundle analysis
 ANALYZE=true pnpm build
@@ -706,7 +706,7 @@ Based on structure analysis:
 #### Lazy Load Candidates
 
 ```typescript
-// web/components/
+// apps/web/components/
 -ShipmentChart.tsx - // Heavy charting library
   AnalyticsPanel.tsx - // Data visualization
   DashboardReports.tsx - // Complex reporting
@@ -798,7 +798,7 @@ export default function Dashboard() {
 
 ### Audit Findings
 
-#### API Integration ([errorHandler.js](./api/src/middleware/errorHandler.js))
+#### API Integration ([errorHandler.js](./apps/api/src/middleware/errorHandler.js))
 
 ```javascript
 // ✅ Sentry.captureException with rich context
@@ -825,7 +825,7 @@ if (Sentry && process.env.SENTRY_DSN) {
 }
 ```
 
-#### Web Integration ([\_app.tsx](./web/pages/_app.tsx))
+#### Web Integration ([\_app.tsx](./apps/web/pages/_app.tsx))
 
 ```typescript
 // ✅ Datadog RUM initialized for production
@@ -919,7 +919,7 @@ curl -X POST http://localhost:4000/api/test-error \
 
 ### Audit Findings
 
-#### Health Check Route ([health.js](./api/src/routes/health.js))
+#### Health Check Route ([health.js](./apps/api/src/routes/health.js))
 
 ```javascript
 // ✅ Endpoint: GET /api/health
@@ -1026,7 +1026,7 @@ watch -n 60 'curl -s http://localhost:4000/api/health | jq .'
 
 ### Audit Findings
 
-#### Audit Middleware ([security.js](./api/src/middleware/security.js))
+#### Audit Middleware ([security.js](./apps/api/src/middleware/security.js))
 
 ```javascript
 function auditLog(req, res, next) {
@@ -1097,19 +1097,19 @@ function auditLog(req, res, next) {
 
 ```bash
 # Extract audit logs
-cat api/logs/audit.log | jq '.user, .method, .path, .status'
+cat apps/api/logs/audit.log | jq '.user, .method, .path, .status'
 
 # Filter by user
-cat api/logs/audit.log | jq 'select(.user == "user-123")'
+cat apps/api/logs/audit.log | jq 'select(.user == "user-123")'
 
 # Find slow requests
-cat api/logs/audit.log | jq 'select(.duration > 1000)'
+cat apps/api/logs/audit.log | jq 'select(.duration > 1000)'
 
 # Detect failed operations
-cat api/logs/audit.log | jq 'select(.status >= 400)'
+cat apps/api/logs/audit.log | jq 'select(.status >= 400)'
 ```
 
-### Winston Structured Logging ([logger.js](./api/src/middleware/logger.js))
+### Winston Structured Logging ([logger.js](./apps/api/src/middleware/logger.js))
 
 ```javascript
 const winston = require("winston");
@@ -1182,7 +1182,7 @@ cp .env.example .env.test
 pnpm --filter @infamous-freight/shared build
 
 # 4. Database setup
-cd api
+cd apps/api
 pnpm prisma:migrate:dev
 pnpm prisma:generate
 cd ..
@@ -1237,20 +1237,20 @@ git commit -m "feat: description"
 
 ```bash
 # View API logs in real-time
-tail -f api/logs/combined.log
+tail -f apps/api/logs/combined.log
 
 # Monitor rate limit metrics
 curl http://localhost:4000/api/metrics
 
 # Check database status
-cd api && pnpm prisma:studio
+cd apps/api && pnpm prisma:studio
 
 # Profile performance
 NODE_OPTIONS=--prof pnpm api:dev
 node --prof-process isolate-*.log > profile.txt
 
 # Type check specific file
-npx tsc --noEmit api/src/routes/shipments.js
+npx tsc --noEmit apps/api/src/routes/shipments.js
 ```
 
 ---
@@ -1262,14 +1262,14 @@ npx tsc --noEmit api/src/routes/shipments.js
 | Recommendation               | Status | Verification                   | Evidence              |
 | ---------------------------- | ------ | ------------------------------ | --------------------- |
 | 1. Shared Package Discipline | ✅     | `packages/shared/dist/` exists | Build output          |
-| 2. Test Coverage Maintenance | ✅     | Coverage > 75%                 | `api/coverage/`       |
+| 2. Test Coverage Maintenance | ✅     | Coverage > 75%                 | `apps/api/coverage/`       |
 | 3. Type Safety               | ✅     | 0 type errors                  | `pnpm check:types`    |
 | 4. Middleware Order          | ✅     | All routes follow pattern      | Code audit            |
 | 5. Rate Limiting             | ✅     | 8 limiters configured          | `security.js`         |
 | 6. Validation/Error Handling | ✅     | 100% route coverage            | Route audit           |
 | 7. Query Optimization        | ✅     | No N+1 patterns                | Query audit           |
 | 8. Prisma Migrations         | ✅     | Migrations tracked             | `migrations/`         |
-| 9. Bundle Analysis           | ⚠️     | Ready for execution            | `web/next.config.mjs` |
+| 9. Bundle Analysis           | ⚠️     | Ready for execution            | `apps/web/next.config.mjs` |
 | 10. Code Splitting           | ⚠️     | Pattern documented             | Implementation guide  |
 | 11. Sentry Tracking          | ✅     | Configured & tested            | `errorHandler.js`     |
 | 12. Health Checks            | ✅     | Endpoint functional            | `health.js`           |

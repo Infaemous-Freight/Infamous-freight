@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'src/apps/mobile/**'
+      - 'apps/mobile/**'
       - 'src/packages/shared/**'
   workflow_dispatch:
   workflow_call:
@@ -55,7 +55,7 @@ jobs:
           pnpm --filter @infamous-freight/shared build
 
       - name: Build and Deploy iOS
-        working-directory: src/apps/mobile
+        working-directory: apps/mobile
         run: |
           if [ -n "${{ secrets.EXPO_TOKEN }}" ]; then
             eas build --platform ios --profile production --non-interactive --no-wait
@@ -63,7 +63,7 @@ jobs:
         continue-on-error: true
 
       - name: Build and Deploy Android
-        working-directory: src/apps/mobile
+        working-directory: apps/mobile
         run: |
           if [ -n "${{ secrets.EXPO_TOKEN }}" ]; then
             eas build --platform android --profile production --non-interactive --no-wait
@@ -71,7 +71,7 @@ jobs:
         continue-on-error: true
 
       - name: Publish Update
-        working-directory: src/apps/mobile
+        working-directory: apps/mobile
         run: |
           if [ -n "${{ secrets.EXPO_TOKEN }}" ]; then
             eas update --auto

@@ -29,7 +29,7 @@
 
 #### 22.1 — AI Sales Agent ("Genesis Sales") ✅
 **Delivered**:
-- `api/src/revops/genesisSalesAI.ts` (520 lines)
+- `apps/api/src/revops/genesisSalesAI.ts` (520 lines)
 - Lead qualification algorithm (company analysis, deal scoring 0-100)
 - AI-generated deal summaries (OpenAI integration)
 - Automatic opportunity creation
@@ -58,7 +58,7 @@
 
 #### 22.3 — Dynamic Pricing Engine ✅
 **Delivered**:
-- `api/src/revops/dynamicPricing.ts` (480 lines)
+- `apps/api/src/revops/dynamicPricing.ts` (480 lines)
 - Surge pricing algorithm (demand-based multipliers)
 - Urgency multipliers (critical/urgent/standard)
 - Time-based adjustments (peak hours, weekend, overnight)
@@ -75,7 +75,7 @@
 
 #### 22.4 — Automated Outbound Engine ✅
 **Delivered**:
-- `api/src/revops/outboundEngine.ts` (520 lines)
+- `apps/api/src/revops/outboundEngine.ts` (520 lines)
 - AI copy generation (personalized per recipient)
 - Campaign management (create, schedule, send)
 - Tracking pixel support (opens, clicks)
@@ -94,7 +94,7 @@
 
 #### 22.5 — Enterprise Contract Workflow ✅
 **Delivered**:
-- `api/src/revops/contractWorkflow.ts` (540 lines)
+- `apps/api/src/revops/contractWorkflow.ts` (540 lines)
 - AI contract generation (MSA, DPA, SOC2 summary)
 - Document storage (S3/CDN integration ready)
 - E-signature integration (DocuSign webhook support)
@@ -110,7 +110,7 @@
 
 #### 22.6 — Revenue Optimization Dashboard ✅
 **Delivered**:
-- `api/src/revops/dashboard.ts` (580 lines)
+- `apps/api/src/revops/dashboard.ts` (580 lines)
 - Sales metrics (pipeline, conversion, avg deal size, sales cycle)
 - Revenue metrics (MRR, ARR, GMV, platform take, growth %)
 - Customer metrics (LTV, CAC, churn rate, LTV:CAC ratio)
@@ -127,7 +127,7 @@
 
 #### 22.7 — Complete API (25 Endpoints) ✅
 **Delivered**:
-- `api/src/routes/revops.js` (480 lines)
+- `apps/api/src/routes/revops.js` (480 lines)
 - Genesis AI endpoints (5)
 - Dynamic pricing endpoints (3)
 - Outbound campaign endpoints (5)
@@ -261,7 +261,7 @@
 ### Step 1: Database Migration
 
 ```bash
-cd api
+cd apps/api
 npx prisma migrate dev --name "phase-22-ai-revops"
 npx prisma generate
 ```
@@ -300,7 +300,7 @@ CDN_URL=https://cdn.infamous-freight.com
 
 ### Step 3: Register Routes
 
-In `api/src/server.js`:
+In `apps/api/src/server.js`:
 
 ```javascript
 const revopsRoutes = require('./routes/revops');
@@ -310,7 +310,7 @@ app.use('/api/revops', revopsRoutes);
 ### Step 4: Set Up Cron Jobs
 
 ```javascript
-// api/src/jobs/revopsCron.js
+// apps/api/src/jobs/revopsCron.js
 const cron = require('node-cron');
 const genesisSalesAI = require('../revops/genesisSalesAI');
 const outboundEngine = require('../revops/outboundEngine');

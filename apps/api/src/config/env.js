@@ -10,11 +10,11 @@ const env = {
     jwtExpiry: process.env.JWT_EXPIRY || "30d",
     avatarStorage: process.env.AVATAR_STORAGE || "local",
     avatarUploadDir:
-        process.env.AVATAR_UPLOAD_DIR || path.join(process.cwd(), "api/public/uploads"),
+        process.env.AVATAR_UPLOAD_DIR || path.join(process.cwd(), "apps/api/public/uploads"),
     avatarMaxFileSizeMB: parseInt(process.env.AVATAR_MAX_FILE_SIZE_MB || "5", 10),
     avatarAllowedTypes: (process.env.AVATAR_ALLOWED_TYPES || "image/jpeg,image/png,image/webp").split(","),
     avatarDataStore:
-        process.env.AVATAR_DATA_STORE || path.join(process.cwd(), "api/data/avatars.json"),
+        process.env.AVATAR_DATA_STORE || path.join(process.cwd(), "apps/api/data/avatars.json"),
     s3Bucket: process.env.S3_BUCKET,
     s3Region: process.env.S3_REGION,
     s3Endpoint: process.env.S3_ENDPOINT,

@@ -11,7 +11,7 @@
 ### 1. **Testing Framework** (COMPLETE)
 
 ```
-api/src/lib/__tests__/
+apps/api/src/lib/__tests__/
 ├── jobStateMachine.test.js    (41 test cases)
 ├── pricing.test.js             (20 test cases)
 └── geo.test.js                 (25 test cases)
@@ -28,7 +28,7 @@ Total: 86 unit tests covering all critical modules
 **To run:**
 
 ```bash
-cd api
+cd apps/api
 pnpm test
 ```
 
@@ -37,7 +37,7 @@ pnpm test
 ### 2. **Redis Integration** (COMPLETE)
 
 ```
-api/src/lib/redis.js
+apps/api/src/lib/redis.js
 ├── WebhookDeduplicator (24h event tracking)
 ├── CacheManager (job listings, driver status, pricing)
 ├── SessionManager (JWT token blacklisting)
@@ -70,7 +70,7 @@ if (await deduplicator.isDuplicate(event.id)) return;
 ### 3. **Circuit Breaker Pattern** (COMPLETE)
 
 ```
-api/src/lib/circuitBreaker.js
+apps/api/src/lib/circuitBreaker.js
 ├── CircuitBreaker class (CLOSED → OPEN → HALF_OPEN)
 ├── stripeCheckoutBreaker
 ├── stripeSubscriptionBreaker
@@ -107,7 +107,7 @@ try {
 ### 4. **Structured Logging** (COMPLETE)
 
 ```
-api/src/lib/structuredLogging.js
+apps/api/src/lib/structuredLogging.js
 ├── Winston logger configuration
 ├── AuthLogger (login, token, scope events)
 ├── WebhookLogger (receipt, retry, success/failure)
@@ -136,7 +136,7 @@ WebhookLogger.success(event.id, processingTimeMs);
 ### 5. **Database Optimization** (COMPLETE)
 
 ```
-api/src/scripts/optimizeDatabase.js
+apps/api/src/scripts/optimizeDatabase.js
 ├── Create 20+ strategic indexes
 ├── Analyze index usage
 ├── Identify unused indexes
@@ -155,7 +155,7 @@ api/src/scripts/optimizeDatabase.js
 **To run:**
 
 ```bash
-cd api
+cd apps/api
 npx ts-node src/scripts/optimizeDatabase.js
 ```
 
@@ -166,7 +166,7 @@ npx ts-node src/scripts/optimizeDatabase.js
 ### Step 1: Install Dependencies
 
 ```bash
-cd api
+cd apps/api
 pnpm add redis@4.6.0 winston@3.11.0
 ```
 
@@ -243,7 +243,7 @@ These need to be implemented separately due to token limits:
 
 ### 7. **Caching Layer Implementation**
 
-**File:** `api/src/middleware/caching.js`
+**File:** `apps/api/src/middleware/caching.js`
 
 ```javascript
 // Cache on-demand job listings
@@ -271,7 +271,7 @@ router.get('/jobs', async (req, res, next) => {
 
 ### 8. **Webhook Event Replay**
 
-**File:** `api/prisma/schema.prisma` (add model):
+**File:** `apps/api/prisma/schema.prisma` (add model):
 
 ```prisma
 model WebhookEvent {
@@ -288,7 +288,7 @@ model WebhookEvent {
 }
 ```
 
-**File:** `api/src/routes/admin.webhooks.js`:
+**File:** `apps/api/src/routes/admin.webhooks.js`:
 
 ```javascript
 // POST /admin/webhooks/:eventId/replay
@@ -306,7 +306,7 @@ router.post("/webhooks/:eventId/replay", async (req, res) => {
 
 ### 9. **WebSocket Real-time Updates**
 
-**File:** `api/src/lib/websocket.js`:
+**File:** `apps/api/src/lib/websocket.js`:
 
 ```javascript
 const io = require("socket.io")(server);
@@ -331,7 +331,7 @@ io.on("connection", (socket) => {
 
 ### 10. **Analytics Dashboard**
 
-**File:** `api/src/routes/analytics.js`:
+**File:** `apps/api/src/routes/analytics.js`:
 
 ```javascript
 // GET /analytics/summary
@@ -361,7 +361,7 @@ router.get("/summary", async (req, res) => {
 
 ### 11. **SMS/Push Notifications**
 
-**File:** `api/src/lib/notifications.js`:
+**File:** `apps/api/src/lib/notifications.js`:
 
 ```javascript
 const twilio = require("twilio");
@@ -398,7 +398,7 @@ class NotificationService {
 
 ### 12. **Driver Rating System**
 
-**File:** `api/prisma/schema.prisma`:
+**File:** `apps/api/prisma/schema.prisma`:
 
 ```prisma
 model DriverRating {

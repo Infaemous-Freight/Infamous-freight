@@ -58,11 +58,11 @@
 📂 FILES CREATED (12 NEW)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  ✅ api/src/middleware/advancedSecurity.js     - JWT + scope management
-  ✅ api/src/middleware/cache.js                - Redis caching layer
-  ✅ api/src/services/queryOptimization.js      - Query patterns guide
-  ✅ web/lib/bundleOptimization.ts              - Bundle analysis guide
-  ✅ api/prisma/database-optimization.sql       - Index creation script
+  ✅ apps/api/src/middleware/advancedSecurity.js     - JWT + scope management
+  ✅ apps/api/src/middleware/cache.js                - Redis caching layer
+  ✅ apps/api/src/services/queryOptimization.js      - Query patterns guide
+  ✅ apps/web/lib/bundleOptimization.ts              - Bundle analysis guide
+  ✅ apps/api/prisma/database-optimization.sql       - Index creation script
   ✅ e2e/comprehensive.spec.ts                  - E2E test suite
   ✅ .github/workflows/rollback.yml             - Emergency rollback
   ✅ .github/workflows/health-check.yml         - Health monitoring
@@ -77,9 +77,9 @@
   ✅ .vercelignore                              - Corrected glob patterns
   ✅ .github/workflows/vercel-deploy.yml        - Git handling
   ✅ .github/workflows/cd.yml                   - Staging validation
-  ✅ api/prisma/schema.prisma                   - Relations fixed
-  ✅ api/src/services/encryption.js             - Enhanced service
-  ✅ api/src/services/databaseOptimization.js   - Updated guide
+  ✅ apps/api/prisma/schema.prisma                   - Relations fixed
+  ✅ apps/api/src/services/encryption.js             - Enhanced service
+  ✅ apps/api/src/services/databaseOptimization.js   - Updated guide
   └─ Plus: Various documentation index files updated
 
 🚀 IMMEDIATE ACTIONS

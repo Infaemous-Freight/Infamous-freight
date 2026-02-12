@@ -296,7 +296,7 @@ headers: [
 
 ### 2.4 API Rate Limiting
 
-**Current Setup:** ✅ Configured in api/src/middleware/security.js
+**Current Setup:** ✅ Configured in apps/api/src/middleware/security.js
 
 ```
 General: 100 requests / 15 minutes
@@ -450,7 +450,7 @@ echo "🔍 Datadog APM Setup"
 echo "==================="
 
 # 1. Prompt for Datadog info
-echo "Enter your Datadog API Key (from https://app.datadoghq.com/account/settings#api/tokens):"
+echo "Enter your Datadog API Key (from https://app.datadoghq.com/account/settings#apps/api/tokens):"
 read DD_API_KEY
 
 echo "Enter your Datadog App Key:"
@@ -508,7 +508,7 @@ bash scripts/setup-datadog.sh
 
 ### 3.3 Logging Strategy
 
-**Current Setup:** ✅ Winston configured in api/src/middleware/logger.js
+**Current Setup:** ✅ Winston configured in apps/api/src/middleware/logger.js
 
 **Verify logging is working:**
 
@@ -780,7 +780,7 @@ echo $PROD_FREEZE
 
 ```bash
 # 1. Create migration locally
-cd api
+cd apps/api
 pnpm prisma migrate dev --name add_new_column
 
 # 2. Review generated migration file

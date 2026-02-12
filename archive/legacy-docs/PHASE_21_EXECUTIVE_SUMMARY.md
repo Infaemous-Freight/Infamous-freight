@@ -309,7 +309,7 @@ schedule.scheduleJob('0 9 * * *', async () => {
 });
 ```
 
-### 2. Create Landing Pages (web/)
+### 2. Create Landing Pages (apps/web/)
 
 **Shipper Page** (`/landing/shipper`)
 ```html
@@ -353,7 +353,7 @@ CALENDLY_API_KEY=...
 ### 4. Run Database Migration
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma migrate dev --name add_sales_models
 pnpm prisma generate
 ```
@@ -438,7 +438,7 @@ pnpm prisma generate
 
 1. **Set up CRM credentials** (.env variables)
 2. **Run database migration** (`pnpm prisma migrate dev`)
-3. **Create landing pages** (web/)
+3. **Create landing pages** (apps/web/)
 4. **Point landing forms** to `/api/sales/leads`
 5. **Enable notifications** (Slack webhook)
 6. **Train sales team** on CRM workflow

@@ -58,11 +58,11 @@ pnpm web:dev          # Start Web only
 
 ```
 infamous-freight-enterprises/
-├── api/                    # Express REST API
-├── web/                    # Next.js React app
+├── apps/api/                    # Express REST API
+├── apps/web/                    # Next.js React app
 ├── packages/
 │   └── shared/            # Shared types & utilities
-├── mobile/                # React Native app
+├── apps/mobile/                # React Native app
 └── e2e/                   # Playwright E2E tests
 ```
 

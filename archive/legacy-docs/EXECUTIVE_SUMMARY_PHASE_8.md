@@ -189,7 +189,7 @@
 Production-Grade Deliverables:
 
 - [x] 60+ passing tests (test coverage fixed)
-- [x] Redis caching layer (api/src/lib/redis.ts)
+- [x] Redis caching layer (apps/api/src/lib/redis.ts)
 - [x] Load testing script (load-test.k6.js)
 - [x] Database optimization guide (DATABASE_OPTIMIZATION.md)
 - [x] Monitoring setup guide (MONITORING_SETUP.md)

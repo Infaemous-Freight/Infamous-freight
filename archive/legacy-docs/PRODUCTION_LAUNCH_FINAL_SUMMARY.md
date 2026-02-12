@@ -138,10 +138,10 @@
 - [DEPLOYMENT_GUIDE_100_PERCENT.md](DEPLOYMENT_GUIDE_100_PERCENT.md) - Platform guides
 
 ### Code
-- [api/src/server.js](api/src/server.js) - Entry point
-- [api/src/middleware/security.js](api/src/middleware/security.js) - Auth
-- [api/src/lib/prometheusMetrics.js](api/src/lib/prometheusMetrics.js) - Metrics
-- [api/src/routes/](api/src/routes/) - All API routes
+- [apps/api/src/server.js](apps/api/src/server.js) - Entry point
+- [apps/api/src/middleware/security.js](apps/api/src/middleware/security.js) - Auth
+- [apps/api/src/lib/prometheusMetrics.js](apps/api/src/lib/prometheusMetrics.js) - Metrics
+- [apps/api/src/routes/](apps/api/src/routes/) - All API routes
 
 ### Configuration
 - [ENV_SETUP_QUICK_START.md](ENV_SETUP_QUICK_START.md) - Environment setup

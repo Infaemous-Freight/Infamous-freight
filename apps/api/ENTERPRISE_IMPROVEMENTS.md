@@ -4,7 +4,7 @@ This document describes the new standardized utilities added to improve code qua
 
 ## New Modules
 
-### 1. Constants (`api/src/config/constants.js`)
+### 1. Constants (`apps/api/src/config/constants.js`)
 
 Centralized constants to eliminate magic values throughout the codebase.
 
@@ -39,7 +39,7 @@ res.status(HTTP_STATUS.OK).json({
 });
 ```
 
-### 2. Error Utilities (`api/src/lib/errors.js`)
+### 2. Error Utilities (`apps/api/src/lib/errors.js`)
 
 Standardized error classes and response utilities.
 
@@ -77,7 +77,7 @@ router.get('/shipments/:id', asyncHandler(async (req, res) => {
 }));
 ```
 
-### 3. Zod Validation (`api/src/lib/validation.js`)
+### 3. Zod Validation (`apps/api/src/lib/validation.js`)
 
 Type-safe input validation using Zod schemas.
 
@@ -124,7 +124,7 @@ router.get('/shipments',
 );
 ```
 
-### 4. Enhanced Error Handler (`api/src/middleware/errorHandler.js`)
+### 4. Enhanced Error Handler (`apps/api/src/middleware/errorHandler.js`)
 
 Updated to support new error classes and provide consistent error responses.
 

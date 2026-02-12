@@ -13,7 +13,7 @@ bash deploy-stripe.sh
 #    - Price IDs (Pro + Enterprise)
 
 # 3. Database migration
-cd api && pnpm prisma migrate dev --name "add_stripe_tables"
+cd apps/api && pnpm prisma migrate dev --name "add_stripe_tables"
 
 # 4. Deploy API
 pnpm api:build

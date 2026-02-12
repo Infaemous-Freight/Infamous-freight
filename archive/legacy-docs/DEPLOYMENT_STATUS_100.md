@@ -28,16 +28,16 @@
 
 - **Status**: Complete & Deployed
 - **Features**: Global pricing, region-based rates, tier-based discounts
-- **Implementation**: `api/src/services/pricingEngine.js`
-- **Routes**: `api/src/routes/shipments.js`, pricing calculations built-in
+- **Implementation**: `apps/api/src/services/pricingEngine.js`
+- **Routes**: `apps/api/src/routes/shipments.js`, pricing calculations built-in
 - **Last Updated**: Multiple releases (Phase 1)
 
 ### 2. **Bonus & Loyalty System** ✅
 
 - **Status**: Complete & Deployed
 - **Features**: 4-tier loyalty, referral bonuses, performance bonuses, milestone rewards
-- **Implementation**: `api/src/services/bonusEngine.js`, `api/src/services/loyaltyProgram.js`
-- **Routes**: `api/src/routes/bonuses.js`
+- **Implementation**: `apps/api/src/services/bonusEngine.js`, `apps/api/src/services/loyaltyProgram.js`
+- **Routes**: `apps/api/src/routes/bonuses.js`
 - **Endpoints**: 8 REST endpoints with JWT auth
 - **Database**: Prisma schema integrated
 - **Last Updated**: Commit a25c224
@@ -46,8 +46,8 @@
 
 - **Status**: Complete & Deployed
 - **Features**: Stripe + PayPal integration, 0-15 min payouts, instant settlement
-- **Implementation**: `api/src/services/paymentService.js`, `api/src/services/stripeService.js`
-- **Routes**: `api/src/routes/billing.js`, `api/src/routes/payments.js`, `api/src/routes/billing-payments.js`
+- **Implementation**: `apps/api/src/services/paymentService.js`, `apps/api/src/services/stripeService.js`
+- **Routes**: `apps/api/src/routes/billing.js`, `apps/api/src/routes/payments.js`, `apps/api/src/routes/billing-payments.js`
 - **Endpoints**: 10+ REST endpoints
 - **Rate Limits**: 30 requests / 15 minutes (billing-specific)
 - **Last Updated**: Commit b6842c7
@@ -56,8 +56,8 @@
 
 - **Status**: Complete & Deployed
 - **Features**: Real-time vehicle tracking, geofencing, route monitoring, alerts, analytics
-- **Implementation**: `api/src/services/trackingService.js`
-- **Routes**: `api/src/routes/tracking.js`
+- **Implementation**: `apps/api/src/services/trackingService.js`
+- **Routes**: `apps/api/src/routes/tracking.js`
 - **Endpoints**: 12 REST endpoints with analytics
 - **Database**: Prisma tracking schema
 - **Last Updated**: Commit 1576e20
@@ -66,8 +66,8 @@
 
 - **Status**: Complete & Deployed
 - **Features**: Multi-factor scoring, collaborative filtering, personalized suggestions, feedback loop, trending analysis
-- **Implementation**: `api/src/services/recommendationService.js`
-- **Routes**: `api/src/routes/recommendations.js`
+- **Implementation**: `apps/api/src/services/recommendationService.js`
+- **Routes**: `apps/api/src/routes/recommendations.js`
 - **Endpoints**: 11 REST endpoints
 - **Database**: Prisma recommendation schema with 9 models
 - **Tests**: 28 tests covering all features
@@ -77,8 +77,8 @@
 
 - **Status**: Complete & Deployed
 - **Features**: Shipment tracking, warehouse ops, inventory control, fleet management, load optimization, supply chain analytics
-- **Implementation**: `api/src/services/logisticsService.js`
-- **Routes**: `api/src/routes/logistics.js`
+- **Implementation**: `apps/api/src/services/logisticsService.js`
+- **Routes**: `apps/api/src/routes/logistics.js`
 - **Endpoints**: 15 REST endpoints
 - **Database**: Prisma logistics schema with 25+ models
 - **Tests**: 26 tests covering all features
@@ -89,19 +89,19 @@
 - **Status**: Complete & Deployed
 - **Features**: 4 featured system avatars, user uploads (PNG/JPEG/WebP, 6 MB max), avatar selection, persistent storage
 - **Implementation**:
-  - API: `api/src/avatars/store.js`, `api/src/avatars/routes.js`
-  - Frontend: `web/components/AvatarSelector.tsx`
-  - Static: `web/public/avatars/main/manifest.json`
+  - API: `apps/api/src/avatars/store.js`, `apps/api/src/avatars/routes.js`
+  - Frontend: `apps/web/components/AvatarSelector.tsx`
+  - Static: `apps/web/public/avatars/main/manifest.json`
 - **Endpoints**: 5 REST endpoints (system, user upload, delete, selection)
 - **Rate Limits**: 100 requests / 15 minutes
-- **Database**: JSON-based store (`api/data/avatars.json`)
+- **Database**: JSON-based store (`apps/api/data/avatars.json`)
 - **Last Updated**: Commit a070229
 
 ### 8. **Security & Authentication** ✅
 
 - **Status**: Complete & Integrated
 - **Features**: JWT auth, scope-based authorization, rate limiting, input validation, audit logging
-- **Implementation**: `api/src/middleware/security.js`, `api/src/middleware/validation.js`
+- **Implementation**: `apps/api/src/middleware/security.js`, `apps/api/src/middleware/validation.js`
 - **Rate Limits**:
   - General: 100/15min
   - Auth: 5/15min
@@ -114,7 +114,7 @@
 - **Status**: Complete
 - **Format**: Swagger/OpenAPI
 - **Endpoint**: `/api/docs` (when running)
-- **Implementation**: `api/src/swagger.js`
+- **Implementation**: `apps/api/src/swagger.js`
 - **Coverage**: All routes documented
 
 ### 10. **Database (Prisma ORM)** ✅
@@ -131,7 +131,7 @@
 
 ```
 Infæmous Freight Enterprises/
-├── api/                           # Express.js Backend (Port 4000/3001)
+├── apps/api/                           # Express.js Backend (Port 4000/3001)
 │   ├── src/
 │   │   ├── routes/               # 15 route modules (all implemented)
 │   │   ├── services/             # 18 service modules (all implemented)
@@ -143,7 +143,7 @@ Infæmous Freight Enterprises/
 │   ├── __tests__/                # Jest test suites
 │   └── package.json              # v2.2.0
 │
-├── web/                           # Next.js 14 Frontend (Port 3000)
+├── apps/web/                           # Next.js 14 Frontend (Port 3000)
 │   ├── pages/                    # Route pages
 │   ├── components/               # React components (AvatarSelector, etc.)
 │   ├── public/
@@ -376,9 +376,9 @@ kubectl apply -f k8s/deployment.yaml
 | ------------------------- | --------------------------------------------------- |
 | Port 3001 already in use  | Kill: `lsof -ti:3001 \| xargs kill -9`              |
 | Node modules missing      | Run: `pnpm install`                                 |
-| Database migration failed | Run: `cd api && pnpm prisma:migrate:dev`            |
+| Database migration failed | Run: `cd apps/api && pnpm prisma:migrate:dev`            |
 | JWT auth failing          | Verify `JWT_SECRET` env var is set                  |
-| Avatar upload fails       | Check `api/public/uploads/avatars/` permissions     |
+| Avatar upload fails       | Check `apps/api/public/uploads/avatars/` permissions     |
 | Build errors              | Run: `pnpm --filter @infamous-freight/shared build` |
 
 ### Verification Commands

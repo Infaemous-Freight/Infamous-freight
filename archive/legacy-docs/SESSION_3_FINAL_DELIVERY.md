@@ -135,26 +135,26 @@
 #### Web Layer (4 files)
 
 ```
-✅ src/apps/web/hooks/useWebSocket.ts
+✅ apps/web/hooks/useWebSocket.ts
    └─ WebSocket connection management with auto-reconnect
 
-✅ src/apps/web/contexts/WebSocketContext.tsx
+✅ apps/web/contexts/WebSocketContext.tsx
    └─ React Context provider for app-wide WebSocket access
 
-✅ src/apps/web/components/RealtimeShipmentList.tsx
+✅ apps/web/components/RealtimeShipmentList.tsx
    └─ Real-time shipment updates with live status
 
-✅ src/apps/web/components/ExportModal.tsx
+✅ apps/web/components/ExportModal.tsx
    └─ Data export UI with multiple format support
 ```
 
 #### API Layer (2 files)
 
 ```
-✅ src/apps/api/src/routes/monitoring.ts
+✅ apps/api/src/routes/monitoring.ts
    └─ 8 monitoring endpoints with metrics
 
-✅ src/apps/api/__tests__/integration/extended-features.test.ts
+✅ apps/api/__tests__/integration/extended-features.test.ts
    └─ 40+ integration test cases
 ```
 
@@ -190,7 +190,7 @@
 ### Modified Files (1)
 
 ```
-🔄 src/apps/api/src/server.ts
+🔄 apps/api/src/server.ts
    └─ Added monitoring route registration (2 replacements)
 ```
 
@@ -415,7 +415,7 @@ pnpm test -- extended-features      # Run extended tests
 k6 run scripts/load-test-k6.js     # Run K6 load tests
 
 # Database
-cd src/apps/api && pnpm prisma:studio  # View database
+cd apps/api && pnpm prisma:studio  # View database
 
 # Documentation
 cat TEAM_KNOWLEDGE_TRANSFER.md      # Developer guide
@@ -425,8 +425,8 @@ cat OPERATIONAL_RUNBOOKS.md         # Operations guide
 ### Key Files to Review
 
 1. `TEAM_KNOWLEDGE_TRANSFER.md` - Start here
-2. `src/apps/web/hooks/useWebSocket.ts` - WebSocket pattern
-3. `src/apps/api/src/routes/monitoring.ts` - Monitoring setup
+2. `apps/web/hooks/useWebSocket.ts` - WebSocket pattern
+3. `apps/api/src/routes/monitoring.ts` - Monitoring setup
 4. `DATABASE_OPTIMIZATION_GUIDE.md` - Performance tuning
 5. `OPERATIONAL_RUNBOOKS.md` - Operations procedures
 

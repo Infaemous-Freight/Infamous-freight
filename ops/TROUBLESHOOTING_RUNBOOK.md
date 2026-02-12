@@ -77,7 +77,7 @@ API_PORT=5000 pnpm api:dev
 
 ```bash
 # Solution 1: Clear cache
-cd web
+cd apps/web
 rm -rf .next node_modules
 pnpm install
 pnpm build
@@ -175,7 +175,7 @@ LIMIT 100;
 
 ```bash
 # Analyze bundle
-cd web && pnpm build:analyze
+cd apps/web && pnpm build:analyze
 
 # Solutions:
 # 1. Dynamic imports for heavy components
@@ -312,9 +312,9 @@ df -h
 tar czf support-bundle-$(date +%s).tar.gz \
   .env.example \
   package.json \
-  api/package.json \
-  web/package.json \
-  api/jest.config.js \
+  apps/api/package.json \
+  apps/web/package.json \
+  apps/api/jest.config.js \
   .github/workflows/ci.yml \
   logs/*.log 2>/dev/null
 
@@ -348,7 +348,7 @@ pnpm check:types
 pnpm lint
 
 # Database
-cd api && pnpm prisma:studio
+cd apps/api && pnpm prisma:studio
 
 # Check health
 curl http://localhost:4000/api/health/detailed

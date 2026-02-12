@@ -18,7 +18,7 @@ Successfully rebuilt the entire monorepo from scratch and implemented comprehens
 
 ```
 infamous-freight-enterprises/
-├── api/                          # Express.js backend (CommonJS)
+├── apps/api/                          # Express.js backend (CommonJS)
 │   ├── src/
 │   │   ├── routes/              # 8 route files (3 existing + 5 new)
 │   │   ├── middleware/          # 3 middleware files
@@ -27,11 +27,11 @@ infamous-freight-enterprises/
 │   │   └── server.js            # Main entry point
 │   ├── prisma/
 │   └── package.json
-├── web/                          # Next.js 14 frontend (TypeScript)
+├── apps/web/                          # Next.js 14 frontend (TypeScript)
 │   ├── pages/
 │   ├── components/
 │   └── package.json
-├── mobile/                       # React Native placeholder
+├── apps/mobile/                       # React Native placeholder
 │   └── package.json
 ├── packages/
 │   └── shared/                   # @infamous-freight/shared
@@ -60,7 +60,7 @@ infamous-freight-enterprises/
 
 **Created 3 Middleware Files:**
 
-1. **[api/src/middleware/security.js](../api/src/middleware/security.js)** (85 lines)
+1. **[apps/api/src/middleware/security.js](../apps/api/src/middleware/security.js)** (85 lines)
    - `limiters` object with 4 rate limiter types:
      - `general`: 100 requests / 15 minutes
      - `auth`: 5 requests / 15 minutes
@@ -70,14 +70,14 @@ infamous-freight-enterprises/
    - `requireScope(scope|scope[])`: Scope enforcement
    - `auditLog()`: Structured request logging
 
-2. **[api/src/middleware/validation.js](../api/src/middleware/validation.js)** (30 lines)
+2. **[apps/api/src/middleware/validation.js](../apps/api/src/middleware/validation.js)** (30 lines)
    - `validateString(field, opts)`: String validation with trim/maxLength
    - `validateEmail(field)`: Email validation + normalization
    - `validatePhone(field)`: Phone number validation
    - `validateUUID(field)`: UUID parameter validation
    - `handleValidationErrors()`: Returns 400 with field-level errors
 
-3. **[api/src/middleware/errorHandler.js](../api/src/middleware/errorHandler.js)** (25 lines)
+3. **[apps/api/src/middleware/errorHandler.js](../apps/api/src/middleware/errorHandler.js)** (25 lines)
    - Global error handler with status extraction
    - Structured console logging
    - Optional Sentry integration
@@ -87,34 +87,34 @@ infamous-freight-enterprises/
 
 **Created 5 New Routes:**
 
-1. **[ai.commands.js](../api/src/routes/ai.commands.js)** (67 lines)
+1. **[ai.commands.js](../apps/api/src/routes/ai.commands.js)** (67 lines)
    - `POST /api/ai/command` - Execute AI commands
    - `GET /api/ai/history` - View AI history
    - Middleware: `limiters.ai`, `authenticate`, `requireScope`, `validation`, `auditLog`
    - ✅ No errors, properly formatted
 
-2. **[billing.js](../api/src/routes/billing.js)** (108 lines)
+2. **[billing.js](../apps/api/src/routes/billing.js)** (108 lines)
    - `POST /api/billing/create-subscription` - Create subscription
    - `GET /api/billing/subscriptions` - List subscriptions
    - `POST /api/billing/cancel-subscription/:id` - Cancel subscription
    - Middleware: `limiters.billing`, `authenticate`, `requireScope`, `validation`, `auditLog`
    - ✅ No errors, properly formatted
 
-3. **[voice.js](../api/src/routes/voice.js)** (96 lines)
+3. **[voice.js](../apps/api/src/routes/voice.js)** (96 lines)
    - `POST /api/voice/ingest` - Upload audio file (Multer)
    - `POST /api/voice/command` - Process voice commands
    - Middleware: `limiters.ai`, `authenticate`, `requireScope`, `auditLog`, Multer
    - File upload: Max 10MB, supports MP3/WAV/OGG/WEBM
    - ✅ No errors, properly formatted
 
-4. **[users.js](../api/src/routes/users.js)** (90 lines)
+4. **[users.js](../apps/api/src/routes/users.js)** (90 lines)
    - `GET /api/users/me` - Get current user profile
    - `PATCH /api/users/me` - Update profile
    - `GET /api/users` - List all users (admin)
    - Middleware: `limiters.general`, `authenticate`, `requireScope`, `validation`, `auditLog`
    - ✅ No errors, properly formatted
 
-5. **[aiSim.internal.js](../api/src/routes/aiSim.internal.js)** (60 lines)
+5. **[aiSim.internal.js](../apps/api/src/routes/aiSim.internal.js)** (60 lines)
    - `GET /internal/ai/simulate` - Synthetic AI simulator
    - `POST /internal/ai/batch` - Batch AI processing
    - Middleware: `auditLog` only (internal services)
@@ -122,21 +122,21 @@ infamous-freight-enterprises/
 
 **Updated 3 Existing Routes:**
 
-1. **[health.js](../api/src/routes/health.js)** - Added `auditLog` to all 4 endpoints
+1. **[health.js](../apps/api/src/routes/health.js)** - Added `auditLog` to all 4 endpoints
    - `GET /health` - Basic health check
    - `GET /health/detailed` - Detailed service health
    - `GET /health/ready` - Kubernetes readiness probe
    - `GET /health/live` - Kubernetes liveness probe
    - ✅ No errors, properly formatted
 
-2. **[metrics.js](../api/src/routes/metrics.js)** - Added full middleware stack
+2. **[metrics.js](../apps/api/src/routes/metrics.js)** - Added full middleware stack
    - `GET /api/metrics/revenue/live` - Real-time metrics
    - `POST /api/metrics/revenue/clear-cache` - Clear cache (admin)
    - `GET /api/metrics/revenue/export` - Export as CSV
    - Middleware: `limiters.general`, `authenticate`, `requireScope`, `auditLog`
    - ✅ No errors, properly formatted
 
-3. **[shipments.js](../api/src/routes/shipments.js)** - Added rate limiters
+3. **[shipments.js](../apps/api/src/routes/shipments.js)** - Added rate limiters
    - `GET /api/shipments` - List shipments
    - `GET /api/shipments/:id` - Get by ID
    - `POST /api/shipments` - Create shipment
@@ -286,14 +286,14 @@ infamous-freight-enterprises/
 
 All route files verified:
 
-- ✅ `api/src/routes/health.js` - No errors, properly formatted
-- ✅ `api/src/routes/metrics.js` - No errors, properly formatted
-- ✅ `api/src/routes/shipments.js` - No errors, properly formatted
-- ✅ `api/src/routes/ai.commands.js` - No errors, properly formatted
-- ✅ `api/src/routes/billing.js` - No errors, properly formatted
-- ✅ `api/src/routes/voice.js` - No errors, properly formatted
-- ✅ `api/src/routes/users.js` - No errors, properly formatted
-- ✅ `api/src/routes/aiSim.internal.js` - No errors, properly formatted
+- ✅ `apps/api/src/routes/health.js` - No errors, properly formatted
+- ✅ `apps/api/src/routes/metrics.js` - No errors, properly formatted
+- ✅ `apps/api/src/routes/shipments.js` - No errors, properly formatted
+- ✅ `apps/api/src/routes/ai.commands.js` - No errors, properly formatted
+- ✅ `apps/api/src/routes/billing.js` - No errors, properly formatted
+- ✅ `apps/api/src/routes/voice.js` - No errors, properly formatted
+- ✅ `apps/api/src/routes/users.js` - No errors, properly formatted
+- ✅ `apps/api/src/routes/aiSim.internal.js` - No errors, properly formatted
 
 ### Server Configuration ✅
 

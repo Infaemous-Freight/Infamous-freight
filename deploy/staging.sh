@@ -23,8 +23,8 @@ SLACK_WEBHOOK=${SLACK_WEBHOOK:-}
 
 # Step 1: Verify environment
 echo -e "${YELLOW}Step 1: Verifying environment...${NC}"
-if [ ! -f "api/.env.staging" ]; then
-  echo -e "${RED}Error: api/.env.staging not found${NC}"
+if [ ! -f "apps/api/.env.staging" ]; then
+  echo -e "${RED}Error: apps/api/.env.staging not found${NC}"
   exit 1
 fi
 
@@ -37,7 +37,7 @@ npm run test || {
 
 # Step 3: Build Docker images
 echo -e "${YELLOW}Step 3: Building Docker images...${NC}"
-docker build -f api/Dockerfile -t infamous-api:staging ./api || {
+docker build -f apps/api/Dockerfile -t infamous-api:staging ./apps/api || {
   echo -e "${RED}Docker build failed!${NC}"
   exit 1
 }
@@ -45,7 +45,7 @@ docker build -f api/Dockerfile -t infamous-api:staging ./api || {
 # Step 4: Run migrations
 echo -e "${YELLOW}Step 4: Running database migrations...${NC}"
 docker run --rm \
-  --env-file api/.env.staging \
+  --env-file apps/api/.env.staging \
   infamous-api:staging \
   npx prisma migrate deploy || {
   echo -e "${RED}Migrations failed!${NC}"
@@ -55,7 +55,7 @@ docker run --rm \
 # Step 5: Seed staging database
 echo -e "${YELLOW}Step 5: Seeding staging database...${NC}"
 docker run --rm \
-  --env-file api/.env.staging \
+  --env-file apps/api/.env.staging \
   infamous-api:staging \
   npx prisma db seed || {
   echo -e "${RED}Seeding failed!${NC}"
@@ -65,7 +65,7 @@ docker run --rm \
 # Step 6: Optimize database
 echo -e "${YELLOW}Step 6: Optimizing database...${NC}"
 docker run --rm \
-  --env-file api/.env.staging \
+  --env-file apps/api/.env.staging \
   infamous-api:staging \
   npx ts-node src/scripts/optimizeDatabase.js || {
   echo -e "${RED}Database optimization failed!${NC}"

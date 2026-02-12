@@ -1,4 +1,4 @@
-// api/__tests__/api.test.js - Comprehensive test suite
+// apps/api/__tests__/api.test.js - Comprehensive test suite
 const http = require("http");
 const { generateToken, verifyToken, authenticate } = require("../auth");
 const { validateShipment, sanitize, validateEmail } = require("../validation");

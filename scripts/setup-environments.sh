@@ -50,41 +50,41 @@ fi
 
 echo ""
 echo "Step 2: Setting up API environment..."
-if [ ! -f "api/.env" ]; then
-    if [ -f "api/.env.example" ]; then
-        cp api/.env.example api/.env
-        print_success "Created api/.env"
+if [ ! -f "apps/api/.env" ]; then
+    if [ -f "apps/api/.env.example" ]; then
+        cp apps/api/.env.example apps/api/.env
+        print_success "Created apps/api/.env"
     else
-        print_warning "api/.env.example not found, skipping"
+        print_warning "apps/api/.env.example not found, skipping"
     fi
 else
-    print_warning "api/.env already exists, skipping"
+    print_warning "apps/api/.env already exists, skipping"
 fi
 
 echo ""
 echo "Step 3: Setting up Web environment..."
-if [ ! -f "web/.env.local" ]; then
-    if [ -f "web/.env.example" ]; then
-        cp web/.env.example web/.env.local
-        print_success "Created web/.env.local"
+if [ ! -f "apps/web/.env.local" ]; then
+    if [ -f "apps/web/.env.example" ]; then
+        cp apps/web/.env.example apps/web/.env.local
+        print_success "Created apps/web/.env.local"
     else
-        print_warning "web/.env.example not found, skipping"
+        print_warning "apps/web/.env.example not found, skipping"
     fi
 else
-    print_warning "web/.env.local already exists, skipping"
+    print_warning "apps/web/.env.local already exists, skipping"
 fi
 
 echo ""
 echo "Step 4: Setting up Mobile environment..."
-if [ ! -f "mobile/.env.development" ]; then
-    if [ -f "mobile/.env.example" ]; then
-        cp mobile/.env.example mobile/.env.development
-        print_success "Created mobile/.env.development"
+if [ ! -f "apps/mobile/.env.development" ]; then
+    if [ -f "apps/mobile/.env.example" ]; then
+        cp apps/mobile/.env.example apps/mobile/.env.development
+        print_success "Created apps/mobile/.env.development"
     else
-        print_warning "mobile/.env.example not found, skipping"
+        print_warning "apps/mobile/.env.example not found, skipping"
     fi
 else
-    print_warning "mobile/.env.development already exists, skipping"
+    print_warning "apps/mobile/.env.development already exists, skipping"
 fi
 
 echo ""
@@ -100,11 +100,11 @@ if [ -f ".env.development" ]; then
     fi
 fi
 
-# Update JWT_SECRET in api/.env if it exists and has default value
-if [ -f "api/.env" ]; then
-    if grep -q "replace_with_long_random_value" api/.env; then
-        sed -i.bak "s/JWT_SECRET=replace_with_long_random_value_minimum_32_characters/JWT_SECRET=$JWT_SECRET/" api/.env
-        rm api/.env.bak 2>/dev/null || true
+# Update JWT_SECRET in apps/api/.env if it exists and has default value
+if [ -f "apps/api/.env" ]; then
+    if grep -q "replace_with_long_random_value" apps/api/.env; then
+        sed -i.bak "s/JWT_SECRET=replace_with_long_random_value_minimum_32_characters/JWT_SECRET=$JWT_SECRET/" apps/api/.env
+        rm apps/api/.env.bak 2>/dev/null || true
         print_success "Generated random JWT_SECRET for API"
     fi
 fi
@@ -114,7 +114,7 @@ echo "Step 6: Verifying environment files..."
 FILES_CREATED=0
 FILES_SKIPPED=0
 
-for file in .env.development .env.local api/.env web/.env.local mobile/.env.development; do
+for file in .env.development .env.local apps/api/.env apps/web/.env.local apps/mobile/.env.development; do
     if [ -f "$file" ]; then
         print_success "$file exists"
         FILES_CREATED=$((FILES_CREATED + 1))

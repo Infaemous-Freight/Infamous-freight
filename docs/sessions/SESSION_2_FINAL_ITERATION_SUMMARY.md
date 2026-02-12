@@ -13,7 +13,7 @@
 **Code & Implementation**:
 
 1. ✅ **Search Endpoint**: GET /api/users/search
-   - Location: [api/src/routes/users.js](api/src/routes/users.js#L42-L112)
+   - Location: [apps/api/src/routes/users.js](apps/api/src/routes/users.js#L42-L112)
    - Features: Filtering (email/name, role), pagination, dynamic sorting
    - Status: Code written, tested design, ready for unit tests
 
@@ -90,7 +90,7 @@
 
 2. ⏳ **Edge Case Tests Validation**
    - Status: BLOCKED - npm unavailable in terminal
-   - 40+ tests written in [api/**tests**/validation-edge-cases.test.js](api/__tests__/validation-edge-cases.test.js)
+   - 40+ tests written in [apps/api/**tests**/validation-edge-cases.test.js](apps/api/__tests__/validation-edge-cases.test.js)
    - Tests cover: string validation, email format, phone format, UUID validation, request bodies, query parameters
    - Action: Run `npm test -- validation-edge-cases.test.js` locally or in CI
    - Expected: All 40+ tests pass with coverage ≥50%
@@ -131,7 +131,7 @@
 
 ### Code Integration
 
-**Search Endpoint** ([api/src/routes/users.js](api/src/routes/users.js)):
+**Search Endpoint** ([apps/api/src/routes/users.js](apps/api/src/routes/users.js)):
 
 ```javascript
 // GET /api/users/search
@@ -207,7 +207,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 1. **Local machine** (best): `npm test -- validation-edge-cases.test.js`
 2. **GitHub Actions** (automatic): Push to main, tests run automatically
-3. **Docker**: `docker build -t api ./api && docker run api npm test`
+3. **Docker**: `docker build -t api ./apps/api && docker run api npm test`
 
 **Expected Result**:
 
@@ -247,7 +247,7 @@ Before continuing, user should:
 
 **Current State**:
 
-- Test file written: [api/**tests**/validation-edge-cases.test.js](api/__tests__/validation-edge-cases.test.js)
+- Test file written: [apps/api/**tests**/validation-edge-cases.test.js](apps/api/__tests__/validation-edge-cases.test.js)
 - 40+ test cases defined
 - Covers: string, email, phone, UUID, request body, query parameter validation
 

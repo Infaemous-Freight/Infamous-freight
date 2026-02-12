@@ -128,38 +128,38 @@ https://github.com/MrMiless44/Infamous-freight/actions
 
 1. ✅ **JWT Scope Tests** - 400+ lines, 50+ tests
    - JWT token validation, scope enforcement, edge cases
-   - File: `api/tests/jwt-scope.test.js`
+   - File: `apps/api/tests/jwt-scope.test.js`
 
 2. ✅ **Feature Flags Tests** - 650+ lines, 60+ tests
    - Rollout percentages, A/B testing, kill switches
-   - File: `api/tests/feature-flags.test.js`
+   - File: `apps/api/tests/feature-flags.test.js`
 
 3. ✅ **Billing Tests** - 750+ lines, 45+ tests
    - Stripe integration, webhooks, subscriptions
-   - File: `api/tests/billing.test.js`
+   - File: `apps/api/tests/billing.test.js`
 
 4. ✅ **Logger Performance Tests** - 650+ lines, 40+ tests
    - Throughput, latency, structured logging
-   - File: `api/tests/logger-performance.test.js`
+   - File: `apps/api/tests/logger-performance.test.js`
 
 5. ✅ **Rate Limiter Tests** - 700+ lines, 55+ tests
    - All 4 tiers, IP/user limiting, bypasses
-   - File: `api/tests/rate-limiter.test.js`
+   - File: `apps/api/tests/rate-limiter.test.js`
 
 6. ✅ **Health Check Tests** - 500+ lines, 35+ tests
    - Liveness/readiness, database, Redis, degraded states
-   - File: `api/tests/health-check.test.js`
+   - File: `apps/api/tests/health-check.test.js`
 
 7. ✅ **E2E Flow Tests** - 800+ lines, 40+ tests
    - Complete user journeys, multi-step workflows
-   - File: `api/tests/e2e-flow.test.js`
+   - File: `apps/api/tests/e2e-flow.test.js`
 
 **Total New Test Code**: 4,450+ lines, 325+ tests
 
 **Next Action**:
 
 ```bash
-cd api && npm test -- --coverage
+cd apps/api && npm test -- --coverage
 open coverage/index.html
 ```
 
@@ -213,7 +213,7 @@ open coverage/index.html
 
 ```bash
 # Update dependencies
-cd api
+cd apps/api
 npm audit fix
 
 # Or manually update specific packages
@@ -260,7 +260,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 ✅ E2E Flow Tests (800+ lines, 40+ tests)
 
 # Run tests to verify coverage:
-cd api
+cd apps/api
 npm test -- --coverage
 open coverage/index.html
 ```

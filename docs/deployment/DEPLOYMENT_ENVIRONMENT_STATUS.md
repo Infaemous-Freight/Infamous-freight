@@ -79,7 +79,7 @@ pnpm web:dev
 ```bash
 # For development/testing without real API
 # Web can mock API responses in development
-# See: web/lib/api/mock.ts or create .env.local
+# See: apps/web/lib/api/mock.ts or create .env.local
 NEXT_PUBLIC_API_URL=http://localhost:4000
 # When API is available, it will automatically work
 ```
@@ -87,7 +87,7 @@ NEXT_PUBLIC_API_URL=http://localhost:4000
 #### C. Regenerate Prisma Client
 
 ```bash
-cd api
+cd apps/api
 # Try to regenerate Prisma without full start
 pnpm prisma:generate
 # May work if libssl not strictly needed for codegen
@@ -255,11 +255,11 @@ pnpm web:dev
 
 ### Code Files ✅
 
-- `api/src/middleware/performance.js` - Compression
-- `api/src/utils/dbOptimization.js` - Query optimization
-- `api/src/config/monitoring.js` - Monitoring config
-- `web/lib/webVitalsMonitoring.js` - Web Vitals tracking
-- `web/lib/webVitalsConfig.js` - Web optimization
+- `apps/api/src/middleware/performance.js` - Compression
+- `apps/api/src/utils/dbOptimization.js` - Query optimization
+- `apps/api/src/config/monitoring.js` - Monitoring config
+- `apps/web/lib/webVitalsMonitoring.js` - Web Vitals tracking
+- `apps/web/lib/webVitalsConfig.js` - Web optimization
 - All integration complete
 
 ### Configuration Files ✅

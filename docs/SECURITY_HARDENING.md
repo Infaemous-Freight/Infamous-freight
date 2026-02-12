@@ -118,7 +118,7 @@ curl -vI https://infamous-freight-api.fly.dev/api/health 2>&1 | grep -i "SSL\|TL
 **Implementation**: Add API key authentication for third-party integrations
 
 ```javascript
-// api/src/middleware/apiKey.js
+// apps/api/src/middleware/apiKey.js
 const apiKey = (req, res, next) => {
   const key = req.headers["x-api-key"];
   const validKeys = (process.env.API_KEYS || "").split(",");
@@ -147,7 +147,7 @@ router.get("/external/data", apiKey, authenticate, handler);
 ```javascript
 // Current: express.json({ limit: '12mb' })
 
-// Add to api/src/server.js for file uploads
+// Add to apps/api/src/server.js for file uploads
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Voice route already has: limits.fileSize: 10MB
@@ -158,7 +158,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 **For admin endpoints only**:
 
 ```javascript
-// api/src/middleware/ipWhitelist.js
+// apps/api/src/middleware/ipWhitelist.js
 const ipWhitelist = (req, res, next) => {
   const whitelist = (process.env.ADMIN_IP_WHITELIST || "").split(",");
   const clientIp = req.ip || req.connection.remoteAddress;
@@ -227,7 +227,7 @@ updates:
 **If using sessions** (currently JWT-based):
 
 ```javascript
-// api/src/config/session.js
+// apps/api/src/config/session.js
 const session = require("express-session");
 const RedisStore = require("connect-redis")(session);
 
@@ -252,7 +252,7 @@ module.exports = session({
 **Enhanced protection**:
 
 ```javascript
-// api/src/middleware/bruteForce.js
+// apps/api/src/middleware/bruteForce.js
 const rateLimit = require("express-rate-limit");
 
 const loginLimiter = rateLimit({
@@ -300,7 +300,7 @@ app.use(csrf({ cookie: true }));
 **For web frontend**:
 
 ```html
-<!-- web/pages/_document.tsx -->
+<!-- apps/web/pages/_document.tsx -->
 <script
   src="https://cdn.example.com/script.js"
   integrity="sha384-..."
@@ -412,7 +412,7 @@ for i in {1..10}; do curl https://infamous-freight-api.fly.dev/api/health; done
 curl -H "Origin: https://evil.com" https://infamous-freight-api.fly.dev/api/health
 
 # Audit dependencies
-cd api && npm audit
+cd apps/api && npm audit
 
 # Check for known CVEs
 npm audit --audit-level=moderate

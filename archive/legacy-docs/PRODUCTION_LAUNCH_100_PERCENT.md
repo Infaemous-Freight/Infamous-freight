@@ -152,7 +152,7 @@ docker run -d \
 **Step 1: Build Production Image**
 ```bash
 # Build Docker image
-docker build -f api/Dockerfile \
+docker build -f apps/api/Dockerfile \
   -t infamouz-freight-api:v1.0.0 .
 
 # Tag for registry

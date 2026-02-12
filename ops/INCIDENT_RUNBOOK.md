@@ -71,13 +71,13 @@ curl https://api.infamous-freight.com/api/health
 
 ### Phase 3: Root Cause Analysis (During Stabilization)
 
-| Issue | Investigation | Resolution |
-|-------|---|---|
-| High Error Rate | Check Sentry errors, review recent deploys | Rollback if needed, fix code |
-| Slow Queries | Run EXPLAIN on slow queries | Check indexes, add if needed |
-| Rate Limiting Blocking Legit Users | Check rate limit logs | Adjust limits, whitelist if needed |
-| Auth Failures | Check JWT issues | Verify JWT_SECRET, rotate if needed |
-| Payment Failures | Check Stripe webhook logs | Retry webhook, verify configuration |
+| Issue                              | Investigation                              | Resolution                          |
+| ---------------------------------- | ------------------------------------------ | ----------------------------------- |
+| High Error Rate                    | Check Sentry errors, review recent deploys | Rollback if needed, fix code        |
+| Slow Queries                       | Run EXPLAIN on slow queries                | Check indexes, add if needed        |
+| Rate Limiting Blocking Legit Users | Check rate limit logs                      | Adjust limits, whitelist if needed  |
+| Auth Failures                      | Check JWT issues                           | Verify JWT_SECRET, rotate if needed |
+| Payment Failures                   | Check Stripe webhook logs                  | Retry webhook, verify configuration |
 
 ### Phase 4: Recovery & Validation
 

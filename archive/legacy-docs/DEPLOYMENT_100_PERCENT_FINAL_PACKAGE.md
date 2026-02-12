@@ -68,7 +68,7 @@
 
 **Health System** (314 lines):
 
-- ✅ `api/src/routes/health-detailed.js` - All endpoints
+- ✅ `apps/api/src/routes/health-detailed.js` - All endpoints
 - ✅ Database connectivity checks
 - ✅ System metrics collection
 - ✅ Performance metrics tracking
@@ -76,7 +76,7 @@
 
 **Secrets Management** (135 lines):
 
-- ✅ `api/src/config/secrets.js` - Secure credential handling
+- ✅ `apps/api/src/config/secrets.js` - Secure credential handling
 - ✅ Docker Secrets file loading (/run/secrets/)
 - ✅ Environment variable fallback
 - ✅ Manages 9+ credential types:
@@ -91,11 +91,11 @@
 
 **Middleware Stack** (All Implemented):
 
-- ✅ `api/src/middleware/security.js` - Auth & rate limiting
-- ✅ `api/src/middleware/validation.js` - Request validation
-- ✅ `api/src/middleware/errorHandler.js` - Error handling
-- ✅ `api/src/middleware/logger.js` - Structured logging
-- ✅ `api/src/middleware/securityHeaders.js` - Security headers
+- ✅ `apps/api/src/middleware/security.js` - Auth & rate limiting
+- ✅ `apps/api/src/middleware/validation.js` - Request validation
+- ✅ `apps/api/src/middleware/errorHandler.js` - Error handling
+- ✅ `apps/api/src/middleware/logger.js` - Structured logging
+- ✅ `apps/api/src/middleware/securityHeaders.js` - Security headers
 
 **Rate Limiting** (8 Different Limits):
 
@@ -350,7 +350,7 @@ git status  # Must be clean
 npm test    # All tests passing
 
 # Verify database
-cd api && pnpm prisma:migrate:status
+cd apps/api && pnpm prisma:migrate:status
 
 # Verify secrets
 ./scripts/setup-secrets.sh --verify

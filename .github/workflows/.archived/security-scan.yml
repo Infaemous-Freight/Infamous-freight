@@ -49,11 +49,11 @@ jobs:
         continue-on-error: true
         run: |
           echo "=== API Audit ==="
-          cd api && npm audit --audit-level=moderate || true
+          cd apps/api && npm audit --audit-level=moderate || true
           cd ..
 
           echo "=== Web Audit ==="
-          cd web && npm audit --audit-level=moderate || true
+          cd apps/web && npm audit --audit-level=moderate || true
           cd ..
 
           echo "=== Shared Audit ==="
@@ -87,10 +87,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build API image
-        run: docker build -t api:scan -f api/Dockerfile . || true
+        run: docker build -t api:scan -f apps/api/Dockerfile . || true
 
       - name: Build Web image
-        run: docker build -t web:scan -f web/Dockerfile . || true
+        run: docker build -t web:scan -f apps/web/Dockerfile . || true
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master

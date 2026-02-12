@@ -193,7 +193,7 @@
 │   pnpm format                 # Code formatting                            │
 │                                                                               │
 │ Bundle Analysis:                                                              │
-│   cd web && ANALYZE=true pnpm build    # Generate report                   │
+│   cd apps/web && ANALYZE=true pnpm build    # Generate report                   │
 │                                                                               │
 │ Deployment:                                                                   │
 │   pnpm build                  # Production build                           │

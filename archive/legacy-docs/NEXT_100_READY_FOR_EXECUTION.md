@@ -10,7 +10,7 @@
 
 #### 1. **Database Connection Pooling Service**
 
-- **File**: `api/config/performance/db-pool.js` (45 lines)
+- **File**: `apps/api/config/performance/db-pool.js` (45 lines)
 - **Features**:
   - 50 concurrent connection pool
   - Slow query detection (>100ms)
@@ -20,7 +20,7 @@
 
 #### 2. **Field-Level Encryption Service**
 
-- **File**: `api/services/security/encryption.js` (150 lines)
+- **File**: `apps/api/services/security/encryption.js` (150 lines)
 - **Features**:
   - AES-256-GCM encryption
   - Secure token generation
@@ -30,7 +30,7 @@
 
 #### 3. **Job Queue & Background Processing Service**
 
-- **File**: `api/services/queue/job-queue.js` (290 lines)
+- **File**: `apps/api/services/queue/job-queue.js` (290 lines)
 - **Features**:
   - Email queue processing
   - SMS queue processing
@@ -42,7 +42,7 @@
 
 #### 4. **Real-Time WebSocket Notification Service**
 
-- **File**: `api/services/realtime/websocket.js` (280 lines)
+- **File**: `apps/api/services/realtime/websocket.js` (280 lines)
 - **Features**:
   - JWT authentication via WebSocket
   - Channel-based messaging
@@ -54,7 +54,7 @@
 
 #### 5. **Metrics Collection & Monitoring Service**
 
-- **File**: `api/services/monitoring/metrics.js` (380 lines)
+- **File**: `apps/api/services/monitoring/metrics.js` (380 lines)
 - **Features**:
   - Histogram tracking
   - Gauge recording
@@ -66,7 +66,7 @@
 
 #### 6. **GDPR Compliance Service**
 
-- **File**: `api/services/compliance/gdpr.js` (340 lines)
+- **File**: `apps/api/services/compliance/gdpr.js` (340 lines)
 - **Features**:
   - Right to be forgotten (data deletion)
   - Right to data portability (export)
@@ -78,7 +78,7 @@
 
 ### 🧪 Comprehensive Test Suite
 
-- **File**: `api/tests/next-100-advanced.test.js` (450 lines)
+- **File**: `apps/api/tests/next-100-advanced.test.js` (450 lines)
 - **71 New Tests**:
   - Database pooling: 3 tests
   - Encryption: 8 tests
@@ -259,7 +259,7 @@ cat NEXT_100_IMPLEMENTATION_GUIDE.md   # Step-by-step
 bash next-100-advancement.sh
 
 # 3. Run tests
-pnpm test api/tests/next-100-advanced.test.js
+pnpm test apps/api/tests/next-100-advanced.test.js
 ```
 
 ### Implementation (40-50 hours)
@@ -287,7 +287,7 @@ Each phase includes:
 ### Created Files
 
 ```
-api/
+apps/api/
 ├── config/
 │   └── performance/
 │       └── db-pool.js (45 lines) ✅ NEW
@@ -422,7 +422,7 @@ Each service includes:
 bash next-100-advancement.sh
 
 # Testing
-pnpm test api/tests/next-100-advanced.test.js
+pnpm test apps/api/tests/next-100-advanced.test.js
 
 # Documentation
 cat NEXT_100_PERCENT_GUIDE.md

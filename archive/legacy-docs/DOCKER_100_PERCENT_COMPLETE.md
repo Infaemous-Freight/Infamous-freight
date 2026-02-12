@@ -18,9 +18,9 @@ All Docker configurations are fully implemented, optimized, and production-ready
 
 | Asset Type               | Count | Status        | Location                    |
 | ------------------------ | ----- | ------------- | --------------------------- |
-| **Dockerfiles**          | 13    | ✅ Complete   | Root, api/, web/, src/apps/ |
+| **Dockerfiles**          | 13    | ✅ Complete   | Root, apps/api/, apps/web/, apps/ |
 | **Docker Compose Files** | 13    | ✅ Complete   | Root, configs/docker/       |
-| **.dockerignore Files**  | 6     | ✅ Complete   | Root, api/, web/, src/apps/ |
+| **.dockerignore Files**  | 6     | ✅ Complete   | Root, apps/api/, apps/web/, apps/ |
 | **Health Checks**        | 5     | ✅ Configured | All services                |
 | **Multi-stage Builds**   | 3     | ✅ Optimized  | API, Web, Root              |
 | **Security Hardening**   | ✅    | ✅ Applied    | All images                  |
@@ -46,9 +46,9 @@ RUN npm install -g pnpm@8.15.9
 
 # Multi-layer caching for dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY api/package.json ./api/
+COPY apps/api/package.json ./apps/api/
 COPY packages/shared/package.json ./packages/shared/
-COPY web/package.json ./web/
+COPY apps/web/package.json ./apps/web/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -63,7 +63,7 @@ EXPOSE 3000
 ENV NODE_ENV=production
 ENV PORT=3000
 
-CMD ["sh", "-c", "cd web && npm start"]
+CMD ["sh", "-c", "cd apps/web && npm start"]
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
@@ -90,7 +90,7 @@ RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
 
 # Cache dependencies first
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml* ./
-COPY api/package.json ./api/package.json
+COPY apps/api/package.json ./apps/api/package.json
 
 RUN pnpm install --frozen-lockfile || pnpm install
 
@@ -221,17 +221,17 @@ services:
     environment:
       NODE_ENV: development
     volumes:
-      - ./src/apps/api/src:/app/src/apps/api/src:ro # Hot reload
-      - ./src/apps/api/prisma:/app/src/apps/api/prisma:ro
+      - ./apps/api/src:/app/apps/api/src:ro # Hot reload
+      - ./apps/api/prisma:/app/apps/api/prisma:ro
 
   web:
     build:
       target: builder
     command: pnpm --filter infamous-freight-web dev
     volumes:
-      - ./src/apps/web/pages:/app/src/apps/web/pages:ro
-      - ./src/apps/web/components:/app/src/apps/web/components:ro
-      - ./src/apps/web/public:/app/src/apps/web/public:ro
+      - ./apps/web/pages:/app/apps/web/pages:ro
+      - ./apps/web/components:/app/apps/web/components:ro
+      - ./apps/web/public:/app/apps/web/public:ro
 
   # pgAdmin for database management
   pgadmin:
@@ -297,7 +297,7 @@ services:
 
   api:
     build:
-      context: ./api
+      context: ./apps/api
       dockerfile: Dockerfile
     container_name: infamous-api-prod
     restart: unless-stopped
@@ -433,8 +433,8 @@ coverage
 tests/e2e
 
 # Next.js
-src/apps/web/.next
-src/apps/web/out
+apps/web/.next
+apps/web/out
 
 # Build artifacts
 dist
@@ -528,10 +528,10 @@ docker-compose -f docker-compose.prod.yml logs -f
 
 ```bash
 # Build API only
-docker build -t infamous-freight-api:latest -f api/Dockerfile .
+docker build -t infamous-freight-api:latest -f apps/api/Dockerfile .
 
 # Build Web only
-docker build -t infamous-freight-web:latest -f web/Dockerfile .
+docker build -t infamous-freight-web:latest -f apps/web/Dockerfile .
 
 # Build root (full-stack)
 docker build -t infamous-freight:latest -f Dockerfile .
@@ -551,14 +551,14 @@ docker buildx create --use --name multi-platform-builder
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -t infamous-freight-api:latest \
-  -f api/Dockerfile \
+  -f apps/api/Dockerfile \
   --push \
   .
 
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -t infamous-freight-web:latest \
-  -f web/Dockerfile \
+  -f apps/web/Dockerfile \
   --push \
   .
 ```
@@ -778,8 +778,8 @@ docker-compose -f docker-compose.prod.yml up -d
 # .github/workflows/docker.yml
 - name: Build and push Docker images
   run: |
-    docker build -t ${{ secrets.DOCKER_REGISTRY }}/api:${{ github.sha }} -f api/Dockerfile .
-    docker build -t ${{ secrets.DOCKER_REGISTRY }}/web:${{ github.sha }} -f web/Dockerfile .
+    docker build -t ${{ secrets.DOCKER_REGISTRY }}/api:${{ github.sha }} -f apps/api/Dockerfile .
+    docker build -t ${{ secrets.DOCKER_REGISTRY }}/web:${{ github.sha }} -f apps/web/Dockerfile .
     docker push ${{ secrets.DOCKER_REGISTRY }}/api:${{ github.sha }}
     docker push ${{ secrets.DOCKER_REGISTRY }}/web:${{ github.sha }}
 ```
@@ -816,7 +816,7 @@ docker stats
 docker-compose build --no-cache --pull
 
 # Check build context
-docker build --progress=plain --no-cache -f api/Dockerfile .
+docker build --progress=plain --no-cache -f apps/api/Dockerfile .
 
 # Common issues:
 1. Missing .dockerignore
@@ -834,7 +834,7 @@ docker stats
 docker run -m 512m infamous-freight-api:latest
 
 # Increase build memory
-docker build --memory=4g -f api/Dockerfile .
+docker build --memory=4g -f apps/api/Dockerfile .
 ```
 
 ### Network Issues
@@ -912,8 +912,8 @@ docker-compose up -d
 - [docker-compose.dev.yml](/docker-compose.dev.yml) - Development overrides
 - [docker-compose.prod.yml](/docker-compose.prod.yml) - Production configuration
 - [Dockerfile](/Dockerfile) - Root full-stack image
-- [api/Dockerfile](/api/Dockerfile) - API service image
-- [web/Dockerfile](/web/Dockerfile) - Web service image
+- [apps/api/Dockerfile](/api/Dockerfile) - API service image
+- [apps/web/Dockerfile](/web/Dockerfile) - Web service image
 - [.dockerignore](/.dockerignore) - Build context exclusions
 - [CONTAINER_REBUILD_100_PERCENT.md](/CONTAINER_REBUILD_100_PERCENT.md) - Rebuild procedures
 - [PORTS_100_PERCENT_COMPLETE.md](/PORTS_100_PERCENT_COMPLETE.md) - Port configuration

@@ -14,7 +14,7 @@
 - **Action**: NONE - Ready for execution
 - **Details**:
   ```
-  Modified: src/apps/api/src/services/websocket.ts
+  Modified: apps/api/src/services/websocket.ts
   Untracked: PHASE_2_EXECUTION_LOG.md
   Untracked: PHASE_2_MONITORING_CHECKLIST.md
   Untracked: scripts/phase2-execute.sh

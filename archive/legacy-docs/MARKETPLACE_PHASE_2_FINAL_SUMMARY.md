@@ -18,47 +18,47 @@ DRAFT → REQUIRES_PAYMENT → (Stripe Checkout) → Webhook → OPEN
 
 ### Files Created
 
-- ✅ `api/src/lib/stripe.ts` (14 lines)
+- ✅ `apps/api/src/lib/stripe.ts` (14 lines)
   - Stripe SDK client initialization
   - API version: 2024-06-20
   
-- ✅ `api/src/marketplace/pricing.ts` (67 lines)
+- ✅ `apps/api/src/marketplace/pricing.ts` (67 lines)
   - TypeScript reference implementation
   - Plan-based discount logic
   - Base rate + distance + weight/volume pricing
 
 ### Files Modified
 
-- ✅ `api/.env.example`
+- ✅ `apps/api/.env.example`
   - Added STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET
   - Added PUBLIC_APP_URL, PUBLIC_API_URL for Checkout redirects
 
-- ✅ `api/prisma/schema.prisma`
+- ✅ `apps/api/prisma/schema.prisma`
   - Added WebhookEvent model for idempotency tracking
   - JobPayment model already present with full support
   - PaymentStatus enum (INITIATED, SUCCEEDED, FAILED, REFUNDED)
 
-- ✅ `api/src/marketplace/router.js` (FIXED)
+- ✅ `apps/api/src/marketplace/router.js` (FIXED)
   - Fixed syntax error in checkout endpoint
   - Corrected response structure: { ok, checkoutUrl, sessionId }
   - Payment.stripeCheckoutId now properly saved
 
 ### Already Present & Verified
 
-- ✅ `api/src/marketplace/webhooks.js` (250+ lines)
+- ✅ `apps/api/src/marketplace/webhooks.js` (250+ lines)
   - Complete Stripe webhook handler
   - Event deduplication (idempotency cache)
   - Retry logic with exponential backoff
   - Handles checkout.session.completed → payment + job state update
   
-- ✅ `api/src/lib/pricing.js` (44 lines)
+- ✅ `apps/api/src/lib/pricing.js` (44 lines)
   - Full pricing implementation with:
     - Base rates by vehicle type
     - $1.50/mile distance fee
     - Weight/volume surcharges
     - Plan-based discounts (10-30% off)
   
-- ✅ `api/src/server.js`
+- ✅ `apps/api/src/server.js`
   - Webhooks router mounted at `/api/webhooks`
   - Raw body middleware for signature verification
   - Marketplace router mounted at `/api/marketplace`
@@ -75,7 +75,7 @@ DRAFT → REQUIRES_PAYMENT → (Stripe Checkout) → Webhook → OPEN
 
 ## � Pricing Algorithm
 
-**File**: `api/src/lib/pricing.js`
+**File**: `apps/api/src/lib/pricing.js`
 
 ### Formula
 
@@ -196,7 +196,7 @@ Idempotency-Key: unique-request-id (optional)
 
 ## 🔐 Webhook Handler
 
-**File**: `api/src/marketplace/webhooks.js`  
+**File**: `apps/api/src/marketplace/webhooks.js`  
 **Endpoint**: `POST /api/webhooks/stripe`
 
 ### Events Handled
@@ -232,7 +232,7 @@ export STRIPE_SECRET_KEY="sk_test_..."
 export STRIPE_WEBHOOK_SECRET="whsec_..."
 
 # 2. Start API
-cd api && pnpm dev
+cd apps/api && pnpm dev
 ```
 
 ### Test Job Creation
@@ -493,11 +493,11 @@ curl http://localhost:4000/api/marketplace/jobs/$JOB_ID \
 ## 🔍 Key Files to Review
 
 ```
-api/src/lib/jobStateMachine.js         ← NEW: State validation
-api/src/middleware/security.js         ← Exports: authenticate, requireScope, limiters
-api/src/marketplace/router.js          ← Modified: Auth, transactions, pagination
-api/src/marketplace/billingRouter.js   ← Modified: Auth, scopes
-api/src/marketplace/webhooks.js        ← Modified: Retry, dedup, correlation IDs
+apps/api/src/lib/jobStateMachine.js         ← NEW: State validation
+apps/api/src/middleware/security.js         ← Exports: authenticate, requireScope, limiters
+apps/api/src/marketplace/router.js          ← Modified: Auth, transactions, pagination
+apps/api/src/marketplace/billingRouter.js   ← Modified: Auth, scopes
+apps/api/src/marketplace/webhooks.js        ← Modified: Retry, dedup, correlation IDs
 ```
 
 ---

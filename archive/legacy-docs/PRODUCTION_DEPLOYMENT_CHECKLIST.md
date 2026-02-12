@@ -73,8 +73,8 @@ watch -n 5 './scripts/check-deployments.sh'
 **Manual steps available:**
 
 1. **API to Fly.io** - `./scripts/complete-fly-deploy.sh`
-2. **Web to Vercel** - `cd src/apps/web && vercel --prod`
-3. **Mobile to Expo** - `cd src/apps/mobile && eas build --platform all`
+2. **Web to Vercel** - `cd apps/web && vercel --prod`
+3. **Mobile to Expo** - `cd apps/mobile && eas build --platform all`
 
 ---
 
@@ -118,7 +118,7 @@ git push origin main
 ./scripts/complete-fly-deploy.sh
 
 # Option 3: Direct
-cd api && flyctl deploy
+cd apps/api && flyctl deploy
 ```
 
 **Verify:**
@@ -149,7 +149,7 @@ flyctl logs --app infamous-freight-api
 git push origin main
 
 # Option 2: Manual
-cd src/apps/web && vercel --prod
+cd apps/web && vercel --prod
 
 # Option 3: Vercel Dashboard
 # Link: https://vercel.com/dashboard
@@ -182,7 +182,7 @@ vercel logs
 git push origin main
 
 # Option 2: Manual
-cd src/apps/mobile
+cd apps/mobile
 eas build --platform all
 eas submit --platform all
 

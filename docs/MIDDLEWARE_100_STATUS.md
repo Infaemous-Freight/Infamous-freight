@@ -12,40 +12,40 @@ Successfully integrated comprehensive middleware stack across all API routes wit
 
 ## Files Created (5 New Routes)
 
-1. **api/src/routes/ai.commands.js** (67 lines)
+1. **apps/api/src/routes/ai.commands.js** (67 lines)
    - `POST /api/ai/command` - AI command processing
    - `GET /api/ai/history` - AI command history
    - Middleware: `limiters.ai`, `authenticate`, `requireScope('ai:command'|'ai:history')`, `validation`, `auditLog`
    - Rate limit: 20 requests/minute
 
-2. **api/src/routes/billing.js** (108 lines)
+2. **apps/api/src/routes/billing.js** (108 lines)
    - `POST /api/billing/create-subscription` - Create subscription
    - `GET /api/billing/subscriptions` - List subscriptions
    - `POST /api/billing/cancel-subscription/:id` - Cancel subscription
    - Middleware: `limiters.billing`, `authenticate`, `requireScope('billing:read'|'billing:write')`, `validation`, `auditLog`
    - Rate limit: 30 requests/15 minutes
 
-3. **api/src/routes/voice.js** (96 lines)
+3. **apps/api/src/routes/voice.js** (96 lines)
    - `POST /api/voice/ingest` - Upload audio file (Multer)
    - `POST /api/voice/command` - Process voice command
    - Middleware: `limiters.ai`, `authenticate`, `requireScope('voice:ingest'|'voice:command')`, `auditLog`
    - File upload: Max 10MB (configurable via `VOICE_MAX_FILE_SIZE_MB`)
    - Supported formats: MP3, WAV, OGG, WEBM
 
-4. **api/src/routes/users.js** (90 lines)
+4. **apps/api/src/routes/users.js** (90 lines)
    - `GET /api/users/me` - Get current user profile
    - `PATCH /api/users/me` - Update current user profile
    - `GET /api/users` - List all users (admin only)
    - Middleware: `limiters.general`, `authenticate`, `requireScope('users:read'|'users:write'|'admin')`, `validation`, `auditLog`
 
-5. **api/src/routes/aiSim.internal.js** (60 lines)
+5. **apps/api/src/routes/aiSim.internal.js** (60 lines)
    - `GET /internal/ai/simulate` - Synthetic AI simulator
    - `POST /internal/ai/batch` - Batch AI processing
    - Middleware: `auditLog` only (no auth for internal services)
 
 ## Files Updated (3 Existing Routes)
 
-1. **api/src/routes/health.js**
+1. **apps/api/src/routes/health.js**
    - Added `auditLog` to all 4 health check endpoints:
      - `GET /health` - Basic health check
      - `GET /health/detailed` - Detailed service health
@@ -53,14 +53,14 @@ Successfully integrated comprehensive middleware stack across all API routes wit
      - `GET /health/live` - Kubernetes liveness probe
    - Remains public (no authentication required)
 
-2. **api/src/routes/metrics.js**
+2. **apps/api/src/routes/metrics.js**
    - Added `limiters.general`, `authenticate`, `requireScope`, `auditLog` to all 3 endpoints:
      - `GET /api/metrics/revenue/live` - Real-time metrics
      - `POST /api/metrics/revenue/clear-cache` - Clear cache (admin)
      - `GET /api/metrics/revenue/export` - Export as CSV
    - Scopes: `metrics:read`, `metrics:export`, `admin`
 
-3. **api/src/routes/shipments.js**
+3. **apps/api/src/routes/shipments.js**
    - Added `limiters.general` to all 6 endpoints (already had auth/scopes/audit):
      - `GET /api/shipments` - List shipments
      - `GET /api/shipments/:id` - Get shipment by ID

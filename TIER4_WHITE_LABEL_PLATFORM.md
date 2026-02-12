@@ -13,7 +13,7 @@ White-label capability enables enterprise partners to offer Infamous Freight as 
 ### 1.1 Multi-Tenant Infrastructure
 
 ```typescript
-// api/src/middleware/whiteLabelMiddleware.ts
+// apps/api/src/middleware/whiteLabelMiddleware.ts
 
 import { Request, Response, NextFunction } from 'express';
 
@@ -109,7 +109,7 @@ export default new WhiteLabelMiddleware();
 ### 1.2 Branding Customization
 
 ```typescript
-// web/src/services/brandingService.ts
+// apps/web/src/services/brandingService.ts
 
 interface BrandAssets {
   logo: string; // URL
@@ -243,7 +243,7 @@ export default new BrandingService();
 ### 2.1 Partner Portal Architecture
 
 ```typescript
-// api/src/routes/whiteLabel.partners.ts
+// apps/api/src/routes/whiteLabel.partners.ts
 
 import express from 'express';
 import { authenticate, requireScope } from '../middleware/security';
@@ -573,7 +573,7 @@ Expected Year 1:
 ### 3.2 Revenue Recognition
 
 ```typescript
-// api/src/services/partnerRevenueService.ts
+// apps/api/src/services/partnerRevenueService.ts
 
 class PartnerRevenueService {
   async calculatePartnerRevenue(partnerId: string, period: 'daily' | 'monthly') {

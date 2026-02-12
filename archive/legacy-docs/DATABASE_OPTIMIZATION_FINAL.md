@@ -10,7 +10,7 @@ This guide covers PostgreSQL optimization, query performance, connection pooling
 
 ### Current Indexes
 
-All indexes are defined in [api/prisma/schema.prisma](../api/prisma/schema.prisma).
+All indexes are defined in [apps/api/prisma/schema.prisma](../apps/api/prisma/schema.prisma).
 
 #### User Indexes
 ```sql
@@ -236,7 +236,7 @@ const stats = await prisma.shipment.groupBy({
 ### Current Configuration
 
 ```javascript
-// api/src/db/prisma.js
+// apps/api/src/db/prisma.js
 const prisma = new PrismaClient({
   log: ['query', 'error', 'warn'],
 });

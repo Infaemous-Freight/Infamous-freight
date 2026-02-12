@@ -21,7 +21,7 @@ const envSchema = z.object({
 
   // Avatar Storage (local disk or s3-compatible)
   AVATAR_STORAGE: z.enum(["local", "s3"]).default("local"),
-  AVATAR_UPLOAD_DIR: z.string().default("api/public/uploads"),
+  AVATAR_UPLOAD_DIR: z.string().default("apps/api/public/uploads"),
   AVATAR_MAX_FILE_SIZE_MB: z.string().default("5"),
   AVATAR_MAX_DIMENSIONS: z.string().default("2048x2048"),
 
@@ -29,7 +29,7 @@ const envSchema = z.object({
   AVATAR_ALLOWED_TYPES: z.string().default("image/jpeg,image/png,image/webp"),
 
   // Avatar Data Store
-  AVATAR_DATA_STORE: z.string().default("api/data/avatars.json"),
+  AVATAR_DATA_STORE: z.string().default("apps/api/data/avatars.json"),
 
   // Rate Limiting for Avatar Operations
   RATE_LIMIT_AVATAR_WINDOW_MS: z.string().default("15"), // minutes

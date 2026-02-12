@@ -50,7 +50,7 @@ MATCH_RADIUS_MILES=10
 ### 3. Database Migration ⏳
 
 ```bash
-cd api
+cd apps/api
 npx prisma migrate deploy
 ```
 
@@ -64,7 +64,7 @@ node prisma/seedMarketplace.js
 
 ### 5. Add Authentication ⏳
 
-Uncomment/add to routes in `api/src/marketplace/router.js`:
+Uncomment/add to routes in `apps/api/src/marketplace/router.js`:
 
 ```javascript
 const { authenticate, requireScope } = require("../middleware/security");
@@ -169,7 +169,7 @@ Consider tracking:
 
 ```bash
 # Build
-cd api
+cd apps/api
 npm run build  # if applicable
 
 # Deploy (example)
@@ -308,7 +308,7 @@ Consider adding:
 
 ```bash
 # Check logs
-tail -f api/logs/combined.log | grep marketplace
+tail -f apps/api/logs/combined.log | grep marketplace
 
 # Database queries
 psql $DATABASE_URL -c "SELECT COUNT(*) FROM jobs WHERE status='OPEN';"

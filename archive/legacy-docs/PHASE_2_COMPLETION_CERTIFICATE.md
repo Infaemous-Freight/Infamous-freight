@@ -44,14 +44,14 @@ Phase 2 successfully adds **Stripe Checkout** and **webhook fulfillment** to the
 
 | File | Status | Purpose |
 |------|--------|---------|
-| [api/src/lib/stripe.ts](api/src/lib/stripe.ts) | ✅ Created | Stripe SDK initialization |
-| [api/src/marketplace/pricing.ts](api/src/marketplace/pricing.ts) | ✅ Created | TypeScript pricing reference |
-| [api/.env.example](.env.example) | ✅ Updated | Stripe env vars documented |
-| [api/prisma/schema.prisma](api/prisma/schema.prisma) | ✅ Updated | WebhookEvent model added |
-| [api/src/marketplace/router.js](api/src/marketplace/router.js) | ✅ Fixed | Checkout endpoint syntax fixed |
-| [api/src/marketplace/webhooks.js](api/src/marketplace/webhooks.js) | ✅ Verified | Complete webhook handler |
-| [api/src/lib/pricing.js](api/src/lib/pricing.js) | ✅ Verified | Pricing calculator ready |
-| [api/src/server.js](api/src/server.js) | ✅ Verified | Webhooks mounted correctly |
+| [apps/api/src/lib/stripe.ts](apps/api/src/lib/stripe.ts) | ✅ Created | Stripe SDK initialization |
+| [apps/api/src/marketplace/pricing.ts](apps/api/src/marketplace/pricing.ts) | ✅ Created | TypeScript pricing reference |
+| [apps/api/.env.example](.env.example) | ✅ Updated | Stripe env vars documented |
+| [apps/api/prisma/schema.prisma](apps/api/prisma/schema.prisma) | ✅ Updated | WebhookEvent model added |
+| [apps/api/src/marketplace/router.js](apps/api/src/marketplace/router.js) | ✅ Fixed | Checkout endpoint syntax fixed |
+| [apps/api/src/marketplace/webhooks.js](apps/api/src/marketplace/webhooks.js) | ✅ Verified | Complete webhook handler |
+| [apps/api/src/lib/pricing.js](apps/api/src/lib/pricing.js) | ✅ Verified | Pricing calculator ready |
+| [apps/api/src/server.js](apps/api/src/server.js) | ✅ Verified | Webhooks mounted correctly |
 
 ---
 
@@ -175,7 +175,7 @@ export STRIPE_SECRET_KEY="sk_test_..."
 export STRIPE_WEBHOOK_SECRET="whsec_..."
 
 # 2. Start API
-cd api && pnpm dev
+cd apps/api && pnpm dev
 
 # 3. Create job (returns job in REQUIRES_PAYMENT)
 curl -X POST http://localhost:4000/api/marketplace/jobs \
@@ -200,7 +200,7 @@ curl http://localhost:4000/api/marketplace/jobs/{jobId} \
 
 ## ✨ Environment Configuration
 
-Add to `api/.env`:
+Add to `apps/api/.env`:
 
 ```bash
 # Stripe API Keys (from Stripe Dashboard)

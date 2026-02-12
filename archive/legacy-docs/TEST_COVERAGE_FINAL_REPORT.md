@@ -305,7 +305,7 @@ pnpm test -- __testNamePattern="SQL injection"
 ## 📁 File Structure
 
 ```
-api/
+apps/api/
 ├── __tests__/
 │   ├── middleware/                    ← Middleware test suite
 │   │   ├── errorHandler.test.js      ✅ (Existing)

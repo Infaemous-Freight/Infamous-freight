@@ -194,27 +194,27 @@ These are difficult to test without actually killing the process:
 
 ### Source Code
 
-1. `api/src/routes/billing.js` - Fixed PayPal SDK usage (2 changes)
-2. `api/src/middleware/errorHandler.js` - Added 503 error handling
-3. `api/src/middleware/securityHeaders.js` - Fixed CSP violation handler
+1. `apps/api/src/routes/billing.js` - Fixed PayPal SDK usage (2 changes)
+2. `apps/api/src/middleware/errorHandler.js` - Added 503 error handling
+3. `apps/api/src/middleware/securityHeaders.js` - Fixed CSP violation handler
 
 ### Tests
 
-1. `api/__tests__/routes.validation.test.js` - Updated error expectations
-2. `api/__tests__/config.test.js` - Fixed module caching issues (2 tests)
+1. `apps/api/__tests__/routes.validation.test.js` - Updated error expectations
+2. `apps/api/__tests__/config.test.js` - Fixed module caching issues (2 tests)
 
 ## ✅ Verification
 
 Run full test suite:
 
 ```bash
-cd api && pnpm test
+cd apps/api && pnpm test
 ```
 
 Run with coverage:
 
 ```bash
-cd api && pnpm test:coverage
+cd apps/api && pnpm test:coverage
 ```
 
 Expected output:
@@ -244,7 +244,7 @@ _Test Framework: Jest 30.2.0_
 
 ---
 
-# Recommended: api/**tests**/security/input-fuzzing.test.js
+# Recommended: apps/api/**tests**/security/input-fuzzing.test.js
 
 const fuzzInputs = [
 '<script>alert("xss")</script>',
@@ -253,12 +253,12 @@ const fuzzInputs = [
 'A'.repeat(10000),
 ];
 
-// Recommended: api/**tests**/db/transactions.test.js
+// Recommended: apps/api/**tests**/db/transactions.test.js
 test('should rollback on error in transaction', async () => {
 // Test transaction atomicity
 });
 
-// Recommended: api/**tests**/performance/endpoints.bench.js
+// Recommended: apps/api/**tests**/performance/endpoints.bench.js
 test('shipment list should respond within 200ms', async () => {
 const start = Date.now();
 await request(app).get('/api/shipments');

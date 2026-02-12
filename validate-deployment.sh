@@ -36,9 +36,9 @@ echo -e "${BLUE}📁 Repository Structure${NC}"
 check "[ -f 'Dockerfile.api' ]" "Dockerfile.api exists"
 check "[ -f 'fly.toml' ]" "fly.toml exists"
 check "[ -f 'deploy-complete-100.sh' ]" "deploy-complete-100.sh exists"
-check "[ -d 'api/src/routes' ]" "api/src/routes directory exists"
-check "[ -f 'api/src/routes/billing-payments.js' ]" "billing-payments.js exists"
-check "[ -f 'api/src/routes/billing.js' ]" "billing.js exists"
+check "[ -d 'apps/api/src/routes' ]" "apps/api/src/routes directory exists"
+check "[ -f 'apps/api/src/routes/billing-payments.js' ]" "billing-payments.js exists"
+check "[ -f 'apps/api/src/routes/billing.js' ]" "billing.js exists"
 check "[ -d 'packages/shared' ]" "shared package exists"
 echo ""
 
@@ -76,8 +76,8 @@ echo ""
 
 # API configuration check
 echo -e "${BLUE}⚙️  API Configuration${NC}"
-check "grep -q 'billingPaymentsRoutes' api/src/server.js 2>/dev/null" "Billing routes integrated in server"
-check "[ -f 'api/src/data/subscriptionPlans.js' ]" "Subscription plans configured"
+check "grep -q 'billingPaymentsRoutes' apps/api/src/server.js 2>/dev/null" "Billing routes integrated in server"
+check "[ -f 'apps/api/src/data/subscriptionPlans.js' ]" "Subscription plans configured"
 echo ""
 
 # Credentials check

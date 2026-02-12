@@ -26,13 +26,13 @@ jobs:
       - name: Build API image
         uses: docker/build-push-action@v5
         with:
-          context: ./api
+          context: ./apps/api
           push: false
           tags: ghcr.io/${{ github.repository_owner }}/infamous-freight-api:test
 
       - name: Build WEB image
         uses: docker/build-push-action@v5
         with:
-          context: ./web
+          context: ./apps/web
           push: false
           tags: ghcr.io/${{ github.repository_owner }}/infamous-freight-web:test

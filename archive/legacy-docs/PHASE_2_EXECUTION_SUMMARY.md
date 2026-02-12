@@ -74,7 +74,7 @@ Phase 2 (Performance Optimization) has been successfully completed with all 6 cr
    - Purpose: Latest notifications per user
    - Expected impact: 2.5x faster notification queries
 
-**File Updated**: `src/apps/api/prisma/schema.prisma`
+**File Updated**: `apps/api/prisma/schema.prisma`
 
 **Performance Gains**:
 - Full table scans eliminated (80-90% faster)
@@ -120,7 +120,7 @@ Phase 2 (Performance Optimization) has been successfully completed with all 6 cr
 - Slow Query Log: 10ms threshold, 128 queries retained
 - Helps identify performance bottlenecks
 
-**File Created**: `src/apps/api/redis-optimization.conf`
+**File Created**: `apps/api/redis-optimization.conf`
 
 **Expected Improvements**:
 - Cache Hit Rate: 40% → >70% (+30 points)
@@ -135,7 +135,7 @@ Phase 2 (Performance Optimization) has been successfully completed with all 6 cr
 **Status**: Complete
 
 **Middleware Implemented**: 
-**File**: `src/apps/api/src/middleware/responseCache.ts` (250+ lines)
+**File**: `apps/api/src/middleware/responseCache.ts` (250+ lines)
 
 **Core Features**:
 
@@ -194,7 +194,7 @@ Phase 2 (Performance Optimization) has been successfully completed with all 6 cr
 **Duration**: 45 minutes  
 **Status**: Complete
 
-**Framework Created**: `src/apps/api/load-test.ts` (250+ lines)
+**Framework Created**: `apps/api/load-test.ts` (250+ lines)
 
 **Test Configuration**:
 - Concurrent requests: 10
@@ -271,7 +271,7 @@ Phase 2 (Performance Optimization) has been successfully completed with all 6 cr
 
 **Run Load Test**:
 ```bash
-cd src/apps/api
+cd apps/api
 npx ts-node load-test.ts
 
 # With custom endpoint:
@@ -354,25 +354,25 @@ API_URL=http://production:4000/api npx ts-node load-test.ts
 ## Files Created/Modified
 
 ### 1. Database Schema
-**File**: `src/apps/api/prisma/schema.prisma`
+**File**: `apps/api/prisma/schema.prisma`
 - **Change**: Added 6 critical indexes to Load and Driver models
 - **Lines**: Added index definitions for Phase 2
 - **Migration**: Ready to apply with `prisma migrate dev`
 
 ### 2. Redis Configuration
-**File**: `src/apps/api/redis-optimization.conf`
+**File**: `apps/api/redis-optimization.conf`
 - **Lines**: 60+
 - **Purpose**: Memory management, persistence, replication
 - **Application**: Apply with `redis-cli CONFIG REWRITE`
 
 ### 3. Response Caching Middleware
-**File**: `src/apps/api/src/middleware/responseCache.ts`
+**File**: `apps/api/src/middleware/responseCache.ts`
 - **Lines**: 250+
 - **Features**: Cache middleware, invalidation, warming
 - **Integration**: Plug into route handlers
 
 ### 4. Load Testing Framework
-**File**: `src/apps/api/load-test.ts`
+**File**: `apps/api/load-test.ts`
 - **Lines**: 250+
 - **Purpose**: Performance validation framework
 - **Execution**: `npx ts-node load-test.ts`

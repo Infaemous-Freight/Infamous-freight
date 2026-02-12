@@ -105,7 +105,7 @@ The health check endpoint (`GET /api/health`) must:
 - ✅ Not require authentication
 - ✅ Check database connectivity
 
-Current implementation in [api/src/routes/health.js](../api/src/routes/health.js):
+Current implementation in [apps/api/src/routes/health.js](../apps/api/src/routes/health.js):
 
 ```javascript
 router.get("/api/health", async (req, res) => {

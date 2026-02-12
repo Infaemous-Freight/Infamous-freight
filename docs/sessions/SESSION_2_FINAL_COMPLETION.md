@@ -16,7 +16,7 @@ Successfully deployed production infrastructure for Infamous Freight Enterprises
 
 ### 1. ✅ Search Endpoint Implementation
 
-- **File**: [api/src/routes/users.js](api/src/routes/users.js#L42-L112)
+- **File**: [apps/api/src/routes/users.js](apps/api/src/routes/users.js#L42-L112)
 - **Lines**: 70 lines added (lines 42-112)
 - **Endpoint**: `GET /api/users/search`
 - **Features**:
@@ -106,7 +106,7 @@ Successfully deployed production infrastructure for Infamous Freight Enterprises
 
 ### 10. ✅ Web Deployment Configuration
 
-- **File**: [web/vercel.json](web/vercel.json)
+- **File**: [apps/web/vercel.json](apps/web/vercel.json)
 - **Update**: Added environment variable configuration
 - **Variable**: `NEXT_PUBLIC_API_BASE` → <https://infamous-freight-api.fly.dev>
 - **Guide**: [WEB_DEPLOYMENT_VERCEL.md](WEB_DEPLOYMENT_VERCEL.md)
@@ -165,11 +165,11 @@ Successfully deployed production infrastructure for Infamous Freight Enterprises
 
 ### New Code
 
-- Search endpoint: 70 lines ([api/src/routes/users.js](api/src/routes/users.js#L42-L112))
+- Search endpoint: 70 lines ([apps/api/src/routes/users.js](apps/api/src/routes/users.js#L42-L112))
 
 ### Modified Files
 
-- [web/vercel.json](web/vercel.json) - Added environment variables
+- [apps/web/vercel.json](apps/web/vercel.json) - Added environment variables
 - [.husky/pre-commit](.husky/pre-commit) - Fixed npm fallback
 
 ### Git Commits
@@ -242,7 +242,7 @@ Successfully deployed production infrastructure for Infamous Freight Enterprises
 2. ✅ **Run edge case tests locally**
 
    ```bash
-   pnpm test -- api/__tests__/validation-edge-cases.test.js
+   pnpm test -- apps/api/__tests__/validation-edge-cases.test.js
    ```
 
 3. ✅ **Monitor production**

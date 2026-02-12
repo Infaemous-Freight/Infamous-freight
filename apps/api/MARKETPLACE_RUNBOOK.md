@@ -22,7 +22,7 @@ The following dependencies are already added to `package.json`:
 No installation needed if `node_modules` already exists. Otherwise:
 
 ```bash
-cd api
+cd apps/api
 npm install
 ```
 
@@ -85,7 +85,7 @@ MATCH_RADIUS_MILES=10
 ### 4. Database Migration
 
 ```bash
-cd api
+cd apps/api
 npx prisma migrate dev --name marketplace_billing_plans
 ```
 
@@ -99,7 +99,7 @@ This creates the new models:
 ### 5. Seed Sample Data
 
 ```bash
-cd api
+cd apps/api
 node prisma/seedMarketplace.js
 ```
 
@@ -276,7 +276,7 @@ Handled events:
 ### 1. Start Development Server
 
 ```bash
-cd api
+cd apps/api
 npm run dev
 ```
 
@@ -367,7 +367,7 @@ node -e "const required = ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'STRIPE
 ## 📚 File Reference
 
 ```
-api/
+apps/api/
 ├── src/
 │   ├── lib/
 │   │   ├── stripe.js         # Stripe client

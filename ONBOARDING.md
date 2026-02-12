@@ -124,20 +124,20 @@ Open your browser and verify:
 ```
 infamous-freight/
 ├── apps/
-│   ├── web/                  # Next.js 16 frontend (TypeScript)
+│   ├── apps/web/                  # Next.js 16 frontend (TypeScript)
 │   │   ├── pages/           # Route pages
 │   │   ├── components/      # React components
 │   │   ├── lib/             # Utilities, hooks
 │   │   ├── proxy.ts         # Edge middleware
 │   │   └── next.config.js   # Next.js config
-│   ├── api/                  # Express.js backend (CommonJS)
+│   ├── apps/api/                  # Express.js backend (CommonJS)
 │   │   ├── src/
 │   │   │   ├── routes/      # API endpoints
 │   │   │   ├── middleware/  # Auth, validation, errors
 │   │   │   ├── services/    # Business logic
 │   │   │   └── server.js    # Express app
 │   │   └── prisma/          # Database schema
-│   └── mobile/               # React Native (Expo)
+│   └── apps/mobile/               # React Native (Expo)
 ├── packages/
 │   └── shared/               # Shared types, constants, utils
 │       └── src/

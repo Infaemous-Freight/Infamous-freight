@@ -119,7 +119,7 @@
 **2. Bundle Analysis**
 
 ```bash
-cd web
+cd apps/web
 ANALYZE=true pnpm build
 # Verify < 150KB gzipped
 # Check vendor splits
@@ -290,7 +290,7 @@ pnpm test -- --watch             # Watch tests
 
 # Web development
 pnpm web:dev                      # Web on port 3000
-cd web && ANALYZE=true pnpm dev   # With bundle analysis
+cd apps/web && ANALYZE=true pnpm dev   # With bundle analysis
 
 # Shared package
 pnpm --filter @infamous-freight/shared build
@@ -313,7 +313,7 @@ pnpm test -- api                 # API tests only
 
 ```bash
 # Bundle analysis
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 
 # Bundle check
 npm run bundle-check

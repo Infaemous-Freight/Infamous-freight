@@ -15,7 +15,7 @@ Containerize application, set up CI/CD pipelines, and deploy to production platf
 
 ## ✅ STEP 1: CREATE DOCKERFILES
 
-### File: `api/Dockerfile`
+### File: `apps/api/Dockerfile`
 
 ```dockerfile
 # Build stage
@@ -74,7 +74,7 @@ ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "src/production-server.js"]
 ```
 
-### File: `web/Dockerfile`
+### File: `apps/web/Dockerfile`
 
 ```dockerfile
 # Build stage
@@ -160,7 +160,7 @@ services:
 
   api:
     build:
-      context: ./api
+      context: ./apps/api
       dockerfile: Dockerfile
     container_name: infamous-api-prod
     environment:
@@ -186,7 +186,7 @@ services:
 
   web:
     build:
-      context: ./web
+      context: ./apps/web
       dockerfile: Dockerfile
     container_name: infamous-web-prod
     environment:
@@ -460,7 +460,7 @@ jobs:
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
-          files: ./api/coverage/lcov.info
+          files: ./apps/api/coverage/lcov.info
           flags: api
 ```
 
@@ -494,7 +494,7 @@ jobs:
       - name: Build and push API
         uses: docker/build-push-action@v4
         with:
-          context: ./api
+          context: ./apps/api
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/infamous-api:latest
           cache-from: type=gha
@@ -503,7 +503,7 @@ jobs:
       - name: Build and push Web
         uses: docker/build-push-action@v4
         with:
-          context: ./web
+          context: ./apps/web
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/infamous-web:latest
           cache-from: type=gha

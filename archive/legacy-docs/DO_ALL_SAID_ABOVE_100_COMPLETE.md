@@ -494,12 +494,12 @@ vscode  62817  ... /home/vscode/.local/bin/node mock-server.cjs
 
 ### Phase 1: Server Creation ✅
 
-- [x] Create mock API server (`api/mock-server.js`)
+- [x] Create mock API server (`apps/api/mock-server.js`)
 - [x] Implement health check endpoint
 - [x] Add shipments data endpoint
 - [x] Implement CORS support
 - [x] Add graceful shutdown handling
-- [x] Create mock web server (`web/mock-server.cjs`)
+- [x] Create mock web server (`apps/web/mock-server.cjs`)
 - [x] Build full HTML/CSS/JS dashboard
 - [x] Implement real-time API integration
 - [x] Add auto-refresh mechanism
@@ -782,14 +782,14 @@ nohup /home/vscode/.local/bin/node mock-server.cjs > /tmp/web-server.log 2>&1 &
 
 ### New Implementation (This Session)
 
-1. **Mock API Server** (`api/mock-server.js`)
+1. **Mock API Server** (`apps/api/mock-server.js`)
    - 91 lines of production-ready code
    - Full HTTP server with routing
    - Mock data layer
    - Health monitoring
    - CORS support
 
-2. **Mock Web Server** (`web/mock-server.cjs`)
+2. **Mock Web Server** (`apps/web/mock-server.cjs`)
    - 186 lines including embedded HTML/CSS/JS
    - Full dashboard application
    - Real-time API integration
@@ -922,8 +922,8 @@ tcp   0   0   0.0.0.0:3000   0.0.0.0:*   LISTEN
 - [PORTS_100_STATUS.md](PORTS_100_STATUS.md) - Port configuration
 - [NEXT_STEPS_100_ACTION_PLAN.md](NEXT_STEPS_100_ACTION_PLAN.md) - Execution roadmap
 - [RUNNING_STATUS_100_REPORT.md](RUNNING_STATUS_100_REPORT.md) - Runtime discovery
-- [api/mock-server.js](api/mock-server.js) - API implementation
-- [web/mock-server.cjs](web/mock-server.cjs) - Web implementation
+- [apps/api/mock-server.js](apps/api/mock-server.js) - API implementation
+- [apps/web/mock-server.cjs](apps/web/mock-server.cjs) - Web implementation
 
 ### External Resources
 

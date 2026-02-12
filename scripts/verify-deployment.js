@@ -85,37 +85,37 @@ function main() {
     checkFileContains('packages/shared/src/rbac.ts', 'Permission', 'Permission enum defined');
     checkFileContains('packages/shared/src/rbac.ts', 'ROLE_PERMISSIONS', 'ROLE_PERMISSIONS map defined');
 
-    checkFile('api/src/middleware/rbac.js', 'RBAC middleware exists (rbac.js)');
-    checkFileContains('api/src/middleware/rbac.js', 'requirePermission', 'requirePermission exported');
-    checkFileContains('api/src/middleware/rbac.js', 'requireRole', 'requireRole exported');
-    checkFileContains('api/src/middleware/rbac.js', 'requireMinimumRole', 'requireMinimumRole exported');
+    checkFile('apps/api/src/middleware/rbac.js', 'RBAC middleware exists (rbac.js)');
+    checkFileContains('apps/api/src/middleware/rbac.js', 'requirePermission', 'requirePermission exported');
+    checkFileContains('apps/api/src/middleware/rbac.js', 'requireRole', 'requireRole exported');
+    checkFileContains('apps/api/src/middleware/rbac.js', 'requireMinimumRole', 'requireMinimumRole exported');
 
-    checkFile('api/src/middleware/authRBAC.js', 'Enhanced auth exists (authRBAC.js)');
-    checkFileContains('api/src/middleware/authRBAC.js', 'authenticateWithRBAC', 'authenticateWithRBAC exported');
-    checkFileContains('api/src/middleware/authRBAC.js', 'createToken', 'createToken exported');
+    checkFile('apps/api/src/middleware/authRBAC.js', 'Enhanced auth exists (authRBAC.js)');
+    checkFileContains('apps/api/src/middleware/authRBAC.js', 'authenticateWithRBAC', 'authenticateWithRBAC exported');
+    checkFileContains('apps/api/src/middleware/authRBAC.js', 'createToken', 'createToken exported');
 
     console.log('');
 
     // ==================== COMPONENT 2: DISPATCH ====================
     log('→', '=== Component 2: Dispatch Module ===\n');
 
-    checkFile('api/src/routes/dispatch.js', 'Dispatch routes exist (dispatch.js)');
-    checkFileContains('api/src/routes/dispatch.js', '/drivers', 'Drivers endpoints defined');
-    checkFileContains('api/src/routes/dispatch.js', '/assignments', 'Assignments endpoints defined');
-    checkFileContains('api/src/routes/dispatch.js', '/optimize', 'Optimization endpoint defined');
-    checkFileContains('api/src/routes/dispatch.js', 'requirePermission', 'Permission checks included');
+    checkFile('apps/api/src/routes/dispatch.js', 'Dispatch routes exist (dispatch.js)');
+    checkFileContains('apps/api/src/routes/dispatch.js', '/drivers', 'Drivers endpoints defined');
+    checkFileContains('apps/api/src/routes/dispatch.js', '/assignments', 'Assignments endpoints defined');
+    checkFileContains('apps/api/src/routes/dispatch.js', '/optimize', 'Optimization endpoint defined');
+    checkFileContains('apps/api/src/routes/dispatch.js', 'requirePermission', 'Permission checks included');
 
     console.log('');
 
     // ==================== COMPONENT 3: AGENTS ====================
     log('→', '=== Component 3: Agent Queueing ===\n');
 
-    checkFile('api/src/queue/agents.js', 'Agent workers exist (agents.js)');
-    checkFileContains('api/src/queue/agents.js', 'dispatchWorker', 'Dispatch worker defined');
-    checkFileContains('api/src/queue/agents.js', 'invoiceAuditWorker', 'Invoice audit worker defined');
-    checkFileContains('api/src/queue/agents.js', 'etaPredictionWorker', 'ETA prediction worker defined');
-    checkFileContains('api/src/queue/agents.js', 'analyticsWorker', 'Analytics worker defined');
-    checkFileContains('api/src/queue/agents.js', 'concurrency', 'Concurrency controls set');
+    checkFile('apps/api/src/queue/agents.js', 'Agent workers exist (agents.js)');
+    checkFileContains('apps/api/src/queue/agents.js', 'dispatchWorker', 'Dispatch worker defined');
+    checkFileContains('apps/api/src/queue/agents.js', 'invoiceAuditWorker', 'Invoice audit worker defined');
+    checkFileContains('apps/api/src/queue/agents.js', 'etaPredictionWorker', 'ETA prediction worker defined');
+    checkFileContains('apps/api/src/queue/agents.js', 'analyticsWorker', 'Analytics worker defined');
+    checkFileContains('apps/api/src/queue/agents.js', 'concurrency', 'Concurrency controls set');
 
     console.log('');
 
@@ -127,14 +127,14 @@ function main() {
     checkFileContains('fly.toml', 'internal_port = 3001', 'Correct API port configured');
     checkFileContains('fly.toml', 'PostgreSQL', 'Database service configured (in comment or config)');
 
-    checkFile('web/vercel.json', 'Vercel config exists');
-    checkFileContains('web/vercel.json', 'nextjs', 'Next.js framework configured');
-    checkFileContains('web/vercel.json', 'buildCommand', 'Build command configured');
+    checkFile('apps/web/vercel.json', 'Vercel config exists');
+    checkFileContains('apps/web/vercel.json', 'nextjs', 'Next.js framework configured');
+    checkFileContains('apps/web/vercel.json', 'buildCommand', 'Build command configured');
 
-    checkFile('api/Dockerfile', 'Docker image configured');
-    checkFileContains('api/Dockerfile', 'node:20', 'Node 20 runtime used');
-    checkFileContains('api/Dockerfile', 'openssl', 'OpenSSL dependencies included');
-    checkFileContains('api/Dockerfile', 'pnpm install', 'pnpm dependency installation');
+    checkFile('apps/api/Dockerfile', 'Docker image configured');
+    checkFileContains('apps/api/Dockerfile', 'node:20', 'Node 20 runtime used');
+    checkFileContains('apps/api/Dockerfile', 'openssl', 'OpenSSL dependencies included');
+    checkFileContains('apps/api/Dockerfile', 'pnpm install', 'pnpm dependency installation');
 
     checkFile('.github/workflows/deploy.yml', 'CI/CD pipeline configured');
     checkFileContains('.github/workflows/deploy.yml', 'vercel/action', 'Vercel deployment step');
@@ -145,8 +145,8 @@ function main() {
     // ==================== INTEGRATION ====================
     log('→', '=== Integration Checks ===\n');
 
-    checkFileContains('api/src/app.js', 'rbac', 'RBAC middleware registered (check app.js)');
-    checkFileContains('api/src/app.js', 'dispatch', 'Dispatch routes registered (check app.js)');
+    checkFileContains('apps/api/src/app.js', 'rbac', 'RBAC middleware registered (check app.js)');
+    checkFileContains('apps/api/src/app.js', 'dispatch', 'Dispatch routes registered (check app.js)');
 
     console.log('');
 

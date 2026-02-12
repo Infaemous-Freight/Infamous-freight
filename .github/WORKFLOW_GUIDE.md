@@ -8,8 +8,8 @@ This document describes all GitHub Actions workflows in the Infamous Freight Ent
 
 ## Workflow Directory
 
-| Workflow                | File                     | Purpose                                      | Trigger                          | Status    |
-| ----------------------- | ------------------------ | -------------------------------------------- | -------------------------------- | --------- |
+| Workflow                | File                     | Purpose                                      | Trigger                          | Status   |
+| ----------------------- | ------------------------ | -------------------------------------------- | -------------------------------- | -------- |
 | **CI/CD Pipeline**      | `ci-cd.yml`              | Main pipeline: lint, test, build, security   | Push to main/develop, PR to main | ✅ Active |
 | **CI**                  | `ci.yml`                 | Lightweight CI checks                        | Push to main, PR                 | ✅ Active |
 | **E2E Tests**           | `e2e.yml`                | End-to-end Playwright tests                  | Scheduled nightly, manual        | ✅ Active |
@@ -61,7 +61,7 @@ AI_PROVIDER: synthetic
 
 - **Lint fails**: Run `pnpm lint --fix` locally
 - **Type errors**: Run `pnpm typecheck` locally
-- **Test failures**: Check `api/coverage/` reports, run `pnpm test` locally
+- **Test failures**: Check `apps/api/coverage/` reports, run `pnpm test` locally
 - **Build fails**: Ensure `pnpm --filter @infamous-freight/shared build` runs first
 
 **Performance:**
@@ -199,7 +199,7 @@ curl https://api.infamous-freight.com/api/health
 **Troubleshooting:**
 
 - **Vercel auth fails**: Check `VERCEL_TOKEN` has correct permissions
-- **Build fails**: Run `pnpm --filter infamous-freight-web build` locally
+- **Build fails**: Run `pnpm --filter web build` locally
 - **Deployment blocked**: Check Vercel project settings for auto-deployment
 
 **Post-Deploy Verification:**
@@ -232,7 +232,7 @@ curl https://infamous-freight-enterprises-git-*.vercel.app/
 
 **Troubleshooting:**
 
-- **build:pages script not found**: Check it exists in `web/package.json`
+- **build:pages script not found**: Check it exists in `apps/web/package.json`
 - **Lighthouse fails**: Lower thresholds in `lighthouserc.json`
 - **Deploy permission denied**: Ensure repo has GitHub Pages enabled
 

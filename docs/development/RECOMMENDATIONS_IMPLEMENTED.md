@@ -132,7 +132,7 @@ pnpm test:integration      # Integration tests only
 
 #### Auth Helpers
 
-**File**: `api/__tests__/helpers/auth.js`
+**File**: `apps/api/__tests__/helpers/auth.js`
 
 **Functions**:
 
@@ -152,7 +152,7 @@ const res = await request(app).get("/api/shipments").set(authHeader(token));
 
 #### Fixture Helpers
 
-**File**: `api/__tests__/helpers/fixtures.js`
+**File**: `apps/api/__tests__/helpers/fixtures.js`
 
 **Functions**:
 
@@ -176,7 +176,7 @@ mockPrisma.shipment.findMany.mockResolvedValue(shipments);
 
 #### Database Helpers
 
-**File**: `api/__tests__/helpers/database.js`
+**File**: `apps/api/__tests__/helpers/database.js`
 
 **Functions**:
 
@@ -202,7 +202,7 @@ beforeEach(async () => {
 
 #### Shipment Lifecycle Integration Test
 
-**File**: `api/__tests__/integration/shipment-lifecycle.test.js`  
+**File**: `apps/api/__tests__/integration/shipment-lifecycle.test.js`  
 **Tests**: 12 comprehensive scenarios
 
 **Test Scenarios**:
@@ -232,7 +232,7 @@ test("should complete full shipment lifecycle", async () => {
 
 #### Input Fuzzing & Security Test Suite
 
-**File**: `api/__tests__/security/input-fuzzing.test.js`  
+**File**: `apps/api/__tests__/security/input-fuzzing.test.js`  
 **Tests**: 50+ security scenarios
 
 **Attack Vectors Tested**:
@@ -302,7 +302,7 @@ describe('XSS Prevention', () => {
 
 #### Transaction Handling Test Suite
 
-**File**: `api/__tests__/integration/database-transactions.test.js`  
+**File**: `apps/api/__tests__/integration/database-transactions.test.js`  
 **Tests**: 15+ transaction scenarios
 
 **Test Categories**:
@@ -351,7 +351,7 @@ test("should rollback on validation error", async () => {
 
 #### Performance Benchmark Suite
 
-**File**: `api/__tests__/performance/benchmark.test.js`  
+**File**: `apps/api/__tests__/performance/benchmark.test.js`  
 **Tests**: 20+ performance benchmarks
 
 **Benchmark Categories**:
@@ -449,7 +449,7 @@ test("should respond within 200ms", async () => {
 
 #### Correlation ID & Performance Tracking
 
-**File**: `api/src/middleware/logger.js`  
+**File**: `apps/api/src/middleware/logger.js`  
 **Enhancement**: Added correlation tracking and performance metrics
 
 **New Middleware**:
@@ -493,7 +493,7 @@ test("should respond within 200ms", async () => {
 - User action tracking
 - Simplified debugging
 
-**Integration**: Added to `api/src/server.js` middleware stack
+**Integration**: Added to `apps/api/src/server.js` middleware stack
 
 ---
 
@@ -723,10 +723,10 @@ test("my test", async () => {
 
 ### Test Files
 
-- `api/__tests__/helpers/` - Reusable test utilities
-- `api/__tests__/integration/` - Integration test suites
-- `api/__tests__/security/` - Security test suites
-- `api/__tests__/performance/` - Performance benchmarks
+- `apps/api/__tests__/helpers/` - Reusable test utilities
+- `apps/api/__tests__/integration/` - Integration test suites
+- `apps/api/__tests__/security/` - Security test suites
+- `apps/api/__tests__/performance/` - Performance benchmarks
 
 ### Scripts
 

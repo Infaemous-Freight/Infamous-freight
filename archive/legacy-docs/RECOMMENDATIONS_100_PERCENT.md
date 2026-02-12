@@ -28,7 +28,7 @@ git push origin main  # Triggers auto-deploy workflow
 # Option C: Individual services
 flyctl deploy --config fly.toml                    # API
 vercel --prod                                       # Web
-cd src/apps/mobile && eas build --platform all     # Mobile
+cd apps/mobile && eas build --platform all     # Mobile
 ```
 
 **Expected Timeline:** 5-10 minutes  
@@ -112,7 +112,7 @@ flyctl ssh console --app infamous-freight-api -C "cd /app && npx prisma migrate 
 flyctl ssh console --app infamous-freight-api -C "psql \$DATABASE_URL -c 'SELECT 1'"
 
 # Check migrations
-cd src/apps/api && npx prisma migrate status
+cd apps/api && npx prisma migrate status
 ```
 
 ---
@@ -127,7 +127,7 @@ cd src/apps/api && npx prisma migrate status
 **Action:** Enhance API middleware
 
 ```javascript
-// src/apps/api/src/middleware/securityHeaders.js
+// apps/api/src/middleware/securityHeaders.js
 helmet({
   contentSecurityPolicy: {
     directives: {
@@ -239,7 +239,7 @@ curl -H "Authorization: Bearer <new_token>" https://infamous-freight-api.fly.dev
 npm install --save dd-trace
 
 # Instrument API
-# src/apps/api/src/server.js (line 1)
+# apps/api/src/server.js (line 1)
 require('dd-trace').init({
   service: 'infamous-freight-api',
   env: process.env.NODE_ENV,
@@ -270,7 +270,7 @@ flyctl secrets set DD_SITE="datadoghq.com" --app infamous-freight-api
 **Action:** OpenTelemetry integration
 
 ```javascript
-// src/apps/api/src/middleware/tracing.js
+// apps/api/src/middleware/tracing.js
 const { NodeTracerProvider } = require("@opentelemetry/sdk-trace-node");
 const { registerInstrumentations } = require("@opentelemetry/instrumentation");
 const { HttpInstrumentation } = require("@opentelemetry/instrumentation-http");
@@ -300,7 +300,7 @@ registerInstrumentations({
 **Action:** Add caching middleware
 
 ```javascript
-// src/apps/api/src/middleware/cache.js
+// apps/api/src/middleware/cache.js
 const redis = require("redis");
 const client = redis.createClient({ url: process.env.REDIS_URL });
 
@@ -340,7 +340,7 @@ router.get("/shipments", cacheMiddleware, getShipments);
 **Action (Web):**
 
 ```javascript
-// src/apps/web/next.config.mjs
+// apps/web/next.config.mjs
 export default {
   images: {
     domains: ["infamous-freight-api.fly.dev", "cdn.example.com"],
@@ -371,7 +371,7 @@ import Image from "next/image";
 **Action:**
 
 ```javascript
-// src/apps/api/prisma/schema.prisma
+// apps/api/prisma/schema.prisma
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -407,7 +407,7 @@ ALTER DATABASE infamous_freight SET max_connections = 50;
 **Action:** Socket.io integration
 
 ```javascript
-// src/apps/api/src/server.js
+// apps/api/src/server.js
 const { Server } = require("socket.io");
 const io = new Server(httpServer, {
   cors: { origin: process.env.WEB_URL },
@@ -429,7 +429,7 @@ io.to(`shipment:${trackingNumber}`).emit("status-update", {
 **Client (Web):**
 
 ```typescript
-// src/apps/web/hooks/useShipmentTracking.ts
+// apps/web/hooks/useShipmentTracking.ts
 import { io } from "socket.io-client";
 
 const socket = io(process.env.NEXT_PUBLIC_API_URL);
@@ -449,7 +449,7 @@ socket.on("status-update", (data) => {
 **Action:** Add metrics endpoint
 
 ```javascript
-// src/apps/api/src/routes/metrics.js
+// apps/api/src/routes/metrics.js
 router.get(
   "/metrics",
   authenticate,
@@ -483,7 +483,7 @@ router.get(
 **Action:**
 
 ```javascript
-// src/apps/api/src/services/aiSyntheticClient.js
+// apps/api/src/services/aiSyntheticClient.js
 async function processBatch(invoices) {
   const batchSize = 50;
   const results = [];
@@ -524,7 +524,7 @@ async function processBatch(invoices) {
 
 ```bash
 # Run coverage report
-cd src/apps/api
+cd apps/api
 npm run test:coverage -- --verbose
 
 # Identify gaps
@@ -699,7 +699,7 @@ RUN pnpm deploy --prod --filter=api /app
 **Action (React Native):**
 
 ```typescript
-// src/apps/mobile/services/offline.ts
+// apps/mobile/services/offline.ts
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 
@@ -727,7 +727,7 @@ async function syncWhenOnline() {
 **Action (Expo):**
 
 ```typescript
-// src/apps/mobile/services/notifications.ts
+// apps/mobile/services/notifications.ts
 import * as Notifications from "expo-notifications";
 
 async function registerForPushNotifications() {

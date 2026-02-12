@@ -172,7 +172,7 @@ npx trivy image ghcr.io/infamous-freight-enterprises/api:latest
 
 ### 4. Health Check Dashboard (✅ Complete)
 
-**File**: `api/src/routes/health-detailed.js`
+**File**: `apps/api/src/routes/health-detailed.js`
 
 **Endpoints**:
 
@@ -231,7 +231,7 @@ open http://localhost:4000/api/health/dashboard
 **Integration in API**:
 
 ```javascript
-// In api/src/server.js (already integrated)
+// In apps/api/src/server.js (already integrated)
 const healthDetailedRoutes = require("./routes/health-detailed");
 app.use("/api", healthDetailedRoutes);
 ```
@@ -429,7 +429,7 @@ docker-compose ps
 
 ### 9. Secrets Management (✅ Complete)
 
-**Files**: `api/src/config/secrets.js`, `scripts/setup-secrets.sh`
+**Files**: `apps/api/src/config/secrets.js`, `scripts/setup-secrets.sh`
 
 **Features**:
 
@@ -550,8 +550,8 @@ services:
 - [x] docker-compose.profiles.yml - Selective service startup
 - [x] .github/workflows/docker-build-push.yml - CI/CD pipeline
 - [x] .github/workflows/security-scan.yml - Weekly security audits
-- [x] api/src/routes/health-detailed.js - Health check endpoints
-- [x] api/src/config/secrets.js - Secrets management
+- [x] apps/api/src/routes/health-detailed.js - Health check endpoints
+- [x] apps/api/src/config/secrets.js - Secrets management
 - [x] monitoring/prometheus.yml - Metrics collection
 - [x] monitoring/nginx/ - Reverse proxy & blue-green switching
 - [x] scripts/switch-deployment.sh - Deployment switching

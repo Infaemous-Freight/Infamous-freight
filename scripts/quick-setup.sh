@@ -122,16 +122,16 @@ echo ""
 echo -e "${BLUE}Step 5: Setting up database...${NC}"
 echo ""
 
-if [ -d "api/prisma" ]; then
+if [ -d "apps/api/prisma" ]; then
     echo "🗄️  Generating Prisma client..."
-    cd api
+    cd apps/api
     pnpm prisma:generate
     
     echo ""
     echo "📊 Running database migrations..."
     pnpm prisma:migrate:dev --name init || echo -e "${YELLOW}⚠️  Migration failed (database may need manual setup)${NC}"
     
-    cd ..
+    cd ../..
     echo -e "${GREEN}✅ Database setup complete${NC}"
 else
     echo -e "${YELLOW}⚠️  No Prisma schema found, skipping database setup${NC}"

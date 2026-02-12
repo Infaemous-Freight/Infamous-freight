@@ -91,7 +91,7 @@ The complete infrastructure overhaul for Infamous Freight Enterprises has been s
 
 ### 4. Secrets Management (✅ Complete)
 
-**File**: `api/src/config/secrets.js`
+**File**: `apps/api/src/config/secrets.js`
 
 **Features**:
 
@@ -225,9 +225,9 @@ The complete infrastructure overhaul for Infamous Freight Enterprises has been s
 
 ### Code Files (3)
 
-1. **api/src/routes/health-detailed.js** - Health endpoints (370 lines)
-2. **api/src/config/secrets.js** - Secrets management (90 lines)
-3. **api/src/middleware/errorHandler.js** - Error handling (updated)
+1. **apps/api/src/routes/health-detailed.js** - Health endpoints (370 lines)
+2. **apps/api/src/config/secrets.js** - Secrets management (90 lines)
+3. **apps/api/src/middleware/errorHandler.js** - Error handling (updated)
 
 ### CI/CD Workflows (2)
 

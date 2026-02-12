@@ -99,7 +99,7 @@ flyctl deploy --app infamous-freight-api --config fly.toml
 
 ```bash
 export PATH="$HOME/.local/share/pnpm:$PATH"
-cd web && vercel --prod
+cd apps/web && vercel --prod
 ```
 
 ### Docker (Local/Self-hosted)

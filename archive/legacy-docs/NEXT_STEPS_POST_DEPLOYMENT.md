@@ -63,7 +63,7 @@ Expected Outcome:
 **Dashboard Links**:
 
 - Vercel: https://vercel.com/santorio-miles-projects/mrmiless44-genesis/analytics
-- Fly.io: https://fly.io/apps/infamous-freight-api/metrics
+- Fly.io: https://fly.io/apps/infamous-freight-apps/api/metrics
 
 ---
 
@@ -114,7 +114,7 @@ Expected Outcome:
 **Setup**:
 
 ```bash
-cd mobile
+cd apps/mobile
 eas build --platform ios
 eas build --platform android
 eas submit --platform ios
@@ -496,7 +496,7 @@ gh repo rules create --branch main
 - **Scaling**: https://fly.io/docs/launch/load-balancing/
 - **Cost Optimization**: https://vercel.com/docs/concepts/analytics
 - **Disaster Recovery**: https://www.postgresql.org/docs/current/backup.html
-- **API Versioning**: https://restfulapi.net/versioning-rest-api/
+- **API Versioning**: https://restfulapi.net/versioning-rest-apps/api/
 - **Advanced Caching**: https://redis.io/docs/
 
 ---

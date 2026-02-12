@@ -154,7 +154,7 @@ Use secrets management:
 pnpm validate:env
 
 # Or manually with Node
-node api/scripts/env.validation.js
+node apps/api/scripts/env.validation.js
 ```
 
 ### Health Check
@@ -282,7 +282,7 @@ docker-compose logs postgres
 
 ```bash
 # Run validation
-node api/scripts/env.validation.js
+node apps/api/scripts/env.validation.js
 
 # Lists missing required variables
 ```

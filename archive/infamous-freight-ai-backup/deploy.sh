@@ -91,7 +91,7 @@ case $choice in
             pnpm add -g vercel@latest
         fi
         
-        cd web
+        cd apps/web
         echo "🔐 Logging in to Vercel..."
         vercel login
         

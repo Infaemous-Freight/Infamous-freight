@@ -161,9 +161,9 @@ Component: api, web, mobile, shared, infrastructure, ci-cd
 **Files Modified:**
 
 - `docker-compose.yml` - Updated for pnpm workspaces
-- `api/Dockerfile` - Multi-stage build with BuildKit
-- `web/Dockerfile` - Optimized with standalone output
-- `web/next.config.mjs` - Added standalone output mode
+- `apps/api/Dockerfile` - Multi-stage build with BuildKit
+- `apps/web/Dockerfile` - Optimized with standalone output
+- `apps/web/next.config.mjs` - Added standalone output mode
 
 **File Created:**
 
@@ -238,8 +238,8 @@ api: ✓ Ready (no build step required)
 
 **Configuration Fixes Applied:**
 
-- Updated `web/eslint.config.js` for ESLint 9 flat config
-- Removed custom `web/babel.config.js` to use Next.js SWC
+- Updated `apps/web/eslint.config.js` for ESLint 9 flat config
+- Removed custom `apps/web/babel.config.js` to use Next.js SWC
 - Upgraded ESLint to v9 in web package for compatibility
 - Added `--passWithNoTests` to shared package test script
 
@@ -267,10 +267,10 @@ api: ✓ Ready (no build step required)
 
 **Recommendations for Future Work:**
 
-1. Update `api/jest.config.js` to use ES modules transform
-2. Add `web/jest.config.js` with `next/jest` preset
+1. Update `apps/api/jest.config.js` to use ES modules transform
+2. Add `apps/web/jest.config.js` with `next/jest` preset
 3. Create test files for `packages/shared` utilities
-4. Fix duplicate `rateLimit` function in `api/src/middleware/security.js`
+4. Fix duplicate `rateLimit` function in `apps/api/src/middleware/security.js`
 5. Configure `transformIgnorePatterns` for monorepo node_modules
 
 ---
@@ -316,13 +316,13 @@ api: ✓ Ready (no build step required)
 ### ESLint 9 Migration
 
 - Migrated from `.eslintignore` file to flat config `ignores` array
-- Updated `web/eslint.config.js` to use `@eslint/eslintrc` compatibility layer
+- Updated `apps/web/eslint.config.js` to use `@eslint/eslintrc` compatibility layer
 - Upgraded ESLint to v9 in web package for Next.js compatibility
 - Fixed circular structure errors in ESLint config
 
 ### Babel Configuration
 
-- Removed custom `web/babel.config.js` to leverage Next.js SWC compiler
+- Removed custom `apps/web/babel.config.js` to leverage Next.js SWC compiler
 - Babel still used by Jest for testing (needs configuration)
 - Next.js now using SWC minification (swcMinify: true)
 
@@ -358,15 +358,15 @@ api: ✓ Ready (no build step required)
 - `.vscode/extensions.json` (4 → 19 extensions)
 - `.vscode/settings.json` (enhanced configuration)
 - `docker-compose.yml` (pnpm workspace support)
-- `api/Dockerfile` (multi-stage with BuildKit)
-- `web/Dockerfile` (standalone output optimization)
-- `web/next.config.mjs` (standalone + optimizations)
-- `web/eslint.config.js` (ESLint 9 flat config)
+- `apps/api/Dockerfile` (multi-stage with BuildKit)
+- `apps/web/Dockerfile` (standalone output optimization)
+- `apps/web/next.config.mjs` (standalone + optimizations)
+- `apps/web/eslint.config.js` (ESLint 9 flat config)
 - `packages/shared/package.json` (--passWithNoTests)
 
 ### Removed
 
-- `web/babel.config.js` (using Next.js defaults now)
+- `apps/web/babel.config.js` (using Next.js defaults now)
 
 ---
 
@@ -377,7 +377,7 @@ api: ✓ Ready (no build step required)
 1. **Fix Test Configuration**
    - Update Jest configs for monorepo
    - Add React/TypeScript transform for web tests
-   - Fix duplicate function in `api/src/middleware/security.js`
+   - Fix duplicate function in `apps/api/src/middleware/security.js`
 
 2. **Test Docker Images**
    - Build images: `docker-compose build`

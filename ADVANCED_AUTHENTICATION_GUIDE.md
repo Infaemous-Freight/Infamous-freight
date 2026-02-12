@@ -14,7 +14,7 @@ pnpm add passport passport-oauth2 passport-google-oauth20 passport-github2 jsonw
 
 ### OAuth Provider Configuration
 
-**File: `api/src/config/oauth.js`**
+**File: `apps/api/src/config/oauth.js`**
 
 ```javascript
 const passport = require('passport');
@@ -109,7 +109,7 @@ module.exports = passport;
 
 ### OAuth Routes
 
-**File: `api/src/routes/auth.oauth.js`**
+**File: `apps/api/src/routes/auth.oauth.js`**
 
 ```javascript
 const express = require('express');
@@ -181,7 +181,7 @@ pnpm add speakeasy qrcode totp-generator
 
 ### MFA Service
 
-**File: `api/src/services/mfaService.js`**
+**File: `apps/api/src/services/mfaService.js`**
 
 ```javascript
 const speakeasy = require('speakeasy');
@@ -288,7 +288,7 @@ module.exports = new MFAService();
 
 ### MFA Routes
 
-**File: `api/src/routes/auth.mfa.js`**
+**File: `apps/api/src/routes/auth.mfa.js`**
 
 ```javascript
 const express = require('express');
@@ -386,7 +386,7 @@ module.exports = router;
 
 ### RBAC Middleware
 
-**File: `api/src/middleware/rbac.js`**
+**File: `apps/api/src/middleware/rbac.js`**
 
 ```javascript
 // Role permissions matrix
@@ -485,7 +485,7 @@ router.post(
 
 ### Session Service
 
-**File: `api/src/services/sessionService.js`**
+**File: `apps/api/src/services/sessionService.js`**
 
 ```javascript
 class SessionService {
@@ -576,7 +576,7 @@ pnpm add bcryptjs password-validator
 
 ### Password Service
 
-**File: `api/src/services/passwordService.js`**
+**File: `apps/api/src/services/passwordService.js`**
 
 ```javascript
 const bcrypt = require('bcryptjs');
@@ -639,7 +639,7 @@ module.exports = new PasswordService();
 
 ### Token Rotation Middleware
 
-**File: `api/src/middleware/advancedSecurity.js`**
+**File: `apps/api/src/middleware/advancedSecurity.js`**
 
 ```javascript
 const jwt = require('jsonwebtoken');
@@ -732,7 +732,7 @@ MFA_TOTP_WINDOW=2
 
 ## Database Schema
 
-Add to `api/prisma/schema.prisma`:
+Add to `apps/api/prisma/schema.prisma`:
 
 ```prisma
 model UserMFA {
@@ -790,7 +790,7 @@ model MFACode {
 
 ## Testing
 
-**File: `api/src/routes/__tests__/auth.test.js`**
+**File: `apps/api/src/routes/__tests__/auth.test.js`**
 
 ```javascript
 describe('Authentication', () => {

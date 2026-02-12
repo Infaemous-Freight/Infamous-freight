@@ -52,7 +52,7 @@ echo "  1. Install Vercel CLI:"
 echo "     pnpm add -g vercel@latest"
 echo ""
 echo "  2. Deploy web to Vercel:"
-echo "     cd web && vercel --prod"
+echo "     cd apps/web && vercel --prod"
 echo ""
 echo "  3. Configure environment variables in Vercel dashboard:"
 echo "     NEXT_PUBLIC_API_URL=https://infamous-freight-api.fly.dev"
@@ -65,7 +65,7 @@ echo ""
 read -p "Deploy web to Vercel now? (y/n) " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    cd web
+    cd apps/web
     vercel --prod || echo "Deployment may need manual intervention"
     cd ..
     echo -e "${GREEN}✅ Web deployed to Vercel${NC}"
@@ -96,7 +96,7 @@ echo "  5. Restart API:"
 echo "     flyctl apps restart infamous-freight-api"
 echo ""
 echo "  6. Verify migrations still work:"
-echo "     flyctl ssh console --app infamous-freight-api -C 'cd api && npx prisma migrate deploy'"
+echo "     flyctl ssh console --app infamous-freight-api -C 'cd apps/api && npx prisma migrate deploy'"
 echo ""
 echo "  7. Delete Fly.io Postgres:"
 echo "     flyctl apps destroy infamous-freight-db"
@@ -116,7 +116,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         sleep 10
         
         echo "Running migrations..."
-        flyctl ssh console --app infamous-freight-api -C "cd api && npx prisma migrate deploy" || true
+        flyctl ssh console --app infamous-freight-api -C "cd apps/api && npx prisma migrate deploy" || true
         
         echo -e "${GREEN}✅ Database migrated to Neon${NC}"
     fi

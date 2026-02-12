@@ -103,7 +103,7 @@ git status && npm test
 **Verification Command**:
 
 ```bash
-cd api && pnpm prisma:migrate:status && pnpm prisma:generate
+cd apps/api && pnpm prisma:migrate:status && pnpm prisma:generate
 ```
 
 ### 2.3 Environment Variables

@@ -66,11 +66,11 @@ if [ -z "$CHANGED" ]; then
   exit 1
 fi
 
-if echo "$CHANGED" | grep -E '^(web/|api/|packages/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)' -q; then
+if echo "$CHANGED" | grep -E '^(apps/web/|apps/api/|packages/|package\.json|pnpm-lock\.yaml|turbo\.json|tsconfig\.json|next\.config\.)' -q; then
   exit 1
 fi
 
-if ! echo "$CHANGED" | grep -q -v -E '^(docs/|mobile/|README\.md|\.github/|\.vscode/)'; then
+if ! echo "$CHANGED" | grep -q -v -E '^(docs/|apps/mobile/|README\.md|\.github/|\.vscode/)'; then
   exit 0
 fi
 
@@ -152,7 +152,7 @@ Minimum sanity set (adjust to your stack):
 **Deliverable summary:**
 
 - Production branch fixed to `main`
-- Domains correctly assigned (no web/API confusion)
+- Domains correctly assigned (no apps/web/API confusion)
 - Build cache enabled
 - Ignore Build Step configured
 - Node.js version aligned with `package.json`

@@ -4,72 +4,72 @@ This document describes all API routes, their required scopes, and org requireme
 
 ## Route-Scope Mapping
 
-See [api/src/lib/routeScopeRegistry.js](../api/src/lib/routeScopeRegistry.js) for the authoritative registry.
+See [apps/api/src/lib/routeScopeRegistry.js](../apps/api/src/lib/routeScopeRegistry.js) for the authoritative registry.
 
 ### Shipments (Organization-Bound)
 
-| Route | Method | Scopes | Org Required |
-|-------|--------|--------|-------------|
-| `/api/shipments` | GET | `shipments:read` | ✅ Yes |
-| `/api/shipments` | POST | `shipments:write` | ✅ Yes |
-| `/api/shipments/:id` | GET | `shipments:read` | ✅ Yes |
-| `/api/shipments/:id` | PATCH | `shipments:write` | ✅ Yes |
-| `/api/shipments/:id` | DELETE | `shipments:write` | ✅ Yes |
-| `/api/shipments/export/:format` | GET | `shipments:read` | ✅ Yes |
+| Route                           | Method | Scopes            | Org Required |
+| ------------------------------- | ------ | ----------------- | ------------ |
+| `/api/shipments`                | GET    | `shipments:read`  | ✅ Yes        |
+| `/api/shipments`                | POST   | `shipments:write` | ✅ Yes        |
+| `/api/shipments/:id`            | GET    | `shipments:read`  | ✅ Yes        |
+| `/api/shipments/:id`            | PATCH  | `shipments:write` | ✅ Yes        |
+| `/api/shipments/:id`            | DELETE | `shipments:write` | ✅ Yes        |
+| `/api/shipments/export/:format` | GET    | `shipments:read`  | ✅ Yes        |
 
 ### Billing (Organization-Bound)
 
-| Route | Method | Scopes | Org Required |
-|-------|--------|--------|-------------|
-| `/api/billing/create-payment-intent` | POST | `billing:write` | ✅ Yes |
-| `/api/billing/create-subscription` | POST | `billing:write` | ✅ Yes |
-| `/api/billing/subscriptions` | GET | `billing:read` | ✅ Yes |
-| `/api/billing/cancel-subscription/:id` | POST | `billing:write` | ✅ Yes |
-| `/api/billing/revenue` | GET | `billing:read` | ✅ Yes |
+| Route                                  | Method | Scopes          | Org Required |
+| -------------------------------------- | ------ | --------------- | ------------ |
+| `/api/billing/create-payment-intent`   | POST   | `billing:write` | ✅ Yes        |
+| `/api/billing/create-subscription`     | POST   | `billing:write` | ✅ Yes        |
+| `/api/billing/subscriptions`           | GET    | `billing:read`  | ✅ Yes        |
+| `/api/billing/cancel-subscription/:id` | POST   | `billing:write` | ✅ Yes        |
+| `/api/billing/revenue`                 | GET    | `billing:read`  | ✅ Yes        |
 
 ### AI Commands (Organization-Bound)
 
-| Route | Method | Scopes | Org Required |
-|-------|--------|--------|-------------|
-| `/api/ai/commands` | POST | `ai:command` | ✅ Yes |
+| Route              | Method | Scopes       | Org Required |
+| ------------------ | ------ | ------------ | ------------ |
+| `/api/ai/commands` | POST   | `ai:command` | ✅ Yes        |
 
 ### Voice (Organization-Bound)
 
-| Route | Method | Scopes | Org Required |
-|-------|--------|--------|-------------|
-| `/api/voice/ingest` | POST | `voice:ingest` | ✅ Yes |
-| `/api/voice/command` | POST | `voice:command` | ✅ Yes |
+| Route                | Method | Scopes          | Org Required |
+| -------------------- | ------ | --------------- | ------------ |
+| `/api/voice/ingest`  | POST   | `voice:ingest`  | ✅ Yes        |
+| `/api/voice/command` | POST   | `voice:command` | ✅ Yes        |
 
 ### Users (Organization-Bound)
 
-| Route | Method | Scopes | Org Required |
-|-------|--------|--------|-------------|
-| `/api/users/:id` | GET | `user:read` | ✅ Yes |
-| `/api/users/:id` | PATCH | `user:write` | ✅ Yes |
+| Route            | Method | Scopes       | Org Required |
+| ---------------- | ------ | ------------ | ------------ |
+| `/api/users/:id` | GET    | `user:read`  | ✅ Yes        |
+| `/api/users/:id` | PATCH  | `user:write` | ✅ Yes        |
 
 ### Analytics (Organization-Bound)
 
-| Route | Method | Scopes | Org Required |
-|-------|--------|--------|-------------|
-| `/api/analytics/dashboard` | GET | `analytics:read` | ✅ Yes |
-| `/api/analytics/export` | GET | `analytics:read` | ✅ Yes |
+| Route                      | Method | Scopes           | Org Required |
+| -------------------------- | ------ | ---------------- | ------------ |
+| `/api/analytics/dashboard` | GET    | `analytics:read` | ✅ Yes        |
+| `/api/analytics/export`    | GET    | `analytics:read` | ✅ Yes        |
 
 ### Metrics (Public metrics endpoint, scoped by metrics scopes)
 
-| Route | Method | Scopes | Org Required |
-|-------|--------|--------|-------------|
-| `/api/metrics` | GET | None (public) | ❌ No |
-| `/api/metrics/revenue/live` | GET | `metrics:read` | ✅ Yes |
-| `/api/metrics/revenue/clear-cache` | POST | `admin` | ✅ Yes |
-| `/api/metrics/revenue/export` | GET | `metrics:export` | ✅ Yes |
+| Route                              | Method | Scopes           | Org Required |
+| ---------------------------------- | ------ | ---------------- | ------------ |
+| `/api/metrics`                     | GET    | None (public)    | ❌ No         |
+| `/api/metrics/revenue/live`        | GET    | `metrics:read`   | ✅ Yes        |
+| `/api/metrics/revenue/clear-cache` | POST   | `admin`          | ✅ Yes        |
+| `/api/metrics/revenue/export`      | GET    | `metrics:export` | ✅ Yes        |
 
 ## Adding New Routes
 
 When adding a new protected route:
 
-1. Update [api/src/lib/routeScopeRegistry.js](../api/src/lib/routeScopeRegistry.js)
+1. Update [apps/api/src/lib/routeScopeRegistry.js](../apps/api/src/lib/routeScopeRegistry.js)
 2. Apply `requireScope()` and `requireOrganization` in route handler
-3. Add integration test in `api/src/__tests__/integration/`
+3. Add integration test in `apps/api/src/__tests__/integration/`
 
 Example:
 

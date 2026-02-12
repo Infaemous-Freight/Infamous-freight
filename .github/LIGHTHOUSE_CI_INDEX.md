@@ -318,7 +318,7 @@ Store for 90 days
 
 ```bash
 # 1. Make changes
-cd web
+cd apps/web
 # Edit components...
 
 # 2. Run quick audit

@@ -135,7 +135,7 @@ pnpm build
 
 ```bash
 # ✅ STEP 1: Check migration status
-cd api
+cd apps/api
 pnpm prisma:migrate:status
 # Expected: All migrations applied
 
@@ -192,11 +192,11 @@ grep -r "Strict-Transport-Security\|X-Frame-Options" monitoring/nginx/
 # Expected: Security headers found
 
 # ✅ STEP 5: Check authentication middleware
-grep -r "authenticate\|requireScope" api/src/routes/ | wc -l
+grep -r "authenticate\|requireScope" apps/api/src/routes/ | wc -l
 # Expected: Multiple auth checks
 
 # ✅ STEP 6: Verify rate limiting
-grep -r "limiters\." api/src/routes/ | wc -l
+grep -r "limiters\." apps/api/src/routes/ | wc -l
 # Expected: Multiple rate limit applications
 ```
 
@@ -233,7 +233,7 @@ grep -c "alert:" monitoring/prometheus.yml || echo "0"
 # Expected: >0 (multiple alert rules)
 
 # ✅ STEP 4: Verify health endpoints
-grep -c "/health" api/src/routes/health-detailed.js
+grep -c "/health" apps/api/src/routes/health-detailed.js
 # Expected: 5 endpoints
 
 # ✅ STEP 5: Check monitoring script

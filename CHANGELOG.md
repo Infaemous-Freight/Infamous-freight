@@ -222,7 +222,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Fixed** Duplicate rateLimit function in api/src/middleware/security.js
+- **Fixed** Duplicate rateLimit function in apps/api/src/middleware/security.js
 - **Updated** Husky hook format (removed deprecated v9 lines)
 - **Updated** ESLint 9 flat config for web package
 - **Updated** Babel configuration (removed custom config, using Next.js SWC)

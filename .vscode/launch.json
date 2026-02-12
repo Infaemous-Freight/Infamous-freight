@@ -50,10 +50,10 @@
       "name": "API Debugger",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/api/src/server.js",
+      "program": "${workspaceFolder}/apps/api/src/server.js",
       "restart": true,
       "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}/api",
+      "cwd": "${workspaceFolder}/apps/api",
       "env": {
         "NODE_ENV": "development",
         "DEBUG": "infamous-freight:*"
@@ -80,7 +80,7 @@
         "--runInBand",
         "--detectOpenHandles"
       ],
-      "cwd": "${workspaceFolder}/api",
+      "cwd": "${workspaceFolder}/apps/api",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     },
@@ -93,7 +93,7 @@
         "${file}",
         "--runInBand"
       ],
-      "cwd": "${workspaceFolder}/api",
+      "cwd": "${workspaceFolder}/apps/api",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     },

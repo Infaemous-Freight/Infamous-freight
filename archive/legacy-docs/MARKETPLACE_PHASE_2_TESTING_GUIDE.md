@@ -25,7 +25,7 @@ docker ps | grep postgres
 
 ```bash
 # Create .env file with all required variables
-cp api/.env.example api/.env
+cp apps/api/.env.example apps/api/.env
 
 # Edit with your values:
 # - JWT_SECRET: Use a strong random string
@@ -37,7 +37,7 @@ cp api/.env.example api/.env
 **Minimal Configuration:**
 
 ```bash
-cat > api/.env << 'EOF'
+cat > apps/api/.env << 'EOF'
 API_PORT=4000
 JWT_SECRET=dev-secret-change-in-production
 DATABASE_URL=postgresql://user:password@localhost:5432/marketplace
@@ -64,7 +64,7 @@ docker-compose up -d postgres
 sleep 30
 
 # Run database migrations
-cd api
+cd apps/api
 pnpm prisma:migrate:dev --name "initial_marketplace"
 
 # (Optional) Seed with sample data
@@ -81,7 +81,7 @@ pnpm prisma:generate
 ### Terminal 1: API Server
 
 ```bash
-cd api
+cd apps/api
 pnpm dev
 # Output: API running on http://localhost:4000
 
@@ -93,7 +93,7 @@ curl http://localhost:4000/api/health
 ### Terminal 2: Web Frontend (Optional)
 
 ```bash
-cd web
+cd apps/web
 pnpm dev
 # Output: Web running on http://localhost:3000
 ```
@@ -354,16 +354,16 @@ stripe trigger payment_intent.succeeded
 
 ```bash
 # Real-time log watching
-tail -f api/combined.log | grep -E "correlation|error|webhook"
+tail -f apps/api/combined.log | grep -E "correlation|error|webhook"
 
 # Filter by correlation ID
-grep "correlationId: abc-123" api/combined.log
+grep "correlationId: abc-123" apps/api/combined.log
 
 # Check for retry attempts
-grep "Webhook retry attempt" api/combined.log
+grep "Webhook retry attempt" apps/api/combined.log
 
 # Monitor state transitions
-grep "validateTransition" api/combined.log
+grep "validateTransition" apps/api/combined.log
 ```
 
 ---
@@ -441,10 +441,10 @@ docker-compose up -d postgres
 
 # Wrong DATABASE_URL?
 # Should be: postgresql://user:password@localhost:5432/marketplace
-# Check api/.env file
+# Check apps/api/.env file
 
 # Migration not run?
-cd api && pnpm prisma:migrate:deploy
+cd apps/api && pnpm prisma:migrate:deploy
 ```
 
 ---
@@ -459,16 +459,16 @@ psql postgresql://user:password@localhost:5432/marketplace -c "SELECT COUNT(*) F
 psql postgresql://user:password@localhost:5432/marketplace -c "SELECT status, COUNT(*) FROM jobs GROUP BY status;"
 
 # Monitor webhook events (recent)
-tail -100 api/combined.log | grep webhook
+tail -100 apps/api/combined.log | grep webhook
 
 # Check error rate
-grep ERROR api/combined.log | wc -l
+grep ERROR apps/api/combined.log | wc -l
 
 # Monitor authentication successes/failures
-grep "Authentication" api/combined.log | tail -20
+grep "Authentication" apps/api/combined.log | tail -20
 
 # Track webhook retries
-grep "retry attempt" api/combined.log
+grep "retry attempt" apps/api/combined.log
 ```
 
 ---

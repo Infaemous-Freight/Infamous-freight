@@ -237,7 +237,7 @@ flyctl secrets set \
   -a infamous-freight-api
 
 # 2. Deploy updated health check
-cd api && pnpm deploy
+cd apps/api && pnpm deploy
 
 # 3. Update API configuration to use Cloudflare DNS
 # Update in your client code:

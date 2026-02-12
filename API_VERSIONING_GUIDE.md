@@ -16,7 +16,7 @@ This guide implements API versioning to maintain backwards compatibility while i
 
 ### 1. API Version Router
 
-**File: `api/src/middleware/apiVersioning.js`**
+**File: `apps/api/src/middleware/apiVersioning.js`**
 
 ```javascript
 const express = require('express');
@@ -62,7 +62,7 @@ module.exports = {
 
 ### 2. Version-Specific Routes
 
-**File: `api/src/routes/v1/shipments.js`**
+**File: `apps/api/src/routes/v1/shipments.js`**
 
 ```javascript
 const express = require('express');
@@ -86,7 +86,7 @@ router.get('/shipments', async (req, res) => {
 module.exports = router;
 ```
 
-**File: `api/src/routes/v2/shipments.js`**
+**File: `apps/api/src/routes/v2/shipments.js`**
 
 ```javascript
 const express = require('express');
@@ -116,7 +116,7 @@ module.exports = router;
 
 ### 3. Mount Versioned Routes
 
-**File: `api/src/server.js`**
+**File: `apps/api/src/server.js`**
 
 ```javascript
 const express = require('express');

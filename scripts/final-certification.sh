@@ -18,7 +18,7 @@ echo "📋 Checking all certification criteria..."
 echo ""
 
 # Criteria 1: Track 1 Complete
-if [ -f "api/src/routes/health.js" ]; then
+if [ -f "apps/api/src/routes/health.js" ]; then
   criteria1="✅"
   echo "✅ Track 1: Production Verification - COMPLETE"
 else
@@ -27,7 +27,7 @@ else
 fi
 
 # Criteria 2: Track 2 Complete
-if [ -f "api/src/services/featureFlags.js" ]; then
+if [ -f "apps/api/src/services/featureFlags.js" ]; then
   criteria2="✅"
   echo "✅ Track 2: Optimization & Tuning - COMPLETE"
 else
@@ -36,7 +36,7 @@ else
 fi
 
 # Criteria 3: Track 3 Complete
-if [ -f "api/src/services/abTesting.js" ]; then
+if [ -f "apps/api/src/services/abTesting.js" ]; then
   criteria3="✅"
   echo "✅ Track 3: Feature Deployment Pipeline - COMPLETE"
 else
@@ -45,7 +45,7 @@ else
 fi
 
 # Criteria 4: Implementation verification
-if [ -d "api/src/routes" ] && [ -d "web/pages/admin" ]; then
+if [ -d "apps/api/src/routes" ] && [ -d "apps/web/pages/admin" ]; then
   criteria4="✅"
   echo "✅ Implementation Complete - VERIFIED"
 else

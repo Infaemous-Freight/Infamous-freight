@@ -24,7 +24,7 @@ Complete bundle analysis system for:
 ### 1️⃣ Setup Next.js Bundle Analyzer
 
 ```javascript
-// web/next.config.mjs
+// apps/web/next.config.mjs
 import bundleAnalyzer from "@next/bundle-analyzer";
 import withTM from "next-transpile-modules";
 
@@ -78,7 +78,7 @@ export default withBundleAnalyzer(
 
 ```bash
 # Generate interactive bundle report
-cd web
+cd apps/web
 ANALYZE=true pnpm build
 
 # Output: public/bundle-report.html
@@ -108,7 +108,7 @@ pnpm bundle-analyze:tree  # Tree view
 ### 4️⃣ Bundle Size Targets
 
 ```javascript
-// web/.bundle-budget.json
+// apps/web/.bundle-budget.json
 {
   "bundles": [
     {
@@ -179,7 +179,7 @@ pnpm bundle-analyze:tree  # Tree view
 ### 6️⃣ Optimize Bundle Size
 
 ```javascript
-// web/next.config.mjs - Advanced Optimizations
+// apps/web/next.config.mjs - Advanced Optimizations
 
 // Remove unused dependencies
 const optimizedDeps = {
@@ -237,7 +237,7 @@ jobs:
 
       - name: Analyze bundle
         run: |
-          cd web
+          cd apps/web
           ANALYZE=true pnpm build
           pnpm bundle-check
 
@@ -246,7 +246,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const report = fs.readFileSync('./web/.bundle-report.json', 'utf-8');
+            const report = fs.readFileSync('./apps/web/.bundle-report.json', 'utf-8');
             const parsed = JSON.parse(report);
             github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -279,7 +279,7 @@ npm ls --all 2>/dev/null | sort -k2 -rn | head -10
 ### 2️⃣ API Production Bundle
 
 ```javascript
-// api/package.json - Slim production build
+// apps/api/package.json - Slim production build
 {
   "name": "api",
   "version": "1.0.0",
@@ -308,7 +308,7 @@ npm ls --all 2>/dev/null | sort -k2 -rn | head -10
 ### 3️⃣ Build Optimized API
 
 ```bash
-# api/Dockerfile - Production-ready
+# apps/api/Dockerfile - Production-ready
 FROM node:18-alpine
 
 WORKDIR /app
@@ -344,21 +344,21 @@ echo "===================="
 # Get node_modules size
 echo ""
 echo "node_modules size:"
-du -sh api/node_modules 2>/dev/null | awk '{print $1}'
+du -sh apps/api/node_modules 2>/dev/null | awk '{print $1}'
 
 # Top 10 largest packages
 echo ""
 echo "Top 10 largest packages:"
-du -sh api/node_modules/*/ 2>/dev/null | sort -rh | head -10
+du -sh apps/api/node_modules/*/ 2>/dev/null | sort -rh | head -10
 
 # Count dependencies
 echo ""
-echo "Total dependencies: $(ls api/node_modules | wc -l)"
+echo "Total dependencies: $(ls apps/api/node_modules | wc -l)"
 
 # Build size
 echo ""
 echo "Build output size:"
-du -sh api/dist 2>/dev/null | awk '{print $1}'
+du -sh apps/api/dist 2>/dev/null | awk '{print $1}'
 
 # Size comparison
 echo ""
@@ -374,7 +374,7 @@ echo "node_modules: $BEFORE_SIZE → $AFTER_SIZE"
 
 ```bash
 # Android APK Analysis
-cd mobile
+cd apps/mobile
 
 # Build and analyze
 npx react-native build-android --mode release
@@ -395,7 +395,7 @@ stat -f%z build/Release-iphonesimulator/app.ipa
 ### 2️⃣ RN Bundle Optimization
 
 ```javascript
-// mobile/metro.config.js
+// apps/mobile/metro.config.js
 const { getDefaultConfig } = require("expo/metro-config");
 
 const config = getDefaultConfig(__dirname);
@@ -430,7 +430,7 @@ module.exports = config;
 ### 3️⃣ Bundle Size Targets
 
 ```javascript
-// mobile/bundle-budget.json
+// apps/mobile/bundle-budget.json
 {
   "android": {
     "apk": "50MB",      // Target APK size

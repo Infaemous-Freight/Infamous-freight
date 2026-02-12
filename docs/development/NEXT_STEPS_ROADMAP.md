@@ -72,8 +72,8 @@
    - Check Console for Web Vitals events
 
 3. **Check performance features:**
-   - Review `api/src/middleware/performance.js` (compression)
-   - Review `web/lib/webVitalsMonitoring.js` (tracking)
+   - Review `apps/api/src/middleware/performance.js` (compression)
+   - Review `apps/web/lib/webVitalsMonitoring.js` (tracking)
    - Run `bash scripts/verify-deployment.sh`
 
 4. **Then deploy:**

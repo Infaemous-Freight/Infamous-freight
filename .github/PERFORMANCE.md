@@ -152,7 +152,7 @@
 ### Bundle Analysis
 
 ```bash
-cd web
+cd apps/web
 ANALYZE=true pnpm build
 # Opens interactive bundle visualization
 ```
@@ -167,14 +167,14 @@ lhci autorun --config=lighthouserc.json
 ### API Load Testing
 
 ```bash
-cd api
+cd apps/api
 pnpm test:load
 ```
 
 ### Web Performance Audit
 
 ```bash
-cd web
+cd apps/web
 pnpm audit:performance
 ```
 

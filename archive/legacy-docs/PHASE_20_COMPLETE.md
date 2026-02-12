@@ -160,7 +160,7 @@ model Organization {
 
 ### Core Billing Services
 
-**`api/src/billing/stripeSync.ts`** (250+ lines)
+**`apps/api/src/billing/stripeSync.ts`** (250+ lines)
 - Subscription lifecycle management
 - Functions:
   - `createStripeSubscription(orgId, name, plan)` — Create customer + subscription
@@ -169,7 +169,7 @@ model Organization {
   - `syncSubscriptionStatus(orgId)` — Sync Stripe ↔ DB
   - `getSubscriptionDetails(orgId)` — Portal metadata
 
-**`api/src/billing/usage.ts`** (300+ lines)
+**`apps/api/src/billing/usage.ts`** (300+ lines)
 - Job completion tracking + fee calculation
 - Functions:
   - `calculatePlatformFee(vehicleType, jobPrice)` — $base + % calculation
@@ -178,7 +178,7 @@ model Organization {
   - `getUsageSummary(orgId, fromMonth, toMonth)` — Date range
   - `resetMonthlyUsage(orgId)` — Testing utility
 
-**`api/src/billing/invoicing.ts`** (350+ lines)
+**`apps/api/src/billing/invoicing.ts`** (350+ lines)
 - Monthly invoice generation
 - Functions:
   - `generateOrgInvoice(orgId, month)` — Single invoice
@@ -187,7 +187,7 @@ model Organization {
   - `markInvoicePaid(orgId, month)` — Manual confirmation
   - `sendInvoiceReminder(orgId, month)` — Resend
 
-**`api/src/billing/documents.ts`** (350+ lines)
+**`apps/api/src/billing/documents.ts`** (350+ lines)
 - Compliance document generation
 - Functions:
   - `generateDPAPDF(orgId, orgName)` — Data Processing Agreement
@@ -196,7 +196,7 @@ model Organization {
 
 ### API Routes
 
-**`api/src/routes/billing.ts`** (NEW - TypeScript)
+**`apps/api/src/routes/billing.ts`** (NEW - TypeScript)
 
 | Endpoint | Method | Purpose |
 |---|---|---|
@@ -213,7 +213,7 @@ model Organization {
 
 ### Background Jobs
 
-**`api/src/jobs/monthlyInvoicing.ts`** (400+ lines)
+**`apps/api/src/jobs/monthlyInvoicing.ts`** (400+ lines)
 - BullMQ scheduled job for 1st of month (midnight UTC)
 - Generates invoices for all active organizations
 - Sends Slack notifications (completion + errors)
@@ -359,7 +359,7 @@ Authorization: Bearer <jwt_token>
 
 ### Example 2: Record Job Completion
 
-**In Job Completion Handler** (`api/src/routes/jobs.ts`):
+**In Job Completion Handler** (`apps/api/src/routes/jobs.ts`):
 ```typescript
 import { recordJobCompletion } from '../billing/usage';
 
@@ -612,7 +612,7 @@ curl -X POST http://localhost:4000/api/admin/billing/invoices/generate
 
 For billing issues or questions:
 1. Check this documentation
-2. Review audit logs: `api/src/audit/orgAuditLog.ts`
+2. Review audit logs: `apps/api/src/audit/orgAuditLog.ts`
 3. Check Stripe dashboard for payment failures
 4. Contact: billing@infamousfreight.com
 

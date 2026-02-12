@@ -45,9 +45,9 @@ We chose to implement a **monorepo architecture using pnpm workspaces**.
 
 ```
 infamous-freight-enterprises/
-├── api/                    # Backend service
-├── web/                    # Frontend application
-├── mobile/                 # Mobile app
+├── apps/api/                    # Backend service
+├── apps/web/                    # Frontend application
+├── apps/mobile/                 # Mobile app
 ├── packages/shared/        # Shared code
 ├── e2e/                    # End-to-end tests
 └── pnpm-workspace.yaml     # Workspace configuration

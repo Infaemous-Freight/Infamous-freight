@@ -27,7 +27,7 @@ Options evaluated:
 
 We chose **Prisma ORM** as our database abstraction layer.
 
-**Schema definition** (`api/prisma/schema.prisma`):
+**Schema definition** (`apps/api/prisma/schema.prisma`):
 
 ```prisma
 datasource db {
@@ -168,7 +168,7 @@ await prisma.$transaction([
 
 ```bash
 # Development: Create and apply migration
-cd api
+cd apps/api
 pnpm prisma:migrate:dev --name descriptive_change_name
 
 # Production: Apply pending migrations

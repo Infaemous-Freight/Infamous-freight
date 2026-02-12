@@ -306,8 +306,8 @@ Content-Type: application/json
 
 ```json
 "eslint.workingDirectories": [
-  "./api",
-  "./web",
+  "./apps/api",
+  "./apps/web",
   "./packages/shared"
 ]
 ```
@@ -325,7 +325,7 @@ Cmd/Ctrl+Shift+P → "Developer: Reload Window"
 **Fix**: Generate Prisma Client
 
 ```bash
-cd api && pnpm prisma:generate
+cd apps/api && pnpm prisma:generate
 ```
 
 ### Issue: Tests Not Appearing in Explorer

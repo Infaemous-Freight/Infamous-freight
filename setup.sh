@@ -25,8 +25,8 @@ fi
 # Clean old dependencies
 echo ""
 echo "🧹 Cleaning old dependencies..."
-pnpm clean 2>/dev/null || rm -rf node_modules api/node_modules web/node_modules mobile/node_modules packages/*/node_modules
-rm -f package-lock.json api/package-lock.json web/package-lock.json mobile/package-lock.json
+pnpm clean 2>/dev/null || rm -rf node_modules apps/api/node_modules apps/web/node_modules apps/mobile/node_modules packages/*/node_modules
+rm -f package-lock.json apps/api/package-lock.json apps/web/package-lock.json apps/mobile/package-lock.json
 echo -e "${GREEN}✓ Cleaned${NC}"
 
 # Install dependencies
@@ -59,11 +59,11 @@ echo -e "${GREEN}✓ Git hooks configured${NC}"
 
 # Generate Prisma client (if needed)
 echo ""
-if [ -f api/prisma/schema.prisma ]; then
+if [ -f apps/api/prisma/schema.prisma ]; then
     echo "🗄️  Generating Prisma client..."
-    cd api
+    cd apps/api
     pnpm prisma:generate
-    cd ..
+    cd ../..
     echo -e "${GREEN}✓ Prisma client generated${NC}"
 fi
 

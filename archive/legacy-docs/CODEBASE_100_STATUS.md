@@ -30,11 +30,11 @@ The entire codebase is **100% production-ready** with comprehensive coverage acr
 **Source Code:**
 - **Files:** 17 JavaScript files
 - **Lines of Code:** 3,262 LOC
-- **Directory:** `api/src/`
+- **Directory:** `apps/api/src/`
 
 **Structure:**
 ```
-api/src/
+apps/api/src/
 ├── routes/           (8 route files, 24 endpoints)
 │   ├── health.js     (Health check endpoints)
 │   ├── shipments.js  (CRUD operations)
@@ -176,7 +176,7 @@ All external services are properly mocked:
 ### **Running Tests**
 
 ```bash
-cd api
+cd apps/api
 
 # Run all tests
 pnpm test
@@ -261,15 +261,15 @@ Coverage: 80% thresholds on branches, functions, lines, statements
 
 ```
 Project Directory Structure:
-├── api/              (444 KB)
+├── apps/api/              (444 KB)
 │   ├── src/          (17 source files, 3,262 LOC)
 │   ├── __tests__/    (13 test files, 1,686 LOC)
 │   ├── prisma/       (Database schema & migrations)
 │   ├── jest.config.js (Jest configuration)
 │   └── package.json  (Dependencies)
-├── web/              (Next.js frontend)
+├── apps/web/              (Next.js frontend)
 ├── packages/shared/  (Shared types & utilities)
-├── mobile/           (React Native app)
+├── apps/mobile/           (React Native app)
 ├── e2e/              (Playwright tests)
 └── docs/             (Documentation)
 
@@ -423,7 +423,7 @@ pnpm format
 
 1. **Local Test Execution**
    ```bash
-   cd api
+   cd apps/api
    node --version  # Ensure Node 18+
    pnpm install
    pnpm test:coverage
@@ -433,7 +433,7 @@ pnpm format
 2. **CI/CD Pipeline Setup** (GitHub Actions)
    ```yaml
    - name: Run Tests
-     run: cd api && pnpm test:coverage
+     run: cd apps/api && pnpm test:coverage
    - name: Upload Coverage
      uses: codecov/codecov-action@v3
    ```

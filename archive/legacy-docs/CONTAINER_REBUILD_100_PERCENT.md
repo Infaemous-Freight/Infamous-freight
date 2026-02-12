@@ -362,7 +362,7 @@ docker-compose build --pull --no-cache api
 
 # 2. Dockerfile syntax errors
 # Solution: Validate Dockerfile
-docker build -f api/Dockerfile .
+docker build -f apps/api/Dockerfile .
 
 # 3. Missing build context
 # Solution: Ensure Dockerfile path is correct in docker-compose.yml
@@ -532,7 +532,7 @@ docker builder prune --filter until=24h
 
 ```bash
 # Verify Dockerfile uses multi-stage builds
-cat api/Dockerfile | grep "^FROM"
+cat apps/api/Dockerfile | grep "^FROM"
 
 # Should see:
 # FROM node:18-alpine AS builder
@@ -574,7 +574,7 @@ docker-compose -f docker-compose.dev.yml up -d
 
 # Enable hot-reload volumes
 volumes:
-  - ./api/src:/app/src:ro  # Read-only bind mount
+  - ./apps/api/src:/app/src:ro  # Read-only bind mount
 ```
 
 ### Production Rebuild

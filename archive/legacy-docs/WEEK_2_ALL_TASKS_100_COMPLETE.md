@@ -18,10 +18,10 @@ All Week 2 infrastructure components have been implemented, configured, and are 
 
 | Component | File | Status |
 |-----------|------|--------|
-| Prisma Schema | `api/prisma/schema.prisma` | ✅ Updated |
+| Prisma Schema | `apps/api/prisma/schema.prisma` | ✅ Updated |
 | Database Models | User, Driver, Shipment | ✅ Complete |
 | Relationships | Foreign keys & indexes | ✅ Complete |
-| Seed File | `api/prisma/seed.js` | ✅ Created |
+| Seed File | `apps/api/prisma/seed.js` | ✅ Created |
 | Test Data | 2 users, 3 drivers, 8 shipments | ✅ Ready |
 | Password Hashing | Bcrypt integration | ✅ Implemented |
 
@@ -51,8 +51,8 @@ All Week 2 infrastructure components have been implemented, configured, and are 
 
 | Component | File | Size | Status |
 |-----------|------|------|--------|
-| API Image | `api/Dockerfile` | ~200MB | ✅ Multi-stage |
-| Web Image | `web/Dockerfile` | ~300MB | ✅ Multi-stage |
+| API Image | `apps/api/Dockerfile` | ~200MB | ✅ Multi-stage |
+| Web Image | `apps/web/Dockerfile` | ~300MB | ✅ Multi-stage |
 | Production Compose | `docker-compose.prod.yml` | - | ✅ 5 services |
 | Health Checks | All services | - | ✅ Configured |
 | Logging | JSON file driver | - | ✅ Configured |
@@ -79,7 +79,7 @@ All Week 2 infrastructure components have been implemented, configured, and are 
 
 ### Database Files (1 created)
 ```
-✅ api/prisma/seed.js (new)
+✅ apps/api/prisma/seed.js (new)
 ```
 
 ### E2E Testing Files (2 modified)
@@ -96,8 +96,8 @@ All Week 2 infrastructure components have been implemented, configured, and are 
 
 ### Docker Files (2 created, 1 modified)
 ```
-✅ api/Dockerfile (new)
-✅ web/Dockerfile (new)
+✅ apps/api/Dockerfile (new)
+✅ apps/web/Dockerfile (new)
 ✅ docker-compose.prod.yml (updated)
 ```
 
@@ -378,7 +378,7 @@ docker stats  # Monitor memory
 ## 📚 DOCUMENTATION REFERENCES
 
 - **Complete Guide**: `WEEK_2_COMPLETE_GUIDE.md`
-- **Database**: `api/prisma/schema.prisma`
+- **Database**: `apps/api/prisma/schema.prisma`
 - **Tests**: `e2e/playwright.config.ts`, `e2e/tests/*.spec.ts`
 - **Deployment**: `scripts/deploy-week2.sh`
 - **CI/CD**: `.github/workflows/week-2-database-testing.yml`

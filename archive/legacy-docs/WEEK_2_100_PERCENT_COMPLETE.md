@@ -207,7 +207,7 @@
 
 ```bash
 flyctl deploy --config fly.api.toml
-cd web && vercel --prod
+cd apps/web && vercel --prod
 ```
 
 **Cost:** $0-5/month (free tiers available)
@@ -299,7 +299,7 @@ Use provided Dockerfiles with ECS task definitions
 ### 1. Run Locally (Development)
 
 ```bash
-node api/production-server.js
+node apps/api/production-server.js
 # API running on http://localhost:4000
 ```
 

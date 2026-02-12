@@ -4,7 +4,7 @@ name: Comprehensive Security Analysis
 db:
   queries:
     - uses: security-and-quality
-    
+
 # Query suites to run
 queries:
   - uses: codeql/javascript-queries
@@ -24,10 +24,10 @@ exclude:
 
 # Include patterns for focused analysis
 paths:
-  - api/src
-  - web
+  - apps/api/src
+  - apps/web
   - packages/shared/src
-  - mobile/src
+  - apps/mobile/src
 
 # Severity filters
 severity:
@@ -44,22 +44,22 @@ javascript:
   extract-config:
     cache: true
     timeout: 120
-    threads: 0  # auto
+    threads: 0 # auto
 
 # Advanced query options
 advanced:
   # Enable all security queries
   security:
     enabled: true
-  
+
   # Enable quality queries
   quality:
     enabled: true
-  
+
   # Performance optimization
   performance:
     max-disk-cache-size: 10gb
-    
+
 # Custom CodeQL library paths
 library-path:
   - .github/codeql/custom-queries
@@ -70,7 +70,7 @@ reporting:
   sarif:
     enabled: true
     version: "2.1.0"
-  
+
   # Summary options
   summary:
     included: true

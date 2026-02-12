@@ -5,7 +5,7 @@
  *
  * Benefits:
  * - Automatic WebP/AVIF conversion (40-60% smaller file sizes)
- * - Responsive images (different sizes for mobile/desktop)
+ * - Responsive images (different sizes for apps/mobile/desktop)
  * - Lazy loading (images below fold load on scroll)
  * - Blur placeholder while loading
  * - Optimized caching

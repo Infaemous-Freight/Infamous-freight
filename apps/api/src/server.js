@@ -195,7 +195,7 @@ app.use("/v1/auth", authRouter);
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
 app.use(
   "/avatars/main",
-  express.static(path.join(__dirname, "../../web/public/avatars/main")),
+  express.static(path.join(__dirname, "../../apps/web/public/avatars/main")),
 );
 
 // Avatar routes (Phase 1 & Phase 2)

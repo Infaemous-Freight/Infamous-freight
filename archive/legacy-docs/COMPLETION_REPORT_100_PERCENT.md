@@ -16,9 +16,9 @@
   - `voice.js`: Moved auditLog before upload, added text validation to voice/command, switched to voice limiter
 
 ### Files Modified
-- [api/src/routes/ai.commands.js](api/src/routes/ai.commands.js)
-- [api/src/routes/billing.js](api/src/routes/billing.js)
-- [api/src/routes/voice.js](api/src/routes/voice.js)
+- [apps/api/src/routes/ai.commands.js](apps/api/src/routes/ai.commands.js)
+- [apps/api/src/routes/billing.js](apps/api/src/routes/billing.js)
+- [apps/api/src/routes/voice.js](apps/api/src/routes/voice.js)
 
 ### Impact
 - **Security**: Rate limits now enforced before authentication (prevents DOS on failed auth)
@@ -53,12 +53,12 @@
 - All critical paths tested (success + failure cases)
 
 ### Files Created
-- [api/src/routes/__tests__/security.test.js](api/src/routes/__tests__/security.test.js)
-- [api/src/routes/__tests__/validation.test.js](api/src/routes/__tests__/validation.test.js)
+- [apps/api/src/routes/__tests__/security.test.js](apps/api/src/routes/__tests__/security.test.js)
+- [apps/api/src/routes/__tests__/validation.test.js](apps/api/src/routes/__tests__/validation.test.js)
 
 ### Run Tests
 ```bash
-cd api
+cd apps/api
 pnpm test -- --testPathPattern="security|validation"
 ```
 
@@ -84,13 +84,13 @@ pnpm test -- --testPathPattern="security|validation"
   - Better tree-shaking
 
 ### Files Modified
-- [web/next.config.mjs](web/next.config.mjs) - Enhanced webpack config
-- [web/components/RevenueMonitorDashboard.tsx](web/components/RevenueMonitorDashboard.tsx) - Dynamic imports
-- [web/package.json](web/package.json) - Added `build:analyze` script
+- [apps/web/next.config.mjs](apps/web/next.config.mjs) - Enhanced webpack config
+- [apps/web/components/RevenueMonitorDashboard.tsx](apps/web/components/RevenueMonitorDashboard.tsx) - Dynamic imports
+- [apps/web/package.json](apps/web/package.json) - Added `build:analyze` script
 
 ### Bundle Analysis Script
 ```bash
-cd web
+cd apps/web
 pnpm build:analyze
 # Opens interactive bundle visualization in browser
 ```
@@ -158,7 +158,7 @@ When merged to main, GitHub Actions will:
 - Better null handling for optional stripe fields
 
 ### Migration Guide Created
-[api/prisma/MIGRATION_GUIDE.md](api/prisma/MIGRATION_GUIDE.md) includes:
+[apps/api/prisma/MIGRATION_GUIDE.md](apps/api/prisma/MIGRATION_GUIDE.md) includes:
 - Development workflow (migrate:dev)
 - Production deployment (migrate:deploy)
 - Index performance monitoring SQL
@@ -167,13 +167,13 @@ When merged to main, GitHub Actions will:
 - CI/CD integration
 
 ### Files Created/Modified
-- [api/prisma/schema.prisma](api/prisma/schema.prisma) - Enhanced with indexes + relationships
-- [api/prisma/migrations/initial_schema_with_indexes.sql](api/prisma/migrations/initial_schema_with_indexes.sql) - Index creation SQL
-- [api/prisma/MIGRATION_GUIDE.md](api/prisma/MIGRATION_GUIDE.md) - Comprehensive guide
+- [apps/api/prisma/schema.prisma](apps/api/prisma/schema.prisma) - Enhanced with indexes + relationships
+- [apps/api/prisma/migrations/initial_schema_with_indexes.sql](apps/api/prisma/migrations/initial_schema_with_indexes.sql) - Index creation SQL
+- [apps/api/prisma/MIGRATION_GUIDE.md](apps/api/prisma/MIGRATION_GUIDE.md) - Comprehensive guide
 
 ### Apply Migrations
 ```bash
-cd api
+cd apps/api
 # Development
 pnpm prisma:migrate:dev --name "add_indexes_and_relationships"
 

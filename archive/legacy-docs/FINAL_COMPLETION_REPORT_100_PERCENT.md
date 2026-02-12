@@ -39,7 +39,7 @@ All requested tasks have been completed at **100% completion** and pushed to Git
 
 - **Error**: `expect(price2).toBeGreaterThan(price1)` → Received NaN
 - **Root Cause**: Test calls `computePriceUsd(miles, minutes)` but function expects object `{ estimatedMiles, estimatedMinutes, shipperPlanTier }`
-- **Fix**: Updated 16 test cases in [api/src/lib/**tests**/pricing.test.js](api/src/lib/__tests__/pricing.test.js)
+- **Fix**: Updated 16 test cases in [apps/api/src/lib/**tests**/pricing.test.js](apps/api/src/lib/__tests__/pricing.test.js)
   - Old: `computePriceUsd(100, 30)`
   - New: `computePriceUsd({ estimatedMiles: 100, estimatedMinutes: 30, shipperPlanTier: 'BASIC' })`
 - **Result**: ✅ All pricing tests now pass with correct discount calculations
@@ -48,7 +48,7 @@ All requested tasks have been completed at **100% completion** and pushed to Git
 
 - **Error**: `expect(response.status).toBe(200)` → Received 500 on all endpoints
 - **Root Cause**: Prisma database module not mocked; tests attempt real database calls
-- **Fix**: Added comprehensive Prisma mocks in [api/**tests**/routes/users.test.js](api/__tests__/routes/users.test.js)
+- **Fix**: Added comprehensive Prisma mocks in [apps/api/**tests**/routes/users.test.js](apps/api/__tests__/routes/users.test.js)
   - Mock `findUnique()` for user lookup
   - Mock `findMany()` for user list
   - Mock `update()` for profile updates
@@ -59,7 +59,7 @@ All requested tasks have been completed at **100% completion** and pushed to Git
 
 - **Error**: `ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL - Your test suite must contain at least one test`
 - **Root Cause**: Test file format incompatible with Jest (standalone assertions + process.exit)
-- **Fix**: Wrapped logic in Jest describe block in [api/**tests**/api.test.js](api/__tests__/api.test.js)
+- **Fix**: Wrapped logic in Jest describe block in [apps/api/**tests**/api.test.js](apps/api/__tests__/api.test.js)
   - Wrapped all tests in `describe('API Tests', () => { ... })`
   - Converted assertions to `expect()` statements
   - Removed `process.exit()` calls
@@ -85,7 +85,7 @@ All requested tasks have been completed at **100% completion** and pushed to Git
 - ✅ Marketplace disabled by default (`MARKETPLACE_ENABLED=false`)
 - ✅ BullMQ queue system ready for enablement
 - ✅ Redis fallback handling implemented
-- ✅ Defensive imports in [api/src/marketplace/state/transition.js](api/src/marketplace/state/transition.js)
+- ✅ Defensive imports in [apps/api/src/marketplace/state/transition.js](apps/api/src/marketplace/state/transition.js)
 - ✅ Graceful degradation when Redis unavailable
 - ✅ State machine for queue transitions ready
 - ✅ Can be enabled in next sprint with `MARKETPLACE_ENABLED=true`
@@ -171,11 +171,11 @@ All requested tasks have been completed at **100% completion** and pushed to Git
 ✅ NEW FILE: ALL_TASKS_COMPLETE_FINAL_REPORT.md (160 lines)
 ✅ NEW FILE: DEPLOYMENT_CHECKLIST_100.md (418 lines)
 ✅ NEW FILE: DEPLOYMENT_READY_100_PERCENT.md (316 lines)
-✅ MODIFIED: api/__tests__/api.test.js (Jest compatibility)
-✅ MODIFIED: api/__tests__/routes/users.test.js (Prisma mocks)
-✅ MODIFIED: api/src/lib/__tests__/pricing.test.js (Object signature)
-✅ MODIFIED: api/src/marketplace/state/transition.js (Defensive imports)
-✅ MODIFIED: src/apps/api/junit.xml (Updated test metrics)
+✅ MODIFIED: apps/api/__tests__/api.test.js (Jest compatibility)
+✅ MODIFIED: apps/api/__tests__/routes/users.test.js (Prisma mocks)
+✅ MODIFIED: apps/api/src/lib/__tests__/pricing.test.js (Object signature)
+✅ MODIFIED: apps/api/src/marketplace/state/transition.js (Defensive imports)
+✅ MODIFIED: apps/api/junit.xml (Updated test metrics)
 
 Total Files Changed: 8
 Insertions: 1,848 lines
@@ -241,24 +241,24 @@ $ node --check src/server.js
 
 ### Test Fixes
 
-1. **[api/src/lib/**tests**/pricing.test.js](api/src/lib/**tests**/pricing.test.js)**
+1. **[apps/api/src/lib/**tests**/pricing.test.js](apps/api/src/lib/**tests**/pricing.test.js)**
    - Updated test cases from positional args to object signature
    - Fixed 16 test cases for plan-based pricing calculations
    - Validates BASIC/STARTER/PRO/ENTERPRISE discount tiers
 
-2. **[api/**tests**/routes/users.test.js](api/**tests**/routes/users.test.js)**
+2. **[apps/api/**tests**/routes/users.test.js](apps/api/**tests**/routes/users.test.js)**
    - Added Prisma mock implementations
    - Fixed admin scope requirement ('admin:all' → 'admin')
    - Validates user authentication and authorization
 
-3. **[api/**tests**/api.test.js](api/**tests**/api.test.js)**
+3. **[apps/api/**tests**/api.test.js](apps/api/**tests**/api.test.js)**
    - Wrapped tests in Jest describe block
    - Removed process.exit() calls
    - Made compatible with Jest framework
 
 ### Configuration Updates
 
-4. **[api/src/marketplace/state/transition.js](api/src/marketplace/state/transition.js)**
+4. **[apps/api/src/marketplace/state/transition.js](apps/api/src/marketplace/state/transition.js)**
    - Added defensive imports with fallback handling
    - Graceful degradation for missing Prisma exports
    - Ready for staged marketplace enablement

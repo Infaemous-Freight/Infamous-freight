@@ -90,7 +90,7 @@ Onboarding: Day 1, 3, 7 educational emails
 
 ### 2. Customer Portal
 
-**Location:** `src/apps/web/components/CustomerPortal.tsx`
+**Location:** `apps/web/components/CustomerPortal.tsx`
 
 **Self-Service Features:**
 
@@ -149,7 +149,7 @@ Platinum: 201+ shipments, 15% discount + dedicated account manager
 
 ### 4. AI-Powered Customer Support
 
-**Location:** `src/apps/api/src/controllers/customer.controller.ts`
+**Location:** `apps/api/src/controllers/customer.controller.ts`
 
 **AI Features:**
 

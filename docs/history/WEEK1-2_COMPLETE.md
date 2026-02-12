@@ -15,14 +15,14 @@
 - Prevents unauthorized changes
 - Ready to use immediately
 
-### ✅ 2. Sentry Error Tracking (`api/src/config/sentry.js`)
+### ✅ 2. Sentry Error Tracking (`apps/api/src/config/sentry.js`)
 
 - Real-time production error monitoring
 - Automatic stack trace capture
 - User context and request data
 - Ready - needs `SENTRY_DSN` environment variable (5 min setup)
 
-### ✅ 3. Rate Limiting (`api/src/middleware/security.js`)
+### ✅ 3. Rate Limiting (`apps/api/src/middleware/security.js`)
 
 - Prevents brute force & DDoS attacks
 - 4 preset limiters: general, auth, billing, AI
@@ -37,7 +37,7 @@
 - Zero-downtime deployments
 - Emergency procedures
 
-### ✅ 5. Security Headers (`api/src/middleware/securityHeaders.js`)
+### ✅ 5. Security Headers (`apps/api/src/middleware/securityHeaders.js`)
 
 - CSP, HSTS, anti-clickjacking headers
 - Active on all API responses
@@ -59,8 +59,8 @@
 
 ```
 .github/CODEOWNERS
-api/src/config/sentry.js
-api/src/middleware/securityHeaders.js
+apps/api/src/config/sentry.js
+apps/api/src/middleware/securityHeaders.js
 docs/DATABASE_MIGRATIONS.md
 docs/ONGOING_MONITORING.md
 docs/WEEK1-2_IMPLEMENTATION.md
@@ -69,10 +69,10 @@ docs/WEEK1-2_IMPLEMENTATION.md
 ### Modified Files (5)
 
 ```
-api/src/server.js
-api/src/middleware/security.js
-api/src/routes/ai.commands.js
-api/package.json
+apps/api/src/server.js
+apps/api/src/middleware/security.js
+apps/api/src/routes/ai.commands.js
+apps/api/package.json
 ```
 
 ### Total Impact

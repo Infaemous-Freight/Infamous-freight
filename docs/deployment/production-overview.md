@@ -64,7 +64,7 @@ flyctl deploy --config fly.toml
 pnpm add -g vercel@latest
 
 # Deploy
-cd web && vercel --prod
+cd apps/web && vercel --prod
 ```
 
 #### Option 3: Render (All-in-One)
@@ -106,20 +106,20 @@ cd web && vercel --prod
 infamous-freight-ai/
 ├── src/
 │   ├── apps/
-│   │   ├── api/                   # Express API
+│   │   ├── apps/api/                   # Express API
 │   │   │   ├── src/              # Routes, middleware, services
 │   │   │   ├── prisma/           # Schema, seeds, migrations
 │   │   │   ├── scripts/          # Prisma utilities
 │   │   │   ├── tsconfig.json
 │   │   │   └── Dockerfile
-│   │   ├── web/                   # Next.js frontend
+│   │   ├── apps/web/                   # Next.js frontend
 │   │   │   ├── pages/
 │   │   │   ├── components/
 │   │   │   ├── hooks/
 │   │   │   ├── styles/
 │   │   │   ├── next.config.mjs
 │   │   │   └── Dockerfile
-│   │   └── mobile/                # Expo/React Native app
+│   │   └── apps/mobile/                # Expo/React Native app
 │   └── packages/
 │       └── shared/                # Shared types and utilities
 ├── tests/e2e/                     # Playwright tests
@@ -164,13 +164,13 @@ Key variables:
 Before starting the API locally or in CI, run:
 
 ```bash
-cd api && npm run validate:env
+cd apps/api && npm run validate:env
 ```
 
 And after deployments (or during integration tests) execute:
 
 ```bash
-cd api && npm run smoke:health
+cd apps/api && npm run smoke:health
 ```
 
 ## API Endpoints
@@ -207,7 +207,7 @@ cd api && npm run smoke:health
 ### Development
 
 ```bash
-cd api
+cd apps/api
 npm run prisma:generate
 npx prisma migrate dev
 npx prisma studio  # Open database GUI
@@ -216,7 +216,7 @@ npx prisma studio  # Open database GUI
 ### Production
 
 ```bash
-cd api
+cd apps/api
 npm run prisma:generate
 npm run prisma:migrate
 ```
@@ -224,7 +224,7 @@ npm run prisma:migrate
 ### Seed Database
 
 ```bash
-node api/prisma/seed.js
+node apps/api/prisma/seed.js
 ```
 
 ## Testing

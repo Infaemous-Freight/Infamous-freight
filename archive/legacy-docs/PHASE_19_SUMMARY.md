@@ -4,13 +4,13 @@
 
 | File | Purpose | Status |
 |------|---------|--------|
-| `api/prisma/schema.prisma` | Added Organization + OrgAuditLog models, extended User/Job | ✅ |
-| `api/src/db/tenant.ts` | Tenant-scoped Prisma client (row-level security) | ✅ |
-| `api/src/middleware/security.js` | Updated authenticate() + added requireOrganization() | ✅ |
-| `api/src/security/kms.ts` | AES-256-GCM key manager + field encryption | ✅ |
-| `api/src/audit/orgAuditLog.ts` | Audit logging + queries + CSV export | ✅ |
-| `api/src/admin/auditExport.ts` | Audit export (JSON/CSV/JSONL) + DPA report | ✅ |
-| `api/.env.phase19` | MASTER_KEY environment variable | ✅ |
+| `apps/api/prisma/schema.prisma` | Added Organization + OrgAuditLog models, extended User/Job | ✅ |
+| `apps/api/src/db/tenant.ts` | Tenant-scoped Prisma client (row-level security) | ✅ |
+| `apps/api/src/middleware/security.js` | Updated authenticate() + added requireOrganization() | ✅ |
+| `apps/api/src/security/kms.ts` | AES-256-GCM key manager + field encryption | ✅ |
+| `apps/api/src/audit/orgAuditLog.ts` | Audit logging + queries + CSV export | ✅ |
+| `apps/api/src/admin/auditExport.ts` | Audit export (JSON/CSV/JSONL) + DPA report | ✅ |
+| `apps/api/.env.phase19` | MASTER_KEY environment variable | ✅ |
 
 ---
 
@@ -21,7 +21,7 @@
 ```bash
 # Generate 32-byte base64 key
 MASTER_KEY=$(openssl rand -base64 32)
-echo "MASTER_KEY=$MASTER_KEY" >> api/.env
+echo "MASTER_KEY=$MASTER_KEY" >> apps/api/.env
 
 # Verify
 echo $MASTER_KEY | base64 -d | wc -c
@@ -31,7 +31,7 @@ echo $MASTER_KEY | base64 -d | wc -c
 ### 2. Run Migration
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma migrate deploy
 pnpm prisma generate
 ```

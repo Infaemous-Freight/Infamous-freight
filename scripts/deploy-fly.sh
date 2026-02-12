@@ -118,14 +118,14 @@ else
 fi
 
 # Check if API package.json exists
-if [ -f "src/apps/api/package.json" ]; then
+if [ -f "apps/api/package.json" ]; then
     echo "✅ API package.json exists"
 else
     echo "❌ API package.json not found"
 fi
 
 # Check if Prisma schema exists
-if [ -f "src/apps/api/prisma/schema.prisma" ]; then
+if [ -f "apps/api/prisma/schema.prisma" ]; then
     echo "✅ Prisma schema exists"
 else
     echo "❌ Prisma schema not found"

@@ -35,7 +35,7 @@ echo ""
 echo "📸 Setting up image optimization..."
 echo ""
 
-cd web
+cd apps/web
 
 # Install image optimization dependencies
 pnpm add -D sharp @next/bundle-analyzer next-optimized-images imagemin imagemin-mozjpeg imagemin-pngquant imagemin-svgo
@@ -283,7 +283,7 @@ echo ""
 
 # Build production bundle
 echo "Building production bundle..."
-cd web
+cd apps/web
 pnpm build
 
 # Run bundle analysis
@@ -320,7 +320,7 @@ kill $SERVER_PID
 
 echo ""
 echo "✅ Performance tests complete!"
-echo "📄 Report saved to: web/lighthouse-report.html"
+echo "📄 Report saved to: apps/web/lighthouse-report.html"
 EOF
 
 chmod +x ../scripts/test-performance.sh
@@ -352,7 +352,7 @@ fi
 
 # Optimize JPG/PNG images
 echo "Compressing images..."
-find web/public -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" \) | while read img; do
+find apps/web/public -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" \) | while read img; do
     echo "  Processing: $img"
     
     # Create WebP version
@@ -495,7 +495,7 @@ echo "  2. Test performance:"
 echo "     bash scripts/test-performance.sh"
 echo ""
 echo "  3. Analyze bundle size:"
-echo "     cd web && ANALYZE=true pnpm build"
+echo "     cd apps/web && ANALYZE=true pnpm build"
 echo ""
 echo "  4. Use lazy loading component:"
 echo "     import LazyImage from '@/components/performance/LazyImage';"

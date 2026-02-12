@@ -47,7 +47,7 @@ Your mock servers are **100% operational**! Here are prioritized, actionable rec
 
 #### 1. Rate Limiting (30 minutes)
 
-**File**: `api/mock-server.js`
+**File**: `apps/api/mock-server.js`
 
 ```javascript
 // Add after server creation
@@ -109,11 +109,11 @@ for i in {1..101}; do curl http://localhost:4000/api/health; done
 **Install**:
 
 ```bash
-cd api
+cd apps/api
 pnpm add jsonwebtoken
 ```
 
-**Create auth module** (`api/auth.js`):
+**Create auth module** (`apps/api/auth.js`):
 
 ```javascript
 const jwt = require("jsonwebtoken");
@@ -294,7 +294,7 @@ curl http://localhost:4000/api/shipments \
 
 #### 3. Input Validation (1 hour)
 
-**Add validation helpers** (`api/validation.js`):
+**Add validation helpers** (`apps/api/validation.js`):
 
 ```javascript
 function validateShipment(data) {
@@ -369,9 +369,9 @@ data.destination = sanitize(data.destination);
 **Generate self-signed certificate** (development only):
 
 ```bash
-mkdir -p api/ssl
-openssl req -x509 -newkey rsa:4096 -keyout api/ssl/key.pem \
-  -out api/ssl/cert.pem -days 365 -nodes \
+mkdir -p apps/api/ssl
+openssl req -x509 -newkey rsa:4096 -keyout apps/api/ssl/key.pem \
+  -out apps/api/ssl/cert.pem -days 365 -nodes \
   -subj "/CN=localhost"
 ```
 
@@ -506,7 +506,7 @@ function sendResponse(res, statusCode, data) {
 
 ### CRUD Operations (4 hours)
 
-**Complete implementation in `api/mock-server.js`**:
+**Complete implementation in `apps/api/mock-server.js`**:
 
 ```javascript
 // Helper: Parse URL params
@@ -704,11 +704,11 @@ const server = http.createServer(async (req, res) => {
 **Install Jest**:
 
 ```bash
-cd api
+cd apps/api
 pnpm add -D jest supertest
 ```
 
-**Create test file** (`api/__tests__/api.test.js`):
+**Create test file** (`apps/api/__tests__/api.test.js`):
 
 ```javascript
 const request = require('supertest');
@@ -795,7 +795,7 @@ describe('API Tests', () => {
 **Run tests**:
 
 ```bash
-cd api
+cd apps/api
 pnpm test
 ```
 
@@ -808,11 +808,11 @@ pnpm test
 **Install Winston**:
 
 ```bash
-cd api
+cd apps/api
 pnpm add winston
 ```
 
-**Create logger** (`api/logger.js`):
+**Create logger** (`apps/api/logger.js`):
 
 ```javascript
 const winston = require("winston");
@@ -884,7 +884,7 @@ docker-compose up -d postgres
 **2. Run Prisma migration**:
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma migrate dev --name init
 ```
 
@@ -1011,7 +1011,7 @@ await prisma.shipment.delete({ where: { id } });
 
 ```bash
 # Week 1 Setup
-cd api
+cd apps/api
 
 # 1. Install dependencies
 pnpm add jsonwebtoken winston

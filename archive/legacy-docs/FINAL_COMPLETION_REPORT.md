@@ -23,7 +23,7 @@
 - ✅ **Load test framework:** Ready with 4 scenarios
 
 ### Code Delivered
-- ✅ **Database:** 288 lines (api/database.js)
+- ✅ **Database:** 288 lines (apps/api/database.js)
 - ✅ **E2E Framework:** 153 lines (e2e/test-runner.js)
 - ✅ **Load Framework:** 194 lines (load-tests/load-runner.cjs)
 - ✅ **Test Scenarios:** 4 files (baseline, stress, spike, quick)
@@ -127,7 +127,7 @@ Coverage: 100%
 **Deployment Options:**
 1. **Docker Compose** (VPS) - `./deploy-production.sh`
 2. **Fly.io** (API) - `flyctl deploy --config fly.api.toml`
-3. **Vercel** (Web) - `cd web && vercel --prod`
+3. **Vercel** (Web) - `cd apps/web && vercel --prod`
 4. **Railway** (Full Stack) - `railway up`
 
 ---
@@ -203,7 +203,7 @@ Coverage: 100%
 ### Run Locally
 ```bash
 # Start API
-node api/production-server.js
+node apps/api/production-server.js
 
 # In another terminal - Run tests
 node e2e/tests/api.test.js
@@ -229,7 +229,7 @@ flyctl deploy --config fly.api.toml
 
 **Option 3: Vercel (Web)**
 ```bash
-cd web
+cd apps/web
 vercel --prod
 ```
 

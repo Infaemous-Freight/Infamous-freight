@@ -85,7 +85,7 @@ pnpm add -g vercel@latest
 vercel login
 
 # 3. Deploy
-cd web
+cd apps/web
 vercel --prod
 
 # 4. Set environment variables in Vercel dashboard
@@ -203,8 +203,8 @@ Current Working Directory:
 ├── .git/ (initialized ✓)
 ├── .env (created ✓)
 ├── docker-compose.yml (ready ✓)
-├── api/ (10 files ✓)
-├── web/ (11 files ✓)
+├── apps/api/ (10 files ✓)
+├── apps/web/ (11 files ✓)
 ├── nginx/ (config ✓)
 ├── deploy/ (3 guides ✓)
 └── .github/workflows/ (3 workflows ✓)
@@ -237,10 +237,10 @@ git push origin main              # Push to GitHub
 ### npm (without Docker)
 
 ```bash
-cd api && npm install             # Install API deps
-cd web && npm install             # Install Web deps
-cd api && npm run dev             # Run API
-cd web && npm run dev             # Run Web
+cd apps/api && npm install             # Install API deps
+cd apps/web && npm install             # Install Web deps
+cd apps/api && npm run dev             # Run API
+cd apps/web && npm run dev             # Run Web
 ```
 
 ---

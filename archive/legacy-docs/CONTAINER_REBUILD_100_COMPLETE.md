@@ -42,7 +42,7 @@ Cache cleared successfully
 
 ```bash
 # Remove all node_modules directories
-rm -rf node_modules api/node_modules web/node_modules mobile/node_modules packages/shared/node_modules
+rm -rf node_modules apps/api/node_modules apps/web/node_modules apps/mobile/node_modules packages/shared/node_modules
 
 # Verify cleanup
 find . -name "node_modules" -type d 2>/dev/null | wc -l
@@ -99,7 +99,7 @@ ls -la packages/shared/dist/
 
 ```bash
 # Navigate to API directory
-cd api
+cd apps/api
 
 # Generate Prisma client from schema
 pnpm prisma:generate
@@ -120,7 +120,7 @@ Location: node_modules/.prisma/client/index.d.ts
 
 ```bash
 # Create/reset development database
-cd api
+cd apps/api
 pnpm prisma:migrate:reset
 
 # Or for non-destructive migration:
@@ -225,7 +225,7 @@ curl http://localhost:3000
 ### Database Connection
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:studio
 # Opens Prisma Studio at http://localhost:5555
 ```
@@ -264,7 +264,7 @@ npm install -g pnpm@8.15.9
 **Solution:**
 
 ```bash
-cd api
+cd apps/api
 rm -rf node_modules/.prisma
 pnpm install
 pnpm prisma:generate
@@ -275,7 +275,7 @@ pnpm prisma:generate
 **Solution:**
 
 ```bash
-cd api
+cd apps/api
 # Reset database (WARNING: deletes data!)
 pnpm prisma:migrate:reset
 

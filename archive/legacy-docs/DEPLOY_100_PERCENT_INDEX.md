@@ -62,28 +62,28 @@
 ### 🔐 **Security & Configuration**
 | File | Purpose | Status |
 |------|---------|--------|
-| `api/src/middleware/security.js` | JWT auth, scope enforcement, org validation | ✅ Wired |
-| `api/src/middleware/validation.js` | Input validators (UUID, enum, pagination) | ✅ Wired |
-| `api/src/middleware/responseCache.js` | Response caching with org/user isolation | ✅ Wired |
+| `apps/api/src/middleware/security.js` | JWT auth, scope enforcement, org validation | ✅ Wired |
+| `apps/api/src/middleware/validation.js` | Input validators (UUID, enum, pagination) | ✅ Wired |
+| `apps/api/src/middleware/responseCache.js` | Response caching with org/user isolation | ✅ Wired |
 | `.env.example` | Environment variable reference | ✅ Complete |
 
 ### 📊 **Observability & Metrics**
 | File | Purpose | Status |
 |------|---------|--------|
-| `api/src/lib/prometheusMetrics.js` | Prometheus text-format metrics export | ✅ Implemented |
-| `api/src/lib/slowQueryLogger.js` | Prisma slow query detection & logging | ✅ Wired |
-| `api/src/middleware/metricsRecorder.js` | Request duration tracking middleware | ✅ Wired |
-| `api/src/routes/metrics.js` | GET /api/metrics endpoint | ✅ Mounted |
+| `apps/api/src/lib/prometheusMetrics.js` | Prometheus text-format metrics export | ✅ Implemented |
+| `apps/api/src/lib/slowQueryLogger.js` | Prisma slow query detection & logging | ✅ Wired |
+| `apps/api/src/middleware/metricsRecorder.js` | Request duration tracking middleware | ✅ Wired |
+| `apps/api/src/routes/metrics.js` | GET /api/metrics endpoint | ✅ Mounted |
 
 ### 🧪 **Testing & Verification**
 | File | Purpose | Status |
 |------|---------|--------|
-| `api/src/__tests__/integration/shipments.auth.test.js` | Org/scope auth tests | ✅ 6 cases |
-| `api/src/__tests__/integration/billing.auth.test.js` | Billing auth tests | ✅ 8 cases |
-| `api/src/__tests__/integration/metrics.prometheus.test.js` | Metrics format tests | ✅ 5 cases |
-| `api/src/__tests__/integration/slowQueryLogger.test.js` | Slow query tests | ✅ 4 cases |
-| `api/src/__tests__/integration/responseCache.test.js` | Cache tests | ✅ 6 cases |
-| `api/src/__tests__/integration/security-performance.integration.test.js` | Comprehensive integration | ✅ 20+ cases |
+| `apps/api/src/__tests__/integration/shipments.auth.test.js` | Org/scope auth tests | ✅ 6 cases |
+| `apps/api/src/__tests__/integration/billing.auth.test.js` | Billing auth tests | ✅ 8 cases |
+| `apps/api/src/__tests__/integration/metrics.prometheus.test.js` | Metrics format tests | ✅ 5 cases |
+| `apps/api/src/__tests__/integration/slowQueryLogger.test.js` | Slow query tests | ✅ 4 cases |
+| `apps/api/src/__tests__/integration/responseCache.test.js` | Cache tests | ✅ 6 cases |
+| `apps/api/src/__tests__/integration/security-performance.integration.test.js` | Comprehensive integration | ✅ 20+ cases |
 | `scripts/verify-implementation.sh` | Automated verification script | ✅ 23 checks |
 
 ### 📚 **Documentation**
@@ -214,17 +214,17 @@ npm install --prefix api && npm start --prefix api
 
 ### ✅ Core Files (All Present)
 ```
-✅ api/src/middleware/security.js
-✅ api/src/middleware/validation.js
-✅ api/src/middleware/responseCache.js
-✅ api/src/lib/prometheusMetrics.js
-✅ api/src/lib/slowQueryLogger.js
-✅ api/src/lib/routeScopeRegistry.js
-✅ api/src/middleware/metricsRecorder.js
-✅ api/src/routes/metrics.js
-✅ api/src/server.js (all middleware wired)
-✅ api/src/db/prisma.js (slow query logger attached)
-✅ web/pages/_app.tsx (gated monitoring)
+✅ apps/api/src/middleware/security.js
+✅ apps/api/src/middleware/validation.js
+✅ apps/api/src/middleware/responseCache.js
+✅ apps/api/src/lib/prometheusMetrics.js
+✅ apps/api/src/lib/slowQueryLogger.js
+✅ apps/api/src/lib/routeScopeRegistry.js
+✅ apps/api/src/middleware/metricsRecorder.js
+✅ apps/api/src/routes/metrics.js
+✅ apps/api/src/server.js (all middleware wired)
+✅ apps/api/src/db/prisma.js (slow query logger attached)
+✅ apps/web/pages/_app.tsx (gated monitoring)
 ```
 
 ### ✅ Exports Verified (All Present)

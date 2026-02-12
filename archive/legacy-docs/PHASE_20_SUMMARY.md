@@ -40,7 +40,7 @@ STRIPE_PRICE_ENTERPRISE=price_...
 ### 3. Run Migrations
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma migrate deploy
 pnpm prisma generate
 ```
@@ -94,7 +94,7 @@ curl -X GET http://localhost:4000/api/billing/portal \
 
 ## 🔌 Core Modules
 
-### `api/src/billing/stripeSync.ts`
+### `apps/api/src/billing/stripeSync.ts`
 
 **Subscription Lifecycle**
 
@@ -112,7 +112,7 @@ await cancelSubscription(orgId, false); // false = 30-day delay
 const details = await getSubscriptionDetails(orgId);
 ```
 
-### `api/src/billing/usage.ts`
+### `apps/api/src/billing/usage.ts`
 
 **Track Jobs & Calculate Fees**
 
@@ -128,7 +128,7 @@ const usage = await getMonthlyUsage(orgId, '2025-01');
 const summary = await getUsageSummary(orgId, '2024-12', '2025-01');
 ```
 
-### `api/src/billing/invoicing.ts`
+### `apps/api/src/billing/invoicing.ts`
 
 **Generate Monthly Invoices**
 
@@ -146,7 +146,7 @@ const inv = await getInvoice(orgId, '2025-01');
 await markInvoicePaid(orgId, '2025-01');
 ```
 
-### `api/src/billing/documents.ts`
+### `apps/api/src/billing/documents.ts`
 
 **Generate Compliance Docs**
 
@@ -161,7 +161,7 @@ const soc2 = await generateSOC2PDF('Acme Corp');
 const docs = await storeComplianceDocuments(orgId, orgName, customerId);
 ```
 
-### `api/src/routes/billing.ts`
+### `apps/api/src/routes/billing.ts`
 
 **API Endpoints**
 
@@ -391,12 +391,12 @@ curl -X POST http://localhost:4000/api/admin/billing/invoices/generate \
 
 | File | Purpose | Lines |
 |---|---|---|
-| `api/src/billing/stripeSync.ts` | Subscription mgmt | 250+ |
-| `api/src/billing/usage.ts` | Usage tracking | 300+ |
-| `api/src/billing/invoicing.ts` | Invoice generation | 350+ |
-| `api/src/billing/documents.ts` | DPA/SOC2 PDFs | 350+ |
-| `api/src/routes/billing.ts` | API endpoints | 400+ |
-| `api/src/jobs/monthlyInvoicing.ts` | BullMQ job | 400+ |
+| `apps/api/src/billing/stripeSync.ts` | Subscription mgmt | 250+ |
+| `apps/api/src/billing/usage.ts` | Usage tracking | 300+ |
+| `apps/api/src/billing/invoicing.ts` | Invoice generation | 350+ |
+| `apps/api/src/billing/documents.ts` | DPA/SOC2 PDFs | 350+ |
+| `apps/api/src/routes/billing.ts` | API endpoints | 400+ |
+| `apps/api/src/jobs/monthlyInvoicing.ts` | BullMQ job | 400+ |
 | `PHASE_20_COMPLETE.md` | Full docs | 600+ |
 
 ---

@@ -51,14 +51,14 @@
 
 ### Performance Optimization
 
-**File**: `api/src/middleware/performance.js`
+**File**: `apps/api/src/middleware/performance.js`
 
 - Gzip compression middleware (level 6, 60-70% reduction expected)
 - In-memory GET request caching with TTL
 - Cache control headers for static/dynamic content
 - Performance monitoring integration
 
-**File**: `api/src/utils/dbOptimization.js`
+**File**: `apps/api/src/utils/dbOptimization.js`
 
 - Query optimization utilities
 - N+1 query prevention helpers
@@ -74,7 +74,7 @@
 
 ### Web Vitals Monitoring
 
-**File**: `web/lib/webVitalsMonitoring.js`
+**File**: `apps/web/lib/webVitalsMonitoring.js`
 
 - LCP (Largest Contentful Paint) tracking
 - FID (First Input Delay) monitoring
@@ -82,21 +82,21 @@
 - TTFB and FCP tracking
 - Auto-reporting to Vercel Analytics and Datadog
 
-**File**: `web/lib/webVitalsConfig.js`
+**File**: `apps/web/lib/webVitalsConfig.js`
 
 - Performance configuration for Next.js
 - Image optimization settings (AVIF/WebP)
 - Cache strategies for different content types
 - Security headers for production
 
-**File**: `web/pages/_app.tsx`
+**File**: `apps/web/pages/_app.tsx`
 
 - Web Vitals tracking hook
 - Auto-reporting on mount
 - Layout shift detection
 - Long task monitoring
 
-**File**: `web/next.config.mjs`
+**File**: `apps/web/next.config.mjs`
 
 - Image optimization with responsive sizes
 - Cache headers (1-year for static, 5min for API)
@@ -105,7 +105,7 @@
 
 ### Production Monitoring
 
-**File**: `api/src/config/monitoring.js`
+**File**: `apps/api/src/config/monitoring.js`
 
 - Datadog APM configuration
 - Sentry integration setup
@@ -131,7 +131,7 @@
 
 ### Integration Points
 
-**File**: `api/src/server.js`
+**File**: `apps/api/src/server.js`
 
 - Added compressionMiddleware to request pipeline
 - Integrated performance monitoring
@@ -139,8 +139,8 @@
 
 **Files Updated**:
 
-- `api/package.json`: Added `compression@^1.7.4`
-- `web/package.json`: Added `web-vitals@^4.0.0`
+- `apps/api/package.json`: Added `compression@^1.7.4`
+- `apps/web/package.json`: Added `web-vitals@^4.0.0`
 - `.env.example`: Added 8 monitoring variables
 
 ---
@@ -151,8 +151,8 @@
 
 ```bash
 ✅ pnpm install                                    # COMPLETE
-✅ api/pnpm add compression@^1.7.4                # COMPLETE
-✅ web/pnpm add web-vitals@^4.0.0                 # COMPLETE
+✅ apps/api/pnpm add compression@^1.7.4                # COMPLETE
+✅ apps/web/pnpm add web-vitals@^4.0.0                 # COMPLETE
 ```
 
 ### Verification Phase ✅
@@ -193,11 +193,11 @@
 
 ## 📋 Files Created (10 New)
 
-1. ✅ `api/src/middleware/performance.js` - 80 lines
-2. ✅ `api/src/utils/dbOptimization.js` - 120 lines
-3. ✅ `api/src/config/monitoring.js` - 90 lines
-4. ✅ `web/lib/webVitalsMonitoring.js` - 110 lines
-5. ✅ `web/lib/webVitalsConfig.js` - 70 lines
+1. ✅ `apps/api/src/middleware/performance.js` - 80 lines
+2. ✅ `apps/api/src/utils/dbOptimization.js` - 120 lines
+3. ✅ `apps/api/src/config/monitoring.js` - 90 lines
+4. ✅ `apps/web/lib/webVitalsMonitoring.js` - 110 lines
+5. ✅ `apps/web/lib/webVitalsConfig.js` - 70 lines
 6. ✅ `scripts/setup-monitoring.sh` - 120 lines
 7. ✅ `scripts/db-indexes.sql` - 140 lines
 8. ✅ `scripts/verify-deployment.sh` - 200 lines
@@ -206,11 +206,11 @@
 
 ## 📝 Files Updated (5 Key)
 
-1. ✅ `api/src/server.js` - Added compressionMiddleware
-2. ✅ `web/pages/_app.tsx` - Added Web Vitals tracking
-3. ✅ `web/next.config.mjs` - Added optimization config
-4. ✅ `api/package.json` - Added compression dependency
-5. ✅ `web/package.json` - Added web-vitals dependency
+1. ✅ `apps/api/src/server.js` - Added compressionMiddleware
+2. ✅ `apps/web/pages/_app.tsx` - Added Web Vitals tracking
+3. ✅ `apps/web/next.config.mjs` - Added optimization config
+4. ✅ `apps/api/package.json` - Added compression dependency
+5. ✅ `apps/web/package.json` - Added web-vitals dependency
 
 ## 📚 Documentation Created (4 Guides)
 

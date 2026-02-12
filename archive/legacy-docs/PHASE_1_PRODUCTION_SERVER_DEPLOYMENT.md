@@ -290,7 +290,7 @@ SMTP_PASSWORD=SG...
 
 ```bash
 # Navigate to API directory
-cd api
+cd apps/api
 
 # Generate Prisma Client
 pnpm prisma:generate
@@ -505,7 +505,7 @@ sudo kill -9 <PID>
 
 ```bash
 # Check migration status
-cd api && pnpm prisma migrate status
+cd apps/api && pnpm prisma migrate status
 
 # If stuck, reset (dev only!)
 # pnpm prisma migrate reset --force

@@ -84,20 +84,20 @@ else
 fi
 
 # Check API environment
-check_file "api/.env" API_REQUIRED[@]
+check_file "apps/api/.env" API_REQUIRED[@]
 
 # Check Web environment
-if [ -f "web/.env.local" ]; then
-    check_file "web/.env.local" WEB_REQUIRED[@]
-elif [ -f "web/.env" ]; then
-    check_file "web/.env" WEB_REQUIRED[@]
+if [ -f "apps/web/.env.local" ]; then
+    check_file "apps/web/.env.local" WEB_REQUIRED[@]
+elif [ -f "apps/web/.env" ]; then
+    check_file "apps/web/.env" WEB_REQUIRED[@]
 else
     print_warning "No web environment file found"
     WARNINGS=$((WARNINGS + 1))
 fi
 
 # Check Mobile environment
-if [ -f "mobile/.env.development" ]; then
+if [ -f "apps/mobile/.env.development" ]; then
     print_success "Mobile environment file exists"
     CHECKS=$((CHECKS + 1))
 else
@@ -121,8 +121,8 @@ else
 fi
 
 # Check JWT secret strength
-if [ -f "api/.env" ]; then
-    JWT_SECRET=$(grep "^JWT_SECRET=" api/.env | cut -d'=' -f2-)
+if [ -f "apps/api/.env" ]; then
+    JWT_SECRET=$(grep "^JWT_SECRET=" apps/api/.env | cut -d'=' -f2-)
     JWT_LENGTH=${#JWT_SECRET}
     
     if [ $JWT_LENGTH -lt 32 ]; then

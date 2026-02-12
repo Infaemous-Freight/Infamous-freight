@@ -57,7 +57,7 @@ NICE TO HAVE (Could Have):
 **Route Implementation: GET /shipments**
 
 ```javascript
-// File: api/src/routes/shipments.js
+// File: apps/api/src/routes/shipments.js
 // Pattern: LIST with Pagination (Pattern 3 from Master System)
 
 const express = require("express");
@@ -154,7 +154,7 @@ module.exports = router;
 **Testing: GET /shipments**
 
 ```javascript
-// File: api/tests/routes/shipments.list.test.js
+// File: apps/api/tests/routes/shipments.list.test.js
 
 const request = require("supertest");
 const { app } = require("../setup");

@@ -141,7 +141,7 @@ Improvement:
 
 ```
 Repository Structure:
-├── api/                    ✅ Express.js backend
+├── apps/api/                    ✅ Express.js backend
 │   ├── __tests__/         ✅ 11 test suites (97 tests)
 │   ├── prisma/            ✅ Schema + migrations
 │   ├── src/
@@ -150,8 +150,8 @@ Repository Structure:
 │   │   ├── routes/       ✅ API endpoints
 │   │   └── services/     ✅ Business logic
 │   └── jest.config.js    ✅ Test configuration
-├── web/                   ✅ Next.js 14 frontend
-├── mobile/                ✅ React Native + Expo
+├── apps/web/                   ✅ Next.js 14 frontend
+├── apps/mobile/                ✅ React Native + Expo
 ├── packages/shared/       ✅ TypeScript shared lib
 ├── e2e/                   ✅ Playwright tests
 └── .github/workflows/     ✅ 15 CI/CD workflows
@@ -236,10 +236,10 @@ Repository Structure:
 
 ```bash
 # Deploy Web to Vercel
-cd web && vercel --prod
+cd apps/web && vercel --prod
 
 # Deploy API to Fly.io
-cd api && fly deploy
+cd apps/api && fly deploy
 
 # Deploy via Docker Compose
 docker-compose -f docker-compose.prod.yml up -d

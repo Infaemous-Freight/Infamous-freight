@@ -33,12 +33,12 @@ Block Deployment if Critical Found
 
 **Images Scanned**:
 
-1. **API** (`api/Dockerfile`)
+1. **API** (`apps/api/Dockerfile`)
    - Node.js runtime
    - npm dependencies
    - System packages
 
-2. **Web** (`web/Dockerfile`)
+2. **Web** (`apps/web/Dockerfile`)
    - Node.js runtime
    - npm dependencies
    - Next.js framework

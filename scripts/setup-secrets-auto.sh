@@ -81,8 +81,8 @@ fly secrets list -a infamous-freight-api 2>/dev/null || echo "Could not list sec
 # Step 7: Mobile environment
 echo ""
 echo -e "${YELLOW}📱 Step 7: Mobile Environment${NC}"
-if [ -f "mobile/.env" ]; then
-  echo -e "${YELLOW}⚠️  mobile/.env already exists${NC}"
+if [ -f "apps/mobile/.env" ]; then
+  echo -e "${YELLOW}⚠️  apps/mobile/.env already exists${NC}"
   read -p "Overwrite? (y/n): " -n 1 -r
   echo
   if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -93,7 +93,7 @@ fi
 
 read -p "Enter EXPO_PROJECT_ID: " EXPO_PROJECT_ID
 if [ ! -z "$EXPO_PROJECT_ID" ]; then
-  cat > mobile/.env << EOF
+  cat > apps/mobile/.env << EOF
 EXPO_PROJECT_ID=$EXPO_PROJECT_ID
 API_BASE_URL=https://infamous-freight-api.fly.dev
 WS_URL=wss://infamous-freight-api.fly.dev/ws
@@ -101,7 +101,7 @@ ENABLE_OFFLINE_QUEUE=true
 ENABLE_PUSH_NOTIFICATIONS=true
 ENABLE_BIOMETRIC_AUTH=true
 EOF
-  echo -e "${GREEN}✅ mobile/.env created${NC}"
+  echo -e "${GREEN}✅ apps/mobile/.env created${NC}"
 fi
 
 # Step 8: Summary
@@ -118,6 +118,6 @@ echo "  ✅ Mobile .env configured"
 echo ""
 echo "Next steps:"
 echo "  1. Deploy API: fly deploy -a infamous-freight-api"
-echo "  2. Install mobile deps: cd mobile && npm install"
+echo "  2. Install mobile deps: cd apps/mobile && npm install"
 echo "  3. Build mobile: eas build"
 echo ""

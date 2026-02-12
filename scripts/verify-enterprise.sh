@@ -57,15 +57,15 @@ echo "📄 IMPLEMENTATION FILES"
 echo "----------------------"
 
 IMPL_FILES=(
-  "api/src/services/stripe.service.js"
-  "api/src/services/auth.service.js"
-  "api/src/services/ai.service.js"
-  "api/src/routes/billing.implementation.js"
-  "api/src/routes/auth.implementation.js"
-  "api/src/routes/ai.commands.implementation.js"
-  "web/lib/api-client.implementation.ts"
-  "web/hooks/useApi.implementation.ts"
-  "web/pages/dashboard.implementation.tsx"
+  "apps/api/src/services/stripe.service.js"
+  "apps/api/src/services/auth.service.js"
+  "apps/api/src/services/ai.service.js"
+  "apps/api/src/routes/billing.implementation.js"
+  "apps/api/src/routes/auth.implementation.js"
+  "apps/api/src/routes/ai.commands.implementation.js"
+  "apps/web/lib/api-client.implementation.ts"
+  "apps/web/hooks/useApi.implementation.ts"
+  "apps/web/pages/dashboard.implementation.tsx"
 )
 
 for file in "${IMPL_FILES[@]}"; do
@@ -115,7 +115,7 @@ echo "------------------"
 
 # Check for hardcoded secrets
 echo -n "✓ Checking for hardcoded secrets..."
-if grep -r "STRIPE_SECRET\|JWT_SECRET\|API_KEY" api/src --include="*.js" 2>/dev/null | \
+if grep -r "STRIPE_SECRET\|JWT_SECRET\|API_KEY" apps/api/src --include="*.js" 2>/dev/null | \
    grep -v "process.env" | grep -v "SECRET_KEY\|API_KEY\" > /dev/null 2>&1; then
   echo -e " ${YELLOW}REVIEW NEEDED${NC}"
 else
@@ -125,7 +125,7 @@ fi
 
 # Check for password hashing
 echo -n "✓ Checking password security (bcrypt)..."
-if grep -r "bcrypt" api/src/services/auth.service.js > /dev/null 2>&1; then
+if grep -r "bcrypt" apps/api/src/services/auth.service.js > /dev/null 2>&1; then
   echo -e " ${GREEN}PASSED${NC}"
   PASSED=$((PASSED+1))
 else
@@ -134,7 +134,7 @@ fi
 
 # Check for JWT tokens
 echo -n "✓ Checking JWT implementation..."
-if grep -r "jwt.sign\|jwt.verify" api/src/services/auth.service.js > /dev/null 2>&1; then
+if grep -r "jwt.sign\|jwt.verify" apps/api/src/services/auth.service.js > /dev/null 2>&1; then
   echo -e " ${GREEN}PASSED${NC}"
   PASSED=$((PASSED+1))
 else
@@ -143,7 +143,7 @@ fi
 
 # Check for rate limiting
 echo -n "✓ Checking rate limiting..."
-if grep -r "limiters\|rate" api/src/routes --include="*.js" > /dev/null 2>&1; then
+if grep -r "limiters\|rate" apps/api/src/routes --include="*.js" > /dev/null 2>&1; then
   echo -e " ${GREEN}PASSED${NC}"
   PASSED=$((PASSED+1))
 else
@@ -267,7 +267,7 @@ echo "📊 MONITORING & OBSERVABILITY"
 echo "-----------------------------"
 
 echo -n "✓ Error tracking (Sentry)..."
-if grep -r "Sentry\|sentry" api/src --include="*.js" > /dev/null 2>&1; then
+if grep -r "Sentry\|sentry" apps/api/src --include="*.js" > /dev/null 2>&1; then
   echo -e " ${GREEN}INTEGRATED${NC}"
   PASSED=$((PASSED+1))
 else
@@ -275,7 +275,7 @@ else
 fi
 
 echo -n "✓ Logging configured..."
-if grep -r "logger\|winston\|console" api/src/middleware/logger.js > /dev/null 2>&1; then
+if grep -r "logger\|winston\|console" apps/api/src/middleware/logger.js > /dev/null 2>&1; then
   echo -e " ${GREEN}SETUP${NC}"
   PASSED=$((PASSED+1))
 else
@@ -283,7 +283,7 @@ else
 fi
 
 echo -n "✓ Health checks..."
-if grep -r "/health\|health" api/src/routes/health.js > /dev/null 2>&1; then
+if grep -r "/health\|health" apps/api/src/routes/health.js > /dev/null 2>&1; then
   echo -e " ${GREEN}IMPLEMENTED${NC}"
   PASSED=$((PASSED+1))
 else

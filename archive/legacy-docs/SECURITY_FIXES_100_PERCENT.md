@@ -49,12 +49,12 @@ pnpm audit fix
 pnpm audit fix --force  # If needed for breaking changes
 
 # Fix Web dependencies
-cd ../web
+cd ../apps/web
 pnpm audit fix
 pnpm audit fix --force  # If needed
 
 # Fix Mobile dependencies
-cd ../mobile
+cd ../apps/mobile
 pnpm audit fix
 
 # Fix Shared dependencies
@@ -203,7 +203,7 @@ cd apps/api
 pnpm test
 
 # Web tests (if available)
-cd ../web
+cd ../apps/web
 pnpm test
 
 # E2E tests
@@ -480,12 +480,12 @@ pnpm audit fix
 pnpm test
 
 # Web
-cd ../web
+cd ../apps/web
 pnpm audit fix
 pnpm test || echo "Web tests skipped (if none exist)"
 
 # Mobile
-cd ../mobile
+cd ../apps/mobile
 pnpm audit fix
 
 # Shared

@@ -19,7 +19,7 @@ flyctl auth login && flyctl deploy --remote-only && pnpm test && pnpm test:e2e
 ### Infrastructure ✅
 
 - [x] Web Frontend: LIVE on Vercel
-- [x] API Server: Ready (api/src/server.js)
+- [x] API Server: Ready (apps/api/src/server.js)
 - [x] Docker Image: Configured (Dockerfile.fly)
 - [x] Fly.dev Config: Ready (fly.toml)
 - [x] Database: Configured (Prisma)

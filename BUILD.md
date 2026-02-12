@@ -98,7 +98,7 @@ pnpm build
 # 1. Builds packages/shared (TypeScript → JavaScript)
 # 2. Validates apps/api (syntax check)
 # 3. Builds apps/web (Next.js production build)
-# 4. Skips mobile/ai (build not configured)
+# 4. Skips apps/mobile/ai (build not configured)
 ```
 
 **Expected Output:**

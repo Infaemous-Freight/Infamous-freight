@@ -62,7 +62,7 @@ Advanced Threat Detection implements real-time security monitoring, anomaly dete
 ### 2.1 WAF Rules & Bot Detection
 
 ```javascript
-// api/src/rules/perimeter-threats.js
+// apps/api/src/rules/perimeter-threats.js
 
 class PerimeterThreatDetection {
   constructor() {
@@ -277,7 +277,7 @@ module.exports = PerimeterThreatDetection;
 ### 3.1 Advanced Behavioral Detection
 
 ```javascript
-// api/src/services/authThreatDetection.js
+// apps/api/src/services/authThreatDetection.js
 
 class AuthenticationThreatDetection {
   async detectCredentialStuffing(loginAttempt) {
@@ -507,7 +507,7 @@ module.exports = AuthenticationThreatDetection;
 ### 4.1 Advanced Data Access Monitoring
 
 ```javascript
-// api/src/services/dataExfiltrationDetection.js
+// apps/api/src/services/dataExfiltrationDetection.js
 
 class DataExfiltrationDetection {
   async detectUnusualDataAccess(userId, dataQuery) {
@@ -723,7 +723,7 @@ module.exports = DataExfiltrationDetection;
 ### 5.1 Response Orchestration Engine
 
 ```javascript
-// api/src/services/incidentResponse.js
+// apps/api/src/services/incidentResponse.js
 
 class IncidentResponseEngine {
   async respondToThreat(threat) {
@@ -1046,7 +1046,7 @@ module.exports = IncidentResponseEngine;
 
 ```yaml
 # SIEM Integration Configuration
-# api/config/siem-integration.yml
+# apps/api/config/siem-integration.yml
 
 datadog:
   enabled: true

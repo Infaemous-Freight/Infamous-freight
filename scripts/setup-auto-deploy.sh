@@ -224,14 +224,14 @@ if check_command "eas-cli" || check_command "eas"; then
         echo -e "${GREEN}✅ Authenticated with Expo as: $($EAS_CMD whoami)${NC}"
         
         # Configure EAS if not configured
-        if [ ! -f "src/apps/mobile/eas.json" ]; then
+        if [ ! -f "apps/mobile/eas.json" ]; then
             echo ""
             read -p "Configure EAS for mobile app? (y/n) " -n 1 -r
             echo
             if [[ $REPLY =~ ^[Yy]$ ]]; then
-                cd src/apps/mobile
+                cd apps/mobile
                 $EAS_CMD build:configure
-                cd ../../..
+                cd ../..
             fi
         else
             echo -e "${GREEN}✅ EAS configured${NC}"

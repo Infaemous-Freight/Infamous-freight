@@ -13,10 +13,10 @@
 
 | File | Changes | Status |
 |------|---------|--------|
-| `api/prisma/schema.prisma` | JobEventType enum (12 types) + JobEvent model + WebhookEvent enhancement | ✅ Complete |
-| `api/src/marketplace/audit.ts` | NEW: 3 helper functions (logJobEvent, getJobTimeline, getLatestJobEvent) | ✅ Complete |
-| `api/src/marketplace/router.js` | Logging in job creation + checkout + NEW timeline endpoint | ✅ Complete |
-| `api/src/marketplace/webhooks.js` | Metadata capture + handleCheckoutExpired + transaction-safe logging | ✅ Complete |
+| `apps/api/prisma/schema.prisma` | JobEventType enum (12 types) + JobEvent model + WebhookEvent enhancement | ✅ Complete |
+| `apps/api/src/marketplace/audit.ts` | NEW: 3 helper functions (logJobEvent, getJobTimeline, getLatestJobEvent) | ✅ Complete |
+| `apps/api/src/marketplace/router.js` | Logging in job creation + checkout + NEW timeline endpoint | ✅ Complete |
+| `apps/api/src/marketplace/webhooks.js` | Metadata capture + handleCheckoutExpired + transaction-safe logging | ✅ Complete |
 
 ### ✅ Documentation (3 Files Created)
 
@@ -178,10 +178,10 @@ All infrastructure in place. Phase 4 can begin immediately.
 ## 🔗 Quick Reference
 
 **Files Modified**:
-- [api/prisma/schema.prisma](api/prisma/schema.prisma) — Schema updates
-- [api/src/marketplace/audit.ts](api/src/marketplace/audit.ts) — NEW helper layer
-- [api/src/marketplace/router.js](api/src/marketplace/router.js) — Endpoint integration
-- [api/src/marketplace/webhooks.js](api/src/marketplace/webhooks.js) — Webhook hardening
+- [apps/api/prisma/schema.prisma](apps/api/prisma/schema.prisma) — Schema updates
+- [apps/api/src/marketplace/audit.ts](apps/api/src/marketplace/audit.ts) — NEW helper layer
+- [apps/api/src/marketplace/router.js](apps/api/src/marketplace/router.js) — Endpoint integration
+- [apps/api/src/marketplace/webhooks.js](apps/api/src/marketplace/webhooks.js) — Webhook hardening
 
 **Documentation**:
 - [PHASE_3_AUDITABILITY_COMPLETE.md](PHASE_3_AUDITABILITY_COMPLETE.md) — Full details

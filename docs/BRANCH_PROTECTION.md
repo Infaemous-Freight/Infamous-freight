@@ -146,8 +146,8 @@ git commit -m "feat(scope): description"
 **Linting errors:**
 
 ```bash
-cd api && npm run lint -- --fix
-cd web && npm run lint -- --fix
+cd apps/api && npm run lint -- --fix
+cd apps/web && npm run lint -- --fix
 ```
 
 **Test failures:**

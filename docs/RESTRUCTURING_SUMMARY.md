@@ -141,7 +141,7 @@ infamous-freight-enterprise/
 │   ├── docker/          # Docker Compose files
 │   └── linting/         # Code quality and formatting
 ├── docs/                 # Organized documentation ✨ ENHANCED
-│   ├── api/             # API documentation
+│   ├── apps/api/             # API documentation
 │   ├── deployment/      # Deployment guides
 │   ├── development/     # Development guides
 │   ├── sessions/        # Session notes
@@ -150,9 +150,9 @@ infamous-freight-enterprise/
 │   ├── repository-structure.md   ✨ NEW
 │   ├── validation-guide.md       ✨ NEW
 │   └── README.md                 ✨ NEW
-├── api/                  # Backend API
-├── web/                  # Web frontend
-├── mobile/               # Mobile app
+├── apps/api/                  # Backend API
+├── apps/web/                  # Web frontend
+├── apps/mobile/               # Mobile app
 ├── packages/shared/      # Shared code
 ├── e2e/                  # End-to-end tests
 ├── scripts/              # Build and deployment scripts

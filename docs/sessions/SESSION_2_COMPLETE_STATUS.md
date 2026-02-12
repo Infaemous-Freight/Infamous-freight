@@ -49,8 +49,8 @@
 | #   | Recommendation            | Status      | Evidence                                                                                 |
 | --- | ------------------------- | ----------- | ---------------------------------------------------------------------------------------- |
 | 1   | Configure Fly.io Secrets  | 🔴 BLOCKED  | Awaiting DATABASE_URL, JWT_SECRET from user                                              |
-| 2   | Implement Search Endpoint | ✅ COMPLETE | [api/src/routes/users.js](api/src/routes/users.js#L42-L112) (70 lines)                   |
-| 3   | Validate Edge Cases       | 🟡 READY    | [validation-edge-cases.test.js](api/__tests__/validation-edge-cases.test.js) (40+ tests) |
+| 2   | Implement Search Endpoint | ✅ COMPLETE | [apps/api/src/routes/users.js](apps/api/src/routes/users.js#L42-L112) (70 lines)                   |
+| 3   | Validate Edge Cases       | 🟡 READY    | [validation-edge-cases.test.js](apps/api/__tests__/validation-edge-cases.test.js) (40+ tests) |
 | 4   | Run E2E Tests             | ⏳ READY    | Can run: `pnpm e2e --baseURL=https://infamous-freight-api.fly.dev`                       |
 | 5   | Verify GitHub Actions     | ⏳ READY    | Check: <https://github.com/MrMiless44/Infamous-freight-enterprises/actions>                |
 | 6   | Generate API Docs         | ✅ COMPLETE | [API_REFERENCE.md](API_REFERENCE.md) (500+ lines)                                        |
@@ -373,11 +373,11 @@ Response: Success or 401/403 error
 
 ```
 /workspaces/Infamous-freight-enterprises/
-├── api/                           # Express backend
+├── apps/api/                           # Express backend
 │   ├── src/routes/users.js       # ← Search endpoint here (line 42-112)
 │   ├── __tests__/                # Test files
 │   └── prisma/schema.prisma      # Database schema
-├── web/                           # Next.js frontend
+├── apps/web/                           # Next.js frontend
 ├── packages/shared/               # Shared types & constants
 ├── API_REFERENCE.md              # ← API documentation
 ├── DEPLOYMENT_RUNBOOK.md         # ← Operations guide

@@ -17,7 +17,7 @@ When a job opens (payment succeeded), the system computes a POD policy and store
 
 ### 1. Environment Variables ✅
 
-Added to `api/.env.example`:
+Added to `apps/api/.env.example`:
 
 ```env
 # ---------- POD Policy (Phase 12) ----------
@@ -50,7 +50,7 @@ POD_SIGNATURE_VEHICLES=CARGO_VAN,SPRINTER,BOX_TRUCK,STRAIGHT_TRUCK,SEMI
 
 ### 2. Prisma Schema Updates ✅
 
-Added four new fields to the `Job` model in `api/prisma/schema.prisma`:
+Added four new fields to the `Job` model in `apps/api/prisma/schema.prisma`:
 
 ```prisma
 podRequirePhoto     Boolean @default(false)
@@ -61,7 +61,7 @@ podPolicyVersion    Int     @default(1)
 
 **Migration Command:**
 ```bash
-cd api
+cd apps/api
 pnpm prisma migrate dev --name phase12_pod_policy
 pnpm prisma generate
 ```
@@ -72,7 +72,7 @@ pnpm prisma generate
 
 ### 3. Policy Evaluator Module ✅
 
-Created: `api/src/marketplace/podPolicy.js`
+Created: `apps/api/src/marketplace/podPolicy.js`
 
 **Exports:**
 - `computePodPolicy(input)` — Returns policy decision object
@@ -94,7 +94,7 @@ const { requirePhoto, requireSignature, requireOtp, version } = computePodPolicy
 
 ### 4. Webhook Integration ✅
 
-Updated: `api/src/marketplace/webhooks.js`
+Updated: `apps/api/src/marketplace/webhooks.js`
 
 **When:** Stripe checkout completes (`checkout.session.completed` event)
 
@@ -120,7 +120,7 @@ Updated: `api/src/marketplace/webhooks.js`
 
 ### 5. POD Submission Enforcement ✅
 
-Updated: `api/src/marketplace/router.js` — `POST /jobs/:jobId/pod`
+Updated: `apps/api/src/marketplace/router.js` — `POST /jobs/:jobId/pod`
 
 **Enforcement Logic:**
 
@@ -225,11 +225,11 @@ POD_SIGNATURE_VEHICLES=
 
 ## Files Modified
 
-1. **api/.env.example** — Added 7 POD policy env vars
-2. **api/prisma/schema.prisma** — Added 4 policy fields to Job model
-3. **api/src/marketplace/podPolicy.js** — NEW: Policy evaluator
-4. **api/src/marketplace/webhooks.js** — Integrated policy computation on payment success
-5. **api/src/marketplace/router.js** — Enforced policy at POD submission endpoint
+1. **apps/api/.env.example** — Added 7 POD policy env vars
+2. **apps/api/prisma/schema.prisma** — Added 4 policy fields to Job model
+3. **apps/api/src/marketplace/podPolicy.js** — NEW: Policy evaluator
+4. **apps/api/src/marketplace/webhooks.js** — Integrated policy computation on payment success
+5. **apps/api/src/marketplace/router.js** — Enforced policy at POD submission endpoint
 
 ---
 

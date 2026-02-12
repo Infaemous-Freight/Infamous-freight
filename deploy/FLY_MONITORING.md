@@ -3,7 +3,7 @@
 ## Built-in Metrics
 
 Fly.io automatically collects metrics for your app. View them at:
-<https://fly.io/apps/infamous-freight-api/metrics>
+<https://fly.io/apps/infamous-freight-apps/api/metrics>
 
 ### Key Metrics to Monitor
 
@@ -206,7 +206,7 @@ flyctl apps restart infamous-freight-api
 
 - [ ] Check health endpoint: `curl https://infamous-freight-api.fly.dev/api/health`
 - [ ] View logs: `flyctl logs -a infamous-freight-api`
-- [ ] Check metrics: <https://fly.io/apps/infamous-freight-api/metrics>
+- [ ] Check metrics: <https://fly.io/apps/infamous-freight-apps/api/metrics>
 - [ ] Verify secrets: `flyctl secrets list -a infamous-freight-api`
 - [ ] Test database: `flyctl ssh console -a infamous-freight-api -C "cd /app && npx prisma db pull"`
 - [ ] Check recent deploys: `flyctl releases -a infamous-freight-api`

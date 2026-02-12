@@ -22,7 +22,7 @@ Open Safari on your iPhone and go to:
 
 1. Railway creates a service - tap on it
 2. Go to **Settings** tab
-3. Set **Root Directory**: `src/apps/api`
+3. Set **Root Directory**: `apps/api`
 4. Set **Build Command**: `pnpm install && pnpm build`
 5. Set **Start Command**: `node src/server.js`
 
@@ -109,7 +109,7 @@ Your full stack is now live:
 2. Common issues:
    - Build timeout: Increase in Settings
    - Missing env vars: Add in Variables tab
-   - Wrong root directory: Should be `src/apps/api`
+   - Wrong root directory: Should be `apps/api`
 
 **If health check fails:**
 

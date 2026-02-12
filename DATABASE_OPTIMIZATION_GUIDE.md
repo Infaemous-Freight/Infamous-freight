@@ -324,7 +324,7 @@ CREATE INDEX idx_shipment_new_column ON shipment(new_column);
 
 ```bash
 # Create a new migration
-cd api
+cd apps/api
 pnpm prisma migrate dev --name add_new_field
 
 # Review SQL before applying
@@ -500,7 +500,7 @@ while (true) {
 
 ```bash
 # Generate Prisma client after schema changes
-cd api
+cd apps/api
 pnpm prisma generate
 
 # View database in GUI

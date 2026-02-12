@@ -34,7 +34,7 @@ jobs:
 
       - name: EAS Build (iOS + Android)
         run: |
-          cd mobile
+          cd apps/mobile
           eas build --platform all --profile production --non-interactive
 
       - name: Slack notify (success)

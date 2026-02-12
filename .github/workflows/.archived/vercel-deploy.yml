@@ -66,7 +66,7 @@ jobs:
       - name: Pull Vercel Environment Information
         id: vercel-env
         run: |
-          cd web
+          cd apps/web
           npx vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         continue-on-error: true
 
@@ -76,13 +76,13 @@ jobs:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || 'https://infamous-freight-api.fly.dev' }}
           NEXT_PUBLIC_API_BASE: ${{ secrets.NEXT_PUBLIC_API_BASE || 'https://infamous-freight-api.fly.dev/api' }}
         run: |
-          cd web
+          cd apps/web
           npx vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy to Vercel
         id: deploy
         run: |
-          cd web
+          cd apps/web
           DEPLOY_URL=$(npx vercel deploy --prod --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
           echo "deploy_url=$DEPLOY_URL" >> $GITHUB_OUTPUT
           echo "✅ Deployed to: $DEPLOY_URL"

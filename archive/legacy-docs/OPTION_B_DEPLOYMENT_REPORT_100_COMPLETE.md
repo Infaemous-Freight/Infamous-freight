@@ -216,7 +216,7 @@ drwx------  2 root  root  4096 Jan 15 12:35 .
 **Run Database Migrations**:
 
 ```bash
-$ cd api
+$ cd apps/api
 $ pnpm prisma:migrate:deploy
 
 Environment variables loaded from .env.production

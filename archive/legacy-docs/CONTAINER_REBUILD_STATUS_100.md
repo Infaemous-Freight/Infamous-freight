@@ -93,9 +93,9 @@ Services:
 ### B. Monorepo Structure
 
 ```
-├── api/               (Express.js backend, CommonJS)
-├── web/              (Next.js 14 frontend, TypeScript)
-├── mobile/           (React Native/Expo)
+├── apps/api/               (Express.js backend, CommonJS)
+├── apps/web/              (Next.js 14 frontend, TypeScript)
+├── apps/mobile/           (React Native/Expo)
 ├── packages/
 │   └── shared/       (Shared types, constants, utils)
 ├── e2e/              (Playwright tests)
@@ -142,7 +142,7 @@ pnpm store prune
 rm -rf node_modules **/node_modules
 pnpm install
 pnpm --filter @infamous-freight/shared build
-cd api && pnpm prisma:generate && cd ..
+cd apps/api && pnpm prisma:generate && cd ..
 ```
 
 ### Start Services
@@ -278,7 +278,7 @@ pnpm --filter @infamous-freight/shared build
 
 ```bash
 # Solution
-cd api && pnpm prisma:migrate:reset
+cd apps/api && pnpm prisma:migrate:reset
 ```
 
 ### Issue 3: Port already in use
@@ -293,7 +293,7 @@ lsof -ti:3000 | xargs kill -9  # Web
 
 ```bash
 # Solution
-cd api && pnpm prisma:generate
+cd apps/api && pnpm prisma:generate
 ```
 
 ---
@@ -330,7 +330,7 @@ Within this workspace:
 ```bash
 # Backup current state
 tar -czf backup-pre-rebuild.tar.gz \
-  .env api/prisma/schema.prisma packages/shared/src/
+  .env apps/api/prisma/schema.prisma packages/shared/src/
 ```
 
 ### Post-Rebuild Recovery

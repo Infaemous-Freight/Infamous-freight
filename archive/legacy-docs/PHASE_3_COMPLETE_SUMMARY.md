@@ -14,11 +14,11 @@ Phase 3 successfully implements comprehensive auditability and observability for
 
 | Component | Status | Files |
 |-----------|--------|-------|
-| JobEvent audit model | ✅ | `api/prisma/schema.prisma` |
-| Audit helper functions | ✅ | `api/src/marketplace/audit.ts` |
-| Endpoint logging integration | ✅ | `api/src/marketplace/router.js` |
-| Webhook hardening + metadata | ✅ | `api/src/marketplace/webhooks.js` |
-| Job timeline API endpoint | ✅ | `api/src/marketplace/router.js` |
+| JobEvent audit model | ✅ | `apps/api/prisma/schema.prisma` |
+| Audit helper functions | ✅ | `apps/api/src/marketplace/audit.ts` |
+| Endpoint logging integration | ✅ | `apps/api/src/marketplace/router.js` |
+| Webhook hardening + metadata | ✅ | `apps/api/src/marketplace/webhooks.js` |
+| Job timeline API endpoint | ✅ | `apps/api/src/marketplace/router.js` |
 | Documentation | ✅ | `PHASE_3_AUDITABILITY_COMPLETE.md`, `PHASE_3_TESTING_GUIDE.md` |
 
 ---
@@ -97,22 +97,22 @@ const jobIdFromMeta = event.data.object.metadata?.jobId;
 
 ## Files Modified
 
-1. **api/prisma/schema.prisma** — +45 lines
+1. **apps/api/prisma/schema.prisma** — +45 lines
    - JobEventType enum (12 types)
    - JobEvent model with indexes
    - Enhanced WebhookEvent
 
-2. **api/src/marketplace/audit.ts** — NEW (47 lines)
+2. **apps/api/src/marketplace/audit.ts** — NEW (47 lines)
    - logJobEvent() helper
    - getJobTimeline() helper
    - getLatestJobEvent() helper
 
-3. **api/src/marketplace/router.js** — +60 lines
+3. **apps/api/src/marketplace/router.js** — +60 lines
    - Added logging to job creation (2 events)
    - Added logging to checkout (1 event)
    - Added GET /jobs/:jobId/timeline endpoint
 
-4. **api/src/marketplace/webhooks.js** — +35 lines
+4. **apps/api/src/marketplace/webhooks.js** — +35 lines
    - Metadata capture (stripeObjId + jobId)
    - handleCheckoutExpired() handler
    - Transaction-safe event logging in handleCheckoutCompleted()

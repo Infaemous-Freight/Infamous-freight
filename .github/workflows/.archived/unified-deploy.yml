@@ -55,10 +55,10 @@ jobs:
           if git diff HEAD~1 --name-only | grep -q "packages/shared/"; then
             echo "shared_changed=true" >> $GITHUB_OUTPUT
           fi
-          if git diff HEAD~1 --name-only | grep -q "api/"; then
+          if git diff HEAD~1 --name-only | grep -q "apps/api/"; then
             echo "api_changed=true" >> $GITHUB_OUTPUT
           fi
-          if git diff HEAD~1 --name-only | grep -q "web/"; then
+          if git diff HEAD~1 --name-only | grep -q "apps/web/"; then
             echo "web_changed=true" >> $GITHUB_OUTPUT
           fi
 
@@ -135,7 +135,7 @@ jobs:
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
-          files: ./api/coverage/lcov.info
+          files: ./apps/api/coverage/lcov.info
           flags: api
           fail_ci_if_error: false
 

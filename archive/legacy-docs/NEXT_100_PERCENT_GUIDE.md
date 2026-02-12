@@ -42,7 +42,7 @@
 #### 1.1 Database Connection Pooling
 
 ```javascript
-// api/config/performance/db-pool.js
+// apps/api/config/performance/db-pool.js
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient({
@@ -87,7 +87,7 @@ const shipments = await prisma.shipment.findMany({
 #### 1.3 Redis Caching Layer
 
 ```javascript
-// api/services/cache/redis-client.js
+// apps/api/services/cache/redis-client.js
 const redis = require("ioredis");
 
 const client = new redis({
@@ -168,7 +168,7 @@ app.use(
 #### 1.6 Asset CDN Integration
 
 ```javascript
-// web/next.config.mjs
+// apps/web/next.config.mjs
 export default {
   images: {
     domains: ["cdn.infamous-freight.com"],
@@ -235,7 +235,7 @@ export default {
 #### 2.1 Field-Level Encryption
 
 ```javascript
-// api/services/security/encryption.js
+// apps/api/services/security/encryption.js
 const crypto = require("crypto");
 
 const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, "hex");
@@ -282,7 +282,7 @@ const user = await prisma.user.create({
 #### 2.2 Two-Factor Authentication
 
 ```javascript
-// api/services/security/2fa.js
+// apps/api/services/security/2fa.js
 const speakeasy = require("speakeasy");
 const QRCode = require("qrcode");
 
@@ -366,7 +366,7 @@ const auditLog = async (req, res, next) => {
 #### 2.4 IP Whitelisting
 
 ```javascript
-// api/middleware/ip-whitelist.js
+// apps/api/middleware/ip-whitelist.js
 const ipWhitelist = (allowedIPs = []) => {
   return (req, res, next) => {
     const clientIP = req.ip;
@@ -402,7 +402,7 @@ router.post(
 #### 2.5 Advanced Threat Detection
 
 ```javascript
-// api/services/security/threat-detection.js
+// apps/api/services/security/threat-detection.js
 class ThreatDetectionService {
   // Detect brute force attacks
   static async detectBruteForce(userId, maxAttempts = 5) {
@@ -495,7 +495,7 @@ module.exports = ThreatDetectionService;
 #### 3.1 Message Queue System
 
 ```javascript
-// api/services/queue/job-queue.js
+// apps/api/services/queue/job-queue.js
 const BullQueue = require("bull");
 
 // Separate queues for different job types
@@ -539,7 +539,7 @@ async function sendEmail(to, subject, body) {
 #### 3.2 Event-Driven Architecture
 
 ```javascript
-// api/services/events/event-emitter.js
+// apps/api/services/events/event-emitter.js
 const EventEmitter = require("events");
 
 class DomainEventBus extends EventEmitter {
@@ -633,7 +633,7 @@ services:
 #### 3.4 Database Sharding Strategy
 
 ```javascript
-// api/services/database/sharding.js
+// apps/api/services/database/sharding.js
 class ShardingService {
   static SHARD_COUNT = 4;
 
@@ -685,7 +685,7 @@ class ShardingService {
 ### 4.1 Real-Time Notifications (WebSocket)
 
 ```javascript
-// api/services/realtime/notification-service.js
+// apps/api/services/realtime/notification-service.js
 const { Server } = require("socket.io");
 
 class NotificationManager {
@@ -732,7 +732,7 @@ class NotificationManager {
 ### 4.2 Advanced Search (Elasticsearch)
 
 ```javascript
-// api/services/search/elasticsearch.js
+// apps/api/services/search/elasticsearch.js
 const { Client } = require("@elastic/elasticsearch");
 
 const es = new Client({
@@ -814,7 +814,7 @@ class SearchService {
 ### 4.3 ML-Based Recommendations
 
 ```javascript
-// api/services/ai/recommendations.js
+// apps/api/services/ai/recommendations.js
 const tf = require("@tensorflow/tfjs");
 
 class RecommendationEngine {
@@ -884,7 +884,7 @@ class RecommendationEngine {
 ### 4.4 Webhook System
 
 ```javascript
-// api/services/webhooks/webhook-manager.js
+// apps/api/services/webhooks/webhook-manager.js
 class WebhookManager {
   // Register webhook
   static async registerWebhook(userId, url, events) {
@@ -963,7 +963,7 @@ class WebhookManager {
 ### 5.1 Advanced APM Integration
 
 ```javascript
-// api/config/monitoring/datadog.js
+// apps/api/config/monitoring/datadog.js
 const StatsD = require("dd-trace").StatsD;
 const tracer = require("dd-trace").init({
   hostname: process.env.DD_AGENT_HOST || "localhost",
@@ -988,7 +988,7 @@ app.use((req, res, next) => {
 ### 5.2 Custom Metrics Collection
 
 ```javascript
-// api/services/monitoring/metrics.js
+// apps/api/services/monitoring/metrics.js
 class MetricsCollector {
   static metrics = new Map();
 
@@ -1039,7 +1039,7 @@ const dashboardMetrics = {
 ### 6.1 GDPR Compliance
 
 ```javascript
-// api/services/compliance/gdpr.js
+// apps/api/services/compliance/gdpr.js
 class GDPRService {
   // Right to be forgotten
   static async deleteUserData(userId) {

@@ -22,12 +22,12 @@ All 6 strategic improvements completed successfully:
 **Critical Port Mismatch**:
 
 - fly.toml configured for PORT=4000
-- api/Dockerfile exposed port 3001
+- apps/api/Dockerfile exposed port 3001
 - Healthcheck referenced port 3001
 
 ### Fix Applied
 
-**File**: `api/Dockerfile`
+**File**: `apps/api/Dockerfile`
 
 ```diff
 - EXPOSE 3001
@@ -79,7 +79,7 @@ All 6 strategic improvements completed successfully:
 
 ### File Created
 
-**`api/__tests__/validation-edge-cases.test.js`** - 180+ lines, 30+ test cases
+**`apps/api/__tests__/validation-edge-cases.test.js`** - 180+ lines, 30+ test cases
 
 ### Test Categories
 
@@ -148,7 +148,7 @@ All 6 strategic improvements completed successfully:
 
 ### File Enhanced
 
-**`api/src/middleware/errorHandler.js`** - Added context and categorization
+**`apps/api/src/middleware/errorHandler.js`** - Added context and categorization
 
 ### Improvements
 
@@ -206,7 +206,7 @@ All errors now return consistent format:
 
 ### File Created
 
-**`api/src/routes/users.search.example.js`** - Reference implementation
+**`apps/api/src/routes/users.search.example.js`** - Reference implementation
 
 ### Endpoint Specification
 
@@ -393,14 +393,14 @@ All errors now return consistent format:
 ### Created Files
 
 1. ✅ `VALIDATION.md` - 300+ line validation guide
-2. ✅ `api/__tests__/validation-edge-cases.test.js` - 30+ edge case tests
-3. ✅ `api/src/routes/users.search.example.js` - Search endpoint documentation
+2. ✅ `apps/api/__tests__/validation-edge-cases.test.js` - 30+ edge case tests
+3. ✅ `apps/api/src/routes/users.search.example.js` - Search endpoint documentation
 4. ✅ `docs/SENTRY_MONITORING.md` - 400+ line monitoring guide
 
 ### Modified Files
 
-1. ✅ `api/Dockerfile` - Fixed port from 3001 to 4000
-2. ✅ `api/src/middleware/errorHandler.js` - Enhanced with context and categorization
+1. ✅ `apps/api/Dockerfile` - Fixed port from 3001 to 4000
+2. ✅ `apps/api/src/middleware/errorHandler.js` - Enhanced with context and categorization
 
 ---
 
@@ -408,9 +408,9 @@ All errors now return consistent format:
 
 ### Immediate
 
-1. Run edge case tests: `cd api && npm test -- validation-edge-cases`
+1. Run edge case tests: `cd apps/api && npm test -- validation-edge-cases`
 2. Commit changes: `git add -A && git commit -m "feat: all 6 improvements - validation, tests, error handling, search, monitoring"`
-3. Verify Docker build: `docker build -f api/Dockerfile .`
+3. Verify Docker build: `docker build -f apps/api/Dockerfile .`
 
 ### Short-term
 
@@ -430,7 +430,7 @@ All errors now return consistent format:
 
 | Task              | File(s)                       | Lines | Status      |
 | ----------------- | ----------------------------- | ----- | ----------- |
-| 1. Deployment     | api/Dockerfile                | 3     | ✅ Complete |
+| 1. Deployment     | apps/api/Dockerfile                | 3     | ✅ Complete |
 | 2. Documentation  | VALIDATION.md                 | 300+  | ✅ Complete |
 | 3. Tests          | validation-edge-cases.test.js | 180+  | ✅ Complete |
 | 4. Error Handling | errorHandler.js               | +40   | ✅ Complete |

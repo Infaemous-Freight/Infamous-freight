@@ -99,10 +99,10 @@ ls -la docker-compose.*.yml
 pnpm --filter @infamous-freight/shared build
 
 # Build API
-cd api && pnpm build
+cd apps/api && pnpm build
 
 # Build Web
-cd web && pnpm build
+cd apps/web && pnpm build
 
 # Return to root
 cd ..
@@ -316,7 +316,7 @@ docker-compose -f docker-compose.production.yml restart redis
 **Update rate limit configuration**:
 
 ```bash
-# In api/.env.production
+# In apps/api/.env.production
 RATE_LIMIT_WINDOW=15        # 15 minutes
 RATE_LIMIT_MAX=100          # 100 requests
 AI_RATE_LIMIT_MAX=20        # AI calls more restrictive
@@ -474,12 +474,12 @@ bash scripts/cost-analysis.sh
 
 ```bash
 # Deploy ML service
-cat > api/src/services/ml/predictiveAvailability.ts << 'EOF'
+cat > apps/api/src/services/ml/predictiveAvailability.ts << 'EOF'
 # (File already created in previous session - 275 lines)
 EOF
 
 # Build and test
-cd api && pnpm build
+cd apps/api && pnpm build
 pnpm run test -- predictiveAvailability.test.ts
 
 # Deploy
@@ -598,28 +598,28 @@ done
 
 ```bash
 # 1. Demand Prediction Model
-cat > api/src/ml/demandPrediction.ts << 'EOF'
+cat > apps/api/src/ml/demandPrediction.ts << 'EOF'
 // ML Model 1: Predict demand for next 7 days (accuracy >85%)
 // Inputs: Historical shipments, time of day, seasonality
 // Outputs: Demand forecast + confidence intervals
 EOF
 
 # 2. Fraud Detection Model
-cat > api/src/ml/fraudDetection.ts << 'EOF'
+cat > apps/api/src/ml/fraudDetection.ts << 'EOF'
 // ML Model 2: Detect fraudulent shipments (accuracy >95%)
 // Inputs: Shipment patterns, driver behavior, route anomalies
 // Outputs: Fraud score + risk classification
 EOF
 
 # 3. Dynamic Pricing Model
-cat > api/src/ml/dynamicPricing.ts << 'EOF'
+cat > apps/api/src/ml/dynamicPricing.ts << 'EOF'
 // ML Model 3: Optimize pricing (revenue +20-25%)
 // Inputs: Demand, competition, delivery distance, urgency
 // Outputs: Optimal price recommendation
 EOF
 
 # Build and deploy
-cd api && pnpm build
+cd apps/api && pnpm build
 docker-compose -f docker-compose.production.yml up -d api
 
 # Test models

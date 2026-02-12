@@ -20,7 +20,7 @@ pnpm api:dev              # Runs on port 3001 (Docker) or 4000 (standalone)
 pnpm web:dev              # Runs on port 3000
 
 # Start Mobile
-cd mobile && pnpm dev
+cd apps/mobile && pnpm dev
 ```
 
 ### Build & Deploy
@@ -59,16 +59,16 @@ pnpm --filter api test -- --coverage
 
 ```bash
 # Create/apply migrations
-cd api && pnpm prisma:migrate:dev --name <description>
+cd apps/api && pnpm prisma:migrate:dev --name <description>
 
 # Reset database (dev only!)
-cd api && pnpm prisma:migrate:reset
+cd apps/api && pnpm prisma:migrate:reset
 
 # Open Prisma Studio
-cd api && pnpm prisma:studio
+cd apps/api && pnpm prisma:studio
 
 # Generate Prisma Client
-cd api && pnpm prisma:generate
+cd apps/api && pnpm prisma:generate
 ```
 
 ### Linting & Formatting
@@ -89,7 +89,7 @@ pnpm check:types
 ## 📁 Directory Structure
 
 ```
-api/                          # Express.js backend (CommonJS)
+apps/api/                          # Express.js backend (CommonJS)
 ├── src/
 │   ├── routes/               # API endpoints
 │   ├── middleware/            # Auth, validation, error handling
@@ -98,13 +98,13 @@ api/                          # Express.js backend (CommonJS)
 ├── prisma/                    # Database schema
 └── tests/                     # Jest tests
 
-web/                          # Next.js 14 frontend (TypeScript)
+apps/web/                          # Next.js 14 frontend (TypeScript)
 ├── pages/                     # Route pages
 ├── components/                # React components
 ├── public/                    # Static assets
 └── styles/                    # CSS/styling
 
-mobile/                       # React Native/Expo app
+apps/mobile/                       # React Native/Expo app
 ├── app/                       # App structure
 └── components/                # Mobile components
 
@@ -281,13 +281,13 @@ curl http://localhost:3001/api/health | jq '.database'
 time curl http://localhost:3001/api/shipments
 
 # Check database slow queries
-cd api && pnpm prisma studio
+cd apps/api && pnpm prisma studio
 ```
 
 ### Error Tracking
 
 - **Sentry**: <https://sentry.io> (production errors)
-- **Logs**: `docker logs`, Winston logs in `api/logs/`
+- **Logs**: `docker logs`, Winston logs in `apps/api/logs/`
 - **Database**: Check `_prisma_migrations` table
 
 ---
@@ -343,7 +343,7 @@ CORS_ORIGINS=https://example.com,https://www.example.com
 ### Next.js Pages
 
 ```typescript
-// Create new page: web/pages/feature.tsx
+// Create new page: apps/web/pages/feature.tsx
 import { GetStaticProps } from 'next';
 import { ApiResponse } from '@infamous-freight/shared';
 
@@ -365,7 +365,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 ```bash
 # Start Expo
-cd mobile && pnpm dev
+cd apps/mobile && pnpm dev
 
 # Test on device
 # Scan QR code with Expo app
@@ -452,7 +452,7 @@ bash scripts/setup-revenue-operations.sh
 ### Add New Database Table
 
 ```bash
-# 1. Edit api/prisma/schema.prisma
+# 1. Edit apps/api/prisma/schema.prisma
 model NewTable {
   id    Int     @id @default(autoincrement())
   name  String
@@ -460,10 +460,10 @@ model NewTable {
 }
 
 # 2. Migrate
-cd api && pnpm prisma:migrate:dev --name add_new_table
+cd apps/api && pnpm prisma:migrate:dev --name add_new_table
 
 # 3. Generate client
-cd api && pnpm prisma:generate
+cd apps/api && pnpm prisma:generate
 
 # 4. Use in code
 import { prisma } from '../config/db';
@@ -473,7 +473,7 @@ const data = await prisma.newTable.findMany();
 ### Add API Endpoint
 
 ```javascript
-// api/src/routes/new-feature.js
+// apps/api/src/routes/new-feature.js
 const {
   limiters,
   authenticate,
@@ -551,7 +551,7 @@ docker ps | grep postgres
 DATABASE_URL=postgresql://user:pass@localhost:5432/infamous
 
 # Reset database (dev only!)
-cd api && pnpm prisma:migrate:reset
+cd apps/api && pnpm prisma:migrate:reset
 ```
 
 ### Type errors after shared package changes

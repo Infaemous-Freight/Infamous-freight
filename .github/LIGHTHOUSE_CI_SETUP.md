@@ -88,7 +88,7 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'web/**'
+      - 'apps/web/**'
       - '.github/workflows/lighthouse-ci.yml'
       - '.lighthouserc*.json'
   pull_request:
@@ -135,7 +135,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: web-build
-          path: web/.next
+          path: apps/web/.next
           retention-days: 1
 
   lighthouse-ci:
@@ -162,14 +162,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: web-build
-          path: web/.next
+          path: apps/web/.next
       
       - name: Install LHCI
         run: npm install -g @lhci/cli@0.9.x
       
       - name: Run Lighthouse CI
         run: |
-          cd web
+          cd apps/web
           npm start > /dev/null 2>&1 &
           sleep 5
           cd ..
@@ -346,7 +346,7 @@ When LHCI integration is enabled:
 lsof -ti:3000 | xargs kill -9
 
 # Start server manually
-cd web && npm start
+cd apps/web && npm start
 
 # Then run audit in another terminal
 lhci autorun --config=../.lighthouserc.json

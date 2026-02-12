@@ -65,8 +65,8 @@ pnpm web:dev
 #### **Option B: Web + Mock API** (Recommended)
 
 ```bash
-# 1. Create web/.env.local
-echo "NEXT_PUBLIC_API_URL=http://localhost:4000" > web/.env.local
+# 1. Create apps/web/.env.local
+echo "NEXT_PUBLIC_API_URL=http://localhost:4000" > apps/web/.env.local
 
 # 2. Start web server
 pnpm web:dev
@@ -235,7 +235,7 @@ fly ssh console
 psql $DATABASE_URL < scripts/db-indexes.sql
 
 # Run migrations:
-cd api && pnpm prisma:migrate:prod
+cd apps/api && pnpm prisma:migrate:prod
 ```
 
 ---
@@ -251,8 +251,8 @@ cd api && pnpm prisma:migrate:prod
 
 ### What's in Git (All Committed)
 
-- API middleware & config: `api/src/middleware/`, `api/src/config/`
-- Web monitoring: `web/lib/web*.js`, `web/pages/_app.tsx`
+- API middleware & config: `apps/api/src/middleware/`, `apps/api/src/config/`
+- Web monitoring: `apps/web/lib/web*.js`, `apps/web/pages/_app.tsx`
 - Database optimization: `scripts/db-indexes.sql`
 - Automation: `scripts/setup-monitoring.sh`, `scripts/verify-deployment.sh`
 - Documentation: All `.md` files in root

@@ -115,7 +115,7 @@ pnpm install
 pnpm --filter @infamous-freight/shared build
 
 # Generate Prisma client
-cd api
+cd apps/api
 pnpm prisma:generate
 ```
 
@@ -129,7 +129,7 @@ docker-compose up -d db
 export DATABASE_URL="postgresql://user:password@localhost:5432/infamousfreight"
 
 # Run migrations
-cd api
+cd apps/api
 pnpm prisma:migrate:dev --name init
 
 # Optional: Seed database
@@ -148,7 +148,7 @@ pnpm web:dev
 # Web running on http://localhost:3000
 
 # Terminal 3: Optional - Prisma Studio
-cd api && pnpm prisma:studio
+cd apps/api && pnpm prisma:studio
 # Database UI on http://localhost:5555
 ```
 
@@ -160,7 +160,7 @@ cd api && pnpm prisma:studio
 
 ```bash
 # Build Next.js application
-cd web
+cd apps/web
 pnpm build
 
 # Test production build locally
@@ -175,7 +175,7 @@ git push origin main
 
 ```bash
 # Build Express API
-cd api
+cd apps/api
 pnpm build
 
 # Build Docker image
@@ -327,8 +327,8 @@ curl http://localhost:4000/api/health
 
 ```bash
 # Development
-tail -f api/combined.log        # Combined logs
-tail -f api/error.log           # Errors only
+tail -f apps/api/combined.log        # Combined logs
+tail -f apps/api/error.log           # Errors only
 
 # Production (Docker)
 docker logs -f <container-id>
@@ -341,10 +341,10 @@ docker logs -f <container-id>
 
 ```bash
 # Bundle analysis
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 
 # Database query performance
-cd api && pnpm prisma:studio
+cd apps/api && pnpm prisma:studio
 
 # API response times
 # Built-in metrics at GET /api/metrics (if enabled)
@@ -368,7 +368,7 @@ corepack prepare pnpm@8.15.9 --activate
 ### Issue: "Cannot find module '@prisma/client'"
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:generate
 ```
 
@@ -411,7 +411,7 @@ pnpm install
 pnpm test -- --verbose
 
 # Run specific test
-pnpm test -- api/__tests__/health.test.ts
+pnpm test -- apps/api/__tests__/health.test.ts
 ```
 
 ---

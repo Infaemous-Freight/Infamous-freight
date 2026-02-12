@@ -3,27 +3,27 @@
  * Comprehensive tests for login, registration, password reset, and account operations
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('Authentication Flow', () => {
-  const API_URL = process.env.API_URL || 'http://localhost:3001';
-  const WEB_URL = process.env.WEB_URL || 'http://localhost:3000';
-  
+test.describe("Authentication Flow", () => {
+  const API_URL = process.env.API_URL || "http://localhost:3001";
+  const WEB_URL = process.env.WEB_URL || "http://localhost:3000";
+
   const testUser = {
     email: `test-${Date.now()}@test.local`,
-    password: 'SecurePassword123!',
-    name: 'Test User',
+    password: "SecurePassword123!",
+    name: "Test User",
   };
 
   test.beforeEach(async ({ page }) => {
     await page.goto(`${WEB_URL}/login`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState("networkidle");
   });
 
-  test.describe('User Registration', () => {
-    test('should successfully register a new user', async ({ page }) => {
+  test.describe("User Registration", () => {
+    test("should successfully register a new user", async ({ page }) => {
       // Navigate to signup
-      await page.click('text=Sign up');
+      await page.click("text=Sign up");
       await page.waitForURL(`${WEB_URL}/signup`);
 
       // Fill in registration form
@@ -40,30 +40,30 @@ test.describe('Authentication Flow', () => {
 
       // Verify redirect to email confirmation
       await page.waitForURL(`${WEB_URL}/verify-email`);
-      expect(page.url()).toContain('verify-email');
+      expect(page.url()).toContain("verify-email");
 
       // Verify success message
       const message = await page.textContent('[role="status"]');
-      expect(message).toContain('confirmation email');
+      expect(message).toContain("confirmation email");
     });
 
-    test('should prevent registration with weak password', async ({ page }) => {
-      await page.click('text=Sign up');
+    test("should prevent registration with weak password", async ({ page }) => {
+      await page.click("text=Sign up");
 
-      await page.fill('input[name="name"]', 'Test User');
+      await page.fill('input[name="name"]', "Test User");
       await page.fill('input[name="email"]', testUser.email);
-      await page.fill('input[name="password"]', 'weak');
-      await page.fill('input[name="confirmPassword"]', 'weak');
+      await page.fill('input[name="password"]', "weak");
+      await page.fill('input[name="confirmPassword"]', "weak");
 
       // Submit form
       await page.click('button:has-text("Create Account")');
 
       // Verify error message
       const error = await page.textContent('[role="alert"]');
-      expect(error).toContain('at least 8 characters');
+      expect(error).toContain("at least 8 characters");
     });
 
-    test('should prevent duplicate email registration', async ({ page, request }) => {
+    test("should prevent duplicate email registration", async ({ page, request }) => {
       // Register first user via API
       const registerRes = await request.post(`${API_URL}/api/auth/register`, {
         data: {
@@ -75,7 +75,7 @@ test.describe('Authentication Flow', () => {
       expect(registerRes.ok()).toBeTruthy();
 
       // Try to register same email via UI
-      await page.click('text=Sign up');
+      await page.click("text=Sign up");
       await page.fill('input[name="name"]', testUser.name);
       await page.fill('input[name="email"]', testUser.email);
       await page.fill('input[name="password"]', testUser.password);
@@ -85,12 +85,12 @@ test.describe('Authentication Flow', () => {
 
       // Verify error
       const error = await page.textContent('[role="alert"]');
-      expect(error).toContain('already registered');
+      expect(error).toContain("already registered");
     });
   });
 
-  test.describe('User Login', () => {
-    test('should successfully login with valid credentials', async ({ page, request }) => {
+  test.describe("User Login", () => {
+    test("should successfully login with valid credentials", async ({ page, request }) => {
       // Register user first
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
@@ -103,23 +103,23 @@ test.describe('Authentication Flow', () => {
 
       // Verify redirect to dashboard
       await page.waitForURL(`${WEB_URL}/dashboard`);
-      expect(page.url()).toContain('dashboard');
+      expect(page.url()).toContain("dashboard");
 
       // Verify user name shown
       const userName = await page.textContent('[role="complementary"]');
       expect(userName).toContain(testUser.name || testUser.email);
     });
 
-    test('should show error with invalid email', async ({ page }) => {
-      await page.fill('input[name="email"]', 'nonexistent@test.local');
-      await page.fill('input[name="password"]', 'Password123!');
+    test("should show error with invalid email", async ({ page }) => {
+      await page.fill('input[name="email"]', "nonexistent@test.local");
+      await page.fill('input[name="password"]', "Password123!");
       await page.click('button:has-text("Login")');
 
       const error = await page.textContent('[role="alert"]');
-      expect(error).toContain('invalid credentials');
+      expect(error).toContain("invalid credentials");
     });
 
-    test('should show error with incorrect password', async ({ page, request }) => {
+    test("should show error with incorrect password", async ({ page, request }) => {
       // Register user
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
@@ -127,14 +127,14 @@ test.describe('Authentication Flow', () => {
 
       // Try login with wrong password
       await page.fill('input[name="email"]', testUser.email);
-      await page.fill('input[name="password"]', 'WrongPassword123!');
+      await page.fill('input[name="password"]', "WrongPassword123!");
       await page.click('button:has-text("Login")');
 
       const error = await page.textContent('[role="alert"]');
-      expect(error).toContain('invalid credentials');
+      expect(error).toContain("invalid credentials");
     });
 
-    test('should rate limit failed login attempts', async ({ page, request }) => {
+    test("should rate limit failed login attempts", async ({ page, request }) => {
       // Register user
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
@@ -144,17 +144,17 @@ test.describe('Authentication Flow', () => {
       for (let i = 0; i < 6; i++) {
         await page.reload();
         await page.fill('input[name="email"]', testUser.email);
-        await page.fill('input[name="password"]', 'WrongPassword123!');
+        await page.fill('input[name="password"]', "WrongPassword123!");
         await page.click('button:has-text("Login")');
         await page.waitForTimeout(500);
       }
 
       // Should get rate limit error
       const error = await page.textContent('[role="alert"]');
-      expect(error).toContain('try again later');
+      expect(error).toContain("try again later");
     });
 
-    test('should persist session with JWT token', async ({ page, request }) => {
+    test("should persist session with JWT token", async ({ page, request }) => {
       // Register and login
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
@@ -173,11 +173,11 @@ test.describe('Authentication Flow', () => {
 
       // Store token and verify it works
       await page.evaluate((t) => {
-        localStorage.setItem('authToken', t);
+        localStorage.setItem("authToken", t);
       }, token);
 
       await page.goto(`${WEB_URL}/dashboard`);
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState("networkidle");
 
       // Should remain logged in
       const userName = await page.textContent('[role="complementary"]');
@@ -185,15 +185,15 @@ test.describe('Authentication Flow', () => {
     });
   });
 
-  test.describe('Password Reset', () => {
-    test('should request password reset email', async ({ page, request }) => {
+  test.describe("Password Reset", () => {
+    test("should request password reset email", async ({ page, request }) => {
       // Register user
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
       });
 
       // Navigate to forgot password
-      await page.click('text=Forgot password');
+      await page.click("text=Forgot password");
       await page.waitForURL(`${WEB_URL}/forgot-password`);
 
       // Request reset
@@ -202,35 +202,35 @@ test.describe('Authentication Flow', () => {
 
       // Verify success message
       const message = await page.textContent('[role="status"]');
-      expect(message).toContain('check your email');
+      expect(message).toContain("check your email");
     });
 
-    test('should not reveal if email exists (security)', async ({ page }) => {
+    test("should not reveal if email exists (security)", async ({ page }) => {
       // Request with non-existent email
-      await page.click('text=Forgot password');
-      
+      await page.click("text=Forgot password");
+
       const response1 = await page.evaluate(async (email) => {
-        const res = await fetch('/api/auth/request-password-reset', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch("/api/auth/request-password-reset", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
         });
         return res.status;
-      }, 'nonexistent@test.local');
+      }, "nonexistent@test.local");
 
       // Request with existing email (after registering)
       const response2 = await page.evaluate(async (data) => {
         // First register
-        await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
         });
 
         // Then request reset
-        const res = await fetch('/api/auth/request-password-reset', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch("/api/auth/request-password-reset", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: data.email }),
         });
         return res.status;
@@ -241,7 +241,7 @@ test.describe('Authentication Flow', () => {
       expect(response2).toBe(200);
     });
 
-    test('should rate limit password reset requests', async ({ page, request }) => {
+    test("should rate limit password reset requests", async ({ page, request }) => {
       // Register user
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
@@ -261,7 +261,7 @@ test.describe('Authentication Flow', () => {
       }
     });
 
-    test('should validate reset token validity', async ({ page, request }) => {
+    test("should validate reset token validity", async ({ page, request }) => {
       // Register user
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
@@ -277,10 +277,10 @@ test.describe('Authentication Flow', () => {
 
       // Verify error
       const error = await page.textContent('[role="alert"]');
-      expect(error).toContain('invalid or expired');
+      expect(error).toContain("invalid or expired");
     });
 
-    test('should complete password reset successfully', async ({ page, request }) => {
+    test("should complete password reset successfully", async ({ page, request }) => {
       // Register user
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
@@ -290,24 +290,22 @@ test.describe('Authentication Flow', () => {
       // For testing, we'd need a test endpoint or mock email service
 
       // Simulate valid reset token (would come from email in real scenario)
-      const resetToken = 'test-reset-token-12345';
-      
+      const resetToken = "test-reset-token-12345";
+
       // Navigate to reset page
-      await page.goto(
-        `${WEB_URL}/reset-password?token=${resetToken}&email=${testUser.email}`
-      );
+      await page.goto(`${WEB_URL}/reset-password?token=${resetToken}&email=${testUser.email}`);
 
       // Fill in new password
-      await page.fill('input[name="newPassword"]', 'NewPassword456!');
-      await page.fill('input[name="confirmPassword"]', 'NewPassword456!');
+      await page.fill('input[name="newPassword"]', "NewPassword456!");
+      await page.fill('input[name="confirmPassword"]', "NewPassword456!");
       await page.click('button:has-text("Reset Password")');
 
       // Verify redirect to login
       await page.waitForURL(`${WEB_URL}/login`);
-      
+
       // Verify can login with new password
       await page.fill('input[name="email"]', testUser.email);
-      await page.fill('input[name="password"]', 'NewPassword456!');
+      await page.fill('input[name="password"]', "NewPassword456!");
       await page.click('button:has-text("Login")');
 
       // Should redirect to dashboard
@@ -315,8 +313,8 @@ test.describe('Authentication Flow', () => {
     });
   });
 
-  test.describe('Account Management', () => {
-    test('should update user profile', async ({ page, request }) => {
+  test.describe("Account Management", () => {
+    test("should update user profile", async ({ page, request }) => {
       // Register and login
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
@@ -334,22 +332,22 @@ test.describe('Authentication Flow', () => {
       // Navigate to profile page
       await page.goto(`${WEB_URL}/profile`);
       await page.evaluate((t) => {
-        localStorage.setItem('authToken', t);
+        localStorage.setItem("authToken", t);
       }, token);
 
       await page.reload();
 
       // Update name
-      const newName = 'Updated Name';
+      const newName = "Updated Name";
       await page.fill('input[name="name"]', newName);
       await page.click('button:has-text("Save Changes")');
 
       // Verify success
       const message = await page.textContent('[role="status"]');
-      expect(message).toContain('updated successfully');
+      expect(message).toContain("updated successfully");
     });
 
-    test('should change password while authenticated', async ({ page, request }) => {
+    test("should change password while authenticated", async ({ page, request }) => {
       // Register and login
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
@@ -367,13 +365,13 @@ test.describe('Authentication Flow', () => {
       // Navigate to account settings
       await page.goto(`${WEB_URL}/account`);
       await page.evaluate((t) => {
-        localStorage.setItem('authToken', t);
+        localStorage.setItem("authToken", t);
       }, token);
 
       await page.reload();
 
       // Change password
-      const newPassword = 'NewPassword789!';
+      const newPassword = "NewPassword789!";
       await page.fill('input[name="currentPassword"]', testUser.password);
       await page.fill('input[name="newPassword"]', newPassword);
       await page.fill('input[name="confirmPassword"]', newPassword);
@@ -382,7 +380,7 @@ test.describe('Authentication Flow', () => {
 
       // Verify success
       const message = await page.textContent('[role="status"]');
-      expect(message).toContain('changed successfully');
+      expect(message).toContain("changed successfully");
 
       // Verify old password no longer works
       const oldLoginRes = await request.post(`${API_URL}/api/auth/login`, {
@@ -405,7 +403,7 @@ test.describe('Authentication Flow', () => {
       expect(newLoginRes.ok()).toBeTruthy();
     });
 
-    test('should logout successfully', async ({ page, request }) => {
+    test("should logout successfully", async ({ page, request }) => {
       // Register and login
       await request.post(`${API_URL}/api/auth/register`, {
         data: testUser,
@@ -423,21 +421,21 @@ test.describe('Authentication Flow', () => {
       // Go to dashboard
       await page.goto(`${WEB_URL}/dashboard`);
       await page.evaluate((t) => {
-        localStorage.setItem('authToken', t);
+        localStorage.setItem("authToken", t);
       }, token);
 
       await page.reload();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState("networkidle");
 
       // Click logout
       await page.click('[aria-label="User menu"]');
-      await page.click('text=Logout');
+      await page.click("text=Logout");
 
       // Verify redirect to login
       await page.waitForURL(`${WEB_URL}/login`);
 
       // Verify token cleared
-      const token2 = await page.evaluate(() => localStorage.getItem('authToken'));
+      const token2 = await page.evaluate(() => localStorage.getItem("authToken"));
       expect(token2).toBeNull();
 
       // Verify can't access dashboard

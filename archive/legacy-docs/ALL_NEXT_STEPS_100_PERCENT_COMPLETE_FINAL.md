@@ -64,7 +64,7 @@ Infamous Freight Enterprises platform has been **fully optimized, verified, and 
 ✅ Web Vitals tracking
 ✅ Lighthouse score integration
 ✅ Alert status overview
-📁 File: web/scripts/performance-dashboard.sh
+📁 File: apps/web/scripts/performance-dashboard.sh
 ```
 
 #### 4.2 Automated Alerting
@@ -74,7 +74,7 @@ Infamous Freight Enterprises platform has been **fully optimized, verified, and 
 ✅ Escalation policies (warning vs critical)
 ✅ Alert database management
 ✅ Metrics thresholds tuning
-📁 File: web/scripts/setup-alerting.sh
+📁 File: apps/web/scripts/setup-alerting.sh
 ```
 
 #### 4.3 Operations Runbook
@@ -153,12 +153,12 @@ Infamous Freight Enterprises platform has been **fully optimized, verified, and 
 ### New Scripts (Phase 4)
 
 ```
-📜 web/scripts/performance-dashboard.sh
+📜 apps/web/scripts/performance-dashboard.sh
   - Generates HTML dashboard
   - Metrics tables, trends, alerts
   - 500+ lines
 
-📜 web/scripts/setup-alerting.sh
+📜 apps/web/scripts/setup-alerting.sh
   - Alert rule configuration
   - Templates for 5 platforms
   - Database initialization
@@ -168,19 +168,19 @@ Infamous Freight Enterprises platform has been **fully optimized, verified, and 
 ### Previous Scripts (Phase 3)
 
 ```
-📜 web/scripts/validate-build.sh
+📜 apps/web/scripts/validate-build.sh
 ✅ Validates build configuration
 
-📜 web/scripts/monitor-build-performance.sh
+📜 apps/web/scripts/monitor-build-performance.sh
 ✅ Tracks build metrics
 
-📜 web/scripts/audit-bundle-size.sh
+📜 apps/web/scripts/audit-bundle-size.sh
 ✅ Analyzes webpack chunks
 
-📜 web/scripts/review-dependencies.sh
+📜 apps/web/scripts/review-dependencies.sh
 ✅ Audits npm dependencies
 
-📜 web/scripts/verify-deployment.sh
+📜 apps/web/scripts/verify-deployment.sh
 ✅ Post-deployment verification
 ```
 
@@ -410,7 +410,7 @@ Infamous Freight Enterprises platform has been **fully optimized, verified, and 
 ### For Development Team
 1. Start with [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
 2. Reference [README.md](README.md) for architecture
-3. Use scripts in `web/scripts/` for automation
+3. Use scripts in `apps/web/scripts/` for automation
 4. Check `.github/workflows/` for CI/CD setup
 
 ### For Management

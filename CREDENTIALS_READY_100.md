@@ -224,7 +224,7 @@ npm i -g vercel
 vercel login
 
 # Deploy
-cd web
+cd apps/web
 vercel --prod
 
 # Add environment variables

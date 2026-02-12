@@ -287,10 +287,10 @@ test('should handle API error', async ({ page }) => {
 
    ```bash
    # Terminal 1: Start web
-   cd web && pnpm dev
+   cd apps/web && pnpm dev
 
    # Terminal 2: Start API
-   cd api && pnpm dev
+   cd apps/api && pnpm dev
    ```
 
 2. **Clear browser state**:

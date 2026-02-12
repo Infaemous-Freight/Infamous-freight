@@ -20,7 +20,7 @@
 
 ### API Service
 
-- ✅ [api/.env.example](api/.env.example) - API-specific template (NEWLY CREATED)
+- ✅ [apps/api/.env.example](apps/api/.env.example) - API-specific template (NEWLY CREATED)
   - 148 lines covering all API configuration
   - Rate limiting configuration
   - Database pool settings
@@ -30,7 +30,7 @@
 
 ### Web Service
 
-- ✅ [web/.env.example](web/.env.example) - Web/Next.js template (NEWLY CREATED)
+- ✅ [apps/web/.env.example](apps/web/.env.example) - Web/Next.js template (NEWLY CREATED)
   - 106 lines covering frontend configuration
   - Next.js specific settings
   - Public API endpoints
@@ -41,9 +41,9 @@
 
 ### Mobile Service
 
-- ✅ [mobile/.env.example](mobile/.env.example) - Mobile app template (EXISTING)
-- ✅ [mobile/.env.development](mobile/.env.development) - Mobile dev (NEWLY CREATED)
-- ✅ [mobile/.env.production](mobile/.env.production) - Mobile prod (NEWLY CREATED)
+- ✅ [apps/mobile/.env.example](apps/mobile/.env.example) - Mobile app template (EXISTING)
+- ✅ [apps/mobile/.env.development](apps/mobile/.env.development) - Mobile dev (NEWLY CREATED)
+- ✅ [apps/mobile/.env.production](apps/mobile/.env.production) - Mobile prod (NEWLY CREATED)
 
 ---
 
@@ -154,13 +154,13 @@ ENABLE_ANALYTICS=false
 cp .env.example .env.development
 
 # Copy API environment file
-cp api/.env.example api/.env
+cp apps/api/.env.example apps/api/.env
 
 # Copy Web environment file
-cp web/.env.example web/.env
+cp apps/web/.env.example apps/web/.env
 
 # Copy Mobile environment file
-cp mobile/.env.example mobile/.env.development
+cp apps/mobile/.env.example apps/mobile/.env.development
 ```
 
 ### 2. Configure Your Environment
@@ -228,7 +228,7 @@ services:
   api:
     env_file:
       - .env.development
-      - api/.env
+      - apps/api/.env
     environment:
       DATABASE_URL: postgresql://postgres:5432/db
 ```

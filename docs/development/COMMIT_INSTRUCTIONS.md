@@ -16,22 +16,22 @@ This session completed all 6 strategic improvements:
 ### Created
 
 - ✅ `VALIDATION.md` - 300+ line validation guide with examples
-- ✅ `api/__tests__/validation-edge-cases.test.js` - 40+ edge case tests
-- ✅ `api/src/routes/users.search.example.js` - Search endpoint documentation
+- ✅ `apps/api/__tests__/validation-edge-cases.test.js` - 40+ edge case tests
+- ✅ `apps/api/src/routes/users.search.example.js` - Search endpoint documentation
 - ✅ `docs/SENTRY_MONITORING.md` - 400+ line Sentry integration guide
 - ✅ `ALL_6_TASKS_COMPLETE.md` - Summary of all changes
 
 ### Modified
 
-- ✅ `api/Dockerfile` - Fixed EXPOSE port from 3001 to 4000
-- ✅ `api/src/middleware/errorHandler.js` - Enhanced with context and categorization
+- ✅ `apps/api/Dockerfile` - Fixed EXPOSE port from 3001 to 4000
+- ✅ `apps/api/src/middleware/errorHandler.js` - Enhanced with context and categorization
 
 ## Recommended Commit Sequence
 
 ### Commit 1: Infrastructure Fix (Critical)
 
 ```bash
-git add api/Dockerfile
+git add apps/api/Dockerfile
 git commit -m "fix(infra): correct docker port from 3001 to 4000
 
 - Aligns Dockerfile with fly.toml configuration (PORT=4000)
@@ -68,7 +68,7 @@ git commit -m "docs: add Sentry monitoring and error tracking guide
 ### Commit 4: Error Handling Enhancement
 
 ```bash
-git add api/src/middleware/errorHandler.js
+git add apps/api/src/middleware/errorHandler.js
 git commit -m "refactor: enhance error handling with context and categorization
 
 - Add formatErrorContext() function for consistent error logging
@@ -81,7 +81,7 @@ git commit -m "refactor: enhance error handling with context and categorization
 ### Commit 5: Feature Specification
 
 ```bash
-git add api/src/routes/users.search.example.js
+git add apps/api/src/routes/users.search.example.js
 git commit -m "docs: document GET /api/users/search endpoint
 
 - Define query parameters (q, page, limit, role, sortBy, order)
@@ -94,7 +94,7 @@ git commit -m "docs: document GET /api/users/search endpoint
 ### Commit 6: Test Suite Expansion
 
 ```bash
-git add api/__tests__/validation-edge-cases.test.js
+git add apps/api/__tests__/validation-edge-cases.test.js
 git commit -m "test: add comprehensive edge case validation tests
 
 - Email validation: 6 tests (invalid formats, valid complex emails)
@@ -126,10 +126,10 @@ After each commit, verify:
 
 ```bash
 # Verify Dockerfile syntax
-docker build -f api/Dockerfile -t infamous-api:test . --no-cache --dry-run
+docker build -f apps/api/Dockerfile -t infamous-api:test . --no-cache --dry-run
 
 # Run the new edge case tests
-cd api && npm test -- validation-edge-cases.test.js
+cd apps/api && npm test -- validation-edge-cases.test.js
 
 # Check all tests still pass
 npm test
@@ -138,7 +138,7 @@ npm test
 npm run lint
 
 # Check TypeScript types (web)
-cd ../web && npm run type-check
+cd ../apps/web && npm run type-check
 ```
 
 ## Push to Remote

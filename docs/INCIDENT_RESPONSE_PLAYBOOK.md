@@ -281,7 +281,7 @@ kubectl logs pod/api-xyz123             # Current
 kubectl rollout pause deployment/api
 
 # Fix migration
-cd api && pnpm prisma migrate resolve --rolled-back "migration_name"
+cd apps/api && pnpm prisma migrate resolve --rolled-back "migration_name"
 
 # Resume deployment
 kubectl rollout resume deployment/api
@@ -445,7 +445,7 @@ kubectl top pods -l app=api --containers=true
 
 ```bash
 # Enable memory profiling (requires code changes)
-# See: api/src/middleware/logger.js for instrumentation
+# See: apps/api/src/middleware/logger.js for instrumentation
 
 # Check for:
 # - Unbounded cache (rate limit metrics, response cache)
@@ -484,7 +484,7 @@ spec:
 ```bash
 # This is a code issue, requires debugging
 # Check git log for recent changes
-git log --oneline api/src -10
+git log --oneline apps/api/src -10
 
 # Review recent commits for:
 # - new caches added

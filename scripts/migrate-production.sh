@@ -17,7 +17,7 @@ echo "📊 Database: ${DATABASE_URL%%\?*}"  # Hide credentials
 echo ""
 
 # Navigate to API directory
-cd "$(dirname "$0")/../api" || exit 1
+cd "$(dirname "$0")/../apps/api" || exit 1
 
 echo "1️⃣  Checking migration status..."
 pnpm prisma migrate status || true
@@ -34,7 +34,7 @@ echo ""
 echo "✅ Migrations complete!"
 echo ""
 echo "📝 To create a new migration:"
-echo "   cd api && pnpm prisma migrate dev --name your_migration_name"
+echo "   cd apps/api && pnpm prisma migrate dev --name your_migration_name"
 echo ""
 echo "🔍 To check migration status:"
-echo "   cd api && pnpm prisma migrate status"
+echo "   cd apps/api && pnpm prisma migrate status"

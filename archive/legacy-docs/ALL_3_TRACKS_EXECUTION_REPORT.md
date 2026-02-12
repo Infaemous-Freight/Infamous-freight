@@ -149,7 +149,7 @@ maintenance_work_mem = 64MB
 1. **Cache Helper Module** ✅
 
 ```javascript
-// Created: api/src/utils/cache.js
+// Created: apps/api/src/utils/cache.js
 // Provides:
 - getCached() - Fetch with auto-caching
 - invalidateCache() - Smart invalidation
@@ -160,8 +160,8 @@ maintenance_work_mem = 64MB
 2. **API Response Caching** ✅
 
 ```javascript
-// Updated: api/src/routes/shipments.js
-// Updated: api/src/routes/users.js
+// Updated: apps/api/src/routes/shipments.js
+// Updated: apps/api/src/routes/users.js
 // Implemented 10-minute TTL for list endpoints
 // Invalidation on create/update/delete
 ```
@@ -169,7 +169,7 @@ maintenance_work_mem = 64MB
 3. **Cache Configuration** ✅
 
 ```javascript
-// Created: api/src/config/cache.js
+// Created: apps/api/src/config/cache.js
 // Defines TTL strategy:
 - Hot data: 1 hour
 - Warm data: 10 minutes
@@ -183,7 +183,7 @@ maintenance_work_mem = 64MB
 1. **Next.js Image Optimization** ✅
 
 ```typescript
-// Updated: web/next.config.mjs
+// Updated: apps/web/next.config.mjs
 // Configured:
 - AVIF/WebP formats
 - Device-specific sizes
@@ -200,7 +200,7 @@ maintenance_work_mem = 64MB
 3. **HTTP Caching Headers** ✅
 
 ```javascript
-// Updated: web/next.config.mjs
+// Updated: apps/web/next.config.mjs
 // Configured aggressive caching:
 - Static assets: 1 year
 - Images: 1 year immutable
@@ -253,7 +253,7 @@ maintenance_work_mem = 64MB
 2. **Docker Layer Caching** ✅
 
 ```dockerfile
-# Optimized: api/Dockerfile, web/Dockerfile
+# Optimized: apps/api/Dockerfile, apps/web/Dockerfile
 # Multi-stage builds
 # Dependency layer separation
 # Result: 8min → 2min (with cache)
@@ -275,7 +275,7 @@ maintenance_work_mem = 64MB
 1. **Feature Flag Service** ✅
 
 ```javascript
-// Created: api/src/services/featureFlags.js
+// Created: apps/api/src/services/featureFlags.js
 // Provides:
 - Flag configuration
 - User-based rollout
@@ -286,7 +286,7 @@ maintenance_work_mem = 64MB
 2. **Client-Side Feature Flags** ✅
 
 ```typescript
-// Created: web/hooks/useFeatureFlag.ts
+// Created: apps/web/hooks/useFeatureFlag.ts
 // React hook for feature flag checks
 // Automatic refresh on user change
 ```
@@ -294,7 +294,7 @@ maintenance_work_mem = 64MB
 3. **Feature Flag Admin Dashboard** ✅
 
 ```typescript
-// Created: web/pages/admin/feature-flags.tsx
+// Created: apps/web/pages/admin/feature-flags.tsx
 // UI for managing all flags
 // Real-time enable/disable
 // Rollout percentage slider
@@ -307,7 +307,7 @@ maintenance_work_mem = 64MB
 1. **A/B Test Service** ✅
 
 ```javascript
-// Created: api/src/services/abTesting.js
+// Created: apps/api/src/services/abTesting.js
 // Provides:
 - Deterministic user assignment
 - Event tracking
@@ -318,7 +318,7 @@ maintenance_work_mem = 64MB
 2. **A/B Test Tracking** ✅
 
 ```typescript
-// Created: web/hooks/useABTest.ts
+// Created: apps/web/hooks/useABTest.ts
 // React hook for A/B testing
 // Automatic event tracking
 // Variant assignment
@@ -327,7 +327,7 @@ maintenance_work_mem = 64MB
 3. **Analytics Dashboard** ✅
 
 ```typescript
-// Created: web/pages/admin/ab-tests.tsx
+// Created: apps/web/pages/admin/ab-tests.tsx
 // Real-time conversion tracking
 // Statistical significance display
 // Automated recommendations
@@ -564,25 +564,25 @@ Documentation: COMPLETE ✅
 
 **Services (3)**:
 
-- `api/src/services/featureFlags.js` - Feature flag management
-- `api/src/services/abTesting.js` - A/B testing framework
-- `api/src/utils/cache.js` - Caching helper utilities
+- `apps/api/src/services/featureFlags.js` - Feature flag management
+- `apps/api/src/services/abTesting.js` - A/B testing framework
+- `apps/api/src/utils/cache.js` - Caching helper utilities
 
 **React Hooks (3)**:
 
-- `web/hooks/useFeatureFlag.ts` - Feature flag React hook
-- `web/hooks/useABTest.ts` - A/B testing React hook
-- `web/hooks/usePerformance.ts` - Performance tracking
+- `apps/web/hooks/useFeatureFlag.ts` - Feature flag React hook
+- `apps/web/hooks/useABTest.ts` - A/B testing React hook
+- `apps/web/hooks/usePerformance.ts` - Performance tracking
 
 **Admin Pages (3)**:
 
-- `web/pages/admin/feature-flags.tsx` - Feature flag dashboard
-- `web/pages/admin/ab-tests.tsx` - A/B testing dashboard
-- `web/pages/admin/performance.tsx` - Performance dashboard
+- `apps/web/pages/admin/feature-flags.tsx` - Feature flag dashboard
+- `apps/web/pages/admin/ab-tests.tsx` - A/B testing dashboard
+- `apps/web/pages/admin/performance.tsx` - Performance dashboard
 
 **Configuration (6)**:
 
-- `api/src/config/cache.js` - Cache strategy config
+- `apps/api/src/config/cache.js` - Cache strategy config
 - `postgresql.conf` - Database tuning
 - `prometheus/alert-rules.yml` - Alert optimization
 - `.github/workflows/build.yml` - CI/CD pipeline
@@ -606,7 +606,7 @@ Documentation: COMPLETE ✅
 
 **Migrations (1)**:
 
-- `api/prisma/migrations/add-performance-indexes.sql`
+- `apps/api/prisma/migrations/add-performance-indexes.sql`
 
 ---
 

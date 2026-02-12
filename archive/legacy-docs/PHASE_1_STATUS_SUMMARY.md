@@ -128,13 +128,13 @@ Phase 4: Advanced Scaling (15 days)
 
 ### Database
 
-- `api/prisma/schema.prisma` - Database schema
+- `apps/api/prisma/schema.prisma` - Database schema
 - `backups/` - Database backup location
 
 ### Services (Phase 2-4)
 
-- `src/apps/api/src/services/ml/predictiveAvailability.ts` - Phase 3 ML service
-- `src/apps/api/src/services/analytics/executiveAnalytics.ts` - Phase 4 analytics
+- `apps/api/src/services/ml/predictiveAvailability.ts` - Phase 3 ML service
+- `apps/api/src/services/analytics/executiveAnalytics.ts` - Phase 4 analytics
 
 ---
 

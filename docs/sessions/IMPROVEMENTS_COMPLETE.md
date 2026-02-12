@@ -184,9 +184,9 @@ Successfully transformed Infamous Freight Enterprises into a modern, production-
 
 ```
 infamous-freight-enterprises/
-├── api/                        # Backend API service
-├── web/                        # Next.js frontend
-├── mobile/                     # React Native mobile (moved from nested)
+├── apps/api/                        # Backend API service
+├── apps/web/                        # Next.js frontend
+├── apps/mobile/                     # React Native mobile (moved from nested)
 ├── packages/
 │   └── shared/                 # Shared TypeScript package
 │       ├── src/

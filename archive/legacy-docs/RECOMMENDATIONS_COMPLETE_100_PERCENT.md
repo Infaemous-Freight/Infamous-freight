@@ -29,7 +29,7 @@ Vercel builds were failing with: `warning: Not a git repository`
 **A. Updated vercel.json ignoreCommand**
 
 ```json
-"ignoreCommand": "bash -c 'if [ -d .git ]; then git diff --quiet HEAD -- . \":(exclude)api/**\" \":(exclude)packages/**\" \":(exclude)archive/**\" || exit 1; fi'"
+"ignoreCommand": "bash -c 'if [ -d .git ]; then git diff --quiet HEAD -- . \":(exclude)apps/api/**\" \":(exclude)packages/**\" \":(exclude)archive/**\" || exit 1; fi'"
 ```
 
 - Gracefully handles shallow clones
@@ -104,9 +104,9 @@ model Shipment {
 
 **Files Created/Modified:**
 
-- `api/prisma/schema.prisma` - Fixed all relation errors
-- `api/src/middleware/advancedSecurity.js` - New advanced auth patterns
-- `api/src/services/encryption.js` - Enhanced encryption service
+- `apps/api/prisma/schema.prisma` - Fixed all relation errors
+- `apps/api/src/middleware/advancedSecurity.js` - New advanced auth patterns
+- `apps/api/src/services/encryption.js` - Enhanced encryption service
 
 **Status:** ✅ **SCHEMA VALIDATED** - All relations properly defined
 
@@ -116,7 +116,7 @@ model Shipment {
 
 ### A. Response Caching Middleware
 
-**File:** `api/src/middleware/cache.js`
+**File:** `apps/api/src/middleware/cache.js`
 
 ```javascript
 // Automatic caching with Redis
@@ -131,7 +131,7 @@ const cacheMiddleware = cacheMiddleware((ttl = 300));
 
 ### B. Query Optimization Guide
 
-**File:** `api/src/services/queryOptimization.js`
+**File:** `apps/api/src/services/queryOptimization.js`
 
 Includes patterns for:
 
@@ -142,7 +142,7 @@ Includes patterns for:
 
 ### C. Web Bundle Optimization
 
-**File:** `web/lib/bundleOptimization.ts`
+**File:** `apps/web/lib/bundleOptimization.ts`
 
 Targets:
 
@@ -176,7 +176,7 @@ Targets:
 
 ### A. Unit Test Enhancements
 
-**File:** `api/__tests__/routes/shipments.test.js` (provided complete example)
+**File:** `apps/api/__tests__/routes/shipments.test.js` (provided complete example)
 
 Comprehensive coverage includes:
 
@@ -227,7 +227,7 @@ pnpm test:e2e               # Run E2E tests
 
 ### A. Advanced Security Module
 
-**File:** `api/src/middleware/advancedSecurity.js`
+**File:** `apps/api/src/middleware/advancedSecurity.js`
 
 Features:
 
@@ -242,7 +242,7 @@ Features:
 
 ### B. Encryption Service Enhancement
 
-**File:** `api/src/services/encryption.js` (enhanced)
+**File:** `apps/api/src/services/encryption.js` (enhanced)
 
 Features:
 
@@ -355,7 +355,7 @@ Automated rollback capabilities:
 ```yaml
 ✅ Manual trigger available
 ✅ Choose environment (production/staging)
-✅ Choose service (api/web/all)
+✅ Choose service (apps/api/web/all)
 ✅ Optional target version
 ✅ Automatic verification post-rollback
 ✅ Slack notification integration
@@ -384,7 +384,7 @@ Each deployment includes:
 
 ### A. Comprehensive Index Strategy
 
-**File:** `api/prisma/database-optimization.sql`
+**File:** `apps/api/prisma/database-optimization.sql`
 
 Implemented indexes:
 
@@ -414,7 +414,7 @@ CREATE INDEX idx_drivers_active
 
 ### B. Query Optimization Patterns
 
-**File:** `api/src/services/databaseOptimization.js` (enhanced)
+**File:** `apps/api/src/services/databaseOptimization.js` (enhanced)
 
 Includes ready-to-use patterns:
 
@@ -497,7 +497,7 @@ ANALYZE=true pnpm --filter web build
 pnpm test:e2e
 
 # Database optimization (when ready)
-cd api && psql $DATABASE_URL -f prisma/database-optimization.sql
+cd apps/api && psql $DATABASE_URL -f prisma/database-optimization.sql
 ```
 
 ---
@@ -596,7 +596,7 @@ To verify all recommendations are in place:
 cat vercel.json | grep ignoreCommand
 
 # Check schema
-cd api && pnpm prisma validate
+cd apps/api && pnpm prisma validate
 
 # Check tests
 pnpm test --listTests | wc -l
@@ -605,7 +605,7 @@ pnpm test --listTests | wc -l
 ls -la .github/workflows/*.yml | wc -l
 
 # Check security modules
-grep -r "advancedSecurity\|encryption" api/src
+grep -r "advancedSecurity\|encryption" apps/api/src
 ```
 
 ---

@@ -72,7 +72,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:test@localhost:5432/infamous_freight_test
         run: |
-          cd api
+          cd apps/api
           pnpm prisma:generate
           pnpm prisma:migrate:deploy
       
@@ -83,7 +83,7 @@ jobs:
           NODE_ENV: test
           AI_PROVIDER: synthetic
         run: |
-          cd api
+          cd apps/api
           pnpm dev &
           
           # Wait for API to be ready
@@ -94,7 +94,7 @@ jobs:
           NEXT_PUBLIC_API_URL: http://localhost:4000
           NODE_ENV: test
         run: |
-          cd web
+          cd apps/web
           pnpm build
           pnpm start &
           
@@ -167,12 +167,12 @@ jobs:
       
       - name: Build Web
         run: |
-          cd web
+          cd apps/web
           pnpm build
       
       - name: Start production server
         run: |
-          cd web
+          cd apps/web
           pnpm start &
           
           # Wait for server
@@ -243,18 +243,18 @@ jobs:
         env:
           ANALYZE: true
         run: |
-          cd web
+          cd apps/web
           pnpm build
       
       - name: Upload bundle stats
         uses: actions/upload-artifact@v4
         with:
           name: bundle-stats
-          path: web/.next/analyze/
+          path: apps/web/.next/analyze/
       
       - name: Check bundle size
         run: |
-          cd web
+          cd apps/web
           
           # Get bundle sizes
           TOTAL_SIZE=$(du -sh .next/static | cut -f1)

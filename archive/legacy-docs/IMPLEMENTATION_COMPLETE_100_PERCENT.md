@@ -20,7 +20,7 @@ All recommended enhancements have been implemented in code. Here's what was deli
 
 ### 1. **Enhanced Security Headers** ✅
 
-- **File:** `src/apps/api/src/middleware/enhancedSecurity.ts`
+- **File:** `apps/api/src/middleware/enhancedSecurity.ts`
 - **Features:**
   - Content Security Policy (CSP)
   - HTTP Strict Transport Security (HSTS) - 1 year
@@ -34,8 +34,8 @@ All recommended enhancements have been implemented in code. Here's what was deli
 ### 2. **Database Connection Pooling** ✅
 
 - **Files:**
-  - `src/apps/api/prisma/schema.prisma` (updated)
-  - `src/apps/api/src/lib/prismaClient.ts` (new)
+  - `apps/api/prisma/schema.prisma` (updated)
+  - `apps/api/src/lib/prismaClient.ts` (new)
 - **Features:**
   - PgBouncer support
   - Connection limit configuration (50 connections)
@@ -61,7 +61,7 @@ All recommended enhancements have been implemented in code. Here's what was deli
 
 ### 4. **Redis Caching Middleware** ✅
 
-- **File:** `src/apps/api/src/middleware/redisCache.ts`
+- **File:** `apps/api/src/middleware/redisCache.ts`
 - **Features:**
   - Intelligent cache key generation
   - Automatic cache invalidation
@@ -76,7 +76,7 @@ All recommended enhancements have been implemented in code. Here's what was deli
 
 ### 5. **Next.js Image Optimization** ✅
 
-- **File:** `src/apps/web/next.config.mjs` (updated)
+- **File:** `apps/web/next.config.mjs` (updated)
 - **Features:**
   - AVIF & WebP formats
   - Responsive image sizes
@@ -100,7 +100,7 @@ All recommended enhancements have been implemented in code. Here's what was deli
 
 ### 7. **WebSocket Real-Time Tracking** ✅
 
-- **File:** `src/apps/api/src/services/websocket.ts`
+- **File:** `apps/api/src/services/websocket.ts`
 - **Features:**
   - JWT authentication for WebSocket
   - Room-based shipment tracking
@@ -123,7 +123,7 @@ All recommended enhancements have been implemented in code. Here's what was deli
 
 ### 8. **Batch AI Processing** ✅
 
-- **File:** `src/apps/api/src/services/batchAI.ts`
+- **File:** `apps/api/src/services/batchAI.ts`
 - **Features:**
   - Process 500 invoices in parallel
   - Priority-based processing
@@ -138,7 +138,7 @@ All recommended enhancements have been implemented in code. Here's what was deli
 
 ### 9. **Distributed Tracing** ✅
 
-- **File:** `src/apps/api/src/middleware/tracing.ts`
+- **File:** `apps/api/src/middleware/tracing.ts`
 - **Features:**
   - OpenTelemetry integration
   - Auto-instruments HTTP, Express, Prisma
@@ -153,7 +153,7 @@ All recommended enhancements have been implemented in code. Here's what was deli
 
 ### 10. **Rate Limit Metrics** ✅
 
-- **File:** `src/apps/api/src/middleware/rateLimitMetrics.ts`
+- **File:** `apps/api/src/middleware/rateLimitMetrics.ts`
 - **Endpoints:**
   - `GET /api/metrics/rate-limits` - View all stats
   - `POST /api/metrics/rate-limits/reset` - Reset stats
@@ -170,7 +170,7 @@ All recommended enhancements have been implemented in code. Here's what was deli
 
 ### 11. **Offline Support** ✅
 
-- **File:** `src/apps/mobile/src/services/offline.ts`
+- **File:** `apps/mobile/src/services/offline.ts`
 - **Features:**
   - Cache last 10 shipments locally
   - Queue actions when offline
@@ -185,7 +185,7 @@ All recommended enhancements have been implemented in code. Here's what was deli
 
 ### 12. **Push Notifications** ✅
 
-- **File:** `src/apps/mobile/src/services/notifications.ts`
+- **File:** `apps/mobile/src/services/notifications.ts`
 - **Features:**
   - Expo push token registration
   - Local notifications
@@ -342,7 +342,7 @@ All recommended enhancements have been implemented in code. Here's what was deli
 ### 1. Add Redis Caching to Existing Route
 
 ```typescript
-// src/apps/api/src/routes/shipments.ts
+// apps/api/src/routes/shipments.ts
 import { cacheMiddleware } from "../middleware/redisCache";
 
 router.get(
@@ -356,7 +356,7 @@ router.get(
 ### 2. Enable WebSockets
 
 ```typescript
-// src/apps/api/src/server.ts
+// apps/api/src/server.ts
 import initializeWebSocket from "./services/websocket";
 
 const server = httpServer.listen(PORT);
@@ -370,7 +370,7 @@ emitShipmentUpdate(io, trackingNumber, { status: "delivered" });
 ### 3. Initialize Distributed Tracing
 
 ```typescript
-// src/apps/api/src/server.ts (line 1)
+// apps/api/src/server.ts (line 1)
 import { initializeTracing, tracingMiddleware } from "./middleware/tracing";
 
 initializeTracing("infamous-freight-api");
@@ -380,7 +380,7 @@ app.use(tracingMiddleware("api"));
 ### 4. Use Batch AI Processing
 
 ```typescript
-// src/apps/api/src/routes/ai.ts
+// apps/api/src/routes/ai.ts
 import { processBatch } from "../services/batchAI";
 
 router.post("/ai/batch", authenticate, async (req, res) => {
@@ -403,10 +403,10 @@ The following cannot be automated and require manual intervention:
 flyctl deploy --config fly.toml
 
 # Web
-cd src/apps/web && vercel --prod
+cd apps/web && vercel --prod
 
 # Mobile
-cd src/apps/mobile && eas build --platform all
+cd apps/mobile && eas build --platform all
 ```
 
 ### 2. Provision Production Database
@@ -448,7 +448,7 @@ npm install @opentelemetry/sdk-trace-node @opentelemetry/instrumentation-http \
   @opentelemetry/instrumentation-express @prisma/instrumentation
 
 # Mobile
-cd src/apps/mobile
+cd apps/mobile
 npm install @react-native-async-storage/async-storage @react-native-community/netinfo expo-notifications
 ```
 

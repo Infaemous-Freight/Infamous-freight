@@ -17,7 +17,7 @@ This guide ensures all web interfaces meet WCAG 2.1 AA standards. Accessibility 
 #### Lighthouse (Built-in)
 ```bash
 # Run accessibility audit
-cd web
+cd apps/web
 pnpm build
 pnpm start &
 
@@ -33,7 +33,7 @@ pnpm start &
 
 #### eslint-plugin-jsx-a11y
 ```bash
-# Already configured in web/eslint.config.js
+# Already configured in apps/web/eslint.config.js
 # Catches accessibility issues at development time
 
 # Run check:
@@ -169,7 +169,7 @@ pnpm lint:a11y
 ### Jest Accessibility Tests
 
 ```javascript
-// web/__tests__/accessibility.test.js
+// apps/web/__tests__/accessibility.test.js
 import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
 

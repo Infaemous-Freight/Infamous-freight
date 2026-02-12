@@ -55,19 +55,19 @@ run_npm_audit() {
     
     echo ""
     echo "🔍 Scanning API dependencies..."
-    cd api
+    cd apps/api
     pnpm audit --audit-level=moderate || exit_code=$?
     cd ..
     
     echo ""
     echo "🔍 Scanning Web dependencies..."
-    cd web
+    cd apps/web
     pnpm audit --audit-level=moderate || exit_code=$?
     cd ..
     
     echo ""
     echo "🔍 Scanning Mobile dependencies..."
-    cd mobile
+    cd apps/mobile
     pnpm audit --audit-level=moderate || exit_code=$?
     cd ..
     
@@ -143,26 +143,26 @@ run_security_headers_audit() {
     
     echo ""
     echo "🛡️  Checking API security middleware..."
-    if [ -f "api/src/middleware/securityHeaders.js" ]; then
+    if [ -f "apps/api/src/middleware/securityHeaders.js" ]; then
         log_success "Security headers middleware found"
         grep -E "Strict-Transport-Security|Content-Security-Policy|X-Frame-Options" \
-            api/src/middleware/securityHeaders.js | head -5
+            apps/api/src/middleware/securityHeaders.js | head -5
     else
         log_warning "Security headers middleware not found"
     fi
     
     echo ""
     echo "🔐 Checking authentication security..."
-    if [ -f "api/src/middleware/security.js" ]; then
+    if [ -f "apps/api/src/middleware/security.js" ]; then
         log_success "Security middleware found"
-        grep -c "JWT\|authenticate\|requireScope" api/src/middleware/security.js
+        grep -c "JWT\|authenticate\|requireScope" apps/api/src/middleware/security.js
     else
         log_warning "Security middleware not found"
     fi
     
     echo ""
     echo "📝 Checking rate limiting..."
-    if grep -r "rateLimit\|limiters\." api/src/routes/ 2>/dev/null | wc -l | grep -q "^0$"; then
+    if grep -r "rateLimit\|limiters\." apps/api/src/routes/ 2>/dev/null | wc -l | grep -q "^0$"; then
         log_warning "Rate limiting not found on all routes"
     else
         log_success "Rate limiting configured"
@@ -175,13 +175,13 @@ run_outdated_check() {
     
     echo ""
     echo "📦 Outdated packages in API..."
-    cd api
+    cd apps/api
     pnpm outdated --depth=0 || true
     cd ..
     
     echo ""
     echo "📦 Outdated packages in Web..."
-    cd web
+    cd apps/web
     pnpm outdated --depth=0 || true
     cd ..
 }
@@ -212,7 +212,7 @@ run_test_coverage() {
     
     echo ""
     echo "🧪 Running API tests..."
-    cd api
+    cd apps/api
     pnpm test 2>&1 | tail -10 || true
     cd ..
     

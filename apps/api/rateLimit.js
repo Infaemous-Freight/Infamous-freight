@@ -1,4 +1,4 @@
-// api/rateLimit.js - Rate Limiting Module
+// apps/api/rateLimit.js - Rate Limiting Module
 class RateLimiter {
     constructor(windowMs = 60000, maxRequests = 100) {
         this.windowMs = windowMs;

@@ -152,18 +152,18 @@
 ### Service Files (5 major services)
 
 ```
-✅ api/config/performance/db-pool.js (45 lines)
-✅ api/services/security/encryption.js (150 lines)
-✅ api/services/queue/job-queue.js (290 lines)
-✅ api/services/realtime/websocket.js (280 lines)
-✅ api/services/monitoring/metrics.js (380 lines)
-✅ api/services/compliance/gdpr.js (340 lines)
+✅ apps/api/config/performance/db-pool.js (45 lines)
+✅ apps/api/services/security/encryption.js (150 lines)
+✅ apps/api/services/queue/job-queue.js (290 lines)
+✅ apps/api/services/realtime/websocket.js (280 lines)
+✅ apps/api/services/monitoring/metrics.js (380 lines)
+✅ apps/api/services/compliance/gdpr.js (340 lines)
 ```
 
 ### Test Files
 
 ```
-✅ api/tests/next-100-advanced.test.js (450 lines)
+✅ apps/api/tests/next-100-advanced.test.js (450 lines)
    - Database pooling tests (3)
    - Encryption tests (8)
    - Job queue tests (7)
@@ -316,7 +316,7 @@ bash next-100-advancement.sh
 
 ```bash
 # Phase 1: Database
-# - Update api/src/index.js to use db-pool.js
+# - Update apps/api/src/index.js to use db-pool.js
 # - Optimize queries in routes
 
 # Phase 2: Security
@@ -340,7 +340,7 @@ bash next-100-advancement.sh
 
 ```bash
 # Run new test suite (71 tests)
-pnpm test api/tests/next-100-advanced.test.js
+pnpm test apps/api/tests/next-100-advanced.test.js
 
 # Full coverage report
 pnpm test -- --coverage
@@ -464,7 +464,7 @@ After deployment, verify:
 - [NEXT_100_IMPLEMENTATION_GUIDE.md](NEXT_100_IMPLEMENTATION_GUIDE.md) -
   Step-by-step
 - [next-100-advancement.sh](next-100-advancement.sh) - Setup script
-- [api/tests/next-100-advanced.test.js](api/tests/next-100-advanced.test.js) -
+- [apps/api/tests/next-100-advanced.test.js](apps/api/tests/next-100-advanced.test.js) -
   Tests
 
 ---

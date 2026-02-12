@@ -137,7 +137,7 @@ git status        # Must be clean
 npm test          # Tests must pass
 
 # Verify database
-cd api && pnpm prisma:migrate:status
+cd apps/api && pnpm prisma:migrate:status
 
 # Verify secrets
 ./scripts/setup-secrets.sh --verify

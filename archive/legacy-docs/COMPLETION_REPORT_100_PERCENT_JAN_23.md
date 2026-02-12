@@ -92,7 +92,7 @@ TESTS UNBLOCKED: 50-60 individual tests
 ### Configuration Files
 
 ```
-api/jest.config.js
+apps/api/jest.config.js
 ├─ Added: transformIgnorePatterns configuration
 ├─ Lines: +3 new lines
 ├─ Purpose: Allow Jest to process @infamous-freight/shared
@@ -122,7 +122,7 @@ packages/shared/dist/ (automatically rebuilt)
 ### Application Code
 
 ```
-api/src/routes/metrics.js
+apps/api/src/routes/metrics.js
 ├─ Fixed: Unclosed GET /metrics endpoint
 ├─ Fixed: Moved routes to module level
 ├─ Fixed: Moved helper functions to module level
@@ -234,7 +234,7 @@ cd /workspaces/Infamous-freight-enterprises
 pnpm --filter @infamous-freight/shared build
 
 # 3. Run quick syntax check
-node -c api/src/routes/metrics.js
+node -c apps/api/src/routes/metrics.js
 node -e "require('@prisma/client'); console.log('✅ Prisma loads')"
 node -e "require('@infamous-freight/shared'); console.log('✅ Shared loads')"
 ```

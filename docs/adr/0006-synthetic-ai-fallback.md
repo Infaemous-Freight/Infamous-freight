@@ -25,7 +25,7 @@ We needed a strategy to maintain development velocity and system reliability wit
 
 We implemented a **synthetic AI engine fallback** that simulates AI responses when external providers are unavailable or not configured.
 
-**Architecture** (`api/src/services/aiSyntheticClient.js`):
+**Architecture** (`apps/api/src/services/aiSyntheticClient.js`):
 
 ```javascript
 const AI_PROVIDER = process.env.AI_PROVIDER || "synthetic";
@@ -228,4 +228,4 @@ If synthetic responses become insufficient:
 
 - [ADR-0001: Monorepo Architecture](0001-monorepo-architecture.md)
 - [.env.example](../../.env.example) - AI provider configuration
-- [api/src/services/aiSyntheticClient.js](../../api/src/services/aiSyntheticClient.js) - Implementation
+- [apps/api/src/services/aiSyntheticClient.js](../../apps/api/src/services/aiSyntheticClient.js) - Implementation

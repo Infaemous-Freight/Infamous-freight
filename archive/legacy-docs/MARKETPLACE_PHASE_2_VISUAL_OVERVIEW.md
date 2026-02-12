@@ -71,7 +71,7 @@ Infamous-freight-enterprises/
 ├── MARKETPLACE_PHASE_2_FINAL_SUMMARY.md
 │   └─ Completion status & next steps
 │
-└── api/src/
+└── apps/api/src/
     ├── lib/
     │   ├── jobStateMachine.js            ← NEW: State validation
     │   ├── stripe.js                     ← Used by marketplace
@@ -189,7 +189,7 @@ Phase 3 (NEXT)
 ```
 FILES MODIFIED: 4
 ┌──────────────────────────────────────────────────┐
-│ api/src/marketplace/router.js                    │
+│ apps/api/src/marketplace/router.js                    │
 ├──────────────────────────────────────────────────┤
 │ Lines Added: 80                                  │
 │ Changes:                                         │
@@ -203,7 +203,7 @@ FILES MODIFIED: 4
 
 FILES CREATED: 1
 ┌──────────────────────────────────────────────────┐
-│ api/src/lib/jobStateMachine.js                   │
+│ apps/api/src/lib/jobStateMachine.js                   │
 ├──────────────────────────────────────────────────┤
 │ Lines: 45                                        │
 │ Features:                                        │
@@ -215,7 +215,7 @@ FILES CREATED: 1
 
 FILES MODIFIED: 2 (MORE)
 ┌──────────────────────────────────────────────────┐
-│ api/src/marketplace/billingRouter.js             │
+│ apps/api/src/marketplace/billingRouter.js             │
 ├──────────────────────────────────────────────────┤
 │ Lines Added: 30                                  │
 │  ✅ Global authentication                        │
@@ -223,7 +223,7 @@ FILES MODIFIED: 2 (MORE)
 │  ✅ User self-access only                        │
 └──────────────────────────────────────────────────┘
 
-│ api/src/marketplace/webhooks.js                  │
+│ apps/api/src/marketplace/webhooks.js                  │
 ├──────────────────────────────────────────────────┤
 │ Lines Added: 120                                 │
 │  ✅ Correlation ID generation                    │

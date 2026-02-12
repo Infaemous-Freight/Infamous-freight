@@ -18,7 +18,7 @@ Phase 13 upgrades driver matching from **distance-only** to **ETA-to-pickup** ra
 
 ### 1. Environment Variables ✅
 
-Added to `api/.env.example`:
+Added to `apps/api/.env.example`:
 
 ```env
 # ---------- Mapbox ETA (Phase 13) ----------
@@ -38,7 +38,7 @@ MAPBOX_ETA_MAX_CANDIDATES=50
 
 ### 2. Tiny TTL Cache Utility ✅
 
-Created: `api/src/lib/cache.js`
+Created: `apps/api/src/lib/cache.js`
 
 **Export:** `TinyTTLCache` class
 
@@ -69,7 +69,7 @@ cache.clear(); // Flush all
 
 ### 3. Mapbox ETA Service ✅
 
-Created: `api/src/mapbox/eta.js`
+Created: `apps/api/src/mapbox/eta.js`
 
 **Exports:**
 - `etaToPickupSeconds(params)` — Main entry point
@@ -100,7 +100,7 @@ Matrix[i][0] = ETA from driver i to pickup
 
 ### 4. Integration into Eligible Driver Selection ✅
 
-Updated: `api/src/marketplace/offers.js`
+Updated: `apps/api/src/marketplace/offers.js`
 
 **Changes:**
 
@@ -240,10 +240,10 @@ MAPBOX_ETA_CACHE_TTL_SECONDS=60  # Longer cache
 
 ## Files Modified
 
-1. **api/.env.example** — Added 4 Mapbox env vars
-2. **api/src/lib/cache.js** — NEW: TinyTTLCache class
-3. **api/src/mapbox/eta.js** — NEW: Mapbox Matrix API client
-4. **api/src/marketplace/offers.js** — Integrated ETA ranking with fallback
+1. **apps/api/.env.example** — Added 4 Mapbox env vars
+2. **apps/api/src/lib/cache.js** — NEW: TinyTTLCache class
+3. **apps/api/src/mapbox/eta.js** — NEW: Mapbox Matrix API client
+4. **apps/api/src/marketplace/offers.js** — Integrated ETA ranking with fallback
 
 ---
 

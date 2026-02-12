@@ -90,7 +90,7 @@ Tech Leads:
 
 ```bash
 # 1. Verify Next.js bundle analyzer setup
-cd web
+cd apps/web
 npm list @next/bundle-analyzer
 
 # 2. Test bundle analysis
@@ -110,13 +110,13 @@ ANALYZE=true pnpm build
 
 ```javascript
 // 1. Verify webpack configuration
-// Review web/next.config.mjs
+// Review apps/web/next.config.mjs
 // ✅ Check: splitChunks configuration present
 // ✅ Check: vendor splitting configured
 // ✅ Check: optimization.usedExports enabled
 
 // 2. Test dynamic imports
-// Create test file: web/pages/test-splitting.tsx
+// Create test file: apps/web/pages/test-splitting.tsx
 import dynamic from "next/dynamic";
 
 const TestComponent = dynamic(() => import("../components/TestComponent"), {
@@ -253,7 +253,7 @@ File content should include:
 - [ ] All tests passing: `pnpm test -- --coverage`
 - [ ] Type checking: `pnpm check:types`
 - [ ] Linting: `pnpm lint`
-- [ ] Bundle check: `cd web && ANALYZE=true pnpm build`
+- [ ] Bundle check: `cd apps/web && ANALYZE=true pnpm build`
 
 ## Screenshots/Evidence
 
@@ -297,7 +297,7 @@ jobs:
         continue-on-error: false
 
       - name: Bundle analysis
-        working-directory: ./web
+        working-directory: ./apps/web
         run: |
           ANALYZE=true pnpm build
           # Check output size
@@ -323,7 +323,7 @@ jobs:
 **Morning (2 hours): Create Example Route**
 
 ```javascript
-// File: api/src/routes/example.perfect.js
+// File: apps/api/src/routes/example.perfect.js
 // This will be the team's reference implementation
 
 const express = require("express");
@@ -522,7 +522,7 @@ module.exports = router;
 **Afternoon (2 hours): Add Complete Test Suite**
 
 ```javascript
-// File: api/tests/routes/example.perfect.test.js
+// File: apps/api/tests/routes/example.perfect.test.js
 // Complete test template showing all 7 categories
 
 const request = require("supertest");

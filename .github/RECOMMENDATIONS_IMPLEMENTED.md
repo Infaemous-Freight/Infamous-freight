@@ -72,7 +72,7 @@
   - Shared: 90%
 - [x] Coverage uploaded to Codecov automatically
 - [x] Configuration in ci-cd.yml
-- **Location:** `api/jest.config.js`, `.github/workflows/ci-cd.yml`
+- **Location:** `apps/api/jest.config.js`, `.github/workflows/ci-cd.yml`
 
 ---
 

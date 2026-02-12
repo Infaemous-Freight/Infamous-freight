@@ -55,9 +55,9 @@ The workflow automatically detects which part of your monorepo changed:
 
 | Changes Detected         | Action             |
 | ------------------------ | ------------------ |
-| `src/apps/api/**`        | Deploy API only    |
-| `src/apps/web/**`        | Deploy Web only    |
-| `src/apps/mobile/**`     | Deploy Mobile only |
+| `apps/api/**`        | Deploy API only    |
+| `apps/web/**`        | Deploy Web only    |
+| `apps/mobile/**`     | Deploy Mobile only |
 | `src/packages/shared/**` | Deploy all apps    |
 | `.github/workflows/**`   | Deploy all apps    |
 
@@ -214,7 +214,7 @@ Visit [DEPLOYMENT_STATUS.md](DEPLOYMENT_STATUS.md) for:
 - ✅ `/Dockerfile.fly` - Multi-stage production build
 - ✅ `/vercel.json` - Vercel monorepo config
 - ✅ `/.vercelignore` - Optimized build excludes
-- ✅ `/src/apps/mobile/eas.json` - Expo build profiles
+- ✅ `/apps/mobile/eas.json` - Expo build profiles
 
 ### GitHub Workflows
 
@@ -247,7 +247,7 @@ Visit [DEPLOYMENT_STATUS.md](DEPLOYMENT_STATUS.md) for:
 
 ### For API Changes
 
-1. You push changes to `src/apps/api/`
+1. You push changes to `apps/api/`
 2. GitHub Actions detects API changes
 3. Runs full CI pipeline (tests, lint, type-check)
 4. Builds optimized Docker image
@@ -258,7 +258,7 @@ Visit [DEPLOYMENT_STATUS.md](DEPLOYMENT_STATUS.md) for:
 
 ### For Web Changes
 
-1. You push changes to `src/apps/web/`
+1. You push changes to `apps/web/`
 2. GitHub Actions detects Web changes
 3. Runs full CI pipeline
 4. Deploys to Vercel
@@ -269,7 +269,7 @@ Visit [DEPLOYMENT_STATUS.md](DEPLOYMENT_STATUS.md) for:
 
 ### For Mobile Changes
 
-1. You push changes to `src/apps/mobile/`
+1. You push changes to `apps/mobile/`
 2. GitHub Actions detects Mobile changes
 3. Runs full CI pipeline
 4. Builds iOS and Android apps via EAS

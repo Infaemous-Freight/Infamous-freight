@@ -103,7 +103,7 @@ AiEvent {
 ├── DEPLOYMENT_GUIDE.md           # Step-by-step deployment
 ├── PROJECT_SUMMARY.md            # This file
 │
-├── api/
+├── apps/api/
 │   ├── Dockerfile                # Node.js 20 Alpine
 │   ├── package.json              # Dependencies
 │   ├── src/
@@ -121,7 +121,7 @@ AiEvent {
 │       ├── seed.js               # Seed data
 │       └── migrations/           # SQL migrations
 │
-├── web/
+├── apps/web/
 │   ├── Dockerfile                # Next.js build
 │   ├── package.json              # Dependencies
 │   ├── pages/
@@ -182,7 +182,7 @@ flyctl launch --config fly.toml
 flyctl deploy
 
 # Deploy Web to Vercel
-cd web && vercel --prod
+cd apps/web && vercel --prod
 ```
 
 ---

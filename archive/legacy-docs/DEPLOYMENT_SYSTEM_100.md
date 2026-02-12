@@ -205,7 +205,7 @@
 
 ```
 Web (Vercel)        → git push to main → auto-deploy
-API (Fly.io)        → changes to api/, shared/ → auto-deploy
+API (Fly.io)        → changes to apps/api/, shared/ → auto-deploy
 E2E Tests           → after deployment → auto-test
 Health Checks       → after deployment → auto-verify
 ```

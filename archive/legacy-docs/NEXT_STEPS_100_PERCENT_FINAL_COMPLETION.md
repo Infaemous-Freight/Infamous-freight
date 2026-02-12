@@ -101,15 +101,15 @@ Pushed **January 17, 2026** with 14 file changes:
 ### 📄 New Files Added
 1. **`.github/SSH_DEPLOY_KEYS.md`** - Production SSH key documentation
 2. **`DEPLOYMENT_100_PERCENT.md`** - Comprehensive deployment status
-3. **`api/src/app.js`** - Express app export for testing
-4. **`api/src/routes/__tests__/shipments.validation.test.js`** - Validation test suite
+3. **`apps/api/src/app.js`** - Express app export for testing
+4. **`apps/api/src/routes/__tests__/shipments.validation.test.js`** - Validation test suite
 5. **`docs/auth_rate_limit_runbook.md`** - Team operational reference
 
 ### 📝 Files Updated
 - **`pnpm-lock.yaml`** - Added Netlify China CDN plugin + XSS protection
-- **`web/pages/_app.tsx`** - Fixed Datadog RUM production check
-- **`api/src/routes/ai.commands.js`** - Enhanced AI command handling
-- **`api/src/routes/shipments.js`** - Improved shipment validation
+- **`apps/web/pages/_app.tsx`** - Fixed Datadog RUM production check
+- **`apps/api/src/routes/ai.commands.js`** - Enhanced AI command handling
+- **`apps/api/src/routes/shipments.js`** - Improved shipment validation
 - **Multiple test files** - Strengthened test coverage
 
 ### ✨ Key Improvements
@@ -237,7 +237,7 @@ Local Docker:  http://localhost:3000 (web) & http://localhost:4000 (api)
 
 ### Deployment Configuration
 - **[.github/workflows/](/.github/workflows/)** - All CI/CD pipelines
-- **[web/vercel.json](web/vercel.json)** - Vercel configuration
+- **[apps/web/vercel.json](apps/web/vercel.json)** - Vercel configuration
 - **[netlify.toml](netlify.toml)** - Netlify configuration
 - **[docker-compose.yml](docker-compose.yml)** - Container orchestration
 - **[.env.example](.env.example)** - Environment template

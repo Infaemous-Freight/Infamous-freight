@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "src/apps/mobile/**"
+      - "apps/mobile/**"
       - "packages/**"
       - "pnpm-lock.yaml"
   workflow_call: {}
@@ -37,7 +37,7 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: EAS Update (OTA)
-        run: cd src/apps/mobile && eas update --channel production
+        run: cd apps/mobile && eas update --channel production
 
       - name: Slack notify (success)
         if: success() && secrets.SLACK_WEBHOOK_URL != ''

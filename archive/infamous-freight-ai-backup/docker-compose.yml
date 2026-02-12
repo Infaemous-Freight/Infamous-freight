@@ -13,7 +13,7 @@ services:
       - "5432:5432"
 
   api:
-    build: ./api
+    build: ./apps/api
     container_name: infamous_api
     restart: always
     env_file:
@@ -32,7 +32,7 @@ services:
       retries: 3
 
   web:
-    build: ./web
+    build: ./apps/web
     container_name: infamous_web
     restart: always
     env_file:

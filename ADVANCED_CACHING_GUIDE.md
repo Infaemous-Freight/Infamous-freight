@@ -54,7 +54,7 @@ Comprehensive caching strategies for Infamous Freight Enterprises to improve per
 ### Basic Implementation
 
 ```typescript
-// src/apps/api/src/services/cacheService.ts
+// apps/api/src/services/cacheService.ts
 interface CacheEntry<T> {
   value: T;
   expiresAt: number;
@@ -127,7 +127,7 @@ export const cacheService = new CacheService();
 ### Usage Example
 
 ```typescript
-// src/apps/api/src/routes/shipments.ts
+// apps/api/src/routes/shipments.ts
 router.get("/shipments/:id", async (req, res, next) => {
   try {
     const cacheKey = `shipment:${req.params.id}`;
@@ -156,7 +156,7 @@ router.get("/shipments/:id", async (req, res, next) => {
 ### Setup
 
 ```typescript
-// src/apps/api/src/services/redisCache.ts
+// apps/api/src/services/redisCache.ts
 import redis from "redis";
 
 const redisClient = redis.createClient({
@@ -248,7 +248,7 @@ volumes:
 ### Cache Control Headers
 
 ```typescript
-// src/apps/api/src/middleware/cacheHeaders.ts
+// apps/api/src/middleware/cacheHeaders.ts
 export const cacheHeaders = (maxAge: number) => {
   return (req: Request, res: Response, next: NextFunction) => {
     res.set("Cache-Control", `public, max-age=${maxAge}`);
@@ -366,7 +366,7 @@ class DependencyCache {
 ### Pre-load Critical Data
 
 ```typescript
-// src/apps/api/src/services/cacheWarmer.ts
+// apps/api/src/services/cacheWarmer.ts
 export async function warmCache() {
   console.log("Starting cache warm-up...");
 
@@ -405,7 +405,7 @@ app.listen(port, () => {
 ### Scheduled Cache Refresh
 
 ```typescript
-// src/apps/api/src/services/cacheRefresher.ts
+// apps/api/src/services/cacheRefresher.ts
 import schedule from "node-schedule";
 
 // Refresh cache every 30 minutes
@@ -429,7 +429,7 @@ initCacheRefresher();
 ### Multi-Server Cache Synchronization
 
 ```typescript
-// src/apps/api/src/services/distributedCache.ts
+// apps/api/src/services/distributedCache.ts
 import { EventEmitter } from "events";
 
 class DistributedCache extends EventEmitter {
@@ -475,7 +475,7 @@ class DistributedCache extends EventEmitter {
 ### Cache Metrics Endpoint
 
 ```typescript
-// src/apps/api/src/routes/metrics.ts
+// apps/api/src/routes/metrics.ts
 router.get("/api/metrics/cache", (req, res) => {
   const stats = cacheService.getStats();
 
@@ -508,7 +508,7 @@ function generateCacheRecommendations(stats: any) {
 ### Dashboard Display
 
 ```typescript
-// src/apps/web/components/CacheMonitor.tsx
+// apps/web/components/CacheMonitor.tsx
 import { useEffect, useState } from 'react';
 
 export function CacheMonitor() {

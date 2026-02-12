@@ -134,7 +134,7 @@ docker-compose logs --tail=50 api
 docker-compose exec api psql $DATABASE_URL < scripts/db-indexes.sql
 
 # Run migrations
-docker-compose exec api cd api && pnpm prisma:migrate:prod
+docker-compose exec api cd apps/api && pnpm prisma:migrate:prod
 
 # Access database shell
 docker-compose exec postgres psql -U infamous -d infamous_freight

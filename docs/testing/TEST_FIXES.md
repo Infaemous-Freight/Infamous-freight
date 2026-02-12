@@ -8,7 +8,7 @@ Fixed 16 failing test assertions to improve test suite stability and updated cov
 
 ### 1. Fixed Billing Route Tests (3 tests)
 
-**File**: `api/__tests__/routes.billing.test.js`
+**File**: `apps/api/__tests__/routes.billing.test.js`
 
 **Issue**: Tests expecting 503 errors when env vars missing were getting 200 responses. The problem was that the `stripe` and `paypalClient` instances were initialized at module load time, so deleting env vars in tests didn't affect already-initialized instances.
 
@@ -25,7 +25,7 @@ Fixed 16 failing test assertions to improve test suite stability and updated cov
 
 ### 2. Fixed Security Headers Tests (2 tests replaced with 1)
 
-**File**: `api/__tests__/securityHeaders.test.js`
+**File**: `apps/api/__tests__/securityHeaders.test.js`
 
 **Issue**: Tests were trying to call `middleware.handle(req, res, next)` directly, which doesn't work properly with Express middleware. These tests were getting `TypeError: Cannot read properties of undefined (reading 'query')`.
 
@@ -42,7 +42,7 @@ Fixed 16 failing test assertions to improve test suite stability and updated cov
 
 ### 3. Updated Coverage Thresholds
 
-**File**: `api/jest.config.js`
+**File**: `apps/api/jest.config.js`
 
 **Previous thresholds** (50% baseline):
 
@@ -106,9 +106,9 @@ This documents the critical fix that allows Prisma to work on Alpine Linux 3.22+
 
 ### Files Affected
 
-1. `api/__tests__/routes.billing.test.js` - 3 tests fixed
-2. `api/__tests__/securityHeaders.test.js` - 2 problematic tests replaced with 1 simple test
-3. `api/jest.config.js` - Coverage thresholds updated
+1. `apps/api/__tests__/routes.billing.test.js` - 3 tests fixed
+2. `apps/api/__tests__/securityHeaders.test.js` - 2 problematic tests replaced with 1 simple test
+3. `apps/api/jest.config.js` - Coverage thresholds updated
 4. `docs/ALPINE_PRISMA_SETUP.md` - New documentation created
 
 ### Lines of Code Changed
@@ -122,7 +122,7 @@ This documents the critical fix that allows Prisma to work on Alpine Linux 3.22+
 To verify these fixes work:
 
 ```bash
-cd api
+cd apps/api
 
 # Run full test suite
 npm test
@@ -170,7 +170,7 @@ Coverage:    84.31%+ (all thresholds met)
 
 ## Related Documentation
 
-- [Jest Configuration](../api/jest.config.js) - Coverage thresholds and setup
+- [Jest Configuration](../apps/api/jest.config.js) - Coverage thresholds and setup
 - [Alpine Prisma Setup](./ALPINE_PRISMA_SETUP.md) - OpenSSL 3.x compatibility
 - [Testing Guide](../CONTRIBUTING.md#testing) - How to write and run tests
 

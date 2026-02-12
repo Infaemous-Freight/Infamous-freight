@@ -17,8 +17,8 @@
 
 **Location**:
 
-- Middleware: `api/src/middleware/performance.js`
-- Utilities: `api/src/utils/dbOptimization.js`
+- Middleware: `apps/api/src/middleware/performance.js`
+- Utilities: `apps/api/src/utils/dbOptimization.js`
 - Indexes: `scripts/db-indexes.sql`
 
 #### ✅ Priority 2: Web Vitals Monitoring
@@ -32,10 +32,10 @@
 
 **Location**:
 
-- Monitoring: `web/lib/webVitalsMonitoring.js`
-- Configuration: `web/lib/webVitalsConfig.js`
-- Updated App: `web/pages/_app.tsx`
-- Config: `web/next.config.mjs`
+- Monitoring: `apps/web/lib/webVitalsMonitoring.js`
+- Configuration: `apps/web/lib/webVitalsConfig.js`
+- Updated App: `apps/web/pages/_app.tsx`
+- Config: `apps/web/next.config.mjs`
 
 #### ✅ Priority 3: Production Monitoring
 
@@ -48,7 +48,7 @@
 **Location**:
 
 - Setup Script: `scripts/setup-monitoring.sh`
-- Configuration: `api/src/config/monitoring.js`
+- Configuration: `apps/api/src/config/monitoring.js`
 - Database Indexes: `scripts/db-indexes.sql`
 - Verification: `scripts/verify-deployment.sh`
 
@@ -127,11 +127,11 @@ DD_TRACE_ENABLED=true pnpm api:dev
 
 ### New Files (10)
 
-1. `api/src/middleware/performance.js` - Compression & caching
-2. `api/src/utils/dbOptimization.js` - Query optimization
-3. `api/src/config/monitoring.js` - Monitoring configuration
-4. `web/lib/webVitalsMonitoring.js` - Web Vitals tracking
-5. `web/lib/webVitalsConfig.js` - Vitals configuration
+1. `apps/api/src/middleware/performance.js` - Compression & caching
+2. `apps/api/src/utils/dbOptimization.js` - Query optimization
+3. `apps/api/src/config/monitoring.js` - Monitoring configuration
+4. `apps/web/lib/webVitalsMonitoring.js` - Web Vitals tracking
+5. `apps/web/lib/webVitalsConfig.js` - Vitals configuration
 6. `scripts/setup-monitoring.sh` - Automated setup
 7. `scripts/db-indexes.sql` - Database indexes
 8. `scripts/verify-deployment.sh` - Deployment verification
@@ -140,11 +140,11 @@ DD_TRACE_ENABLED=true pnpm api:dev
 
 ### Modified Files (3)
 
-1. `api/src/server.js` - Added compression middleware
-2. `web/pages/_app.tsx` - Added Web Vitals tracking
-3. `web/next.config.mjs` - Added image & caching optimization
-4. `api/package.json` - Added compression dependency
-5. `web/package.json` - Added web-vitals dependency
+1. `apps/api/src/server.js` - Added compression middleware
+2. `apps/web/pages/_app.tsx` - Added Web Vitals tracking
+3. `apps/web/next.config.mjs` - Added image & caching optimization
+4. `apps/api/package.json` - Added compression dependency
+5. `apps/web/package.json` - Added web-vitals dependency
 
 ---
 
@@ -223,7 +223,7 @@ psql $DATABASE_URL < scripts/db-indexes.sql
 DD_TRACE_ENABLED=true pnpm api:dev
 
 # Build web app
-cd web && pnpm build && pnpm start
+cd apps/web && pnpm build && pnpm start
 
 # Run tests
 pnpm test
@@ -286,7 +286,7 @@ All components verified and tested:
 - `PERFORMANCE_MONITORING_COMPLETE.md` - Detailed implementation guide
 - `scripts/setup-monitoring.sh` - Monitoring configuration
 - `scripts/verify-deployment.sh` - Deployment verification
-- `api/src/config/monitoring.js` - Monitoring configuration reference
+- `apps/api/src/config/monitoring.js` - Monitoring configuration reference
 
 **Environment Setup:**
 
@@ -294,9 +294,9 @@ All components verified and tested:
 
 **Troubleshooting:**
 
-- Check `api/src/middleware/performance.js` for compression issues
-- Check `web/lib/webVitalsMonitoring.js` for Web Vitals data
-- Check `api/src/config/monitoring.js` for monitoring configuration
+- Check `apps/api/src/middleware/performance.js` for compression issues
+- Check `apps/web/lib/webVitalsMonitoring.js` for Web Vitals data
+- Check `apps/api/src/config/monitoring.js` for monitoring configuration
 
 ---
 

@@ -19,8 +19,8 @@ cd /workspaces/Infamous-freight-enterprises
 pnpm check:types
 
 # Expected output:
-# ✓ src/apps/api/src/**/*.ts (no errors)
-# ✓ src/apps/web/pages/**/*.tsx (no errors)
+# ✓ apps/api/src/**/*.ts (no errors)
+# ✓ apps/web/pages/**/*.tsx (no errors)
 # ✓ packages/shared/src/**/*.ts (no errors)
 ```
 
@@ -31,8 +31,8 @@ pnpm check:types
 pnpm build
 
 # Build output validation
-ls -lah api/dist/
-ls -lah web/.next/
+ls -lah apps/api/dist/
+ls -lah apps/web/.next/
 
 # Verify no errors in build output
 pnpm build 2>&1 | grep -i "error\|fail"
@@ -42,7 +42,7 @@ pnpm build 2>&1 | grep -i "error\|fail"
 ### 1.3 Bundle Analysis
 
 ```bash
-cd web
+cd apps/web
 ANALYZE=true pnpm build
 
 # Review bundle sizes:
@@ -73,7 +73,7 @@ pnpm format
 ### 2.2 Code Coverage
 
 ```bash
-cd api
+cd apps/api
 
 # Run tests with coverage
 pnpm test:coverage
@@ -96,7 +96,7 @@ pnpm audit
 # Expected: 0 critical vulnerabilities
 
 # Code complexity analysis
-pnpm complexity api/src
+pnpm complexity apps/api/src
 # Expected: Most functions < 10 cyclomatic complexity
 ```
 
@@ -107,7 +107,7 @@ pnpm complexity api/src
 ### 3.1 API Unit Tests
 
 ```bash
-cd api
+cd apps/api
 
 # Run all API tests
 pnpm test
@@ -124,7 +124,7 @@ pnpm test -- services/aiSyntheticClient.test.js
 ### 3.2 Web Unit Tests
 
 ```bash
-cd web
+cd apps/web
 
 # Run Next.js component tests
 pnpm test
@@ -202,10 +202,10 @@ curl http://localhost:3000/api/proxy/health
 
 ```bash
 # Build API container
-docker build -f api/Dockerfile -t infamous-api:latest ./api
+docker build -f apps/api/Dockerfile -t infamous-api:latest ./apps/api
 
 # Build Web container
-docker build -f web/Dockerfile -t infamous-web:latest ./web
+docker build -f apps/web/Dockerfile -t infamous-web:latest ./apps/web
 
 # Verify images created
 docker images | grep infamous

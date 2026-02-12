@@ -100,7 +100,7 @@ vulnerability fix
 ```
 🔑 Potential secret found
 Type: GitHub Token
-Location: api/src/config.js:42
+Location: apps/api/src/config.js:42
 ```
 
 ### Step 5: Enable Secret Scanning - Push Protection

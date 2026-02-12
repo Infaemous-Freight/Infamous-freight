@@ -110,7 +110,7 @@ The API validates all required environment variables on startup:
 
 ```bash
 # Check validation
-node api/scripts/env.validation.js
+node apps/api/scripts/env.validation.js
 ```
 
 ## Docker Environment
@@ -138,7 +138,7 @@ services:
 When adding a new environment variable:
 
 1. Add it to this documentation
-2. Add validation in `api/scripts/env.validation.js`
+2. Add validation in `apps/api/scripts/env.validation.js`
 3. Add default value to `.env.example` (if non-sensitive)
 4. Add TypeScript type in `packages/shared/src/types.ts`
 5. Document in API JSDoc comments
@@ -146,5 +146,5 @@ When adding a new environment variable:
 ## References
 
 - [Shared Package Env Helpers](packages/shared/src/env.ts)
-- [API Env Validation](api/scripts/env.validation.js)
+- [API Env Validation](apps/api/scripts/env.validation.js)
 - [Environment Guide](docs/env.guide.md)

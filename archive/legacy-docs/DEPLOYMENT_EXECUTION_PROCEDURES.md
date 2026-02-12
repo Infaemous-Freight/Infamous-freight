@@ -65,8 +65,8 @@ mkdir -p nginx/ssl logs scripts/backups monitoring/{prometheus,grafana}
 
 # 4. Build services
 pnpm --filter @infamous-freight/shared build
-cd api && pnpm build && cd ..
-cd web && pnpm build && cd ..
+cd apps/api && pnpm build && cd ..
+cd apps/web && pnpm build && cd ..
 
 # 5. Start database and cache
 docker-compose -f docker-compose.production.yml up -d postgres redis
@@ -212,8 +212,8 @@ echo "- Post-optimization in: phase2-post-optimization.json"
 ```bash
 # Feature 1: Predictive Availability (Day 4)
 git checkout -b feature/phase3-predictive-availability
-# Implementation in: api/src/services/ml/predictiveAvailability.ts (275 lines)
-cd api && pnpm build && pnpm test -- predictiveAvailability.test.ts
+# Implementation in: apps/api/src/services/ml/predictiveAvailability.ts (275 lines)
+cd apps/api && pnpm build && pnpm test -- predictiveAvailability.test.ts
 git add . && git commit -m "feat: predictive driver availability ML service"
 git push origin feature/phase3-predictive-availability
 # Create PR, review, merge, deploy to staging
@@ -287,10 +287,10 @@ docker-compose -f docker-compose.production.yml restart postgres
 
 # Component 3-5: ML Models (Days 18-24)
 # Deploy demand prediction, fraud detection, dynamic pricing
-cd api && pnpm build && pnpm test -- ml/*.test.ts
+cd apps/api && pnpm build && pnpm test -- ml/*.test.ts
 
 # Component 6: Analytics Platform (Days 25-26)
-# Executive Analytics service: api/src/services/analytics/executiveAnalytics.ts
+# Executive Analytics service: apps/api/src/services/analytics/executiveAnalytics.ts
 # Test endpoint: curl http://localhost:3001/api/analytics/dashboard
 
 # Component 7: Auto-scaling & CDN (Days 27-30)
@@ -410,7 +410,7 @@ docker-compose -f docker-compose.production.yml exec redis \
 **Feature tests failing**:
 
 ```bash
-cd api
+cd apps/api
 pnpm test -- <feature>.test.ts --verbose
 ```
 
@@ -463,7 +463,7 @@ docker-compose -f docker-compose.production.yml restart postgres
 ```bash
 # Disable features one by one
 git checkout <previous-feature-branch>
-cd api && pnpm build
+cd apps/api && pnpm build
 docker-compose -f docker-compose.production.yml restart api
 ```
 

@@ -126,7 +126,7 @@ Before deploying to production:
 
 ```bash
 # From project root
-cd src/apps/api
+cd apps/api
 git push render main
 ```
 
@@ -134,7 +134,7 @@ git push render main
 
 ```bash
 # From project root
-cd src/apps/web
+cd apps/web
 vercel --prod
 ```
 
@@ -221,7 +221,7 @@ pnpm test:e2e --grep "@smoke"
 If database migration needs rollback:
 
 ```bash
-cd src/apps/api
+cd apps/api
 pnpm prisma migrate resolve --rolled-back <migration-name>
 ```
 
@@ -326,7 +326,7 @@ Via Render dashboard → Environment → Environment Variables
 ### Internal Resources
 
 - **Architecture Documentation**: [ARCHITECTURE.md](ARCHITECTURE.md)
-- **API Reference**: [api/API_REFERENCE.md](api/API_REFERENCE.md)
+- **API Reference**: [apps/api/API_REFERENCE.md](apps/api/API_REFERENCE.md)
 - **Testing Guide**: [TESTING.md](TESTING.md)
 - **Security Guide**: [security.md](security.md)
 

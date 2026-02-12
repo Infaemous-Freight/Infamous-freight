@@ -3,8 +3,8 @@ services:
     name: infamous-web
     env: static
     repo: https://github.com/MrMiless44/Infamous-freight-enterprises
-    buildCommand: cd web && npm install && npm run build
-    staticPublishPath: web/.next
+    buildCommand: cd apps/web && npm install && npm run build
+    staticPublishPath: apps/web/.next
     envVars:
       - key: NEXT_PUBLIC_API_BASE
         value: https://infamous-api.onrender.com/api
@@ -14,7 +14,7 @@ services:
     env: docker
     repo: https://github.com/MrMiless44/Infamous-freight-enterprises
     branch: main
-    dockerfilePath: api/Dockerfile
+    dockerfilePath: apps/api/Dockerfile
     envVars:
       - key: NODE_ENV
         value: production

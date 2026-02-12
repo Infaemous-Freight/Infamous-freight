@@ -2,7 +2,7 @@
  * Phase 20 Integration Guide
  * 
  * Shows how to integrate billing services into the main API application
- * This file is a reference guide - copy patterns into your api/src/app.js
+ * This file is a reference guide - copy patterns into your apps/api/src/app.js
  */
 
 // ============================================

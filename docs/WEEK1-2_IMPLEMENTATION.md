@@ -60,9 +60,9 @@ Captures all unhandled errors in production and sends them to Sentry.io dashboar
 
 ### Files Created/Modified
 
-- `api/src/config/sentry.js` - 83 lines (Sentry initialization & helpers)
-- `api/src/server.js` - Updated to initialize Sentry early
-- `api/package.json` - Added `@sentry/node` dependency
+- `apps/api/src/config/sentry.js` - 83 lines (Sentry initialization & helpers)
+- `apps/api/src/server.js` - Updated to initialize Sentry early
+- `apps/api/package.json` - Added `@sentry/node` dependency
 
 ### Setup Requirements
 
@@ -156,9 +156,9 @@ Prevents API abuse by limiting requests from each IP address. Protects against:
 
 ### Files Created/Modified
 
-- `api/src/middleware/security.js` - Enhanced with express-rate-limit
-- `api/src/routes/ai.commands.js` - Applied AI rate limiter (example)
-- `api/package.json` - Added `express-rate-limit` dependency
+- `apps/api/src/middleware/security.js` - Enhanced with express-rate-limit
+- `apps/api/src/routes/ai.commands.js` - Applied AI rate limiter (example)
+- `apps/api/package.json` - Added `express-rate-limit` dependency
 
 ### Configuration
 
@@ -367,16 +367,16 @@ Before every production migration:
 ```
 Created:
   .github/CODEOWNERS
-  api/src/config/sentry.js
-  api/src/middleware/securityHeaders.js
+  apps/api/src/config/sentry.js
+  apps/api/src/middleware/securityHeaders.js
   docs/DATABASE_MIGRATIONS.md
   docs/ONGOING_MONITORING.md
 
 Modified:
-  api/src/server.js
-  api/src/middleware/security.js
-  api/src/routes/ai.commands.js
-  api/package.json
+  apps/api/src/server.js
+  apps/api/src/middleware/security.js
+  apps/api/src/routes/ai.commands.js
+  apps/api/package.json
 ```
 
 ### Testing & Validation

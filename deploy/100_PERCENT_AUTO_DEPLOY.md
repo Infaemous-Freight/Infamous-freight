@@ -139,7 +139,7 @@ flyctl deploy
 vercel --prod
 
 # Mobile (Expo)
-cd src/apps/mobile && eas build --platform all
+cd apps/mobile && eas build --platform all
 ```
 
 ## 📊 Monitoring Deployments
@@ -271,7 +271,7 @@ pnpm --filter infamous-freight-web build
 
 ```bash
 # Check EAS build status
-cd src/apps/mobile
+cd apps/mobile
 eas build:list
 
 # View build logs

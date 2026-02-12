@@ -33,8 +33,8 @@ This guide provides **100 strategic recommendations** across 10 domains:
 
 ```bash
 # Address 14 moderate alerts
-cd api && npm audit fix
-cd ../web && npm audit fix
+cd apps/api && npm audit fix
+cd ../apps/web && npm audit fix
 cd ../packages/shared && npm audit fix
 # Re-run tests: pnpm test
 # Commit: "fix: Address security vulnerabilities (npm audit fix)"

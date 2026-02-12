@@ -118,7 +118,7 @@ cd /tmp/vscode-github-mrmiles44-infamous-freight-enterprises/web
 vercel --prod
 
 # 3. After deployment, add environment variable in Vercel dashboard:
-# Go to: https://vercel.com/your-username/infamous-freight-web/settings/environment-variables
+# Go to: https://vercel.com/your-username/infamous-freight-apps/web/settings/environment-variables
 # Add: NEXT_PUBLIC_API_BASE=https://infamous-freight-api.fly.dev/api
 ```
 

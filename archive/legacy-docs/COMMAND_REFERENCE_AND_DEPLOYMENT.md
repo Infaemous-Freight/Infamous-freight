@@ -23,7 +23,7 @@ pnpm lint
 pnpm test -- --coverage
 
 # 4. Capture baseline metrics
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 # Record bundle sizes from bundle-report.html
 ```
 
@@ -37,8 +37,8 @@ cd web && ANALYZE=true pnpm build
 
 # 2. Infrastructure verification
 pnpm install
-cd api && pnpm prisma:generate
-cd web && npm ls @next/bundle-analyzer
+cd apps/api && pnpm prisma:generate
+cd apps/web && npm ls @next/bundle-analyzer
 
 # 3. First PR template verification
 # Create test PR and verify checklist appears
@@ -59,7 +59,7 @@ cd web && npm ls @next/bundle-analyzer
 #   - PUT /api/resource/:id (UPDATE) → Copy Pattern 4
 #   - DELETE /api/resource/:id (DELETE) → Copy Pattern 5
 
-# Location: api/src/routes/resource.js
+# Location: apps/api/src/routes/resource.js
 # Reference: ROUTE_BUILDING_MASTER_SYSTEM_100_PERCENT.md
 
 # 2. Implementation
@@ -68,7 +68,7 @@ npm run dev  # Start development server
 # Keep middleware stack intact (8-layer order)
 
 # 3. Add tests
-# Location: api/tests/routes/resource.test.js
+# Location: apps/api/tests/routes/resource.test.js
 # Include all 7 test categories from template
 
 # 4. Verify checklist items
@@ -79,7 +79,7 @@ pnpm test -- --coverage resource.test
 pnpm lint
 pnpm check:types
 pnpm test -- --coverage
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 
 # 6. Create PR
 git checkout -b feat/new-route
@@ -123,7 +123,7 @@ pnpm dev
 pnpm build
 
 # Bundle analysis (see size report)
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 
 # Check bundle size is under 150KB
 npm run build --filter @infamous-freight/web
@@ -142,7 +142,7 @@ npm run build --filter @infamous-freight/web
 
 # 2. Backup existing tests
 git checkout -b refactor/old-route-upgrade
-cp api/src/routes/old-route.js api/src/routes/old-route.js.backup
+cp apps/api/src/routes/old-route.js apps/api/src/routes/old-route.js.backup
 
 # 3. Identify pattern needed
 # Based on route type:
@@ -178,7 +178,7 @@ time curl -X GET http://localhost:4000/api/old-route
 
 ```bash
 # Bundle Analysis
-cd web
+cd apps/web
 ANALYZE=true pnpm build
 # Review bundle-report.html in browser
 # Identify opportunities:
@@ -188,7 +188,7 @@ ANALYZE=true pnpm build
 
 # API Performance
 # Start in profiling mode
-node --trace-warnings api/server.js 2>&1 | grep -i require
+node --trace-warnings apps/api/server.js 2>&1 | grep -i require
 
 # Identify slow imports
 node --trace-warnings . 2>&1 | head -50
@@ -198,7 +198,7 @@ time npm start
 # Target: <1.5 seconds
 
 # Database Query Optimization
-cd api
+cd apps/api
 npm run prisma:generate
 npm run dev
 # Monitor: SELECT count(*) in logs
@@ -230,7 +230,7 @@ cat BASELINE_METRICS.md
 # Look for regressions >10%
 
 # 2. Check bundle size
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 # If increased: investigate and optimize
 
 # 3. Review error rate
@@ -258,7 +258,7 @@ pnpm test -- --coverage
 # If below: plan coverage additions
 
 # 2. Bundle Analysis
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 # Record sizes: js, css, total
 # Compare to last month
 
@@ -269,7 +269,7 @@ cd web && ANALYZE=true pnpm build
 # Create issues for fixes
 
 # 4. Database Performance
-cd api
+cd apps/api
 npm run prisma:studio
 # Review slow queries
 # Check for N+1 patterns
@@ -415,10 +415,10 @@ pnpm test -- resource.test.js
 DEBUG=* pnpm test -- resource.test.js
 
 # 3. Check mocks
-grep -r "jest.mock" api/tests/
+grep -r "jest.mock" apps/api/tests/
 
 # 4. Check Prisma mock
-cat api/tests/mocks/prisma.js
+cat apps/api/tests/mocks/prisma.js
 
 # 5. Reset test environment
 pnpm test -- --clearCache
@@ -431,7 +431,7 @@ pnpm test -- --verbose --no-coverage
 
 ```bash
 # 1. Check bundle size
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 # Compare report to baseline
 
 # 2. Check API startup time
@@ -467,7 +467,7 @@ node --prof-process isolate-*.log > profile.txt
 pnpm check:types
 pnpm lint
 pnpm test -- --coverage
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 
 # 3. Check each step
 # Type checking
@@ -483,7 +483,7 @@ pnpm test -- --coverage
 # If failed: check test output, see test section above
 
 # Bundle
-cd web && ANALYZE=true pnpm build
+cd apps/web && ANALYZE=true pnpm build
 # If failed: check bundle report, see bundle analysis
 ```
 
@@ -544,7 +544,7 @@ pnpm check:types                  # TypeScript check
 ### **Builds & Analysis**
 
 ```bash
-cd web && ANALYZE=true pnpm build  # Bundle analysis
+cd apps/web && ANALYZE=true pnpm build  # Bundle analysis
 pnpm build                        # Production build
 npm ls @next/bundle-analyzer     # Check analyzer installed
 npm outdated                      # Check outdated packages
@@ -554,9 +554,9 @@ npm audit                         # Security audit
 ### **Database**
 
 ```bash
-cd api && pnpm prisma:generate    # Generate Prisma client
-cd api && pnpm prisma:studio      # Prisma Studio UI
-cd api && pnpm prisma:migrate:dev # Create migration
+cd apps/api && pnpm prisma:generate    # Generate Prisma client
+cd apps/api && pnpm prisma:studio      # Prisma Studio UI
+cd apps/api && pnpm prisma:migrate:dev # Create migration
 ```
 
 ### **Git & CI**

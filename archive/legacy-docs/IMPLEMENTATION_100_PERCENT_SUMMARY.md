@@ -11,50 +11,50 @@ All recommended security, performance, and observability features have been **10
 ### Security & Authentication (100%)
 | Feature | Status | Files |
 |---------|--------|-------|
-| Organization enforcement | ✅ | [security.js](api/src/middleware/security.js) |
-| Scope-based access control | ✅ | [security.js](api/src/middleware/security.js) |
-| JWT with org_id claim | ✅ | [security.js](api/src/middleware/security.js) |
-| Helmet CSP headers | ✅ | [securityHeaders.js](api/src/middleware/securityHeaders.js) |
-| CORS allow-list | ✅ | [cors.js](api/src/middleware/cors.js) |
-| Correlation ID tracking | ✅ | [logger.js](api/src/middleware/logger.js), [security.js](api/src/middleware/security.js) |
-| Rate limiting (7 limiters) | ✅ | [security.js](api/src/middleware/security.js) |
-| OPTIONS preflight skip | ✅ | [security.js](api/src/middleware/security.js) |
-| Trust proxy configuration | ✅ | [server.js](api/src/server.js) |
+| Organization enforcement | ✅ | [security.js](apps/api/src/middleware/security.js) |
+| Scope-based access control | ✅ | [security.js](apps/api/src/middleware/security.js) |
+| JWT with org_id claim | ✅ | [security.js](apps/api/src/middleware/security.js) |
+| Helmet CSP headers | ✅ | [securityHeaders.js](apps/api/src/middleware/securityHeaders.js) |
+| CORS allow-list | ✅ | [cors.js](apps/api/src/middleware/cors.js) |
+| Correlation ID tracking | ✅ | [logger.js](apps/api/src/middleware/logger.js), [security.js](apps/api/src/middleware/security.js) |
+| Rate limiting (7 limiters) | ✅ | [security.js](apps/api/src/middleware/security.js) |
+| OPTIONS preflight skip | ✅ | [security.js](apps/api/src/middleware/security.js) |
+| Trust proxy configuration | ✅ | [server.js](apps/api/src/server.js) |
 
-**Tests:** [shipments.auth.test.js](api/src/__tests__/integration/shipments.auth.test.js), [billing.auth.test.js](api/src/__tests__/integration/billing.auth.test.js)
+**Tests:** [shipments.auth.test.js](apps/api/src/__tests__/integration/shipments.auth.test.js), [billing.auth.test.js](apps/api/src/__tests__/integration/billing.auth.test.js)
 
 ### Validation & API Ergonomics (100%)
 | Feature | Status | Files |
 |---------|--------|-------|
-| Enum validation | ✅ | [validation.js](api/src/middleware/validation.js), [shipments.js](api/src/routes/shipments.js) |
-| UUID body validation | ✅ | [validation.js](api/src/middleware/validation.js) |
-| Pagination validation | ✅ | [validation.js](api/src/middleware/validation.js), [shipments.js](api/src/routes/shipments.js) |
-| Consistent error responses | ✅ | [errorHandler.js](api/src/middleware/errorHandler.js) |
-| Status query filtering | ✅ | [shipments.js](api/src/routes/shipments.js) |
+| Enum validation | ✅ | [validation.js](apps/api/src/middleware/validation.js), [shipments.js](apps/api/src/routes/shipments.js) |
+| UUID body validation | ✅ | [validation.js](apps/api/src/middleware/validation.js) |
+| Pagination validation | ✅ | [validation.js](apps/api/src/middleware/validation.js), [shipments.js](apps/api/src/routes/shipments.js) |
+| Consistent error responses | ✅ | [errorHandler.js](apps/api/src/middleware/errorHandler.js) |
+| Status query filtering | ✅ | [shipments.js](apps/api/src/routes/shipments.js) |
 
-**Tests:** [shipments.auth.test.js](api/src/__tests__/integration/shipments.auth.test.js#L33)
+**Tests:** [shipments.auth.test.js](apps/api/src/__tests__/integration/shipments.auth.test.js#L33)
 
 ### Observability & Performance (100%)
 | Feature | Status | Files |
 |---------|--------|-------|
-| Prometheus metrics endpoint | ✅ | [metrics.js](api/src/routes/metrics.js), [prometheusMetrics.js](api/src/lib/prometheusMetrics.js) |
-| Request duration histograms | ✅ | [prometheusMetrics.js](api/src/lib/prometheusMetrics.js) |
-| Latency percentiles (P50/P95/P99) | ✅ | [prometheusMetrics.js](api/src/lib/prometheusMetrics.js) |
-| Request/error counts by path | ✅ | [prometheusMetrics.js](api/src/lib/prometheusMetrics.js) |
-| Rate limiter metrics | ✅ | [prometheusMetrics.js](api/src/lib/prometheusMetrics.js) |
-| Slow query logging | ✅ | [slowQueryLogger.js](api/src/lib/slowQueryLogger.js), [prisma.js](api/src/db/prisma.js) |
-| Response caching (org/user scoped) | ✅ | [responseCache.js](api/src/middleware/responseCache.js) |
-| Metrics recorder middleware | ✅ | [metricsRecorder.js](api/src/middleware/metricsRecorder.js) |
-| Sentry integration | ✅ | [errorHandler.js](api/src/middleware/errorHandler.js), [slowQueryLogger.js](api/src/lib/slowQueryLogger.js) |
+| Prometheus metrics endpoint | ✅ | [metrics.js](apps/api/src/routes/metrics.js), [prometheusMetrics.js](apps/api/src/lib/prometheusMetrics.js) |
+| Request duration histograms | ✅ | [prometheusMetrics.js](apps/api/src/lib/prometheusMetrics.js) |
+| Latency percentiles (P50/P95/P99) | ✅ | [prometheusMetrics.js](apps/api/src/lib/prometheusMetrics.js) |
+| Request/error counts by path | ✅ | [prometheusMetrics.js](apps/api/src/lib/prometheusMetrics.js) |
+| Rate limiter metrics | ✅ | [prometheusMetrics.js](apps/api/src/lib/prometheusMetrics.js) |
+| Slow query logging | ✅ | [slowQueryLogger.js](apps/api/src/lib/slowQueryLogger.js), [prisma.js](apps/api/src/db/prisma.js) |
+| Response caching (org/user scoped) | ✅ | [responseCache.js](apps/api/src/middleware/responseCache.js) |
+| Metrics recorder middleware | ✅ | [metricsRecorder.js](apps/api/src/middleware/metricsRecorder.js) |
+| Sentry integration | ✅ | [errorHandler.js](apps/api/src/middleware/errorHandler.js), [slowQueryLogger.js](apps/api/src/lib/slowQueryLogger.js) |
 
-**Tests:** [metrics.prometheus.test.js](api/src/__tests__/integration/metrics.prometheus.test.js), [slowQueryLogger.test.js](api/src/__tests__/integration/slowQueryLogger.test.js), [responseCache.test.js](api/src/__tests__/integration/responseCache.test.js)
+**Tests:** [metrics.prometheus.test.js](apps/api/src/__tests__/integration/metrics.prometheus.test.js), [slowQueryLogger.test.js](apps/api/src/__tests__/integration/slowQueryLogger.test.js), [responseCache.test.js](apps/api/src/__tests__/integration/responseCache.test.js)
 
 ### DevOps & Tooling (100%)
 | Feature | Status | Files |
 |---------|--------|-------|
 | Pre-push hook | ✅ | [.husky/pre-push](.husky/pre-push) |
 | Pre-dev hook | ✅ | [.husky/pre-dev](.husky/pre-dev) |
-| Route scope registry | ✅ | [routeScopeRegistry.js](api/src/lib/routeScopeRegistry.js) |
+| Route scope registry | ✅ | [routeScopeRegistry.js](apps/api/src/lib/routeScopeRegistry.js) |
 | CORS & Security guide | ✅ | [docs/CORS_AND_SECURITY.md](docs/CORS_AND_SECURITY.md) |
 | Route scope documentation | ✅ | [docs/ROUTE_SCOPE_REGISTRY.md](docs/ROUTE_SCOPE_REGISTRY.md) |
 | Verification script | ✅ | [scripts/verify-implementation.sh](scripts/verify-implementation.sh) |
@@ -63,12 +63,12 @@ All recommended security, performance, and observability features have been **10
 ### Testing (100%)
 | Test Suite | Coverage | Files |
 |-----------|----------|-------|
-| Shipments auth/org/scope | ✅ | [shipments.auth.test.js](api/src/__tests__/integration/shipments.auth.test.js) |
-| Billing auth/org/scope | ✅ | [billing.auth.test.js](api/src/__tests__/integration/billing.auth.test.js) |
-| Prometheus metrics format | ✅ | [metrics.prometheus.test.js](api/src/__tests__/integration/metrics.prometheus.test.js) |
-| Slow query logger | ✅ | [slowQueryLogger.test.js](api/src/__tests__/integration/slowQueryLogger.test.js) |
-| Response cache | ✅ | [responseCache.test.js](api/src/__tests__/integration/responseCache.test.js) |
-| Security & performance (comprehensive) | ✅ | [security-performance.integration.test.js](api/src/__tests__/integration/security-performance.integration.test.js) |
+| Shipments auth/org/scope | ✅ | [shipments.auth.test.js](apps/api/src/__tests__/integration/shipments.auth.test.js) |
+| Billing auth/org/scope | ✅ | [billing.auth.test.js](apps/api/src/__tests__/integration/billing.auth.test.js) |
+| Prometheus metrics format | ✅ | [metrics.prometheus.test.js](apps/api/src/__tests__/integration/metrics.prometheus.test.js) |
+| Slow query logger | ✅ | [slowQueryLogger.test.js](apps/api/src/__tests__/integration/slowQueryLogger.test.js) |
+| Response cache | ✅ | [responseCache.test.js](apps/api/src/__tests__/integration/responseCache.test.js) |
+| Security & performance (comprehensive) | ✅ | [security-performance.integration.test.js](apps/api/src/__tests__/integration/security-performance.integration.test.js) |
 
 ---
 
@@ -174,18 +174,18 @@ See [DEPLOYMENT_GUIDE_100_PERCENT.md](DEPLOYMENT_GUIDE_100_PERCENT.md) for compl
 ## 🎓 Learning Resources
 
 ### For Security
-- Review [security.js](api/src/middleware/security.js) for auth patterns
+- Review [security.js](apps/api/src/middleware/security.js) for auth patterns
 - See [docs/ROUTE_SCOPE_REGISTRY.md](docs/ROUTE_SCOPE_REGISTRY.md) for scope patterns
-- Check [shipments.auth.test.js](api/src/__tests__/integration/shipments.auth.test.js) for test patterns
+- Check [shipments.auth.test.js](apps/api/src/__tests__/integration/shipments.auth.test.js) for test patterns
 
 ### For Performance
-- Review [prometheusMetrics.js](api/src/lib/prometheusMetrics.js) for metrics export
-- See [responseCache.js](api/src/middleware/responseCache.js) for caching patterns
-- Check [metricsRecorder.js](api/src/middleware/metricsRecorder.js) for duration tracking
+- Review [prometheusMetrics.js](apps/api/src/lib/prometheusMetrics.js) for metrics export
+- See [responseCache.js](apps/api/src/middleware/responseCache.js) for caching patterns
+- Check [metricsRecorder.js](apps/api/src/middleware/metricsRecorder.js) for duration tracking
 
 ### For Testing
-- See [security-performance.integration.test.js](api/src/__tests__/integration/security-performance.integration.test.js) for comprehensive patterns
-- Review [slowQueryLogger.test.js](api/src/__tests__/integration/slowQueryLogger.test.js) for mocking patterns
+- See [security-performance.integration.test.js](apps/api/src/__tests__/integration/security-performance.integration.test.js) for comprehensive patterns
+- Review [slowQueryLogger.test.js](apps/api/src/__tests__/integration/slowQueryLogger.test.js) for mocking patterns
 
 ---
 

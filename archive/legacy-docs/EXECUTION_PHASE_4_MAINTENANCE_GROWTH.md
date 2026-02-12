@@ -419,7 +419,7 @@ Example: Refactor Rate Limiting
 ✅ Routes: 30+ perfect routes in production
 ✅ Metrics: All targets met
 ✅ New Patterns: 1-2 domain-specific patterns added
-→ Focus: Train new developers, expand to mobile/admin APIs
+→ Focus: Train new developers, expand to apps/mobile/admin APIs
 ```
 
 ### **1 Year (January 2027)**

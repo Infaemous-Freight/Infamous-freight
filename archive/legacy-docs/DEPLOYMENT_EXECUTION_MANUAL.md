@@ -176,7 +176,7 @@ flyctl secrets list --app infamous-freight-api
 
 ```bash
 # Navigate to web app
-cd src/apps/web
+cd apps/web
 
 # Add production secrets
 vercel env add NEXT_PUBLIC_API_URL production
@@ -234,7 +234,7 @@ flyctl logs --app infamous-freight-api
 
 ```bash
 # Navigate to web app
-cd src/apps/web
+cd apps/web
 
 # Login to Vercel
 vercel login
@@ -254,7 +254,7 @@ vercel ls
 
 ```bash
 # Navigate to mobile app
-cd src/apps/mobile
+cd apps/mobile
 
 # Login to Expo
 eas login
@@ -405,7 +405,7 @@ flyctl apps restart infamous-freight-api
 vercel logs
 
 # Redeploy
-cd src/apps/web
+cd apps/web
 vercel --prod --force
 
 # Check environment variables

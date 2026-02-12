@@ -72,7 +72,7 @@ Tasks:
 □ Deploy Grafana
 □ Deploy Redis
 □ Configure Prometheus to scrape metrics from API
-□ Import Grafana dashboards from src/apps/api/src/config/grafana.ts
+□ Import Grafana dashboards from apps/api/src/config/grafana.ts
 □ Test alert rules trigger properly
 □ Configure Slack webhook for alerts
 
@@ -164,7 +164,7 @@ Log Results:
 
 Run K6 load tests:
 ```bash
-cd /workspaces/Infamous-freight-enterprises/src/apps/api
+cd /workspaces/Infamous-freight-enterprises/apps/api
 k6 run scripts/load-test-performance.js \
   --vus 50 \
   --duration 5m \
@@ -713,7 +713,7 @@ All documentation created:
 
 **Operational Guides** (Execution Phase) 6. DEPLOYMENT_RUNBOOK.md 7. MONITORING_SETUP_GUIDE.md 8. PRE_PRODUCTION_CHECKLIST.md
 
-**Configuration Files** 9. src/apps/api/src/config/grafana.ts 10. src/apps/api/src/config/redis-adapter.ts
+**Configuration Files** 9. apps/api/src/config/grafana.ts 10. apps/api/src/config/redis-adapter.ts
 
 **Support Materials** 11. NEXT_STEPS_EXECUTION_PLAN.md (this document)
 

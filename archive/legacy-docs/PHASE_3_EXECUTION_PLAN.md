@@ -12,19 +12,19 @@
 ### Week 1 Implementation Status
 
 **Day 1-2: Predictive Driver Availability** ✅ Framework Ready
-- File: `src/apps/api/src/services/driverAvailabilityPredictor.ts`
+- File: `apps/api/src/services/driverAvailabilityPredictor.ts`
 - Model: Behavioral prediction with 6 factors
 - Accuracy: 85%+ target
 - Integration: Dispatch optimization
 
 **Day 3-4: Route Optimization** ✅ Framework Ready
-- File: `src/apps/api/src/services/routeOptimizer.ts`
+- File: `apps/api/src/services/routeOptimizer.ts`
 - Algorithms: A*, Dijkstra with traffic awareness
 - Target: 15-20% route efficiency
 - Multi-stop VRP support
 
 **Day 5-6: Real-time GPS Tracking** ✅ Framework Ready
-- File: `src/apps/api/src/services/gpsTracking.ts`
+- File: `apps/api/src/services/gpsTracking.ts`
 - Technology: WebSocket with geofencing
 - Features: ETA calculation, location history
 - Update: Every 5 seconds
@@ -268,7 +268,7 @@ ws.onmessage = (event) => {
 
 ### Day 1-2: Train ML Model
 ```bash
-cd src/apps/api
+cd apps/api
 npx ts-node services/driverAvailabilityPredictor.ts --train
 
 # Expected output:

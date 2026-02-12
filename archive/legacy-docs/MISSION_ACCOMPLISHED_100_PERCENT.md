@@ -34,11 +34,11 @@
 
 ### Files Modified: 6
 
-- `api/jest.config.js` - Configuration
+- `apps/api/jest.config.js` - Configuration
 - `packages/shared/tsconfig.json` - Module system
 - `packages/shared/package.json` - Package metadata
 - `packages/shared/dist/` - Rebuilt output
-- `api/src/routes/metrics.js` - Route structure
+- `apps/api/src/routes/metrics.js` - Route structure
 - **+ 7 documentation files created (2000+ lines)**
 
 ---
@@ -241,7 +241,7 @@ PRODUCTION READINESS SCALE
 
 ```bash
 # Verify fixes
-node -c api/src/routes/metrics.js
+node -c apps/api/src/routes/metrics.js
 node -e "require('@prisma/client')"
 node -e "require('@infamous-freight/shared')"
 

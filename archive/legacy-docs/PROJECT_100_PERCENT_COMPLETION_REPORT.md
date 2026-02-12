@@ -168,7 +168,7 @@ All implementations follow the established project architecture and patterns:
 ### 1. Database Seeding
 
 ```bash
-cd api
+cd apps/api
 npm run seed
 ```
 
@@ -450,12 +450,12 @@ cdfdd25 build: Complete web and api builds
 
 ### Key Files for Reference
 
-- **WebSocket**: `src/apps/api/src/services/websocket-events.ts`
-- **Notifications**: `src/apps/api/src/services/notification.service.ts`
-- **Tests**: `src/apps/api/__tests__/routes/`
-- **API Docs**: `src/apps/api/src/swagger.config.ts`
-- **Logging**: `src/apps/api/src/middleware/enhanced-logging.ts`
-- **Monitoring**: `src/apps/api/src/monitoring/dashboards.ts`
+- **WebSocket**: `apps/api/src/services/websocket-events.ts`
+- **Notifications**: `apps/api/src/services/notification.service.ts`
+- **Tests**: `apps/api/__tests__/routes/`
+- **API Docs**: `apps/api/src/swagger.config.ts`
+- **Logging**: `apps/api/src/middleware/enhanced-logging.ts`
+- **Monitoring**: `apps/api/src/monitoring/dashboards.ts`
 
 ### Environment Configuration
 

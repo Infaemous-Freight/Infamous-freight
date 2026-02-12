@@ -234,7 +234,7 @@
 ### Network
 
 - [ ] Database only accessible from API pods
-- [ ] API only accessible from web/external clients
+- [ ] API only accessible from apps/web/external clients
 - [ ] Ingress rules enforce HTTPS
 - [ ] Network policies defined (default deny)
 - [ ] VPC/private networks used (not public)

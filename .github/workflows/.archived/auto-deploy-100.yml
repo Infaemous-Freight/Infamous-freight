@@ -66,9 +66,9 @@ jobs:
             echo "mobile=true" >> $GITHUB_OUTPUT
             echo "shared=true" >> $GITHUB_OUTPUT
           else
-            API_CHANGED=$(git diff --name-only HEAD^ HEAD 2>/dev/null | grep -E '^api/' || echo "")
-            WEB_CHANGED=$(git diff --name-only HEAD^ HEAD 2>/dev/null | grep -E '^web/' || echo "")
-            MOBILE_CHANGED=$(git diff --name-only HEAD^ HEAD 2>/dev/null | grep -E '^mobile/' || echo "")
+            API_CHANGED=$(git diff --name-only HEAD^ HEAD 2>/dev/null | grep -E '^apps/api/' || echo "")
+            WEB_CHANGED=$(git diff --name-only HEAD^ HEAD 2>/dev/null | grep -E '^apps/web/' || echo "")
+            MOBILE_CHANGED=$(git diff --name-only HEAD^ HEAD 2>/dev/null | grep -E '^apps/mobile/' || echo "")
             SHARED_CHANGED=$(git diff --name-only HEAD^ HEAD 2>/dev/null | grep -E '^packages/shared/' || echo "")
             
             [ -n "$API_CHANGED" ] && echo "api=true" >> $GITHUB_OUTPUT || echo "api=false" >> $GITHUB_OUTPUT
@@ -226,7 +226,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: api-build
-          path: api/
+          path: apps/api/
 
       - name: Setup Fly CLI
         uses: superfly/flyctl-actions/setup-flyctl@master
@@ -235,7 +235,7 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
-          cd api
+          cd apps/api
           flyctl deploy --remote-only --build-arg NODE_ENV=production
           echo "✅ API deployed successfully to Fly.io" >> $GITHUB_STEP_SUMMARY
 
@@ -268,7 +268,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: web-build
-          path: web/
+          path: apps/web/
 
       - name: Deploy to Vercel
         env:

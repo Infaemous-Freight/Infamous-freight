@@ -149,7 +149,7 @@ DATABASE_URL=postgresql://infamous-freight-db.flycast
 
 ### Schema Verification
 
-- **Schema File:** `api/prisma/schema.prisma`
+- **Schema File:** `apps/api/prisma/schema.prisma`
 - **Lines:** 1,423 (verified)
 - **Status:** ✅ Valid and complete
 
@@ -314,7 +314,7 @@ Phase 3: Database Validation       [██████████████�
 
 ### Critical Files Verified
 
-- [api/prisma/schema.prisma](api/prisma/schema.prisma) - 1,423 lines ✅
+- [apps/api/prisma/schema.prisma](apps/api/prisma/schema.prisma) - 1,423 lines ✅
 - [.env](.env) - All phases configured ✅
 - [docker-compose.yml](docker-compose.yml) - Profiles ready ✅
 

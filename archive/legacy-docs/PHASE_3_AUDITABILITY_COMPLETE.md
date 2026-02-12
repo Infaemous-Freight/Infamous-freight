@@ -59,7 +59,7 @@ model JobEvent {
 
 ### 2. Audit Helper Layer
 
-**File**: `api/src/marketplace/audit.ts`
+**File**: `apps/api/src/marketplace/audit.ts`
 
 ```typescript
 import { prisma, JobEventType } from '@prisma/client';
@@ -399,10 +399,10 @@ CREATE INDEX "JobEvent_type_createdAt_idx" ON "JobEvent"("type", "createdAt" DES
 
 | File | Changes |
 |------|---------|
-| `api/prisma/schema.prisma` | Added JobEventType enum, JobEvent model, WebhookEvent enhancements |
-| `api/src/marketplace/audit.ts` | NEW — logJobEvent, getJobTimeline, getLatestJobEvent helpers |
-| `api/src/marketplace/router.js` | Added logging to job creation, checkout, timeline endpoint |
-| `api/src/marketplace/webhooks.js` | Added metadata capture, handleCheckoutExpired, transaction-safe logging |
+| `apps/api/prisma/schema.prisma` | Added JobEventType enum, JobEvent model, WebhookEvent enhancements |
+| `apps/api/src/marketplace/audit.ts` | NEW — logJobEvent, getJobTimeline, getLatestJobEvent helpers |
+| `apps/api/src/marketplace/router.js` | Added logging to job creation, checkout, timeline endpoint |
+| `apps/api/src/marketplace/webhooks.js` | Added metadata capture, handleCheckoutExpired, transaction-safe logging |
 
 ---
 

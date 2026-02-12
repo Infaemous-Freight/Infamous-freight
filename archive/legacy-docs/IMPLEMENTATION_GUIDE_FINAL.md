@@ -113,13 +113,13 @@ npm install express-validator
 ```
 
 **Add Payment Routes (2 hours)**
-- Copy PAYMENT_ROUTES.js to `api/src/routes/`
+- Copy PAYMENT_ROUTES.js to `apps/api/src/routes/`
 - Add to Express app: `app.use('/api/payments', paymentRoutes)`
 - Test with Postman
 
 **Add Stripe Configuration (2 hours)**
-- Copy STRIPE_CONFIG.js to `api/src/services/`
-- Copy WEBHOOK_ROUTES.js to `api/src/routes/`
+- Copy STRIPE_CONFIG.js to `apps/api/src/services/`
+- Copy WEBHOOK_ROUTES.js to `apps/api/src/routes/`
 - Test webhook handlers
 
 **Test Endpoints (1 hour)**
@@ -138,7 +138,7 @@ curl -X POST http://localhost:4000/api/payments/checkout-session \
 **Create Pricing Page (3 hours)**
 ```bash
 # Create pricing component
-web/components/PricingPage.tsx
+apps/web/components/PricingPage.tsx
 
 Features:
 - Display all 4 plans
@@ -162,7 +162,7 @@ npm install @stripe/react-stripe-js @stripe/stripe-js
 **Add Billing Dashboard (2 hours)**
 ```bash
 # Manage subscriptions
-web/components/BillingDashboard.tsx
+apps/web/components/BillingDashboard.tsx
 
 Features:
 - Current plan display

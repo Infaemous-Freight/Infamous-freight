@@ -40,7 +40,7 @@ setup_ml_services() {
   log_info "Verifying ML services..."
   
   # Verify predictive availability service
-  if [ -f "api/src/services/ml/predictiveAvailability.ts" ]; then
+  if [ -f "apps/api/src/services/ml/predictiveAvailability.ts" ]; then
     log_info "✓ Predictive Availability Service found (275 lines)"
   else
     log_error "Predictive Availability Service not found"
@@ -58,7 +58,7 @@ setup_ml_services() {
   )
   
   for feature in "${features[@]}"; do
-    if [ -f "api/src/services/features/${feature}" ] || [ -f "api/src/services/ml/${feature}" ]; then
+    if [ -f "apps/api/src/services/features/${feature}" ] || [ -f "apps/api/src/services/ml/${feature}" ]; then
       log_info "✓ $feature found"
     fi
   done
@@ -67,7 +67,7 @@ setup_ml_services() {
 build_api_with_features() {
   log_info "Building API with all Phase 3 features..."
   
-  cd api
+  cd apps/api
   pnpm build
   
   if [ $? -eq 0 ]; then

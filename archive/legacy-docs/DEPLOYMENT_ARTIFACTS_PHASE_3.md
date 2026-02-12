@@ -9,23 +9,23 @@
 ## New Files Created (15)
 
 ### Core Services & Middleware
-1. **api/src/routes/auth.js** (200+ lines)
+1. **apps/api/src/routes/auth.js** (200+ lines)
    - Password reset flow
    - Account management endpoints
    - Rate-limited password operations
 
-2. **api/src/services/encryption.js** (150+ lines)
+2. **apps/api/src/services/encryption.js** (150+ lines)
    - AES-256-GCM encryption/decryption
    - Password hashing with salt
    - Constant-time comparison
 
-3. **api/src/services/monitoring.js** (200+ lines)
+3. **apps/api/src/services/monitoring.js** (200+ lines)
    - Prometheus metrics collection
    - HTTP, DB, business metrics
    - Health check utilities
 
 ### Testing & Quality
-4. **api/__tests__/performance.test.js** (350+ lines)
+4. **apps/api/__tests__/performance.test.js** (350+ lines)
    - 20+ performance SLA tests
    - Query benchmarking
    - N+1 query detection
@@ -77,7 +77,7 @@
     - Performance debugging
     - 20+ diagnostic commands
 
-13. **api/src/swagger/auth.swagger.js** (200+ lines)
+13. **apps/api/src/swagger/auth.swagger.js** (200+ lines)
     - OpenAPI 3.0 documentation
     - 50+ endpoints documented
     - Request/response schemas
@@ -116,7 +116,7 @@
 
 ## Modified Files (2)
 
-### 1. api/src/middleware/security.js
+### 1. apps/api/src/middleware/security.js
 **Changes Made**:
 - Added 3 new rate limiters (export, passwordReset, webhook)
 - Added `validateUserOwnership()` middleware function
@@ -125,7 +125,7 @@
 **Line Changes**: +80 lines
 **Impact**: Enhanced rate limiting and access control
 
-### 2. api/prisma/schema.prisma
+### 2. apps/api/prisma/schema.prisma
 **Changes Made**:
 - Added `encryptedCardLast4` field to Payment model
 - Added `encryptedMetadata` field to Payment model
@@ -137,7 +137,7 @@
 
 **Migration Required**:
 ```bash
-cd api
+cd apps/api
 pnpm prisma:migrate:dev --name "add_encryption_fields"
 ```
 
@@ -187,7 +187,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 pg_dump -h $DB_HOST -U $DB_USER -d freight_db > backup_$(date +%s).sql
 
 # Apply migration
-cd api
+cd apps/api
 pnpm prisma:migrate:dev --name "add_encryption_fields"
 ```
 
@@ -348,7 +348,7 @@ curl https://api.infamous-freight.com/api/shipments \
 
 ### 3. Error Tracking (Check Sentry)
 ```
-https://sentry.io/projects/infamous-freight-api/
+https://sentry.io/projects/infamous-freight-apps/api/
 - Look for any new errors
 - Check error count is <10 in first hour
 - Investigate and fix any 5xx errors
@@ -453,7 +453,7 @@ curl https://api.infamous-freight.com/api/health
 | Security Audit | Compliance checklist | SECURITY_AUDIT_COMPREHENSIVE.md |
 | Accessibility Testing | WCAG compliance | ACCESSIBILITY_TESTING_FINAL.md |
 | Database Optimization | Performance tuning | DATABASE_OPTIMIZATION_FINAL.md |
-| API Documentation | Endpoint reference | api/src/swagger/auth.swagger.js |
+| API Documentation | Endpoint reference | apps/api/src/swagger/auth.swagger.js |
 
 ---
 

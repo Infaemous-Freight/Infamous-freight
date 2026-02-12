@@ -10,7 +10,7 @@ RUN npm install -g pnpm@9.15.0
 
 # Copy workspace and package files
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY api/package.json ./api/
+COPY apps/api/package.json ./apps/api/
 COPY packages/shared/package.json ./packages/shared/
 
 # Install dependencies
@@ -23,7 +23,7 @@ COPY . .
 RUN pnpm --filter @infamous-freight/shared build && pnpm --filter api build
 
 # Generate Prisma client
-RUN cd api && pnpm prisma:generate || true
+RUN cd apps/api && pnpm prisma:generate || true
 
 # Expose API port
 EXPOSE 3001
@@ -34,8 +34,8 @@ ENV PORT=3001
 ENV API_PORT=3001
 
 # Production command - run the API server
-CMD ["sh", "-c", "cd api && node src/server.js"]
+CMD ["sh", "-c", "cd apps/api && node src/server.js"]
 
 # Health check for API
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/api/health || exit 1

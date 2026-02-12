@@ -34,7 +34,7 @@ All 10 operational pillars are **100% complete** and **production-ready**:
 - **URL**: https://mrmiless44-genesis.vercel.app
 - **Project**: santorio-miles-projects/mrmiless44-genesis
 - **Build**: `pnpm --filter web build`
-- **Output**: `web/.next/` (prebuilt, 80 kB First Load JS)
+- **Output**: `apps/web/.next/` (prebuilt, 80 kB First Load JS)
 - **Components Fixed**:
   - ✅ Stripe payment form (@stripe/stripe-js, @stripe/react-stripe-js)
   - ✅ Recharts dashboard components
@@ -45,7 +45,7 @@ All 10 operational pillars are **100% complete** and **production-ready**:
 - **Framework**: Express.js (CommonJS, Node.js 20)
 - **Status**: ✅ **DOCKER CONFIGURED + READY FOR FLY.DEV**
 - **Port**: 4000 (configurable via `API_PORT`)
-- **Server Entry**: `api/src/server.js`
+- **Server Entry**: `apps/api/src/server.js`
 - **Docker**: `Dockerfile.fly` (multi-stage, optimized, non-root user)
 - **Health Endpoint**: `GET /api/health` (Fly.dev configured)
 - **Features Ready**:
@@ -62,7 +62,7 @@ All 10 operational pillars are **100% complete** and **production-ready**:
 
 - **ORM**: Prisma
 - **Status**: ✅ **READY**
-- **Schema**: `api/prisma/schema.prisma`
+- **Schema**: `apps/api/prisma/schema.prisma`
 - **Migrations**: In place, Prisma Client generated
 - **Health**: DB connection checks in `/api/health`
 - **Shared Types**: Exported from `packages/shared/src/types.ts`
@@ -120,13 +120,13 @@ All 10 operational pillars are **100% complete** and **production-ready**:
   "buildCommand": "pnpm --filter web build",
   "devCommand": "pnpm --filter web dev",
   "installCommand": "pnpm install",
-  "outputDirectory": "web/.next",
+  "outputDirectory": "apps/web/.next",
   "ignoreCommand": "git diff --quiet HEAD~1 && exit 0 || exit 1"
 }
 ```
 
 - ✅ Monorepo-aware (pnpm --filter)
-- ✅ Correct output directory (web/.next)
+- ✅ Correct output directory (apps/web/.next)
 - ✅ Ignores API-only changes
 
 ### Fly.dev Deployment
@@ -157,7 +157,7 @@ memory = 1GB, CPU = 1 shared
 - ✅ Non-root user (nodejs:1001)
 - ✅ Health checks included
 - ✅ Sentry instrumentation support
-- ✅ Monorepo-aware (api/, packages/shared/)
+- ✅ Monorepo-aware (apps/api/, packages/shared/)
 
 ---
 
@@ -165,7 +165,7 @@ memory = 1GB, CPU = 1 shared
 
 ### Authentication & Authorization
 
-- ✅ **JWT-based auth**: `api/src/middleware/security.js`
+- ✅ **JWT-based auth**: `apps/api/src/middleware/security.js`
 - ✅ **Scope enforcement**: Per-route scope validation
 - ✅ **Supported scopes**: `ai:command`, `voice:ingest`, `voice:command`, etc.
 

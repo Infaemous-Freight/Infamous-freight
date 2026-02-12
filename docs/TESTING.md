@@ -7,7 +7,7 @@ This guide explains how to write, run, and maintain tests for the Infamous Freig
 ## Test Structure
 
 ```
-api/
+apps/api/
 ├── __tests__/              # Route-level tests
 │   ├── routes.billing.test.js
 │   ├── routes.shipments.test.js
@@ -32,19 +32,19 @@ api/
 
 ```bash
 # Run all tests
-cd api && pnpm test
+cd apps/api && pnpm test
 
 # Run with coverage
-cd api && pnpm test:coverage
+cd apps/api && pnpm test:coverage
 
 # Run specific test file
-cd api && pnpm test routes.billing.test.js
+cd apps/api && pnpm test routes.billing.test.js
 
 # Run tests in watch mode (for development)
-cd api && pnpm test --watch
+cd apps/api && pnpm test --watch
 
 # Run tests with verbose output
-cd api && pnpm test --verbose
+cd apps/api && pnpm test --verbose
 ```
 
 ### Coverage Reports
@@ -53,13 +53,13 @@ After running `pnpm test:coverage`, view the HTML report:
 
 ```bash
 # Open in browser (macOS)
-open api/coverage/index.html
+open apps/api/coverage/index.html
 
 # Open in browser (Linux)
-xdg-open api/coverage/index.html
+xdg-open apps/api/coverage/index.html
 
 # Open in browser (Windows)
-start api/coverage/index.html
+start apps/api/coverage/index.html
 ```
 
 ## Writing Tests

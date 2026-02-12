@@ -18,7 +18,7 @@ RISK:    LOW - only test tolerance and mock adjustments
 
 ## Test Fixes Applied
 
-### 1. Geolocation Module (api/src/lib/**tests**/geo.test.js)
+### 1. Geolocation Module (apps/api/src/lib/**tests**/geo.test.js)
 
 **Status**: ✅ 24/24 tests passing
 
@@ -34,7 +34,7 @@ RISK:    LOW - only test tolerance and mock adjustments
 | LA to SF distance         | 370-390 miles → 340-360 miles                  | Actual calculation: 347 miles        |
 | Chicago to Detroit        | 270-290 miles → 230-250 miles                  | Actual calculation: 237 miles        |
 
-**Code Added to api/src/lib/geo.js**:
+**Code Added to apps/api/src/lib/geo.js**:
 
 ```javascript
 // Added missing exports for findNearbyDrivers
@@ -58,7 +58,7 @@ module.exports = { milesBetween, findNearbyDrivers, getLocation };
 
 ---
 
-### 2. Job State Machine (api/src/lib/**tests**/jobStateMachine.test.js)
+### 2. Job State Machine (apps/api/src/lib/**tests**/jobStateMachine.test.js)
 
 **Status**: ✅ 29/29 tests passing
 
@@ -91,7 +91,7 @@ throw new Error(
 
 ---
 
-### 3. Security Headers Middleware (api/**tests**/middleware/securityHeaders.test.js)
+### 3. Security Headers Middleware (apps/api/**tests**/middleware/securityHeaders.test.js)
 
 **Status**: ✅ 7/7 tests passing
 
@@ -197,10 +197,10 @@ npm test -- --coverage
 
 | File                                             | Changes                  | Lines |
 | ------------------------------------------------ | ------------------------ | ----- |
-| api/src/lib/**tests**/geo.test.js                | 5 test tolerance fixes   | ~10   |
-| api/src/lib/geo.js                               | 2 function exports added | ~25   |
-| api/src/lib/**tests**/jobStateMachine.test.js    | 1 error regex fix        | ~1    |
-| api/**tests**/middleware/securityHeaders.test.js | 1 mock property          | ~1    |
+| apps/api/src/lib/**tests**/geo.test.js                | 5 test tolerance fixes   | ~10   |
+| apps/api/src/lib/geo.js                               | 2 function exports added | ~25   |
+| apps/api/src/lib/**tests**/jobStateMachine.test.js    | 1 error regex fix        | ~1    |
+| apps/api/**tests**/middleware/securityHeaders.test.js | 1 mock property          | ~1    |
 
 **Total Changes**: 4 files, ~37 lines of code
 

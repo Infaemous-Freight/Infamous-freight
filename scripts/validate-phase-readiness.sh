@@ -62,7 +62,7 @@ else
 fi
 
 # Check Prisma schema
-if [ -f "api/prisma/schema.prisma" ]; then
+if [ -f "apps/api/prisma/schema.prisma" ]; then
     check_pass "Prisma schema exists"
 else
     check_fail "Prisma schema missing"
@@ -124,7 +124,7 @@ else
 fi
 
 # Check ML service
-if [ -f "src/apps/api/src/services/ml/predictiveAvailability.ts" ]; then
+if [ -f "apps/api/src/services/ml/predictiveAvailability.ts" ]; then
     check_pass "ML Predictive Availability service exists"
 else
     check_warn "ML service not found (will be implemented in Phase 3)"
@@ -143,7 +143,7 @@ echo "PHASE 4: INFRASTRUCTURE SCALING READINESS"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Check executive analytics service
-if [ -f "src/apps/api/src/services/analytics/executiveAnalytics.ts" ]; then
+if [ -f "apps/api/src/services/analytics/executiveAnalytics.ts" ]; then
     check_pass "Executive Analytics service exists"
 else
     check_warn "Executive Analytics service not found (will be implemented in Phase 4)"
@@ -190,14 +190,14 @@ else
 fi
 
 # Check API package.json
-if [ -f "api/package.json" ]; then
+if [ -f "apps/api/package.json" ]; then
     check_pass "API package.json exists"
 else
     check_fail "API package.json missing"
 fi
 
 # Check Web package.json
-if [ -f "web/package.json" ]; then
+if [ -f "apps/web/package.json" ]; then
     check_pass "Web package.json exists"
 else
     check_fail "Web package.json missing"

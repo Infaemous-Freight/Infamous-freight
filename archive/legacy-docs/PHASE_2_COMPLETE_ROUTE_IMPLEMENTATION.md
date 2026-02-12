@@ -144,7 +144,7 @@ router.[method](
 ### Route 1: GET /api/shipments (LIST)
 
 **Status**: ✅ PRODUCTION READY  
-**File**: `api/src/routes/shipments.js`  
+**File**: `apps/api/src/routes/shipments.js`  
 **Tests**: 12 test cases covering:
 
 - ✅ Validation (pagination, status enum, driverId)
@@ -163,7 +163,7 @@ router.[method](
 ### Route 2: POST /api/shipments (CREATE)
 
 **Status**: ✅ PRODUCTION READY  
-**File**: `api/src/routes/shipments.js`  
+**File**: `apps/api/src/routes/shipments.js`  
 **Features**:
 
 - ✅ Required fields: origin, destination
@@ -179,7 +179,7 @@ router.[method](
 ### Route 3: GET /api/shipments/:id (READ)
 
 **Status**: ✅ PRODUCTION READY  
-**File**: `api/src/routes/shipments.js`  
+**File**: `apps/api/src/routes/shipments.js`  
 **Features**:
 
 - ✅ UUID validation for ID parameter
@@ -194,7 +194,7 @@ router.[method](
 ### Route 4: PATCH /api/shipments/:id (UPDATE)
 
 **Status**: ✅ PRODUCTION READY  
-**File**: `api/src/routes/shipments.js`  
+**File**: `apps/api/src/routes/shipments.js`  
 **Features**:
 
 - ✅ Update status with enum validation
@@ -209,7 +209,7 @@ router.[method](
 ### Route 5: DELETE /api/shipments/:id (DELETE)
 
 **Status**: ✅ PRODUCTION READY  
-**File**: `api/src/routes/shipments.js`  
+**File**: `apps/api/src/routes/shipments.js`  
 **Features**:
 
 - ✅ Soft delete support (sets status to "deleted")
@@ -222,7 +222,7 @@ router.[method](
 ### Route 6: GET /api/users (LIST)
 
 **Status**: ✅ PRODUCTION READY  
-**File**: `api/src/routes/users.js`  
+**File**: `apps/api/src/routes/users.js`  
 **Features**:
 
 - ✅ Pagination with configurable page size
@@ -235,7 +235,7 @@ router.[method](
 ### Route 7: POST /api/users (CREATE)
 
 **Status**: ✅ PRODUCTION READY  
-**File**: `api/src/routes/users.js`  
+**File**: `apps/api/src/routes/users.js`  
 **Features**:
 
 - ✅ Email validation + normalization

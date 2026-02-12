@@ -14,7 +14,7 @@
 
 #### Feature 1: Predictive Driver Availability (Days 1-2)
 
-- [ ] Deploy ML model: `src/apps/api/src/services/ml/predictiveAvailability.ts`
+- [ ] Deploy ML model: `apps/api/src/services/ml/predictiveAvailability.ts`
 - [ ] Train on historical driver data
 - [ ] Achieve >85% accuracy on test set
 - [ ] API endpoint: `POST /api/ml/driver-availability`

@@ -40,9 +40,9 @@ you find the information you need.
 
 ## API Documentation
 
-- **[API Reference](api/API_REFERENCE.md)** - Complete API endpoint
+- **[API Reference](apps/api/API_REFERENCE.md)** - Complete API endpoint
   documentation
-- **[API Testing Guide](api/API_TESTING_GUIDE.md)** - How to test API endpoints
+- **[API Testing Guide](apps/api/API_TESTING_GUIDE.md)** - How to test API endpoints
 - **[API Security Checklist](API_SECURITY_CHECKLIST.md)** - Security best
   practices
 
@@ -179,7 +179,7 @@ root:
 2. **Run tests**: [Testing Guide](TESTING.md)
 3. **Deploy to production**:
    [Deployment Runbook](deployment/DEPLOYMENT_RUNBOOK.md)
-4. **Add a new API endpoint**: [API Reference](api/API_REFERENCE.md)
+4. **Add a new API endpoint**: [API Reference](apps/api/API_REFERENCE.md)
 5. **Configure environment variables**:
    [Environment Variables](ENVIRONMENT_VARIABLES.md)
 
@@ -188,7 +188,7 @@ root:
 - Check the [Developer Guide](developer-guide.md) for common setup issues
 - Review the [Quick Reference](QUICK_REFERENCE.md) for command cheatsheet
 - See the [Testing Guide](TESTING.md) for testing help
-- Consult the [API Reference](api/API_REFERENCE.md) for API documentation
+- Consult the [API Reference](apps/api/API_REFERENCE.md) for API documentation
 
 ## Contributing
 

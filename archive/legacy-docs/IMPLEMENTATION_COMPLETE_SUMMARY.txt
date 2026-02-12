@@ -72,8 +72,8 @@ All Next Steps: EXECUTED
    ✓ /api/health/ready (K8s readiness)
    ✓ /api/health/details (authenticated metrics)
    ✓ /api/health/dashboard (HTML dashboard)
-   ✓ api/src/routes/health-detailed.js (370 lines)
-   ✓ api/src/config/secrets.js (90 lines)
+   ✓ apps/api/src/routes/health-detailed.js (370 lines)
+   ✓ apps/api/src/config/secrets.js (90 lines)
 
 ✅ CI/CD Pipeline (2 files)
    ✓ docker-build-push.yml (multi-platform builds)
@@ -159,8 +159,8 @@ Configuration Files: 7
   ✓ monitoring/nginx/conf.d/default.conf
 
 Application Code: 2
-  ✓ api/src/routes/health-detailed.js (370 lines)
-  ✓ api/src/config/secrets.js (90 lines)
+  ✓ apps/api/src/routes/health-detailed.js (370 lines)
+  ✓ apps/api/src/config/secrets.js (90 lines)
 
 CI/CD Workflows: 2
   ✓ .github/workflows/docker-build-push.yml

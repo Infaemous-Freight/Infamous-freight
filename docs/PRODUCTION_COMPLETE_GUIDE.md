@@ -195,7 +195,7 @@ flyctl deploy --config fly.api.toml --app infamous-freight-api
 
 # Run database migrations
 flyctl ssh console --app infamous-freight-api
-cd api && npx prisma migrate deploy
+cd apps/api && npx prisma migrate deploy
 exit
 
 # Verify deployment
@@ -223,8 +223,8 @@ pnpm add -g vercel@latest
 # Login
 vercel login
 
-# Deploy from web/ directory
-cd web
+# Deploy from apps/web/ directory
+cd apps/web
 vercel --prod
 
 # Set environment variables in Vercel dashboard
@@ -440,8 +440,8 @@ flyctl postgres db restore --backup-id <id> --app infamous-freight-db
 
 ```bash
 # Check for updates
-cd api && npm outdated
-cd ../web && npm outdated
+cd apps/api && npm outdated
+cd ../apps/web && npm outdated
 
 # Update packages
 npm update
@@ -454,12 +454,12 @@ npm audit fix
 
 ```bash
 # Create migration
-cd api
+cd apps/api
 npx prisma migrate dev --name description
 
 # Deploy to production
 flyctl ssh console --app infamous-freight-api
-cd api && npx prisma migrate deploy
+cd apps/api && npx prisma migrate deploy
 ```
 
 ### Scaling
@@ -547,7 +547,7 @@ flyctl scale memory 512 --app infamous-freight-api
 
 # Solution: Add database indexes
 flyctl ssh console --app infamous-freight-api
-cd api && npx prisma studio
+cd apps/api && npx prisma studio
 # Add indexes in schema.prisma, then migrate
 ```
 
@@ -597,7 +597,7 @@ flyctl machine list --app infamous-freight-api
 **1. Move Web to Vercel (Free)**
 
 ```bash
-cd web
+cd apps/web
 vercel --prod
 # Saves ~$3/month, better Next.js optimization
 ```

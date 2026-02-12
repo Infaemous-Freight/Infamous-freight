@@ -4,7 +4,7 @@ This guide summarizes the essentials for contributing to the Infamous Freight En
 
 ## Repository Layout
 
-- **Applications**: `src/apps/{api,web,mobile}`
+- **Applications**: `apps/{api,web,mobile}`
 - **Shared packages**: `src/packages/shared`
 - **End-to-end tests**: `tests/e2e` (Playwright)
 - **Configuration**:

@@ -20,7 +20,7 @@ kubectl create secret generic app-secrets --from-file=.env.local
 
 ## Environment Variables by Service
 
-### API Service (api/.env)
+### API Service (apps/api/.env)
 
 ```bash
 # JWT & Authentication
@@ -74,7 +74,7 @@ WEB_URL="https://yourdomain.com"                          # For email links, etc
 API_BASE_URL="https://api.yourdomain.com"                 # For frontend requests
 ```
 
-### Web Service (web/.env.local)
+### Web Service (apps/web/.env.local)
 
 ```bash
 # API Communication
@@ -212,8 +212,8 @@ node scripts/verify-env.js
 ```bash
 # Single secret
 kubectl create secret generic app-secrets \
-  --from-file=api.env=api/.env.local \
-  --from-file=web.env=web/.env.local \
+  --from-file=api.env=apps/api/.env.local \
+  --from-file=web.env=apps/web/.env.local \
   -n infamous-freight
 
 # Or from file

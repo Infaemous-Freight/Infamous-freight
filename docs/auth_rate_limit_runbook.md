@@ -6,7 +6,7 @@
 - Scopes: enforced per route via `requireScope()`. Example: `ai:command`, `voice:ingest`, `billing:write`, `shipments:read|write`, `users:read|write`, `admin`.
 - Dev override: `x-user-id` header is accepted when no bearer token (for local only). Use `x-org-id` to simulate org context.
 
-## Rate Limiters (see api/src/middleware/security.js)
+## Rate Limiters (see apps/api/src/middleware/security.js)
 
 - `general`: default (100 / 15m).
 - `auth`: login/password change (5 / 15m).
@@ -34,7 +34,7 @@ Skip list: health endpoints are skipped by limiter.
 ## Testing
 
 - API tests: `pnpm --filter api test`.
-- New validation coverage: `api/src/routes/__tests__/shipments.validation.test.js` exercises UUID/body validation and scope+auth chain for shipments.
+- New validation coverage: `apps/api/src/routes/__tests__/shipments.validation.test.js` exercises UUID/body validation and scope+auth chain for shipments.
 
 ## Common issues
 

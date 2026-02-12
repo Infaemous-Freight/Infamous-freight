@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="1" failures="0" errors="0" time="0.927">
-  <testsuite name="components/__tests__/AvatarGrid.test.jsx" errors="0" failures="0" skipped="0" timestamp="2025-12-30T05:47:05" time="0.37" tests="1">
-    <testcase classname="Dashboard Component" name="should render without crashing" time="0.003">
-    </testcase>
-  </testsuite>
-</testsuites>

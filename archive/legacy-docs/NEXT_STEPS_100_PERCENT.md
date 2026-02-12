@@ -325,7 +325,7 @@
 ### A. Docker Deployment
 ```bash
 # Build image
-docker build -f api/Dockerfile -t infamouz-freight-api:latest .
+docker build -f apps/api/Dockerfile -t infamouz-freight-api:latest .
 
 # Push to registry
 docker tag infamouz-freight-api:latest myregistry.azurecr.io/infamouz-freight-api:latest

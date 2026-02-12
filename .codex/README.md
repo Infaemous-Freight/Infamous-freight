@@ -28,7 +28,7 @@ This directory contains configuration for the [Codex CLI](https://github.com/ope
 The template includes workspace-specific settings that help Codex understand this project:
 
 - **Tech Stack**: Node.js, Next.js, TypeScript, PostgreSQL, Prisma, Express, React Native
-- **Architecture**: pnpm monorepo with `api/`, `web/`, `mobile/`, `packages/shared/`
+- **Architecture**: pnpm monorepo with `apps/api/`, `apps/web/`, `apps/mobile/`, `packages/shared/`
 - **Ignore Patterns**: Excludes build artifacts, node_modules, logs
 
 ## Usage

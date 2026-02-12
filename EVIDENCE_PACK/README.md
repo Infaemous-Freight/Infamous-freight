@@ -62,7 +62,7 @@ Configuration and test artifacts:
 pnpm generate:evidence
 
 # Verify audit chain integrity
-node api/src/audit/verify.js --jobId=<JOB_ID>
+node apps/api/src/audit/verify.js --jobId=<JOB_ID>
 
 # Collect security headers
 curl -i https://api.infamous-freight.com/api/health
@@ -113,4 +113,4 @@ Update artifacts regularly:
 
 - [SECURITY.md](../SECURITY.md) - Complete security documentation
 - [INCIDENT_RESPONSE.md](../INCIDENT_RESPONSE.md) - Incident playbook
-- [.env.example](../api/.env.example) - Environment configuration reference
+- [.env.example](../apps/api/.env.example) - Environment configuration reference

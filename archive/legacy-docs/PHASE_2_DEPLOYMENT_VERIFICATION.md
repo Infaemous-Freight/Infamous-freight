@@ -10,7 +10,7 @@ All 10 enhancements have been successfully implemented and integrated into the m
 
 ### Middleware Security Exports
 
-**File:** `api/src/middleware/security.js`
+**File:** `apps/api/src/middleware/security.js`
 
 - ✅ `limiters` - Rate limiting configuration
 - ✅ `rateLimit` - General limiter alias
@@ -26,7 +26,7 @@ All 10 enhancements have been successfully implemented and integrated into the m
 
 ### Marketplace Router Changes
 
-**File:** `api/src/marketplace/router.js`
+**File:** `apps/api/src/marketplace/router.js`
 **Enhancements Implemented:**
 
 - ✅ Authentication on all protected routes
@@ -55,7 +55,7 @@ All 10 enhancements have been successfully implemented and integrated into the m
 
 ### Billing Router Changes
 
-**File:** `api/src/marketplace/billingRouter.js`
+**File:** `apps/api/src/marketplace/billingRouter.js`
 **Enhancements Implemented:**
 
 - ✅ Global authentication middleware
@@ -73,7 +73,7 @@ All 10 enhancements have been successfully implemented and integrated into the m
 
 ### Webhook Enhancement
 
-**File:** `api/src/marketplace/webhooks.js`
+**File:** `apps/api/src/marketplace/webhooks.js`
 **Enhancements Implemented:**
 
 - ✅ Correlation ID generation and tracking
@@ -98,7 +98,7 @@ All 10 enhancements have been successfully implemented and integrated into the m
 
 ### Utility Creation
 
-**File:** `api/src/lib/jobStateMachine.js` (NEW)
+**File:** `apps/api/src/lib/jobStateMachine.js` (NEW)
 **Features Implemented:**
 
 - ✅ VALID_TRANSITIONS constant defining all allowed state paths
@@ -292,7 +292,7 @@ curl -X POST http://localhost:4000/api/marketplace/jobs/job-123/checkout \
 ### Immediate (Before Production)
 
 1. [ ] Run `npm test` to ensure all tests pass
-2. [ ] Run syntax check: `node --check api/src/marketplace/router.js`
+2. [ ] Run syntax check: `node --check apps/api/src/marketplace/router.js`
 3. [ ] Review all changes with team
 4. [ ] Configure JWT scopes for all users
 5. [ ] Set up Stripe webhook in production

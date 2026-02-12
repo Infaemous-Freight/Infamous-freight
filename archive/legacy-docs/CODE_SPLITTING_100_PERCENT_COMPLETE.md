@@ -24,7 +24,7 @@ Complete code splitting system for:
 ### 1️⃣ Route-Based Code Splitting (Automatic)
 
 ```typescript
-// web/pages/dashboard.tsx
+// apps/web/pages/dashboard.tsx
 // ✅ AUTOMATIC: Next.js creates separate bundle for this route
 
 import { Layout } from '../components/Layout';
@@ -48,7 +48,7 @@ export default function Dashboard() {
 ### 2️⃣ Dynamic Route Imports
 
 ```typescript
-// web/pages/shipments/index.tsx
+// apps/web/pages/shipments/index.tsx
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 
@@ -83,7 +83,7 @@ export default function ShipmentsPage() {
 ### 3️⃣ Component-Based Code Splitting
 
 ```typescript
-// web/components/Modals/index.tsx
+// apps/web/components/Modals/index.tsx
 import dynamic from 'next/dynamic';
 
 // ✅ SPLIT: Modal components only load when needed
@@ -125,7 +125,7 @@ export function ShipmentRow() {
 ### 4️⃣ Conditional Code Splitting
 
 ```typescript
-// web/pages/admin/index.tsx
+// apps/web/pages/admin/index.tsx
 import dynamic from 'next/dynamic';
 import { useAuth } from '../hooks/useAuth';
 
@@ -150,7 +150,7 @@ export default function AdminPage() {
 ### 5️⃣ Vendor Code Splitting
 
 ```javascript
-// web/next.config.mjs
+// apps/web/next.config.mjs
 export default {
   webpack: (config, { isServer }) => {
     config.optimization.splitChunks.cacheGroups = {
@@ -214,7 +214,7 @@ export default {
 ### 6️⃣ Code Splitting Configuration
 
 ```javascript
-// web/next.config.mjs - Complete splitting setup
+// apps/web/next.config.mjs - Complete splitting setup
 export default {
   // Enable experimental optimizations
   experimental: {
@@ -254,7 +254,7 @@ export default {
 ### 1️⃣ Lazy-Load Route Handlers
 
 ```javascript
-// api/src/routes/index.js - Lazy route loading
+// apps/api/src/routes/index.js - Lazy route loading
 const express = require("express");
 const router = express.Router();
 
@@ -284,7 +284,7 @@ module.exports = router;
 ### 2️⃣ Dynamic Middleware Loading
 
 ```javascript
-// api/src/middleware/index.js - Lazy middleware
+// apps/api/src/middleware/index.js - Lazy middleware
 const loadMiddleware = (name) => {
   return async (req, res, next) => {
     try {
@@ -309,7 +309,7 @@ router.post(
 ### 3️⃣ Service Lazy Loading
 
 ```javascript
-// api/src/services/index.js - Lazy service loading
+// apps/api/src/services/index.js - Lazy service loading
 class ServiceRegistry {
   constructor() {
     this.services = new Map();
@@ -346,7 +346,7 @@ router.post("/shipments", async (req, res, next) => {
 ### 4️⃣ Conditional Database Query Loading
 
 ```javascript
-// api/src/routes/shipments.js - Lazy query building
+// apps/api/src/routes/shipments.js - Lazy query building
 router.get("/shipments", authenticate, async (req, res, next) => {
   try {
     const { include } = req.query;
@@ -379,7 +379,7 @@ router.get("/shipments", authenticate, async (req, res, next) => {
 ### 5️⃣ Feature Flag Based Splitting
 
 ```javascript
-// api/src/routes/index.js - Feature-based routing
+// apps/api/src/routes/index.js - Feature-based routing
 router.use("/shipments", require("./shipments"));
 
 // ✅ SPLIT: Only load experimental route if enabled
@@ -396,7 +396,7 @@ if (process.env.BETA_ROUTES_ENABLED === "true") {
 ### 6️⃣ Request-Time Code Splitting
 
 ```javascript
-// api/src/middleware/routeDispatcher.js
+// apps/api/src/middleware/routeDispatcher.js
 const routeHandlers = new Map();
 
 async function getHandler(route) {
@@ -429,7 +429,7 @@ router.all("/:route/*", routeDispatcher);
 ### 1️⃣ Dynamic Screen Loading
 
 ```typescript
-// mobile/src/navigation/AppNavigator.tsx
+// apps/mobile/src/navigation/AppNavigator.tsx
 import { lazy, Suspense } from 'react';
 
 // ✅ SPLIT: Screens loaded only when navigated to
@@ -490,7 +490,7 @@ export function AppNavigator() {
 ### 2️⃣ Component Library Splitting
 
 ```typescript
-// mobile/src/components/index.ts - Selective exports
+// apps/mobile/src/components/index.ts - Selective exports
 // ✅ SPLIT: Heavy components lazy-loaded
 
 export const Map = lazy(() => import("./Map").then((m) => m.Map));
@@ -510,7 +510,7 @@ export { Card } from "./Card";
 ### 3️⃣ Metro Configuration for Splitting
 
 ```javascript
-// mobile/metro.config.js - Code splitting config
+// apps/mobile/metro.config.js - Code splitting config
 const { getDefaultConfig } = require("expo/metro-config");
 
 const config = getDefaultConfig(__dirname);
@@ -623,16 +623,16 @@ import type { ApiResponse } from "@infamous-freight/shared";
 
 ```bash
 # Web: Analyze route chunks
-cd web
+cd apps/web
 ANALYZE=true pnpm build
 # Review bundle-report.html
 
 # API: Check imported modules
-cd api
+cd apps/api
 npm ls --depth=0
 
 # Mobile: Analyze bundle
-cd mobile
+cd apps/mobile
 npx expo export --platform web
 ```
 

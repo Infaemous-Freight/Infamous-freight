@@ -4,7 +4,7 @@
 
 set -e
 
-BUILD_DIR="${1:-web/.next}"
+BUILD_DIR="${1:-apps/web/.next}"
 THRESHOLD_KB="${BUNDLE_SIZE_THRESHOLD_KB:-200}"
 OUTPUT_FILE="${OUTPUT_FILE:-/tmp/bundle-analysis.json}"
 

@@ -23,7 +23,7 @@ Phase 21 transforms Infæmous Freight from a "ready-to-sell" product into a scal
 ## 📋 Sub-Phases Delivered
 
 ### Phase 21.1 — Public Marketing Funnel
-**Landing pages** (to be created in web/):
+**Landing pages** (to be created in apps/web/):
 - `/landing/shipper` — "Move freight instantly"
 - `/landing/driver` — "Get paid for deliveries"
 - `/landing/enterprise` — "AI-powered dispatch"
@@ -32,7 +32,7 @@ Phase 21 transforms Infæmous Freight from a "ready-to-sell" product into a scal
 - `/demo` — Demo booking
 
 ### Phase 21.2 — Lead Capture & CRM
-**Service**: `api/src/sales/leadCapture.ts` (400+ lines)
+**Service**: `apps/api/src/sales/leadCapture.ts` (400+ lines)
 
 Functions:
 - `createLead()` — Capture from landing pages
@@ -47,7 +47,7 @@ Functions:
 - Slack (send notification)
 
 ### Phase 21.3 — Demo Scheduling
-**Service**: `api/src/sales/demoScheduling.ts` (350+ lines)
+**Service**: `apps/api/src/sales/demoScheduling.ts` (350+ lines)
 
 Functions:
 - `scheduleDemo()` — Book via Calendly/Google Calendar
@@ -62,7 +62,7 @@ Functions:
 - Zoom link generation
 
 ### Phase 21.4 — ROI Calculator
-**Service**: `api/src/sales/roiCalculator.ts` (250+ lines)
+**Service**: `apps/api/src/sales/roiCalculator.ts` (250+ lines)
 
 **Formula**:
 ```
@@ -80,7 +80,7 @@ ROI = Annual Savings / Implementation Cost
 - **Savings: $28,000/month = $336,000/year**
 
 ### Phase 21.5 — Sales CRM Sync
-**Service**: `api/src/sales/leadCapture.ts` with CRM adapter
+**Service**: `apps/api/src/sales/leadCapture.ts` with CRM adapter
 
 **Sync Events**:
 - Lead created → HubSpot contact
@@ -90,7 +90,7 @@ ROI = Annual Savings / Implementation Cost
 - Job volume milestone → Upsell alert
 
 ### Phase 21.6 — Affiliate & Referral System
-**Service**: `api/src/sales/referrals.ts` (350+ lines)
+**Service**: `apps/api/src/sales/referrals.ts` (350+ lines)
 
 **Referral Flow**:
 1. Referrer gets unique code (e.g., `REF_ABC123_XYZ789`)
@@ -115,7 +115,7 @@ Functions:
 - `/stripe/checkout?plan=enterprise` → $2,500/month + demo
 
 ### Phase 21.8 — Investor-Grade Metrics
-**Service**: `api/src/sales/metrics.ts` (400+ lines)
+**Service**: `apps/api/src/sales/metrics.ts` (400+ lines)
 
 **Metrics Tracked**:
 
@@ -523,14 +523,14 @@ WEB_BASE_URL=https://infamousfreight.app
 ### Database Migration
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma migrate dev --name add_sales_models
 pnpm prisma generate
 ```
 
 ### API Integration
 
-Add to `api/src/app.js`:
+Add to `apps/api/src/app.js`:
 
 ```typescript
 import salesRoutes from './routes/sales';

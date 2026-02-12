@@ -20,7 +20,7 @@ All "Next Steps" from Option D completion have been implemented:
 
 ### 1. Marketplace Metrics Service
 
-**File:** [`api/src/services/metricsService.js`](api/src/services/metricsService.js) (234 lines)
+**File:** [`apps/api/src/services/metricsService.js`](apps/api/src/services/metricsService.js) (234 lines)
 
 **Features:**
 
@@ -44,7 +44,7 @@ All "Next Steps" from Option D completion have been implemented:
 
 ### 2. Metrics API Routes
 
-**File:** [`api/src/routes/marketplace-metrics.js`](api/src/routes/marketplace-metrics.js) (106 lines)
+**File:** [`apps/api/src/routes/marketplace-metrics.js`](apps/api/src/routes/marketplace-metrics.js) (106 lines)
 
 **Endpoints:**
 | Method | Endpoint | Auth | Purpose |
@@ -84,7 +84,7 @@ All "Next Steps" from Option D completion have been implemented:
 
 ### 3. Datadog RUM Integration
 
-**File:** [`web/src/lib/datadog.ts`](web/src/lib/datadog.ts) (160 lines)
+**File:** [`apps/web/src/lib/datadog.ts`](apps/web/src/lib/datadog.ts) (160 lines)
 
 **Features:**
 
@@ -104,7 +104,7 @@ All "Next Steps" from Option D completion have been implemented:
 
 **Integration Points:**
 
-- Initialized in [`web/pages/_app.tsx`](web/pages/_app.tsx) on app mount
+- Initialized in [`apps/web/pages/_app.tsx`](apps/web/pages/_app.tsx) on app mount
 - Call `setDatadogUser()` after authentication
 - Call `clearDatadogUser()` on logout
 - Track custom actions with `trackDatadogAction()`
@@ -229,7 +229,7 @@ annotations:
 
 ### Server Integration
 
-**Modified:** [`api/src/server.js`](api/src/server.js)
+**Modified:** [`apps/api/src/server.js`](apps/api/src/server.js)
 
 **Changes:**
 
@@ -415,17 +415,17 @@ PERFORMANCE_SAMPLE_RATE=1.0
 ### New Files (7)
 
 1. `MONITORING_GUIDE.md` - Comprehensive monitoring documentation
-2. `api/src/services/metricsService.js` - Metrics collection service
-3. `api/src/routes/marketplace-metrics.js` - Metrics API endpoints
+2. `apps/api/src/services/metricsService.js` - Metrics collection service
+3. `apps/api/src/routes/marketplace-metrics.js` - Metrics API endpoints
 4. `k8s/api-deployment.yaml` - Kubernetes deployment manifest
 5. `k8s/api-hpa.yaml` - Horizontal Pod Autoscaler config
-6. `web/src/lib/datadog.ts` - Datadog RUM integration
+6. `apps/web/src/lib/datadog.ts` - Datadog RUM integration
 7. `.env.production.template` - Production environment template
 
 ### Modified Files (3)
 
-1. `api/src/server.js` - Metrics service integration
-2. `web/pages/_app.tsx` - Datadog RUM initialization
+1. `apps/api/src/server.js` - Metrics service integration
+2. `apps/web/pages/_app.tsx` - Datadog RUM initialization
 3. `.env` - Scaled worker concurrency + metrics config
 
 **Total:** 10 files, 1408 insertions, 100 deletions

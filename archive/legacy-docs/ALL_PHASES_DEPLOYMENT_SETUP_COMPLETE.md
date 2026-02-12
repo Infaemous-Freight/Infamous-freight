@@ -391,7 +391,7 @@ curl http://localhost:3001/api/health
 ├── DEPLOYMENT_EXECUTION_PROCEDURES.md  ✅ 2000+ lines
 ├── ALL_4_PHASES_MASTER_EXECUTION_PLAN.md (existing)
 │
-├── api/
+├── apps/api/
 │   └── src/services/
 │       ├── ml/
 │       │   └── predictiveAvailability.ts (275 lines - ready)

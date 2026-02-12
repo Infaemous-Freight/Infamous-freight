@@ -11,7 +11,7 @@
   - Status: ✅ Live (SSO-protected)
   - Framework: Next.js 14.2.35
   - Build: Standalone output
-  - Root Directory: `web/`
+  - Root Directory: `apps/web/`
 - **API (Fly.io)**: <https://infamous-freight-ai.fly.dev>
   - Status: ⚠️ Needs machine restart (port configuration)
   - Runtime: Node.js 20.18.1
@@ -38,11 +38,11 @@ SENTRY_DSN=https://b9dfa87d832ff88cd0bed7805b86b45c@o4510554478149632.ingest.us.
 
 ### Web (Vercel)
 
-**Build Configuration** (`web/vercel.json`):
+**Build Configuration** (`apps/web/vercel.json`):
 
 ```json
 {
-  "buildCommand": "cd .. && pnpm install && pnpm --filter @infamous-freight/shared build && cd web && pnpm build",
+  "buildCommand": "cd .. && pnpm install && pnpm --filter @infamous-freight/shared build && cd apps/web && pnpm build",
   "installCommand": "cd .. && pnpm install --frozen-lockfile"
 }
 ```
@@ -52,7 +52,7 @@ SENTRY_DSN=https://b9dfa87d832ff88cd0bed7805b86b45c@o4510554478149632.ingest.us.
 - `NEXT_PUBLIC_API_BASE=https://infamous-freight-ai.fly.dev`
 - `NEXT_PUBLIC_ENV=production`
 
-**Rewrites** (`web/next.config.mjs`):
+**Rewrites** (`apps/web/next.config.mjs`):
 
 ```javascript
 rewrites: async () => ({
@@ -76,7 +76,7 @@ rewrites: async () => ({
 
 2. **Next.js API Proxy (Alternative)**
    - Browser: `https://<vercel-domain>/api/proxy/api/health`
-   - Proxies through: `web/pages/api/proxy/[...path].ts`
+   - Proxies through: `apps/web/pages/api/proxy/[...path].ts`
    - Avoids CORS entirely
 
 ## 🔒 Security Configuration
@@ -84,7 +84,7 @@ rewrites: async () => ({
 ### CORS (Fly API)
 
 ```javascript
-// Set in api/src/config.js
+// Set in apps/api/src/config.js
 corsOrigins: [
   "https://infamous-freight-enterprises-e1mn358un-santorio-miles-projects.vercel.app",
   "https://infamous-freight-enterprises.vercel.app",
@@ -120,7 +120,7 @@ corsOrigins: [
 
 ### Vercel Analytics
 
-- **Speed Insights**: Enabled in `web/pages/_app.tsx`
+- **Speed Insights**: Enabled in `apps/web/pages/_app.tsx`
 - **Analytics**: Enabled via `@vercel/analytics`
 - **Dashboard**: <https://vercel.com/santorio-miles-projects/infamous-freight-enterprises/analytics>
 
@@ -149,8 +149,8 @@ curl -i https://infamous-freight-ai.fly.dev/api/health  # Should return 200
 ### Update API (Fly)
 
 ```bash
-# Make changes in api/
-cd api
+# Make changes in apps/api/
+cd apps/api
 flyctl deploy -a infamous-freight-ai
 
 # Or update secrets
@@ -161,7 +161,7 @@ flyctl apps restart infamous-freight-ai
 ### Update Web (Vercel)
 
 ```bash
-# Make changes in web/
+# Make changes in apps/web/
 git add . && git commit -m "feat: description" && git push
 # Vercel auto-deploys from GitHub
 ```

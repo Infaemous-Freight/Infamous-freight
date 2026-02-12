@@ -175,10 +175,10 @@ vercel logs --tail
 
 ```bash
 # Run tests locally
-pnpm test -- api/__tests__/validation-edge-cases.test.js
+pnpm test -- apps/api/__tests__/validation-edge-cases.test.js
 
 # Check specific test
-pnpm test -- api/__tests__/routes.users.test.js
+pnpm test -- apps/api/__tests__/routes.users.test.js
 ```
 
 ---

@@ -1,4 +1,4 @@
-// api/logger.js - Structured Logging Module
+// apps/api/logger.js - Structured Logging Module
 const fs = require('fs');
 const path = require('path');
 

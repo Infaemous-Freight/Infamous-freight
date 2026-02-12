@@ -1,6 +1,6 @@
 /**
  * Avatar Store - JSON Persistence Layer
- * Manages user avatars with CI-safe disk storage at api/data/avatars.json
+ * Manages user avatars with CI-safe disk storage at apps/api/data/avatars.json
  *
  * Features:
  * - Atomic writes to prevent corruption

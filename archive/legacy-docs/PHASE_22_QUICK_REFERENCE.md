@@ -10,13 +10,13 @@
 
 | File | Lines | Purpose |
 |---|---|---|
-| `api/prisma/schema.prisma` | +420 | 7 models, 4 enums |
-| `api/src/revops/genesisSalesAI.ts` | 520 | AI sales agent |
-| `api/src/revops/dynamicPricing.ts` | 480 | Surge pricing |
-| `api/src/revops/outboundEngine.ts` | 520 | Cold outreach |
-| `api/src/revops/contractWorkflow.ts` | 540 | Auto-contracts |
-| `api/src/revops/dashboard.ts` | 580 | RevOps BI |
-| `api/src/routes/revops.js` | 480 | 25 API endpoints |
+| `apps/api/prisma/schema.prisma` | +420 | 7 models, 4 enums |
+| `apps/api/src/revops/genesisSalesAI.ts` | 520 | AI sales agent |
+| `apps/api/src/revops/dynamicPricing.ts` | 480 | Surge pricing |
+| `apps/api/src/revops/outboundEngine.ts` | 520 | Cold outreach |
+| `apps/api/src/revops/contractWorkflow.ts` | 540 | Auto-contracts |
+| `apps/api/src/revops/dashboard.ts` | 580 | RevOps BI |
+| `apps/api/src/routes/revops.js` | 480 | 25 API endpoints |
 
 **Total**: 3,540+ lines
 
@@ -27,7 +27,7 @@
 ### 1. Run Migration
 
 ```bash
-cd api
+cd apps/api
 npx prisma migrate dev --name "phase-22-revops"
 npx prisma generate
 ```
@@ -45,7 +45,7 @@ AWS_S3_BUCKET=infamous-contracts
 ### 3. Register Routes
 
 ```javascript
-// api/src/server.js
+// apps/api/src/server.js
 const revopsRoutes = require('./routes/revops');
 app.use('/api/revops', revopsRoutes);
 ```

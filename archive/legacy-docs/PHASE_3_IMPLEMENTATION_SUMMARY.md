@@ -27,7 +27,7 @@ This document summarizes the comprehensive implementation of all 15 high-priorit
 
 ### 1. ✅ Expanded Rate Limiting (Complete)
 
-**File**: [api/src/middleware/security.js](../api/src/middleware/security.js)
+**File**: [apps/api/src/middleware/security.js](../apps/api/src/middleware/security.js)
 
 **What Was Added**:
 - `export` limiter: 5 requests per 60 minutes (prevent export DOS)
@@ -52,7 +52,7 @@ RATE_LIMIT_WEBHOOK_MAX=100           // 100 requests max
 
 ### 2. ✅ User Ownership Validation Middleware (Complete)
 
-**File**: [api/src/middleware/security.js](../api/src/middleware/security.js)
+**File**: [apps/api/src/middleware/security.js](../apps/api/src/middleware/security.js)
 
 **Function Added**: `validateUserOwnership(paramName)`
 
@@ -80,7 +80,7 @@ router.delete(
 
 ### 3. ✅ Encryption Service (Complete)
 
-**File**: [api/src/services/encryption.js](../api/src/services/encryption.js)
+**File**: [apps/api/src/services/encryption.js](../apps/api/src/services/encryption.js)
 
 **Capabilities**:
 - AES-256-GCM encryption (NIST standard)
@@ -98,7 +98,7 @@ verifyPassword(pwd, hash)  // Constant-time comparison
 
 **Integration with Payment Model**:
 ```javascript
-// api/prisma/schema.prisma
+// apps/api/prisma/schema.prisma
 model Payment {
   encryptedCardLast4 String?
   encryptedMetadata String?
@@ -112,7 +112,7 @@ model Payment {
 
 ### 4. ✅ Password Reset Flow (Complete)
 
-**File**: [api/src/routes/auth.js](../api/src/routes/auth.js)
+**File**: [apps/api/src/routes/auth.js](../apps/api/src/routes/auth.js)
 
 **Endpoints Implemented**:
 
@@ -155,7 +155,7 @@ model Payment {
 
 ### 5. ✅ Performance Tests (Complete)
 
-**File**: [api/__tests__/performance.test.js](../api/__tests__/performance.test.js)
+**File**: [apps/api/__tests__/performance.test.js](../apps/api/__tests__/performance.test.js)
 
 **Test Suites (8 total)**:
 
@@ -269,7 +269,7 @@ pnpm test auth.spec.ts
 
 ### 8. ✅ Monitoring Service (Complete)
 
-**File**: [api/src/services/monitoring.js](../api/src/services/monitoring.js)
+**File**: [apps/api/src/services/monitoring.js](../apps/api/src/services/monitoring.js)
 
 **Metrics Tracked** (using Prometheus):
 
@@ -376,7 +376,7 @@ artillery run load-test.yml
 
 ### 10. ✅ API Documentation (Complete)
 
-**File**: [api/src/swagger/auth.swagger.js](../api/src/swagger/auth.swagger.js)
+**File**: [apps/api/src/swagger/auth.swagger.js](../apps/api/src/swagger/auth.swagger.js)
 
 **Documentation Includes** (with 50+ endpoints):
 
@@ -654,7 +654,7 @@ Before deploying to production, verify:
 - [ ] Linting passes: `pnpm lint`
 - [ ] Build succeeds: `pnpm build`
 - [ ] Load test runs successfully: `artillery run load-test.yml`
-- [ ] Prisma migration created: `cd api && pnpm prisma:migrate:dev --name "add_encryption_fields"`
+- [ ] Prisma migration created: `cd apps/api && pnpm prisma:migrate:dev --name "add_encryption_fields"`
 - [ ] Environment variables set (see .env.example)
 - [ ] Rate limiter config reviewed
 - [ ] Encryption key securely stored

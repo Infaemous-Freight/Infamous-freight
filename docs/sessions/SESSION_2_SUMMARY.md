@@ -17,12 +17,12 @@
 
 **Solution Applied**:
 
-- ✅ Updated `api/Dockerfile` EXPOSE from 3001 → 4000
+- ✅ Updated `apps/api/Dockerfile` EXPOSE from 3001 → 4000
 - ✅ Updated healthcheck port from 3001 → 4000
 - ✅ Verified fly.toml PORT=4000 alignment
 - ✅ Ensured Fly.io deployment will work correctly
 
-**Files Modified**: `api/Dockerfile` (2 lines changed)
+**Files Modified**: `apps/api/Dockerfile` (2 lines changed)
 
 ---
 
@@ -61,7 +61,7 @@
 
 **Status**: 40+ TEST CASES ADDED
 
-**Content Created**: `api/__tests__/validation-edge-cases.test.js` (180+ lines)
+**Content Created**: `apps/api/__tests__/validation-edge-cases.test.js` (180+ lines)
 
 **Test Breakdown**:
 
@@ -93,7 +93,7 @@
    - Tests empty request handling
 
 **Coverage**: 30+ test cases across 7 categories
-**Files Created**: `api/__tests__/validation-edge-cases.test.js`
+**Files Created**: `apps/api/__tests__/validation-edge-cases.test.js`
 
 ---
 
@@ -101,7 +101,7 @@
 
 **Status**: MIDDLEWARE ENHANCED
 
-**Content Modified**: `api/src/middleware/errorHandler.js` (+40 lines)
+**Content Modified**: `apps/api/src/middleware/errorHandler.js` (+40 lines)
 
 **Improvements**:
 
@@ -126,7 +126,7 @@
 4. ✅ Consistent Error Response Format
    - All errors return: success: false, error, message, requestId, details?
 
-**Files Modified**: `api/src/middleware/errorHandler.js`
+**Files Modified**: `apps/api/src/middleware/errorHandler.js`
 
 ---
 
@@ -134,7 +134,7 @@
 
 **Status**: SPECIFICATION COMPLETE
 
-**Content Created**: `api/src/routes/users.search.example.js` (180+ lines)
+**Content Created**: `apps/api/src/routes/users.search.example.js` (180+ lines)
 
 **Endpoint**: `GET /api/users/search`
 
@@ -175,7 +175,7 @@
 }
 ```
 
-**Files Created**: `api/src/routes/users.search.example.js`
+**Files Created**: `apps/api/src/routes/users.search.example.js`
 
 ---
 
@@ -219,16 +219,16 @@
 ### Created Files (5)
 
 1. ✅ `VALIDATION.md` (278 lines)
-2. ✅ `api/__tests__/validation-edge-cases.test.js` (180+ lines)
-3. ✅ `api/src/routes/users.search.example.js` (180+ lines)
+2. ✅ `apps/api/__tests__/validation-edge-cases.test.js` (180+ lines)
+3. ✅ `apps/api/src/routes/users.search.example.js` (180+ lines)
 4. ✅ `docs/SENTRY_MONITORING.md` (400+ lines)
 5. ✅ `ALL_6_TASKS_COMPLETE.md` (summary)
 6. ✅ `COMMIT_INSTRUCTIONS.md` (guidance)
 
 ### Modified Files (2)
 
-1. ✅ `api/Dockerfile` (2 lines - port fix)
-2. ✅ `api/src/middleware/errorHandler.js` (+40 lines)
+1. ✅ `apps/api/Dockerfile` (2 lines - port fix)
+2. ✅ `apps/api/src/middleware/errorHandler.js` (+40 lines)
 
 **Total**: 7 files | 1600+ lines of new content
 
@@ -260,8 +260,8 @@
 
 ### Immediate Next Steps
 
-1. Run edge case tests: `cd api && npm test -- validation-edge-cases`
-2. Verify Docker build: `docker build -f api/Dockerfile .`
+1. Run edge case tests: `cd apps/api && npm test -- validation-edge-cases`
+2. Verify Docker build: `docker build -f apps/api/Dockerfile .`
 3. Commit changes (see COMMIT_INSTRUCTIONS.md)
 4. Push to main and deploy
 

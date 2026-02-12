@@ -110,12 +110,12 @@ bash scripts/verify-implementation.sh
 pnpm --filter api test
 
 # Expected:
-# PASS api/src/__tests__/integration/shipments.auth.test.js
-# PASS api/src/__tests__/integration/billing.auth.test.js
-# PASS api/src/__tests__/integration/metrics.prometheus.test.js
-# PASS api/src/__tests__/integration/slowQueryLogger.test.js
-# PASS api/src/__tests__/integration/responseCache.test.js
-# PASS api/src/__tests__/integration/security-performance.integration.test.js
+# PASS apps/api/src/__tests__/integration/shipments.auth.test.js
+# PASS apps/api/src/__tests__/integration/billing.auth.test.js
+# PASS apps/api/src/__tests__/integration/metrics.prometheus.test.js
+# PASS apps/api/src/__tests__/integration/slowQueryLogger.test.js
+# PASS apps/api/src/__tests__/integration/responseCache.test.js
+# PASS apps/api/src/__tests__/integration/security-performance.integration.test.js
 
 # 3. Check metrics endpoint
 curl -s http://localhost:4000/api/metrics | head -20
@@ -170,21 +170,21 @@ curl -s http://localhost:4000/api/metrics | head -20
 ### Q: Metrics endpoint returns empty?
 A: Middleware must be wired in server.js. Check:
 ```bash
-grep -n "cacheResponseMiddleware\|metricsRecorderMiddleware" api/src/server.js
+grep -n "cacheResponseMiddleware\|metricsRecorderMiddleware" apps/api/src/server.js
 ```
 Should see both lines after `correlationMiddleware`.
 
 ### Q: Slow queries not logged?
 A: Check Prisma initialization:
 ```bash
-grep -n "attachSlowQueryLogger" api/src/db/prisma.js
+grep -n "attachSlowQueryLogger" apps/api/src/db/prisma.js
 ```
 Should be called after `new PrismaClient()`.
 
 ### Q: Auth tests failing?
 A: Ensure `requireOrganization` middleware is applied. Check routes:
 ```bash
-grep -A5 "GET.*shipments" api/src/routes/shipments.js | grep requireOrganization
+grep -A5 "GET.*shipments" apps/api/src/routes/shipments.js | grep requireOrganization
 ```
 
 ### Q: CORS errors on cross-origin requests?

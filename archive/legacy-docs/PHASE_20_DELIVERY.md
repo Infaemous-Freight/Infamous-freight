@@ -26,7 +26,7 @@
 
 ### Billing Services (TypeScript)
 
-- ✅ **`api/src/billing/stripeSync.ts`** (250+ lines)
+- ✅ **`apps/api/src/billing/stripeSync.ts`** (250+ lines)
   - `createStripeSubscription()` — Customer + subscription creation
   - `updateSubscriptionPlan()` — Upgrade/downgrade support
   - `cancelSubscription()` — Cancellation with proration
@@ -34,7 +34,7 @@
   - `getSubscriptionDetails()` — Portal data
   - Constants: STRIPE_PRICES, PLAN_DETAILS
 
-- ✅ **`api/src/billing/usage.ts`** (300+ lines)
+- ✅ **`apps/api/src/billing/usage.ts`** (300+ lines)
   - `calculatePlatformFee()` — Per-vehicle commission ($5–$25 + 8–15%)
   - `recordJobCompletion()` — Auto-trigger on job completion
   - `getMonthlyUsage()` — Query current usage
@@ -42,7 +42,7 @@
   - `resetMonthlyUsage()` — Testing utility
   - Stripe metered usage reporting
 
-- ✅ **`api/src/billing/invoicing.ts`** (350+ lines)
+- ✅ **`apps/api/src/billing/invoicing.ts`** (350+ lines)
   - `generateOrgInvoice()` — Single invoice generation
   - `generateMonthlyInvoices()` — Batch job for all orgs
   - `getInvoice()` — Invoice retrieval
@@ -50,7 +50,7 @@
   - `sendInvoiceReminder()` — Resend functionality
   - Stripe invoice item creation + finalization
 
-- ✅ **`api/src/billing/documents.ts`** (350+ lines)
+- ✅ **`apps/api/src/billing/documents.ts`** (350+ lines)
   - `generateDPAPDF()` — GDPR Data Processing Agreement
   - `generateSOC2PDF()` — SOC2 Type II Compliance Certificate
   - `storeComplianceDocuments()` — Save to Stripe metadata
@@ -58,7 +58,7 @@
 
 ### API Routes
 
-- ✅ **`api/src/routes/billing.ts`** (NEW - 400+ lines)
+- ✅ **`apps/api/src/routes/billing.ts`** (NEW - 400+ lines)
   - `GET /api/billing/portal` — Stripe billing portal redirect
   - `POST /api/billing/subscribe` — New subscription
   - `POST /api/billing/upgrade` — Plan upgrade/downgrade
@@ -73,7 +73,7 @@
 
 ### Background Jobs
 
-- ✅ **`api/src/jobs/monthlyInvoicing.ts`** (400+ lines)
+- ✅ **`apps/api/src/jobs/monthlyInvoicing.ts`** (400+ lines)
   - BullMQ scheduled job (1st of month, 00:00 UTC)
   - Automatic invoice generation for all active orgs
   - Job event handling (completed, failed, retry)
@@ -292,7 +292,7 @@ SEND_INVOICES=false
 
 ### 3. Database Migration
 ```bash
-cd api
+cd apps/api
 pnpm prisma migrate deploy
 pnpm prisma generate
 ```
@@ -392,12 +392,12 @@ After Phase 20 deployment, track:
 
 | File | Purpose | Lines | Status |
 |---|---|---|---|
-| `api/src/billing/stripeSync.ts` | Subscription mgmt | 250+ | ✅ |
-| `api/src/billing/usage.ts` | Usage tracking | 300+ | ✅ |
-| `api/src/billing/invoicing.ts` | Invoice generation | 350+ | ✅ |
-| `api/src/billing/documents.ts` | DPA/SOC2 PDFs | 350+ | ✅ |
-| `api/src/routes/billing.ts` | API endpoints | 400+ | ✅ |
-| `api/src/jobs/monthlyInvoicing.ts` | BullMQ job | 400+ | ✅ |
+| `apps/api/src/billing/stripeSync.ts` | Subscription mgmt | 250+ | ✅ |
+| `apps/api/src/billing/usage.ts` | Usage tracking | 300+ | ✅ |
+| `apps/api/src/billing/invoicing.ts` | Invoice generation | 350+ | ✅ |
+| `apps/api/src/billing/documents.ts` | DPA/SOC2 PDFs | 350+ | ✅ |
+| `apps/api/src/routes/billing.ts` | API endpoints | 400+ | ✅ |
+| `apps/api/src/jobs/monthlyInvoicing.ts` | BullMQ job | 400+ | ✅ |
 | `PHASE_20_COMPLETE.md` | Full documentation | 600+ | ✅ |
 | `PHASE_20_SUMMARY.md` | Quick reference | 400+ | ✅ |
 | `PHASE_20_INTEGRATION_GUIDE.md` | Integration examples | 500+ | ✅ |
@@ -457,7 +457,7 @@ All deliverables implemented, tested, documented, and production-ready.
 - Full documentation: `PHASE_20_COMPLETE.md`
 - Quick reference: `PHASE_20_SUMMARY.md`
 - Integration guide: `PHASE_20_INTEGRATION_GUIDE.md`
-- Database schema: See `api/prisma/schema.prisma`
+- Database schema: See `apps/api/prisma/schema.prisma`
 
 ---
 

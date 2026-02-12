@@ -218,7 +218,7 @@ pnpm check:types # Type checking
 pnpm format # Code formatting
 
 Bundle Analysis:
-cd web && ANALYZE=true pnpm build # Generate bundle report
+cd apps/web && ANALYZE=true pnpm build # Generate bundle report
 npm run bundle-check # Check against targets
 
 Deployment:

@@ -55,7 +55,7 @@ app.use(errorHandler);
 
 ### Available Limiters
 
-From `api/src/middleware/security.js`:
+From `apps/api/src/middleware/security.js`:
 
 | Limiter | Window | Max Requests | Use Case |
 |---------|--------|--------------|----------|
@@ -175,7 +175,7 @@ router.post('/admin/action',
 
 ### Available Validators
 
-From `api/src/middleware/validation.js`:
+From `apps/api/src/middleware/validation.js`:
 
 ```javascript
 const {
@@ -442,7 +442,7 @@ router.post('/voice/ingest',
 
 ### Global Error Handler
 
-From `api/src/middleware/errorHandler.js`:
+From `apps/api/src/middleware/errorHandler.js`:
 
 ```javascript
 function errorHandler(err, req, res, next) {

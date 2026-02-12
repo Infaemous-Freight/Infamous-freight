@@ -55,18 +55,18 @@ Q4 2026 (Oct-Dec): Enterprise & Scale
 cd /workspaces/Infamous-freight-enterprises/api
 npm audit
 
-cd ../web
+cd ../apps/web
 npm audit
 
 cd ../packages/shared
 npm audit
 
 # Step 2: Fix vulnerabilities (30 minutes)
-cd ../api
+cd ../apps/api
 npm audit fix
 npm test  # Verify no breaking changes
 
-cd ../web
+cd ../apps/web
 npm audit fix
 pnpm build  # Type check
 
@@ -1182,8 +1182,8 @@ If accelerating delivery:
 
 ```bash
 # 1. npm audit fix (30 min)
-cd api && npm audit fix && npm test
-cd web && npm audit fix && pnpm build
+cd apps/api && npm audit fix && npm test
+cd apps/web && npm audit fix && pnpm build
 cd packages/shared && npm audit fix
 
 # Commit

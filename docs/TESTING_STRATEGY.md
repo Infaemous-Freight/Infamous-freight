@@ -38,7 +38,7 @@ This document outlines the comprehensive testing strategy for Infamous Freight E
 ### 1. Unit Tests
 
 **Purpose**: Test individual functions in isolation  
-**Location**: `api/__tests__/*.test.js`  
+**Location**: `apps/api/__tests__/*.test.js`  
 **Coverage**: 75% of total tests
 
 **What to test:**
@@ -68,7 +68,7 @@ describe("validateShipment", () => {
 ### 2. Integration Tests
 
 **Purpose**: Test component interactions  
-**Location**: `api/__tests__/integration/`  
+**Location**: `apps/api/__tests__/integration/`  
 **Coverage**: 20% of total tests
 
 **What to test:**
@@ -106,7 +106,7 @@ describe("Shipment Lifecycle", () => {
 ### 3. Security Tests
 
 **Purpose**: Verify protection against common vulnerabilities  
-**Location**: `api/__tests__/security/`
+**Location**: `apps/api/__tests__/security/`
 
 **What to test:**
 
@@ -141,7 +141,7 @@ describe("Security - XSS Prevention", () => {
 ### 4. Performance Tests
 
 **Purpose**: Ensure acceptable response times and resource usage  
-**Location**: `api/__tests__/performance/`
+**Location**: `apps/api/__tests__/performance/`
 
 **What to test:**
 

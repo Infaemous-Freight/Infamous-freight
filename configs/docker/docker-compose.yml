@@ -22,7 +22,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: src/apps/api/Dockerfile
+      dockerfile: apps/api/Dockerfile
       args:
         NODE_ENV: production
     container_name: infamous_api
@@ -39,20 +39,12 @@ services:
       - "${API_PORT:-3001}:3001"
     volumes:
       - ./:/app
-      - ./src/apps/api:/app/src/apps/api
+      - ./apps/api:/app/apps/api
       - pnpm-store:/root/.local/share/pnpm/store
-      - node-modules-api:/app/src/apps/api/node_modules
-    command: sh -c "cd /app && HUSKY=0 pnpm install && cd src/apps/api && pnpm dev"
+      - node-modules-api:/app/apps/api/node_modules
+    command: sh -c "cd /app && HUSKY=0 pnpm install && cd apps/api && pnpm dev"
     healthcheck:
-      test:
-        [
-          "CMD",
-          "wget",
-          "--quiet",
-          "--tries=1",
-          "--spider",
-          "http://localhost:3001/health",
-        ]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -60,7 +52,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: src/apps/web/Dockerfile
+      dockerfile: apps/web/Dockerfile
       args:
         NODE_ENV: production
     container_name: infamous_web
@@ -77,11 +69,11 @@ services:
       - "${WEB_PORT:-3000}:3000"
     volumes:
       - ./:/app
-      - ./src/apps/web:/app/src/apps/web
+      - ./apps/web:/app/apps/web
       - pnpm-store:/root/.local/share/pnpm/store
-      - node-modules-web:/app/src/apps/web/node_modules
-      - nextjs-cache:/app/src/apps/web/.next
-    command: sh -c "cd /app && HUSKY=0 pnpm install && cd src/apps/web && pnpm dev"
+      - node-modules-web:/app/apps/web/node_modules
+      - nextjs-cache:/app/apps/web/.next
+    command: sh -c "cd /app && HUSKY=0 pnpm install && cd apps/web && pnpm dev"
 
   nginx:
     image: nginx:stable-alpine

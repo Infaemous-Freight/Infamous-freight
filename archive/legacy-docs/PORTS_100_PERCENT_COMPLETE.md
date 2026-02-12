@@ -122,7 +122,7 @@ services:
       PORT: 3000
 ```
 
-### 3. API Server (`api/src/server.js`)
+### 3. API Server (`apps/api/src/server.js`)
 
 ```javascript
 const PORT = process.env.API_PORT || process.env.PORT || 4000;
@@ -132,7 +132,7 @@ app.listen(PORT, () => {
 });
 ```
 
-### 4. Web Frontend (`web/next.config.mjs`)
+### 4. Web Frontend (`apps/web/next.config.mjs`)
 
 ```javascript
 module.exports = {
@@ -144,7 +144,7 @@ module.exports = {
 };
 ```
 
-### 5. Mobile (`mobile/package.json`)
+### 5. Mobile (`apps/mobile/package.json`)
 
 ```json
 {
@@ -508,7 +508,7 @@ spec:
 
 - [.env.example](/.env.example) - Environment variables template
 - [docker-compose.yml](/docker-compose.yml) - Docker Compose configuration
-- [api/src/server.js](/api/src/server.js) - API server initialization
+- [apps/api/src/server.js](/api/src/server.js) - API server initialization
 - [CONTAINER_REBUILD_100_PERCENT.md](/CONTAINER_REBUILD_100_PERCENT.md) - **Container rebuild guide**
 - [DEPLOYMENT_STATUS_100.md](/DEPLOYMENT_STATUS_100.md) - Deployment overview
 - [QUICK_REFERENCE.md](/QUICK_REFERENCE.md) - Command cheat sheet

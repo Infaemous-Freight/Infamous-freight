@@ -49,8 +49,8 @@ Infamous Freight operates a multi-platform, enterprise-grade CI/CD pipeline desi
 
 **Version: v2.0.0** | **Proprietary Software** | **© 2025 Infæmous Freight. All Rights Reserved.**
 
-[![Test Coverage](https://img.shields.io/badge/coverage-86.2%25-brightgreen.svg)](./api/coverage)
-[![Tests](https://img.shields.io/badge/tests-197%20passing-brightgreen.svg)](./api)
+[![Test Coverage](https://img.shields.io/badge/coverage-86.2%25-brightgreen.svg)](./apps/api/coverage)
+[![Tests](https://img.shields.io/badge/tests-197%20passing-brightgreen.svg)](./apps/api)
 [![Node.js](https://img.shields.io/badge/node-20.0.0+-brightgreen.svg)](https://nodejs.org)
 [![pnpm](https://img.shields.io/badge/pnpm-9.15.0-orange.svg)](https://pnpm.io)
 [![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)]()
@@ -225,9 +225,9 @@ Infæmous Freight + Genesis AI are operating as a unified global logistics + fin
 
 Infæmous Freight is a comprehensive logistics and fleet management solution built as a monorepo with:
 
-- `api/` – Express.js backend (Fly.io, Docker, PostgreSQL via Prisma)
-- `web/` – Next.js 14 frontend (Netlify/Vercel, TypeScript, ESM)
-- `mobile/` – React Native / Expo mobile app
+- `apps/api/` – Express.js backend (Fly.io, Docker, PostgreSQL via Prisma)
+- `apps/web/` – Next.js 14 frontend (Netlify/Vercel, TypeScript, ESM)
+- `apps/mobile/` – React Native / Expo mobile app
 - `packages/shared/` – Shared TypeScript types, constants, and utilities
 - `e2e/` – Playwright end-to-end test suite
 
@@ -364,7 +364,7 @@ This will:
 5. **Initialize Database**
 
    ```bash
-   cd api
+   cd apps/api
    pnpm prisma:migrate:dev
    pnpm prisma:seed  # Optional: seed initial data
    ```
@@ -383,7 +383,7 @@ This will:
 ## 📁 Project Structure
 
 ```
-├── api/                           # Express.js backend
+├── apps/api/                           # Express.js backend
 │   ├── prisma/                   # Database schema and migrations
 │   ├── src/
 │   │   ├── routes/               # API endpoints
@@ -391,12 +391,12 @@ This will:
 │   │   ├── middleware/           # Security & utilities
 │   │   └── server.js             # Express server
 │   └── scripts/                  # Database and utility scripts
-├── web/                          # Next.js frontend
+├── apps/web/                          # Next.js frontend
 │   ├── pages/                    # API routes and pages
 │   ├── components/               # React components
 │   ├── hooks/                    # Custom React hooks
 │   └── styles/                   # Global styles
-├── mobile/                       # React Native mobile app
+├── apps/mobile/                       # React Native mobile app
 │   ├── App.tsx                   # Main app component
 │   └── assets/                   # Mobile assets
 ├── packages/
@@ -453,10 +453,10 @@ npm run lint             # Run ESLint
 
 ### Database Management
 
-- **Run Migrations**: `cd api && npx prisma migrate dev`
-- **Studio (GUI)**: `cd api && npm run prisma:studio`
-- **Generate Client**: `cd api && npm run prisma:generate`
-- **Seed Database**: `cd api && npx prisma db seed`
+- **Run Migrations**: `cd apps/api && npx prisma migrate dev`
+- **Studio (GUI)**: `cd apps/api && npm run prisma:studio`
+- **Generate Client**: `cd apps/api && npm run prisma:generate`
+- **Seed Database**: `cd apps/api && npx prisma db seed`
 
 ### AI Coding Assistant
 
@@ -479,10 +479,10 @@ See [QUICK_REFERENCE.md](QUICK_REFERENCE.md#codex-cli) for more details.
 
 ```bash
 # Lint web application
-cd web && npm run lint
+cd apps/web && npm run lint
 
 # Validate API environment
-cd api && npm run validate:env
+cd apps/api && npm run validate:env
 ```
 
 ## 🐳 Docker

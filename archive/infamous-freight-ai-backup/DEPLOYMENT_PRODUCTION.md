@@ -117,7 +117,7 @@
 
    ```bash
    pnpm add -g vercel@latest
-   cd web
+   cd apps/web
    vercel login
    vercel --prod
    ```
@@ -246,7 +246,7 @@ render run --service=infamous-freight-api -- npx prisma db push
 curl https://your-api.onrender.com/api/health
 
 # Check CORS settings
-# Update api/src/server.js CORS_ORIGINS
+# Update apps/api/src/server.js CORS_ORIGINS
 ```
 
 ---
@@ -256,7 +256,7 @@ curl https://your-api.onrender.com/api/health
 ### 1. Enable Caching
 
 ```javascript
-// Add to web/next.config.mjs
+// Add to apps/web/next.config.mjs
 module.exports = {
   headers: async () => [
     {
@@ -270,7 +270,7 @@ module.exports = {
 ### 2. Database Connection Pool
 
 ```javascript
-// Add to api/src/server.js
+// Add to apps/api/src/server.js
 const prisma = new PrismaClient({
   datasources: {
     db: {

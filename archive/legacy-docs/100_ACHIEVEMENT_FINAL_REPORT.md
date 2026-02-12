@@ -170,7 +170,7 @@
     - Monitoring configuration
 
 12. ✅ **.gitignore**
-    - Excluded .vercel.api/ artifacts
+    - Excluded .vercel.apps/api/ artifacts
     - Cleaned build outputs
 
 ---

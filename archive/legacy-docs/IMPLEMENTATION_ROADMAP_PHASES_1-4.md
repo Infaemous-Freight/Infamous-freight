@@ -169,7 +169,7 @@ Day 3 Afternoon (2 hours):
 - [ ] Calculate cost per API call
 - [ ] Generate performance report
 
-**Create**: `src/apps/api/src/services/performanceAnalyzer.ts`
+**Create**: `apps/api/src/services/performanceAnalyzer.ts`
 
 - [ ] Database query profiler
 - [ ] Cache effectiveness meter
@@ -204,7 +204,7 @@ const shipments = await prisma.shipment.findMany({
 - [ ] Composite index on (status, createdAt)
 - [ ] Full-text search index on shipment notes
 
-**Create**: `api/prisma/migrations/optimize-queries.sql`
+**Create**: `apps/api/prisma/migrations/optimize-queries.sql`
 
 #### Task 2.3: Cache Strategy Optimization
 
@@ -226,7 +226,7 @@ redis-cli INFO stats
 - [ ] Add cache size monitoring
 - [ ] Create cache efficiency dashboard
 
-**Create**: `src/apps/api/src/services/cacheOptimizer.ts`
+**Create**: `apps/api/src/services/cacheOptimizer.ts`
 
 #### Task 2.4: Rate Limit Tuning
 
@@ -352,7 +352,7 @@ Day 13-14 (2 days): Security hardening + testing
 
 **Goal**: Predict which drivers will be available in next 1-4 hours
 
-**Create**: `src/apps/api/src/services/ml/predictiveAvailability.ts`
+**Create**: `apps/api/src/services/ml/predictiveAvailability.ts`
 
 ```typescript
 interface AvailabilityPrediction {
@@ -406,7 +406,7 @@ async function predictDriverAvailability(
 
 **Goal**: Optimize routes for drivers handling multiple deliveries
 
-**Create**: `src/apps/api/src/services/ai/multiDestinationOptimizer.ts`
+**Create**: `apps/api/src/services/ai/multiDestinationOptimizer.ts`
 
 ```typescript
 interface OptimizedRoute {
@@ -454,7 +454,7 @@ async function optimizeMultiDestinationRoute(
 
 **Goal**: Live driver location tracking with updates every 10-30 seconds
 
-**Create**: `src/apps/api/src/services/gpsTracking.ts`
+**Create**: `apps/api/src/services/gpsTracking.ts`
 
 ```typescript
 interface GPSUpdate {
@@ -503,7 +503,7 @@ io.on("connection", (socket) => {
 
 **Goal**: Engage drivers with scoring system and leaderboards
 
-**Create**: `src/apps/api/src/services/gamification.ts`
+**Create**: `apps/api/src/services/gamification.ts`
 
 ```typescript
 interface DriverScore {
@@ -829,7 +829,7 @@ class DemandPredictor:
 
 #### Task 4.4: Dynamic Pricing Engine (2 days)
 
-**Create**: `src/apps/api/src/services/dynamicPricing.ts`
+**Create**: `apps/api/src/services/dynamicPricing.ts`
 
 ```typescript
 interface PricingFactors {
@@ -871,7 +871,7 @@ async function calculateDynamicPrice(
 
 #### Task 4.5: Fraud Detection System (2 days)
 
-**Create**: `src/apps/api/src/services/fraudDetection.ts`
+**Create**: `apps/api/src/services/fraudDetection.ts`
 
 ```typescript
 interface FraudRisk {

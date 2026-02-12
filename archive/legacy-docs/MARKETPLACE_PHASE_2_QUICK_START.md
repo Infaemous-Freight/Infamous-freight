@@ -47,11 +47,11 @@ Phase 2 adds **payment gating** via Stripe Checkout. Jobs now require payment be
 | Component | Status | File |
 |-----------|--------|------|
 | Stripe SDK | ✅ Installed | `node_modules/stripe` |
-| Stripe Client | ✅ Created | [api/src/lib/stripe.ts](api/src/lib/stripe.ts) |
-| Pricing Logic | ✅ Ready | [api/src/lib/pricing.js](api/src/lib/pricing.js) |
-| Webhook Handler | ✅ Complete | [api/src/marketplace/webhooks.js](api/src/marketplace/webhooks.js) |
-| Checkout Endpoint | ✅ Fixed | [api/src/marketplace/router.js](api/src/marketplace/router.js#L217-L285) |
-| Prisma Models | ✅ Updated | [api/prisma/schema.prisma](api/prisma/schema.prisma) |
+| Stripe Client | ✅ Created | [apps/api/src/lib/stripe.ts](apps/api/src/lib/stripe.ts) |
+| Pricing Logic | ✅ Ready | [apps/api/src/lib/pricing.js](apps/api/src/lib/pricing.js) |
+| Webhook Handler | ✅ Complete | [apps/api/src/marketplace/webhooks.js](apps/api/src/marketplace/webhooks.js) |
+| Checkout Endpoint | ✅ Fixed | [apps/api/src/marketplace/router.js](apps/api/src/marketplace/router.js#L217-L285) |
+| Prisma Models | ✅ Updated | [apps/api/prisma/schema.prisma](apps/api/prisma/schema.prisma) |
 | Environment Vars | ✅ Documented | [.env.example](.env.example#L88-L97) |
 
 ---
@@ -169,10 +169,10 @@ curl http://localhost:4000/api/marketplace/jobs/job-abc123 \
 
 | File | Changes |
 |------|---------|
-| `api/src/marketplace/router.js` | Fixed checkout endpoint syntax error |
-| `api/.env.example` | Added Stripe env vars |
-| `api/prisma/schema.prisma` | Added WebhookEvent model |
-| `api/package.json` | stripe dependency already added |
+| `apps/api/src/marketplace/router.js` | Fixed checkout endpoint syntax error |
+| `apps/api/.env.example` | Added Stripe env vars |
+| `apps/api/prisma/schema.prisma` | Added WebhookEvent model |
+| `apps/api/package.json` | stripe dependency already added |
 
 ---
 
@@ -197,7 +197,7 @@ export STRIPE_SECRET_KEY="sk_test_..."
 export STRIPE_WEBHOOK_SECRET="whsec_..."
 
 # 2. Start API
-cd api && pnpm dev
+cd apps/api && pnpm dev
 
 # 3. Create job (see Quick Curl Examples above)
 # Expected: status = REQUIRES_PAYMENT
@@ -223,7 +223,7 @@ cd api && pnpm dev
 | Stripe library installed | ✅ | `pnpm list stripe` |
 | Environment variables documented | ✅ | `.env.example` has STRIPE_* vars |
 | Prisma schema updated | ✅ | WebhookEvent model present |
-| Pricing function ready | ✅ | `api/src/lib/pricing.js` exists |
+| Pricing function ready | ✅ | `apps/api/src/lib/pricing.js` exists |
 | Checkout endpoint working | ✅ | Syntax verified, returns checkoutUrl |
 | Webhook handler ready | ✅ | Idempotency + retry logic present |
 | Job state machine enforced | ✅ | validateTransition() in place |

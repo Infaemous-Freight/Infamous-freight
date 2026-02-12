@@ -11,7 +11,7 @@
 
 ### ✅ Core Implementation (2 Files Modified)
 
-#### 1. **api/src/marketplace/router.js** (+100 lines)
+#### 1. **apps/api/src/marketplace/router.js** (+100 lines)
 
 **Upgraded POST /jobs/:jobId/accept** (lines 427–538)
 - Race-safe first-wins semantics via `updateMany()` with compound WHERE
@@ -44,7 +44,7 @@ if (updateResult.count === 0) {
 - Authorization: drivers see own, admins see all
 - Ordered by recency, limited to 100
 
-#### 2. **api/src/marketplace/validators.js**
+#### 2. **apps/api/src/marketplace/validators.js**
 - Already had `acceptJobSchema` ✅ (no changes needed)
 
 ---
@@ -253,7 +253,7 @@ See **PHASE_4_TESTING_GUIDE.md** for detailed test procedures.
 
 | File | Changes | Lines |
 |------|---------|-------|
-| api/src/marketplace/router.js | Upgraded accept endpoint + added my jobs endpoint | +100 |
+| apps/api/src/marketplace/router.js | Upgraded accept endpoint + added my jobs endpoint | +100 |
 
 **Total**: ~100 lines of production code
 

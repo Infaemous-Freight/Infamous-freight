@@ -26,7 +26,7 @@
 
 ### 🌐 Web Frontend (Next.js) - Port 3000
 
-**Configuration File**: [web/next.config.mjs](web/next.config.mjs)
+**Configuration File**: [apps/web/next.config.mjs](apps/web/next.config.mjs)
 
 **Environment Variables**:
 
@@ -67,7 +67,7 @@ curl http://localhost:3000
 
 ### 🔌 API Backend (Express.js) - Port 4000
 
-**Configuration File**: [api/src/server.js](api/src/server.js)
+**Configuration File**: [apps/api/src/server.js](apps/api/src/server.js)
 
 **Environment Variables**:
 
@@ -230,7 +230,7 @@ redis-cli -h localhost -p 6379 -a redispass ping
 
 ### 🔄 WebSocket Server - Port 4000 (Same as API)
 
-**Configuration File**: [api/src/services/websocket.js](api/src/services/websocket.js)
+**Configuration File**: [apps/api/src/services/websocket.js](apps/api/src/services/websocket.js)
 
 **Implementation**:
 
@@ -390,8 +390,8 @@ PORT=3001 pnpm web:dev
 ### Configuration Files ✅ 100%
 
 - ✅ [.env.example](.env.example) - Environment template
-- ✅ [api/src/server.js](api/src/server.js) - API port configuration
-- ✅ [web/next.config.mjs](web/next.config.mjs) - Web port configuration
+- ✅ [apps/api/src/server.js](apps/api/src/server.js) - API port configuration
+- ✅ [apps/web/next.config.mjs](apps/web/next.config.mjs) - Web port configuration
 - ✅ [docker-compose.yml](docker-compose.yml) - Container ports
 - ✅ [fly.toml](fly.toml) - Production port configuration
 - ✅ [package.json](package.json) - Start scripts

@@ -7,7 +7,7 @@
   "ci": {
     "collect": {
       "numberOfRuns": 3,
-      "startServerCommand": "cd ../web && pnpm start",
+      "startServerCommand": "cd ../apps/web && pnpm start",
       "url": [
         "http://localhost:3000",
         "http://localhost:3000/pricing",
@@ -46,7 +46,7 @@
   "ci": {
     "collect": {
       "numberOfRuns": 3,
-      "startServerCommand": "cd ../web && pnpm start",
+      "startServerCommand": "cd ../apps/web && pnpm start",
       "url": ["http://localhost:3000"],
       "settings": {
         "emulatedFormFactor": "mobile",
@@ -76,7 +76,7 @@
   "ci": {
     "collect": {
       "numberOfRuns": 3,
-      "startServerCommand": "cd ../web && pnpm start",
+      "startServerCommand": "cd ../apps/web && pnpm start",
       "url": ["http://localhost:3000"],
       "settings": {
         "emulatedFormFactor": "desktop",

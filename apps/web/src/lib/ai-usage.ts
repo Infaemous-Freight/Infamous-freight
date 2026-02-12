@@ -47,8 +47,6 @@ export async function recordAiActionsAndReport(
     throw new Error("Invalid AI hard cap multiplier in billing config");
   }
   const hardCap = included * multiplier;
-  const pct = included > 0 ? used / included : 0;
-  const hardCap = included * billing.ai_hard_cap_multiplier;
 
   if (pct >= 0.8 && pct < 1) {
     await supabaseAdmin.from("audit_logs").insert({

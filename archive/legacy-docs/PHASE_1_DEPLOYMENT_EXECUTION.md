@@ -162,8 +162,8 @@ pnpm --filter infamous-freight-api build
 pnpm --filter infamous-freight-web build
 
 # Verify all builds succeeded
-test -f api/dist/server.js && echo "✅ API built"
-test -d web/.next && echo "✅ Web built"
+test -f apps/api/dist/server.js && echo "✅ API built"
+test -d apps/web/.next && echo "✅ Web built"
 ```
 
 **Expected**: All builds complete successfully

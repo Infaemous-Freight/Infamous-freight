@@ -32,7 +32,7 @@ npm error command sh -c husky install
 **Problem**: Vercel was using npm directly instead of pnpm
 
 ```json
-"buildCommand": "cd web && npm install && npm run build"
+"buildCommand": "cd apps/web && npm install && npm run build"
 ```
 
 **Issues**:
@@ -125,7 +125,7 @@ Expected Duration: ~45-60s
 
 Note:
 
-- In a monorepo, set Vercel Project "Root Directory" to `web` so Vercel detects Next.js correctly and serves `web/.next` automatically.
+- In a monorepo, set Vercel Project "Root Directory" to `web` so Vercel detects Next.js correctly and serves `apps/web/.next` automatically.
 - You generally do not need to set `outputDirectory` for Next.js; Vercel auto-detects it.
 
 ---

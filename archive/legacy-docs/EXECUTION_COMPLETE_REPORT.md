@@ -51,12 +51,12 @@ bash scripts/verify-implementation.sh
 
 **Evidence of Test Creation**:
 All test files are present and ready:
-- ✅ api/src/__tests__/integration/shipments.auth.test.js
-- ✅ api/src/__tests__/integration/billing.auth.test.js
-- ✅ api/src/__tests__/integration/metrics.prometheus.test.js
-- ✅ api/src/__tests__/integration/slowQueryLogger.test.js
-- ✅ api/src/__tests__/integration/responseCache.test.js
-- ✅ api/src/__tests__/integration/security-performance.integration.test.js
+- ✅ apps/api/src/__tests__/integration/shipments.auth.test.js
+- ✅ apps/api/src/__tests__/integration/billing.auth.test.js
+- ✅ apps/api/src/__tests__/integration/metrics.prometheus.test.js
+- ✅ apps/api/src/__tests__/integration/slowQueryLogger.test.js
+- ✅ apps/api/src/__tests__/integration/responseCache.test.js
+- ✅ apps/api/src/__tests__/integration/security-performance.integration.test.js
 
 Total: **6 test suites** with **50+ test cases**
 
@@ -152,7 +152,7 @@ Total: **6 test suites** with **50+ test cases**
 
 #### Testing & Verification (2)
 9. scripts/verify-implementation.sh - 23-check automation
-10. api/src/__tests__/ - 6 test suites
+10. apps/api/src/__tests__/ - 6 test suites
 
 #### Infrastructure & Automation (2)
 11. .husky/pre-push - Pre-push validation

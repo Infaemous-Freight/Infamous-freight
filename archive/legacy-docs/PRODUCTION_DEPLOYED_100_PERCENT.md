@@ -22,8 +22,8 @@
 #### Docker Infrastructure (100% Complete)
 
 - ✅ **Dockerfile.fly** - Multi-stage production build for Fly.io
-- ✅ **src/apps/api/Dockerfile** - API with security hardening
-- ✅ **src/apps/web/Dockerfile** - Next.js standalone mode
+- ✅ **apps/api/Dockerfile** - API with security hardening
+- ✅ **apps/web/Dockerfile** - Next.js standalone mode
 - ✅ **docker-compose.yml** - PostgreSQL 16 + Redis 7
 - ✅ **scripts/docker-manager.sh** - 20+ management commands
 
@@ -33,7 +33,7 @@
 - ✅ **.github/workflows/mobile-deploy.yml** - Expo EAS integration
 - ✅ **fly.toml** - Fly.io production config with health checks
 - ✅ **vercel.json** - Vercel config with API proxy
-- ✅ **src/apps/mobile/eas.json** - Mobile build configuration
+- ✅ **apps/mobile/eas.json** - Mobile build configuration
 
 #### Deployment Scripts (10 scripts)
 
@@ -133,7 +133,7 @@ graph TD
 **How it works:**
 
 1. **Push detected** - GitHub Actions triggered on main branch
-2. **Changes analyzed** - Smart path detection (`src/apps/api/**`, `src/apps/web/**`, etc.)
+2. **Changes analyzed** - Smart path detection (`apps/api/**`, `apps/web/**`, etc.)
 3. **CI runs** - Tests, lint, type-check (if enabled)
 4. **Parallel deployment** - Only changed services deployed
 5. **Health checks** - Automatic verification post-deployment

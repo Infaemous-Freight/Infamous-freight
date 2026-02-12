@@ -127,7 +127,7 @@
 
 3. **Deployment workflows execute** (if tests pass)
    - **Web**: `vercel-deploy.yml` builds and deploys to Vercel
-   - **API**: `deploy-api-fly.yml` builds and deploys to Fly.io (if api/\*\* changed)
+   - **API**: `deploy-api-fly.yml` builds and deploys to Fly.io (if apps/api/\*\* changed)
 
 4. **Health checks verify deployment**
    - Web: Checks https://infamous-freight-enterprises.vercel.app
@@ -150,7 +150,7 @@
 
 - ✅ Push to `main` branch
 - ✅ Manual workflow dispatch
-- ✅ Any changes to `web/**` or `packages/shared/**`
+- ✅ Any changes to `apps/web/**` or `packages/shared/**`
 
 **Steps**:
 
@@ -175,7 +175,7 @@
 
 **Trigger**:
 
-- ✅ Push to `main` with changes to `api/**`
+- ✅ Push to `main` with changes to `apps/api/**`
 - ✅ Changes to `packages/shared/**`
 - ✅ Changes to `Dockerfile.fly` or `fly.api.toml`
 - ✅ Manual workflow dispatch
@@ -283,7 +283,7 @@ pnpm add -g vercel@latest
 vercel login
 
 # Deploy to production
-cd web
+cd apps/web
 vercel --prod
 ```
 
@@ -377,7 +377,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 **Fly.io (API)**:
 
-- ✅ Push to `main` with changes to `api/**`
+- ✅ Push to `main` with changes to `apps/api/**`
 - ✅ Changes to `packages/shared/**`
 - ✅ Changes to deployment config
 - ✅ Manual workflow dispatch

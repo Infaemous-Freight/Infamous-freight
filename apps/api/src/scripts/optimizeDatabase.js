@@ -2,7 +2,7 @@
  * Copyright © 2025 Infæmous Freight. All Rights Reserved.
  * Database Optimization & Index Management
  * 
- * Run with: npx ts-node api/src/scripts/optimizeDatabase.js
+ * Run with: npx ts-node apps/api/src/scripts/optimizeDatabase.js
  */
 
 const { PrismaClient } = require('@prisma/client');

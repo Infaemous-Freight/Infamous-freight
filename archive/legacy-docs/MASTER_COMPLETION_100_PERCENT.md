@@ -148,7 +148,7 @@ infamous-freight-enterprises/
 │   ├── workflows/
 │   │   └── build-deploy.yml ✅ NEW
 │   └── STATUS_GREEN.md
-├── api/                      ✅ Backend
+├── apps/api/                      ✅ Backend
 ├── packages/shared/          ✅ Shared types
 ├── client/                   ✅ React app (legacy)
 ├── tests/                    ✅ E2E tests

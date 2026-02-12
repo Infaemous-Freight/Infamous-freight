@@ -34,7 +34,7 @@
 3. **Attempted to build the API image (legacy builder)**
 
    ```bash
-   docker build --network host -t infamous-api ./api
+   docker build --network host -t infamous-api ./apps/api
    ```
 
    - Result: `unshare: operation not permitted` (host disallows required namespaces).
@@ -42,7 +42,7 @@
 4. **Attempted to build with BuildKit**
 
    ```bash
-   docker buildx build --network host -t infamous-api ./api --load
+   docker buildx build --network host -t infamous-api ./apps/api --load
    ```
 
    - Result: BuildKit failed to mount the build context (`operation not permitted`) because the host kernel does not grant `CAP_SYS_ADMIN` for mount operations.
@@ -59,7 +59,7 @@
 - Once on a privileged host, the standard command should work:
 
   ```bash
-  docker build -t infamous-api ./api
+  docker build -t infamous-api ./apps/api
   ```
 
 ---
@@ -72,8 +72,8 @@
 
 ```bash
 pnpm install
-cd api && pnpm add compression@^1.7.4
-cd web && pnpm add web-vitals@^4.0.0
+cd apps/api && pnpm add compression@^1.7.4
+cd apps/web && pnpm add web-vitals@^4.0.0
 ```
 
 **Result**: ✅ SUCCESS
@@ -148,10 +148,10 @@ DD_TRACE_ENABLED=true pnpm api:dev
    - All monorepo packages resolved
 
 2. **Performance Optimization Deployed**
-   - Compression middleware created: `api/src/middleware/performance.js`
-   - Caching utilities created: `api/src/utils/dbOptimization.js`
-   - Web Vitals tracking integrated: `web/lib/webVitalsMonitoring.js`
-   - Image optimization configured: `web/next.config.mjs`
+   - Compression middleware created: `apps/api/src/middleware/performance.js`
+   - Caching utilities created: `apps/api/src/utils/dbOptimization.js`
+   - Web Vitals tracking integrated: `apps/web/lib/webVitalsMonitoring.js`
+   - Image optimization configured: `apps/web/next.config.mjs`
 
 3. **Monitoring Infrastructure Prepared**
    - Datadog APM configuration set to enabled
@@ -295,21 +295,21 @@ psql $DATABASE_URL < scripts/db-indexes.sql
 
 ### Middleware (2)
 
-- ✅ `api/src/middleware/performance.js` - Compression & caching
-- ✅ `api/src/middleware/security.js` - Already existed
+- ✅ `apps/api/src/middleware/performance.js` - Compression & caching
+- ✅ `apps/api/src/middleware/security.js` - Already existed
 
 ### Utilities (1)
 
-- ✅ `api/src/utils/dbOptimization.js` - Query optimization
+- ✅ `apps/api/src/utils/dbOptimization.js` - Query optimization
 
 ### Configuration (2)
 
-- ✅ `api/src/config/monitoring.js` - Monitoring setup
-- ✅ `web/lib/webVitalsConfig.js` - Web Vitals configuration
+- ✅ `apps/api/src/config/monitoring.js` - Monitoring setup
+- ✅ `apps/web/lib/webVitalsConfig.js` - Web Vitals configuration
 
 ### Monitoring (3)
 
-- ✅ `web/lib/webVitalsMonitoring.js` - Tracking & reporting
+- ✅ `apps/web/lib/webVitalsMonitoring.js` - Tracking & reporting
 - ✅ `scripts/setup-monitoring.sh` - Automation script
 - ✅ `scripts/verify-deployment.sh` - Verification checklist
 
@@ -319,8 +319,8 @@ psql $DATABASE_URL < scripts/db-indexes.sql
 
 ### Integration (2)
 
-- ✅ `web/pages/_app.tsx` - Updated with tracking
-- ✅ `web/next.config.mjs` - Enhanced with optimization
+- ✅ `apps/web/pages/_app.tsx` - Updated with tracking
+- ✅ `apps/web/next.config.mjs` - Enhanced with optimization
 
 ---
 

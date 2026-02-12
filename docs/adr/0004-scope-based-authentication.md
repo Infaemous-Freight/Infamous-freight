@@ -42,7 +42,7 @@ We implemented **scope-based RBAC** using JWT claims and Express middleware.
 **Middleware pattern:**
 
 ```javascript
-// api/src/middleware/security.js
+// apps/api/src/middleware/security.js
 function requireScope(requiredScope) {
   return (req, res, next) => {
     const userScopes = req.user?.scopes || [];

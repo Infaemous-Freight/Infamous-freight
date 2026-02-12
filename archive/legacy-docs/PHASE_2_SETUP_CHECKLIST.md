@@ -8,11 +8,11 @@
   - [x] Path module imported (line 17)
 
 - [x] Core files created
-  - [x] `api/src/avatars/routes.ts` - 6 endpoints (system, me, upload, select, delete, stats)
-  - [x] `api/src/avatars/store.ts` - JSON persistence with atomic writes
-  - [x] `api/src/avatars/MOUNT_SNIPPET.ts` - Integration documentation
-  - [x] `api/src/auth/userId.ts` - JWT extraction utilities
-  - [x] `api/src/config/env.ts` - Environment validation with Zod
+  - [x] `apps/api/src/avatars/routes.ts` - 6 endpoints (system, me, upload, select, delete, stats)
+  - [x] `apps/api/src/avatars/store.ts` - JSON persistence with atomic writes
+  - [x] `apps/api/src/avatars/MOUNT_SNIPPET.ts` - Integration documentation
+  - [x] `apps/api/src/auth/userId.ts` - JWT extraction utilities
+  - [x] `apps/api/src/config/env.ts` - Environment validation with Zod
 
 - [x] Directories created
   - [x] `/api/public/uploads/` - User avatar storage
@@ -22,7 +22,7 @@
   - [x] `/api/src/config/` - Config files
 
 - [x] Data store initialized
-  - [x] `api/data/avatars.json` - Empty store with version
+  - [x] `apps/api/data/avatars.json` - Empty store with version
 
 ## 🟡 Pending (Setup Required)
 
@@ -34,12 +34,12 @@
   - [ ] `main-03.png` - Golden Sphinx Core
   - [ ] `main-04.png` - Genesis Oracle
 
-- [ ] Copy images to `web/public/avatars/main/`:
+- [ ] Copy images to `apps/web/public/avatars/main/`:
   ```bash
-  cp main-01.png web/public/avatars/main/
-  cp main-02.png web/public/avatars/main/
-  cp main-03.png web/public/avatars/main/
-  cp main-04.png web/public/avatars/main/
+  cp main-01.png apps/web/public/avatars/main/
+  cp main-02.png apps/web/public/avatars/main/
+  cp main-03.png apps/web/public/avatars/main/
+  cp main-04.png apps/web/public/avatars/main/
   ```
 
 ### Phase 2: Install Dependencies
@@ -53,10 +53,10 @@
 
 - [ ] Verify/update `.env` file with avatar settings:
   ```
-  AVATAR_UPLOAD_DIR=api/public/uploads
+  AVATAR_UPLOAD_DIR=apps/api/public/uploads
   AVATAR_MAX_FILE_SIZE_MB=5
   AVATAR_ALLOWED_TYPES=image/jpeg,image/png,image/webp
-  AVATAR_DATA_STORE=api/data/avatars.json
+  AVATAR_DATA_STORE=apps/api/data/avatars.json
   RATE_LIMIT_AVATAR_WINDOW_MS=15
   RATE_LIMIT_AVATAR_MAX=20
   ```
@@ -93,9 +93,9 @@
 - [ ] Stage files:
 
   ```bash
-  git add api/src/avatars api/src/auth api/src/config api/public/uploads api/data
-  git add web/public/avatars/main/*.png
-  git add api/src/server.js PHASE_2_AVATAR_INTEGRATION.md
+  git add apps/api/src/avatars apps/api/src/auth apps/api/src/config apps/api/public/uploads apps/api/data
+  git add apps/web/public/avatars/main/*.png
+  git add apps/api/src/server.js PHASE_2_AVATAR_INTEGRATION.md
   ```
 
 - [ ] Commit:
@@ -112,9 +112,9 @@
 ## 📚 Documentation
 
 - **Integration Guide:** `PHASE_2_AVATAR_INTEGRATION.md`
-- **Implementation Details:** `api/src/avatars/MOUNT_SNIPPET.ts`
+- **Implementation Details:** `apps/api/src/avatars/MOUNT_SNIPPET.ts`
 - **Endpoint Documentation:** See routes.ts headers
-- **Store Implementation:** `api/src/avatars/store.ts` comments
+- **Store Implementation:** `apps/api/src/avatars/store.ts` comments
 
 ## 🔗 Key URLs After Deployment
 
@@ -131,10 +131,10 @@
 pnpm add multer zod @types/multer
 
 # 2. Copy Phase 1 images
-cp /path/to/main-01.png web/public/avatars/main/
-cp /path/to/main-02.png web/public/avatars/main/
-cp /path/to/main-03.png web/public/avatars/main/
-cp /path/to/main-04.png web/public/avatars/main/
+cp /path/to/main-01.png apps/web/public/avatars/main/
+cp /path/to/main-02.png apps/web/public/avatars/main/
+cp /path/to/main-03.png apps/web/public/avatars/main/
+cp /path/to/main-04.png apps/web/public/avatars/main/
 
 # 3. Start API
 pnpm api:dev

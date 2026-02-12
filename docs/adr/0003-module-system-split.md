@@ -35,10 +35,10 @@ We adopted a **hybrid module system strategy**:
 **API (CommonJS):**
 
 ```javascript
-// api/package.json
+// apps/api/package.json
 { "type": "commonjs" }
 
-// api/src/routes/users.js
+// apps/api/src/routes/users.js
 const express = require('express');
 const { HTTP_STATUS } = require('@infamous-freight/shared');
 ```
@@ -46,10 +46,10 @@ const { HTTP_STATUS } = require('@infamous-freight/shared');
 **Web/Mobile (ESM):**
 
 ```javascript
-// web/package.json
+// apps/web/package.json
 { "type": "module" }  // implicit for Next.js
 
-// web/pages/index.tsx
+// apps/web/pages/index.tsx
 import { User } from '@infamous-freight/shared';
 ```
 

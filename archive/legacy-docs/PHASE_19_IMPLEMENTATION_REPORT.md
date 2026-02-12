@@ -25,7 +25,7 @@ Phase 19 implements multi-tenant data isolation, per-tenant encryption, and comp
 
 ### Phase 19.1: Multi-Tenant Data Model ✅
 
-**Files Modified**: `api/prisma/schema.prisma`
+**Files Modified**: `apps/api/prisma/schema.prisma`
 
 **What Was Added**:
 
@@ -89,13 +89,13 @@ Phase 19 implements multi-tenant data isolation, per-tenant encryption, and comp
    - Every job belongs to shipper's org
    - Enforced via foreign key constraint
 
-**Migration**: `cd api && pnpm prisma migrate deploy && pnpm prisma generate`
+**Migration**: `cd apps/api && pnpm prisma migrate deploy && pnpm prisma generate`
 
 ---
 
 ### Phase 19.2: Tenant-Scoped Prisma Client ✅
 
-**File Created**: `api/src/db/tenant.ts` (TypeScript)
+**File Created**: `apps/api/src/db/tenant.ts` (TypeScript)
 
 **Purpose**: Enforce row-level security in code, not SQL views
 
@@ -137,7 +137,7 @@ const jobs = await tprisma.job.findMany(); // ← Org's jobs only
 
 ### Phase 19.3: Tenant-Aware Authentication ✅
 
-**File Modified**: `api/src/middleware/security.js`
+**File Modified**: `apps/api/src/middleware/security.js`
 
 **What Changed**:
 
@@ -210,7 +210,7 @@ router.get(
 
 ### Phase 19.4: Per-Tenant Encryption Keys ✅
 
-**File Created**: `api/src/security/kms.ts` (TypeScript)
+**File Created**: `apps/api/src/security/kms.ts` (TypeScript)
 
 **Purpose**: AES-256-GCM field-level encryption per tenant
 
@@ -276,7 +276,7 @@ const encryptedSSN = encryptField(dataKey, ssn);
 
 ### Phase 19.5: Tenant Audit Logs ✅
 
-**File Created**: `api/src/audit/orgAuditLog.ts` (TypeScript)
+**File Created**: `apps/api/src/audit/orgAuditLog.ts` (TypeScript)
 
 **Purpose**: Customer-visible compliance audit trail
 
@@ -334,7 +334,7 @@ await logAuditEvent(prisma, {
 
 ### Phase 19.6: Audit Exports (Enterprise Compliance) ✅
 
-**File Created**: `api/src/admin/auditExport.ts` (TypeScript)
+**File Created**: `apps/api/src/admin/auditExport.ts` (TypeScript)
 
 **Purpose**: Exportable audit trail for SOC2, DPA, regulatory audits
 
@@ -402,11 +402,11 @@ console.log(report.summary.totalEvents); // "42 events logged"
 
 | File | Lines | Purpose |
 |------|-------|---------|
-| `api/src/db/tenant.ts` | 195 | Tenant-scoped Prisma client (RLS) |
-| `api/src/security/kms.ts` | 315 | AES-256-GCM key manager + field encryption |
-| `api/src/audit/orgAuditLog.ts` | 325 | Audit logging, queries, CSV export |
-| `api/src/admin/auditExport.ts` | 425 | Audit export (JSON/CSV/JSONL), DPA report |
-| `api/.env.phase19` | 6 | MASTER_KEY configuration |
+| `apps/api/src/db/tenant.ts` | 195 | Tenant-scoped Prisma client (RLS) |
+| `apps/api/src/security/kms.ts` | 315 | AES-256-GCM key manager + field encryption |
+| `apps/api/src/audit/orgAuditLog.ts` | 325 | Audit logging, queries, CSV export |
+| `apps/api/src/admin/auditExport.ts` | 425 | Audit export (JSON/CSV/JSONL), DPA report |
+| `apps/api/.env.phase19` | 6 | MASTER_KEY configuration |
 | `PHASE_19_COMPLETE.md` | 550+ | Comprehensive implementation guide |
 | `PHASE_19_SUMMARY.md` | 350+ | Quick reference & deployment guide |
 
@@ -416,8 +416,8 @@ console.log(report.summary.totalEvents); // "42 events logged"
 
 | File | Changes | Impact |
 |------|---------|--------|
-| `api/prisma/schema.prisma` | +35 lines | Organization, OrgAuditLog, extended User/Job |
-| `api/src/middleware/security.js` | +30 lines | Enhanced authenticate(), requireOrganization() |
+| `apps/api/prisma/schema.prisma` | +35 lines | Organization, OrgAuditLog, extended User/Job |
+| `apps/api/src/middleware/security.js` | +30 lines | Enhanced authenticate(), requireOrganization() |
 
 ---
 
@@ -492,10 +492,10 @@ console.log(report.summary.totalEvents); // "42 events logged"
 ```bash
 # 1. Generate MASTER_KEY
 export MASTER_KEY=$(openssl rand -base64 32)
-echo "MASTER_KEY=$MASTER_KEY" >> api/.env
+echo "MASTER_KEY=$MASTER_KEY" >> apps/api/.env
 
 # 2. Run migration
-cd api && pnpm prisma migrate deploy && pnpm prisma generate
+cd apps/api && pnpm prisma migrate deploy && pnpm prisma generate
 
 # 3. Create initial organizations
 # (Manual via Prisma Studio or via migration seed)

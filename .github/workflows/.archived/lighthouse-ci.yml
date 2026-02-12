@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'web/**'
+      - 'apps/web/**'
       - '.github/workflows/lighthouse-ci.yml'
       - '.lighthouserc*.json'
   pull_request:
@@ -137,13 +137,13 @@ jobs:
       - name: Run SEO audit
         run: |
           echo "Checking for meta tags..."
-          find web/.next/server/app -name "*.html" -exec grep -l '<meta name="description"' {} \; || echo "⚠️ Missing meta description"
+          find apps/web/.next/server/app -name "*.html" -exec grep -l '<meta name="description"' {} \; || echo "⚠️ Missing meta description"
           
           echo "Checking for Open Graph tags..."
-          find web/.next/server/app -name "*.html" -exec grep -l '<meta property="og:' {} \; || echo "⚠️ Missing Open Graph tags"
+          find apps/web/.next/server/app -name "*.html" -exec grep -l '<meta property="og:' {} \; || echo "⚠️ Missing Open Graph tags"
           
-          [ -f web/public/robots.txt ] && echo "✅ robots.txt found" || echo "⚠️ Missing robots.txt"
-          [ -f web/public/sitemap.xml ] && echo "✅ sitemap.xml found" || echo "⚠️ Missing sitemap.xml"
+          [ -f apps/web/public/robots.txt ] && echo "✅ robots.txt found" || echo "⚠️ Missing robots.txt"
+          [ -f apps/web/public/sitemap.xml ] && echo "✅ sitemap.xml found" || echo "⚠️ Missing sitemap.xml"
   
   security-audit:
     runs-on: ubuntu-latest

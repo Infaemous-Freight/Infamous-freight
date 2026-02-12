@@ -85,7 +85,7 @@ pnpm format
 **API Service** (`/api`)
 
 ```bash
-cd api
+cd apps/api
 pnpm dev              # Start dev server
 pnpm test             # Run tests
 pnpm prisma:studio    # Open database GUI
@@ -94,7 +94,7 @@ pnpm prisma:studio    # Open database GUI
 **Web Service** (`/web`)
 
 ```bash
-cd web
+cd apps/web
 pnpm dev              # Start Next.js
 pnpm build            # Production build
 ```
@@ -167,8 +167,8 @@ These run automatically on commit via Husky hooks.
 
 **Before submitting a PR:**
 
-1. Run full test suite: `cd api && pnpm test`
-2. Check coverage: `cd api && pnpm test:coverage`
+1. Run full test suite: `cd apps/api && pnpm test`
+2. Check coverage: `cd apps/api && pnpm test:coverage`
 3. Review uncovered code - is it intentional? See [COVERAGE_GAPS.md](./docs/COVERAGE_GAPS.md)
 
 **Writing Tests:**
@@ -352,17 +352,17 @@ describe("User API", () => {
 
 ```
 infamous-freight-enterprises/
-├── api/                    # Backend API service
+├── apps/api/                    # Backend API service
 │   ├── src/
 │   │   ├── routes/        # API endpoints
 │   │   ├── services/      # Business logic
 │   │   └── middleware/    # Express middleware
 │   └── prisma/            # Database schema
-├── web/                   # Next.js frontend
+├── apps/web/                   # Next.js frontend
 │   ├── pages/            # Routes and pages
 │   ├── components/       # React components
 │   └── hooks/            # Custom hooks
-├── mobile/               # React Native app
+├── apps/mobile/               # React Native app
 ├── packages/
 │   └── shared/           # Shared code
 │       ├── src/

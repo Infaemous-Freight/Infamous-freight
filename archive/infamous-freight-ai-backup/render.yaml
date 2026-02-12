@@ -4,7 +4,7 @@ services:
   - type: web
     name: infamous-freight-web
     runtime: docker
-    dockerfilePath: ./web/Dockerfile
+    dockerfilePath: ./apps/web/Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
@@ -20,7 +20,7 @@ services:
   - type: web
     name: infamous-freight-api
     runtime: docker
-    dockerfilePath: ./api/Dockerfile
+    dockerfilePath: ./apps/api/Dockerfile
     envVars:
       - key: NODE_ENV
         value: production

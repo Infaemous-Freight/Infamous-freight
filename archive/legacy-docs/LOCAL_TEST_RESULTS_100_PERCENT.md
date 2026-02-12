@@ -31,21 +31,21 @@
 ## 🔍 VERIFICATION SCRIPT RESULTS (23/23)
 
 ### ✅ Security & Authentication
-- [x] Organization requirement check exported from `api/src/middleware/security.js`
-- [x] Scope enforcement exported from `api/src/middleware/security.js`
+- [x] Organization requirement check exported from `apps/api/src/middleware/security.js`
+- [x] Scope enforcement exported from `apps/api/src/middleware/security.js`
 - [x] Security middleware (scopes, org enforcement) in place
 
 ### ✅ Validation
-- [x] Enum validator exported from `api/src/middleware/validation.js`
-- [x] UUID body validator exported from `api/src/middleware/validation.js`
-- [x] Pagination validator exported from `api/src/middleware/validation.js`
+- [x] Enum validator exported from `apps/api/src/middleware/validation.js`
+- [x] UUID body validator exported from `apps/api/src/middleware/validation.js`
+- [x] Pagination validator exported from `apps/api/src/middleware/validation.js`
 - [x] Validation middleware implemented
 
 ### ✅ Observability & Performance
 - [x] Prometheus metrics exporter available
-- [x] Prometheus export function exported from `api/src/lib/prometheusMetrics.js`
-- [x] Slow query logger attachment exported from `api/src/lib/slowQueryLogger.js`
-- [x] Response cache middleware exported from `api/src/middleware/responseCache.js`
+- [x] Prometheus export function exported from `apps/api/src/lib/prometheusMetrics.js`
+- [x] Slow query logger attachment exported from `apps/api/src/lib/slowQueryLogger.js`
+- [x] Response cache middleware exported from `apps/api/src/middleware/responseCache.js`
 - [x] Metrics recorder middleware in place
 - [x] Slow query logger implemented
 - [x] Response caching middleware configured

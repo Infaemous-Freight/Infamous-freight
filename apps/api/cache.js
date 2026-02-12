@@ -1,4 +1,4 @@
-// api/cache.js - Response Caching Module
+// apps/api/cache.js - Response Caching Module
 class Cache {
     constructor(ttl = 5000) {
         this.store = new Map();

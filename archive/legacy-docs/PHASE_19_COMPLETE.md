@@ -16,7 +16,7 @@ Infæmous Freight is now an enterprise-grade logistics platform with row-level s
    - All existing data (shipments, payments) migrated to tenant context
 
 ### 2. **Row-Level Security (RLS)** ✅
-   - **Tenant-scoped Prisma client** (`api/src/db/tenant.ts`): 
+   - **Tenant-scoped Prisma client** (`apps/api/src/db/tenant.ts`): 
      - Every query automatically filtered by `organizationId`
      - Developers can't accidentally leak cross-tenant data
      - Covers: Job, User, JobEvent, OrgAuditLog
@@ -31,7 +31,7 @@ Infæmous Freight is now an enterprise-grade logistics platform with row-level s
    - **Dev fallback**: `x-org-id` header for local testing
 
 ### 4. **Per-Tenant Encryption Keys** ✅
-   - **KMS module** (`api/src/security/kms.ts`):
+   - **KMS module** (`apps/api/src/security/kms.ts`):
      - Master key (MASTER_KEY env var) encrypts data keys
      - Each org gets unique AES-256 data key (256-bit encryption)
      - Data key stored encrypted in `Organization.dataKeyEnc`
@@ -47,7 +47,7 @@ Infæmous Freight is now an enterprise-grade logistics platform with row-level s
    - **Separate from JobEvent**: 
      - JobEvent = operational (system-generated)
      - OrgAuditLog = compliance (user actions, sensitive events)
-   - **Audit helper** (`api/src/audit/orgAuditLog.ts`):
+   - **Audit helper** (`apps/api/src/audit/orgAuditLog.ts`):
      - `logAuditEvent()` — Log single event
      - `logAuditEventsBatch()` — Atomic multi-event logging
      - `getAuditLogs()` — Query with filtering (action, entity, date range)
@@ -55,7 +55,7 @@ Infæmous Freight is now an enterprise-grade logistics platform with row-level s
      - **CSV export**: `auditLogsToCSV()` for spreadsheet analysis
 
 ### 6. **Audit Exports (Enterprise Compliance)** ✅
-   - **Export module** (`api/src/admin/auditExport.ts`):
+   - **Export module** (`apps/api/src/admin/auditExport.ts`):
      - `exportOrgAudit()` — Export logs for period (JSON/CSV/JSONL)
      - `streamOrgAudit()` — Stream large exports without memory spike
      - `exportFilteredAudit()` — Export with action/entity/user filters

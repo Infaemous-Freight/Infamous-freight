@@ -389,7 +389,7 @@ module.exports = router;
 ### Unit Tests Template
 
 ```javascript
-// api/tests/routes/resource.test.js
+// apps/api/tests/routes/resource.test.js
 const request = require("supertest");
 const express = require("express");
 const { prismaMock } = require("../mocks/prisma");
@@ -664,7 +664,7 @@ curl -X POST http://localhost:4000/api/resource \
 curl http://localhost:4000/api/health
 
 # 6. Verify audit logs
-tail -f api/logs/combined.log | grep "resource"
+tail -f apps/api/logs/combined.log | grep "resource"
 
 # 7. Check Sentry (if error triggered)
 # Login to sentry.io and verify error tracking
@@ -674,7 +674,7 @@ tail -f api/logs/combined.log | grep "resource"
 
 ## ✨ Perfect Route Example: Shipments Endpoint
 
-See [api/src/routes/shipments.js](./api/src/routes/shipments.js) for a production-ready example implementing all 13 recommendations.
+See [apps/api/src/routes/shipments.js](./apps/api/src/routes/shipments.js) for a production-ready example implementing all 13 recommendations.
 
 ---
 

@@ -102,7 +102,7 @@ read -p "ENTERPRISE Price ID (price_...): " STRIPE_PRICE_ENTERPRISE
 # Step 6: Create/Update Config
 echo -e "${BLUE}[Step 6]${NC} Creating Stripe config..."
 
-cat > api/src/config/stripe.js << 'EOF'
+cat > apps/api/src/config/stripe.js << 'EOF'
 // Stripe Configuration
 module.exports = {
   plans: {
@@ -134,9 +134,9 @@ echo -e "${BLUE}[Step 8]${NC} Database setup..."
 read -p "Ready to create Stripe tables? (y/n): " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    cd api
+    cd apps/api
     pnpm prisma db push --skip-generate
-    cd ..
+    cd ../..
     echo -e "${GREEN}✓ Database updated${NC}"
 fi
 

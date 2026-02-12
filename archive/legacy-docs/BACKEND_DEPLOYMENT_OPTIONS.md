@@ -199,7 +199,7 @@ Deploy using Docker Compose to your own server or VPS.
    ```bash
    # From your local machine
    scp -r .github/ docker-compose.prod.yml .env.production user@server:~/app/
-   scp -r api/ user@server:~/app/
+   scp -r apps/api/ user@server:~/app/
    scp -r packages/shared user@server:~/app/
    ```
 

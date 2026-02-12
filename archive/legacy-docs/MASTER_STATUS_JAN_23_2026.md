@@ -52,7 +52,7 @@ SyntaxError: Unexpected token 'export' in packages/shared/dist/index.js:1
 
 **Files Modified**: 3
 
-- `api/jest.config.js` - Added transformIgnorePatterns
+- `apps/api/jest.config.js` - Added transformIgnorePatterns
 - `packages/shared/tsconfig.json` - Changed module from ES2022 to CommonJS
 - `packages/shared/package.json` - Removed "type": "module" declaration
 - `packages/shared/dist/` - Rebuilt with CommonJS output
@@ -78,7 +78,7 @@ SyntaxError: Unexpected end of input (line 184)
 
 **File Modified**: 1
 
-- `api/src/routes/metrics.js` - Fixed brace structure
+- `apps/api/src/routes/metrics.js` - Fixed brace structure
 
 **Result**: metrics routes and tests can now load without parse errors
 
@@ -100,11 +100,11 @@ SyntaxError: Unexpected end of input (line 184)
 
 | Category          | File                            | Changes         | Status |
 | ----------------- | ------------------------------- | --------------- | ------ |
-| **Configuration** | `api/jest.config.js`            | +3 lines        | ✅     |
+| **Configuration** | `apps/api/jest.config.js`            | +3 lines        | ✅     |
 | **TypeScript**    | `packages/shared/tsconfig.json` | -2/+1 lines     | ✅     |
 | **Package**       | `packages/shared/package.json`  | -1 line         | ✅     |
 | **Dist**          | `packages/shared/dist/*`        | Rebuilt         | ✅     |
-| **Routes**        | `api/src/routes/metrics.js`     | Fixed structure | ✅     |
+| **Routes**        | `apps/api/src/routes/metrics.js`     | Fixed structure | ✅     |
 | **Docs**          | 3 new documentation files       | Created         | ✅     |
 
 **Total**: 6 files modified, 3 files created

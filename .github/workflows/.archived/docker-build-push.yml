@@ -21,10 +21,10 @@ jobs:
       matrix:
         include:
           - service: api
-            dockerfile: ./api/Dockerfile
+            dockerfile: ./apps/api/Dockerfile
             context: .
           - service: web
-            dockerfile: ./web/Dockerfile
+            dockerfile: ./apps/web/Dockerfile
             context: .
 
     steps:

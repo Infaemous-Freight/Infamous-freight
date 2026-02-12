@@ -53,7 +53,7 @@ curl -X POST -H "Authorization: Bearer YOUR_TOKEN" \
 Infamous-freight-enterprises/
 ├── packages/shared/src/
 │   └── rbac.ts                    ← Role-based access control types
-├── api/src/
+├── apps/api/src/
 │   ├── middleware/
 │   │   ├── rbac.js                ← RBAC middleware guards
 │   │   └── authRBAC.js            ← Enhanced JWT + RBAC auth
@@ -61,9 +61,9 @@ Infamous-freight-enterprises/
 │   │   └── dispatch.js            ← Driver + assignment endpoints
 │   └── queue/
 │       └── agents.js              ← BullMQ workers (dispatch, invoice, ETA, analytics)
-├── web/vercel.json                ← Vercel deployment config
+├── apps/web/vercel.json                ← Vercel deployment config
 ├── fly.toml                        ← Fly.io API deployment config
-├── api/Dockerfile                 ← Updated with Node 20, OpenSSL
+├── apps/api/Dockerfile                 ← Updated with Node 20, OpenSSL
 ├── .github/workflows/deploy.yml   ← CI/CD pipeline
 └── FRAMEWORK_INTEGRATION_GUIDE.md  ← This guide
 ```
@@ -74,9 +74,9 @@ Infamous-freight-enterprises/
 
 ### Component 1: RBAC System
 
-**Location**: `packages/shared/src/rbac.ts` + `api/src/middleware/rbac.js` + `api/src/middleware/authRBAC.js`
+**Location**: `packages/shared/src/rbac.ts` + `apps/api/src/middleware/rbac.js` + `apps/api/src/middleware/authRBAC.js`
 
-**Register middleware in `api/src/app.js`:**
+**Register middleware in `apps/api/src/app.js`:**
 
 ```javascript
 const { authenticateWithRBAC } = require("./middleware/authRBAC");
@@ -121,9 +121,9 @@ curl -H "Authorization: Bearer $VIEWER_TOKEN" \
 
 ### Component 2: Dispatch Module
 
-**Location**: `api/src/routes/dispatch.js`
+**Location**: `apps/api/src/routes/dispatch.js`
 
-**Register route in `api/src/app.js`:**
+**Register route in `apps/api/src/app.js`:**
 
 ```javascript
 const dispatchRoutes = require("./routes/dispatch");
@@ -204,9 +204,9 @@ curl -X PATCH http://localhost:3001/api/dispatch/assignments/$ASSIGNMENT \
 
 ### Component 3: Agent Queueing
 
-**Location**: `api/src/queue/agents.js`
+**Location**: `apps/api/src/queue/agents.js`
 
-**Register workers in `api/src/worker/index.js`:**
+**Register workers in `apps/api/src/worker/index.js`:**
 
 ```javascript
 const {
@@ -252,7 +252,7 @@ sqlite3 api.db "SELECT * FROM agent_runs LIMIT 10;"
 
 ### Component 4: Deployment
 
-**Location**: `fly.toml` + `web/vercel.json` + `.github/workflows/deploy.yml` + `api/Dockerfile`
+**Location**: `fly.toml` + `apps/web/vercel.json` + `.github/workflows/deploy.yml` + `apps/api/Dockerfile`
 
 **Prerequisites:**
 
@@ -356,7 +356,7 @@ TEST_JWT_TOKEN=<test-token>
 
 ### Adding New Dispatch Endpoint
 
-**1. Define route in `api/src/routes/dispatch.js`:**
+**1. Define route in `apps/api/src/routes/dispatch.js`:**
 
 ```javascript
 router.get(
@@ -388,7 +388,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 **3. Add integration test:**
 
 ```javascript
-// api/src/routes/__tests__/dispatch.test.js
+// apps/api/src/routes/__tests__/dispatch.test.js
 describe("GET /api/dispatch/shipments/:id/history", () => {
   it("returns assignment history", async () => {
     const res = await request(app)
@@ -403,7 +403,7 @@ describe("GET /api/dispatch/shipments/:id/history", () => {
 
 ### Adding New Agent Worker
 
-**1. Define worker in `api/src/queue/agents.js`:**
+**1. Define worker in `apps/api/src/queue/agents.js`:**
 
 ```javascript
 const myAgentQueue = new Queue("my-agent", { connection: redis });
@@ -460,7 +460,7 @@ node -e "console.log(JSON.stringify(require('jsonwebtoken').decode('YOUR_TOKEN')
 **Verify role has permission:**
 
 ```javascript
-// In api/src/middleware/rbac.js
+// In apps/api/src/middleware/rbac.js
 const { ROLE_PERMISSIONS, UserRole } = require("@infamous-freight/shared");
 console.log(ROLE_PERMISSIONS[UserRole.DISPATCH]);
 // Should include 'dispatch:manage' or similar
@@ -490,7 +490,7 @@ pnpm api:dev
 **Check migration status:**
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:migrate:status
 ```
 
@@ -507,7 +507,7 @@ pnpm prisma:migrate:reset
 
 ### Rate Limiting by Role
 
-Already configured in `api/src/middleware/security.js`:
+Already configured in `apps/api/src/middleware/security.js`:
 
 - **Viewer**: 5 requests/15min (strict)
 - **Driver**: 20 requests/1min (moderate)
@@ -644,7 +644,7 @@ router.post(
 
 - **Framework Guide**: [FRAMEWORK_INTEGRATION_GUIDE.md](FRAMEWORK_INTEGRATION_GUIDE.md)
 - **Copilot Instructions**: [.github/copilot-instructions.md](.github/copilot-instructions.md)
-- **API Docs**: [Postman collection](./api/docs/postman.json) (generated)
+- **API Docs**: [Postman collection](./apps/api/docs/postman.json) (generated)
 - **Architecture**: [architecture.md](./ARCHITECTURE.md)
 
 ---

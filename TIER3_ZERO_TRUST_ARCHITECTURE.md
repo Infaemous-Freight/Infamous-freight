@@ -103,7 +103,7 @@ module.exports = TrustScoreCalculator;
 ### 2.1 Multi-Factor Authentication (Advanced)
 
 ```typescript
-// api/src/services/zeroTrustAuth.ts
+// apps/api/src/services/zeroTrustAuth.ts
 
 import speakeasy from 'speakeasy';
 import QRCode from 'qrcode';
@@ -237,7 +237,7 @@ export default ZeroTrustAuthService;
 ### 2.2 Device Posture Assessment
 
 ```javascript
-// api/src/services/devicePosture.js
+// apps/api/src/services/devicePosture.js
 
 class DevicePostureService {
   // Comprehensive device health check
@@ -377,7 +377,7 @@ module.exports = DevicePostureService;
 
 ```yaml
 # Network Segmentation Configuration
-# api/config/network-segmentation.yml
+# apps/api/config/network-segmentation.yml
 
 network_tiers:
   # Tier 0: Critical Infrastructure
@@ -491,7 +491,7 @@ microsegmentation:
 ### 3.2 API Endpoint Segmentation
 
 ```javascript
-// api/src/middleware/zeroTrustSegmentation.js
+// apps/api/src/middleware/zeroTrustSegmentation.js
 
 class ZeroTrustSegmentation {
   // Define protected resource tiers with access requirements
@@ -736,7 +736,7 @@ module.exports = ZeroTrustSegmentation;
 ### 4.1 Real-Time Threat Detection
 
 ```javascript
-// api/src/services/threatDetection.js
+// apps/api/src/services/threatDetection.js
 
 class ThreatDetectionEngine {
   constructor() {

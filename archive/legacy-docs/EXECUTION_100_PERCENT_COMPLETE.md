@@ -143,10 +143,10 @@ Coverage Status: ✅ ≥80% met
 
 All service files created:
 
-- ✅ `api/src/services/aiSyntheticClient.js` — AI provider client
-- ✅ `api/src/services/cache.js` — Caching service
-- ✅ `api/src/services/websocket.js` — WebSocket management
-- ✅ `api/src/services/export.js` — Data export service
+- ✅ `apps/api/src/services/aiSyntheticClient.js` — AI provider client
+- ✅ `apps/api/src/services/cache.js` — Caching service
+- ✅ `apps/api/src/services/websocket.js` — WebSocket management
+- ✅ `apps/api/src/services/export.js` — Data export service
 
 Next run: `pnpm test` will pass all suites once Prisma client is fully initialized.
 
@@ -170,7 +170,7 @@ Lines        : 82.8%  (baseline ✅)
 open playwright-report/index.html
 
 # View Unit Test Coverage (detailed)
-open api/coverage/index.html
+open apps/api/coverage/index.html
 ```
 
 ### Coverage Breakdown
@@ -309,7 +309,7 @@ open https://mrmiless44-genesis.vercel.app
 pnpm test
 
 # 2. View coverage report
-open api/coverage/index.html
+open apps/api/coverage/index.html
 
 # 3. Continue development
 pnpm dev  # Already running - make more changes

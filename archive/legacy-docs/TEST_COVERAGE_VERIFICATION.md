@@ -212,7 +212,7 @@ pnpm test -- health.test.js
 ### **View Coverage Report**
 
 ```bash
-open api/coverage/index.html
+open apps/api/coverage/index.html
 ```
 
 ---

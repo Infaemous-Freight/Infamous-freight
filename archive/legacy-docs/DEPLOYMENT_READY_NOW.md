@@ -212,7 +212,7 @@ pnpm install && pnpm api:dev
 ### Build & Test (15 min)
 - [ ] `pnpm install`
 - [ ] `pnpm --filter @infamous-freight/shared build`
-- [ ] `cd api && pnpm prisma:migrate:deploy`
+- [ ] `cd apps/api && pnpm prisma:migrate:deploy`
 - [ ] `pnpm --filter api test` → All passing
 
 ### Deployment (5 min - Choose One)

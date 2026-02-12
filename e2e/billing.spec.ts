@@ -3,24 +3,24 @@
  * Test complete billing flow: payment intent → webhook → confirmation
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-const API_BASE = process.env.API_BASE_URL || 'http://localhost:4000';
-const WEB_BASE = process.env.WEB_BASE_URL || 'http://localhost:3000';
+const API_BASE = process.env.API_BASE_URL || "http://localhost:4000";
+const WEB_BASE = process.env.WEB_BASE_URL || "http://localhost:3000";
 
-test.describe('Billing Workflow - End-to-End', () => {
-  let authToken = '';
-  let paymentIntentId = '';
-  let subscriptionId = '';
+test.describe("Billing Workflow - End-to-End", () => {
+  let authToken = "";
+  let paymentIntentId = "";
+  let subscriptionId = "";
 
   test.beforeAll(async () => {
     // Setup: Create test user and get auth token
     const loginRes = await fetch(`${API_BASE}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: `test-${Date.now()}@example.com`,
-        password: 'Test@1234',
+        password: "Test@1234",
       }),
     });
 
@@ -28,17 +28,17 @@ test.describe('Billing Workflow - End-to-End', () => {
     authToken = loginData.token;
   });
 
-  test('should create payment intent successfully', async () => {
+  test("should create payment intent successfully", async () => {
     const res = await fetch(`${API_BASE}/api/billing/create-payment-intent`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${authToken}`,
       },
       body: JSON.stringify({
-        amount: '99.99',
-        currency: 'usd',
-        description: 'Test Payment',
+        amount: "99.99",
+        currency: "usd",
+        description: "Test Payment",
       }),
     });
 
@@ -50,17 +50,17 @@ test.describe('Billing Workflow - End-to-End', () => {
     paymentIntentId = data.paymentIntentId;
   });
 
-  test('should confirm payment processing', async () => {
+  test("should confirm payment processing", async () => {
     // Simulate Stripe webhook confirmation
     const webhookRes = await fetch(`${API_BASE}/api/billing/webhook`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        type: 'payment_intent.succeeded',
+        type: "payment_intent.succeeded",
         data: {
           object: {
             id: paymentIntentId,
-            status: 'succeeded',
+            status: "succeeded",
           },
         },
       }),
@@ -71,27 +71,27 @@ test.describe('Billing Workflow - End-to-End', () => {
     expect(data.received).toBe(true);
   });
 
-  test('should create subscription successfully', async () => {
+  test("should create subscription successfully", async () => {
     const res = await fetch(`${API_BASE}/api/billing/create-subscription`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${authToken}`,
       },
       body: JSON.stringify({
-        priceId: 'price_test_123',
+        priceId: "price_test_123",
       }),
     });
 
     expect(res.status).toBe(201);
     const data = await res.json();
     expect(data.subscriptionId).toBeDefined();
-    expect(data.status).toBe('active');
+    expect(data.status).toBe("active");
 
     subscriptionId = data.subscriptionId;
   });
 
-  test('should retrieve user subscriptions', async () => {
+  test("should retrieve user subscriptions", async () => {
     const res = await fetch(`${API_BASE}/api/billing/subscriptions`, {
       headers: {
         Authorization: `Bearer ${authToken}`,
@@ -105,7 +105,7 @@ test.describe('Billing Workflow - End-to-End', () => {
     expect(data.count).toBeGreaterThanOrEqual(0);
   });
 
-  test('should get revenue statistics', async () => {
+  test("should get revenue statistics", async () => {
     const res = await fetch(`${API_BASE}/api/billing/revenue`, {
       headers: {
         Authorization: `Bearer ${authToken}`,
@@ -120,9 +120,9 @@ test.describe('Billing Workflow - End-to-End', () => {
     expect(data.revenue.activeSubscriptions).toBeDefined();
   });
 
-  test('should cancel subscription', async () => {
+  test("should cancel subscription", async () => {
     const res = await fetch(`${API_BASE}/api/billing/cancel-subscription/${subscriptionId}`, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
@@ -131,10 +131,10 @@ test.describe('Billing Workflow - End-to-End', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.success).toBe(true);
-    expect(data.message).toContain('cancelled');
+    expect(data.message).toContain("cancelled");
   });
 
-  test('should reject unauthorized billing requests', async () => {
+  test("should reject unauthorized billing requests", async () => {
     const res = await fetch(`${API_BASE}/api/billing/subscriptions`, {
       // No auth header
     });
@@ -144,14 +144,14 @@ test.describe('Billing Workflow - End-to-End', () => {
     expect(data.error).toBeDefined();
   });
 
-  test('should enforce rate limiting on billing endpoints', async () => {
+  test("should enforce rate limiting on billing endpoints", async () => {
     const requests = [];
     // Make 40 rapid requests (limit is 30/15min)
     for (let i = 0; i < 40; i++) {
       requests.push(
         fetch(`${API_BASE}/api/billing/subscriptions`, {
           headers: { Authorization: `Bearer ${authToken}` },
-        })
+        }),
       );
     }
 
@@ -162,19 +162,19 @@ test.describe('Billing Workflow - End-to-End', () => {
     console.log(`Rate limited ${rateLimited.length}/40 requests as expected`);
   });
 
-  test('should require proper scope for billing operations', async () => {
+  test("should require proper scope for billing operations", async () => {
     // Create token without billing:write scope
-    const noScopeToken = 'token_without_billing_scope';
+    const noScopeToken = "token_without_billing_scope";
 
     const res = await fetch(`${API_BASE}/api/billing/create-payment-intent`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${noScopeToken}`,
       },
       body: JSON.stringify({
-        amount: '50.00',
-        currency: 'usd',
+        amount: "50.00",
+        currency: "usd",
       }),
     });
 
@@ -182,38 +182,38 @@ test.describe('Billing Workflow - End-to-End', () => {
   });
 });
 
-test.describe('Payment Processing Flow', () => {
-  let paymentIntentId = '';
+test.describe("Payment Processing Flow", () => {
+  let paymentIntentId = "";
 
-  test('should process payment with webhook confirmation', async ({ page }) => {
+  test("should process payment with webhook confirmation", async ({ page }) => {
     // Navigate to payment page
     await page.goto(`${WEB_BASE}/billing`);
 
     // Fill payment form
-    await page.fill('[data-testid=amount]', '99.99');
-    await page.fill('[data-testid=description]', 'Test Payment');
+    await page.fill("[data-testid=amount]", "99.99");
+    await page.fill("[data-testid=description]", "Test Payment");
 
     // Click submit
-    await page.click('[data-testid=submit-payment]');
+    await page.click("[data-testid=submit-payment]");
 
     // Wait for payment intent creation
     await page.waitForResponse(
       (response) =>
-        response.url().includes('/api/billing/create-payment-intent') && response.status() === 201
+        response.url().includes("/api/billing/create-payment-intent") && response.status() === 201,
     );
 
     // Verify success message
-    await expect(page.locator('[data-testid=success-message]')).toBeVisible();
+    await expect(page.locator("[data-testid=success-message]")).toBeVisible();
   });
 
-  test('should display subscription management UI', async ({ page }) => {
+  test("should display subscription management UI", async ({ page }) => {
     await page.goto(`${WEB_BASE}/subscriptions`);
 
     // Wait for subscriptions to load
-    await page.waitForSelector('[data-testid=subscriptions-list]', { timeout: 5000 });
+    await page.waitForSelector("[data-testid=subscriptions-list]", { timeout: 5000 });
 
     // Verify list is rendered
-    const list = page.locator('[data-testid=subscriptions-list]');
+    const list = page.locator("[data-testid=subscriptions-list]");
     await expect(list).toBeVisible();
   });
 });

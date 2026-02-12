@@ -59,8 +59,8 @@ fi
 # Check 2: Project structure
 print_header "2️⃣ Project Structure"
 DIRS=(
-    "src/apps/api"
-    "src/apps/web"
+    "apps/api"
+    "apps/web"
     "packages/shared"
     "scripts"
     "monitoring"
@@ -94,9 +94,9 @@ done
 
 # Check 4: Build artifacts
 print_header "4️⃣ Build Artifacts"
-if [ -d "src/apps/api/dist" ]; then
-    DIST_SIZE=$(du -sh src/apps/api/dist | cut -f1)
-    DIST_FILES=$(find src/apps/api/dist -type f | wc -l)
+if [ -d "apps/api/dist" ]; then
+    DIST_SIZE=$(du -sh apps/api/dist | cut -f1)
+    DIST_FILES=$(find apps/api/dist -type f | wc -l)
     check_item "API dist folder ($DIST_SIZE, $DIST_FILES files)" "✅"
 else
     check_item "API dist folder" "❌"
@@ -104,7 +104,7 @@ fi
 
 # Check 5: Dependencies
 print_header "5️⃣ Dependencies"
-cd src/apps/api
+cd apps/api
 if npm audit --json 2>/dev/null | grep -q '"vulnerabilities"'; then
     VULN_COUNT=$(npm audit --json 2>/dev/null | grep -o '"vulnerabilities"' | wc -l)
     check_item "npm audit passed (review vulnerabilities)" "✅"
@@ -115,7 +115,7 @@ cd - > /dev/null
 
 # Check 6: Tests
 print_header "6️⃣ Test Execution"
-cd src/apps/api
+cd apps/api
 if npm test 2>&1 | grep -q "Tests:.*passed"; then
     TEST_RESULTS=$(npm test 2>&1 | grep "Tests:" | tail -1)
     check_item "All tests passing: $TEST_RESULTS" "✅"
@@ -126,7 +126,7 @@ cd - > /dev/null
 
 # Check 7: Type checking
 print_header "7️⃣ Type Safety"
-cd src/apps/api
+cd apps/api
 if npx tsc --noEmit 2>&1 | grep -q "error TS"; then
     ERROR_COUNT=$(npx tsc --noEmit 2>&1 | grep -c "error TS" || true)
     check_item "TypeScript compilation ($ERROR_COUNT errors)" "❌"
@@ -138,8 +138,8 @@ cd - > /dev/null
 # Check 8: Services created
 print_header "8️⃣ AI Services"
 SERVICES=(
-    "src/apps/api/src/services/aiDispatchService.ts"
-    "src/apps/api/src/services/aiCoachService.ts"
+    "apps/api/src/services/aiDispatchService.ts"
+    "apps/api/src/services/aiCoachService.ts"
 )
 
 for service in "${SERVICES[@]}"; do
@@ -155,7 +155,7 @@ done
 print_header "9️⃣ Infrastructure & Deployment"
 INFRA_FILES=(
     "docker-compose.production.yml"
-    "src/apps/api/Dockerfile.production"
+    "apps/api/Dockerfile.production"
     "monitoring/prometheus.yml"
     "monitoring/alerts.yml"
     "monitoring/grafana/dashboards/api-dashboard.json"

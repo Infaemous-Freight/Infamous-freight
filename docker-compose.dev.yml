@@ -22,17 +22,17 @@ services:
   api:
     build:
       context: .
-      dockerfile: src/apps/api/Dockerfile
+      dockerfile: apps/api/Dockerfile
       target: builder # Use builder stage for development
-    command: pnpm --filter infamous-freight-api dev
+    command: pnpm --filter api dev
     environment:
       NODE_ENV: development
       DATABASE_URL: postgresql://infamous:infamouspass@postgres:5432/infamous_freight
       REDIS_URL: redis://:redispass@redis:6379
     volumes:
       # Mount source code for hot reload
-      - ./src/apps/api/src:/app/src/apps/api/src:ro
-      - ./src/apps/api/prisma:/app/src/apps/api/prisma:ro
+      - ./apps/api/src:/app/apps/api/src:ro
+      - ./apps/api/prisma:/app/apps/api/prisma:ro
     ports:
       - "${API_PORT:-4000}:${API_PORT:-4000}"
 
@@ -40,17 +40,17 @@ services:
   web:
     build:
       context: .
-      dockerfile: src/apps/web/Dockerfile
+      dockerfile: apps/web/Dockerfile
       target: builder # Use builder stage for development
-    command: pnpm --filter infamous-freight-web dev
+    command: pnpm --filter web dev
     environment:
       NODE_ENV: development
       NEXT_PUBLIC_API_BASE: http://localhost:${API_PORT:-4000}/api
     volumes:
       # Mount source code for hot reload
-      - ./src/apps/web/pages:/app/src/apps/web/pages:ro
-      - ./src/apps/web/components:/app/src/apps/web/components:ro
-      - ./src/apps/web/public:/app/src/apps/web/public:ro
+      - ./apps/web/pages:/app/apps/web/pages:ro
+      - ./apps/web/components:/app/apps/web/components:ro
+      - ./apps/web/public:/app/apps/web/public:ro
     ports:
       - "${WEB_PORT:-3000}:3000"
 

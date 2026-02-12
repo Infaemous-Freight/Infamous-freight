@@ -33,8 +33,8 @@ check_file() {
 # Check Dockerfiles
 echo "📝 Checking Dockerfiles..."
 check_file "Dockerfile.fly"
-check_file "src/apps/api/Dockerfile"
-check_file "src/apps/web/Dockerfile"
+check_file "apps/api/Dockerfile"
+check_file "apps/web/Dockerfile"
 check_file ".dockerignore"
 echo ""
 
@@ -95,8 +95,8 @@ validate_dockerfile() {
 }
 
 validate_dockerfile "Dockerfile.fly"
-validate_dockerfile "src/apps/api/Dockerfile"
-validate_dockerfile "src/apps/web/Dockerfile"
+validate_dockerfile "apps/api/Dockerfile"
+validate_dockerfile "apps/web/Dockerfile"
 echo ""
 
 # Validate docker-compose syntax
@@ -147,7 +147,7 @@ fi
 
 # Check for security in Dockerfiles
 echo -e "${BLUE}📊 Security Checklist:${NC}"
-for dockerfile in "Dockerfile.fly" "src/apps/api/Dockerfile" "src/apps/web/Dockerfile"; do
+for dockerfile in "Dockerfile.fly" "apps/api/Dockerfile" "apps/web/Dockerfile"; do
     if [ -f "$dockerfile" ]; then
         echo "  Checking $dockerfile:"
         

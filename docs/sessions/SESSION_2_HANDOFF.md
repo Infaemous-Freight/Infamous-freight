@@ -60,7 +60,7 @@ flyctl logs -a infamous-freight-api
 
 ```bash
 cd /workspaces/Infamous-freight-enterprises
-pnpm test -- api/__tests__/validation-edge-cases.test.js
+pnpm test -- apps/api/__tests__/validation-edge-cases.test.js
 # Expected: 40+ tests pass
 ```
 
@@ -334,7 +334,7 @@ ec015cf feat: prepare web frontend for Vercel deployment with live API URL
 
 ### Before Next Session (Optional)
 
-1. Run edge case tests: `pnpm test -- api/__tests__/validation-edge-cases.test.js`
+1. Run edge case tests: `pnpm test -- apps/api/__tests__/validation-edge-cases.test.js`
 2. Monitor API logs: `flyctl logs -a infamous-freight-api`
 3. Test endpoints manually
 4. Review documentation

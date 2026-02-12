@@ -25,7 +25,7 @@ This phase transforms "secure" infrastructure into **"provable" enterprise-ready
 - `@sentry/profiling-node` - Performance profiling
 
 ### Created
-**File:** `api/src/observability/sentry.js`
+**File:** `apps/api/src/observability/sentry.js`
 - Initializes Sentry with environment config
 - Captures exceptions and messages with context
 - Starts transactions for performance tracing
@@ -34,7 +34,7 @@ This phase transforms "secure" infrastructure into **"provable" enterprise-ready
 
 ### Integration Points
 
-**API Server** (`api/src/server.js`)
+**API Server** (`apps/api/src/server.js`)
 ```javascript
 // Early initialization (before routes)
 const { initSentry, Sentry } = require("./observability/sentry");
@@ -108,7 +108,7 @@ RELEASE_SHA=abc123def456             # Build identifier
 
 ### Worker Heartbeat
 
-**File:** `api/src/worker/heartbeat.js`
+**File:** `apps/api/src/worker/heartbeat.js`
 - Periodically writes timestamp to Redis
 - TTL: 30 seconds (expires if worker dies)
 - Interval: 10 seconds (safe margin)
@@ -132,7 +132,7 @@ curl http://localhost:4000/api/status | jq '.worker.heartbeat'
 
 ## Phase 18.3 — Audit Chain Verification ✓
 
-### File: `api/src/audit/verify.js`
+### File: `apps/api/src/audit/verify.js`
 
 **Purpose:**
 Detects tampering in immutable audit logs by:
@@ -288,7 +288,7 @@ SENTRY_PROFILES_SAMPLE_RATE=0.0
 RELEASE_SHA=abc123def456
 ```
 
-All added to [api/.env.example](api/.env.example)
+All added to [apps/api/.env.example](apps/api/.env.example)
 
 ---
 
@@ -337,7 +337,7 @@ cd EVIDENCE_PACK/artifacts
 ```bash
 # Verify random sample of audit chains
 node -e "
-const verify = require('./api/src/audit/verify');
+const verify = require('./apps/api/src/audit/verify');
 verify.verifyBulkJobChains(
   ['job-1', 'job-2', 'job-3'],
   prisma

@@ -240,7 +240,7 @@ pnpm install
 pnpm --filter @infamous-freight/shared build
 
 # Generate Prisma Client
-cd api && pnpm prisma:generate && cd ..
+cd apps/api && pnpm prisma:generate && cd ..
 
 # Run type checking
 pnpm check:types
@@ -345,7 +345,7 @@ pnpm --filter @infamous-freight/shared build
 
 ### Step 4: Check Specific Issues
 
-- **Module errors:** `cd api && pnpm prisma:generate`
+- **Module errors:** `cd apps/api && pnpm prisma:generate`
 - **Type errors:** `pnpm check:types`
 - **Port in use:** `lsof -ti:3000 | xargs kill -9`
 - **Database error:** `pnpm prisma:migrate:reset`
@@ -376,14 +376,14 @@ packages/shared/     ← Shared types, constants, utils
 │   ├── utils.ts     ← Utility functions
 │   └── env.ts       ← Environment validation
 
-api/                 ← Express.js backend
+apps/api/                 ← Express.js backend
 ├── src/
 │   ├── routes/      ← API endpoints
 │   ├── middleware/  ← Authentication, validation
 │   ├── services/    ← Business logic
 │   └── prisma/      ← Database schema
 
-web/                 ← Next.js 14 frontend
+apps/web/                 ← Next.js 14 frontend
 ├── pages/           ← Page routes
 ├── components/      ← React components
 └── lib/             ← Client utilities

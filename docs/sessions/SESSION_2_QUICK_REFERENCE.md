@@ -46,7 +46,7 @@ git push origin main
 
 ```bash
 cd /path/to/project
-pnpm test -- api/__tests__/validation-edge-cases.test.js
+pnpm test -- apps/api/__tests__/validation-edge-cases.test.js
 # Expected: 40+ tests pass
 ```
 

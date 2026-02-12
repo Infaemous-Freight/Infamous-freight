@@ -104,7 +104,7 @@ The Infamous Freight Enterprises platform is now:
 **Deliverables**:
 
 - `scripts/validation-framework.sh` - Monitoring script (running)
-- `web/pages/admin/validation-dashboard.tsx` - Real-time dashboard
+- `apps/web/pages/admin/validation-dashboard.tsx` - Real-time dashboard
 - `validation-data/metrics/baseline_metrics.json` - Baseline data
 
 **Timeline**:
@@ -204,7 +204,7 @@ The Infamous Freight Enterprises platform is now:
 **Deliverables**:
 
 - `scripts/gradual-rollout-plan.sh` - Rollout plan script
-- `web/pages/admin/feature-flags.tsx` - Feature flag management UI
+- `apps/web/pages/admin/feature-flags.tsx` - Feature flag management UI
 - All rollout procedures documented
 
 **Timeline**:
@@ -356,15 +356,15 @@ The Infamous Freight Enterprises platform is now:
 
 ### Services Created
 
-1. ✅ `api/src/services/featureFlags.js` - Feature flag system
-2. ✅ `api/src/services/abTesting.js` - A/B testing framework
+1. ✅ `apps/api/src/services/featureFlags.js` - Feature flag system
+2. ✅ `apps/api/src/services/abTesting.js` - A/B testing framework
 
 ### Dashboards (Operational)
 
-1. ✅ `web/pages/admin/validation-dashboard.tsx` - Real-time metrics
-2. ✅ `web/pages/admin/signoff-dashboard.tsx` - Sign-off tracking
-3. ✅ `web/pages/admin/feature-flags.tsx` - Feature flag management
-4. ✅ `web/pages/admin/ab-tests.tsx` - A/B testing analytics
+1. ✅ `apps/web/pages/admin/validation-dashboard.tsx` - Real-time metrics
+2. ✅ `apps/web/pages/admin/signoff-dashboard.tsx` - Sign-off tracking
+3. ✅ `apps/web/pages/admin/feature-flags.tsx` - Feature flag management
+4. ✅ `apps/web/pages/admin/ab-tests.tsx` - A/B testing analytics
 
 ---
 

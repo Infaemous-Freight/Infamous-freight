@@ -7,7 +7,7 @@
 │                                                                 │
 │  🚀 Deployment Readiness Check                       ✅ DONE   │
 │  ├─ Issue Found: Port mismatch (3001 vs 4000)                 │
-│  ├─ File Fixed: api/Dockerfile                                │
+│  ├─ File Fixed: apps/api/Dockerfile                                │
 │  ├─ Port Changed: 3001 → 4000                                 │
 │  ├─ Healthcheck Updated: Port 4000, path /api/health         │
 │  └─ Impact: Production deployment now works correctly         │
@@ -197,7 +197,7 @@
 
 | #   | File            | Type   | Changes   | Reason                     |
 | --- | --------------- | ------ | --------- | -------------------------- |
-| 1   | api/Dockerfile  | Config | 2 lines   | Port fix (3001→4000)       |
+| 1   | apps/api/Dockerfile  | Config | 2 lines   | Port fix (3001→4000)       |
 | 2   | errorHandler.js | Code   | +40 lines | Error handling enhancement |
 
 ## ✅ Ready for Deployment
@@ -231,7 +231,7 @@ DEPLOYMENT STATUS: 🟢 READY
 2. Run verification tests
    ├─ Edge case tests: npm test -- validation-edge-cases
    ├─ All tests: npm test
-   └─ Docker build: docker build -f api/Dockerfile .
+   └─ Docker build: docker build -f apps/api/Dockerfile .
 
 3. Deploy to production
    ├─ Push commits to main

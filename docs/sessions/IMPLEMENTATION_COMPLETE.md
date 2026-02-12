@@ -254,11 +254,11 @@ const user: User = {
 ### Before
 
 ```bash
-cd api && npm install
-cd ../web && npm install
-cd api && npm run dev
+cd apps/api && npm install
+cd ../apps/web && npm install
+cd apps/api && npm run dev
 # In another terminal
-cd web && npm run dev
+cd apps/web && npm run dev
 ```
 
 ### After

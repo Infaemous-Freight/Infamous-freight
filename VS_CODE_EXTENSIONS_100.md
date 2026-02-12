@@ -66,7 +66,7 @@
 
 ```bash
 # Edit schema with Prisma IntelliSense
-vim api/prisma/schema.prisma
+vim apps/api/prisma/schema.prisma
 
 # Run migration with syntax validation
 pnpm prisma:migrate:dev --name add_user_roles

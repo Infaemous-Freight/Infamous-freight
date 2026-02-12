@@ -45,9 +45,9 @@ jobs:
         id: changes
         run: |
           # Check if specific paths changed
-          API_CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '^(src/apps/api|api)/' || echo "")
-          WEB_CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '^(src/apps/web|web)/' || echo "")
-          MOBILE_CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '^(src/apps/mobile|mobile)/' || echo "")
+          API_CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '^(apps/api|api)/' || echo "")
+          WEB_CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '^(apps/web|web)/' || echo "")
+          MOBILE_CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '^(apps/mobile|mobile)/' || echo "")
           SHARED_CHANGED=$(git diff --name-only HEAD^ HEAD | grep -E '^(src/packages/shared|packages)/' || echo "")
           
           # Manual trigger overrides

@@ -253,7 +253,7 @@ export CORS_ORIGINS="https://yourdomain.com"
 pnpm typecheck
 
 # 3. Start server
-node api/src/server.js
+node apps/api/src/server.js
 
 # 4. Verify health endpoint
 curl http://localhost:4000/api/health
@@ -263,7 +263,7 @@ curl http://localhost:4000/api/health
 
 ```bash
 # Build image
-docker build -f api/Dockerfile -t infamous-freight-api:latest .
+docker build -f apps/api/Dockerfile -t infamous-freight-api:latest .
 
 # Run container
 docker run -d \

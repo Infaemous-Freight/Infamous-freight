@@ -5,7 +5,7 @@
 The project currently has duplicate structures:
 
 - Root level: `/api`, `/web`, `/e2e`
-- Nested duplicate: `/infamous-freight-ai` with its own `api/`, `web/`, and `mobile/`
+- Nested duplicate: `/infamous-freight-ai` with its own `apps/api/`, `apps/web/`, and `apps/mobile/`
 
 ## Recommended Approach
 
@@ -36,7 +36,7 @@ Merge unique features from `/infamous-freight-ai` into the root-level services:
 
 If the nested structure is more complete:
 
-- Move root api/web/e2e to archive
+- Move root apps/api/web/e2e to archive
 - Promote infamous-freight-ai contents to root
 - Reconfigure all deployment files
 

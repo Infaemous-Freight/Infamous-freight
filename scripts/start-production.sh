@@ -70,7 +70,7 @@ MODE="${1:-all}"
 case "$MODE" in
     api)
         log "Starting API only..."
-        node api/production-server.js
+        node apps/api/production-server.js
         ;;
     
     monitoring)
@@ -91,7 +91,7 @@ case "$MODE" in
         
         # Start API in background
         log "Starting API..."
-        node api/production-server.js &
+        node apps/api/production-server.js &
         API_PID=$!
         echo $API_PID > /tmp/infamous-api.pid
         

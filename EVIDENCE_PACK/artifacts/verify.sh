@@ -145,7 +145,7 @@ fi
 
 # 5. Dependency audit check
 echo -e "${YELLOW}[5/6] Checking for known vulnerabilities...${NC}"
-if command -v pnpm &> /dev/null && [ -f "api/package.json" ]; then
+if command -v pnpm &> /dev/null && [ -f "apps/api/package.json" ]; then
   vuln_count=$(pnpm audit --json 2>/dev/null | jq '.metadata.vulnerabilities.total // 0' || echo "unknown")
   if [ "$vuln_count" = "0" ]; then
     echo -e "${GREEN}✓ No known vulnerabilities${NC}"

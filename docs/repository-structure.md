@@ -24,16 +24,16 @@ infamous-freight-enterprise/
 │   ├── testing/          # Playwright test configuration
 │   └── validation/       # HTML/CSS validation rules
 ├── docs/                 # Documentation
-│   ├── api/              # API documentation
+│   ├── apps/api/              # API documentation
 │   ├── deployment/       # Deployment guides
 │   ├── development/      # Development guides
 │   ├── sessions/         # Historical session notes
 │   └── testing/          # Testing documentation
 ├── src/
 │   ├── apps/             # Application code
-│   │   ├── api/          # Backend API (Express.js, CommonJS)
-│   │   ├── mobile/       # Mobile app (React Native/Expo)
-│   │   └── web/          # Web frontend (Next.js)
+│   │   ├── apps/api/          # Backend API (Express.js, CommonJS)
+│   │   ├── apps/mobile/       # Mobile app (React Native/Expo)
+│   │   └── apps/web/          # Web frontend (Next.js)
 │   └── packages/         # Shared packages
 │       └── shared/       # Shared types, constants, utilities
 ├── tests/e2e/            # End-to-end tests (Playwright)
@@ -148,12 +148,12 @@ Documentation is organized by topic:
 
 ## Source Code
 
-### api/
+### apps/api/
 
 Express.js backend API using CommonJS:
 
 ```
-api/
+apps/api/
 ├── prisma/               # Database schema and migrations
 ├── scripts/              # Database and build scripts
 ├── src/
@@ -165,28 +165,28 @@ api/
 └── package.json         # Dependencies and scripts
 ```
 
-### web/
+### apps/web/
 
 Next.js 14 frontend using TypeScript/ESM:
 
 ```
-web/
+apps/web/
 ├── components/          # React components
 ├── lib/                 # Utilities and helpers
 ├── pages/               # Next.js pages
-│   ├── api/            # Next.js API routes
+│   ├── apps/api/            # Next.js API routes
 │   └── *.tsx           # Page components
 ├── public/              # Static assets
 ├── styles/              # CSS stylesheets
 └── package.json         # Dependencies and scripts
 ```
 
-### mobile/
+### apps/mobile/
 
 React Native/Expo mobile app:
 
 ```
-mobile/
+apps/mobile/
 ├── assets/              # Images, fonts, etc.
 ├── App.tsx              # Main app component
 ├── app.json             # Expo configuration
@@ -239,8 +239,8 @@ Environment configuration:
 
 - `.env.example` - Template for environment variables
 - `.env` - Local environment (git-ignored)
-- `web/.env.production` - Web production env
-- `web/.env.preview` - Web preview env
+- `apps/web/.env.production` - Web production env
+- `apps/web/.env.preview` - Web preview env
 
 ## Git Configuration
 
@@ -312,7 +312,7 @@ When adding new files, follow these guidelines:
 
 ### Source Code
 
-- Add to appropriate workspace (`api/`, `web/`, `mobile/`, or `packages/shared/`)
+- Add to appropriate workspace (`apps/api/`, `apps/web/`, `apps/mobile/`, or `packages/shared/`)
 - Follow existing directory structure
 - Update workspace package.json if adding dependencies
 

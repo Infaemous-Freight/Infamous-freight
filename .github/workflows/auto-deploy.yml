@@ -21,13 +21,13 @@ jobs:
         with:
           filters: |
             api:
-              - 'api/**'
+              - 'apps/api/**'
               - 'packages/**'
             web:
-              - 'web/**'
+              - 'apps/web/**'
               - 'packages/**'
             mobile:
-              - 'mobile/**'
+              - 'apps/mobile/**'
               - 'packages/**'
             ai:
               - 'ai/**'

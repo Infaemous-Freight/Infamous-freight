@@ -1,0 +1,525 @@
+// ============================================
+// TIER 1: SECURITY & COMPLIANCE MODELS
+// ============================================
+
+// ============================================
+// Two-Factor Authentication (TIER 3)
+// ============================================
+
+model TwoFactorAuth {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // TOTP Setup
+  totpSecret          String? // Encrypted
+  totpEnabled         Boolean  @default(false)
+  
+  // Backup Codes
+  backupCodesHashed   String[] // Array of bcrypt hashes
+  backupCodesUsed     String[] // Track which codes were used
+  
+  // Recovery
+  recoveryEmailSent   DateTime?
+  recoveryPhoneNumber String?
+  
+  // Metadata
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  lastUsedAt          DateTime?
+
+  @@index([userId])
+  @@map("two_factor_auth")
+}
+
+// ============================================
+// Encryption Key Management (TIER 3)
+// ============================================
+
+model EncryptionKey {
+  id                String   @id @default(cuid())
+  organizationId    String
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  // Key Material (encrypted by master key in HSM)
+  keyVersionId      String   @unique
+  keyType           String   @default("aes-256-gcm") // Algorithm
+  keyStatus         String   @default("active") // active | rotated | retired
+  
+  // Rotation Policy
+  createdAt         DateTime @default(now())
+  rotatedAt         DateTime?
+  expiresAt         DateTime?
+  nextRotationDate  DateTime?
+  
+  // Audit
+  createdBy         String?
+  rotationReason    String?
+  
+  // Data encrypted by this key
+  encryptedRecords  Int      @default(0)
+
+  @@index([organizationId])
+  @@index([keyStatus])
+  @@index([expiresAt])
+  @@map("encryption_keys")
+}
+
+// ============================================
+// GDPR Compliance Tracking (TIER 1)
+// ============================================
+
+model DataProcessingLog {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Operation Details
+  operation         String   // read | write | delete | export | share
+  purpose           String   // shipment | analytics | support | marketing
+  dataCategory      String   // personal | financial | location | etc
+  
+  // Context
+  ipAddress         String?
+  userAgent         String?
+  endpoint          String?
+  
+  // Audit
+  timestamp         DateTime @default(now())
+  retained          Boolean  @default(true)
+  retentionUntil    DateTime?
+
+  @@index([userId, timestamp])
+  @@index([operation])
+  @@index([purpose])
+  @@index([timestamp])
+  @@map("data_processing_logs")
+}
+
+model UserConsent {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Consent Type
+  consentType       String   // marketing | analytics | thirdparty | newsletter
+  value             Boolean  @default(false)
+  version           Int      @default(1)
+  
+  // Record Keeping
+  grantedAt         DateTime?
+  withdrawnAt       DateTime?
+  recordedIp        String?
+  recordedUserAgent String?
+  
+  // Audit
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([userId, consentType])
+  @@index([userId])
+  @@index([consentType])
+  @@map("user_consents")
+}
+
+// ============================================
+// COMPLIANCE AUDITS & REPORTS (TIER 1)
+// ============================================
+
+enum ComplianceStatus {
+  COMPLIANT
+  NON_COMPLIANT
+  NEEDS_REVIEW
+  REMEDIATION_PENDING
+}
+
+model ComplianceAudit {
+  id                String             @id @default(cuid())
+  organizationId    String
+  organization      Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  // Audit Details
+  standard          String             // GDPR | CCPA | SOC2 | ISO27001 | PCIDSS
+  status            ComplianceStatus   @default(NEEDS_REVIEW)
+  
+  // Findings
+  findingsJson      Json? // Array of findings with severity
+  remediationItems  String[]
+  
+  // Timeline
+  auditDate         DateTime
+  completedAt       DateTime?
+  nextAuditDate     DateTime?
+  
+  // Evidence
+  evidenceLinks     String[]
+  auditorNotes      String?
+  
+  @@index([organizationId, standard])
+  @@index([status])
+  @@index([auditDate])
+  @@map("compliance_audits")
+}
+
+model ComplianceReport {
+  id                String   @id @default(cuid())
+  organizationId    String
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  // Report Details
+  reportType        String   // daily | weekly | monthly | quarterly | annual
+  period            String   // YYYY-MM for monthly, etc
+  
+  // Metrics
+  dataProcessedRecords       Int     @default(0)
+  dataAccessEvents           Int     @default(0)
+  dataDeleteRequests         Int     @default(0)
+  securityIncidents          Int     @default(0)
+  
+  // Compliance Score
+  complianceScore   Float    @default(0) // 0-100
+  areasOfConcern    String[]
+  recommendations   String[]
+  
+  // Report
+  reportUrl         String?  // S3 PDF link
+  generatedAt       DateTime @default(now())
+
+  @@index([organizationId, period])
+  @@index([reportType])
+  @@map("compliance_reports")
+}
+
+// ============================================
+// THREAT DETECTION & SECURITY (TIER 3)
+// ============================================
+
+model SecurityEvent {
+  id                String   @id @default(cuid())
+  organizationId    String?
+  userId            String?
+  user              User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  // Event Details
+  eventType         String   // login_failed | suspicious_activity | unauthorized_access | etc
+  severity          String   @default("low") // low | medium | high | critical
+  
+  // Context
+  ipAddress         String?
+  userAgent         String?
+  endpoint          String?
+  method            String?
+  
+  // Detection
+  detectedBy        String   // rate_limiter | anomaly_detector | waf | manual
+  metadata          Json?    // Additional detection data
+  
+  // Response
+  actionTaken       String?  // blocked | warned | logged | escalated
+  resolved          Boolean  @default(false)
+  resolvedAt        DateTime?
+  
+  // Timeline
+  timestamp         DateTime @default(now())
+
+  @@index([organizationId, timestamp])
+  @@index([userId, timestamp])
+  @@index([severity])
+  @@index([eventType])
+  @@map("security_events")
+}
+
+model AnomalyDetection {
+  id                String   @id @default(cuid())
+  userId            String?
+  user              User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  // Anomaly Details
+  anomalyType       String   // unusual_location | impossible_travel | unusual_time | etc
+  confidence        Float    @default(0) // 0-1
+  
+  // Baseline Data
+  normalBehavior    Json?    // Historical average
+  currentBehavior   Json?    // Current event
+  deviation         Float?   // How many standard deviations
+  
+  // Action
+  flaggedAt         DateTime @default(now())
+  reviewedAt        DateTime?
+  reviewedBy        String?
+  falsePositive     Boolean?
+  
+  @@index([userId])
+  @@index([anomalyType])
+  @@index([confidence])
+  @@map("anomaly_detections")
+}
+
+// ============================================
+// USAGE METERING & ANALYTICS (TIER 1 & 2)
+// ============================================
+
+model UsageMetric {
+  id                String   @id @default(cuid())
+  organizationId    String
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId            String?
+  user              User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  // Metric Details
+  metricName        String   // api_requests | ai_commands | storage_gb | etc
+  quantity          Int      @default(1)
+  value             Float?   // e.g. bytes, tokens
+  
+  // Timestamp
+  recordedAt        DateTime @default(now())
+  month             String   // YYYY-MM for aggregation
+
+  @@index([organizationId, month])
+  @@index([organizationId, metricName])
+  @@index([recordedAt])
+  @@map("usage_metrics")
+}
+
+// ============================================
+// PARTNER & REFERRAL PROGRAMS (TIER 2)
+// ============================================
+
+enum PartnerTier {
+  RESELLER
+  AGENCY
+  TECHNOLOGY
+  DISTRIBUTOR
+}
+
+model Partner {
+  id                String           @id @default(cuid())
+  organizationId    String?
+  organization      Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  
+  // Partner Details
+  name              String           @unique
+  email             String           @unique
+  website           String?
+  
+  // Tier & Commission
+  tier              PartnerTier      @default(RESELLER)
+  commissionRate    Float            @default(0.20) // 20% default
+  
+  // Status
+  isActive          Boolean          @default(true)
+  approvedAt        DateTime?
+  
+  // Earnings
+  totalEarnings     Float            @default(0)
+  transactionCount  Int              @default(0)
+  
+  // Metadata
+  metadata          Json?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([tier])
+  @@index([isActive])
+  @@index([createdAt])
+  @@map("partners")
+}
+
+model PartnerCommission {
+  id                String   @id @default(cuid())
+  partnerId         String
+  partner           Partner  @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  
+  // Transaction
+  transactionId     String
+  amount            Float
+  commissionRate    Float
+  commission        Float
+  
+  // Status
+  status            String   @default("pending") // pending | paid | failed
+  paidAt            DateTime?
+  
+  // Timeline
+  createdAt         DateTime @default(now())
+
+  @@index([partnerId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("partner_commissions")
+}
+
+enum ReferralStatus {
+  PENDING
+  CONVERTED
+  PAID
+  FAILED
+}
+
+model Referral {
+  id                String           @id @default(cuid())
+  referrerUserId    String
+  referrerUser      User             @relation("referralsCreated", fields: [referrerUserId], references: [id], onDelete: Cascade)
+  
+  referreeEmail     String
+  referreeUserId    String?
+  referreeUser      User? @relation("referralsReceived", fields: [referreeUserId], references: [id], onDelete: SetNull)
+  
+  // Commission Structure
+  directReward      Float            @default(0) // Direct reward
+  indirectReward    Float            @default(0) // Referrer's indirect reward (20%)
+  
+  // Status
+  status            ReferralStatus   @default(PENDING)
+  convertedAt       DateTime?
+  paidAt            DateTime?
+  
+  // Tier Badge
+  referralTier      String           @default("bronze") // bronze | silver | gold | platinum
+  
+  // Anti-Fraud
+  fraudDetected     Boolean          @default(false)
+  fraudReason       String?
+  
+  // Timeline
+  createdAt         DateTime         @default(now())
+  expiresAt         DateTime?        // Link expires after 90 days
+
+  @@index([referrerUserId])
+  @@index([status])
+  @@index([convertedAt])
+  @@index([createdAt])
+  @@map("referrals")
+}
+
+// ============================================
+// UPSELL & CHURN PREDICTION (TIER 2)
+// ============================================
+
+model ChurnPrediction {
+  id                String   @id @default(cuid())
+  organizationId    String
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  // Prediction
+  riskScore         Float    @default(0) // 0-1
+  riskFactors       Json     // Array of factors contributing to churn
+  
+  // Recommendation
+  recommendedAction String?  // upgrade | discount | support_outreach | etc
+  recommendedOffer  Json?    // Offer details
+  
+  // Lifecycle
+  predictedAt       DateTime @default(now())
+  actionTaken       String?
+  actionAt          DateTime?
+  result            String?  // retained | churned (after 30 days)
+
+  @@index([organizationId, riskScore])
+  @@index([predictedAt])
+  @@map("churn_predictions")
+}
+
+model UpsellOpportunity {
+  id                String   @id @default(cuid())
+  organizationId    String
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  // Opportunity
+  opportunityType   String   // upgrade | addon | seat_expansion
+  targetTier        String?  // Suggested tier
+  estimatedValue    Float?
+  
+  // Personalization
+  reason            String?  // Why this org is a good fit
+  contextJson       Json?    // Usage patterns, etc
+  
+  // Campaign
+  campaignId        String?
+  campaignStatus    String   @default("draft") // draft | active | completed
+  
+  // Results
+  exposed           DateTime?
+  clicked           DateTime?
+  converted         DateTime?
+  
+  @@index([organizationId])
+  @@index([campaignStatus])
+  @@map("upsell_opportunities")
+}
+
+// ============================================
+// DISASTER RECOVERY & BACKUPS (TIER 1)
+// ============================================
+
+model BackupLog {
+  id                String   @id @default(cuid())
+  
+  // Backup Details
+  backupType        String   // full | incremental | wal
+  backupDate        DateTime @default(now())
+  s3Key             String
+  
+  // Metadata
+  size              BigInt?  // Bytes
+  status            String   @default("success") // success | failed
+  checksumSha256    String?
+  
+  // Verification
+  verified          Boolean  @default(false)
+  verifiedAt        DateTime?
+  
+  // Retention
+  retentionUntil    DateTime?
+  
+  @@index([backupDate])
+  @@index([status])
+  @@index([backupType])
+  @@map("backup_logs")
+}
+
+model RestoreLog {
+  id                String   @id @default(cuid())
+  backupLogId       String
+  backupLog         BackupLog @relation(fields: [backupLogId], references: [id], onDelete: Cascade)
+  
+  // Restore Details
+  initiatedAt       DateTime @default(now())
+  completedAt       DateTime?
+  status            String   @default("pending") // pending | in_progress | success | failed
+  
+  // Context
+  reason            String   // disaster | test | manual
+  initiatedBy       String?
+  
+  // Result
+  rto               Int?     // Minutes
+  rpo               Int?     // Minutes
+  errors            String?
+  
+  @@index([status])
+  @@index([initiatedAt])
+  @@map("restore_logs")
+}
+
+// ============================================
+// Add these relationships to existing User model:
+// ============================================
+// twoFactorAuth         TwoFactorAuth?
+// dataProcessingLogs    DataProcessingLog[]
+// userConsents          UserConsent[]
+// securityEvents        SecurityEvent[]
+// anomalyDetections     AnomalyDetection[]
+// usageMetrics          UsageMetric[]
+// referralsCreated      Referral[] @relation("referralsCreated")
+// referralsReceived     Referral[] @relation("referralsReceived")
+
+// ============================================
+// Add these relationships to existing Organization model:
+// ============================================
+// encryptionKeys        EncryptionKey[]
+// complianceAudits      ComplianceAudit[]
+// complianceReports     ComplianceReport[]
+// churnPredictions      ChurnPrediction[]
+// upsellOpportunities   UpsellOpportunity[]
+// partners              Partner[]

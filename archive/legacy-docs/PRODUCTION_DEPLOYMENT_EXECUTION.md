@@ -78,7 +78,7 @@ ls -la /run/secrets/
 
 ```bash
 # Option A: Using Prisma (if app setup)
-cd api
+cd apps/api
 pnpm prisma:migrate:deploy
 
 # Option B: Manual migrations

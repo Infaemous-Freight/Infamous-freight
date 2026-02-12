@@ -559,7 +559,7 @@ pnpm lint
 pnpm test -- --coverage
 
 # 2. Verify coverage
-# Check api/coverage/index.html for > 75%
+# Check apps/api/coverage/index.html for > 75%
 
 # 3. Test locally
 curl -X POST http://localhost:4000/api/resource \
@@ -571,7 +571,7 @@ curl -X POST http://localhost:4000/api/resource \
 curl http://localhost:4000/api/health
 
 # 5. Check logs
-tail -f api/logs/combined.log
+tail -f apps/api/logs/combined.log
 
 # 6. Deploy with confidence ✅
 ```

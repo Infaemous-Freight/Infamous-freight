@@ -363,10 +363,10 @@ flyctl secrets list -a infamous-freight-api
 
 ### Add Cloudflare Health Check Endpoint
 
-Update [api/src/routes/health.js](../api/src/routes/health.js) to support Cloudflare probes:
+Update [apps/api/src/routes/health.js](../apps/api/src/routes/health.js) to support Cloudflare probes:
 
 ```javascript
-// api/src/routes/health.js (Enhanced for Cloudflare LB)
+// apps/api/src/routes/health.js (Enhanced for Cloudflare LB)
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 

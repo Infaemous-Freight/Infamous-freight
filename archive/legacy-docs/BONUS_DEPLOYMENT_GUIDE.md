@@ -94,7 +94,7 @@ cat prisma/bonus-schema.prisma
 ### Step 2: Create Migration
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma migrate dev --name add-bonus-system
 ```
 
@@ -113,7 +113,7 @@ pnpm prisma db push
 ### Step 4: Seed Initial Data (Optional)
 
 ```javascript
-// api/prisma/seed.js - Add:
+// apps/api/prisma/seed.js - Add:
 
 const prisma = require("@prisma/client");
 
@@ -144,7 +144,7 @@ async function seedBonusData() {
 ### Step 1: Mount Routes in Express App
 
 ```javascript
-// api/src/app.js or main.js
+// apps/api/src/app.js or main.js
 
 const bonusesRouter = require("./routes/bonuses");
 
@@ -231,7 +231,7 @@ const payload = {
 
 ```bash
 # 1. Navigate to API directory
-cd api
+cd apps/api
 
 # 2. Install/update dependencies (none new required)
 pnpm install
@@ -401,7 +401,7 @@ SELECT COUNT(*) FROM driver_performance;
 ```
 Solution:
 1. Verify routes are mounted in app.js
-2. Check route file exists: api/src/routes/bonuses.js
+2. Check route file exists: apps/api/src/routes/bonuses.js
 3. Restart API server
 4. Check console for import errors
 ```
@@ -556,8 +556,8 @@ limiters.performance: 50 requests/1 min (increased from 20)
 - [API Documentation](BONUS_API_DOCUMENTATION.md)
 - [Bonus System Overview](BONUSES_2026_COMPLETE.md)
 - [Database Schema](prisma/bonus-schema.prisma)
-- [Integration Tests](api/src/__tests__/bonusSystem.test.js)
-- [Routes Implementation](api/src/routes/bonuses.js)
+- [Integration Tests](apps/api/src/__tests__/bonusSystem.test.js)
+- [Routes Implementation](apps/api/src/routes/bonuses.js)
 
 ---
 

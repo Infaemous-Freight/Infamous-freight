@@ -163,7 +163,7 @@ Repository → Actions → 🚀 Lighthouse CI
 ### 2. Run Local Audit
 
 ```bash
-cd web
+cd apps/web
 pnpm build
 npm install -g @lhci/cli@0.9.x
 lhci autorun --config=../.lighthouserc.json
@@ -277,7 +277,7 @@ Edit `.lighthouserc.json`:
 
 ```bash
 # 1. Build the application
-cd web && pnpm build
+cd apps/web && pnpm build
 
 # 2. Install LHCI globally
 npm install -g @lhci/cli@0.9.x
@@ -459,7 +459,7 @@ node --max-old-space-size=4096 node_modules/@lhci/cli/bin/lhci.js autorun
 
 ```bash
 # Start server manually
-cd web
+cd apps/web
 npm start &
 
 # Then run LHCI

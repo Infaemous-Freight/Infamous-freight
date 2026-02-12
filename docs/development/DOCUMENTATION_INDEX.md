@@ -18,9 +18,9 @@
 ### Architecture
 
 - **Monorepo Structure**: Using pnpm workspaces
-  - `/src/apps/api` - REST API backend service
-  - `/src/apps/web` - Next.js frontend application
-  - `/src/apps/mobile` - React Native mobile app (Expo)
+  - `/apps/api` - REST API backend service
+  - `/apps/web` - Next.js frontend application
+  - `/apps/mobile` - React Native mobile app (Expo)
   - `/src/packages/shared` - Shared types, utilities, and constants
   - `/tests/e2e` - End-to-end tests with Playwright
 

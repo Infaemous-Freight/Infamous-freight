@@ -112,7 +112,7 @@ Your deployment is complete!
 **What Happens**:
 
 1. Reads Jest configuration from `jest.config.js`
-2. Discovers all test files in `api/__tests__/`
+2. Discovers all test files in `apps/api/__tests__/`
 3. Runs each test suite sequentially
 4. Generates coverage report
 5. Validates coverage thresholds (≥80%)
@@ -139,11 +139,11 @@ Your deployment is complete!
 **Expected Output**:
 
 ```
-PASS  api/__tests__/routes/health.test.js
+PASS  apps/api/__tests__/routes/health.test.js
   ✓ GET /api/health returns 200 (45ms)
   ✓ Database connection verified (50ms)
 
-PASS  api/__tests__/routes/ai.commands.test.js
+PASS  apps/api/__tests__/routes/ai.commands.test.js
   ✓ POST /api/ai/command routes correctly (75ms)
   ✓ Rate limiting enforced (40ms)
   ✓ Scope validation working (35ms)
@@ -164,7 +164,7 @@ Coverage summary:
 PASS: All tests passed! ✅
 ```
 
-**Coverage Report**: `api/coverage/index.html` (viewable in browser)
+**Coverage Report**: `apps/api/coverage/index.html` (viewable in browser)
 
 **Duration**: ~20 seconds
 

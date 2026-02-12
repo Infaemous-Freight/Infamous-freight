@@ -16,13 +16,12 @@ print_status() {
     echo -e "${2}${1}${NC}"
 }
 
-print_status "📋 Step 1: NPM Audit" "$YELLOW"
-cd /workspaces/Infamous-freight-enterprises/src/apps/api
-npm audit --audit-level=moderate || true
-npm audit fix --force || true
+print_status "📋 Step 1: pnpm Audit" "$YELLOW"
+cd /workspaces/Infamous-freight-enterprises/apps/api
+pnpm audit --audit-level=moderate || true
 
 print_status "\n📦 Step 2: Checking for outdated packages" "$YELLOW"
-npm outdated || true
+pnpm outdated || true
 
 print_status "\n🔐 Step 3: Verifying environment variables" "$YELLOW"
 REQUIRED_VARS=(
@@ -105,10 +104,10 @@ REPORT_FILE="security-report-$(date +%Y%m%d-%H%M%S).txt"
     echo ""
     echo "Environment: $NODE_ENV"
     echo "Node Version: $(node --version)"
-    echo "npm Version: $(npm --version)"
+    echo "pnpm Version: $(pnpm --version)"
     echo ""
     echo "Audit Summary:"
-    npm audit --json | jq '.metadata' || echo "No vulnerability data"
+    pnpm audit --json | jq '.metadata' || echo "No vulnerability data"
 } > "$REPORT_FILE"
 
 print_status "\n📄 Report saved to: $REPORT_FILE" "$GREEN"

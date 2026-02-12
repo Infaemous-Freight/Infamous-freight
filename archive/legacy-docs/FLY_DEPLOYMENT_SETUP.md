@@ -48,7 +48,7 @@ Copy the token that's displayed.
 
 The workflow will **automatically deploy** when you push changes to:
 
-- `api/**` (API code changes)
+- `apps/api/**` (API code changes)
 - `packages/shared/**` (Shared types/utils)
 - `Dockerfile.fly` (Docker configuration)
 - `fly.toml` (Fly.io configuration)

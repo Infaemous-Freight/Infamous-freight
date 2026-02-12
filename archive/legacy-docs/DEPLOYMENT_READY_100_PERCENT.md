@@ -48,7 +48,7 @@ export DATABASE_URL="postgresql://..."
 export CORS_ORIGINS="https://yourdomain.com"
 
 # Start API
-node api/src/server.js
+node apps/api/src/server.js
 
 # Or use Docker
 docker run -d -p 3001:4000 \
@@ -95,8 +95,8 @@ for i in {1..101}; do curl -s http://localhost:4000/api/health > /dev/null; done
 
 | Document                                                               | Purpose               | Details                          |
 | ---------------------------------------------------------------------- | --------------------- | -------------------------------- |
-| [api/src/middleware/security.js](./api/src/middleware/security.js)     | Security Middleware   | Rate limiters, JWT auth, scopes  |
-| [api/src/middleware/validation.js](./api/src/middleware/validation.js) | Validation Middleware | Input validation, error handling |
+| [apps/api/src/middleware/security.js](./apps/api/src/middleware/security.js)     | Security Middleware   | Rate limiters, JWT auth, scopes  |
+| [apps/api/src/middleware/validation.js](./apps/api/src/middleware/validation.js) | Validation Middleware | Input validation, error handling |
 
 ---
 
@@ -229,7 +229,7 @@ for i in {1..101}; do curl -s http://localhost:4000/api/health > /dev/null; done
 
 → Adjust RATE*LIMIT*_*MAX and RATE_LIMIT*_\_WINDOW_MS in .env  
 → Default values: general 100/15min, auth 5/15min, ai 20/1min  
-→ See api/src/middleware/security.js for configuration
+→ See apps/api/src/middleware/security.js for configuration
 
 ---
 
@@ -245,7 +245,7 @@ for i in {1..101}; do curl -s http://localhost:4000/api/health > /dev/null; done
 
 ```bash
 # Start API
-cd api && node src/server.js
+cd apps/api && node src/server.js
 
 # Run tests
 pnpm test

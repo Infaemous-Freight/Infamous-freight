@@ -70,7 +70,7 @@ Status: SUCCESSFULLY PUSHED ✅
 **Option A: Quick Fix Path** ⚡
 
 1. Update Prisma schema to include: `Notification`, `Message`, `Shipment` models
-2. Run: `cd api && pnpm prisma:migrate:dev --name add-missing-models`
+2. Run: `cd apps/api && pnpm prisma:migrate:dev --name add-missing-models`
 3. Re-run typecheck and fix remaining type mismatches
 4. Complete TIER 1-2
 
@@ -127,9 +127,9 @@ Ready Components:
 
 **File Locations:**
 
-- Metrics: `src/apps/api/src/monitoring/dashboards.ts`
-- Swagger: `src/apps/api/src/swagger.config.ts`
-- Logging: `src/apps/api/src/middleware/enhanced-logging.ts`
+- Metrics: `apps/api/src/monitoring/dashboards.ts`
+- Swagger: `apps/api/src/swagger.config.ts`
+- Logging: `apps/api/src/middleware/enhanced-logging.ts`
 
 **Deployment Timeline:**
 
@@ -223,7 +223,7 @@ Current Test Coverage:
 
 ```bash
 # 1. Fix TypeScript errors (Option: Schema-based fix)
-cd src/apps/api
+cd apps/api
 pnpm prisma:migrate:dev --name "Add webhook and notification models"
 
 # 2. Rebuild and verify
@@ -360,12 +360,12 @@ git push origin main
 
 **File Locations:**
 
-- API entry: `src/apps/api/src/server.ts`
-- Routes: `src/apps/api/src/routes/`
-- Services: `src/apps/api/src/services/`
-- Middleware: `src/apps/api/src/middleware/`
-- Tests: `src/apps/api/src/__tests__/`
-- Prisma: `src/apps/api/prisma/schema.prisma`
+- API entry: `apps/api/src/server.ts`
+- Routes: `apps/api/src/routes/`
+- Services: `apps/api/src/services/`
+- Middleware: `apps/api/src/middleware/`
+- Tests: `apps/api/src/__tests__/`
+- Prisma: `apps/api/prisma/schema.prisma`
 
 ---
 

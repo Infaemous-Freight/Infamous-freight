@@ -120,12 +120,12 @@ docker-compose -f docker-compose.monitoring.yml up -d
 
 **Deploy to Fly.io:**
 ```bash
-cd api && fly deploy
+cd apps/api && fly deploy
 ```
 
 **Deploy to Vercel:**
 ```bash
-cd web && vercel --prod
+cd apps/web && vercel --prod
 ```
 
 **Health Monitoring:**

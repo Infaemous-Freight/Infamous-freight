@@ -90,7 +90,7 @@ scp .env.staging staging-web:/app/.env
 ssh staging-api "systemctl stop freight-api"
 
 # 3.2 Deploy new version
-cd src/apps/api
+cd apps/api
 pnpm build
 scp -r dist/* staging-api:/app/dist/
 scp package.json staging-api:/app/
@@ -109,7 +109,7 @@ curl https://staging-api.yourdomain.com/api/health
 
 ```bash
 # 4.1 Build Next.js
-cd src/apps/web
+cd apps/web
 pnpm build
 
 # 4.2 Deploy
@@ -141,7 +141,7 @@ curl https://staging-api.yourdomain.com/api/metrics/ready
 # Should see: "WebSocket connected"
 
 # 5.5 Monitor logs
-ssh staging-api "tail -f /var/log/freight-api/combined.log"
+ssh staging-api "tail -f /var/log/freight-apps/api/combined.log"
 ```
 
 ---
@@ -195,7 +195,7 @@ curl https://green-api.yourdomain.com/api/metrics/health
 ssh lb-primary "update-dns-to-blue"
 
 # 2. Investigate root cause
-ssh production-api "tail -f /var/log/freight-api/error.log"
+ssh production-api "tail -f /var/log/freight-apps/api/error.log"
 
 # 3. Verify previous version working
 curl https://api.yourdomain.com/api/health
@@ -212,7 +212,7 @@ curl https://api.yourdomain.com/api/health
 
 ```bash
 # Terminal 1: Monitor API logs
-ssh production-api "tail -f /var/log/freight-api/combined.log"
+ssh production-api "tail -f /var/log/freight-apps/api/combined.log"
 
 # Terminal 2: Monitor error rate
 watch "curl -s https://api.yourdomain.com/api/metrics/performance | grep error_rate"

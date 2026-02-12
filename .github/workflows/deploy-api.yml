@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "api/**"
+      - "apps/api/**"
       - "packages/**"
       - "pnpm-lock.yaml"
   workflow_call: {}
@@ -50,8 +50,8 @@ jobs:
             changed_files="$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")"
           fi
 
-          if echo "$changed_files" | grep -q "^api/prisma/"; then
-            echo "api/prisma changes detected; running Prisma migrate deploy with lock."
+          if echo "$changed_files" | grep -q "^apps/api/prisma/"; then
+            echo "apps/api/prisma changes detected; running Prisma migrate deploy with lock."
             # Acquire an exclusive file lock for up to 180 seconds (matching the previous 180000 ms timeout)
             exec 200>/tmp/prisma-migrate.lock
             if ! flock -w 180 200; then
@@ -60,7 +60,7 @@ jobs:
             fi
             pnpm --filter infamous-freight-api prisma migrate deploy
           else
-            echo "No api/prisma changes detected; skipping Prisma migrate deploy."
+            echo "No apps/api/prisma changes detected; skipping Prisma migrate deploy."
           fi
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

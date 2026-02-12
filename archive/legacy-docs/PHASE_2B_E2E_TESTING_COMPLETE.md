@@ -121,7 +121,7 @@ await runner.request("DELETE", "/api/shipments/1");
 
 ```bash
 # Start API server
-node api/production-server.js &
+node apps/api/production-server.js &
 
 # Run E2E tests
 node e2e/tests/api.test.js
@@ -205,7 +205,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Start API
-        run: node api/production-server.js &
+        run: node apps/api/production-server.js &
       - name: Wait for API
         run: sleep 3
       - name: Run E2E Tests

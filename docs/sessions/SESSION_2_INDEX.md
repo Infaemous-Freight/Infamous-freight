@@ -16,17 +16,17 @@
 ### For Deploying
 
 1. 📋 **[COMMIT_INSTRUCTIONS.md](./COMMIT_INSTRUCTIONS.md)** - How to commit and push (15 min read)
-2. 🔧 **[api/Dockerfile](./api/Dockerfile)** - Review port changes (2 min read)
+2. 🔧 **[apps/api/Dockerfile](./apps/api/Dockerfile)** - Review port changes (2 min read)
 
 ### For Implementation
 
 1. 📖 **[VALIDATION.md](./VALIDATION.md)** - Input validation patterns (20 min read)
-2. 📖 **[api/src/routes/users.search.example.js](./api/src/routes/users.search.example.js)** - Search endpoint spec (15 min read)
+2. 📖 **[apps/api/src/routes/users.search.example.js](./apps/api/src/routes/users.search.example.js)** - Search endpoint spec (15 min read)
 3. 📖 **[docs/SENTRY_MONITORING.md](./docs/SENTRY_MONITORING.md)** - Monitoring setup (20 min read)
 
 ### For Testing
 
-1. 🧪 **[api/**tests**/validation-edge-cases.test.js](./api/**tests**/validation-edge-cases.test.js)** - Edge case tests (10 min read)
+1. 🧪 **[apps/api/**tests**/validation-edge-cases.test.js](./apps/api/**tests**/validation-edge-cases.test.js)** - Edge case tests (10 min read)
 
 ### Complete Reference
 
@@ -44,20 +44,20 @@
 | ---------------------------------------------------------------------------------- | ----- | ------------------------------------ | ------ |
 | [VALIDATION.md](./VALIDATION.md)                                                   | 278   | Input validation guide with examples | 20 min |
 | [docs/SENTRY_MONITORING.md](./docs/SENTRY_MONITORING.md)                           | 400+  | Error tracking & monitoring setup    | 25 min |
-| [api/src/routes/users.search.example.js](./api/src/routes/users.search.example.js) | 180+  | Search endpoint specification        | 15 min |
+| [apps/api/src/routes/users.search.example.js](./apps/api/src/routes/users.search.example.js) | 180+  | Search endpoint specification        | 15 min |
 
 #### Infrastructure Changes
 
 | File                                                                       | Change           | Impact                         |
 | -------------------------------------------------------------------------- | ---------------- | ------------------------------ |
-| [api/Dockerfile](./api/Dockerfile)                                         | EXPOSE 3001→4000 | 🔴 CRITICAL - Fixes deployment |
-| [api/src/middleware/errorHandler.js](./api/src/middleware/errorHandler.js) | +40 lines        | Better error tracking          |
+| [apps/api/Dockerfile](./apps/api/Dockerfile)                                         | EXPOSE 3001→4000 | 🔴 CRITICAL - Fixes deployment |
+| [apps/api/src/middleware/errorHandler.js](./apps/api/src/middleware/errorHandler.js) | +40 lines        | Better error tracking          |
 
 #### Test Suite
 
 | File                                                                                         | Tests | Purpose                    |
 | -------------------------------------------------------------------------------------------- | ----- | -------------------------- |
-| [api/**tests**/validation-edge-cases.test.js](./api/__tests__/validation-edge-cases.test.js) | 30+   | Edge case validation tests |
+| [apps/api/**tests**/validation-edge-cases.test.js](./apps/api/__tests__/validation-edge-cases.test.js) | 30+   | Edge case validation tests |
 
 ---
 
@@ -86,7 +86,7 @@
 ### Task 1: Deployment Readiness ✅
 
 **Status**: CRITICAL FIX APPLIED  
-**Key File**: [api/Dockerfile](./api/Dockerfile)
+**Key File**: [apps/api/Dockerfile](./apps/api/Dockerfile)
 
 **What Changed**:
 
@@ -96,9 +96,9 @@
 
 **Quick Steps**:
 
-1. Review: [api/Dockerfile](./api/Dockerfile) lines 43-44
+1. Review: [apps/api/Dockerfile](./apps/api/Dockerfile) lines 43-44
 2. Verify: Port matches fly.toml (PORT=4000)
-3. Test: `docker build -f api/Dockerfile .`
+3. Test: `docker build -f apps/api/Dockerfile .`
 
 ---
 
@@ -127,7 +127,7 @@
 ### Task 3: Test Expansion - Edge Cases ✅
 
 **Status**: 40+ TESTS ADDED  
-**Key File**: [api/**tests**/validation-edge-cases.test.js](./api/__tests__/validation-edge-cases.test.js) (180+ lines)
+**Key File**: [apps/api/**tests**/validation-edge-cases.test.js](./apps/api/__tests__/validation-edge-cases.test.js) (180+ lines)
 
 **Test Categories**:
 
@@ -141,7 +141,7 @@
 
 **Quick Steps**:
 
-1. Run: `cd api && npm test -- validation-edge-cases`
+1. Run: `cd apps/api && npm test -- validation-edge-cases`
 2. Review: Test file for patterns
 3. Extend: Add more edge cases as needed
 
@@ -150,7 +150,7 @@
 ### Task 4: Error Handling Refactor ✅
 
 **Status**: MIDDLEWARE ENHANCED  
-**Key File**: [api/src/middleware/errorHandler.js](./api/src/middleware/errorHandler.js)
+**Key File**: [apps/api/src/middleware/errorHandler.js](./apps/api/src/middleware/errorHandler.js)
 
 **What's Enhanced**:
 
@@ -171,7 +171,7 @@
 ### Task 5: New Feature - User Search ✅
 
 **Status**: SPECIFICATION COMPLETE  
-**Key File**: [api/src/routes/users.search.example.js](./api/src/routes/users.search.example.js) (180+ lines)
+**Key File**: [apps/api/src/routes/users.search.example.js](./apps/api/src/routes/users.search.example.js) (180+ lines)
 
 **Endpoint Specification**:
 
@@ -182,7 +182,7 @@
 
 **Quick Steps**:
 
-1. Read: [users.search.example.js](./api/src/routes/users.search.example.js)
+1. Read: [users.search.example.js](./apps/api/src/routes/users.search.example.js)
 2. Implement: Use as template for actual endpoint
 3. Test: Use edge case patterns for validation
 
@@ -218,23 +218,23 @@
 ```bash
 # 1. Review changes
 cat VALIDATION.md                    # Input validation guide
-cat api/src/middleware/errorHandler.js  # Error handling improvements
+cat apps/api/src/middleware/errorHandler.js  # Error handling improvements
 
 # 2. Run tests
-cd api && npm test -- validation-edge-cases
+cd apps/api && npm test -- validation-edge-cases
 
 # 3. Reference implementation
-cat api/src/routes/users.search.example.js  # Search endpoint template
+cat apps/api/src/routes/users.search.example.js  # Search endpoint template
 ```
 
 ### For DevOps/Deployment
 
 ```bash
 # 1. Check deployment changes
-cat api/Dockerfile                  # Review port changes
+cat apps/api/Dockerfile                  # Review port changes
 
 # 2. Verify docker build
-docker build -f api/Dockerfile .
+docker build -f apps/api/Dockerfile .
 
 # 3. Review monitoring
 cat docs/SENTRY_MONITORING.md       # Monitoring setup
@@ -247,10 +247,10 @@ cat COMMIT_INSTRUCTIONS.md
 
 ```bash
 # 1. Run new edge case tests
-cd api && npm test -- validation-edge-cases
+cd apps/api && npm test -- validation-edge-cases
 
 # 2. Review test coverage
-cat api/__tests__/validation-edge-cases.test.js
+cat apps/api/__tests__/validation-edge-cases.test.js
 
 # 3. Test error handling
 # (See VALIDATION.md for test cases)
@@ -263,8 +263,8 @@ cat api/__tests__/validation-edge-cases.test.js
 ### Created (11 files)
 
 ✅ VALIDATION.md  
-✅ api/**tests**/validation-edge-cases.test.js  
-✅ api/src/routes/users.search.example.js  
+✅ apps/api/**tests**/validation-edge-cases.test.js  
+✅ apps/api/src/routes/users.search.example.js  
 ✅ docs/SENTRY_MONITORING.md  
 ✅ ALL_6_TASKS_COMPLETE.md  
 ✅ COMMIT_INSTRUCTIONS.md  
@@ -276,8 +276,8 @@ cat api/__tests__/validation-edge-cases.test.js
 
 ### Modified (2 files)
 
-✅ api/Dockerfile (2 lines)  
-✅ api/src/middleware/errorHandler.js (+40 lines)
+✅ apps/api/Dockerfile (2 lines)  
+✅ apps/api/src/middleware/errorHandler.js (+40 lines)
 
 ### Total: 13 files changed
 
@@ -299,7 +299,7 @@ I want to...
 │  └─ Read: VALIDATION.md section "Migration Path"
 
 ├─ Implement the search endpoint
-│  └─ Use: api/src/routes/users.search.example.js as template
+│  └─ Use: apps/api/src/routes/users.search.example.js as template
 
 ├─ Setup Sentry monitoring
 │  └─ Read: docs/SENTRY_MONITORING.md section "Configuration"
@@ -308,11 +308,11 @@ I want to...
 │  └─ Use: requestId in error responses to trace request
 
 ├─ Add more edge case tests
-│  ├─ Reference: api/__tests__/validation-edge-cases.test.js
+│  ├─ Reference: apps/api/__tests__/validation-edge-cases.test.js
 │  └─ Pattern: Similar tests in other categories
 
 ├─ Review error handling changes
-│  └─ Check: api/src/middleware/errorHandler.js lines 1-50
+│  └─ Check: apps/api/src/middleware/errorHandler.js lines 1-50
 
 └─ See all changes in detail
    └─ Read: ALL_6_TASKS_DELIVERABLES_MANIFEST.md
@@ -326,18 +326,18 @@ I want to...
 
 - 📖 [VALIDATION.md](./VALIDATION.md) - How validation works
 - 📖 [docs/SENTRY_MONITORING.md](./docs/SENTRY_MONITORING.md) - Monitoring setup
-- 📖 [api/src/routes/users.search.example.js](./api/src/routes/users.search.example.js) - Search endpoint
+- 📖 [apps/api/src/routes/users.search.example.js](./apps/api/src/routes/users.search.example.js) - Search endpoint
 
 ### Infrastructure
 
-- 🔧 [api/Dockerfile](./api/Dockerfile) - Deployment config
-- 🔧 [api/src/middleware/errorHandler.js](./api/src/middleware/errorHandler.js) - Error handling
+- 🔧 [apps/api/Dockerfile](./apps/api/Dockerfile) - Deployment config
+- 🔧 [apps/api/src/middleware/errorHandler.js](./apps/api/src/middleware/errorHandler.js) - Error handling
 - ⚙️ [fly.toml](./fly.toml) - Fly.io configuration
 
 ### Tests
 
-- 🧪 [api/**tests**/validation-edge-cases.test.js](./api/__tests__/validation-edge-cases.test.js) - Edge case tests
-- 🧪 [api/**tests**/](./api/__tests__/) - All test files
+- 🧪 [apps/api/**tests**/validation-edge-cases.test.js](./apps/api/__tests__/validation-edge-cases.test.js) - Edge case tests
+- 🧪 [apps/api/**tests**/](./apps/api/__tests__/) - All test files
 
 ### Guides & References
 

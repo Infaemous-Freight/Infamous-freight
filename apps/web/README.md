@@ -53,7 +53,7 @@ pnpm build:analyze
 ## 📁 Project Structure
 
 ```
-web/
+apps/web/
 ├── pages/              # Next.js pages (routes)
 ├── components/         # Shared React components
 ├── src/

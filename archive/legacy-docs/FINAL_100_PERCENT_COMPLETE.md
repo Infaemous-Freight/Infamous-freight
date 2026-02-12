@@ -123,9 +123,9 @@
 ```
 ✅ Prisma 5.22.0 — ORM configured
 ✅ PostgreSQL — Connection established
-✅ Schema — api/prisma/schema.prisma defined
-✅ Migrations — api/prisma/migrations/ maintained
-✅ Seed Scripts — api/prisma/seed.js ready
+✅ Schema — apps/api/prisma/schema.prisma defined
+✅ Migrations — apps/api/prisma/migrations/ maintained
+✅ Seed Scripts — apps/api/prisma/seed.js ready
 ✅ Client Generation — Prisma client auto-generated
 ✅ Health Check — DB connectivity verified in /api/health
 ✅ Connection Pooling — Configured for scalability
@@ -170,7 +170,7 @@
    ├─ Functions: 85.2% ✅
    └─ Lines: 82.8% ✅
 
-✅ Jest Configuration — api/jest.config.js
+✅ Jest Configuration — apps/api/jest.config.js
 ✅ Playwright Configuration — tests/e2e/playwright.config.ts
 ```
 
@@ -202,7 +202,7 @@
 ```
 ✅ Vercel Project — mrmiless44-genesis
 ✅ Build Command — pnpm --filter web build
-✅ Output Directory — web/.next
+✅ Output Directory — apps/web/.next
 ✅ Deployment — LIVE at https://mrmiless44-genesis.vercel.app
 ✅ Build Time — ~80 seconds
 ✅ Deploy Time — ~30 seconds
@@ -246,7 +246,7 @@
 ### **8. Security** ✅
 
 ```
-✅ JWT Authentication — HS256 (api/src/middleware/security.js)
+✅ JWT Authentication — HS256 (apps/api/src/middleware/security.js)
 ✅ Scope-based Authorization — Per-endpoint access control
 ✅ Rate Limiting (4 tiers) — DDoS mitigation
    ├─ General: 100/15min
@@ -404,7 +404,7 @@ Expected: API LIVE at https://infamous-freight-api.fly.dev
 pnpm test
 
 # View coverage details
-open api/coverage/index.html
+open apps/api/coverage/index.html
 
 # View E2E results
 open playwright-report/index.html

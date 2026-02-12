@@ -422,7 +422,7 @@ Settings → Secrets and variables → Actions → New repository secret
 1. **Local**:
 
    ```bash
-   cd api && pnpm test:coverage
+   cd apps/api && pnpm test:coverage
    # Open: coverage/lcov-report/index.html
    ```
 

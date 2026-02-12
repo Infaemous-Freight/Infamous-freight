@@ -333,14 +333,14 @@ curl -X POST http://localhost:4000/api/ai-decisions/cld1x.../feedback \
 To apply the schema changes to your database:
 
 ```bash
-cd api
+cd apps/api
 npx prisma migrate deploy
 ```
 
 For development with migration creation:
 
 ```bash
-cd api
+cd apps/api
 npx prisma migrate dev --name add_ai_decision_and_feedback_models
 ```
 
@@ -349,7 +349,7 @@ npx prisma migrate dev --name add_ai_decision_and_feedback_models
 Run the test suite:
 
 ```bash
-cd api
+cd apps/api
 npm test -- routes.ai.decisions.test.js
 ```
 

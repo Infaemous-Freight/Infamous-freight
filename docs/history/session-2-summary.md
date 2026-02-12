@@ -17,7 +17,7 @@
 - Dockerfile port: 3001 → 4000
 - Healthcheck endpoint: Updated to /api/health
 - Impact: Fly.io deployment now works correctly
-- **File**: `api/Dockerfile`
+- **File**: `apps/api/Dockerfile`
 
 ### ✅ Task 2: Documentation - Input Validation
 
@@ -39,7 +39,7 @@
 - Type coercion (5 tests)
 - Missing fields (3 tests)
 - Multiple errors, empty body (3 tests)
-- **File**: `api/__tests__/validation-edge-cases.test.js`
+- **File**: `apps/api/__tests__/validation-edge-cases.test.js`
 
 ### ✅ Task 4: Error Handling Refactor
 
@@ -49,7 +49,7 @@
 - Error context formatting
 - Categorized logging by error type
 - Consistent error response format
-- **File**: `api/src/middleware/errorHandler.js`
+- **File**: `apps/api/src/middleware/errorHandler.js`
 
 ### ✅ Task 5: New Feature - User Search
 
@@ -59,7 +59,7 @@
 - Query params: q, page, limit, role, sortBy, order
 - Full-text search, filtering, pagination, sorting
 - Complete implementation example
-- **File**: `api/src/routes/users.search.example.js`
+- **File**: `apps/api/src/routes/users.search.example.js`
 
 ### ✅ Task 6: Monitoring - Sentry
 
@@ -79,8 +79,8 @@
 
 ```
 VALIDATION.md                              278 lines
-api/__tests__/validation-edge-cases.test.js    180+ lines
-api/src/routes/users.search.example.js         180+ lines
+apps/api/__tests__/validation-edge-cases.test.js    180+ lines
+apps/api/src/routes/users.search.example.js         180+ lines
 docs/SENTRY_MONITORING.md                      400+ lines
 ALL_6_TASKS_COMPLETE.md                        250+ lines
 COMMIT_INSTRUCTIONS.md                         200+ lines
@@ -94,8 +94,8 @@ README.SESSION_2.md                            This file
 ### Files Modified: 2
 
 ```
-api/Dockerfile                    2 lines (port fix)
-api/src/middleware/errorHandler.js    +40 lines
+apps/api/Dockerfile                    2 lines (port fix)
+apps/api/src/middleware/errorHandler.js    +40 lines
 ```
 
 ### Total Content Created: 1600+ lines
@@ -121,13 +121,13 @@ cat SESSION_2_INDEX.md
 
 ```bash
 # Test edge cases
-cd api && npm test -- validation-edge-cases
+cd apps/api && npm test -- validation-edge-cases
 
 # All tests
 npm test
 
 # Docker build
-docker build -f api/Dockerfile .
+docker build -f apps/api/Dockerfile .
 ```
 
 ### 3. Commit Changes (20 minutes)
@@ -137,7 +137,7 @@ docker build -f api/Dockerfile .
 cat COMMIT_INSTRUCTIONS.md
 
 # Follow 7-commit sequence
-git add api/Dockerfile
+git add apps/api/Dockerfile
 git commit -m "fix(infra): correct docker port from 3001 to 4000"
 # ... continue with remaining 6 commits
 ```
@@ -167,13 +167,13 @@ flyctl deploy
 
 ### For Implementation
 
-- **[api/src/routes/users.search.example.js](./api/src/routes/users.search.example.js)** - Search endpoint template
-- **[api/**tests**/validation-edge-cases.test.js](./api/**tests**/validation-edge-cases.test.js)** - Test examples
+- **[apps/api/src/routes/users.search.example.js](./apps/api/src/routes/users.search.example.js)** - Search endpoint template
+- **[apps/api/**tests**/validation-edge-cases.test.js](./apps/api/**tests**/validation-edge-cases.test.js)** - Test examples
 
 ### For Deployment
 
 - **[COMMIT_INSTRUCTIONS.md](./COMMIT_INSTRUCTIONS.md)** - How to commit
-- **[api/Dockerfile](./api/Dockerfile)** - Review port changes
+- **[apps/api/Dockerfile](./apps/api/Dockerfile)** - Review port changes
 
 ### For Reference
 

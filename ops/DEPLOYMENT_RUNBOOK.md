@@ -24,7 +24,7 @@ pnpm lint
 pnpm build
 
 # 4. Verify migrations are ready
-cd api && pnpm prisma:migrate:status
+cd apps/api && pnpm prisma:migrate:status
 ```
 
 ## Deployment Steps
@@ -32,7 +32,7 @@ cd api && pnpm prisma:migrate:status
 ### Step 1: Apply Database Migrations
 
 ```bash
-cd api
+cd apps/api
 
 # Show pending migrations
 pnpm prisma:migrate:status
@@ -108,7 +108,7 @@ curl https://api.infamous-freight.com/api/health
 ```bash
 # DO NOT rollback migrations automatically
 # 1. Identify the failed migration
-cd api && pnpm prisma:migrate:status
+cd apps/api && pnpm prisma:migrate:status
 
 # 2. Investigate error
 # 3. Fix schema.prisma or write recovery migration
@@ -163,12 +163,12 @@ Trigger rollback if:
 
 ## Quick Reference Commands
 
-| Command | Purpose |
-|---------|---------|
-| `flyctl deploy` | Deploy API to Fly.io |
-| `git push origin main` | Deploy web to Vercel |
-| `pnpm prisma:migrate:deploy` | Apply pending migrations |
-| `pnpm prisma:migrate:status` | Check migration status |
-| `curl /api/health/detailed` | Full service health check |
-| `flyctl logs` | View API logs |
-| `pnpm test:e2e` | Run end-to-end tests |
+| Command                      | Purpose                   |
+| ---------------------------- | ------------------------- |
+| `flyctl deploy`              | Deploy API to Fly.io      |
+| `git push origin main`       | Deploy web to Vercel      |
+| `pnpm prisma:migrate:deploy` | Apply pending migrations  |
+| `pnpm prisma:migrate:status` | Check migration status    |
+| `curl /api/health/detailed`  | Full service health check |
+| `flyctl logs`                | View API logs             |
+| `pnpm test:e2e`              | Run end-to-end tests      |

@@ -103,15 +103,15 @@ echo ""
 echo "Verifying implementation files..."
 
 IMPLEMENTATION_FILES=(
-    "api/src/services/stripe.service.js"
-    "api/src/services/auth.service.js"
-    "api/src/services/ai.service.js"
-    "api/src/routes/billing.implementation.js"
-    "api/src/routes/auth.implementation.js"
-    "api/src/routes/ai.commands.implementation.js"
-    "web/lib/api-client.implementation.ts"
-    "web/hooks/useApi.implementation.ts"
-    "web/pages/dashboard.implementation.tsx"
+    "apps/api/src/services/stripe.service.js"
+    "apps/api/src/services/auth.service.js"
+    "apps/api/src/services/ai.service.js"
+    "apps/api/src/routes/billing.implementation.js"
+    "apps/api/src/routes/auth.implementation.js"
+    "apps/api/src/routes/ai.commands.implementation.js"
+    "apps/web/lib/api-client.implementation.ts"
+    "apps/web/hooks/useApi.implementation.ts"
+    "apps/web/pages/dashboard.implementation.tsx"
 )
 
 VERIFIED_COUNT=0
@@ -211,9 +211,9 @@ fi
 print_section "PHASE 8: DATABASE CONFIGURATION"
 
 echo ""
-if [ -d "api/prisma" ]; then
+if [ -d "apps/api/prisma" ]; then
     print_success "Prisma schema found"
-    if [ -f "api/prisma/schema.prisma" ]; then
+    if [ -f "apps/api/prisma/schema.prisma" ]; then
         echo "   Configured with PostgreSQL"
     fi
 else

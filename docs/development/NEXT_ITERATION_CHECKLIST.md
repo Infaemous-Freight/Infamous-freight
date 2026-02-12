@@ -123,10 +123,10 @@ npm install
 pnpm install
 
 # Run edge case tests
-npm test -- api/__tests__/validation-edge-cases.test.js
+npm test -- apps/api/__tests__/validation-edge-cases.test.js
 
 # Or run all API tests
-npm test -- api/__tests__
+npm test -- apps/api/__tests__
 
 # With coverage
 npm run test:coverage
@@ -145,7 +145,7 @@ Tests will run automatically when you push to GitHub:
 
 ```bash
 # Build API image
-docker build -t infamous-api ./api
+docker build -t infamous-api ./apps/api
 
 # Run tests in container
 docker run --rm infamous-api npm test
@@ -156,7 +156,7 @@ docker run --rm infamous-api npm test
 **40+ Edge Case Tests Should Pass**:
 
 ```
-PASS  api/__tests__/validation-edge-cases.test.js
+PASS  apps/api/__tests__/validation-edge-cases.test.js
   ✓ validateString rejects empty strings (10ms)
   ✓ validateString rejects strings >500 chars (5ms)
   ✓ validateString sanitizes SQL injection attempts (8ms)

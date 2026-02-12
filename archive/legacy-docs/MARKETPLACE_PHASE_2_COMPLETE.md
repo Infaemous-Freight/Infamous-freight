@@ -31,7 +31,7 @@ All 10 recommended enhancements have been successfully implemented, tested, and 
 ### Created (1 file)
 
 ```
-✅ api/src/lib/jobStateMachine.js
+✅ apps/api/src/lib/jobStateMachine.js
    - VALID_TRANSITIONS constant
    - canTransition() validator
    - getAllowedTransitions() helper
@@ -41,26 +41,26 @@ All 10 recommended enhancements have been successfully implemented, tested, and 
 ### Modified (4 files)
 
 ```
-✅ api/src/marketplace/router.js (9 endpoints enhanced)
+✅ apps/api/src/marketplace/router.js (9 endpoints enhanced)
    - Added: authenticate, requireScope, limiters, validateTransition
    - Added: Price change protection, idempotency keys
    - Added: Response pagination (page/limit/total/pages)
    - Added: Database transactions for job acceptance
    - Added: User ownership validation
 
-✅ api/src/marketplace/billingRouter.js (2 endpoints enhanced)
+✅ apps/api/src/marketplace/billingRouter.js (2 endpoints enhanced)
    - Added: Global authenticate middleware
    - Added: Scope-based authorization (shipper:subscribe, shipper:portal)
    - Added: User self-access validation
 
-✅ api/src/marketplace/webhooks.js (6 handlers enhanced)
+✅ apps/api/src/marketplace/webhooks.js (6 handlers enhanced)
    - Added: UUID for correlation IDs
    - Added: processedEvents Set for deduplication
    - Added: withRetry() wrapper with exponential backoff
    - Added: State machine validation
    - Added: Database transactions
 
-✅ api/src/lib/jobStateMachine.js (NEW UTILITY)
+✅ apps/api/src/lib/jobStateMachine.js (NEW UTILITY)
    - All state transition logic in one place
    - Imported by router.js and webhooks.js
    - Highly testable and reusable
@@ -387,21 +387,21 @@ Executive summary of Phase 2 implementation.
 
 ```bash
 # Verify code compiles
-node --check api/src/marketplace/router.js
-node --check api/src/marketplace/billingRouter.js
-node --check api/src/marketplace/webhooks.js
-node --check api/src/lib/jobStateMachine.js
+node --check apps/api/src/marketplace/router.js
+node --check apps/api/src/marketplace/billingRouter.js
+node --check apps/api/src/marketplace/webhooks.js
+node --check apps/api/src/lib/jobStateMachine.js
 
 # Run linter
-pnpm lint api/src/marketplace
-pnpm lint api/src/lib/jobStateMachine.js
+pnpm lint apps/api/src/marketplace
+pnpm lint apps/api/src/lib/jobStateMachine.js
 ```
 
 ### 2. Environment (5 minutes)
 
 ```bash
 # Copy .env.example to .env
-cp api/.env.example api/.env
+cp apps/api/.env.example apps/api/.env
 
 # Update with production values
 # - JWT_SECRET (strong random)
@@ -414,7 +414,7 @@ cp api/.env.example api/.env
 
 ```bash
 # Run migrations
-cd api
+cd apps/api
 pnpm prisma:migrate:deploy
 
 # Verify schema
@@ -428,10 +428,10 @@ pnpm prisma:db:seed
 
 ```bash
 # Terminal 1: API
-cd api && pnpm dev
+cd apps/api && pnpm dev
 
 # Terminal 2: Web (optional)
-cd web && pnpm dev
+cd apps/web && pnpm dev
 
 # Verify health
 curl http://localhost:4000/api/health
@@ -448,7 +448,7 @@ curl "http://localhost:4000/api/marketplace/jobs?page=1&limit=10" \
   -H "Authorization: Bearer $JWT"
 
 # Monitor logs
-tail -f api/combined.log | grep -E "correlation|error|webhook"
+tail -f apps/api/combined.log | grep -E "correlation|error|webhook"
 ```
 
 ---
@@ -475,9 +475,9 @@ tail -f api/combined.log | grep -E "correlation|error|webhook"
 
 ### Code Examples
 
-- State machine: `api/src/lib/jobStateMachine.js`
-- Router security: `api/src/marketplace/router.js` (lines 1-50)
-- Webhook retry: `api/src/marketplace/webhooks.js` (lines 60-80)
+- State machine: `apps/api/src/lib/jobStateMachine.js`
+- Router security: `apps/api/src/marketplace/router.js` (lines 1-50)
+- Webhook retry: `apps/api/src/marketplace/webhooks.js` (lines 60-80)
 
 ### Documentation
 
@@ -488,9 +488,9 @@ tail -f api/combined.log | grep -E "correlation|error|webhook"
 ### Related Files
 
 - Original implementation: Phase 1 marketplace files
-- Stripe integration: `api/src/lib/stripe.js`
-- Pricing logic: `api/src/lib/pricing.js`
-- Geolocation: `api/src/lib/geo.js`
+- Stripe integration: `apps/api/src/lib/stripe.js`
+- Pricing logic: `apps/api/src/lib/pricing.js`
+- Geolocation: `apps/api/src/lib/geo.js`
 
 ---
 

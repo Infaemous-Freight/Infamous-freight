@@ -90,8 +90,8 @@ SECURITY_HARDENING.md         # Security checklist & best practices
 ```
 fly.api.toml                  # API deployment config
 Dockerfile.fly                # API container definition
-api/src/config/swagger.js     # OpenAPI documentation
-api/src/services/cache.js     # Enhanced Redis caching
+apps/api/src/config/swagger.js     # OpenAPI documentation
+apps/api/src/services/cache.js     # Enhanced Redis caching
 ```
 
 ### Web Configuration
@@ -99,7 +99,7 @@ api/src/services/cache.js     # Enhanced Redis caching
 ```
 fly.toml                      # Web deployment config (current)
 Dockerfile                    # Web container definition
-web/next.config.mjs           # Next.js production config
+apps/web/next.config.mjs           # Next.js production config
 ```
 
 ### CI/CD
@@ -263,7 +263,7 @@ Full details: [scripts/setup-monitoring.sh](../scripts/setup-monitoring.sh)
 
 ```bash
 # 1. Deploy web to Vercel
-cd web && vercel --prod
+cd apps/web && vercel --prod
 
 # 2. Sign up for Neon database
 # https://neon.tech - Get connection string
@@ -285,7 +285,7 @@ flyctl secrets set REDIS_URL="redis://..." --app infamous-freight-api
 ### API Tests
 
 ```bash
-cd api
+cd apps/api
 npm test
 npm run test:coverage
 ```
@@ -335,7 +335,7 @@ curl -H "Origin: https://evil.com" https://infamous-freight-api.fly.dev/api/heal
 ### API Documentation
 
 - **Live API Docs**: <https://infamous-freight-api.fly.dev/api/docs> (when deployed)
-- **Swagger Config**: [api/src/config/swagger.js](../api/src/config/swagger.js)
+- **Swagger Config**: [apps/api/src/config/swagger.js](../apps/api/src/config/swagger.js)
 
 ### Configuration Files
 

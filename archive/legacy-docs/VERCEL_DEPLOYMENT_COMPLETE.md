@@ -8,13 +8,13 @@
 ### Web Frontend
 
 - **Framework**: Next.js 14.2.35
-- **Build Output**: `web/.next/`
+- **Build Output**: `apps/web/.next/`
 - **Deployment Platform**: Vercel
 - **Production URL**: https://mrmiless44-genesis.vercel.app
 - **Project Scope**: santorio-miles-projects/mrmiless44-genesis
 - **Build Command**: `pnpm --filter web build`
 - **Installation**: `pnpm install`
-- **Output Directory**: `web/.next`
+- **Output Directory**: `apps/web/.next`
 
 ### Build Artifacts
 

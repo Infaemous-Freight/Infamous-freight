@@ -51,7 +51,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 ### 2. Search Feature (`GET /api/users/search`)
 
-**Implemented in**: [api/src/routes/users.js](api/src/routes/users.js#L42-L112)
+**Implemented in**: [apps/api/src/routes/users.js](apps/api/src/routes/users.js#L42-L112)
 
 **Capabilities**:
 
@@ -86,7 +86,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 ### Code Changes
 
-**File**: [api/src/routes/users.js](api/src/routes/users.js)
+**File**: [apps/api/src/routes/users.js](apps/api/src/routes/users.js)
 
 **Addition**: 70-line search endpoint (lines 42-112)
 
@@ -257,7 +257,7 @@ flyctl secrets set JWT_SECRET="your-32-character-secret-here"
 
 **Tests Pending**:
 
-- 40+ validation edge cases (api/**tests**/validation-edge-cases.test.js)
+- 40+ validation edge cases (apps/api/**tests**/validation-edge-cases.test.js)
 - E2E tests (pnpm e2e)
 - Coverage verification
 
@@ -285,7 +285,7 @@ curl https://infamous-freight-api.fly.dev/api/health
 
 ```bash
 # Run tests locally (with npm available)
-npm test -- api/__tests__/validation-edge-cases.test.js
+npm test -- apps/api/__tests__/validation-edge-cases.test.js
 
 # Test search endpoint manually
 export TOKEN="your-jwt-token"
@@ -393,7 +393,7 @@ bc4f8ab fix: improve securityHeaders tests
 
 **Files Modified**:
 
-- ✅ [api/src/routes/users.js](api/src/routes/users.js) - +70 lines (search endpoint)
+- ✅ [apps/api/src/routes/users.js](apps/api/src/routes/users.js) - +70 lines (search endpoint)
 - ✅ [README.md](README.md) - +20 lines (production API section)
 
 **Total Changes**: 1,600+ lines of code & documentation

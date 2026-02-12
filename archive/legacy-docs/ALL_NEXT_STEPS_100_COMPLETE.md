@@ -44,10 +44,10 @@ All Phase 1, 2, and 3 optimization tasks from the original recommendations have 
 
 ### Scripts Created
 ```bash
-web/scripts/validate-build.sh          # Pre-build config validation
-web/scripts/monitor-build-performance.sh  # Build metrics tracking
-web/scripts/audit-bundle-size.sh       # Bundle analysis
-web/scripts/review-dependencies.sh     # Dependency audit
+apps/web/scripts/validate-build.sh          # Pre-build config validation
+apps/web/scripts/monitor-build-performance.sh  # Build metrics tracking
+apps/web/scripts/audit-bundle-size.sh       # Bundle analysis
+apps/web/scripts/review-dependencies.sh     # Dependency audit
 ```
 
 ### Features Added
@@ -60,14 +60,14 @@ web/scripts/review-dependencies.sh     # Dependency audit
 
 ## 📁 Files Modified
 
-1. `web/pages/_app.tsx` - Analytics components
-2. `web/pages/pricing.tsx` - ISR implementation
-3. `web/middleware.ts` - Edge runtime (NEW)
-4. `web/next.config.mjs` - Image optimization + code splitting
+1. `apps/web/pages/_app.tsx` - Analytics components
+2. `apps/web/pages/pricing.tsx` - ISR implementation
+3. `apps/web/middleware.ts` - Edge runtime (NEW)
+4. `apps/web/next.config.mjs` - Image optimization + code splitting
 5. `vercel.json` - Cache config + aliases
 6. `lighthouserc.json` - Enhanced thresholds
 7. `.github/workflows/lighthouse-ci.yml` - pnpm support
-8. `web/scripts/*.sh` - 4 new monitoring scripts
+8. `apps/web/scripts/*.sh` - 4 new monitoring scripts
 
 ## 🎯 Success Metrics (30-Day Targets)
 

@@ -10,7 +10,7 @@
 
 ### Backend Services (5 TypeScript Modules)
 
-#### 1. `api/src/sales/leadCapture.ts` (400+ lines)
+#### 1. `apps/api/src/sales/leadCapture.ts` (400+ lines)
 - Lead creation from landing pages
 - CRM sync (HubSpot, Salesforce, Notion)
 - Slack notifications
@@ -25,7 +25,7 @@
 - `getLeads()` — List for dashboard
 - `syncLeadToCrm()` — CRM integration
 
-#### 2. `api/src/sales/demoScheduling.ts` (350+ lines)
+#### 2. `apps/api/src/sales/demoScheduling.ts` (350+ lines)
 - Demo booking with Calendly/Google Calendar
 - Email confirmations
 - Zoom link generation
@@ -40,7 +40,7 @@
 - `getDemoStats()` — Conversion metrics
 - `sendDemoReminders()` — 24-hour reminder
 
-#### 3. `api/src/sales/referrals.ts` (350+ lines)
+#### 3. `apps/api/src/sales/referrals.ts` (350+ lines)
 - Referral code generation
 - Signup tracking
 - Milestone checking (10 jobs)
@@ -56,7 +56,7 @@
 - `getReferralStats()` — Referrer dashboard
 - `getTopReferrers()` — Leaderboard
 
-#### 4. `api/src/sales/roiCalculator.ts` (250+ lines)
+#### 4. `apps/api/src/sales/roiCalculator.ts` (250+ lines)
 - ROI calculation engine
 - Savings estimation
 - Payback period calculation
@@ -68,7 +68,7 @@
 - `compareScenarios()` — What-if analysis
 - `getPlanPricing()` — Plan reference
 
-#### 5. `api/src/sales/metrics.ts` (400+ lines)
+#### 5. `apps/api/src/sales/metrics.ts` (400+ lines)
 - Real-time metrics collection
 - Historical trend tracking
 - Growth rate calculation
@@ -83,7 +83,7 @@
 
 ### API Routes
 
-#### 6. `api/src/routes/sales.ts` (300+ lines)
+#### 6. `apps/api/src/routes/sales.ts` (300+ lines)
 - 20 endpoints for all sales functions
 - Full validation on inputs
 - Rate limiting
@@ -99,7 +99,7 @@
 
 ### Database Schema Updates
 
-#### 7. `api/prisma/schema.prisma` (+100 lines)
+#### 7. `apps/api/prisma/schema.prisma` (+100 lines)
 
 **New Models**:
 - `Lead` — Prospect tracking
@@ -175,7 +175,7 @@
 ## 🎯 What Was Delivered
 
 ### Phase 21.1 — Marketing Funnel
-- Landing page structure (ready to build in web/)
+- Landing page structure (ready to build in apps/web/)
 - Form endpoints ready
 - CRM sync ready
 

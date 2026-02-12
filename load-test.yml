@@ -3,27 +3,27 @@ config:
   phases:
     # Phase 1: Warm up (ramp up to 100 RPS over 2 minutes)
     - duration: 120
-      arrivalRate: 0.833  # ~50 requests per second at end
+      arrivalRate: 0.833 # ~50 requests per second at end
       name: "Warm up"
 
     # Phase 2: Normal load (steady 100 RPS for 5 minutes)
     - duration: 300
-      arrivalRate: 1.667  # 100 RPS
+      arrivalRate: 1.667 # 100 RPS
       name: "Normal load"
 
     # Phase 3: Spike test (jump to 500 RPS for 1 minute)
     - duration: 60
-      arrivalRate: 8.333  # 500 RPS
+      arrivalRate: 8.333 # 500 RPS
       name: "Spike test"
 
     # Phase 4: Stress test (up to 1000 RPS for 3 minutes)
     - duration: 180
-      arrivalRate: 16.667  # 1000 RPS
+      arrivalRate: 16.667 # 1000 RPS
       name: "Stress test"
 
     # Phase 5: Cool down (scale back to 50 RPS)
     - duration: 120
-      arrivalRate: 0.833  # 50 RPS
+      arrivalRate: 0.833 # 50 RPS
       name: "Cool down"
 
   processor: "./loadtest-processor.js"
@@ -159,7 +159,7 @@ scenarios:
 
 # Assertions to verify performance SLAs
 assertions:
-  - jitter < 100  # Latency variance
-  - p95 < 250     # 95th percentile under 250ms
-  - p99 < 500     # 99th percentile under 500ms
+  - jitter < 100 # Latency variance
+  - p95 < 250 # 95th percentile under 250ms
+  - p99 < 500 # 99th percentile under 500ms
   - errorRate < 1 # Less than 1% error rate

@@ -22,12 +22,12 @@
 ## ✅ Completed Features
 
 ### 1. ✅ Real-Time Revenue Dashboard
-**File**: `web/components/RevenueMonitorDashboard.tsx` (400+ lines)  
+**File**: `apps/web/components/RevenueMonitorDashboard.tsx` (400+ lines)  
 **Status**: Complete, tested, documented  
 **Impact**: Real-time MRR/ARR/churn/LTV visibility
 
 ### 2. ✅ Backend Metrics API
-**File**: `api/src/routes/metrics.js` (350+ lines)  
+**File**: `apps/api/src/routes/metrics.js` (350+ lines)  
 **Status**: Complete with 60s caching  
 **Impact**: Fast, scalable metrics endpoint
 
@@ -37,12 +37,12 @@
 **Impact**: Customer trust through transparency
 
 ### 4. ✅ Customer Success Automation
-**File**: `api/src/services/customerSuccess.js` (550+ lines)  
+**File**: `apps/api/src/services/customerSuccess.js` (550+ lines)  
 **Status**: Complete with health scoring  
 **Impact**: **$50K-75K** from churn reduction
 
 ### 5. ✅ Advanced Security Hardening
-**File**: `api/src/middleware/securityHardening.js` (500+ lines)  
+**File**: `apps/api/src/middleware/securityHardening.js` (500+ lines)  
 **Status**: Complete with multi-layer protection  
 **Impact**: **$100K+** breach prevention
 

@@ -60,7 +60,7 @@
 - Regional timezone configuration
 - Currency localization
 - Date/time format customization
-- **File**: `api/src/config/i18n.js`
+- **File**: `apps/api/src/config/i18n.js`
 
 ---
 
@@ -84,7 +84,7 @@
 - GDPR-compliant EU region routing (9 regions)
 - Data residency enforcement
 - Timezone & coordinate mapping per region
-- **File**: `api/src/config/regions.js`
+- **File**: `apps/api/src/config/regions.js`
 
 ---
 
@@ -154,8 +154,8 @@ GET /api/analytics/costs
 
 **Files**:
 
-- Service: `api/src/services/analytics.js` (7.7 KB)
-- Routes: `api/src/routes/analytics.js` (3.8 KB)
+- Service: `apps/api/src/services/analytics.js` (7.7 KB)
+- Routes: `apps/api/src/routes/analytics.js` (3.8 KB)
 
 ---
 
@@ -190,7 +190,7 @@ location: update; // Broadcast location to all watchers
 - Scope-based authorization
 - User identification via JWT payload
 
-**File**: `api/src/services/realtime.js` (7.5 KB)
+**File**: `apps/api/src/services/realtime.js` (7.5 KB)
 
 ---
 
@@ -224,7 +224,7 @@ location: update; // Broadcast location to all watchers
 - **MFA Ready** - TOTP, SMS, Email support
 - **Password Policies** - Enforced strength requirements
 
-**File**: `api/src/config/sso.js` (6.0 KB)
+**File**: `apps/api/src/config/sso.js` (6.0 KB)
 
 ---
 
@@ -252,7 +252,7 @@ location: update; // Broadcast location to all watchers
 - **Compliance Reports**: Automated generation
 - **Regional Compliance**: Enforcement per region
 
-**File**: `api/src/services/compliance.js` (9.9 KB)
+**File**: `apps/api/src/services/compliance.js` (9.9 KB)
 
 ---
 
@@ -577,7 +577,7 @@ cp .env.example .env
 # Edit .env with your configuration
 
 # Initialize database
-cd api
+cd apps/api
 pnpm prisma migrate dev
 pnpm prisma:seed
 ```
@@ -619,7 +619,7 @@ pnpm format
 
 ```bash
 # Create migration
-cd api
+cd apps/api
 pnpm prisma:migrate:dev --name "description"
 
 # View database UI
@@ -687,14 +687,14 @@ pnpm prisma:migrate:reset
 
 ### API Development
 
-1. Study `api/src/routes/` for endpoint examples
-2. Review `api/src/middleware/security.js` for auth patterns
-3. Examine `api/src/services/` for business logic
+1. Study `apps/api/src/routes/` for endpoint examples
+2. Review `apps/api/src/middleware/security.js` for auth patterns
+3. Examine `apps/api/src/services/` for business logic
 
 ### Database
 
-1. Check `api/prisma/schema.prisma` for data model
-2. Review migrations in `api/prisma/migrations/`
+1. Check `apps/api/prisma/schema.prisma` for data model
+2. Review migrations in `apps/api/prisma/migrations/`
 3. Use `pnpm prisma:studio` to visualize data
 
 ### Deployment

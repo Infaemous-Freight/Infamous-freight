@@ -98,7 +98,7 @@ router.get("/system", (req, res) => {
     const manifestPath = path.join(
       __dirname,
       "../../..",
-      "web/public/avatars/main/manifest.json",
+      "apps/web/public/avatars/main/manifest.json",
     );
 
     if (!fs.existsSync(manifestPath)) {

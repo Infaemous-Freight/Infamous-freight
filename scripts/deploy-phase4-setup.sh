@@ -92,13 +92,13 @@ setup_ml_models() {
   log_info "Setting up ML models..."
   
   # Check if ML service already exists
-  if [ -f "api/src/services/analytics/executiveAnalytics.ts" ]; then
+  if [ -f "apps/api/src/services/analytics/executiveAnalytics.ts" ]; then
     log_info "✓ Executive Analytics Service found (380 lines)"
   else
     log_error "Executive Analytics Service not found"
   fi
   
-  cat > api/src/ml/models.config.ts << 'EOF'
+  cat > apps/api/src/ml/models.config.ts << 'EOF'
 // ML Models Configuration for Phase 4
 
 export const ML_MODELS = {
@@ -135,7 +135,7 @@ EOF
 setup_analytics() {
   log_info "Setting up executive analytics platform..."
   
-  if [ -f "api/src/services/analytics/executiveAnalytics.ts" ]; then
+  if [ -f "apps/api/src/services/analytics/executiveAnalytics.ts" ]; then
     log_info "✓ Analytics service ready (380 lines)"
   fi
   

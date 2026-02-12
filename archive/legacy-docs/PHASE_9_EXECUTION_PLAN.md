@@ -85,7 +85,7 @@ flyctl logs -a infamous-freight-api
 **Review existing setup:**
 
 ```bash
-cat api/src/lib/redis.ts
+cat apps/api/src/lib/redis.ts
 ```
 
 **Integration steps:**

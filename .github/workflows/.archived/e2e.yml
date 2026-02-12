@@ -83,7 +83,7 @@ jobs:
         continue-on-error: true
 
       - name: Run database migrations
-        working-directory: src/apps/api
+        working-directory: apps/api
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
         run: pnpm exec prisma migrate deploy || echo "Migrations completed"
@@ -97,7 +97,7 @@ jobs:
         continue-on-error: false
 
       - name: Start API server
-        working-directory: src/apps/api
+        working-directory: apps/api
         env:
           HUSKY: 0
           API_PORT: 4000
@@ -134,16 +134,16 @@ jobs:
           echo "  DATABASE_URL is set"
           echo ""
           echo "Starting Node.js server with: node dist/server.js"
-          timeout 10 node dist/server.js > ../../api.log 2>&1 &
+          timeout 10 node dist/server.js > ../../apps/api.log 2>&1 &
           API_PID=$!
-          echo $API_PID > ../../api.pid
+          echo $API_PID > ../../apps/api.pid
           sleep 3
           echo "API process started with PID $API_PID"
           if kill -0 $API_PID 2>/dev/null; then
             echo "✅ API process is running"
           else
             echo "❌ API process died immediately, showing logs:"
-            cat ../../api.log 2>/dev/null || echo "No logs available"
+            cat ../../apps/api.log 2>/dev/null || echo "No logs available"
             exit 1
           fi
         timeout-minutes: 5
@@ -177,7 +177,7 @@ jobs:
           exit 1
 
       - name: Start Web server
-        working-directory: src/apps/web
+        working-directory: apps/web
         env:
           NEXT_PUBLIC_API_URL: http://localhost:4000
           PORT: 3000
@@ -218,11 +218,11 @@ jobs:
       - name: Cleanup servers
         if: always()
         run: |
-          if [ -f src/apps/web/web.pid ]; then
-            kill $(cat src/apps/web/web.pid) 2>/dev/null || true
+          if [ -f apps/web/web.pid ]; then
+            kill $(cat apps/web/web.pid) 2>/dev/null || true
           fi
-          if [ -f src/apps/api/api.pid ]; then
-            kill $(cat src/apps/api/api.pid) 2>/dev/null || true
+          if [ -f apps/api/api.pid ]; then
+            kill $(cat apps/api/api.pid) 2>/dev/null || true
           fi
           pkill -f "node.*server.js" || true
           pkill -f "node.*next" || true

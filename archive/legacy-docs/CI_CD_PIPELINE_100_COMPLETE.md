@@ -236,7 +236,7 @@
 **Triggers**:
 
 - ✅ On push to `main`
-- ✅ When files in `api/`, `packages/`, or `pnpm-lock.yaml` change
+- ✅ When files in `apps/api/`, `packages/`, or `pnpm-lock.yaml` change
 - ✅ Manual workflow dispatch
 
 **Deployment Strategy**: Rolling (zero-downtime)
@@ -411,7 +411,7 @@ NODE_ENV=production
 
 ```bash
 # 1. Fix in next commit
-cd api && npm audit fix
+cd apps/api && npm audit fix
 
 # 2. Automated with Dependabot
 # Configure: .github/dependabot.yml
@@ -452,7 +452,7 @@ cd api && npm audit fix
                   v
   ┌────────────────────────────────────────────────────────────┐
   │          2. DEPLOY WORKFLOW TRIGGERS                        │
-  │  If: Changes in api/, packages/, or pnpm-lock.yaml         │
+  │  If: Changes in apps/api/, packages/, or pnpm-lock.yaml         │
   └────────┬────────────────────────────────────────────────────┘
            │
            v

@@ -100,7 +100,7 @@
   - [ ] File already created: `apps/api/src/middleware/rateLimitRedis.js`
   - [ ] Integration: Add to routes that need protection
   - [ ] Example: `router.post('/ai/command', rateLimiters.ai, handler)`
-  - [ ] Test: `for i in {1..21}; do curl .../api/ai/command; done`
+  - [ ] Test: `for i in {1..21}; do curl .../apps/api/ai/command; done`
   - [ ] ✅ 21st request returns 429 (rate limited)
   - [ ] ✅ Rate limit headers present in response
 

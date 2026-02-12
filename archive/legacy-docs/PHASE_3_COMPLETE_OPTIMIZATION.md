@@ -120,7 +120,7 @@ Breakdown:
 ### Refactored Version
 
 ```javascript
-// File: api/src/routes/ai.commands.js
+// File: apps/api/src/routes/ai.commands.js
 
 const express = require("express");
 const { prisma } = require("../db/prisma");

@@ -31,8 +31,8 @@
 
 **Files Modified**:
 
-- `api/src/routes/users.js` - Updated POST /users endpoint
-- `api/jest.setup.js` - Improved Prisma mocking for tests
+- `apps/api/src/routes/users.js` - Updated POST /users endpoint
+- `apps/api/jest.setup.js` - Improved Prisma mocking for tests
 
 ### 2. ✅ Sentry Instrumentation Setup (Commit b5d69eb)
 
@@ -40,7 +40,7 @@
 
 **Implementation**:
 
-- Created `api/src/instrument.js` - Dedicated Sentry initialization module
+- Created `apps/api/src/instrument.js` - Dedicated Sentry initialization module
 - Moves Sentry init to very top of application before other modules load
 - Ensures proper instrumentation of HTTP, Express, and error handlers
 - Complements earlier Sentry DSN configuration (sendDefaultPii enabled)
@@ -56,8 +56,8 @@
 
 **Files Created/Modified**:
 
-- `api/src/instrument.js` (NEW) - Sentry initialization module
-- `api/src/server.js` - Updated to require instrument.js first
+- `apps/api/src/instrument.js` (NEW) - Sentry initialization module
+- `apps/api/src/server.js` - Updated to require instrument.js first
 
 ### 3. ✅ Previous Sentry Fixes (Commits 90c479d, 9c3b2da)
 
@@ -130,7 +130,7 @@
 
 ## Code Changes Summary
 
-### File: `api/src/instrument.js` (NEW)
+### File: `apps/api/src/instrument.js` (NEW)
 
 ```javascript
 // Early Sentry initialization before any other modules
@@ -141,7 +141,7 @@ const Sentry = require("@sentry/node");
 // Profiles 10% of requests, samples 10% of transactions
 ```
 
-### File: `api/src/server.js` (MODIFIED)
+### File: `apps/api/src/server.js` (MODIFIED)
 
 ```javascript
 // IMPORTANT: Initialize Sentry instrumentation first
@@ -149,7 +149,7 @@ require("./instrument.js");
 // Then all other modules...
 ```
 
-### File: `api/src/routes/users.js` (MODIFIED)
+### File: `apps/api/src/routes/users.js` (MODIFIED)
 
 ```javascript
 router.post(
@@ -169,7 +169,7 @@ router.post(
 );
 ```
 
-### File: `api/jest.setup.js` (MODIFIED)
+### File: `apps/api/jest.setup.js` (MODIFIED)
 
 ```javascript
 // Proper Prisma mocking for tests with realistic responses
@@ -217,13 +217,13 @@ Run tests locally:
 
 ```bash
 # Validation tests
-cd api && npm test -- __tests__/validation-edge-cases.test.js
+cd apps/api && npm test -- __tests__/validation-edge-cases.test.js
 
 # All tests
-cd api && npm test
+cd apps/api && npm test
 
 # Check coverage
-cd api && npm test -- --coverage
+cd apps/api && npm test -- --coverage
 ```
 
 Expected output:

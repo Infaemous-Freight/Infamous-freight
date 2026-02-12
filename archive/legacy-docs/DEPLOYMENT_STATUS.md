@@ -86,9 +86,9 @@ The auto-deploy workflow uses smart path detection:
 
 | Path Changed             | Services Deployed |
 | ------------------------ | ----------------- |
-| `src/apps/api/**`        | API only          |
-| `src/apps/web/**`        | Web only          |
-| `src/apps/mobile/**`     | Mobile only       |
+| `apps/api/**`        | API only          |
+| `apps/web/**`        | Web only          |
+| `apps/mobile/**`     | Mobile only       |
 | `src/packages/shared/**` | All services      |
 | `.github/workflows/**`   | All services      |
 
@@ -116,10 +116,10 @@ gh secret list
 ./scripts/complete-fly-deploy.sh
 
 # Deploy Web to Vercel
-cd src/apps/web && vercel --prod
+cd apps/web && vercel --prod
 
 # Deploy Mobile to Expo
-cd src/apps/mobile && eas build --platform all
+cd apps/mobile && eas build --platform all
 ```
 
 ### Check All Deployments

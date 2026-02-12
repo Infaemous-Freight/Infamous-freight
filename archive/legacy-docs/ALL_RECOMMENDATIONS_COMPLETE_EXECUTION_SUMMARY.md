@@ -11,7 +11,7 @@
 | #   | Recommendation            | Status      | Evidence                   | Documentation                                                |
 | --- | ------------------------- | ----------- | -------------------------- | ------------------------------------------------------------ |
 | 1   | Shared Package Discipline | ✅ Complete | `packages/shared/` exports | [Shared Package Workflow](./docs/SHARED_PACKAGE_WORKFLOW.md) |
-| 2   | Test Coverage Maintenance | ✅ Complete | `api/coverage/` > 75%      | [Test Coverage Strategy](./docs/TEST_COVERAGE_STRATEGY.md)   |
+| 2   | Test Coverage Maintenance | ✅ Complete | `apps/api/coverage/` > 75%      | [Test Coverage Strategy](./docs/TEST_COVERAGE_STRATEGY.md)   |
 | 3   | Type Safety               | ✅ Complete | `pnpm check:types`         | [Type Safety Guide](./docs/TYPE_SAFETY_GUIDE.md)             |
 | 4   | Middleware Order          | ✅ Complete | All routes audited ✓       | [Middleware Pattern](./docs/MIDDLEWARE_ORDER_PATTERN.md)     |
 | 5   | Rate Limiting             | ✅ Complete | 8 limiters configured      | [Rate Limiting Strategy](./docs/RATE_LIMITING_STRATEGY.md)   |
@@ -155,7 +155,7 @@
 
 - ✅ Bundle analyzer installed and configured
 - ✅ Next.js optimized for builds
-- ⚠️ Awaiting execution: `cd web && ANALYZE=true pnpm build`
+- ⚠️ Awaiting execution: `cd apps/web && ANALYZE=true pnpm build`
 - **Targets:** First Load < 150KB, Total < 500KB
 - **Action:** Execute analysis and optimize identified opportunities
 
@@ -271,7 +271,7 @@ Project Root
 ├── .github/
 │   └── copilot-instructions.md                          [Architecture Guide]
 │
-└── api/src/middleware/
+└── apps/api/src/middleware/
     ├── security.js                                      [Auth, Rate Limits, Scopes]
     ├── validation.js                                    [Input Validation]
     ├── errorHandler.js                                  [Error Handling + Sentry]

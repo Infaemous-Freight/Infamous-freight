@@ -456,7 +456,7 @@ curl http://api/health
 
 ```bash
 # Rollback migrations
-cd api && pnpm prisma:migrate:resolve --rollback
+cd apps/api && pnpm prisma:migrate:resolve --rollback
 
 # Restore from backup if needed
 ./scripts/restore-backup.sh 2026-01-14-23-00

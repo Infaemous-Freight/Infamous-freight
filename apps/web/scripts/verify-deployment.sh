@@ -128,13 +128,13 @@ Deployment URL: $DEPLOYMENT_URL
 
 **Manual Check**:
 ```bash
-cd web
+cd apps/web
 bash scripts/monitor-build-performance.sh
 ```
 
 ## 🛠️ Automation Scripts
 
-All scripts are executable and located in `web/scripts/`:
+All scripts are executable and located in `apps/web/scripts/`:
 
 - [x] validate-build.sh - Pre-build configuration validation
 - [x] monitor-build-performance.sh - Build performance tracking

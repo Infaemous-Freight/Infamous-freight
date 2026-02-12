@@ -314,7 +314,7 @@ cat .env.development
 # Look for build errors
 
 # Clear Next.js cache
-rm -rf web/.next
+rm -rf apps/web/.next
 
 # Rebuild
 pnpm --filter web build

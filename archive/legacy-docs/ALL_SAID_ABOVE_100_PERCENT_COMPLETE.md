@@ -34,9 +34,9 @@
 | ------------------ | ----------------- | ------------------------- |
 | docker-compose.yml | ✅ Verified       | 8 services configured     |
 | .env.example       | ✅ Template Ready | Environment configuration |
-| api/ directory     | ✅ Present        | Express.js backend        |
-| web/ directory     | ✅ Present        | Next.js frontend          |
-| mobile/ directory  | ✅ Present        | React Native/Expo         |
+| apps/api/ directory     | ✅ Present        | Express.js backend        |
+| apps/web/ directory     | ✅ Present        | Next.js frontend          |
+| apps/mobile/ directory  | ✅ Present        | React Native/Expo         |
 | packages/shared/   | ✅ Present        | Shared TypeScript package |
 | e2e/ directory     | ✅ Present        | Playwright tests          |
 
@@ -126,9 +126,9 @@
   - [x] Web settings
 
 - [x] Monorepo Structure
-  - [x] api/ (Express.js)
-  - [x] web/ (Next.js 14)
-  - [x] mobile/ (React Native)
+  - [x] apps/api/ (Express.js)
+  - [x] apps/web/ (Next.js 14)
+  - [x] apps/mobile/ (React Native)
   - [x] packages/shared/ (TypeScript)
   - [x] e2e/ (Playwright)
 

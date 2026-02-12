@@ -52,7 +52,7 @@
   - Type checking
   - Test verification (100 tests passing)
 - [x] **Pre-push Validation**:
-  - Full test suite (109 tests from src/apps/api)
+  - Full test suite (109 tests from apps/api)
   - Coverage thresholds
   - TypeScript checking
 
@@ -132,7 +132,7 @@ pnpm add -g vercel@latest
 vercel login
 
 # Deploy to production
-cd web
+cd apps/web
 vercel --prod
 ```
 

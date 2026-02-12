@@ -21,7 +21,7 @@ SENTRY_RELEASE=1.0.0           # Application version
 ### Initialization
 
 ```javascript
-// api/src/config/sentry.js
+// apps/api/src/config/sentry.js
 const Sentry = require("@sentry/node");
 
 function initSentry(app) {
@@ -305,7 +305,7 @@ logger.info({
 ### Structured Logging with Sentry
 
 ```javascript
-// api/src/middleware/logger.js
+// apps/api/src/middleware/logger.js
 const winston = require("winston");
 
 const logger = winston.createLogger({

@@ -15,7 +15,7 @@ export type UsageTotals = Record<AiMeteredFeature, number>;
  * @deprecated
  * This function is not the canonical source of billing usage/overage data.
  * Use the backend billing usage endpoints (backed by OrgUsage/OrgBilling in
- * api/src/billing/usage.ts) as the single source of truth instead.
+ * apps/api/src/billing/usage.ts) as the single source of truth instead.
  */
 export async function computeOverageForOrganization(params: {
   organizationId: string;
@@ -29,7 +29,7 @@ export async function computeOverageForOrganization(params: {
 
   throw new Error(
     "computeOverageForTenant is deprecated. Use the backend billing usage " +
-      "implementation in api/src/billing/usage.ts (e.g., getUsageSummary) " +
+      "implementation in apps/api/src/billing/usage.ts (e.g., getUsageSummary) " +
       "as the single source of truth for billing calculations.",
   );
 }

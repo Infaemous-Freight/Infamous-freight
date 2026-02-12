@@ -13,7 +13,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const rootDir = join(__dirname, "..");
-const webAppDir = join(rootDir, "src/apps/web");
+const webAppDir = join(rootDir, "apps/web");
 const distDir = join(rootDir, "dist");
 
 console.log("🚀 Building GitHub Pages site...\n");

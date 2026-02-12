@@ -12,7 +12,7 @@
 
 #### 1️⃣ Database Connection Pooling
 
-- **Location**: `api/config/performance/db-pool.js`
+- **Location**: `apps/api/config/performance/db-pool.js`
 - **Lines**: 45
 - **Features**: Connection pooling (50 max), slow query detection, graceful
   shutdown
@@ -20,35 +20,35 @@
 
 #### 2️⃣ Field-Level Encryption
 
-- **Location**: `api/services/security/encryption.js`
+- **Location**: `apps/api/services/security/encryption.js`
 - **Lines**: 150
 - **Features**: AES-256-GCM encryption, hashing, token generation
 - **Impact**: Enterprise-grade security
 
 #### 3️⃣ Job Queue & Background Processing
 
-- **Location**: `api/services/queue/job-queue.js`
+- **Location**: `apps/api/services/queue/job-queue.js`
 - **Lines**: 290
 - **Features**: Email, SMS, reports, webhooks, analytics queues + retry logic
 - **Impact**: 1,000,000 jobs/day capacity
 
 #### 4️⃣ WebSocket Real-Time Notifications
 
-- **Location**: `api/services/realtime/websocket.js`
+- **Location**: `apps/api/services/realtime/websocket.js`
 - **Lines**: 280
 - **Features**: JWT auth, channel messaging, health monitoring
 - **Impact**: < 100ms real-time delivery
 
 #### 5️⃣ Metrics & Monitoring
 
-- **Location**: `api/services/monitoring/metrics.js`
+- **Location**: `apps/api/services/monitoring/metrics.js`
 - **Lines**: 380
 - **Features**: Histograms, gauges, counters, Prometheus export
 - **Impact**: Complete observability + APM
 
 #### 6️⃣ GDPR Compliance
 
-- **Location**: `api/services/compliance/gdpr.js`
+- **Location**: `apps/api/services/compliance/gdpr.js`
 - **Lines**: 340
 - **Features**: Delete, export, rectification, retention policies
 - **Impact**: GDPR + SOC2 certified
@@ -59,7 +59,7 @@
 
 #### Test Suite
 
-- **Location**: `api/tests/next-100-advanced.test.js`
+- **Location**: `apps/api/tests/next-100-advanced.test.js`
 - **Lines**: 450
 - **Coverage**:
   - Database pooling: 3 tests
@@ -409,7 +409,7 @@ pnpm add bull ioredis @elastic/elasticsearch speakeasy qrcode socket.io
 
 ```bash
 # Run all 71 tests
-pnpm test api/tests/next-100-advanced.test.js
+pnpm test apps/api/tests/next-100-advanced.test.js
 
 # With coverage
 pnpm test -- --coverage

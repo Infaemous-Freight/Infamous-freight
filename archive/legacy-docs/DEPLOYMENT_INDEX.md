@@ -194,7 +194,7 @@ bash production-preflight.sh && ./deploy-production.sh all
 {
   "framework": null,
   "buildCommand": "pnpm --filter web build",
-  "outputDirectory": "web/.next",
+  "outputDirectory": "apps/web/.next",
   "headers": [...],
   "rewrites": [...]
 }

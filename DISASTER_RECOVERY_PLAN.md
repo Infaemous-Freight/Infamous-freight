@@ -25,7 +25,7 @@ RETENTION_HOURS=24
 #### Backup Configuration
 
 ```javascript
-// api/src/services/backup.js
+// apps/api/src/services/backup.js
 
 const schedule = require('node-schedule');
 const { prisma } = require('@infamous-freight/shared');
@@ -290,7 +290,7 @@ PREVIOUS_COMMIT=$(git rev-parse HEAD~1)
 echo "Rolling back to: $PREVIOUS_COMMIT"
 
 # 2. Checkout previous code
-git checkout $PREVIOUS_COMMIT web/ api/
+git checkout $PREVIOUS_COMMIT apps/web/ apps/api/
 
 # 3. Rebuild
 pnpm install

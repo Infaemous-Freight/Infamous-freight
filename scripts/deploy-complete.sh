@@ -49,8 +49,8 @@ echo ""
 
 # Step 1: Build and test locally
 echo -e "${BLUE}Step 1: Running tests...${NC}"
-if [ -f "api/package.json" ]; then
-    cd api
+if [ -f "apps/api/package.json" ]; then
+    cd apps/api
     npm test || echo -e "${YELLOW}⚠️  Tests failed, continuing anyway...${NC}"
     cd ..
 fi
@@ -128,7 +128,7 @@ echo -e "${GREEN}✅ Web deployed${NC}"
 # Step 6: Run database migrations
 echo -e "${BLUE}Step 6: Running database migrations...${NC}"
 echo "Connecting to API to run migrations..."
-flyctl ssh console --app infamous-freight-api -C "cd api && npx prisma migrate deploy" \
+flyctl ssh console --app infamous-freight-api -C "cd apps/api && npx prisma migrate deploy" \
     || echo -e "${YELLOW}⚠️  Migration failed. Run manually: flyctl ssh console --app infamous-freight-api${NC}"
 
 # Step 7: Verify deployments

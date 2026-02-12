@@ -67,7 +67,7 @@ pnpm install
 pnpm build
 
 # Ensure database is migrated
-cd api && pnpm prisma migrate deploy && cd ..
+cd apps/api && pnpm prisma migrate deploy && cd ..
 ```
 
 ### Automated Staging Deployment
@@ -87,8 +87,8 @@ export STAGING_USER=deploy
 ### Manual Staging Deployment
 ```bash
 # 1. Build Docker images
-docker build -f api/Dockerfile -t infamous-api:staging ./api
-docker build -f web/Dockerfile -t infamous-web:staging ./web
+docker build -f apps/api/Dockerfile -t infamous-api:staging ./apps/api
+docker build -f apps/web/Dockerfile -t infamous-web:staging ./apps/web
 
 # 2. Start services with Docker Compose
 docker-compose -f docker-compose.staging.yml up -d
@@ -379,7 +379,7 @@ redis-cli FLUSHALL
 docker stats infamous-api-prod
 
 # Identify memory leaks
-node --inspect=0.0.0.0:9229 api/src/server.js
+node --inspect=0.0.0.0:9229 apps/api/src/server.js
 
 # Monitor with Chrome DevTools
 # Open chrome://inspect

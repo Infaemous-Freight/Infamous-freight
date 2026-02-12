@@ -37,7 +37,7 @@ STRIPE_WEBHOOK_SECRET=whsec_xxx...
 ### Backend Setup (Express.js)
 
 ```javascript
-// api/src/services/stripeService.js
+// apps/api/src/services/stripeService.js
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
@@ -175,7 +175,7 @@ module.exports = new StripeService();
 ### API Endpoints
 
 ```javascript
-// api/src/routes/billing.js
+// apps/api/src/routes/billing.js
 
 const express = require('express');
 const { authenticate, requireScope } = require('../middleware/security');
@@ -373,7 +373,7 @@ module.exports = router;
 ### Frontend - Payment Page
 
 ```typescript
-// web/pages/billing.tsx
+// apps/web/pages/billing.tsx
 
 import { useState } from 'react';
 import { loadStripe } from '@stripe/js';

@@ -103,7 +103,7 @@ This PR implements 3 major feature priorities to improve performance, mobile UX,
 
 ## Deployment Requirements
 1. Set `REDIS_URL` environment variable (production)
-2. Set `EXPO_PROJECT_ID` in mobile/.env
+2. Set `EXPO_PROJECT_ID` in apps/mobile/.env
 3. Install mobile dependencies: `npm install` (see DEPLOYMENT_CHECKLIST.md)
 4. Deploy API with WebSocket support
 
@@ -116,7 +116,7 @@ This PR implements 3 major feature priorities to improve performance, mobile UX,
 ## Documentation
 - ✅ DEPLOYMENT_CHECKLIST.md with complete setup guide
 - ✅ .env.production.example with all required variables
-- ✅ mobile/.env.example for mobile configuration
+- ✅ apps/mobile/.env.example for mobile configuration
 - ✅ Inline code comments and TypeScript types
 
 ## Breaking Changes

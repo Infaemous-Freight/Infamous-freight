@@ -52,8 +52,8 @@ Result: ✅ All audits passing (0 vulnerabilities)
 ```
 Implemented:
 1. CODEOWNERS (.github/CODEOWNERS) - Auto code review assignments
-2. Sentry Integration (api/src/config/sentry.js) - Error tracking
-3. Rate Limiting (api/src/middleware/security.js) - DDoS/brute-force protection
+2. Sentry Integration (apps/api/src/config/sentry.js) - Error tracking
+3. Rate Limiting (apps/api/src/middleware/security.js) - DDoS/brute-force protection
 4. Security Headers (securityHeaders.js) - XSS/clickjacking prevention
 5. Database Migrations Guide (docs/DATABASE_MIGRATIONS.md) - Safe deployments
 6. Monitoring Procedures (docs/ONGOING_MONITORING.md) - Operational health
@@ -90,11 +90,11 @@ Dependencies: @playwright/test + eslint + prettier
 ### API Security
 
 ```
-✅ api/src/config/sentry.js                    (83 lines)
-✅ api/src/middleware/securityHeaders.js       (80+ lines)
-✅ api/src/middleware/security.js              (enhanced)
-✅ api/src/server.js                           (modified)
-✅ api/package.json                            (dependencies updated)
+✅ apps/api/src/config/sentry.js                    (83 lines)
+✅ apps/api/src/middleware/securityHeaders.js       (80+ lines)
+✅ apps/api/src/middleware/security.js              (enhanced)
+✅ apps/api/src/server.js                           (modified)
+✅ apps/api/package.json                            (dependencies updated)
 ```
 
 ### E2E Testing

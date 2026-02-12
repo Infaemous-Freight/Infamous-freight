@@ -65,7 +65,7 @@ RECOMMENDATION CATEGORIES - IMPLEMENTATION SUMMARY
    • Rollback procedures provided
 
 9. LOGGING & MONITORING ✅ COMPLETE
-   • Winston logger configured in api/src/middleware/logger.js
+   • Winston logger configured in apps/api/src/middleware/logger.js
    • Sentry integration active for error tracking
    • Vercel Analytics configured for web
    • Datadog RUM setup ready (conditional on ENV=production)
@@ -86,7 +86,7 @@ NEW FILES:
 ✅ ENVIRONMENT_SETUP.md
 ✅ RATE_LIMITING_DOCUMENTATION.md
 ✅ RECOMMENDATIONS_100_IMPLEMENTATION.md
-✅ .api/.eslintignore
+✅ .apps/api/.eslintignore
 
 UPDATED FILES:
 ✅ .vscode/launch.json

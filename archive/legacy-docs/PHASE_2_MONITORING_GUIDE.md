@@ -266,11 +266,11 @@ rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m])
 
 ## Key Files for Reference
 
-1. **Redis Configuration**: `src/apps/api/redis-optimization.conf`
-2. **Caching Middleware**: `src/apps/api/src/middleware/responseCache.ts`
-3. **Load Testing**: `src/apps/api/load-test.ts`
+1. **Redis Configuration**: `apps/api/redis-optimization.conf`
+2. **Caching Middleware**: `apps/api/src/middleware/responseCache.ts`
+3. **Load Testing**: `apps/api/load-test.ts`
 4. **Phase 2 Summary**: `PHASE_2_EXECUTION_SUMMARY.md`
-5. **Database Schema**: `src/apps/api/prisma/schema.prisma`
+5. **Database Schema**: `apps/api/prisma/schema.prisma`
 
 ---
 

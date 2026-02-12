@@ -92,13 +92,13 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: process.env.CI ? undefined : [
     {
-      command: 'cd ../web && pnpm dev',
+      command: 'cd ../apps/web && pnpm dev',
       url: 'http://localhost:3000',
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,
     },
     {
-      command: 'cd ../api && pnpm dev',
+      command: 'cd ../apps/api && pnpm dev',
       url: 'http://localhost:4000/api/health',
       timeout: 120 * 1000,
       reuseExistingServer: !process.env.CI,

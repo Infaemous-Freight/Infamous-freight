@@ -387,12 +387,12 @@ LOW (CVSS 0-3)
 
 - Roles: `SHIPPER`, `DRIVER`, `ADMIN`, `SYSTEM`
 - Permissions: `job:*`, `offer:*`, `payout:run`, `admin:ops`
-- Files: `api/src/auth/roles.js`, `api/src/auth/authorize.js`
+- Files: `apps/api/src/auth/roles.js`, `apps/api/src/auth/authorize.js`
 - Enforcement: `requirePerm()` middleware on critical endpoints
 
 **JWT Rotation (JWKS-ready):**
 
-- Optional JWKS validator: `api/src/auth/jwtRotation.js`
+- Optional JWKS validator: `apps/api/src/auth/jwtRotation.js`
 - Mounted globally, fail-open when not configured
 - Populates `req.auth` for RBAC checks
 - Environment: `AUTH_JWKS_URI`, `AUTH_AUDIENCE`, `AUTH_ISSUER`
@@ -401,7 +401,7 @@ LOW (CVSS 0-3)
 
 **Tamper-evident Hash Chain:**
 
-- Implementation: `api/src/lib/auditChain.js`
+- Implementation: `apps/api/src/lib/auditChain.js`
 - Append-only log with previous hash chaining
 - Automatically captures all requests via `auditLog` middleware
 - Storage: Configurable via `AUDIT_LOG_DIR`, `AUDIT_LOG_FILE`
@@ -423,7 +423,7 @@ logrotate /etc/logrotate.d/infamous-audit
 
 - Express-validator on all write endpoints
 - Zod schemas for complex payloads
-- Idempotency keys via Redis: `api/src/middleware/idempotency.js`
+- Idempotency keys via Redis: `apps/api/src/middleware/idempotency.js`
 - TTL: `IDEMPOTENCY_TTL_SECONDS` (default 900s)
 
 **Rate Limiting:**
@@ -436,7 +436,7 @@ logrotate /etc/logrotate.d/infamous-audit
 
 **Security Headers:**
 
-- Helmet with strict CSP: `api/src/middleware/securityHeaders.js`
+- Helmet with strict CSP: `apps/api/src/middleware/securityHeaders.js`
 - CSP violation reporting: `POST /api/csp-violation`
 - HSTS, X-Frame-Options, X-Content-Type-Options
 - Configure report endpoint: `CSP_REPORT_URI`
@@ -463,7 +463,7 @@ git config core.hooksPath .githooks
 
 **Runtime Validation:**
 
-- Required envs checked at startup: `api/src/config/validate.js`
+- Required envs checked at startup: `apps/api/src/config/validate.js`
 - Logs redact authorization headers
 - Audit chain masks sensitive fields
 
@@ -493,7 +493,7 @@ git config core.hooksPath .githooks
 
 ### Compliance Artifacts
 
-1. **RBAC Matrix:** `api/src/auth/roles.js`
+1. **RBAC Matrix:** `apps/api/src/auth/roles.js`
 2. **Audit Logs:** `data/audit.log` (immutable)
 3. **Security Headers:** Verified via SecurityHeaders.com
 4. **Dependency Scan:** `pnpm audit` (daily)

@@ -24,13 +24,13 @@ Web Tests:  1 test passed ✓
 
 ### Key Files Created
 
-- `api/jest.config.js` - Jest configuration for Node.js environment
-- `web/jest.config.js` - Jest configuration for browser environment
-- `web/jest.setup.js` - Test environment setup
-- `web/babel.config.js` - Babel configuration for JSX
-- `api/__tests__/server.test.js` - API server tests
-- `api/src/routes/__tests__/health.test.js` - Health check tests
-- `web/components/__tests__/AvatarGrid.test.jsx` - Component test example
+- `apps/api/jest.config.js` - Jest configuration for Node.js environment
+- `apps/web/jest.config.js` - Jest configuration for browser environment
+- `apps/web/jest.setup.js` - Test environment setup
+- `apps/web/babel.config.js` - Babel configuration for JSX
+- `apps/api/__tests__/server.test.js` - API server tests
+- `apps/api/src/routes/__tests__/health.test.js` - Health check tests
+- `apps/web/components/__tests__/AvatarGrid.test.jsx` - Component test example
 
 ### npm Scripts Added
 
@@ -77,14 +77,14 @@ Web Tests:  1 test passed ✓
 
 ### Middleware Implementations
 
-#### 1. **Error Handler** (`api/src/middleware/errorHandler.js`)
+#### 1. **Error Handler** (`apps/api/src/middleware/errorHandler.js`)
 
 - Centralized error handling
 - Standardized error responses
 - Status-based error categorization
 - Environment-aware error details
 
-#### 2. **Logging** (`api/src/middleware/logger.js`)
+#### 2. **Logging** (`apps/api/src/middleware/logger.js`)
 
 - Structured logging with Pino
 - HTTP request/response logging
@@ -92,7 +92,7 @@ Web Tests:  1 test passed ✓
 - Pretty printing in development
 - JSON output in production
 
-#### 3. **Validation** (`api/src/middleware/validation.js`)
+#### 3. **Validation** (`apps/api/src/middleware/validation.js`)
 
 - Email validation
 - String validation with length constraints
@@ -118,7 +118,7 @@ Web Tests:  1 test passed ✓
 
 ## Phase 4: Environment Configuration ✓
 
-### Config Helper (`api/src/config.js`)
+### Config Helper (`apps/api/src/config.js`)
 
 - Type-safe configuration management
 - Environment variable validation
@@ -144,7 +144,7 @@ Web Tests:  1 test passed ✓
 
 ### Seed Script Enhancement
 
-- Extended `api/prisma/seed.js` with complete seed data
+- Extended `apps/api/prisma/seed.js` with complete seed data
 - Added npm script: `prisma:seed`
 - Ready for database initialization
 - Seeds Users, Drivers, Shipments, and AI Events
@@ -163,7 +163,7 @@ Web Tests:  1 test passed ✓
 
 ### Swagger/OpenAPI Setup
 
-- Created `api/src/swagger.js` with JSDoc documentation
+- Created `apps/api/src/swagger.js` with JSDoc documentation
 - Swagger UI Express installed for interactive docs
 - Documented endpoints:
   - `/api/health` - Health check
@@ -200,7 +200,7 @@ Web Tests:  1 test passed ✓
 
 ## Package Dependencies Summary
 
-### API (`api/package.json`)
+### API (`apps/api/package.json`)
 
 - **Testing**: jest, @types/jest
 - **Linting**: eslint, eslint-plugin-import, eslint-plugin-n, eslint-plugin-promise, globals
@@ -209,7 +209,7 @@ Web Tests:  1 test passed ✓
 - **Documentation**: swagger-ui-express
 - **Rate Limiting**: rate-limiter-flexible (already installed)
 
-### Web (`web/package.json`)
+### Web (`apps/web/package.json`)
 
 - **Testing**: jest, jest-environment-jsdom, @testing-library/react, @testing-library/jest-dom
 - **Transpilation**: babel-jest, @babel/preset-env, @babel/preset-react
@@ -304,19 +304,19 @@ npm run test:coverage   # Generate coverage report
 
 ```
 .lintstagedrc.json
-api/.eslintrc.js
-api/jest.config.js
-api/src/config.js
-api/src/middleware/errorHandler.js
-api/src/middleware/logger.js
-api/src/middleware/validation.js
-api/src/swagger.js
-api/__tests__/server.test.js
-api/src/routes/__tests__/health.test.js
-web/babel.config.js
-web/jest.config.js
-web/jest.setup.js
-web/components/__tests__/AvatarGrid.test.jsx
+apps/api/.eslintrc.js
+apps/api/jest.config.js
+apps/api/src/config.js
+apps/api/src/middleware/errorHandler.js
+apps/api/src/middleware/logger.js
+apps/api/src/middleware/validation.js
+apps/api/src/swagger.js
+apps/api/__tests__/server.test.js
+apps/api/src/routes/__tests__/health.test.js
+apps/web/babel.config.js
+apps/web/jest.config.js
+apps/web/jest.setup.js
+apps/web/components/__tests__/AvatarGrid.test.jsx
 package.json (root)
 package-lock.json (root)
 ```
@@ -324,9 +324,9 @@ package-lock.json (root)
 ### Modified Files (3)
 
 ```
-api/package.json
-api/src/server.js
-web/package.json
+apps/api/package.json
+apps/api/src/server.js
+apps/web/package.json
 ```
 
 ---

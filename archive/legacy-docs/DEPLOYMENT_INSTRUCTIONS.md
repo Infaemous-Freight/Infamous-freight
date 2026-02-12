@@ -30,8 +30,8 @@ pnpm install
 
 This installs all dependencies for:
 
-- `api/` (Express.js backend)
-- `web/` (Next.js frontend)
+- `apps/api/` (Express.js backend)
+- `apps/web/` (Next.js frontend)
 - `packages/shared/` (Shared TypeScript library)
 - `e2e/` (Playwright tests)
 
@@ -194,7 +194,7 @@ cp .env.example .env
 ### Step 4: Set Up Database
 
 ```bash
-cd api
+cd apps/api
 
 # Create/migrate database
 pnpm prisma:migrate:dev
@@ -297,7 +297,7 @@ pnpm check:types
 pnpm add -g vercel@latest
 
 # Deploy
-cd web
+cd apps/web
 vercel deploy --prod
 
 # Or: Automatic on git push to main
@@ -384,12 +384,12 @@ docker-compose -f docker-compose.prod.yml logs -f web
 
 **Sentry** (Error tracking):
 
-- Configured in `api/src/instrument.js`
+- Configured in `apps/api/src/instrument.js`
 - Set `SENTRY_DSN` env var
 
 **Datadog** (APM & RUM):
 
-- Configured in `api/src/server.js` and `web/pages/_app.tsx`
+- Configured in `apps/api/src/server.js` and `apps/web/pages/_app.tsx`
 - Set `DD_TRACE_ENABLED`, `DD_SERVICE`, etc.
 
 **Health Checks**:
@@ -457,7 +457,7 @@ lsof -ti:5432 | xargs kill -9  # PostgreSQL
 docker-compose -f docker-compose.prod.yml logs postgres
 
 # Reset database
-cd api
+cd apps/api
 pnpm prisma:migrate:reset --force
 ```
 

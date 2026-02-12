@@ -62,7 +62,7 @@ pnpm db:down
 ## 📁 Project Structure
 
 ```
-api/
+apps/api/
 ├── src/
 │   ├── routes/          # API endpoints
 │   ├── middleware/      # Express middleware (auth, validation, logging)
@@ -184,28 +184,28 @@ This document summarizes the enterprise-grade improvements implemented for produ
 
 ### 1. Core Infrastructure Modules (100% Complete)
 
-#### Constants Module (`api/src/config/constants.js`)
+#### Constants Module (`apps/api/src/config/constants.js`)
 
 - **30+ constants** organized in 13 categories
 - Eliminates all magic values across codebase
 - Single source of truth for configuration
 - **Impact**: No more scattered magic numbers, easier to update limits
 
-#### Error Framework (`api/src/lib/errors.js`)
+#### Error Framework (`apps/api/src/lib/errors.js`)
 
 - **7 custom error classes** with proper HTTP status codes
 - **3 utility functions** for response standardization
 - `asyncHandler` eliminates try-catch boilerplate
 - **Impact**: Consistent error responses, better error tracking
 
-#### Validation Framework (`api/src/lib/validation.js`)
+#### Validation Framework (`apps/api/src/lib/validation.js`)
 
 - **15+ Zod schemas** for type-safe validation
 - Covers all major domains: shipments, users, payments, tracking, feedback
 - `validateRequest` middleware factory
 - **Impact**: Type-safe inputs, prevents injection attacks, clear error messages
 
-#### Enhanced Error Handler (`api/src/middleware/errorHandler.js`)
+#### Enhanced Error Handler (`apps/api/src/middleware/errorHandler.js`)
 
 - Integrated with new error classes
 - Structured logging via Pino
@@ -255,17 +255,17 @@ npm run check:types     # Type check all packages
 
 #### Created Comprehensive Guides
 
-1. **`api/ENTERPRISE_IMPROVEMENTS.md`** (7KB)
+1. **`apps/api/ENTERPRISE_IMPROVEMENTS.md`** (7KB)
    - Usage examples for all modules
    - Migration guide with before/after
    - Benefits summary
 
-2. **`api/QUALITY_IMPROVEMENTS.md`** (8KB)
+2. **`apps/api/QUALITY_IMPROVEMENTS.md`** (8KB)
    - Progress tracking
    - Remaining work breakdown
    - Success criteria
 
-3. **`api/README.md`** (This file)
+3. **`apps/api/README.md`** (This file)
    - Implementation summary
    - Metrics and impact
 
@@ -273,7 +273,7 @@ npm run check:types     # Type check all packages
 
 #### Migrated Health Route
 
-**File**: `api/src/routes/health.js`
+**File**: `apps/api/src/routes/health.js`
 
 **Changes:**
 
@@ -288,7 +288,7 @@ npm run check:types     # Type check all packages
 
 #### Created Tests
 
-- **`api/__tests__/lib/errors.test.js`** - 6 tests, 100% passing
+- **`apps/api/__tests__/lib/errors.test.js`** - 6 tests, 100% passing
   - ApiError serialization
   - ValidationError creation
   - Success response formatting
@@ -396,29 +396,29 @@ npm run check:types     # Type check all packages
 
 ### New Files Created (11)
 
-1. `api/src/config/constants.js` - Constants module
-2. `api/src/lib/errors.js` - Error framework
-3. `api/src/lib/validation.js` - Zod validation
-4. `api/ENTERPRISE_IMPROVEMENTS.md` - Usage guide
-5. `api/QUALITY_IMPROVEMENTS.md` - Progress tracking
-6. `api/README.md` - This summary
-7. `api/__tests__/lib/errors.test.js` - Error tests
+1. `apps/api/src/config/constants.js` - Constants module
+2. `apps/api/src/lib/errors.js` - Error framework
+3. `apps/api/src/lib/validation.js` - Zod validation
+4. `apps/api/ENTERPRISE_IMPROVEMENTS.md` - Usage guide
+5. `apps/api/QUALITY_IMPROVEMENTS.md` - Progress tracking
+6. `apps/api/README.md` - This summary
+7. `apps/api/__tests__/lib/errors.test.js` - Error tests
 8. `.github/workflows/quality-gates.yml` - Quality pipeline
 9. `.lintstagedrc` - Updated lint-staged config
 10. `package.json` - Updated with new scripts
 
 ### Files Modified (5)
 
-1. `api/src/middleware/errorHandler.js` - Enhanced error handling
-2. `api/src/routes/health.js` - Migrated to new patterns
-3. `api/auth.js` - Fixed linting errors
-4. `api/metrics.js` - Fixed linting errors
-5. `api/production-server.js` - Fixed linting errors
-6. `api/src/admin/auditExport.ts` - Fixed syntax errors
-7. `api/src/auth/jwt.js` - Fixed linting errors
-8. `api/src/avatars/routes.js` - Fixed unused imports
-9. `api/src/config/secrets.js` - Fixed unused imports
-10. `api/src/data/bonusesSystem.js` - Fixed property names
+1. `apps/api/src/middleware/errorHandler.js` - Enhanced error handling
+2. `apps/api/src/routes/health.js` - Migrated to new patterns
+3. `apps/api/auth.js` - Fixed linting errors
+4. `apps/api/metrics.js` - Fixed linting errors
+5. `apps/api/production-server.js` - Fixed linting errors
+6. `apps/api/src/admin/auditExport.ts` - Fixed syntax errors
+7. `apps/api/src/auth/jwt.js` - Fixed linting errors
+8. `apps/api/src/avatars/routes.js` - Fixed unused imports
+9. `apps/api/src/config/secrets.js` - Fixed unused imports
+10. `apps/api/src/data/bonusesSystem.js` - Fixed property names
 
 ## Testing Instructions
 

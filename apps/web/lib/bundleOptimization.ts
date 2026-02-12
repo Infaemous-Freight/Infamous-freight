@@ -13,7 +13,7 @@ import dynamic from "next/dynamic";
 import React from "react";
 
 // ✅ Code splitting: Dynamic imports for heavy components
-// web/pages/dashboard.tsx
+// apps/web/pages/dashboard.tsx
 const ShipmentChart = dynamic(() => import("../components/ShipmentChart"), {
   loading: () => React.createElement("div", { className: "skeleton" }),
   ssr: false,
@@ -28,7 +28,7 @@ void ShipmentChart;
 void ReportGenerator;
 
 // ✅ Tree-shaking: Export named exports instead of default
-// web/lib/utils.ts
+// apps/web/lib/utils.ts
 export const formatDate = (date: Date) => date.toLocaleDateString();
 export const formatCurrency = (amount: number) => `$${amount.toFixed(2)}`;
 export const sanitizeEmail = (email: string) => email.toLowerCase().trim();
@@ -56,7 +56,7 @@ const config = {
 };
 
 // ✅ Image optimization: Use next/image everywhere
-// web/components/ShipmentCard.tsx
+// apps/web/components/ShipmentCard.tsx
 import Image from "next/image";
 
 interface Shipment {
@@ -93,13 +93,13 @@ export function ShipmentCard({ shipment }: ShipmentCardProps) {
 // - pages/billing -> billing.js
 
 // ✅ Lazy load expensive libraries
-// web/lib/chartLibrary.ts
+// apps/web/lib/chartLibrary.ts
 export async function loadChartLibrary(): Promise<typeof import("recharts")> {
   return import("recharts");
 }
 
 // ✅ Preload critical resources in _app.tsx
-// web/pages/_app.tsx
+// apps/web/pages/_app.tsx
 import Head from "next/head";
 
 interface AppProps {

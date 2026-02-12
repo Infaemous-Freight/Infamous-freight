@@ -42,8 +42,8 @@ npm install -g pnpm@8
 pnpm clean
 
 # Or manually:
-rm -rf node_modules api/node_modules web/node_modules mobile/node_modules packages/*/node_modules
-rm -rf package-lock.json api/package-lock.json web/package-lock.json
+rm -rf node_modules apps/api/node_modules apps/web/node_modules apps/mobile/node_modules packages/*/node_modules
+rm -rf package-lock.json apps/api/package-lock.json apps/web/package-lock.json
 ```
 
 ### 3. Install dependencies
@@ -74,7 +74,7 @@ pnpm prepare
 ### 7. Run migrations (if needed)
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:migrate:dev
 pnpm prisma:generate
 ```
@@ -131,7 +131,7 @@ pnpm lint:fix
 
 ## Using Shared Package
 
-### In API (api/src/example.js)
+### In API (apps/api/src/example.js)
 
 ```javascript
 const {
@@ -148,7 +148,7 @@ const trackingNumber = generateTrackingNumber();
 const price = formatCurrency(1999.99);
 ```
 
-### In Web (web/pages/index.tsx)
+### In Web (apps/web/pages/index.tsx)
 
 ```typescript
 import { User, ShipmentStatus, formatDate } from "@infamous-freight/shared";
@@ -207,7 +207,7 @@ pnpm --filter infamous-freight-api build
 ### Prisma client issues
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:generate
 ```
 
@@ -229,8 +229,8 @@ rm pnpm-lock.yaml .npmrc pnpm-workspace.yaml
 
 # 2. Reinstall with npm
 npm install
-cd api && npm install
-cd ../web && npm install
+cd apps/api && npm install
+cd ../apps/web && npm install
 
 # 3. Use npm commands
 npm run dev

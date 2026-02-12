@@ -25,7 +25,7 @@ Verify production deployment configuration and fix any critical issues
 
 ### 📁 Files Changed
 
-- `api/Dockerfile` (2 lines changed)
+- `apps/api/Dockerfile` (2 lines changed)
 
 ### 📊 Impact
 
@@ -35,7 +35,7 @@ Verify production deployment configuration and fix any critical issues
 
 ### 🔗 Details
 
-See: `api/Dockerfile` lines 43-44
+See: `apps/api/Dockerfile` lines 43-44
 
 ---
 
@@ -100,7 +100,7 @@ Add comprehensive edge case tests covering input validation boundaries
 
 ### 📁 Files Created
 
-- `api/__tests__/validation-edge-cases.test.js` (180+ lines)
+- `apps/api/__tests__/validation-edge-cases.test.js` (180+ lines)
 
 ### 📊 Test Breakdown
 
@@ -117,7 +117,7 @@ Add comprehensive edge case tests covering input validation boundaries
 
 ### 🔗 Details
 
-See: `api/__tests__/validation-edge-cases.test.js`
+See: `apps/api/__tests__/validation-edge-cases.test.js`
 
 ---
 
@@ -138,7 +138,7 @@ Enhance error handling with context, categorization, and request tracing
 
 ### 📁 Files Modified
 
-- `api/src/middleware/errorHandler.js` (+40 lines)
+- `apps/api/src/middleware/errorHandler.js` (+40 lines)
 
 ### 📊 Enhancements
 
@@ -153,7 +153,7 @@ Enhance error handling with context, categorization, and request tracing
 
 ### 🔗 Details
 
-See: `api/src/middleware/errorHandler.js` lines 1-50
+See: `apps/api/src/middleware/errorHandler.js` lines 1-50
 
 ---
 
@@ -175,7 +175,7 @@ Document GET /api/users/search endpoint with complete specification
 
 ### 📁 Files Created
 
-- `api/src/routes/users.search.example.js` (180+ lines)
+- `apps/api/src/routes/users.search.example.js` (180+ lines)
 
 ### 📊 Endpoint Specification
 
@@ -201,7 +201,7 @@ Document GET /api/users/search endpoint with complete specification
 
 ### 🔗 Details
 
-See: `api/src/routes/users.search.example.js`
+See: `apps/api/src/routes/users.search.example.js`
 
 ---
 
@@ -303,16 +303,16 @@ See: `docs/SENTRY_MONITORING.md`
 
 - 📖 `VALIDATION.md` - Input validation guide with examples
 - 📖 `docs/SENTRY_MONITORING.md` - Error tracking setup
-- 📖 `api/src/routes/users.search.example.js` - Search endpoint spec
+- 📖 `apps/api/src/routes/users.search.example.js` - Search endpoint spec
 
 ### Tests
 
-- 🧪 `api/__tests__/validation-edge-cases.test.js` - 40+ edge case tests
+- 🧪 `apps/api/__tests__/validation-edge-cases.test.js` - 40+ edge case tests
 
 ### Infrastructure
 
-- 🔧 `api/Dockerfile` - Fixed port configuration
-- 🔧 `api/src/middleware/errorHandler.js` - Enhanced error handling
+- 🔧 `apps/api/Dockerfile` - Fixed port configuration
+- 🔧 `apps/api/src/middleware/errorHandler.js` - Enhanced error handling
 
 ### Guides
 
@@ -351,14 +351,14 @@ STATUS: 🟢 READY FOR DEPLOYMENT
 2. **Verify Tests**
 
    ```bash
-   cd api && npm test -- validation-edge-cases
+   cd apps/api && npm test -- validation-edge-cases
    npm test  # All tests
    ```
 
 3. **Verify Docker Build**
 
    ```bash
-   docker build -f api/Dockerfile .
+   docker build -f apps/api/Dockerfile .
    ```
 
 4. **Commit Changes**
@@ -373,11 +373,11 @@ STATUS: 🟢 READY FOR DEPLOYMENT
 
 ## 📞 Questions or Issues
 
-- **Port Configuration**: See `api/Dockerfile` lines 43-44
+- **Port Configuration**: See `apps/api/Dockerfile` lines 43-44
 - **Validation Details**: See `VALIDATION.md`
-- **Error Handling**: See `api/src/middleware/errorHandler.js`
+- **Error Handling**: See `apps/api/src/middleware/errorHandler.js`
 - **Monitoring Setup**: See `docs/SENTRY_MONITORING.md`
-- **Search Endpoint**: See `api/src/routes/users.search.example.js`
+- **Search Endpoint**: See `apps/api/src/routes/users.search.example.js`
 - **Commit Guidance**: See `COMMIT_INSTRUCTIONS.md`
 
 ---

@@ -78,7 +78,7 @@ fly deploy
 #### Install Required Packages
 
 ```bash
-cd mobile
+cd apps/mobile
 npm install @react-native-async-storage/async-storage
 npm install expo-notifications
 npm install expo-local-authentication
@@ -113,7 +113,7 @@ npm install expo-device
 
 ### 4. API Integration
 
-#### Initialize Services (api/src/server.js)
+#### Initialize Services (apps/api/src/server.js)
 
 ```javascript
 const { cacheService } = require("./services/cacheService");
@@ -129,7 +129,7 @@ const wsServer = new WebSocketServer(server);
 #### Add Caching Middleware
 
 ```javascript
-// api/src/middleware/cache.js
+// apps/api/src/middleware/cache.js
 const { cacheService } = require("../services/cacheService");
 
 async function cacheMiddleware(req, res, next) {
@@ -152,7 +152,7 @@ async function cacheMiddleware(req, res, next) {
 
 ### 5. Mobile App Initialization
 
-#### App Entry Point (mobile/App.tsx)
+#### App Entry Point (apps/mobile/App.tsx)
 
 ```typescript
 import { offlineQueue } from "./services/offlineQueue";

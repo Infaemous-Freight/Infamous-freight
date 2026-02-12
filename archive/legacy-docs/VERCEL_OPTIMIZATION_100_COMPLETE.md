@@ -46,7 +46,7 @@ e2e/                   # End-to-end tests
 {
   "crons": [],
   "cache": [
-    "web/.next/cache/**",
+    "apps/web/.next/cache/**",
     "node_modules/.cache/**",
     ".pnpm-store/**"
   ]
@@ -61,7 +61,7 @@ e2e/                   # End-to-end tests
 ---
 
 ### ✅ 4. Pre-Build Validation Script
-**Created**: `web/scripts/validate-build.sh`
+**Created**: `apps/web/scripts/validate-build.sh`
 
 **Validates**:
 - ✅ Datadog RUM configuration (DD_APP_ID, DD_CLIENT_TOKEN, DD_SITE)
@@ -109,7 +109,7 @@ e2e/                   # End-to-end tests
 
 **After**:
 ```json
-"buildCommand": "cd web && bash scripts/validate-build.sh && cd .. && pnpm --filter web build"
+"buildCommand": "cd apps/web && bash scripts/validate-build.sh && cd .. && pnpm --filter web build"
 ```
 
 **Flow**:
@@ -151,10 +151,10 @@ e2e/                   # End-to-end tests
 **Test Matrix**:
 | Change Location | Expected Behavior |
 |----------------|-------------------|
-| `web/` | ✅ Trigger build |
-| `api/` | ❌ Skip build |
+| `apps/web/` | ✅ Trigger build |
+| `apps/api/` | ❌ Skip build |
 | `packages/` | ❌ Skip build |
-| `mobile/` | ❌ Skip build |
+| `apps/mobile/` | ❌ Skip build |
 | Root config | ✅ Trigger build |
 
 ---
@@ -183,7 +183,7 @@ e2e/                   # End-to-end tests
 1. ✅ `.vercelignore` - Updated ignore patterns
 2. ✅ `vercel.json` - Added caching, validation, notifications
 3. ✅ `.github/CODEOWNERS` - Protected deployment configs
-4. ✅ `web/scripts/validate-build.sh` - Created validation script
+4. ✅ `apps/web/scripts/validate-build.sh` - Created validation script
 
 ---
 

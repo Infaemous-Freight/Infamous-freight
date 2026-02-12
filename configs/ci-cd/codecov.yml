@@ -8,7 +8,7 @@ coverage:
   precision: 2
   round: down
   range: "90...100"
-  
+
   status:
     project:
       default:
@@ -39,11 +39,11 @@ flags:
   api:
     carryforward: true
     paths:
-      - src/apps/api/src
-      - src/apps/api/tests
+      - apps/api/src
+      - apps/api/__tests__
   web:
     carryforward: true
     paths:
-      - src/apps/web/components
-      - src/apps/web/pages
-      - src/apps/web/hooks
+      - apps/web/components
+      - apps/web/pages
+      - apps/web/hooks

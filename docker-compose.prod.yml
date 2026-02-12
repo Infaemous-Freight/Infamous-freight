@@ -43,7 +43,7 @@ services:
 
   api:
     build:
-      context: ./api
+      context: ./apps/api
       dockerfile: Dockerfile
     container_name: infamous-api-prod
     restart: unless-stopped
@@ -68,7 +68,7 @@ services:
 
   web:
     build:
-      context: ./web
+      context: ./apps/web
       dockerfile: Dockerfile
     container_name: infamous-web-prod
     restart: unless-stopped

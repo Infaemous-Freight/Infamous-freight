@@ -19,7 +19,7 @@ Phase 1 establishes the core marketplace primitives for a DoorDash-style deliver
 ### 1. Install Dependencies
 
 ```bash
-cd api
+cd apps/api
 pnpm add zod
 ```
 
@@ -27,7 +27,7 @@ pnpm add zod
 
 ### 2. Prisma Schema (Already in place)
 
-**File**: [api/prisma/schema.prisma](../api/prisma/schema.prisma)
+**File**: [apps/api/prisma/schema.prisma](../apps/api/prisma/schema.prisma)
 
 **Key Models**:
 
@@ -121,7 +121,7 @@ model Job {
 ### 3. Prisma Code Generation
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma generate
 ```
 
@@ -131,7 +131,7 @@ pnpm prisma generate
 
 ## 📍 Geolocation Utilities
 
-**File**: [api/src/lib/geo.ts](../api/src/lib/geo.ts)
+**File**: [apps/api/src/lib/geo.ts](../apps/api/src/lib/geo.ts)
 
 **Functions**:
 
@@ -163,7 +163,7 @@ export function filterByRadius(
 
 ## ✅ Zod Validators
 
-**File**: [api/src/marketplace/validators.ts](../api/src/marketplace/validators.ts)
+**File**: [apps/api/src/marketplace/validators.ts](../apps/api/src/marketplace/validators.ts)
 
 **Schemas**:
 
@@ -570,17 +570,17 @@ curl -X POST http://localhost:4000/api/marketplace/jobs/job-id/accept \
 ## 📦 Files Created/Modified
 
 ### Created:
-- ✅ [api/src/lib/geo.ts](../api/src/lib/geo.ts) — Distance calculations
-- ✅ [api/src/marketplace/validators.ts](../api/src/marketplace/validators.ts) — Zod schemas
+- ✅ [apps/api/src/lib/geo.ts](../apps/api/src/lib/geo.ts) — Distance calculations
+- ✅ [apps/api/src/marketplace/validators.ts](../apps/api/src/marketplace/validators.ts) — Zod schemas
 
 ### Modified:
-- ✅ [api/prisma/schema.prisma](../api/prisma/schema.prisma) — Fixed duplicate Subscription model
-- ✅ [api/package.json](../api/package.json) — Added `zod` dependency
+- ✅ [apps/api/prisma/schema.prisma](../apps/api/prisma/schema.prisma) — Fixed duplicate Subscription model
+- ✅ [apps/api/package.json](../apps/api/package.json) — Added `zod` dependency
 
 ### Already Present:
-- ✅ [api/src/marketplace/router.js](../api/src/marketplace/router.js) — All endpoints
-- ✅ [api/src/marketplace/billingRouter.js](../api/src/marketplace/billingRouter.js) — Billing
-- ✅ [api/src/marketplace/webhooks.js](../api/src/marketplace/webhooks.js) — Stripe webhooks
+- ✅ [apps/api/src/marketplace/router.js](../apps/api/src/marketplace/router.js) — All endpoints
+- ✅ [apps/api/src/marketplace/billingRouter.js](../apps/api/src/marketplace/billingRouter.js) — Billing
+- ✅ [apps/api/src/marketplace/webhooks.js](../apps/api/src/marketplace/webhooks.js) — Stripe webhooks
 
 ---
 

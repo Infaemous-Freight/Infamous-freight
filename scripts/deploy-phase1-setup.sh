@@ -159,10 +159,10 @@ build_services() {
   pnpm --filter @infamous-freight/shared build
   
   log_info "Building API..."
-  cd api && pnpm build && cd ..
+  cd apps/api && pnpm build && cd ..
   
   log_info "Building Web..."
-  cd web && pnpm build && cd ..
+  cd apps/web && pnpm build && cd ..
   
   log_info "All services built successfully"
 }

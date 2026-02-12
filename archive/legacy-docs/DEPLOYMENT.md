@@ -37,7 +37,7 @@ The `docker-compose.yml` will:
 Inside the `api` container, run Prisma migrations:
 
 ```bash
-docker compose exec api sh -lc 'cd src/apps/api && pnpm prisma:migrate:deploy && pnpm prisma:generate'
+docker compose exec api sh -lc 'cd apps/api && pnpm prisma:migrate:deploy && pnpm prisma:generate'
 ```
 
 ## 4) Reverse Proxy (Optional but recommended)

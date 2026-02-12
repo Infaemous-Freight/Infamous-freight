@@ -75,12 +75,12 @@ Phase 7 - Test Coverage:       103 comprehensive tests ✅
 - ✅ **Audit Logging** - Request tracking and user activity logging
 
 **Files Created:**
-- `api/src/routes/billing.js` - Billing endpoints (3)
-- `api/src/routes/ai.commands.js` - AI command processing (2)
-- `api/src/routes/voice.js` - Voice processing (2)
-- `api/src/routes/metrics.js` - Revenue tracking (3)
-- `api/src/routes/users.js` - User management (3)
-- `api/src/routes/shipments.js` - Shipment CRUD + export (6)
+- `apps/api/src/routes/billing.js` - Billing endpoints (3)
+- `apps/api/src/routes/ai.commands.js` - AI command processing (2)
+- `apps/api/src/routes/voice.js` - Voice processing (2)
+- `apps/api/src/routes/metrics.js` - Revenue tracking (3)
+- `apps/api/src/routes/users.js` - User management (3)
+- `apps/api/src/routes/shipments.js` - Shipment CRUD + export (6)
 
 **Status:** ✅ PRODUCTION READY
 
@@ -265,12 +265,12 @@ Phase 7 - Test Coverage:       103 comprehensive tests ✅
 - Metrics: 2 endpoints (live, export)
 
 **Files Created:**
-- `api/src/middleware/security.js` - JWT & rate limiting
-- `api/src/middleware/validation.js` - Request validators
-- `api/src/middleware/errorHandler.js` - Global error handler
-- `api/src/middleware/logger.js` - Structured logging
-- `api/src/middleware/securityHeaders.js` - Security headers
-- `api/src/routes/*.js` - All 8 route files
+- `apps/api/src/middleware/security.js` - JWT & rate limiting
+- `apps/api/src/middleware/validation.js` - Request validators
+- `apps/api/src/middleware/errorHandler.js` - Global error handler
+- `apps/api/src/middleware/logger.js` - Structured logging
+- `apps/api/src/middleware/securityHeaders.js` - Security headers
+- `apps/api/src/routes/*.js` - All 8 route files
 - `packages/shared/` - Shared types and utilities
 
 **Status:** ✅ PRODUCTION READY
@@ -316,10 +316,10 @@ Phase 7 - Test Coverage:       103 comprehensive tests ✅
 - Edge Cases: 3 tests (3%)
 
 **Files Created:**
-- `api/jest.config.js` - Jest configuration (28 lines)
-- `api/__tests__/setup.js` - Test setup (49 lines)
-- `api/__tests__/middleware/` - 3 middleware test files (504 LOC)
-- `api/__tests__/routes/` - 8 route test files (1,080 LOC)
+- `apps/api/jest.config.js` - Jest configuration (28 lines)
+- `apps/api/__tests__/setup.js` - Test setup (49 lines)
+- `apps/api/__tests__/middleware/` - 3 middleware test files (504 LOC)
+- `apps/api/__tests__/routes/` - 8 route test files (1,080 LOC)
 - `docs/TEST_COVERAGE_100.md` - Test documentation (470+ lines)
 
 **Status:** ✅ PRODUCTION READY
@@ -475,7 +475,7 @@ All required environment variables documented:
 
 1. **Local Testing**
    ```bash
-   cd api
+   cd apps/api
    pnpm install
    pnpm test:coverage
    open coverage/lcov-report/index.html

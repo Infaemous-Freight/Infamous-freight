@@ -32,13 +32,13 @@ Phase 22 transforms Infæmous Freight from a revenue-ready platform into a **sel
 
 | File | Type | Lines | Purpose |
 |---|---|---|---|
-| `api/prisma/schema.prisma` | Prisma | +420 | 7 new models + 4 enums |
-| `api/src/revops/genesisSalesAI.ts` | TypeScript | 520+ | AI sales agent |
-| `api/src/revops/dynamicPricing.ts` | TypeScript | 480+ | Surge pricing engine |
-| `api/src/revops/outboundEngine.ts` | TypeScript | 520+ | Automated campaigns |
-| `api/src/revops/contractWorkflow.ts` | TypeScript | 540+ | Contract generation |
-| `api/src/revops/dashboard.ts` | TypeScript | 580+ | RevOps BI dashboard |
-| `api/src/routes/revops.js` | CommonJS | 480+ | 25+ API endpoints |
+| `apps/api/prisma/schema.prisma` | Prisma | +420 | 7 new models + 4 enums |
+| `apps/api/src/revops/genesisSalesAI.ts` | TypeScript | 520+ | AI sales agent |
+| `apps/api/src/revops/dynamicPricing.ts` | TypeScript | 480+ | Surge pricing engine |
+| `apps/api/src/revops/outboundEngine.ts` | TypeScript | 520+ | Automated campaigns |
+| `apps/api/src/revops/contractWorkflow.ts` | TypeScript | 540+ | Contract generation |
+| `apps/api/src/revops/dashboard.ts` | TypeScript | 580+ | RevOps BI dashboard |
+| `apps/api/src/routes/revops.js` | CommonJS | 480+ | 25+ API endpoints |
 | **TOTAL** | **Mixed** | **3,540+** | **Phase 22 Complete** |
 
 ---
@@ -871,7 +871,7 @@ All mutations logged:
 ### 1. Database Migration
 
 ```bash
-cd api
+cd apps/api
 npx prisma migrate dev --name "phase-22-revops"
 npx prisma generate
 ```
@@ -907,7 +907,7 @@ CDN_URL=https://cdn.infamous-freight.com
 
 ### 3. API Routes
 
-Register routes in `api/src/server.js`:
+Register routes in `apps/api/src/server.js`:
 
 ```javascript
 const revopsRoutes = require('./routes/revops');
@@ -918,7 +918,7 @@ app.use('/api/revops', revopsRoutes);
 
 **Auto-qualify new leads** (every hour):
 ```javascript
-// api/src/jobs/autoQualifyLeads.js
+// apps/api/src/jobs/autoQualifyLeads.js
 cron.schedule('0 * * * *', async () => {
   const qualified = await genesisSalesAI.autoQualifyNewLeads();
   console.log(`[Cron] Auto-qualified ${qualified} leads`);
@@ -927,7 +927,7 @@ cron.schedule('0 * * * *', async () => {
 
 **Send scheduled campaigns** (every 15 min):
 ```javascript
-// api/src/jobs/sendCampaigns.js
+// apps/api/src/jobs/sendCampaigns.js
 cron.schedule('*/15 * * * *', async () => {
   const campaigns = await prisma.outboundCampaign.findMany({
     where: {

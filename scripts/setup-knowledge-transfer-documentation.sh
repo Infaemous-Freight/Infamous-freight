@@ -162,7 +162,7 @@ TARGET: 20 ADRs by end of Q2 2026
 How users authenticate and what they're authorized to do.
 
 ## Components
-- JWT token generation (api/src/middleware/security.js)
+- JWT token generation (apps/api/src/middleware/security.js)
 - Scope-based authorization
 - Token refresh mechanism
 - Password hashing (bcrypt, 12 rounds)
@@ -202,9 +202,9 @@ How users authenticate and what they're authorized to do.
 **Solution**: Verify user has required scope, check token payload
 
 ## Code References
-- Authentication: api/src/middleware/security.js#authenticate
-- Authorization: api/src/middleware/security.js#requireScope
-- Token generation: api/src/routes/auth.js#login
+- Authentication: apps/api/src/middleware/security.js#authenticate
+- Authorization: apps/api/src/middleware/security.js#requireScope
+- Token generation: apps/api/src/routes/auth.js#login
 ```
 
 ##### 2. Database Architecture (`docs/systems/database.md`)
@@ -240,7 +240,7 @@ PostgreSQL database with Prisma ORM, primary + 2 read replicas.
 - Cache frequent queries (Redis)
 
 ## Migrations
-- Location: api/prisma/migrations/
+- Location: apps/api/prisma/migrations/
 - Create: pnpm prisma:migrate:dev --name <name>
 - Apply: pnpm prisma:migrate:deploy
 - Rollback: [steps]
@@ -258,9 +258,9 @@ PostgreSQL database with Prisma ORM, primary + 2 read replicas.
 **Solution**: [rollback steps]
 
 ## Code References
-- Schema: api/prisma/schema.prisma
-- Client setup: api/src/config/prisma.js
-- Example queries: api/src/services/*.js
+- Schema: apps/api/prisma/schema.prisma
+- Client setup: apps/api/src/config/prisma.js
+- Example queries: apps/api/src/services/*.js
 ```
 
 ##### 3-10. Additional Systems

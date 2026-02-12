@@ -31,7 +31,7 @@ npm install --save-dev @types/ioredis
 
 ### 2. Create Redis Service
 
-**File: `api/src/services/cacheService.js`**
+**File: `apps/api/src/services/cacheService.js`**
 
 ```javascript
 const redis = require('ioredis');
@@ -162,7 +162,7 @@ module.exports = new CacheService();
 
 ### 3. Create Cache Middleware
 
-**File: `api/src/middleware/cacheMiddleware.js`**
+**File: `apps/api/src/middleware/cacheMiddleware.js`**
 
 ```javascript
 const cacheService = require('../services/cacheService');
@@ -225,7 +225,7 @@ module.exports = {
 ### Example 1: Cache Shipment Details
 
 ```javascript
-// api/src/routes/shipments.js
+// apps/api/src/routes/shipments.js
 const cacheMiddleware = require('../middleware/cacheMiddleware');
 const cacheService = require('../services/cacheService');
 

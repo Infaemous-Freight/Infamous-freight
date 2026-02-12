@@ -12,16 +12,16 @@
 
 #### 1. **Jest Testing Framework** (86 Test Cases)
 
-- ✅ `api/src/lib/__tests__/jobStateMachine.test.js` (41 tests)
+- ✅ `apps/api/src/lib/__tests__/jobStateMachine.test.js` (41 tests)
   - State transitions validation
   - Workflow sequence testing
   - Edge cases (nulls, undefined, case sensitivity)
-- ✅ `api/src/lib/__tests__/pricing.test.js` (20 tests)
+- ✅ `apps/api/src/lib/__tests__/pricing.test.js` (20 tests)
   - Plan discount calculations (BASIC/PLUS/PRO/ENTERPRISE)
   - Distance and time pricing
   - Decimal precision
   - Deterministic results
-- ✅ `api/src/lib/__tests__/geo.test.js` (25 tests)
+- ✅ `apps/api/src/lib/__tests__/geo.test.js` (25 tests)
   - Haversine formula accuracy
   - Known distance verification (NYC-LA, London-Paris)
   - Symmetric distance checks
@@ -37,7 +37,7 @@ pnpm test
 
 #### 2. **Redis Integration Library** (Production-Ready)
 
-**File:** `api/src/lib/redis.js` (275 lines)
+**File:** `apps/api/src/lib/redis.js` (275 lines)
 
 **Features:**
 
@@ -70,7 +70,7 @@ if (!jobs) {
 
 #### 3. **Circuit Breaker Pattern** (Production-Ready)
 
-**File:** `api/src/lib/circuitBreaker.js` (270 lines)
+**File:** `apps/api/src/lib/circuitBreaker.js` (270 lines)
 
 **Features:**
 
@@ -109,7 +109,7 @@ try {
 
 #### 4. **Structured Logging System** (Production-Ready)
 
-**File:** `api/src/lib/structuredLogging.js` (400 lines)
+**File:** `apps/api/src/lib/structuredLogging.js` (400 lines)
 
 **Features:**
 
@@ -142,7 +142,7 @@ JobLogger.stateTransition(jobId, "DRAFT", "REQUIRES_PAYMENT");
 
 #### 5. **Database Optimization Script** (Production-Ready)
 
-**File:** `api/src/scripts/optimizeDatabase.js` (400 lines)
+**File:** `apps/api/src/scripts/optimizeDatabase.js` (400 lines)
 
 **Creates 20+ Strategic Indexes:**
 
@@ -299,11 +299,11 @@ Each feature includes:
 
 **Code Files (5):**
 
-1. `api/src/lib/redis.js` - Redis client (275 lines)
-2. `api/src/lib/circuitBreaker.js` - Circuit breaker (270 lines)
-3. `api/src/lib/structuredLogging.js` - Logging system (400 lines)
-4. `api/src/scripts/optimizeDatabase.js` - DB optimization (400 lines)
-5. `api/src/lib/__tests__/` - Test files (86 tests)
+1. `apps/api/src/lib/redis.js` - Redis client (275 lines)
+2. `apps/api/src/lib/circuitBreaker.js` - Circuit breaker (270 lines)
+3. `apps/api/src/lib/structuredLogging.js` - Logging system (400 lines)
+4. `apps/api/src/scripts/optimizeDatabase.js` - DB optimization (400 lines)
+5. `apps/api/src/lib/__tests__/` - Test files (86 tests)
 
 **Documentation Files (1):**
 
@@ -341,16 +341,16 @@ Copy code from `PHASE_3_PRODUCTION_HARDENING_GUIDE.md`:
 
 ```bash
 # 6. Caching
-# → Copy caching middleware to api/src/middleware/caching.js
+# → Copy caching middleware to apps/api/src/middleware/caching.js
 # → Integrate into router.js
 
 # 7. Webhook Replay
 # → Add WebhookEvent model to schema.prisma
-# → Create api/src/routes/admin.webhooks.js
+# → Create apps/api/src/routes/admin.webhooks.js
 # → Run: pnpm prisma migrate dev
 
 # 8. WebSocket
-# → Create api/src/lib/websocket.js
+# → Create apps/api/src/lib/websocket.js
 # → Update server.js to initialize socket.io
 
 # ... and so on for each feature

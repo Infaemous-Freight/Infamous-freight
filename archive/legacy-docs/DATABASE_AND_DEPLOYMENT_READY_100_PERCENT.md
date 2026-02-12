@@ -35,7 +35,7 @@ postgresql://infamous-freight-db.flycast
 - **Provider:** PostgreSQL
 - **Host:** infamous-freight-db.flycast (Fly.io managed database)
 - **Prisma ORM:** Fully configured
-- **Migrations:** Applied (`api/prisma/migrations/`)
+- **Migrations:** Applied (`apps/api/prisma/migrations/`)
 - **Schema:** 1,424 lines of optimized schema
 - **Indexes:** Performance indexes applied
 
@@ -152,7 +152,7 @@ flyctl secrets set SENTRY_DSN=<your-sentry-dsn>
 ### 2. Run Migrations
 ```bash
 # Before first deployment
-cd api
+cd apps/api
 pnpm prisma:migrate:deploy
 pnpm prisma:generate
 ```
@@ -376,7 +376,7 @@ METRICS_PORT=9090
 psql postgresql://infamous-freight-db.flycast
 
 # Check Prisma connection
-cd api && pnpm prisma:db:push --skip-generate
+cd apps/api && pnpm prisma:db:push --skip-generate
 ```
 
 ### API Won't Start
@@ -385,7 +385,7 @@ cd api && pnpm prisma:db:push --skip-generate
 env | grep DATABASE_URL
 
 # Verify Prisma client
-cd api && pnpm prisma:generate
+cd apps/api && pnpm prisma:generate
 
 # Check logs
 npm run api:dev 2>&1 | grep -i error

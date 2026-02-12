@@ -104,7 +104,7 @@ flyctl logs -a infamous-freight-api --follow | grep -i "scaling\|cpu\|memory"
 
 #### **1.3 Database Connection Pooling** ✅
 
-**File**: `api/src/config.js` (update)
+**File**: `apps/api/src/config.js` (update)
 
 ```javascript
 const prisma = new PrismaClient({
@@ -193,7 +193,7 @@ name: Bundle Analysis
 on:
   pull_request:
     paths:
-      - "web/**"
+      - "apps/web/**"
 
 jobs:
   analyze:
@@ -209,14 +209,14 @@ jobs:
 
       - name: Build and analyze
         run: |
-          cd web
+          cd apps/web
           ANALYZE=true pnpm build
           echo "Bundle size analysis complete"
 ```
 
 #### **2.3 Database Query Optimization** ✅
 
-**File**: `api/src/utils/queryOptimization.js`
+**File**: `apps/api/src/utils/queryOptimization.js`
 
 ```javascript
 // Monitor slow queries
@@ -419,7 +419,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "mobile/**"
+      - "apps/mobile/**"
   workflow_dispatch:
 
 jobs:
@@ -442,10 +442,10 @@ jobs:
           EAS_TOKEN: ${{ secrets.EAS_TOKEN }}
 
       - name: Build iOS
-        run: cd mobile && eas build --platform ios --auto-submit
+        run: cd apps/mobile && eas build --platform ios --auto-submit
 
       - name: Build Android
-        run: cd mobile && eas build --platform android --auto-submit
+        run: cd apps/mobile && eas build --platform android --auto-submit
 
       - name: Notify deployment
         if: always()
@@ -482,7 +482,7 @@ Google Play:
 
 #### **4.3 Version Management** ✅
 
-**File**: `mobile/app.json`
+**File**: `apps/mobile/app.json`
 
 ```json
 {
@@ -504,7 +504,7 @@ Google Play:
 
 #### **5.1 Version Routing Implementation** ✅
 
-**File**: `api/src/routes/index.js`
+**File**: `apps/api/src/routes/index.js`
 
 ```javascript
 const express = require("express");
@@ -526,7 +526,7 @@ module.exports = router;
 
 #### **5.2 Deprecation Strategy** ✅
 
-**File**: `api/src/middleware/deprecation.js`
+**File**: `apps/api/src/middleware/deprecation.js`
 
 ```javascript
 function deprecationWarning(version, deprecatedAt, removedAt) {
@@ -655,7 +655,7 @@ Infrastructure:
 
 #### **6.3 Analytics Integration** ✅
 
-**File**: `web/src/utils/analytics.js`
+**File**: `apps/web/src/utils/analytics.js`
 
 ```javascript
 import posthog from "posthog-js";
@@ -880,7 +880,7 @@ jobs:
 
 #### **10.1 Redis Caching Implementation** ✅
 
-**File**: `api/src/services/cache.js` (enhanced)
+**File**: `apps/api/src/services/cache.js` (enhanced)
 
 ```javascript
 const redis = require("redis");

@@ -45,10 +45,10 @@ GIT COMMIT:  3896909 (d955857, 829a413)
 📦 DELIVERABLES SUMMARY
 
 Code Changes:
-  • api/src/lib/__tests__/pricing.test.js
-  • api/__tests__/routes/users.test.js
-  • api/__tests__/api.test.js
-  • api/src/marketplace/state/transition.js
+  • apps/api/src/lib/__tests__/pricing.test.js
+  • apps/api/__tests__/routes/users.test.js
+  • apps/api/__tests__/api.test.js
+  • apps/api/src/marketplace/state/transition.js
 
 Documentation Files (5):
   1. COMPLETION_INDEX.md (7.9 KB)

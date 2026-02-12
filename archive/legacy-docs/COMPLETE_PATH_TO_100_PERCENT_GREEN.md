@@ -50,10 +50,10 @@ cd /workspaces/Infamous-freight-enterprises
 cd apps/api
 pnpm audit fix
 
-cd ../web
+cd ../apps/web
 pnpm audit fix
 
-cd ../mobile
+cd ../apps/mobile
 pnpm audit fix
 
 cd ../packages/shared

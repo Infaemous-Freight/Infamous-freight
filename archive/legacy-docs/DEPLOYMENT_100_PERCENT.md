@@ -11,7 +11,7 @@
 ### 1. Vercel (Web Frontend)
 - **Status:** ✅ Configured & Deployed
 - **URL:** https://infamous-freight-enterprises.vercel.app
-- **Config:** `web/vercel.json`
+- **Config:** `apps/web/vercel.json`
 - **Workflow:** `.github/workflows/vercel-deploy.yml`
 - **Features:**
   - Node 20
@@ -108,7 +108,7 @@
 - ⚠️ `YUNBOX_SITE_ID` (optional, for China CDN)
 
 ### Vercel Environment Variables
-- ✅ Set in `web/vercel.json`:
+- ✅ Set in `apps/web/vercel.json`:
   - `NEXT_PUBLIC_API_URL=https://infamous-freight-api.fly.dev`
   - `NEXT_PUBLIC_API_BASE=https://infamous-freight-api.fly.dev/api`
 
@@ -119,7 +119,7 @@
 - ✅ [DEPLOYMENT.md](DEPLOYMENT.md) - Docker Compose guide
 - ✅ [README.md](README.md) - Deployment status & badges
 - ✅ [netlify.toml](netlify.toml) - Netlify configuration
-- ✅ [web/vercel.json](web/vercel.json) - Vercel configuration
+- ✅ [apps/web/vercel.json](apps/web/vercel.json) - Vercel configuration
 - ✅ [docker-compose.yml](docker-compose.yml) - Container orchestration
 - ✅ `.github/workflows/` - All CI/CD pipelines
 - ✅ `.env.example` - Environment template
@@ -137,7 +137,7 @@ pnpm --filter @infamous-freight/shared build
 docker compose --profile prod up -d --build
 
 # Run migrations
-docker compose exec api sh -lc 'cd src/apps/api && pnpm prisma:migrate:deploy'
+docker compose exec api sh -lc 'cd apps/api && pnpm prisma:migrate:deploy'
 
 # Smoke test
 bash scripts/smoke-test.sh
@@ -207,9 +207,9 @@ bash scripts/smoke-test.sh
 
 ### Web Returns 404
 1. Check Vercel build logs
-2. Verify `web/vercel.json` configuration
+2. Verify `apps/web/vercel.json` configuration
 3. Ensure `NEXT_PUBLIC_API_*` envs are set
-4. Confirm build runs from `web/` directory
+4. Confirm build runs from `apps/web/` directory
 
 ### API Health Unreachable
 1. Check Fly.io deployment logs
@@ -227,7 +227,7 @@ bash scripts/smoke-test.sh
 1. Rebuild: `docker compose up -d --build`
 2. Check logs: `docker compose logs -f`
 3. Verify `.env` file exists with proper values
-4. Run migrations: `docker compose exec api sh -lc 'cd src/apps/api && pnpm prisma:migrate:deploy'`
+4. Run migrations: `docker compose exec api sh -lc 'cd apps/api && pnpm prisma:migrate:deploy'`
 
 ---
 

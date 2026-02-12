@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "api/**"
+      - "apps/api/**"
       - "packages/**"
       - "pnpm-lock.yaml"
   workflow_call: {}
@@ -72,7 +72,7 @@ jobs:
             changed_files="$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}")"
           fi
 
-          if echo "$changed_files" | grep -q "^api/prisma/"; then
+          if echo "$changed_files" | grep -q "^apps/api/prisma/"; then
             # Start DB lock process in the background and keep it alive during migration
             node scripts/db-lock.js migrations 180000 &
             db_lock_pid=$!
@@ -86,7 +86,7 @@ jobs:
             kill "$db_lock_pid" 2>/dev/null || true
             trap - EXIT
           else
-            echo "No api/prisma changes detected; skipping Prisma migrate deploy."
+            echo "No apps/api/prisma changes detected; skipping Prisma migrate deploy."
           fi
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

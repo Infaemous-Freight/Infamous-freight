@@ -33,7 +33,7 @@ The **Infamous Freight Enterprises** deploy-site is **100% production-ready** wi
 ```
 deploy-site/
 ├── 📦 BACKEND LAYER
-│   └── api/
+│   └── apps/api/
 │       ├── src/
 │       │   ├── routes/          (8 route handlers, 24 endpoints)
 │       │   ├── middleware/       (5 middleware implementations)
@@ -45,14 +45,14 @@ deploy-site/
 │       └── package.json          (Dependencies)
 │
 ├── 🎨 FRONTEND LAYER
-│   ├── web/                      (Next.js 14 frontend)
+│   ├── apps/web/                      (Next.js 14 frontend)
 │   │   ├── pages/                (Next.js pages)
 │   │   ├── components/           (React components)
 │   │   ├── styles/               (CSS modules)
 │   │   ├── public/               (Static assets)
 │   │   └── package.json
 │   │
-│   └── mobile/                   (React Native/Expo)
+│   └── apps/mobile/                   (React Native/Expo)
 │       ├── app/                  (App structure)
 │       ├── components/           (Mobile components)
 │       └── package.json

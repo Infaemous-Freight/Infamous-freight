@@ -12,7 +12,7 @@ Comprehensive implementation of performance optimization, web vitals monitoring,
 
 ### Compression & Caching Middleware
 
-**File**: `api/src/middleware/performance.js`
+**File**: `apps/api/src/middleware/performance.js`
 
 - **Gzip Compression**: Compresses responses >1KB at level 6 (balance speed/ratio)
 - **In-Memory Cache**: Caches GET requests with configurable TTL
@@ -34,7 +34,7 @@ const cacheMiddleware = (duration = 60) => { ... };
 
 ### Database Optimization
 
-**File**: `api/src/utils/dbOptimization.js`
+**File**: `apps/api/src/utils/dbOptimization.js`
 
 **Features**:
 
@@ -68,7 +68,7 @@ CREATE INDEX idx_ai_events_created_at ON "AiEvent"("createdAt" DESC);
 
 ### API Server Configuration
 
-**File**: `api/src/server.js`
+**File**: `apps/api/src/server.js`
 
 - Added `compressionMiddleware` to request pipeline
 - Proper middleware ordering for optimal performance
@@ -80,7 +80,7 @@ CREATE INDEX idx_ai_events_created_at ON "AiEvent"("createdAt" DESC);
 
 ### Core Web Vitals Monitoring
 
-**File**: `web/lib/webVitalsMonitoring.js`
+**File**: `apps/web/lib/webVitalsMonitoring.js`
 
 **Metrics Tracked**:
 
@@ -100,7 +100,7 @@ CREATE INDEX idx_ai_events_created_at ON "AiEvent"("createdAt" DESC);
 
 ### Next.js Configuration
 
-**File**: `web/next.config.mjs`
+**File**: `apps/web/next.config.mjs`
 
 **Enhancements**:
 
@@ -121,7 +121,7 @@ CREATE INDEX idx_ai_events_created_at ON "AiEvent"("createdAt" DESC);
 
 ### Web App Updates
 
-**File**: `web/pages/_app.tsx`
+**File**: `apps/web/pages/_app.tsx`
 
 **Changes**:
 
@@ -158,7 +158,7 @@ bash scripts/setup-monitoring.sh
 
 ### Monitoring Configuration
 
-**File**: `api/src/config/monitoring.js`
+**File**: `apps/api/src/config/monitoring.js`
 
 **Configuration Sections**:
 
@@ -295,7 +295,7 @@ curl -H "Accept-Encoding: gzip" http://localhost:4000/api/health -v
 
 ```bash
 # Build web app
-cd web && pnpm build && pnpm start
+cd apps/web && pnpm build && pnpm start
 
 # Open in browser and check console for:
 # "📊 Web Vital: LCP" messages
@@ -386,9 +386,9 @@ pnpm test
 
 ## 📚 Additional Resources
 
-- [Compression Middleware](api/src/middleware/performance.js)
-- [Database Optimization](api/src/utils/dbOptimization.js)
-- [Web Vitals Configuration](web/lib/webVitalsMonitoring.js)
+- [Compression Middleware](apps/api/src/middleware/performance.js)
+- [Database Optimization](apps/api/src/utils/dbOptimization.js)
+- [Web Vitals Configuration](apps/web/lib/webVitalsMonitoring.js)
 - [Monitoring Setup](scripts/setup-monitoring.sh)
 - [Database Indexes](scripts/db-indexes.sql)
 

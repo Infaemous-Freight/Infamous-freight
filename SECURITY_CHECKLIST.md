@@ -192,7 +192,7 @@ Already configured in code, but verify:
 
 - API routes have rate limiters
 - Middleware is in correct order
-- Check `api/src/middleware/security.js`
+- Check `apps/api/src/middleware/security.js`
 
 ### Set Up Alerts
 

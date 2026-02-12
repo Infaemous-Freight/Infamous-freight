@@ -40,7 +40,7 @@ Feature Modules:
 ### 1.2 API Integration Layer
 
 ```typescript
-// mobile/src/services/apiClient.ts
+// apps/mobile/src/services/apiClient.ts
 
 import axios, { AxiosInstance } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -204,7 +204,7 @@ interface QueuedRequest {
 ### 2.1 Real-Time GPS Tracking
 
 ```typescript
-// mobile/src/features/tracking/gpsService.ts
+// apps/mobile/src/features/tracking/gpsService.ts
 
 import * as Location from 'expo-location';
 import { AppState } from 'react-native';
@@ -306,7 +306,7 @@ interface Coordinates {
 ### 2.2 Push Notification System
 
 ```typescript
-// mobile/src/services/notificationService.ts
+// apps/mobile/src/services/notificationService.ts
 
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -485,7 +485,7 @@ Projected Revenue:
 ### 3.2 Monetization Integration
 
 ```typescript
-// mobile/src/services/monetizationService.ts
+// apps/mobile/src/services/monetizationService.ts
 
 import { RevenueCat } from 'react-native-revenuecat';
 

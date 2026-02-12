@@ -56,7 +56,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./src/apps/api/Dockerfile
+          file: ./apps/api/Dockerfile
           push: false
           tags: ghcr.io/${{ env.REGISTRY_OWNER }}/infamous-freight-api:test
         continue-on-error: true
@@ -65,7 +65,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./src/apps/web/Dockerfile
+          file: ./apps/web/Dockerfile
           push: false
           tags: ghcr.io/${{ env.REGISTRY_OWNER }}/infamous-freight-web:test
           build-args: |

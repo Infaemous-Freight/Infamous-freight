@@ -130,7 +130,7 @@ Test Report:         TEST_COVERAGE_EXECUTION_REPORT.md ✅
 
 ```bash
 # Verify tests
-cd api && npm test  # All 60+ should pass ✅
+cd apps/api && npm test  # All 60+ should pass ✅
 
 # Type check
 pnpm check:types
@@ -193,7 +193,7 @@ flyctl ssh console -a infamous-freight-api
 
 1. Review [TEST_COVERAGE_EXECUTION_REPORT.md](TEST_COVERAGE_EXECUTION_REPORT.md) - understand test fixes
 2. Check [DATABASE_OPTIMIZATION.md](DATABASE_OPTIMIZATION.md) - learn performance tips
-3. Study [api/src/lib/redis.ts](api/src/lib/redis.ts) - integrate caching
+3. Study [apps/api/src/lib/redis.ts](apps/api/src/lib/redis.ts) - integrate caching
 
 ### For DevOps/SRE
 

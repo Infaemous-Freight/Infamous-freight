@@ -331,11 +331,11 @@ Metrics to Measure:
 # Step 2: Install & Build
 pnpm install --production
 pnpm test  # Must pass >75%
-cd api && pnpm build
-cd ../web && pnpm build
+cd apps/api && pnpm build
+cd ../apps/web && pnpm build
 
 # Step 3: Database
-cd api
+cd apps/api
 pnpm prisma:generate
 pnpm prisma:migrate:deploy
 
@@ -344,7 +344,7 @@ npm audit --audit-level=moderate  # Must pass
 
 # Step 5: Start Services
 pm2 stop all
-pm2 start api/server.js -i max --name "api"
+pm2 start apps/api/server.js -i max --name "api"
 pm2 start "npm run start" --cwd web --name "web"
 pm2 save
 

@@ -86,7 +86,7 @@ echo -e "${BLUE}═══ 6. API Test Coverage ═══${NC}"
 echo -e "${YELLOW}Generating coverage report...${NC}"
 if pnpm --filter api test:coverage --silent; then
   echo -e "${GREEN}✓ Coverage report generated${NC}"
-  echo -e "${BLUE}View at: api/coverage/index.html${NC}"
+  echo -e "${BLUE}View at: apps/api/coverage/index.html${NC}"
   ((CHECKS_PASSED++))
 else
   echo -e "${YELLOW}⚠ Coverage generation failed${NC}"

@@ -46,7 +46,7 @@ Total tests fixed: 60+
 
 **Created Files**:
 
-1. **[api/src/lib/redis.ts](api/src/lib/redis.ts)** - Redis Caching Layer
+1. **[apps/api/src/lib/redis.ts](apps/api/src/lib/redis.ts)** - Redis Caching Layer
    - Generic cache getter/setter with fallback compute
    - TTL presets (SHORT: 1min, MEDIUM: 5min, LONG: 1hr, DAY: 24hrs)
    - Cache invalidation patterns (single key, glob pattern, clear all)
@@ -144,7 +144,7 @@ From previous phases:
 1. **[STEP 1]** Deploy with fixed tests
 
    ```bash
-   cd api && npm test  # Verify all 60+ pass
+   cd apps/api && npm test  # Verify all 60+ pass
    git push origin main  # Auto-deploys via GitHub Actions
    ```
 
@@ -241,13 +241,13 @@ Coverage Target: 95%+ ✅ Achievable
 
 **Test Files Fixed** (3):
 
-1. `api/src/lib/__tests__/geo.test.js` - 5 tolerance fixes + 2 exports added
-2. `api/src/lib/__tests__/jobStateMachine.test.js` - 1 error message regex fix
-3. `api/__tests__/middleware/securityHeaders.test.js` - 2 mock property additions
+1. `apps/api/src/lib/__tests__/geo.test.js` - 5 tolerance fixes + 2 exports added
+2. `apps/api/src/lib/__tests__/jobStateMachine.test.js` - 1 error message regex fix
+3. `apps/api/__tests__/middleware/securityHeaders.test.js` - 2 mock property additions
 
 **API Code Enhanced** (1):
 
-1. `api/src/lib/geo.js` - Added `findNearbyDrivers()` and `getLocation()` exports
+1. `apps/api/src/lib/geo.js` - Added `findNearbyDrivers()` and `getLocation()` exports
 
 ---
 

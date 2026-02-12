@@ -41,7 +41,7 @@ pnpm start
 ## 📁 Project Structure
 
 ```
-mobile/
+apps/mobile/
 ├── src/
 │   ├── components/     # Reusable React Native components
 │   ├── navigation/     # Navigation configuration

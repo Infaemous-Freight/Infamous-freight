@@ -128,11 +128,11 @@
 
 | File                                   | Changes                           | Lines | Status |
 | -------------------------------------- | --------------------------------- | ----- | ------ |
-| `api/src/lib/jobStateMachine.js`       | NEW                               | +45   | ✅     |
-| `api/src/marketplace/router.js`        | Auth, transactions, pagination    | +80   | ✅     |
-| `api/src/marketplace/billingRouter.js` | Auth, scopes                      | +30   | ✅     |
-| `api/src/marketplace/webhooks.js`      | Retry, dedup, correlation IDs     | +120  | ✅     |
-| `api/src/middleware/security.js`       | Already exports everything needed | 0     | ✅     |
+| `apps/api/src/lib/jobStateMachine.js`       | NEW                               | +45   | ✅     |
+| `apps/api/src/marketplace/router.js`        | Auth, transactions, pagination    | +80   | ✅     |
+| `apps/api/src/marketplace/billingRouter.js` | Auth, scopes                      | +30   | ✅     |
+| `apps/api/src/marketplace/webhooks.js`      | Retry, dedup, correlation IDs     | +120  | ✅     |
+| `apps/api/src/middleware/security.js`       | Already exports everything needed | 0     | ✅     |
 
 **Total Code Added:** 365 lines  
 **Total Code Modified:** 4 files  
@@ -202,10 +202,10 @@
 
 ```bash
 # 1. Start API
-cd api && pnpm dev
+cd apps/api && pnpm dev
 
 # 2. Start Web (optional)
-cd web && pnpm dev
+cd apps/web && pnpm dev
 
 # 3. Verify health
 curl http://localhost:4000/api/health

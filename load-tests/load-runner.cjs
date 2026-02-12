@@ -1,6 +1,6 @@
 // load-tests/load-runner.js - Lightweight Load Testing Framework (Pure Node.js)
 const http = require('http');
-const { generateToken } = require('../api/auth');
+const { generateToken } = require('../apps/api/auth');
 
 const API_BASE = process.env.API_BASE_URL || 'http://localhost:4000';
 

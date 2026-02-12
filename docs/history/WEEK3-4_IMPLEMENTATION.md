@@ -105,8 +105,8 @@ Events:
 - Manual trigger
 
 Images Scanned:
-1. API Container (api/Dockerfile)
-2. Web Container (web/Dockerfile)
+1. API Container (apps/api/Dockerfile)
+2. Web Container (apps/web/Dockerfile)
 
 Jobs:
 1. Build API image

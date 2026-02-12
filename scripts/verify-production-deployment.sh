@@ -232,8 +232,8 @@ check_ssl_certificate() {
 check_logging() {
     print_header "Logging System Check"
     
-    if [ -f "api/logs/combined.log" ]; then
-        local recent_errors=$(tail -n 100 api/logs/combined.log 2>/dev/null | grep -c "ERROR" || echo "0")
+    if [ -f "apps/api/logs/combined.log" ]; then
+        local recent_errors=$(tail -n 100 apps/api/logs/combined.log 2>/dev/null | grep -c "ERROR" || echo "0")
         if [ "$recent_errors" -gt 10 ]; then
             print_warning "Found $recent_errors errors in recent logs"
         else

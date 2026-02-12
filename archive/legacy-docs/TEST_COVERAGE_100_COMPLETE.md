@@ -234,7 +234,7 @@ pnpm test -- --testNamePattern="should validate JWT token"
 After running tests, view the HTML coverage report:
 
 ```bash
-open api/coverage/lcov-report/index.html
+open apps/api/coverage/lcov-report/index.html
 ```
 
 Coverage includes:
@@ -294,11 +294,11 @@ module.exports = {
 
 ## Files Modified
 
-- ✅ Created: `api/__tests__/middleware/logger.test.js` (180+ lines)
-- ✅ Created: `api/__tests__/middleware/securityHeaders.test.js` (120+ lines)
-- ✅ Created: `api/__tests__/middleware/errorTracking.test.js` (250+ lines)
-- ✅ Created: `api/__tests__/middleware/performance.test.js` (80+ lines)
-- ✅ Created: `api/__tests__/middleware/securityHardening.test.js` (400+ lines)
+- ✅ Created: `apps/api/__tests__/middleware/logger.test.js` (180+ lines)
+- ✅ Created: `apps/api/__tests__/middleware/securityHeaders.test.js` (120+ lines)
+- ✅ Created: `apps/api/__tests__/middleware/errorTracking.test.js` (250+ lines)
+- ✅ Created: `apps/api/__tests__/middleware/performance.test.js` (80+ lines)
+- ✅ Created: `apps/api/__tests__/middleware/securityHardening.test.js` (400+ lines)
 
 Total new test code: **1000+ lines of comprehensive test coverage**
 

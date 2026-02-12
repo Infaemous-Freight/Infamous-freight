@@ -18,7 +18,7 @@ The build process is managed by `scripts/build-pages.mjs`:
 1. Cleans the `dist/` directory
 2. Builds the shared package (if needed)
 3. Builds the Next.js web app with static export (`output: "export"`)
-4. Copies the output from `src/apps/web/out/` to `./dist/`
+4. Copies the output from `apps/web/out/` to `./dist/`
 5. Creates a `.nojekyll` file for GitHub Pages
 
 ## Configuration Files

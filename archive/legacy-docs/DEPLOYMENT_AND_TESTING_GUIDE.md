@@ -72,7 +72,7 @@ Lines:       ≥80%
 Statements:  ≥80%
 ```
 
-**Output**: `api/coverage/` (HTML report)
+**Output**: `apps/api/coverage/` (HTML report)
 
 ---
 
@@ -113,7 +113,7 @@ Before running tests, verify:
 [ -d packages/shared/dist ] && echo "✅ Shared package ready" || echo "❌ Build shared first"
 
 # 2. API server exists
-[ -f api/src/server.js ] && echo "✅ API server ready" || echo "❌ Missing server.js"
+[ -f apps/api/src/server.js ] && echo "✅ API server ready" || echo "❌ Missing server.js"
 
 # 3. Docker file configured
 [ -f Dockerfile.fly ] && echo "✅ Docker ready" || echo "❌ Missing Dockerfile"
@@ -122,7 +122,7 @@ Before running tests, verify:
 [ -f fly.toml ] && echo "✅ Fly.dev config ready" || echo "❌ Missing fly.toml"
 
 # 5. Tests exist
-[ -d api/__tests__ ] && echo "✅ Tests ready" || echo "❌ Missing tests"
+[ -d apps/api/__tests__ ] && echo "✅ Tests ready" || echo "❌ Missing tests"
 ```
 
 ### ✅ Post-Deployment Verification
@@ -188,16 +188,16 @@ Set up alerts for:
 ### Unit Tests (API)
 
 ```
-PASS  api/__tests__/routes/health.test.js
+PASS  apps/api/__tests__/routes/health.test.js
   ✓ GET /api/health (50ms)
   ✓ Database connection check (100ms)
 
-PASS  api/__tests__/routes/ai.commands.test.js
+PASS  apps/api/__tests__/routes/ai.commands.test.js
   ✓ POST /api/ai/command (75ms)
   ✓ Rate limiting enforced (50ms)
   ✓ Scope validation (40ms)
 
-PASS  api/__tests__/routes/billing.test.js
+PASS  apps/api/__tests__/routes/billing.test.js
   ✓ POST /api/billing/create-invoice (80ms)
   ✓ POST /api/billing/payment (120ms)
 
@@ -271,7 +271,7 @@ npm run prisma:migrate:dev
 
 ```bash
 # Verify rate limiters are configured
-grep -r "express-rate-limit" api/src/
+grep -r "express-rate-limit" apps/api/src/
 
 # Check middleware order in server.js
 # Rate limiters must come BEFORE route handlers

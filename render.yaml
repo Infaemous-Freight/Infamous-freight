@@ -31,8 +31,8 @@ services:
   - type: web
     name: infamous-freight-api
     env: node
-    buildCommand: cd api && npm install
-    startCommand: cd api && npm start
+    buildCommand: cd apps/api && npm install
+    startCommand: cd apps/api && npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION

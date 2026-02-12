@@ -1,5 +1,5 @@
-import type { RiskFactors, RiskScoreResult } from "../api/risk";
-import { scoreRisk } from "../api/risk";
+import type { RiskFactors, RiskScoreResult } from "../apps/api/risk";
+import { scoreRisk } from "../apps/api/risk";
 
 export interface GenesisInput {
   userId: string;

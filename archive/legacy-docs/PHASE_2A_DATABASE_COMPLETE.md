@@ -152,10 +152,10 @@ When Docker/PostgreSQL available:
 
 ```bash
 # Start API server
-node api/production-server.js
+node apps/api/production-server.js
 
 # Generate JWT token
-node -e "const { generateToken } = require('./api/auth'); console.log(generateToken('user-123', 'test@example.com', 'admin'));"
+node -e "const { generateToken } = require('./apps/api/auth'); console.log(generateToken('user-123', 'test@example.com', 'admin'));"
 
 # Test CRUD operations
 TOKEN="<your-token>"

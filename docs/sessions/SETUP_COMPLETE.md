@@ -26,9 +26,9 @@
 
 ### 4. ✅ Project Structure Verified
 
-- `api/` - Express.js backend
-- `web/` - Next.js frontend (built)
-- `mobile/` - React Native/Expo app
+- `apps/api/` - Express.js backend
+- `apps/web/` - Next.js frontend (built)
+- `apps/mobile/` - React Native/Expo app
 - `packages/shared/` - Shared TypeScript package (built)
 - `e2e/` - Playwright tests
 
@@ -90,21 +90,21 @@ docker-compose up postgres
 ### Run Migrations
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:migrate:dev
 ```
 
 ### Seed Test Data (Optional)
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:seed
 ```
 
 ### Open Database GUI
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma:studio
 ```
 
@@ -114,9 +114,9 @@ pnpm prisma:studio
 
 - ✅ `.env.local` - Environment configuration (created)
 - ✅ `packages/shared/dist/` - Compiled shared package (built)
-- ✅ `web/.next/` - Next.js production build (built)
+- ✅ `apps/web/.next/` - Next.js production build (built)
 - ✅ `node_modules/` - 669 packages installed
-- `api/prisma/schema.prisma` - Database schema (ready for migrations)
+- `apps/api/prisma/schema.prisma` - Database schema (ready for migrations)
 
 ---
 

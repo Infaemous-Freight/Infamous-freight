@@ -1,4 +1,4 @@
-// api/validation.js - Input Validation Module
+// apps/api/validation.js - Input Validation Module
 function validateShipment(data) {
     const errors = [];
 

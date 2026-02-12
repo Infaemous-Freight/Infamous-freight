@@ -2,7 +2,6 @@
  * Package.json scripts for 100% implementation verification and testing.
  * Add these scripts to root package.json for easy access.
  */
-
 {
   "scripts": {
     "verify": "bash scripts/verify-implementation.sh",
@@ -12,7 +11,7 @@
     "test:metrics": "pnpm --filter api test -- metrics.*\\.test\\.js",
     "test:cache": "pnpm --filter api test -- responseCache\\.test\\.js",
     "test:slow-query": "pnpm --filter api test -- slowQueryLogger\\.test\\.js",
-    "docs:routes": "node -e \"const r = require('./api/src/lib/routeScopeRegistry'); console.table(r.listAllRoutes());\"",
+    "docs:routes": "node -e \"const r = require('./apps/api/src/lib/routeScopeRegistry'); console.table(r.listAllRoutes());\"",
     "check:cors": "node -e \"console.log('CORS Origins:', process.env.CORS_ORIGINS || 'NOT SET')\"",
     "check:env": "node scripts/validate-env.js",
     "setup:hooks": "npx husky install && npx husky add .husky/pre-push 'bash .husky/pre-push'",

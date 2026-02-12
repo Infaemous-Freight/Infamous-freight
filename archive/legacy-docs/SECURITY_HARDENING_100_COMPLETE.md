@@ -18,7 +18,7 @@
 
 ### 1.1 HTTP Security Headers Configuration
 
-**Location**: `api/src/middleware/securityHeaders.js`
+**Location**: `apps/api/src/middleware/securityHeaders.js`
 
 ```javascript
 const helmet = require('helmet');

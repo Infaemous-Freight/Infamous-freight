@@ -8,7 +8,7 @@
 
 ## What Was Implemented
 
-### 1. Sentry Error Tracking (`api/src/observability/sentry.js`)
+### 1. Sentry Error Tracking (`apps/api/src/observability/sentry.js`)
 - ✅ Automatic exception capture
 - ✅ Performance tracing (10% sample rate)
 - ✅ Request/response context
@@ -23,11 +23,11 @@
 ### 2. Health & Status Monitoring
 - ✅ `GET /api/health` - Basic liveness
 - ✅ `GET /api/status` - Full operational snapshot
-- ✅ Worker heartbeat system (`api/src/worker/heartbeat.js`)
+- ✅ Worker heartbeat system (`apps/api/src/worker/heartbeat.js`)
 - ✅ Queue metrics (dispatch, expiry, eta)
 - ✅ Release and environment info
 
-### 3. Audit Chain Verification (`api/src/audit/verify.js`)
+### 3. Audit Chain Verification (`apps/api/src/audit/verify.js`)
 - ✅ Hash chain integrity validation
 - ✅ Tampering detection (broken chain, data modified)
 - ✅ Single job verification
@@ -48,9 +48,9 @@
 
 | File | Purpose |
 |------|---------|
-| `api/src/observability/sentry.js` | Sentry initialization & helpers |
-| `api/src/worker/heartbeat.js` | Worker liveness monitoring |
-| `api/src/audit/verify.js` | Audit chain tamper detection |
+| `apps/api/src/observability/sentry.js` | Sentry initialization & helpers |
+| `apps/api/src/worker/heartbeat.js` | Worker liveness monitoring |
+| `apps/api/src/audit/verify.js` | Audit chain tamper detection |
 | `EVIDENCE_PACK/README.md` | Compliance evidence guide |
 | `EVIDENCE_PACK/policies/SECURITY_POLICY.md` | Security controls reference |
 | `EVIDENCE_PACK/policies/AUDIT_POLICY.md` | Audit trail requirements |
@@ -61,8 +61,8 @@
 
 | File | Changes |
 |------|---------|
-| `api/src/server.js` | Added Sentry handlers + /api/status endpoint + heartbeat init |
-| `api/.env.example` | Added SENTRY_* and RELEASE_SHA environment variables |
+| `apps/api/src/server.js` | Added Sentry handlers + /api/status endpoint + heartbeat init |
+| `apps/api/.env.example` | Added SENTRY_* and RELEASE_SHA environment variables |
 
 ---
 
@@ -83,7 +83,7 @@ RELEASE_SHA=git-commit-hash
 
 ### 1. Install Dependencies
 ```bash
-cd api
+cd apps/api
 npm add @sentry/node @sentry/profiling-node
 ```
 
@@ -153,7 +153,7 @@ curl https://api.infamous-freight.com/api/status | jq
 ./EVIDENCE_PACK/artifacts/verify.sh production
 
 # Sample audit verification
-node -e "const v=require('./api/src/audit/verify'); ..."
+node -e "const v=require('./apps/api/src/audit/verify'); ..."
 ```
 
 ### Monthly Audit
@@ -220,7 +220,7 @@ curl http://localhost:4000/api/status | jq '.worker.heartbeat'
 
 # Verify audit chain
 node -e "
-const verify = require('./api/src/audit/verify');
+const verify = require('./apps/api/src/audit/verify');
 verify.verifyJobAuditChain('job-123', prisma).then(r => console.log(r));
 "
 

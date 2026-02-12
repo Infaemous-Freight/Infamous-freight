@@ -179,7 +179,7 @@
 ./scripts/security-scan.sh all
 
 # Check npm vulnerabilities
-cd api && pnpm audit --audit-level=moderate
+cd apps/api && pnpm audit --audit-level=moderate
 
 # View GitHub security dashboard
 open "https://github.com/MrMiless44/Infamous-freight-enterprises/security"

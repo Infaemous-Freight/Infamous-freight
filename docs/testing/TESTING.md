@@ -24,10 +24,10 @@ This document describes the testing strategy, conventions, and best practices fo
 pnpm test
 
 # API only
-cd api && pnpm test
+cd apps/api && pnpm test
 
 # Web only
-cd web && pnpm test
+cd apps/web && pnpm test
 
 # With coverage
 pnpm test:coverage
@@ -84,7 +84,7 @@ pnpm test:contracts
 ### Directory Organization
 
 ```
-api/
+apps/api/
 ├── __tests__/              # Unit tests
 │   ├── routes.*.test.js    # Route tests
 │   ├── *.test.js           # Middleware tests
@@ -433,9 +433,9 @@ Add to `.vscode/launch.json`:
 pnpm test:coverage
 
 # Open in browser
-open api/coverage/index.html  # macOS
-xdg-open api/coverage/index.html  # Linux
-start api/coverage/index.html  # Windows
+open apps/api/coverage/index.html  # macOS
+xdg-open apps/api/coverage/index.html  # Linux
+start apps/api/coverage/index.html  # Windows
 ```
 
 ### Understanding Coverage Gaps

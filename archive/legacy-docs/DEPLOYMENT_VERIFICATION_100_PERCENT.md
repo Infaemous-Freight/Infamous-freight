@@ -451,7 +451,7 @@ gh run view [RUN_ID] --log
 
 ```bash
 # Verify image exists
-gh api /user/packages/container/infamous-freight-api/versions
+gh api /user/packages/container/infamous-freight-apps/api/versions
 
 # Re-authenticate
 echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin

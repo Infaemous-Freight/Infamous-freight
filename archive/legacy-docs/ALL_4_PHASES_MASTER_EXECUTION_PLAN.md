@@ -174,7 +174,7 @@ bash scripts/optimize-performance-phase2.sh
 
 ```bash
 # Task 1: Database Query Optimization
-# File: api/prisma/schema.prisma
+# File: apps/api/prisma/schema.prisma
 # Add indexes to frequently queried columns:
 #   - shipments: status, driver_id, created_at
 #   - drivers: status, updated_at
@@ -278,11 +278,11 @@ bash scripts/load-test.sh --duration=10m
 
 ### Phase 2 Files Modified
 
-- `api/prisma/schema.prisma` - Database indexes
-- `api/src/services/` - Query optimization
+- `apps/api/prisma/schema.prisma` - Database indexes
+- `apps/api/src/services/` - Query optimization
 - `.env.production` - Rate limit adjustments
 - `docker-compose.production.yml` - Redis configuration
-- `web/next.config.mjs` - Caching headers
+- `apps/web/next.config.mjs` - Caching headers
 
 **Next**: Phase 3 starts Day 4
 
@@ -309,7 +309,7 @@ bash scripts/load-test.sh --duration=10m
 
 **Feature 1: Predictive Driver Availability (3 days)**
 
-- Service: `src/apps/api/src/services/ml/predictiveAvailability.ts` (275 lines, ready)
+- Service: `apps/api/src/services/ml/predictiveAvailability.ts` (275 lines, ready)
 - ML Model: Predict when drivers become available
 - Integration: Use in dispatch optimization
 - Accuracy Target: > 85%
@@ -356,7 +356,7 @@ bash scripts/load-test.sh --duration=10m
 # 1. Integrate Socket.IO for real-time updates
 # 2. Implement GPS data ingestion
 # 3. Create tracking API endpoints
-# 4. Update web/mobile UI for tracking
+# 4. Update apps/web/mobile UI for tracking
 # 5. Add privacy controls
 
 # Expected: Customer satisfaction +30%, fewer support calls
@@ -584,7 +584,7 @@ bash scripts/load-test.sh --duration=10m
 
 **Component 6: Executive Analytics Platform (3 days)**
 
-- Service: `src/apps/api/src/services/analytics/executiveAnalytics.ts` (380 lines, ready)
+- Service: `apps/api/src/services/analytics/executiveAnalytics.ts` (380 lines, ready)
 - Real-time dashboards
 - KPI tracking
 - Business intelligence
@@ -800,8 +800,8 @@ bash scripts/load-test.sh --duration=10m
 - [PHASE_1_QUICK_START.md](PHASE_1_QUICK_START.md) - Phase 1 commands
 - [COMPLETE_IMPLEMENTATION_CHECKLIST.md](COMPLETE_IMPLEMENTATION_CHECKLIST.md) - All 155+ checkpoints
 - [IMPLEMENTATION_ROADMAP_PHASES_1-4.md](IMPLEMENTATION_ROADMAP_PHASES_1-4.md) - Original 30-day roadmap
-- [src/apps/api/src/services/ml/predictiveAvailability.ts](src/apps/api/src/services/ml/predictiveAvailability.ts) - Phase 3 ML service
-- [src/apps/api/src/services/analytics/executiveAnalytics.ts](src/apps/api/src/services/analytics/executiveAnalytics.ts) - Phase 4 analytics service
+- [apps/api/src/services/ml/predictiveAvailability.ts](apps/api/src/services/ml/predictiveAvailability.ts) - Phase 3 ML service
+- [apps/api/src/services/analytics/executiveAnalytics.ts](apps/api/src/services/analytics/executiveAnalytics.ts) - Phase 4 analytics service
 
 ---
 

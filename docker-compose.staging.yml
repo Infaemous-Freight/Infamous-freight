@@ -17,7 +17,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_staging_data:/var/lib/postgresql/data
-      - ./api/prisma/migrations:/docker-entrypoint-initdb.d
+      - ./apps/api/prisma/migrations:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
       interval: 10s
@@ -50,7 +50,7 @@ services:
   # API Server
   api:
     build:
-      context: ./api
+      context: ./apps/api
       dockerfile: Dockerfile
       args:
         NODE_ENV: staging
@@ -81,8 +81,8 @@ services:
       TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER:-}
       FIREBASE_CREDENTIALS: ${FIREBASE_CREDENTIALS:-}
     volumes:
-      - ./api/src:/app/src
-      - ./api/logs:/app/logs
+      - ./apps/api/src:/app/src
+      - ./apps/api/logs:/app/logs
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
       interval: 30s
@@ -100,7 +100,7 @@ services:
   # Web Application (Next.js)
   web:
     build:
-      context: ./web
+      context: ./apps/web
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.staging.infamous-freight.app}
@@ -118,8 +118,8 @@ services:
       NEXT_PUBLIC_DD_CLIENT_TOKEN: ${NEXT_PUBLIC_DD_CLIENT_TOKEN:-}
       NEXT_PUBLIC_DD_SITE: ${NEXT_PUBLIC_DD_SITE:-datadoghq.com}
     volumes:
-      - ./web/public:/app/public
-      - ./web/.next:/app/.next
+      - ./apps/web/public:/app/public
+      - ./apps/web/.next:/app/.next
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 30s

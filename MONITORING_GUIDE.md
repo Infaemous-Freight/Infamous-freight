@@ -344,7 +344,7 @@ Sentry.captureException(new Error("Infamous Freight test error"));
    };
    ```
 
-4. **Server-only errors**: to capture errors from Next.js server routes (API routes, route handlers, middleware), add an optional server config such as `web/sentry.server.config.(ts|js)` (or `apps/web/sentry.server.config.(ts|js)` depending on your app path) per Sentry’s Next.js conventions. This file is not required unless you want Sentry to record server-only errors.
+4. **Server-only errors**: to capture errors from Next.js server routes (API routes, route handlers, middleware), add an optional server config such as `apps/web/sentry.server.config.(ts|js)` (or `apps/web/sentry.server.config.(ts|js)` depending on your app path) per Sentry’s Next.js conventions. This file is not required unless you want Sentry to record server-only errors.
 
 ## 📊 Dashboards
 

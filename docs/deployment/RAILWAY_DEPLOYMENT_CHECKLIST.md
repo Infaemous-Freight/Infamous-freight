@@ -38,7 +38,7 @@
 
 - [ ] Tap on the service Railway created
 - [ ] Go to Settings tab
-- [ ] Set Root Directory: `src/apps/api`
+- [ ] Set Root Directory: `apps/api`
 - [ ] Set Build Command: `pnpm install && pnpm build`
 - [ ] Set Start Command: `node src/server.js`
 - [ ] Set Port: 4000 (or use Railway default)

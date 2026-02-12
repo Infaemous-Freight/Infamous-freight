@@ -10,36 +10,36 @@
 
 ### Billing Services (4 TypeScript modules)
 
-1. **`api/src/billing/stripeSync.ts`** (250+ lines)
+1. **`apps/api/src/billing/stripeSync.ts`** (250+ lines)
    - Stripe subscription lifecycle management
    - Customer creation, plan updates, cancellation
    - Status syncing for webhook support
 
-2. **`api/src/billing/usage.ts`** (300+ lines)
+2. **`apps/api/src/billing/usage.ts`** (300+ lines)
    - Job completion tracking with platform fee calculation
    - Monthly usage aggregation (YYYY-MM format)
    - Overage detection and metered usage reporting to Stripe
 
-3. **`api/src/billing/invoicing.ts`** (350+ lines)
+3. **`apps/api/src/billing/invoicing.ts`** (350+ lines)
    - Monthly invoice generation (batch + single)
    - Stripe invoice integration
    - Invoice retrieval, payment tracking, reminders
 
-4. **`api/src/billing/documents.ts`** (350+ lines)
+4. **`apps/api/src/billing/documents.ts`** (350+ lines)
    - DPA (Data Processing Agreement) PDF generation
    - SOC2 Type II Compliance Certificate generation
    - Stripe metadata storage for compliance docs
 
 ### API Routes
 
-5. **`api/src/routes/billing.ts`** (400+ lines)
+5. **`apps/api/src/routes/billing.ts`** (400+ lines)
    - 10 new API endpoints for subscription + usage + invoicing
    - Authentication + authorization + rate limiting + audit logging
    - Pricing info endpoint (public)
 
 ### Background Jobs
 
-6. **`api/src/jobs/monthlyInvoicing.ts`** (400+ lines)
+6. **`apps/api/src/jobs/monthlyInvoicing.ts`** (400+ lines)
    - BullMQ scheduled job (1st of month, midnight UTC)
    - Batch invoice generation for all organizations
    - Job event handlers, notifications, retry logic
@@ -76,7 +76,7 @@
 
 ### Prisma Schema
 
-**`api/prisma/schema.prisma`**
+**`apps/api/prisma/schema.prisma`**
 
 **Added Models**:
 
@@ -194,7 +194,7 @@
 ## 🔄 Integration Points
 
 ### 1. Organization Creation Flow
-**Location**: `api/src/routes/orgs.js` (example in INTEGRATION_GUIDE)
+**Location**: `apps/api/src/routes/orgs.js` (example in INTEGRATION_GUIDE)
 
 ```typescript
 // When org created:
@@ -203,7 +203,7 @@ const docs = await storeComplianceDocuments(orgId, orgName, sub.stripeCustomerId
 ```
 
 ### 2. Job Completion Flow
-**Location**: `api/src/routes/jobs.js` (example in INTEGRATION_GUIDE)
+**Location**: `apps/api/src/routes/jobs.js` (example in INTEGRATION_GUIDE)
 
 ```typescript
 // When job status → COMPLETED:
@@ -211,7 +211,7 @@ await recordJobCompletion(orgId, jobId, vehicleType, finalPrice);
 ```
 
 ### 3. Monthly Invoicing (Scheduled)
-**Location**: `api/src/jobs/monthlyInvoicing.ts` (fully implemented)
+**Location**: `apps/api/src/jobs/monthlyInvoicing.ts` (fully implemented)
 
 ```typescript
 // Runs 1st of month, 00:00 UTC
@@ -219,7 +219,7 @@ await generateMonthlyInvoices();
 ```
 
 ### 4. Admin Analytics
-**Location**: `api/src/routes/admin.js` (example in INTEGRATION_GUIDE)
+**Location**: `apps/api/src/routes/admin.js` (example in INTEGRATION_GUIDE)
 
 ```typescript
 // NEW endpoints:

@@ -14,7 +14,7 @@
 - ✅ `scripts/deploy-production.sh` - Automated deployment script
 - ✅ `scripts/security-audit.sh` - Security validation script
 - ✅ `scripts/pre-deployment-check.sh` - Pre-flight checks
-- ✅ `src/apps/api/Dockerfile.production` - Optimized API image
+- ✅ `apps/api/Dockerfile.production` - Optimized API image
 - ✅ `monitoring/prometheus.yml` - Metrics configuration
 - ✅ `monitoring/alerts.yml` - Alert rules
 - ✅ `.github/workflows/ci-cd.yml` - CI/CD pipeline

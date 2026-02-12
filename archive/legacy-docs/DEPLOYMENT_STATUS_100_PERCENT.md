@@ -222,7 +222,7 @@ pnpm install
 pnpm --filter @infamous-freight/shared build
 
 # Run database migrations
-cd api && pnpm prisma:migrate:deploy
+cd apps/api && pnpm prisma:migrate:deploy
 
 # Verify database connection
 pnpm prisma:studio

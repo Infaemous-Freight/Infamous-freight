@@ -134,11 +134,11 @@ npm test
 **Expected Output**:
 
 ```
-PASS  api/__tests__/routes/health.test.js
+PASS  apps/api/__tests__/routes/health.test.js
   ✓ GET /api/health (50ms)
   ✓ Database connection check (45ms)
 
-PASS  api/__tests__/routes/ai.commands.test.js
+PASS  apps/api/__tests__/routes/ai.commands.test.js
   ✓ POST /api/ai/command (75ms)
   ✓ Rate limiting enforced (40ms)
   ✓ Scope validation (35ms)
@@ -257,7 +257,7 @@ Duration: 48 seconds
 - 10/10 suites passing
 - 45+ individual tests passing
 - ≥80% code coverage
-- Coverage report: `api/coverage/`
+- Coverage report: `apps/api/coverage/`
 
 ✅ **E2E Tests**
 

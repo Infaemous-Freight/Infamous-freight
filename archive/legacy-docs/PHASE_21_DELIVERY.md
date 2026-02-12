@@ -10,32 +10,32 @@
 
 ### Backend Services (5 TypeScript Modules, 1,500+ Lines)
 
-1. **`api/src/sales/leadCapture.ts`** (400+ lines)
+1. **`apps/api/src/sales/leadCapture.ts`** (400+ lines)
    - Lead creation from landing pages
    - HubSpot/Salesforce/Notion/Slack sync
    - Lead status tracking
    - Conversion tracking
 
-2. **`api/src/sales/demoScheduling.ts`** (350+ lines)
+2. **`apps/api/src/sales/demoScheduling.ts`** (350+ lines)
    - Calendly & Google Calendar integration
    - Demo booking + confirmation
    - Status tracking (scheduled, completed, no-show)
    - Reminder emails (24-hour before)
 
-3. **`api/src/sales/referrals.ts`** (350+ lines)
+3. **`apps/api/src/sales/referrals.ts`** (350+ lines)
    - Referral code generation
    - Signup tracking
    - Milestone completion (e.g., 10 jobs)
    - Payout processing (credit or cash)
    - Leaderboard tracking
 
-4. **`api/src/sales/roiCalculator.ts`** (250+ lines)
+4. **`apps/api/src/sales/roiCalculator.ts`** (250+ lines)
    - Enterprise ROI calculation
    - Savings estimation
    - Payback period calculation
    - Scenario comparison
 
-5. **`api/src/sales/metrics.ts`** (400+ lines)
+5. **`apps/api/src/sales/metrics.ts`** (400+ lines)
    - Real-time metrics collection (MRR, GMV, active users)
    - Historical trend tracking
    - Growth rate calculation
@@ -43,7 +43,7 @@
 
 ### API Routes (300+ Lines)
 
-**`api/src/routes/sales.ts`** — 20+ endpoints
+**`apps/api/src/routes/sales.ts`** — 20+ endpoints
 - Lead capture + management
 - Demo scheduling + tracking
 - ROI calculations
@@ -321,7 +321,7 @@ WEB_BASE_URL=https://yourapp.com
 ### Database Migration
 
 ```bash
-cd api
+cd apps/api
 pnpm prisma migrate dev --name add_sales_models
 pnpm prisma generate
 ```
@@ -348,13 +348,13 @@ Track these KPIs to measure Phase 21 impact:
 
 | File | Purpose | Lines |
 |---|---|---|
-| `api/src/sales/leadCapture.ts` | Lead capture + CRM | 400+ |
-| `api/src/sales/demoScheduling.ts` | Demo booking | 350+ |
-| `api/src/sales/referrals.ts` | Referral tracking | 350+ |
-| `api/src/sales/roiCalculator.ts` | ROI calculation | 250+ |
-| `api/src/sales/metrics.ts` | Metrics collection | 400+ |
-| `api/src/routes/sales.ts` | API routes | 300+ |
-| `api/prisma/schema.prisma` | Database models | +100 lines |
+| `apps/api/src/sales/leadCapture.ts` | Lead capture + CRM | 400+ |
+| `apps/api/src/sales/demoScheduling.ts` | Demo booking | 350+ |
+| `apps/api/src/sales/referrals.ts` | Referral tracking | 350+ |
+| `apps/api/src/sales/roiCalculator.ts` | ROI calculation | 250+ |
+| `apps/api/src/sales/metrics.ts` | Metrics collection | 400+ |
+| `apps/api/src/routes/sales.ts` | API routes | 300+ |
+| `apps/api/prisma/schema.prisma` | Database models | +100 lines |
 | `PHASE_21_COMPLETE.md` | Full documentation | 500+ |
 
 **Total**: 2,650+ lines of production-grade code

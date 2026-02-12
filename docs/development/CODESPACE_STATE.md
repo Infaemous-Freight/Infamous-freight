@@ -117,8 +117,8 @@ pnpm check:types       # TypeScript checking
 │   ├── init.sh              # Initialization script (NEW)
 │   ├── docker-compose.yml   # Services definition
 │   └── ...
-├── api/                     # Express backend
-├── web/                     # Next.js frontend
+├── apps/api/                     # Express backend
+├── apps/web/                     # Next.js frontend
 ├── packages/shared/         # Shared package
 ├── e2e/                     # E2E tests
 └── ...

@@ -180,10 +180,10 @@ After **Week 1's successful completion** with 96% test pass rate and production 
 
 **Files to Create/Update**:
 
-- `api/prisma/schema.prisma` - Updated with relationships
-- `api/prisma/seed.js` - Database seed script
-- `api/production-server.js` - Updated to use Prisma
-- `api/__tests__/database.test.js` - Database integration tests
+- `apps/api/prisma/schema.prisma` - Updated with relationships
+- `apps/api/prisma/seed.js` - Database seed script
+- `apps/api/production-server.js` - Updated to use Prisma
+- `apps/api/__tests__/database.test.js` - Database integration tests
 - `.env.production` - Database credentials
 
 **Output**: Production database with persisted shipments
@@ -222,8 +222,8 @@ After **Week 1's successful completion** with 96% test pass rate and production 
 
 **Files to Create**:
 
-- `api/Dockerfile` - API container image
-- `web/Dockerfile` - Web container image
+- `apps/api/Dockerfile` - API container image
+- `apps/web/Dockerfile` - Web container image
 - `docker-compose.prod.yml` - Production stack
 - `nginx.conf` - Nginx reverse proxy config
 - `.github/workflows/deploy.yml` - Deployment pipeline
@@ -400,8 +400,8 @@ For each phase, detailed troubleshooting sections included:
 ```bash
 # Database
 docker-compose up -d postgres
-cd api && pnpm prisma migrate dev
-cd api && pnpm prisma studio
+cd apps/api && pnpm prisma migrate dev
+cd apps/api && pnpm prisma studio
 
 # Testing
 cd e2e && npx playwright test --ui

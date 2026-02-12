@@ -327,7 +327,7 @@ Add to Supabase → Settings → Auth → Redirect URLs
 If using the API for additional auth logic:
 
 ```javascript
-// api/src/services/supabaseAuth.js
+// apps/api/src/services/supabaseAuth.js
 const { createClient } = require("@supabase/supabase-js");
 
 const supabase = createClient(

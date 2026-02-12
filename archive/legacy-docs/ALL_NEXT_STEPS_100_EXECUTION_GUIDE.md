@@ -579,10 +579,10 @@ pnpm test
 **Step 4.3: Build Applications**
 ```bash
 # Build API
-cd api && pnpm build
+cd apps/api && pnpm build
 
 # Build Web
-cd ../web && pnpm build
+cd ../apps/web && pnpm build
 
 echo "✅ Both API and Web built successfully"
 ```
@@ -590,7 +590,7 @@ echo "✅ Both API and Web built successfully"
 **Step 4.4: Run Database Migrations**
 ```bash
 # Navigate to API directory
-cd api
+cd apps/api
 
 # Generate Prisma client
 pnpm prisma:generate
@@ -622,7 +622,7 @@ echo "✅ Security audit passed"
 pm2 stop all 2>/dev/null
 
 # Start API service in cluster mode
-pm2 start api/server.js -i max --name "api" \
+pm2 start apps/api/server.js -i max --name "api" \
   --env production \
   --time \
   --watch

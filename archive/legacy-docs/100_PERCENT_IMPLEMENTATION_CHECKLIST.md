@@ -26,10 +26,10 @@
 ## Phase 2: Monitoring & Health Checks
 
 - [x] 4. Health Check Dashboard
-     - File: api/src/routes/health-detailed.js
+     - File: apps/api/src/routes/health-detailed.js
      - Status: ✅ Complete (370 lines)
      - Endpoints: /api/health, /api/health/live, /api/health/ready, /api/health/details, /api/health/dashboard
-     - TODO: Integrate into api/src/server.js
+     - TODO: Integrate into apps/api/src/server.js
 
 - [x] 5. Automated Security Scanning
      - Files: .github/workflows/security-scan.yml
@@ -62,7 +62,7 @@
      - Features: CPU/Memory limits, restart policies, health checks, no-new-privileges
 
 - [x] 10. Docker Secrets Management
-      - Files: api/src/config/secrets.js, scripts/setup-secrets.sh
+      - Files: apps/api/src/config/secrets.js, scripts/setup-secrets.sh
       - Status: ✅ Complete
       - Features: Secret file reading, environment variable fallback, Docker Swarm support
 
@@ -82,7 +82,7 @@
 
 ## Integration Tasks
 
-- [ ] Update api/src/server.js to import health-detailed.js routes
+- [ ] Update apps/api/src/server.js to import health-detailed.js routes
 - [ ] Fix docker-compose.prod.yml path issue (currently at wrong location)
 - [ ] Create Grafana dashboard JSON files
 - [ ] Update .devcontainer/devcontainer.json with Docker features

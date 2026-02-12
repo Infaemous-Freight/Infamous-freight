@@ -82,7 +82,7 @@
       }
     },
     "collect": {
-      "staticDistDir": "./web/.next",
+      "staticDistDir": "./apps/web/.next",
       "numberOfRuns": 3,
       "url": [
         "http://localhost:3000/",

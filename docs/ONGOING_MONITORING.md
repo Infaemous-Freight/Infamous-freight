@@ -84,13 +84,13 @@ https://app.codecov.io/gh/MrMiless44/Infamous-freight-enterprises
 
 ```
 📊 Overall Coverage
-├── api/          60% (target: 70%)
-├── web/          55% (target: 70%)
+├── apps/api/          60% (target: 70%)
+├── apps/web/          55% (target: 70%)
 └── Status        Coverage has declined
 
 🔍 Uncovered Files
-├── api/services/ ← Usually needs better coverage
-└── web/hooks/    ← Hook testing is important
+├── apps/api/services/ ← Usually needs better coverage
+└── apps/web/hooks/    ← Hook testing is important
 
 📈 Coverage Trends
 ├── Last week:    58%
@@ -120,12 +120,12 @@ https://app.codecov.io/gh/MrMiless44/Infamous-freight-enterprises
 
 ```bash
 # Identify uncovered file
-# In Codecov, click on api/services/billing.js
+# In Codecov, click on apps/api/services/billing.js
 
 # See uncovered lines (shown in red)
 # Write tests for those lines
 
-npm test -- api/__tests__/billing.test.js
+npm test -- apps/api/__tests__/billing.test.js
 npm test -- --coverage  # Verify improvement
 ```
 
@@ -150,7 +150,7 @@ npm test -- --coverage  # Verify improvement
    - May need to regenerate lock files
 
 3. Test locally (for major versions)
-   cd api
+   cd apps/api
    npm install
    npm test
    npm run lint
@@ -247,8 +247,8 @@ LIMIT 10;
 
 ```bash
 # Run npm audit across all packages
-cd api && npm audit --audit-level=moderate
-cd ../web && npm audit --audit-level=moderate
+cd apps/api && npm audit --audit-level=moderate
+cd ../apps/web && npm audit --audit-level=moderate
 
 # Review any vulnerabilities
 # Expected: 0 vulnerabilities (Dependabot prevents this)

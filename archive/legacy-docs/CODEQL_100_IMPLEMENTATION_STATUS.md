@@ -424,7 +424,7 @@ timeout-minutes: 360  # Increased from 60
 **Solution**:
 ```bash
 # Review high vulnerabilities
-cd api && pnpm audit
+cd apps/api && pnpm audit
 
 # Update packages
 pnpm update

@@ -315,8 +315,8 @@ Operations:           🟢 Ready (monitoring & on-call guides)
 
 **Configuration**:
 
-- 🔧 [src/apps/api/src/config/grafana.ts](src/apps/api/src/config/grafana.ts) - Grafana config
-- 🔌 [src/apps/api/src/config/redis-adapter.ts](src/apps/api/src/config/redis-adapter.ts) - Redis config
+- 🔧 [apps/api/src/config/grafana.ts](apps/api/src/config/grafana.ts) - Grafana config
+- 🔌 [apps/api/src/config/redis-adapter.ts](apps/api/src/config/redis-adapter.ts) - Redis config
 
 ---
 

@@ -235,7 +235,7 @@ PHASE 1: IMMEDIATE WINS (Week 1 - SAVE $15-25/mo, 0% risk)
       - Status: Partial (needs enhancement)
       - Effort: 2 hours
       - Savings: $3-8/mo (better caching)
-      - Files: api/src/middleware/securityHeaders.js
+      - Files: apps/api/src/middleware/securityHeaders.js
   
   [ ] 1.3 Right-Size Database Queries
       - Status: Partially optimized
@@ -373,7 +373,7 @@ STEP 2: IMPLEMENT PHASE 1 (Day 1)
 ═══════════════════════════════════════════════════════════════════════════
 
   [ ] Verify compression is enabled
-      grep -r "gzip\|compress" api/src/middleware/
+      grep -r "gzip\|compress" apps/api/src/middleware/
 
   [ ] Analyze API response sizes
       flyctl logs -a infamous-freight-api | grep "size\|bytes" | tail -20
