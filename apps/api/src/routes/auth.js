@@ -3,12 +3,16 @@
  * Protected with strict rate limiting
  */
 
-const express = require('express');
-const { limiters, authenticate, auditLog } = require('../middleware/security');
-const { validateEmail, validateString, handleValidationErrors } = require('../middleware/validation');
-const { hashPassword, decrypt } = require('../services/encryption');
-const { sendEmail } = require('../services/email');
-const { prisma } = require('../db/prisma');
+const express = require("express");
+const { limiters, authenticate, auditLog } = require("../middleware/security");
+const {
+  validateEmail,
+  validateString,
+  handleValidationErrors,
+} = require("../middleware/validation");
+const { hashPassword, decrypt } = require("../services/encryption");
+const { sendEmail } = require("../services/emailService");
+const { prisma } = require("../db/prisma");
 
 const router = express.Router();
 
@@ -18,9 +22,9 @@ const router = express.Router();
  * Rate limited: 3 attempts per 24 hours per email
  */
 router.post(
-  '/request-password-reset',
+  "/request-password-reset",
   limiters.passwordReset,
-  validateEmail('email'),
+  validateEmail("email"),
   handleValidationErrors,
   auditLog,
   async (req, res, next) => {
@@ -36,12 +40,12 @@ router.post(
       if (!user) {
         return res.status(200).json({
           success: true,
-          message: 'If an account exists with that email, a reset link will be sent.',
+          message: "If an account exists with that email, a reset link will be sent.",
         });
       }
 
       // Generate reset token (valid for 1 hour)
-      const resetToken = require('crypto').randomBytes(32).toString('hex');
+      const resetToken = require("crypto").randomBytes(32).toString("hex");
       const resetTokenHash = hashPassword(resetToken);
       const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
@@ -58,23 +62,23 @@ router.post(
       const resetLink = `${process.env.APP_URL}/reset-password?token=${resetToken}&email=${email}`;
       await sendEmail({
         to: email,
-        subject: 'Password Reset Request',
-        template: 'password-reset',
+        subject: "Password Reset Request",
+        template: "password-reset",
         data: {
           name: user.name || email,
           resetLink,
-          expiresIn: '1 hour',
+          expiresIn: "1 hour",
         },
       });
 
       res.json({
         success: true,
-        message: 'Password reset link sent to email',
+        message: "Password reset link sent to email",
       });
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 /**
@@ -83,11 +87,11 @@ router.post(
  * Rate limited: General rate limiter (prevent brute force)
  */
 router.post(
-  '/reset-password',
+  "/reset-password",
   limiters.general,
-  validateEmail('email'),
-  validateString('token', { maxLength: 100 }),
-  validateString('newPassword', { maxLength: 200 }),
+  validateEmail("email"),
+  validateString("token", { maxLength: 100 }),
+  validateString("newPassword", { maxLength: 200 }),
   handleValidationErrors,
   auditLog,
   async (req, res, next) => {
@@ -97,18 +101,18 @@ router.post(
       // Validate password strength
       if (newPassword.length < 8) {
         return res.status(400).json({
-          error: 'Password must be at least 8 characters',
+          error: "Password must be at least 8 characters",
         });
       }
 
       const user = await prisma.user.findUnique({
         where: { email },
-        include: { passwordResets: { take: 1, orderBy: { createdAt: 'desc' } } },
+        include: { passwordResets: { take: 1, orderBy: { createdAt: "desc" } } },
       });
 
       if (!user || !user.passwordResets.length) {
         return res.status(400).json({
-          error: 'Invalid or expired reset token',
+          error: "Invalid or expired reset token",
         });
       }
 
@@ -118,7 +122,7 @@ router.post(
       const tokenHash = hashPassword(token);
       if (reset.token !== tokenHash || reset.expiresAt < new Date()) {
         return res.status(400).json({
-          error: 'Invalid or expired reset token',
+          error: "Invalid or expired reset token",
         });
       }
 
@@ -139,8 +143,8 @@ router.post(
       // Send confirmation email
       await sendEmail({
         to: email,
-        subject: 'Password Changed',
-        template: 'password-changed',
+        subject: "Password Changed",
+        template: "password-changed",
         data: {
           name: user.name || email,
           timestamp: new Date().toLocaleString(),
@@ -149,12 +153,12 @@ router.post(
 
       res.json({
         success: true,
-        message: 'Password reset successful. Please log in.',
+        message: "Password reset successful. Please log in.",
       });
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 /**
@@ -163,11 +167,11 @@ router.post(
  * Rate limited: 10 attempts per 15 minutes (more lenient for authenticated users)
  */
 router.post(
-  '/change-password',
+  "/change-password",
   limiters.auth, // Stricter limiter
   authenticate,
-  validateString('currentPassword', { maxLength: 200 }),
-  validateString('newPassword', { maxLength: 200 }),
+  validateString("currentPassword", { maxLength: 200 }),
+  validateString("newPassword", { maxLength: 200 }),
   handleValidationErrors,
   auditLog,
   async (req, res, next) => {
@@ -178,13 +182,13 @@ router.post(
       // Validate new password
       if (newPassword.length < 8) {
         return res.status(400).json({
-          error: 'New password must be at least 8 characters',
+          error: "New password must be at least 8 characters",
         });
       }
 
       if (currentPassword === newPassword) {
         return res.status(400).json({
-          error: 'New password must be different from current password',
+          error: "New password must be different from current password",
         });
       }
 
@@ -195,7 +199,7 @@ router.post(
 
       if (!user) {
         return res.status(404).json({
-          error: 'User not found',
+          error: "User not found",
         });
       }
 
@@ -203,13 +207,13 @@ router.post(
       const currentPasswordHash = hashPassword(currentPassword);
       if (user.password !== currentPasswordHash) {
         // Log failed attempt
-        console.warn('Failed password change attempt', {
+        console.warn("Failed password change attempt", {
           userId,
           ip: req.ip,
         });
 
         return res.status(401).json({
-          error: 'Current password is incorrect',
+          error: "Current password is incorrect",
         });
       }
 
@@ -224,12 +228,12 @@ router.post(
 
       res.json({
         success: true,
-        message: 'Password changed successfully',
+        message: "Password changed successfully",
       });
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 /**
@@ -238,10 +242,10 @@ router.post(
  * Rate limited: General limiter
  */
 router.get(
-  '/verify-reset-token',
+  "/verify-reset-token",
   limiters.general,
-  validateString('token', { maxLength: 100 }),
-  validateEmail('email'),
+  validateString("token", { maxLength: 100 }),
+  validateEmail("email"),
   handleValidationErrors,
   auditLog,
   async (req, res, next) => {
@@ -250,13 +254,13 @@ router.get(
 
       const user = await prisma.user.findUnique({
         where: { email },
-        include: { passwordResets: { take: 1, orderBy: { createdAt: 'desc' } } },
+        include: { passwordResets: { take: 1, orderBy: { createdAt: "desc" } } },
       });
 
       if (!user || !user.passwordResets.length) {
         return res.status(400).json({
           valid: false,
-          error: 'No reset request found',
+          error: "No reset request found",
         });
       }
 
@@ -268,7 +272,7 @@ router.get(
       if (!isValid) {
         return res.status(400).json({
           valid: false,
-          error: 'Token is invalid or expired',
+          error: "Token is invalid or expired",
         });
       }
 
@@ -280,7 +284,7 @@ router.get(
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 module.exports = router;
