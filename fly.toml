@@ -10,17 +10,37 @@ primary_region = "ord"
   dockerfile = "Dockerfile"
 
 [env]
+  NODE_ENV = "production"
   API_PORT = "3001"
+  LOG_LEVEL = "info"
 
 [http_service]
   auto_start_machines = true
-  auto_stop_machines = true
+  auto_stop_machines = "suspend"
   force_https = true
-  internal_port = 3000
-  min_machines_running = 0
+  internal_port = 3001
+  min_machines_running = 1
   processes = ["app"]
+
+  # Health checks
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/api/health"
 
 [[vm]]
   cpu_kind = "shared"
   cpus = 1
   memory = "1gb"
+
+# PostgreSQL database connection
+[[statics]]
+  guest_path = "/app/public"
+  url_prefix = "/public"
+
+# Deployment strategy
+[deploy]
+  strategy = "rolling"
+  max_unavailable = 0.33

@@ -20,7 +20,7 @@ COPY apps ./apps
 COPY packages ./packages
 
 # Install dependencies without cache mount (for Depot compatibility)
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # Stage 2: Build application
 FROM base AS build
