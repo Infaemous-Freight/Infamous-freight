@@ -27,8 +27,8 @@ describe("Boundary Conditions", () => {
 
       it("should handle zero", () => {
         expect(0).toBe(0);
-        expect(-0).toBe(0);
-        expect(Object.is(0, -0)).toBe(false);
+        expect(-0 == 0).toBe(true); // == treats -0 and 0 as equal
+        expect(Object.is(0, -0)).toBe(false); // Object.is treats them as different
       });
 
       it("should handle boundary around zero", () => {
@@ -169,7 +169,7 @@ describe("Boundary Conditions", () => {
 
     describe("Maximum Length Constraints", () => {
       it("should handle typical max email length (254)", () => {
-        const longEmail = "a".repeat(243) + "@example.com";
+        const longEmail = "a".repeat(242) + "@example.com"; // 242 + 12 = 254
         expect(longEmail.length).toBe(254);
       });
 
@@ -204,8 +204,8 @@ describe("Boundary Conditions", () => {
       });
 
       it("should handle combining characters", () => {
-        const combined = "é"; // e + combining acute
-        const precomposed = "é"; // Precomposed character
+        const combined = "e\u0301"; // e + combining acute
+        const precomposed = "\u00e9"; // Precomposed character
         expect(combined !== precomposed).toBe(true);
       });
     });
