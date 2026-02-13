@@ -14,9 +14,36 @@ jest.mock("@prisma/client", () => ({
   PrismaClient: jest.fn(() => mockPrisma),
 }));
 
-jest.mock("../../marketplace/waves");
-jest.mock("../../queue/schedule");
-jest.mock("../../notify/index");
+// Mock wave configuration
+const mockWaveConfig = jest.fn(() => ({
+  radiusMiles: 10,
+  wave1: { count: 3, expirySeconds: 30 },
+  wave2: { count: 10, expirySeconds: 30 },
+  wave3: { enabled: true, count: 50, expirySeconds: 60 },
+}));
+
+const mockRunWave = jest.fn();
+
+jest.mock("../../marketplace/waves", () => ({
+  waveConfig: mockWaveConfig,
+  runWave: mockRunWave,
+}));
+
+// Mock queue schedule
+const mockEnqueueWave = jest.fn();
+
+jest.mock("../../queue/schedule", () => ({
+  enqueueWave: mockEnqueueWave,
+}));
+
+// Mock notifier
+const mockNotifier = jest.fn(() => ({
+  pushExpo: jest.fn(),
+}));
+
+jest.mock("../../notify/index", () => ({
+  notifier: mockNotifier,
+}));
 
 const { processDispatch } = require("../../worker/processors/dispatch");
 
@@ -25,6 +52,13 @@ describe("Dispatch Processor", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Setup default mock responses
+    mockRunWave.mockResolvedValue({ offers: [] });
+    mockNotifier.mockReturnValue({
+      pushExpo: jest.fn().mockResolvedValue(true),
+    });
+    mockEnqueueWave.mockResolvedValue(true);
 
     mockJob = {
       id: "job-1",
