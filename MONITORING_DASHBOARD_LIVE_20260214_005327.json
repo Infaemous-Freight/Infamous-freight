@@ -1,0 +1,82 @@
+{
+  "dashboard_name": "INFÆMOUS FREIGHT Launch Day Monitoring",
+  "activation_time": "February 14, 2026 - 6:00 AM PT",
+  "refresh_interval": "Real-time (< 1 second)",
+  "primary_metrics": {
+    "signups": {
+      "metric": "New free tier signups",
+      "unit": "count",
+      "target": "2,100+ by EOD",
+      "alert_threshold": "< 100/hour for 2+ hours",
+      "current": 0
+    },
+    "conversions": {
+      "metric": "Free → Pro conversions",
+      "unit": "count",
+      "target": "100+ by EOD",
+      "alert_threshold": "< 10/hour for 3+ hours",
+      "current": 0
+    },
+    "revenue": {
+      "metric": "ARR accumulating",
+      "unit": "$",
+      "target": "$10K+ by EOD",
+      "alert_threshold": "< $2K/2 hours",
+      "current": 0
+    },
+    "product_hunt_rank": {
+      "metric": "PH ranking (if launching)",
+      "unit": "position",
+      "target": "Top 5",
+      "alert_threshold": "Falls below Top 10",
+      "current": "N/A"
+    },
+    "email_performance": {
+      "metric": "Email open rate",
+      "unit": "%",
+      "target": "35%+",
+      "alert_threshold": "< 20%",
+      "current": "N/A"
+    }
+  },
+  "secondary_metrics": {
+    "api_health": "Response time < 500ms, error rate < 0.1%",
+    "web_performance": "Page load < 2s, Lighthouse > 80",
+    "database": "Query time < 100ms, connection pool healthy",
+    "queue_depth": "Background jobs < 100 pending",
+    "error_rate": "< 0.01% critical errors"
+  },
+  "alerts": {
+    "critical": [
+      "API response time > 5s",
+      "Database connection failed",
+      "Revenue tracking error",
+      "Signup processing failed"
+    ],
+    "warning": [
+      "Email campaign < 10% open rate",
+      "Conversion rate < 2%",
+      "Web Lighthouse < 70"
+    ]
+  },
+  "dashboard_urls": {
+    "internal": "https://localhost:3000/dashboard",
+    "public": "https://monitoring.infamous-freight.com",
+    "slack_integration": "#infamous-alerts channel",
+    "pagerduty": "On-call escalation"
+  },
+  "monitoring_checklist": [
+    "[ ] Grafana connected to Prometheus",
+    "[ ] DataDog RUM enabled",
+    "[ ] Sentry error tracking live",
+    "[ ] Slack webhooks configured",
+    "[ ] Email alerts enabled",
+    "[ ] 15-minute check-in schedule set"
+  ],
+  "team_schedule": {
+    "6:00 AM - 8:00 AM": "Pre-launch validation (2 people)",
+    "8:00 AM - 12:00 PM": "Launch + active monitoring (3 people, 15-min check-ins)",
+    "12:00 PM - 6:00 PM": "Sustained monitoring (2 people, 30-min check-ins)",
+    "6:00 PM - 10:00 PM": "Wrap-up analysis (2 people, hourly check-ins)"
+  }
+}

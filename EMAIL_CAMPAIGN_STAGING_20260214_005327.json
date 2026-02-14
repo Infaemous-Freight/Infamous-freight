@@ -1,0 +1,112 @@
+{
+  "campaign_name": "INFÆMOUS FREIGHT Free Launch - Grandfather Pricing",
+  "launch_date": "February 14, 2026",
+  "total_templates": 7,
+  "deployment_plan": {
+    "email_1": {
+      "name": "Grandfather Pricing Offer",
+      "send_time": "6:30 AM PT (same day)",
+      "target_segment": "All existing customers",
+      "subject": "INFÆMOUS FREIGHT - Free Plan Just Launched + Grandfather Pricing for You",
+      "primary_cta": "Claim Your Grandfather Pricing",
+      "expected_metrics": {
+        "open_rate": "35%",
+        "click_rate": "10%",
+        "conversion_rate": "30% to Pro tier in 7 days"
+      },
+      "revenue_impact": "$15K+ new MRR"
+    },
+    "email_2": {
+      "name": "Product Hunt Success Celebration",
+      "send_time": "2:00 PM PT (same day)",
+      "target_segment": "New free signups from launch",
+      "subject": "Join 2,000+ Teams Already Using INFÆMOUS FREIGHT",
+      "primary_cta": "Upgrade to Pro (Get 50% Off First Month)",
+      "expected_metrics": {
+        "open_rate": "32%",
+        "click_rate": "8%",
+        "conversion_rate": "25% to Pro tier"
+      },
+      "revenue_impact": "$8K+ new MRR"
+    },
+    "email_3": {
+      "name": "Free Tier Starter Guide",
+      "send_time": "Day 3 (automatically 72 hours after signup)",
+      "target_segment": "Free tier new signups",
+      "subject": "Your INFÆMOUS FREIGHT Quick Start Guide (You Have 100 Free API Calls)",
+      "primary_cta": "Read the guide + Set up your first shipment",
+      "expected_metrics": {
+        "open_rate": "28%",
+        "click_rate": "12%",
+        "activation_rate": "40%"
+      },
+      "revenue_impact": "N/A (activation funnel)"
+    },
+    "email_4": {
+      "name": "Power User Upsell",
+      "send_time": "Day 7 (automatically if 50%+ usage)",
+      "target_segment": "Free tier users approaching limits",
+      "subject": "Running Low on API Calls? Upgrade to Pro Now",
+      "primary_cta": "Upgrade to Pro ($99/mo, Cancel Anytime)",
+      "expected_metrics": {
+        "open_rate": "38%",
+        "click_rate": "15%",
+        "conversion_rate": "40% to Pro"
+      },
+      "revenue_impact": "$12K+ new MRR"
+    },
+    "email_5": {
+      "name": "Referral Program Incentives",
+      "send_time": "Day 10 (after Pro users are activated)",
+      "target_segment": "Active Pro customers",
+      "subject": "Earn $50 (Or More!) by Referring to INFÆMOUS FREIGHT",
+      "primary_cta": "Get Your Referral Link + Start Earning",
+      "expected_metrics": {
+        "open_rate": "40%",
+        "click_rate": "18%",
+        "referral_rate": "25% will refer"
+      },
+      "revenue_impact": "Viral multiplier: 1.2-1.5x"
+    },
+    "email_6": {
+      "name": "Enterprise Outreach",
+      "send_time": "Day 14 (after product-market fit signals)",
+      "target_segment": "Free users with 5+ team members",
+      "subject": "Your Team Needs INFÆMOUS FREIGHT Enterprise ($999/mo)",
+      "primary_cta": "Book a Demo with Our Sales Team",
+      "expected_metrics": {
+        "open_rate": "25%",
+        "click_rate": "6%",
+        "demo_booking_rate": "15%"
+      },
+      "revenue_impact": "$50K+/month at 5% conversion"
+    },
+    "email_7": {
+      "name": "Churn Recovery Campaign",
+      "send_time": "Day 21 (for inactive free users)",
+      "target_segment": "Free tier: No activity in 7 days",
+      "subject": "We Miss You! Come Back to INFÆMOUS FREIGHT",
+      "primary_cta": "Log Back In + Get $50 Credit",
+      "expected_metrics": {
+        "open_rate": "20%",
+        "click_rate": "5%",
+        "reactivation_rate": "30%"
+      },
+      "revenue_impact": "Churn reduction: -15%"
+    }
+  },
+  "automation_rules": {
+    "trigger_1": "Day 3 after signup: Email #3 (Starter Guide)",
+    "trigger_2": "50% of free tier usage limit: Email #4 (Power User Upsell)",
+    "trigger_3": "First Pro payment confirmed: Email #5 (Referral)",
+    "trigger_4": "5+ team members created: Email #6 (Enterprise)",
+    "trigger_5": "7 days inactivity: Email #7 (Churn Recovery)"
+  },
+  "integration": {
+    "email_service": "SendGrid or similar",
+    "crm_integration": "Webhook to user database",
+    "tracking": "Email open, click, conversion tracking enabled",
+    "compliance": "Unsubscribe link on all emails, GDPR compliant"
+  },
+  "total_revenue_potential": "$85K+ in first month from email campaigns"
+}

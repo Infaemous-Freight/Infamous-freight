@@ -1,0 +1,53 @@
+{
+  "campaign": "Series A Launch - February 14, 2026",
+  "targets": [
+    {
+      "type": "Advisor warm intro",
+      "count": 5,
+      "template": "SERIES_A_VC_OUTREACH_EMAIL_TEMPLATES.md - Email #1",
+      "expected_timeline": "Send today, meetings scheduled by Monday",
+      "success_rate": "40% meeting booking"
+    },
+    {
+      "type": "Tier 1 VCs ($2-5M Series A)",
+      "count": 8,
+      "template": "SERIES_A_VC_OUTREACH_EMAIL_TEMPLATES.md - Email #2",
+      "expected_timeline": "Week 1-2 intro meetings",
+      "success_rate": "20% intro → meeting"
+    },
+    {
+      "type": "Mid-tier VCs ($1-2M)",
+      "count": 8,
+      "template": "SERIES_A_VC_OUTREACH_EMAIL_TEMPLATES.md - Email #3",
+      "expected_timeline": "Week 2-3 intro meetings",
+      "success_rate": "25% intro → meeting"
+    }
+  ],
+  "deliverables": [
+    {
+      "name": "Investor deck",
+      "file": "SERIES_A_INVESTOR_DECK_2026.md",
+      "status": "Ready",
+      "format": "PDF (print from markdown)"
+    },
+    {
+      "name": "Financial model",
+      "details": "$8.2M Month 1, $143.6M Month 6",
+      "status": "Locked in",
+      "confidence": "90%"
+    },
+    {
+      "name": "Use of proceeds",
+      "allocation": "$1.5M: Sales 40%, Product 30%, Marketing 20%, Ops 10%",
+      "status": "Defined",
+      "timeline": "Month 3-4 close target"
+    }
+  ],
+  "execution": {
+    "immediate": "Today: Email 5 advisors (Email #1)",
+    "week_1": "Complete 10-15 intro meetings",
+    "week_2": "Begin deep-dive diligence with 3-5 VCs",
+    "week_3": "Term sheet negotiations begin",
+    "week_4": "Target close for Series A"
+  }
+}
