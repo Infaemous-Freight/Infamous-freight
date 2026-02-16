@@ -43,6 +43,16 @@ interface SubscriptionResponse {
   status: string;
 }
 
+type ExpressCheckoutConfirmEvent = {
+  complete?: (status: "success" | "fail") => void;
+};
+
+type RevenueStatsData = {
+  totalOneTime: number;
+  totalTransactions: number;
+  activeSubscriptions: number;
+};
+
 /**
  * Inner payment form component (must be inside Elements provider)
  */
@@ -56,7 +66,7 @@ function PaymentFormContent({ amount, description, onSuccess, onError }: Payment
 
   const returnUrl = useMemo(() => window.location.href, []);
 
-  const handleExpressConfirm = async (event: any) => {
+  const handleExpressConfirm = async (event: ExpressCheckoutConfirmEvent) => {
     if (!stripe || !elements) {
       return;
     }
@@ -109,7 +119,7 @@ function PaymentFormContent({ amount, description, onSuccess, onError }: Payment
         setSuccess(true);
         onSuccess?.(result.paymentIntent.id);
         // Payment successful - 100% to your account
-         
+
         console.log("✅ Payment succeeded! 100% to your Stripe account");
       } else {
         setError("Payment processing failed. Please try again.");
@@ -337,7 +347,7 @@ export function StripeSubscriptionForm({
             if (subscriptionId) {
               onSuccess?.(subscriptionId);
             }
-             
+
             console.log("✅ Subscription active! 100% of recurring payments to your account");
           }}
           onError={onError}
@@ -422,7 +432,7 @@ function SubscriptionPaymentContent({
     setLoading(false);
   };
 
-  const handleExpressConfirm = async (event: any) => {
+  const handleExpressConfirm = async (event: ExpressCheckoutConfirmEvent) => {
     if (!stripe || !elements) {
       return;
     }
@@ -490,7 +500,7 @@ function SubscriptionPaymentContent({
  * Shows real-time revenue statistics
  */
 export function RevenueStats() {
-  const [revenue, setRevenue] = React.useState<any>(null);
+  const [revenue, setRevenue] = React.useState<RevenueStatsData | null>(null);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -505,7 +515,6 @@ export function RevenueStats() {
         setLoading(false);
       })
       .catch((err) => {
-         
         console.error("Failed to load revenue:", err);
         setLoading(false);
       });

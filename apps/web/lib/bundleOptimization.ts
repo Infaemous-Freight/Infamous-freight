@@ -11,6 +11,7 @@
 
 import dynamic from "next/dynamic";
 import React from "react";
+import type { AppProps } from "next/app";
 
 // ✅ Code splitting: Dynamic imports for heavy components
 // apps/web/pages/dashboard.tsx
@@ -100,11 +101,6 @@ export async function loadChartLibrary(): Promise<typeof import("recharts")> {
 // ✅ Preload critical resources in _app.tsx
 // apps/web/pages/_app.tsx
 import Head from "next/head";
-
-interface AppProps {
-  Component: any;
-  pageProps: any;
-}
 
 export default function App({ Component, pageProps }: AppProps) {
   return React.createElement(

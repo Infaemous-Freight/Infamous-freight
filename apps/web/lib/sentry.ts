@@ -34,7 +34,6 @@ export function logError(
 
   // Log to console in development
   if (process.env.NODE_ENV === "development") {
-     
     console.error("[Sentry]", error, context);
   }
 
@@ -61,7 +60,6 @@ export function logMessage(
   });
 
   if (process.env.NODE_ENV === "development") {
-     
     console.debug(`[Sentry ${level}]`, message, context);
   }
 
@@ -88,7 +86,6 @@ export function setUser(user: {
   });
 
   if (process.env.NODE_ENV === "development") {
-     
     console.debug("[Sentry] User set:", user.id);
   }
 }
@@ -104,7 +101,6 @@ export function clearUser(): void {
   Sentry.setUser(null);
 
   if (process.env.NODE_ENV === "development") {
-     
     console.debug("[Sentry] User cleared");
   }
 }
@@ -194,7 +190,7 @@ export function startPerformanceMetric(
  * const safeUpdate = withErrorTracking(updateShipment, 'updateShipment');
  * await safeUpdate(shipmentId);
  */
-export function withErrorTracking<T extends (...args: any[]) => Promise<any>>(
+export function withErrorTracking<T extends (...args: unknown[]) => Promise<unknown>>(
   fn: T,
   functionName?: string,
   context?: Record<string, unknown>,
@@ -297,7 +293,6 @@ export async function safeExecute<T>(
         ...context,
       });
     } else {
-       
       console.error(error);
     }
     return null;

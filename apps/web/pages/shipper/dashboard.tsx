@@ -59,6 +59,19 @@ interface RecentLoad {
   eta?: string;
 }
 
+type ShipmentApi = {
+  reference?: string;
+  trackingId?: string;
+  id?: string;
+  origin?: string;
+  destination?: string;
+  rate?: number;
+  priceUsd?: number;
+  status?: string;
+  driver?: { name?: string };
+  createdAt?: string;
+};
+
 interface ShipperPortalProps {
   stats: ShipmentStats;
   recentLoads: RecentLoad[];
@@ -442,7 +455,7 @@ export const getServerSideProps: GetServerSideProps<ShipperPortalProps> = async 
         if (loadsRes.ok) {
           const loadsResult = await loadsRes.json();
           if (loadsResult?.ok && Array.isArray(loadsResult.shipments)) {
-            recentLoads = loadsResult.shipments.slice(0, 6).map((shipment: any) => ({
+            recentLoads = loadsResult.shipments.slice(0, 6).map((shipment: ShipmentApi) => ({
               id: shipment.reference || shipment.trackingId || shipment.id,
               origin: shipment.origin,
               destination: shipment.destination,

@@ -44,8 +44,8 @@ export default function LoadsPage() {
         }),
       );
       window.location.href = "/loads/active";
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Failed to accept load");
     }
   }
 

@@ -91,7 +91,9 @@ export default function CostCalculator() {
           <label>Urgency: </label>
           <select
             value={shipment.urgency}
-            onChange={(e) => setShipment({ ...shipment, urgency: e.target.value as any })}
+            onChange={(e) =>
+              setShipment({ ...shipment, urgency: e.target.value as ShipmentData["urgency"] })
+            }
             style={{ marginLeft: "10px", padding: "8px" }}
           >
             <option value="standard">Standard (3-5 days)</option>

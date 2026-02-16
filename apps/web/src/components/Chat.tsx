@@ -10,6 +10,10 @@ type Msg = {
   created_at: string;
 };
 
+type MessageInsertPayload = {
+  new: Msg;
+};
+
 export default function Chat({
   threadId,
   initialMessages,
@@ -33,8 +37,8 @@ export default function Chat({
           table: "messages",
           filter: `thread_id=eq.${threadId}`,
         },
-        (payload: any) => {
-          const m = payload.new as Msg;
+        (payload: MessageInsertPayload) => {
+          const m = payload.new;
           setMsgs((cur) => [...cur, m]);
         },
       )

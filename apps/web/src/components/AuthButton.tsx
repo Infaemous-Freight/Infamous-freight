@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import type { Session } from "@supabase/supabase-js";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 
 export default function AuthButton() {
@@ -9,11 +10,15 @@ export default function AuthButton() {
 
   useEffect(() => {
     const supabase = supabaseBrowser();
-    supabase.auth.getSession().then(({ data }: any) => setAuthed(!!data.session));
+    supabase.auth
+      .getSession()
+      .then(({ data }: { data: { session: Session | null } }) => setAuthed(!!data.session));
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_event: string, session: any) => {
-      setAuthed(!!session);
-    });
+    const { data: sub } = supabase.auth.onAuthStateChange(
+      (_event: string, session: Session | null) => {
+        setAuthed(!!session);
+      },
+    );
 
     return () => sub.subscription.unsubscribe();
   }, []);

@@ -122,7 +122,15 @@ export default function RouteOptimizationVisualization() {
   );
 }
 
-function MetricCard({ label, value, icon }: any) {
+function MetricCard({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: number | string;
+  icon: string;
+}) {
   return (
     <div
       style={{

@@ -70,7 +70,7 @@ export function withSentryAPI(handler: ApiHandler): ApiHandler {
       });
 
       // Send error response
-      const statusCode = (error as any).statusCode || 500;
+      const statusCode = getStatusCode(error);
       const message =
         process.env.NODE_ENV === "production" ? "Internal Server Error" : (error as Error).message;
 
@@ -102,6 +102,12 @@ function sanitizeHeaders(headers: NextApiRequest["headers"]): Record<string, str
   }
 
   return sanitized;
+}
+
+function getStatusCode(error: unknown): number {
+  if (typeof error !== "object" || error === null) return 500;
+  const maybeError = error as { statusCode?: unknown };
+  return typeof maybeError.statusCode === "number" ? maybeError.statusCode : 500;
 }
 
 /**

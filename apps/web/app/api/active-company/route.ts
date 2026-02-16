@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     // Handle request validation errors explicitly
     if (err instanceof z.ZodError) {
-      const details = typeof err.flatten === "function" ? err.flatten() : (err as any).errors;
+      const details = err.flatten();
       return jsonWithRequestId(req, { error: "Invalid request body", details }, { status: 400 });
     }
 

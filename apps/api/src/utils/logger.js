@@ -42,6 +42,8 @@ const format = winston.format.combine(
   winston.format.json(),
 );
 
+const isTest = process.env.NODE_ENV === "test";
+
 // Define transports
 const transports = [
   // Console output
@@ -55,19 +57,23 @@ const transports = [
       }),
     ),
   }),
-  // Error log file
-  new winston.transports.File({
-    filename: "logs/error.log",
-    level: "error",
-    maxsize: 5242880, // 5MB
-    maxFiles: 5,
-  }),
-  // Combined log file
-  new winston.transports.File({
-    filename: "logs/combined.log",
-    maxsize: 5242880, // 5MB
-    maxFiles: 5,
-  }),
+  ...(isTest
+    ? []
+    : [
+      // Error log file
+      new winston.transports.File({
+        filename: "logs/error.log",
+        level: "error",
+        maxsize: 5242880, // 5MB
+        maxFiles: 5,
+      }),
+      // Combined log file
+      new winston.transports.File({
+        filename: "logs/combined.log",
+        maxsize: 5242880, // 5MB
+        maxFiles: 5,
+      }),
+    ]),
 ];
 
 // Create the logger

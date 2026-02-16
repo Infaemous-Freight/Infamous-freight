@@ -174,8 +174,10 @@ describe("Voice Route Tests", () => {
       expect(res.status).toBe(200);
       expect(res.body).toMatchObject({
         ok: true,
-        command: "Check shipment status",
-        result: expect.any(String),
+        command: {
+          originalText: "Check shipment status",
+        },
+        execution: expect.any(Object),
         timestamp: expect.any(String),
       });
     });

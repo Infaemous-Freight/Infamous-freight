@@ -27,8 +27,8 @@ export default function ConnectPage() {
     try {
       const res = await api("/connect/create", { method: "POST", body: JSON.stringify({}) }, token);
       window.location.href = res.url;
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Failed to start onboarding");
     }
   }
 
@@ -37,8 +37,8 @@ export default function ConnectPage() {
     try {
       const res = await api("/connect/status", {}, token);
       setStatus(res);
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Failed to refresh status");
     }
   }
 

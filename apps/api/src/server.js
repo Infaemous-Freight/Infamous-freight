@@ -51,6 +51,7 @@ const billingPaymentsRoutes = require("./routes/billing-payments");
 const { stripeRouter, stripeWebhookRouter } = require("./routes/stripe");
 const voiceRoutes = require("./routes/voice");
 const aiSimRoutes = require("./routes/aiSim.internal");
+const phase10AiRoutes = require("./routes/phase10.ai");
 const usersRoutes = require("./routes/users");
 const shipmentsRoutes = require("./routes/shipments");
 const analyticsRoutes = require("./routes/analytics");
@@ -84,6 +85,7 @@ const blockchainAuditRoutes = require("./routes/blockchain-audit");
 const advancedGeofencingRoutes = require("./routes/advanced-geofencing");
 const analyticsBIRoutes = require("./routes/analytics-bi");
 const complianceInsuranceRoutes = require("./routes/compliance-insurance");
+const phase9AdvancedRoutes = require("./routes/phase9.advanced");
 const marketplaceEnabled =
   String(
     process.env.FEATURE_GET_TRUCKN ?? process.env.MARKETPLACE_ENABLED ?? "true",
@@ -123,10 +125,11 @@ const { uploadsRouter } = require("./uploads/router");
 const { validateRuntimeEnv } = require("./config/validate");
 const bodyLoggingMiddleware = require("./middleware/bodyLogging");
 const { auditContextMiddleware, initializeAuditLogging } = require("./middleware/auditLogging");
-const { idempotencyMiddleware } = require("./middleware/idempotency");
+const { withIdempotency } = require("./middleware/idempotency");
 
 const app = express();
 const DEFAULT_REQUEST_TIMEOUT_MS = Number(process.env.REQUEST_TIMEOUT_MS || 30000);
+const idempotencyMiddleware = withIdempotency();
 
 // Prevent hung requests from consuming resources indefinitely
 app.use((req, res, next) => {
@@ -199,6 +202,7 @@ app.use(
 app.use("/api", healthRoutes);
 app.use("/api", healthDetailedRoutes);
 app.use("/api", aiRoutes);
+app.use("/api", phase10AiRoutes);
 app.use("/api", billingRoutes);
 app.use("/api", billingPaymentsRoutes);
 app.use("/api", voiceRoutes);
@@ -206,9 +210,9 @@ app.use("/api", usersRoutes);
 app.use("/api", shipmentsRoutes);
 app.use("/api/loads", loadboardRoutes);
 app.use("/api/webhooks", webhookRoutes);
+app.use("/api/analytics/phase11", phase11AnalyticsRoutes);
 app.use("/api/analytics", analyticsRoutesPhase2);
 app.use("/api/analytics", analyticsRoutes);
-app.use("/api/analytics/phase11", phase11AnalyticsRoutes);
 app.use("/api/ml", mlRoutes);
 app.use("/api/geofencing", geofencingRoutes);
 app.use("/api/notifications", notificationsRoutes);
@@ -222,6 +226,7 @@ app.use("/api/v4/blockchain", blockchainAuditRoutes);
 app.use("/api/v4/geofencing", advancedGeofencingRoutes);
 app.use("/api/v4/analytics", analyticsBIRoutes);
 app.use("/api/v4/compliance", complianceInsuranceRoutes);
+app.use("/api", phase9AdvancedRoutes);
 app.use("/api", metricsRoutes);
 app.use("/api", adminFeatureFlagsRoutes);
 app.use("/api", adminOpsRoutes);

@@ -9,6 +9,27 @@ export function useUpgradePrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
   const [promptType, setPromptType] = useState<"free-to-pro" | "pro-to-enterprise" | null>(null);
 
+  type UpgradeUsage = {
+    api_calls?: number;
+    shipments_created?: number;
+  };
+
+  type UpgradeUser = {
+    created_at: string;
+    team_members_count?: number;
+  };
+
+  type UpgradeSubscription = {
+    tier: "free" | "pro" | string;
+    created_at: string;
+  };
+
+  type UpgradeData = {
+    subscription?: UpgradeSubscription;
+    usage?: UpgradeUsage;
+    user: UpgradeUser;
+  };
+
   useEffect(() => {
     // Check if user qualifies for upgrade prompt
     checkUpgradeEligibility();
@@ -18,7 +39,7 @@ export function useUpgradePrompt() {
     try {
       // Get user's tier and usage
       const response = await fetch("/api/user/subscription");
-      const data = await response.json();
+      const data = (await response.json()) as UpgradeData;
 
       if (!data.subscription) return;
 
@@ -32,7 +53,7 @@ export function useUpgradePrompt() {
     }
   };
 
-  const checkFreeTierUpgrade = (data: any) => {
+  const checkFreeTierUpgrade = (data: UpgradeData) => {
     // Trigger upgrade if:
     // 1. Used 80%+ of limits
     // 2. 14+ days since signup
@@ -50,7 +71,7 @@ export function useUpgradePrompt() {
     }
   };
 
-  const checkProTierUpgrade = (data: any) => {
+  const checkProTierUpgrade = (data: UpgradeData) => {
     // Trigger if:
     // 1. Using 70%+ of Pro tier limits
     // 2. On Pro for 30+ days

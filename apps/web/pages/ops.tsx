@@ -53,8 +53,8 @@ export default function Ops() {
         throw new Error(data?.error || "weather fetch failed");
       }
       setWeather(data.point as WeatherPoint);
-    } catch (e: any) {
-      setErr(e?.message || "weather fetch failed");
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "weather fetch failed");
     } finally {
       setBusy(false);
     }
@@ -79,8 +79,8 @@ export default function Ops() {
       }
       setRouteSummary(data.summary as RouteSummary);
       setRouteWeather(data.weather as { origin: WeatherPoint; destination: WeatherPoint });
-    } catch (e: any) {
-      setErr(e?.message || "route-risk failed");
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "route-risk failed");
     } finally {
       setBusy(false);
     }

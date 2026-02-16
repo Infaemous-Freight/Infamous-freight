@@ -22,8 +22,8 @@ export default function DriverDashboard() {
       }
       await api("/drivers/location", { method: "POST", body: JSON.stringify(loc) }, token);
       setMsg("✅ Location updated. Proximity matching ready.");
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Failed to share location");
     }
   }
 

@@ -7,6 +7,27 @@
 const crypto = require("crypto");
 const { cacheGetJson, cacheSetJson } = require("../lib/redisCache");
 
+const useMemoryCache = process.env.NODE_ENV === "test";
+const memoryCache = new Map();
+
+async function getCachedValue(key) {
+  if (useMemoryCache) {
+    return memoryCache.get(key) || null;
+  }
+  return cacheGetJson(key);
+}
+
+async function setCachedValue(key, payload, ttlSeconds) {
+  if (useMemoryCache) {
+    memoryCache.set(key, payload);
+    if (ttlSeconds && Number.isFinite(ttlSeconds)) {
+      setTimeout(() => memoryCache.delete(key), ttlSeconds * 1000).unref?.();
+    }
+    return true;
+  }
+  return cacheSetJson(key, payload, ttlSeconds);
+}
+
 function withIdempotency(opts = {}) {
   const scope = String(opts.scope || "default");
   const ttlSeconds = Number.isFinite(opts.ttlSeconds)
@@ -29,7 +50,7 @@ function withIdempotency(opts = {}) {
       const redisKey = `idemp:${scope}:${key}:${fp}`;
 
       // Return cached response if present
-      const cached = await cacheGetJson(redisKey);
+      const cached = await getCachedValue(redisKey);
       if (cached && cached.body) {
         try {
           if (cached.headers) {
@@ -47,13 +68,15 @@ function withIdempotency(opts = {}) {
       // Lightweight lock to avoid duplicate work when multiple requests race
       const lockKey = `${redisKey}:lock`;
       let gotLock = false;
-      try {
-        const { redisConnection } = require("../queue/redis");
-        const c = redisConnection();
-        const setRes = await c.set(lockKey, "1", "NX", "EX", Math.max(ttlSeconds, 60));
-        gotLock = setRes === "OK";
-      } catch (_) {
-        /* Lock acquisition failure - continue without locking */
+      if (!useMemoryCache) {
+        try {
+          const { redisConnection } = require("../queue/redis");
+          const c = redisConnection();
+          const setRes = await c.set(lockKey, "1", "NX", "EX", Math.max(ttlSeconds, 60));
+          gotLock = setRes === "OK";
+        } catch (_) {
+          /* Lock acquisition failure - continue without locking */
+        }
       }
 
       // Wrap response methods to capture output once
@@ -67,17 +90,19 @@ function withIdempotency(opts = {}) {
               "Content-Type": res.getHeader("Content-Type") || "application/json",
             },
           };
-          await cacheSetJson(redisKey, payload, ttlSeconds);
+          await setCachedValue(redisKey, payload, ttlSeconds);
         } catch (_) {
           /* Cache write failure - continue without caching */
         }
-        try {
-          // Release lock
-          const { redisConnection } = require("../queue/redis");
-          const c = redisConnection();
-          await c.del(lockKey);
-        } catch (_) {
-          /* Lock release failure - will expire automatically */
+        if (!useMemoryCache) {
+          try {
+            // Release lock
+            const { redisConnection } = require("../queue/redis");
+            const c = redisConnection();
+            await c.del(lockKey);
+          } catch (_) {
+            /* Lock release failure - will expire automatically */
+          }
         }
         return originalJson(data);
       };

@@ -35,7 +35,7 @@ export async function getUserCompanies(userId: string) {
       company_id: data.organization_id,
       // Role information is not stored on the users table; keep it nullable
       // to preserve the original return shape.
-      role: null as any,
+      role: null,
     },
   ];
 }

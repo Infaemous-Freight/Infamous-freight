@@ -8,10 +8,12 @@ export function getLocaleFromRouter(locale: string | undefined): Locale {
 // Tiny dot-notation getter
 export function t(locale: Locale, key: string): string {
   const parts = key.split(".");
-  let cur: any = dict[locale] as any;
+  let cur: unknown = dict[locale];
 
   for (const p of parts) {
-    cur = cur?.[p];
+    if (typeof cur !== "object" || cur === null) return key;
+    const record = cur as Record<string, unknown>;
+    cur = record[p];
     if (cur === null || cur === undefined) return key;
   }
   return typeof cur === "string" ? cur : key;

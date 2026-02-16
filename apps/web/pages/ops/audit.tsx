@@ -60,8 +60,8 @@ export default function OpsAuditPage() {
         throw new Error(data?.error || "Unable to load audit logs");
       }
       setEvents(data.logs || []);
-    } catch (err: any) {
-      setError(err?.message || "Unable to load audit logs");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to load audit logs");
     } finally {
       setLoading(false);
     }

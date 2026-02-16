@@ -5,7 +5,7 @@
  */
 
 const request = require("supertest");
-const app = require("../server");
+const app = require("../src/server");
 const jwt = require("jsonwebtoken");
 
 // Test JWT with AI scopes

@@ -34,7 +34,7 @@ const PostLoadForm: React.FC = () => {
   const router = useRouter();
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     pickupCity: "",
     pickupState: "",
     pickupZip: "",
@@ -56,9 +56,13 @@ const PostLoadForm: React.FC = () => {
     contactName: "",
     contactPhone: "",
     contactEmail: "",
-  });
+  };
 
-  const handleInputChange = (field: string, value: any) => {
+  type FormData = typeof initialFormData;
+
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+
+  const handleInputChange = <K extends keyof FormData>(field: K, value: FormData[K]) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,

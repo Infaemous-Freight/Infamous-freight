@@ -69,8 +69,8 @@ export default function ActiveLoadPage() {
 
       setPodAttached(true);
       setMsg("✅ POD uploaded and attached.");
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Failed to upload POD");
     } finally {
       setBusy(false);
     }
@@ -90,8 +90,8 @@ export default function ActiveLoadPage() {
       );
       localStorage.removeItem("active_assignment");
       setActive(null);
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Failed to complete load");
     } finally {
       setBusy(false);
     }

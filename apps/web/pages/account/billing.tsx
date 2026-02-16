@@ -4,7 +4,13 @@ import Link from "next/link";
 const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 export default function Billing() {
-  const [ent, setEnt] = useState<any>(null);
+  type Entitlements = {
+    plan?: string;
+    features?: string | string[];
+    [key: string]: unknown;
+  };
+
+  const [ent, setEnt] = useState<Entitlements | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -17,13 +23,13 @@ export default function Billing() {
         "x-user-id": "demo-user",
       },
     });
-    const data = await res.json();
+    const data = (await res.json()) as { entitlements?: Entitlements; error?: string };
     if (!res.ok) throw new Error(data?.error ?? "Failed to load billing");
-    setEnt(data.entitlements);
+    setEnt(data.entitlements ?? null);
   }
 
   useEffect(() => {
-    load().catch((e) => setErr(e?.message ?? "Failed"));
+    load().catch((e) => setErr(e instanceof Error ? e.message : "Failed"));
   }, []);
 
   async function portal() {
@@ -44,8 +50,8 @@ export default function Billing() {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? "Portal failed");
       window.location.href = data.url;
-    } catch (e: any) {
-      setErr(e?.message ?? "Portal failed");
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Portal failed");
     } finally {
       setBusy(false);
     }

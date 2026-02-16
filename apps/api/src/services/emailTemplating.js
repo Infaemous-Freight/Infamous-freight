@@ -1,6 +1,11 @@
 // apps/api/src/services/emailTemplating.js
 
-const handlebars = require("handlebars");
+let handlebars = null;
+try {
+  handlebars = require("handlebars");
+} catch (_) {
+  handlebars = null;
+}
 
 class EmailTemplatingService {
   /**
@@ -123,6 +128,18 @@ class EmailTemplatingService {
       throw new Error(`Template not found: ${templateName}`);
     }
 
+    if (!handlebars) {
+      const subject = this.interpolate(template.subject, variables);
+      const body = this.interpolate(template.body, variables);
+      return {
+        subject,
+        preview: template.preview,
+        html: this.wrapHTML(body),
+        text: body,
+        variables,
+      };
+    }
+
     // Compile Handlebars templates
     const subjectCompiled = handlebars.compile(template.subject);
     const bodyCompiled = handlebars.compile(template.body);
@@ -134,6 +151,13 @@ class EmailTemplatingService {
       text: handlebars.compile(template.body)(variables), // Text version
       variables,
     };
+  }
+
+  interpolate(content, variables) {
+    return Object.entries(variables || {}).reduce((acc, [key, value]) => {
+      const safeValue = value === undefined || value === null ? "" : String(value);
+      return acc.split(`{{${key}}}`).join(safeValue);
+    }, content);
   }
 
   /**

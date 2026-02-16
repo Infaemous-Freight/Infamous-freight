@@ -21,11 +21,13 @@ interface FleetStats {
 }
 
 export default function DriverFleetDashboard() {
+  type DriverFilter = "all" | "available" | "onduty";
+
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [stats, setStats] = useState<FleetStats | null>(null);
   const [selectedDriver, setSelectedDriver] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "available" | "onduty">("all");
+  const [filter, setFilter] = useState<DriverFilter>("all");
 
   useEffect(() => {
     const fetchFleetData = async () => {
@@ -77,7 +79,7 @@ export default function DriverFleetDashboard() {
       {/* Filter */}
       <div style={{ marginBottom: "20px" }}>
         <label>Filter: </label>
-        <select value={filter} onChange={(e) => setFilter(e.target.value as any)}>
+        <select value={filter} onChange={(e) => setFilter(e.target.value as DriverFilter)}>
           <option value="all">All Drivers</option>
           <option value="available">Available</option>
           <option value="onduty">On Duty</option>
@@ -157,7 +159,7 @@ export default function DriverFleetDashboard() {
   );
 }
 
-function StatCard({ label, value, icon }: any) {
+function StatCard({ label, value, icon }: { label: string; value?: number; icon: string }) {
   return (
     <div
       style={{

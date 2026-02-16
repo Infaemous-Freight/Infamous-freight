@@ -63,7 +63,6 @@ export default function SignOffDashboard() {
       const data = await res.json();
       setSignoffs(data.data || []);
     } catch (err) {
-       
       console.error("Failed to fetch sign-offs:", err);
     } finally {
       setLoading(false);
@@ -98,7 +97,7 @@ export default function SignOffDashboard() {
       }
     } catch (err) {
       alert("Failed to sign off");
-       
+
       console.error(err);
     }
   };
@@ -132,7 +131,7 @@ export default function SignOffDashboard() {
       }
     } catch (err) {
       alert("Failed to reject sign-off");
-       
+
       console.error(err);
     }
   };
@@ -143,7 +142,6 @@ export default function SignOffDashboard() {
       const data = await res.json();
       setSelectedSignoff(data.data);
     } catch (err) {
-       
       console.error("Failed to fetch sign-off details:", err);
     }
   };
@@ -197,7 +195,7 @@ export default function SignOffDashboard() {
               {["all", "pending", "completed"].map((f) => (
                 <button
                   key={f}
-                  onClick={() => setFilter(f as any)}
+                  onClick={() => setFilter(f as "all" | "pending" | "completed")}
                   className={`px-4 py-2 rounded ${
                     filter === f
                       ? "bg-blue-600 text-white"

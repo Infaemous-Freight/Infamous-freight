@@ -5,8 +5,8 @@
 const request = require("supertest");
 const jwt = require("jsonwebtoken");
 
-jest.mock("../middleware/security", () => {
-  const actual = jest.requireActual("../middleware/security");
+jest.mock("../src/middleware/security", () => {
+  const actual = jest.requireActual("../src/middleware/security");
   const noOp = (_req, _res, next) => next();
   return {
     ...actual,
@@ -20,7 +20,7 @@ jest.mock("../middleware/security", () => {
   };
 });
 
-jest.mock("../services/realTimeAnalytics", () => ({
+jest.mock("../src/services/realTimeAnalytics", () => ({
   getKPI: jest.fn(),
   getTimeSeries: jest.fn(),
   getDashboardSnapshot: jest.fn(),
@@ -28,7 +28,7 @@ jest.mock("../services/realTimeAnalytics", () => ({
   exportData: jest.fn(),
 }));
 
-jest.mock("../services/cohortAnalysis", () => ({
+jest.mock("../src/services/cohortAnalysis", () => ({
   createCohort: jest.fn(),
   analyzeRetention: jest.fn(),
   calculateLTV: jest.fn(),
@@ -36,7 +36,7 @@ jest.mock("../services/cohortAnalysis", () => ({
   createLookalikeAudience: jest.fn(),
 }));
 
-jest.mock("../services/predictiveAnalytics", () => ({
+jest.mock("../src/services/predictiveAnalytics", () => ({
   predictChurn: jest.fn(),
   predictLTV: jest.fn(),
   identifyUpsellOpportunities: jest.fn(),
@@ -44,7 +44,7 @@ jest.mock("../services/predictiveAnalytics", () => ({
   whatIfAnalysis: jest.fn(),
 }));
 
-jest.mock("../services/businessIntelligence", () => ({
+jest.mock("../src/services/businessIntelligence", () => ({
   generateExecutiveSummary: jest.fn(),
   generateFinancialReport: jest.fn(),
   generateOperationalReport: jest.fn(),
@@ -54,11 +54,11 @@ jest.mock("../services/businessIntelligence", () => ({
   exportReport: jest.fn(),
 }));
 
-const app = require("../server");
-const realTimeAnalytics = require("../services/realTimeAnalytics");
-const cohortAnalysis = require("../services/cohortAnalysis");
-const predictiveAnalytics = require("../services/predictiveAnalytics");
-const businessIntelligence = require("../services/businessIntelligence");
+const app = require("../src/server");
+const realTimeAnalytics = require("../src/services/realTimeAnalytics");
+const cohortAnalysis = require("../src/services/cohortAnalysis");
+const predictiveAnalytics = require("../src/services/predictiveAnalytics");
+const businessIntelligence = require("../src/services/businessIntelligence");
 
 const basePath = "/api/analytics/phase11";
 const testSecret = process.env.JWT_SECRET || "test-secret";

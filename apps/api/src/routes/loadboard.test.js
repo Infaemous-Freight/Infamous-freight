@@ -1,7 +1,7 @@
 const request = require("supertest");
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const loadboardRoutes = require("../routes/loadboard");
+let loadboardRoutes;
 const datLoadboard = require("../services/datLoadboard");
 const truckstopLoadboard = require("../services/truckstopLoadboard");
 const convoyLoadboard = require("../services/convoyLoadboard");
@@ -9,10 +9,26 @@ const { authenticate, requireScope, handleValidationErrors } = require("../middl
 const { body, validationResult } = require("express-validator");
 
 // Mock middleware
-jest.mock("../middleware/security");
-jest.mock("../services/datLoadboard");
-jest.mock("../services/truckstopLoadboard");
-jest.mock("../services/convoyLoadboard");
+jest.mock("../middleware/security", () => ({
+  authenticate: jest.fn((_req, _res, next) => next()),
+  requireScope: jest.fn(() => (_req, _res, next) => next()),
+  handleValidationErrors: jest.fn(() => (_req, _res, next) => next()),
+  limiters: {
+    general: (_req, _res, next) => next(),
+  },
+}));
+jest.mock("../services/datLoadboard", () => ({
+  searchLoads: jest.fn(),
+  getStats: jest.fn(),
+}));
+jest.mock("../services/truckstopLoadboard", () => ({
+  searchLoads: jest.fn(),
+  getStats: jest.fn(),
+}));
+jest.mock("../services/convoyLoadboard", () => ({
+  searchLoads: jest.fn(),
+  getStats: jest.fn(),
+}));
 
 describe("Loadboard API Routes", () => {
   let app;
@@ -21,6 +37,9 @@ describe("Loadboard API Routes", () => {
   beforeAll(() => {
     // JWT secret from test env
     process.env.JWT_SECRET = "test-secret";
+
+    // Load routes after mocks are set
+    loadboardRoutes = require("../routes/loadboard");
 
     // Create Express app with middleware
     app = express();
@@ -99,9 +118,9 @@ describe("Loadboard API Routes", () => {
         },
       ];
 
-      datLoadboard.search.mockResolvedValue([mockLoads[0]]);
-      truckstopLoadboard.search.mockResolvedValue([mockLoads[1]]);
-      convoyLoadboard.search.mockResolvedValue([]);
+      datLoadboard.searchLoads.mockResolvedValue([mockLoads[0]]);
+      truckstopLoadboard.searchLoads.mockResolvedValue([mockLoads[1]]);
+      convoyLoadboard.searchLoads.mockResolvedValue([]);
 
       const response = await request(app)
         .get("/api/loads/search")
@@ -115,8 +134,10 @@ describe("Loadboard API Routes", () => {
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.data).toHaveLength(2);
-      expect(response.body.data[0].score).toBeGreaterThanOrEqual(response.body.data[1].score); // Sorted by score
+      expect(response.body.data.loads).toHaveLength(2);
+      expect(response.body.data.loads[0].score).toBeGreaterThanOrEqual(
+        response.body.data.loads[1].score,
+      ); // Sorted by score
     });
 
     it("should filter loads by rate", async () => {

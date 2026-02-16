@@ -19,7 +19,6 @@ export function initDatadogRUM() {
 
   // Only initialize in production with valid credentials
   if (!isProduction || !appId || !clientToken) {
-     
     console.info("[Datadog RUM] Skipping initialization (not production or credentials missing)");
     return;
   }
@@ -57,14 +56,12 @@ export function initDatadogRUM() {
     // Start tracking views automatically
     datadogRum.startSessionReplayRecording();
 
-     
     console.info("[Datadog RUM] Initialized successfully", {
       service,
       env,
       site,
     });
   } catch (error) {
-     
     console.error("[Datadog RUM] Failed to initialize:", error);
   }
 }
@@ -86,7 +83,6 @@ export function setDatadogUser(user: { id: string; email?: string; name?: string
       role: user.role,
     });
   } catch (error) {
-     
     console.error("[Datadog RUM] Failed to set user:", error);
   }
 }
@@ -102,7 +98,6 @@ export function clearDatadogUser() {
   try {
     datadogRum.clearUser();
   } catch (error) {
-     
     console.error("[Datadog RUM] Failed to clear user:", error);
   }
 }
@@ -110,7 +105,7 @@ export function clearDatadogUser() {
 /**
  * Add custom context to RUM events
  */
-export function addDatadogContext(key: string, value: any) {
+export function addDatadogContext(key: string, value: unknown) {
   if (process.env.NEXT_PUBLIC_ENV !== "production") {
     return;
   }
@@ -118,7 +113,6 @@ export function addDatadogContext(key: string, value: any) {
   try {
     datadogRum.setGlobalContextProperty(key, value);
   } catch (error) {
-     
     console.error("[Datadog RUM] Failed to add context:", error);
   }
 }
@@ -126,7 +120,7 @@ export function addDatadogContext(key: string, value: any) {
 /**
  * Track custom action in Datadog RUM
  */
-export function trackDatadogAction(name: string, context?: Record<string, any>) {
+export function trackDatadogAction(name: string, context?: Record<string, unknown>) {
   if (process.env.NEXT_PUBLIC_ENV !== "production") {
     return;
   }
@@ -134,7 +128,6 @@ export function trackDatadogAction(name: string, context?: Record<string, any>) 
   try {
     datadogRum.addAction(name, context);
   } catch (error) {
-     
     console.error("[Datadog RUM] Failed to track action:", error);
   }
 }

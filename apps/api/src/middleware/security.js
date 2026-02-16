@@ -10,7 +10,7 @@ const { authenticateWithRotation } = require("./advancedSecurity");
 const { env } = require("../config/env");
 const rateLimitMetrics = require("../lib/rateLimitMetrics");
 const { logger } = require("./logger");
-const { validateScope, hasScope } = require("@infamous-freight/shared");
+const { validateScope, hasScope, hasAllScopes } = require("@infamous-freight/shared");
 
 /**
  * Factory for creating rate limiters with enhanced configuration
@@ -221,10 +221,19 @@ function requireScope(required) {
   }
 
   return (req, res, next) => {
-    const userScopes = req.user?.scopes || [];
+    const rawScopes = req.user?.scopes;
+    const userScopes = Array.isArray(rawScopes)
+      ? rawScopes
+      : typeof rawScopes === "string"
+        ? rawScopes.split(" ").filter(Boolean)
+        : [];
 
-    // Check if user has any of the required scopes
-    if (!hasScope(userScopes, requiredScopes)) {
+    const hasRequiredScopes =
+      requiredScopes.length > 1
+        ? hasAllScopes(userScopes, requiredScopes)
+        : hasScope(userScopes, requiredScopes[0]);
+
+    if (!hasRequiredScopes) {
       logger.warn("Scope check failed", {
         requiredScopes,
         userScopes,

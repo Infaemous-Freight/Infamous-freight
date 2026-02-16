@@ -217,13 +217,15 @@ export default function PricingPage({ currency = "USD" }: PricingPageProps) {
   );
 }
 
+type PricingTier = (typeof PRICING_TIERS)[number];
+
 function PricingCard({
   tier,
   currency,
   billingPeriod,
   isHighlighted,
 }: {
-  tier: any;
+  tier: PricingTier;
   currency: string;
   billingPeriod: string;
   isHighlighted: boolean;

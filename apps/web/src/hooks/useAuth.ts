@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
+import type { Session, User } from "@supabase/supabase-js";
 import { supabaseBrowser } from "../lib/supabase/browser";
 
 interface UseAuthReturn {
@@ -29,7 +29,6 @@ export function useAuth(): UseAuthReturn {
         setUser(user);
         setIsAuthenticated(!!user);
       } catch (error) {
-         
         console.error("Error fetching user:", error);
       } finally {
         setIsLoading(false);
@@ -40,7 +39,7 @@ export function useAuth(): UseAuthReturn {
 
     // Subscribe to auth state changes
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event: string, session: any) => {
+      (_event: string, session: Session | null) => {
         setUser(session?.user ?? null);
         setIsAuthenticated(!!session?.user);
         setIsLoading(false);
@@ -58,7 +57,6 @@ export function useAuth(): UseAuthReturn {
       setUser(null);
       setIsAuthenticated(false);
     } catch (error) {
-       
       console.error("Error signing out:", error);
       throw error;
     }

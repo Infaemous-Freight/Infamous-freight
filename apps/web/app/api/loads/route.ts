@@ -12,11 +12,11 @@ const Create = z.object({
 });
 
 function mapErrorToResponse(err: unknown): { status: number; body: Record<string, unknown> } {
-  const anyErr = err as any;
+  const errorWithStatus = err as { status?: number; statusCode?: number; message?: string } | null;
 
   const status: number =
-    (typeof anyErr?.status === "number" && anyErr.status) ||
-    (typeof anyErr?.statusCode === "number" && anyErr.statusCode) ||
+    (typeof errorWithStatus?.status === "number" && errorWithStatus.status) ||
+    (typeof errorWithStatus?.statusCode === "number" && errorWithStatus.statusCode) ||
     (err instanceof z.ZodError ? 400 : 500);
 
   if (err instanceof z.ZodError) {
@@ -32,7 +32,10 @@ function mapErrorToResponse(err: unknown): { status: number; body: Record<string
   return {
     status,
     body: {
-      error: typeof anyErr?.message === "string" ? anyErr.message : "Internal Server Error",
+      error:
+        typeof errorWithStatus?.message === "string"
+          ? errorWithStatus.message
+          : "Internal Server Error",
     },
   };
 }
@@ -49,7 +52,7 @@ export async function GET(req: Request) {
   } catch (error) {
     // Fallback error handling to avoid unhandled promise rejections
     // and to provide a consistent JSON error response.
-     
+
     console.error("GET /api/loads failed", error);
     const { status, body } = mapErrorToResponse(error);
     return jsonWithRequestId(req, body, { status });
@@ -70,7 +73,6 @@ export async function POST(req: Request) {
     if (error) return jsonWithRequestId(req, { error: error.message }, { status: 400 });
     return jsonWithRequestId(req, { ok: true, load: data });
   } catch (error) {
-     
     console.error("POST /api/loads failed", error);
     const { status, body } = mapErrorToResponse(error);
     return jsonWithRequestId(req, body, { status });
