@@ -12,10 +12,11 @@ Complete financial analysis of Infæmous Freight Enterprises infrastructure, ser
 
 **Key Metrics:**
 - ✅ **Development Cost:** Free (local docker-compose)
-- ✅ **Staging Cost:** ~$100/month
-- ✅ **Production Cost:** ~$500-$800/month (scalable)
-- ✅ **Total Monthly (Production):** $600-$900/month
-- ✅ **Annual Cost (Production):** $7,200-$10,800/year
+- ✅ **Staging Cost:** ~$36/month
+- ✅ **Production Cost:** ~$2,427/month (before optimization)
+- ✅ **Production Cost (Optimized):** ~$2,142/month (after optimization)
+- ✅ **Total Monthly Savings:** $285/month
+- ✅ **Annual Savings:** $3,420/year
 
 ---
 
