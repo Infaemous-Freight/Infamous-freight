@@ -95,13 +95,17 @@ function createUserAvatar(avatar) {
 
 /**
  * Delete a user avatar
- * @param {string} avatarId
+ * @param {string} avatarIdOrFileName - Avatar ID (UUID) or fileName (userId/filename)
  * @param {string} ownerUserId
  * @returns {boolean}
  */
-function deleteUserAvatar(avatarId, ownerUserId) {
+function deleteUserAvatar(avatarIdOrFileName, ownerUserId) {
   const store = read();
-  const idx = store.avatars.findIndex((a) => a.id === avatarId && a.ownerUserId === ownerUserId);
+  const idx = store.avatars.findIndex(
+    (a) =>
+      (a.id === avatarIdOrFileName || a.fileName === avatarIdOrFileName) &&
+      a.ownerUserId === ownerUserId,
+  );
   if (idx < 0) return false;
   store.avatars.splice(idx, 1);
   write(store);

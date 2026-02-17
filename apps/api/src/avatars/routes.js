@@ -19,6 +19,13 @@ const {
   getSelection,
   setSelection,
 } = require("./store");
+const {
+  generateAvatarResponse,
+  learnFromInteraction,
+  getAvatarPersonality,
+  recommendAvatar,
+  generateAvatarInsights,
+} = require("./avatarService");
 const { getUserId } = require("../auth/user");
 const { authenticate, limiters, auditLog } = require("../middleware/security");
 const { handleValidationErrors } = require("../middleware/validation");
@@ -98,6 +105,22 @@ const upload = multer({
 });
 
 /**
+ * GET /api/avatars/me
+ * List authenticated user's avatars and current selection (frontend endpoint)
+ */
+router.get("/me", limiters.general, authenticate, auditLog, (req, res) => {
+  const userId = getUserId(req);
+  const avatars = listUserAvatars(userId);
+  const selection = getSelection(userId);
+
+  res.status(200).json({
+    success: true,
+    avatars,
+    selected: selection,
+  });
+});
+
+/**
  * GET /api/avatars/user
  * List all user-uploaded avatars for the authenticated user
  */
@@ -113,6 +136,49 @@ router.get("/user", limiters.general, authenticate, auditLog, (req, res) => {
     },
   });
 });
+
+/**
+ * POST /api/avatars/me/upload
+ * Upload a new personal avatar (frontend endpoint)
+ */
+router.post(
+  "/me/upload",
+  limiters.general,
+  authenticate,
+  auditLog,
+  upload.single("avatar"),
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        error: "No file uploaded",
+      });
+    }
+
+    const userId = getUserId(req);
+    const { name } = req.body;
+
+    // Construct relative path for storage
+    const fileName = `${userId}/${req.file.filename}`;
+
+    const avatar = createUserAvatar({
+      id: randomUUID(),
+      ownerUserId: userId,
+      name: name || req.file.originalname,
+      fileName,
+      uploadedAt: new Date().toISOString(),
+      fileSize: req.file.size,
+      mimeType: req.file.mimetype,
+      selected: false,
+    });
+
+    res.status(201).json({
+      success: true,
+      data: avatar,
+      message: "Avatar uploaded successfully",
+    });
+  },
+);
 
 /**
  * POST /api/avatars/user/upload
@@ -159,6 +225,69 @@ router.post(
         avatar,
         message: "Avatar uploaded successfully",
       },
+    });
+  },
+);
+
+/**
+ * POST /api/avatars/me/select/:fileName
+ * Select an avatar as the user's current avatar (frontend endpoint)
+ */
+router.post(
+  "/me/select/:fileName",
+  limiters.general,
+  authenticate,
+  auditLog,
+  (req, res) => {
+    const userId = getUserId(req);
+    const { fileName } = req.params;
+
+    // Verify ownership
+    const avatars = listUserAvatars(userId);
+    const avatar = avatars.find((a) => a.fileName === fileName);
+
+    if (!avatar) {
+      return res.status(404).json({
+        success: false,
+        error: "Avatar not found or not owned by this user",
+      });
+    }
+
+    const selection = setSelection(userId, { type: "user", fileName });
+
+    res.status(200).json({
+      success: true,
+      data: selection,
+      message: "Avatar selected successfully",
+    });
+  },
+);
+
+/**
+ * DELETE /api/avatars/me/:fileName
+ * Delete a user-uploaded avatar (frontend endpoint)
+ */
+router.delete(
+  "/me/:fileName",
+  limiters.general,
+  authenticate,
+  auditLog,
+  (req, res) => {
+    const userId = getUserId(req);
+    const { fileName } = req.params;
+
+    const deleted = deleteUserAvatar(fileName, userId);
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        error: "Avatar not found or not owned by this user",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Avatar deleted successfully",
     });
   },
 );
@@ -252,6 +381,134 @@ router.post(
     });
   },
 );
+
+// ==================== AI-POWERED AVATAR FEATURES ====================
+
+/**
+ * POST /api/avatars/chat
+ * Chat with the selected avatar using AI personality
+ */
+router.post(
+  "/chat",
+  limiters.ai,
+  authenticate,
+  auditLog,
+  [
+    body("message").isString().trim().notEmpty().withMessage("Message required"),
+    body("avatarId").optional().isString().trim(),
+  ],
+  handleValidationErrors,
+  async (req, res) => {
+    const userId = getUserId(req);
+    const { message, avatarId: requestedAvatarId } = req.body;
+
+    // Get user's selected avatar or use provided avatarId
+    let avatarId = requestedAvatarId;
+    if (!avatarId) {
+      const selection = getSelection(userId);
+      avatarId = selection?.type === "system" ? selection.id : "main-01";
+    }
+
+    try {
+      const response = await generateAvatarResponse(avatarId, message, { userId });
+
+      // Log interaction for learning
+      await learnFromInteraction(userId, avatarId, {
+        message,
+        response,
+        type: "chat",
+      });
+
+      res.status(200).json({
+        success: true,
+        data: {
+          response,
+          avatarId,
+          timestamp: new Date().toISOString(),
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: "Failed to generate avatar response",
+      });
+    }
+  },
+);
+
+/**
+ * GET /api/avatars/personality/:avatarId
+ * Get personality profile for an avatar
+ */
+router.get(
+  "/personality/:avatarId",
+  limiters.general,
+  [param("avatarId").isString().trim().notEmpty().withMessage("Avatar ID required")],
+  handleValidationErrors,
+  (req, res) => {
+    const { avatarId } = req.params;
+    const personality = getAvatarPersonality(avatarId);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        avatarId,
+        personality,
+      },
+    });
+  },
+);
+
+/**
+ * GET /api/avatars/recommend
+ * Get recommended avatar based on user preferences
+ */
+router.get("/recommend", limiters.general, authenticate, auditLog, (req, res) => {
+  const userId = getUserId(req);
+  const { workStyle, priority } = req.query;
+
+  const recommendedId = recommendAvatar({ workStyle, priority });
+  const personality = getAvatarPersonality(recommendedId);
+
+  res.status(200).json({
+    success: true,
+    data: {
+      recommendedAvatarId: recommendedId,
+      personality,
+      reason: "Based on your preferences and activity patterns",
+    },
+  });
+});
+
+/**
+ * GET /api/avatars/insights
+ * Get AI-generated insights from avatar based on user activity
+ */
+router.get("/insights", limiters.general, authenticate, auditLog, async (req, res) => {
+  const userId = getUserId(req);
+
+  try {
+    // In production, fetch real activity data from database
+    const activityData = {
+      totalShipments: parseInt(req.query.totalShipments) || 0,
+      onTimeDeliveries: parseInt(req.query.onTimeDeliveries) || 0,
+      costSavings: parseFloat(req.query.costSavings) || 0,
+      aiInteractions: parseInt(req.query.aiInteractions) || 0,
+    };
+
+    const insights = await generateAvatarInsights(userId, activityData);
+
+    res.status(200).json({
+      success: true,
+      data: insights,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: "Failed to generate avatar insights",
+    });
+  }
+});
 
 // ==================== ERROR HANDLING ====================
 
