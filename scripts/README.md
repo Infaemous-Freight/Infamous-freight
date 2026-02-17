@@ -181,6 +181,31 @@ Checks critical public endpoints and reports pass/fail summary.
 
 ---
 
+### 10. **firebase-setup.sh**
+
+Creates minimal local Firebase emulator configuration files when missing.
+
+**Usage:**
+
+```bash
+./scripts/firebase-setup.sh
+```
+
+---
+
+### 11. **start-firebase-emulator.sh**
+
+Starts Firebase emulators from repo root and auto-runs setup if config is
+missing.
+
+**Usage:**
+
+```bash
+./scripts/start-firebase-emulator.sh
+```
+
+---
+
 ## 🔧 Setup Instructions
 
 ### Make scripts executable

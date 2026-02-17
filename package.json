@@ -54,7 +54,9 @@
     "ci:build": "pnpm -r build",
     "go-live:verify": "bash scripts/genesis-go-live-verify.sh",
     "prepare": "husky",
-    "deploy:production": "bash deploy/production-vercel-railway.sh"
+    "deploy:production": "bash deploy/production-vercel-railway.sh",
+    "firebase:setup": "bash scripts/firebase-setup.sh",
+    "firebase:emulator": "bash scripts/start-firebase-emulator.sh"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1"
