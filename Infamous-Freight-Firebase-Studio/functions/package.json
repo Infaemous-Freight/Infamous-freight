@@ -19,5 +19,15 @@
   "devDependencies": {
     "eslint": "^9.16.0",
     "eslint-config-google": "^0.14.0"
+  },
+  "eslintConfig": {
+    "extends": "google",
+    "env": {
+      "node": true,
+      "es2021": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2021
+    }
   }
 }
