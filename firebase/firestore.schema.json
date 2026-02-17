@@ -1,0 +1,46 @@
+{
+  "collections": {
+    "shipments": {
+      "documentId": "<shipmentId>",
+      "fields": {
+        "origin": "string",
+        "destination": "string",
+        "status": "string",
+        "driverId": "string",
+        "currentLocation": {
+          "lat": "number",
+          "lng": "number"
+        },
+        "estimatedArrival": "timestamp",
+        "proofOfDeliveryUrl": "string",
+        "lastUpdated": "timestamp"
+      }
+    },
+    "drivers": {
+      "documentId": "<driverId>",
+      "fields": {
+        "name": "string",
+        "email": "string",
+        "phone": "string",
+        "currentLocation": {
+          "lat": "number",
+          "lng": "number"
+        },
+        "activeShipment": "string"
+      }
+    },
+    "events": {
+      "documentId": "<eventId>",
+      "fields": {
+        "shipmentId": "string",
+        "type": "string",
+        "timestamp": "timestamp",
+        "location": {
+          "lat": "number",
+          "lng": "number"
+        },
+        "notes": "string"
+      }
+    }
+  }
+}
