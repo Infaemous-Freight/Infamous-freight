@@ -11,15 +11,17 @@ const db = admin.firestore();
  * Updates latest location event and shipment metadata.
  */
 exports.updateShipmentLocation = onDocumentUpdated('shipments/{shipmentId}', async (event) => {
-  const before = event.data.before.data();
-  const after = event.data.after.data();
+  const beforeSnap = event.data.before;
+  const afterSnap = event.data.after;
   const shipmentId = event.params.shipmentId;
 
-  if (!before || !after) {
+  if (!beforeSnap || !afterSnap) {
     logger.info('No shipment payload found for update.', {shipmentId});
     return;
   }
 
+  const before = beforeSnap.data();
+  const after = afterSnap.data();
   const beforeLocation = JSON.stringify(before.currentLocation || {});
   const afterLocation = JSON.stringify(after.currentLocation || {});
 
