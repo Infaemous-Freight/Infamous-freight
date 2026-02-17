@@ -53,7 +53,8 @@
     "ci:install": "corepack enable && pnpm install --frozen-lockfile",
     "ci:build": "pnpm -r build",
     "go-live:verify": "bash scripts/genesis-go-live-verify.sh",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy:production": "bash deploy/production-vercel-railway.sh"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1"
