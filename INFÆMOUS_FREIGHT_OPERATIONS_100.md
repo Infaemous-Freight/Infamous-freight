@@ -851,20 +851,20 @@ Operating Income (EBITDA):             $ 3,800,000   (9%)
 
 ### 📊 Competitive Comparison
 
-| Feature | Infæmous Freight | Competitor A | Competitor B | Competitor C |
-|---------|------------------|--------------|--------------|--------------|
-| **Shipment Management** | ✅ Full CRUD + lifecycle | ✅ Full | ✅ Full | ⚠️ Basic |
-| **Real-Time Tracking** | ✅ 1-sec updates | ⚠️ 5-min updates | ⚠️ 15-min updates | ❌ None |
-| **AI Route Optimization** | ✅ Advanced ML | ⚠️ Basic | ❌ None | ❌ None |
-| **Load Board Integration** | ✅ 4 platforms | ⚠️ 1 platform | ✅ 2 platforms | ❌ None |
-| **Instant Payments** | ✅ Escrow + instant | ❌ 30-day terms | ⚠️ 7-day terms | ❌ 60-day terms |
-| **AI Assistants** | ✅ 4 personalities | ❌ None | ⚠️ Basic chatbot | ❌ None |
-| **Blockchain Audit** | ✅ Immutable logs | ❌ None | ❌ None | ❌ None |
-| **Voice Commands** | ✅ Full support | ❌ None | ❌ None | ❌ None |
-| **Mobile App Rating** | ✅ 4.7/5 | ⚠️ 3.8/5 | ⚠️ 3.5/5 | ⚠️ 4.1/5 |
-| **API Access** | ✅ Full REST API | ⚠️ Limited API | ⚠️ Limited API | ❌ None |
-| **Custom Analytics** | ✅ Advanced BI | ⚠️ Basic reports | ⚠️ Basic reports | ❌ None |
-| **Pricing Model** | ✅ Transparent | ⚠️ Hidden fees | ⚠️ Complex tiers | ⚠️ High minimums |
+| Feature                    | Infæmous Freight        | Competitor A    | Competitor B     | Competitor C    |
+| -------------------------- | ----------------------- | --------------- | ---------------- | --------------- |
+| **Shipment Management**    | ✅ Full CRUD + lifecycle | ✅ Full          | ✅ Full           | ⚠️ Basic         |
+| **Real-Time Tracking**     | ✅ 1-sec updates         | ⚠️ 5-min updates | ⚠️ 15-min updates | ❌ None          |
+| **AI Route Optimization**  | ✅ Advanced ML           | ⚠️ Basic         | ❌ None           | ❌ None          |
+| **Load Board Integration** | ✅ 4 platforms           | ⚠️ 1 platform    | ✅ 2 platforms    | ❌ None          |
+| **Instant Payments**       | ✅ Escrow + instant      | ❌ 30-day terms  | ⚠️ 7-day terms    | ❌ 60-day terms  |
+| **AI Assistants**          | ✅ 4 personalities       | ❌ None          | ⚠️ Basic chatbot  | ❌ None          |
+| **Blockchain Audit**       | ✅ Immutable logs        | ❌ None          | ❌ None           | ❌ None          |
+| **Voice Commands**         | ✅ Full support          | ❌ None          | ❌ None           | ❌ None          |
+| **Mobile App Rating**      | ✅ 4.7/5                 | ⚠️ 3.8/5         | ⚠️ 3.5/5          | ⚠️ 4.1/5         |
+| **API Access**             | ✅ Full REST API         | ⚠️ Limited API   | ⚠️ Limited API    | ❌ None          |
+| **Custom Analytics**       | ✅ Advanced BI           | ⚠️ Basic reports | ⚠️ Basic reports  | ❌ None          |
+| **Pricing Model**          | ✅ Transparent           | ⚠️ Hidden fees   | ⚠️ Complex tiers  | ⚠️ High minimums |
 
 **Overall Score**: Infæmous Freight 12/12 | Competitor A 6/12 | Competitor B 6/12 | Competitor C 2/12
 

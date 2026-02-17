@@ -30,17 +30,17 @@
 
 ## 📋 PRIORITY 3 QUICK REFERENCE
 
-| Metric | Week 1 | Week 2 | Week 3 | Week 4 | Target |
-|--------|--------|--------|--------|--------|--------|
-| **Weekly Revenue** | $40-50K | $70-85K | $120K | $150-200K | $150K+ |
-| **Active Carriers** | 50-75 | 150-200 | 300+ | 500+ | 500+ |
-| **Active Shippers** | 100-150 | 250-300 | 500+ | 750+ | 750+ |
-| **Shipments/Week** | 2-3K | 8-10K | 20K+ | 40K+ | 40K+/week |
-| **Team Size** | 20 | 25-30 | 35-40 | 45-50 | 50+ |
-| **States Active** | 3 (CA, TX, FL) | 8 | 15+ | 25+ | 50 states |
-| **Enterprise Accounts** | 0 | 0 | 2-3 pilot | 10-15 | 20+ |
-| **App Performance** | P95 600ms | P95 450ms | P95 300ms | P95 <250ms | <250ms |
-| **Customer NPS** | 45-50 | 55-60 | 65-70 | 70+ | 75+ |
+| Metric                  | Week 1         | Week 2    | Week 3    | Week 4     | Target    |
+| ----------------------- | -------------- | --------- | --------- | ---------- | --------- |
+| **Weekly Revenue**      | $40-50K        | $70-85K   | $120K     | $150-200K  | $150K+    |
+| **Active Carriers**     | 50-75          | 150-200   | 300+      | 500+       | 500+      |
+| **Active Shippers**     | 100-150        | 250-300   | 500+      | 750+       | 750+      |
+| **Shipments/Week**      | 2-3K           | 8-10K     | 20K+      | 40K+       | 40K+/week |
+| **Team Size**           | 20             | 25-30     | 35-40     | 45-50      | 50+       |
+| **States Active**       | 3 (CA, TX, FL) | 8         | 15+       | 25+        | 50 states |
+| **Enterprise Accounts** | 0              | 0         | 2-3 pilot | 10-15      | 20+       |
+| **App Performance**     | P95 600ms      | P95 450ms | P95 300ms | P95 <250ms | <250ms    |
+| **Customer NPS**        | 45-50          | 55-60     | 65-70     | 70+        | 75+       |
 
 ---
 
@@ -1232,15 +1232,15 @@ FINANCIAL POSITION:
 
 **During Priority 3 Execution**:
 
-| Issue | Primary | Secondary | CEO Escalation |
-|-------|---------|-----------|-----------------|
-| Revenue below 10% target | Sales VP | CRO | If 2 consecutive weeks |
-| Support satisfaction <85% | Support Manager | VP Support | If sustained >3 days |
-| API uptime <99.5% | CTO | Eng Manager | Immediate |
-| Security incident | CEO + CTO | Legal | Immediate |
-| Customer churn >5% | Product | Sales | If trend emerging |
-| Carrier recruitment stalled | Sales VP | Ops | If 3 days behind |
-| Key employee departure | HR | CEO | Immediate |
+| Issue                       | Primary         | Secondary   | CEO Escalation         |
+| --------------------------- | --------------- | ----------- | ---------------------- |
+| Revenue below 10% target    | Sales VP        | CRO         | If 2 consecutive weeks |
+| Support satisfaction <85%   | Support Manager | VP Support  | If sustained >3 days   |
+| API uptime <99.5%           | CTO             | Eng Manager | Immediate              |
+| Security incident           | CEO + CTO       | Legal       | Immediate              |
+| Customer churn >5%          | Product         | Sales       | If trend emerging      |
+| Carrier recruitment stalled | Sales VP        | Ops         | If 3 days behind       |
+| Key employee departure      | HR              | CEO         | Immediate              |
 
 ---
 

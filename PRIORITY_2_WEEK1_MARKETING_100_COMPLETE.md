@@ -628,14 +628,14 @@ what's the best day/time for me to follow up?"
 
 ## Call Objection Matrix
 
-| Objection | Response | Next Step |
-|-----------|----------|-----------|
-| "Sounds like a scam" | Show testimonials, explain model clearly | Send review links |
-| "I'm too busy" | Offer to set up, 10-min setup | Schedule exact time |
-| "Don't need more loads" | "More quality loads = more money. Try it." | Send trial link |
-| "Worried about payment" | "We use Stripe, pay daily, super reliable" | Show testimonials |
-| "What about my current board?" | "Add us, don't replace" | Free trial + no cancellation |
-| "Need to think about it" | "Totally fair. When can I follow up?" | Schedule call (next 3 days) |
+| Objection                      | Response                                   | Next Step                    |
+| ------------------------------ | ------------------------------------------ | ---------------------------- |
+| "Sounds like a scam"           | Show testimonials, explain model clearly   | Send review links            |
+| "I'm too busy"                 | Offer to set up, 10-min setup              | Schedule exact time          |
+| "Don't need more loads"        | "More quality loads = more money. Try it." | Send trial link              |
+| "Worried about payment"        | "We use Stripe, pay daily, super reliable" | Show testimonials            |
+| "What about my current board?" | "Add us, don't replace"                    | Free trial + no cancellation |
+| "Need to think about it"       | "Totally fair. When can I follow up?"      | Schedule call (next 3 days)  |
 
 ---
 
@@ -656,12 +656,12 @@ After each call, log:
 
 ## Incentive Structure
 
-| Tier | Criteria | Reward |
-|------|----------|--------|
-| **Instant** | Sign up this week | $100 cash bonus |
-| **Active** | 5+ loads in Week 1 | $50 bonus |
-| **Top Performer** | Top 10 earnings Week 1 | $500 bonus |
-| **Affiliate** | Refer 5 carriers | 20% of their first load |
+| Tier              | Criteria               | Reward                  |
+| ----------------- | ---------------------- | ----------------------- |
+| **Instant**       | Sign up this week      | $100 cash bonus         |
+| **Active**        | 5+ loads in Week 1     | $50 bonus               |
+| **Top Performer** | Top 10 earnings Week 1 | $500 bonus              |
+| **Affiliate**     | Refer 5 carriers       | 20% of their first load |
 
 ```
 
@@ -803,12 +803,12 @@ What's the best day/time to follow up? Say, Thursday afternoon?"
 
 ## Shipper Close Rates by Source
 
-| Source | Open Rate | Demo Rate | Close Rate |
-|--------|-----------|-----------|------------|
-| **Cold Calls** | 60% answer | 40% (24%) | 25% (6%) |
-| **Email** | 35% open | 15% click | 2% convert |
-| **Referral** | 90% answer | 70% | 40% |
-| **Ad Click** | N/A | 60% | 10% |
+| Source         | Open Rate  | Demo Rate | Close Rate |
+| -------------- | ---------- | --------- | ---------- |
+| **Cold Calls** | 60% answer | 40% (24%) | 25% (6%)   |
+| **Email**      | 35% open   | 15% click | 2% convert |
+| **Referral**   | 90% answer | 70%       | 40%        |
+| **Ad Click**   | N/A        | 60%       | 10%        |
 
 **Best performing: Referrals + Cold Calls to existing customers**
 
@@ -1171,8 +1171,8 @@ Meeting: Friday 2:00 PM
 
 ## ✅ ACTION ITEMS FOR WEEK 2
 
-| Action | Owner | Due Date | Priority |
-|--------|-------|----------|----------|
+| Action               | Owner  | Due Date    | Priority |
+| -------------------- | ------ | ----------- | -------- |
 | [Action description] | [Name] | Mon/Tue/Wed | P1/P2/P3 |
 | [Action description] | [Name] | Mon/Tue/Wed | P1/P2/P3 |
 | [Action description] | [Name] | Mon/Tue/Wed | P1/P2/P3 |

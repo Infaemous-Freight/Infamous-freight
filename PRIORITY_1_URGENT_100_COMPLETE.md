@@ -772,23 +772,23 @@ Level 3 Incident (Red - Critical)
 
 ## Contact Information
 
-| Role | Name | Email | Phone | Slack |
-|------|------|-------|-------|-------|
-| Primary On-Call | John Smith | john@infamousfreight.com | +1-555-0100 | @johnsmith |
-| Secondary On-Call | Sarah Chen | sarah@infamousfreight.com | +1-555-0101 | @sarahchen |
-| Backup | Mike Johnson | mike@infamousfreight.com | +1-555-0102 | @mikejohnson |
-| VP Engineering | Alex Rodriguez | alex@infamousfreight.com | +1-555-0103 | @alexrodriguez |
-| CTO | Sam Lee | sam@infamousfreight.com | +1-555-0104 | @samlee |
-| CEO | Miles (MR) | mr@infamousfreight.com | +1-555-0105 | @mr |
+| Role              | Name           | Email                     | Phone       | Slack          |
+| ----------------- | -------------- | ------------------------- | ----------- | -------------- |
+| Primary On-Call   | John Smith     | john@infamousfreight.com  | +1-555-0100 | @johnsmith     |
+| Secondary On-Call | Sarah Chen     | sarah@infamousfreight.com | +1-555-0101 | @sarahchen     |
+| Backup            | Mike Johnson   | mike@infamousfreight.com  | +1-555-0102 | @mikejohnson   |
+| VP Engineering    | Alex Rodriguez | alex@infamousfreight.com  | +1-555-0103 | @alexrodriguez |
+| CTO               | Sam Lee        | sam@infamousfreight.com   | +1-555-0104 | @samlee        |
+| CEO               | Miles (MR)     | mr@infamousfreight.com    | +1-555-0105 | @mr            |
 
 ## Response Time Targets (SLA)
 
-| Severity | Ack Time | MTTR | Communication |
-|----------|----------|------|---|
-| P1 (Critical) | < 2 min | < 15 min | Every 5 min |
-| P2 (High) | < 5 min | < 30 min | Every 10 min |
-| P3 (Medium) | < 15 min | < 1 hour | Every 30 min |
-| P4 (Low) | < 1 hour | < 4 hours | As resolved |
+| Severity      | Ack Time | MTTR      | Communication |
+| ------------- | -------- | --------- | ------------- |
+| P1 (Critical) | < 2 min  | < 15 min  | Every 5 min   |
+| P2 (High)     | < 5 min  | < 30 min  | Every 10 min  |
+| P3 (Medium)   | < 15 min | < 1 hour  | Every 30 min  |
+| P4 (Low)      | < 1 hour | < 4 hours | As resolved   |
 
 EOF
 
@@ -1168,16 +1168,16 @@ EOF
 
 ## Alert Runbook Matrix
 
-| Alert | Severity | 1st Response | Escalate If | Typical Fix Time |
-|-------|----------|--------------|-------------|------------------|
-| API Response Time >500ms | P2 | Check DB, scale | >10 min unresolved | 5-15 min |
-| Error Rate >1% | P1 | Rollback/restart | >5 min unresolved | 5-10 min |
-| Database CPU >80% | P2 | Scale RDS | >10 min unresolved | 10-20 min |
-| Service Down | P1 | Failover/restart | >2 min unresolved | 5-15 min |
-| Cache Hit Rate <80% | P3 | Investigate queries | >1 hour | 10-30 min |
-| Payment Failures >5% | P1 | Check Stripe/PayPal | >2 min | 5-15 min |
-| Disk Space <20% | P3 | Clear logs/temp | >2 hours | 10-30 min |
-| Security Alert | P2 | Investigate | Immediately | Varies |
+| Alert                    | Severity | 1st Response        | Escalate If        | Typical Fix Time |
+| ------------------------ | -------- | ------------------- | ------------------ | ---------------- |
+| API Response Time >500ms | P2       | Check DB, scale     | >10 min unresolved | 5-15 min         |
+| Error Rate >1%           | P1       | Rollback/restart    | >5 min unresolved  | 5-10 min         |
+| Database CPU >80%        | P2       | Scale RDS           | >10 min unresolved | 10-20 min        |
+| Service Down             | P1       | Failover/restart    | >2 min unresolved  | 5-15 min         |
+| Cache Hit Rate <80%      | P3       | Investigate queries | >1 hour            | 10-30 min        |
+| Payment Failures >5%     | P1       | Check Stripe/PayPal | >2 min             | 5-15 min         |
+| Disk Space <20%          | P3       | Clear logs/temp     | >2 hours           | 10-30 min        |
+| Security Alert           | P2       | Investigate         | Immediately        | Varies           |
 
 EOF
 
@@ -1395,18 +1395,18 @@ Rush shipments cost more. Off-peak shipments cost less."
 
 ## Common Error Messages & Fixes
 
-| Error Message | Cause | Fix |
-|---------------|-------|-----|
-| "Service Unavailable (503)" | API is down or restarting | Wait 2-5 min, refresh page |
-| "Bad Gateway (502)" | API crashed | Escalate to on-call immediately |
-| "Unauthorized (401)" | Session expired | Clear cookies, login again |
-| "Forbidden (403)" | Customer doesn't have permission | Verify account plan/permissions |
-| "Not Found (404)" | Invalid URL or resource deleted | Verify URL is correct |
-| "Too Many Requests (429)" | Rate limit hit | Wait 15 minutes and retry |
-| "Payment Failed" | Card declined or invalid | Try different card or payment method |
-| "File Too Large" | Upload >10 MB | Compress file or split into smaller files |
-| "Invalid Email" | Email format wrong | Verify @ symbol and domain correct |
-| "Database Connection" | Can't reach database | Escalate to on-call (infrastructure issue) |
+| Error Message               | Cause                            | Fix                                        |
+| --------------------------- | -------------------------------- | ------------------------------------------ |
+| "Service Unavailable (503)" | API is down or restarting        | Wait 2-5 min, refresh page                 |
+| "Bad Gateway (502)"         | API crashed                      | Escalate to on-call immediately            |
+| "Unauthorized (401)"        | Session expired                  | Clear cookies, login again                 |
+| "Forbidden (403)"           | Customer doesn't have permission | Verify account plan/permissions            |
+| "Not Found (404)"           | Invalid URL or resource deleted  | Verify URL is correct                      |
+| "Too Many Requests (429)"   | Rate limit hit                   | Wait 15 minutes and retry                  |
+| "Payment Failed"            | Card declined or invalid         | Try different card or payment method       |
+| "File Too Large"            | Upload >10 MB                    | Compress file or split into smaller files  |
+| "Invalid Email"             | Email format wrong               | Verify @ symbol and domain correct         |
+| "Database Connection"       | Can't reach database             | Escalate to on-call (infrastructure issue) |
 
 ---
 
@@ -1414,16 +1414,16 @@ Rush shipments cost more. Off-peak shipments cost less."
 
 ### When to Escalate
 
-| Situation | Escalate To | Priority | Response Time |
-|-----------|------------|----------|---|
-| Multiple users affected | On-Call Engineer | P1 | <2 min |
-| Service down | On-Call + VP Eng | P1 | <1 min |
-| Data loss/corruption | On-Call + CTO | P1 | <2 min |
-| Security issue | Security Team | P1 | <5 min |
-| Persistent customer issue | Support Manager | P2 | <10 min |
-| Billing/payments issue | Finance Team | P2 | <15 min |
-| Feature not working | On-Call Engineer | P2 | <10 min |
-| Performance degraded | On-Call Engineer | P2 | <10 min |
+| Situation                 | Escalate To      | Priority | Response Time |
+| ------------------------- | ---------------- | -------- | ------------- |
+| Multiple users affected   | On-Call Engineer | P1       | <2 min        |
+| Service down              | On-Call + VP Eng | P1       | <1 min        |
+| Data loss/corruption      | On-Call + CTO    | P1       | <2 min        |
+| Security issue            | Security Team    | P1       | <5 min        |
+| Persistent customer issue | Support Manager  | P2       | <10 min       |
+| Billing/payments issue    | Finance Team     | P2       | <15 min       |
+| Feature not working       | On-Call Engineer | P2       | <10 min       |
+| Performance degraded      | On-Call Engineer | P2       | <10 min       |
 
 ### How to Escalate
 

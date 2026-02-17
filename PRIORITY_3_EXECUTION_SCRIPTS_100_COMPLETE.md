@@ -621,13 +621,13 @@ docker stats api web database redis
 
 ## 📞 EMERGENCY CONTACTS
 
-| Issue | Contact | Response Time |
-|-------|---------|----------------|
-| Revenue > 10% below target | Sales VP | 1 hour |
-| Support satisfaction < 85% | Support Manager | 1 hour |
-| API uptime < 99.5% | CTO | 15 minutes |
-| Security incident | CEO + CTO | Immediate |
-| Key person departure | HR + CEO | Immediate |
+| Issue                      | Contact         | Response Time |
+| -------------------------- | --------------- | ------------- |
+| Revenue > 10% below target | Sales VP        | 1 hour        |
+| Support satisfaction < 85% | Support Manager | 1 hour        |
+| API uptime < 99.5%         | CTO             | 15 minutes    |
+| Security incident          | CEO + CTO       | Immediate     |
+| Key person departure       | HR + CEO        | Immediate     |
 
 ---
 
