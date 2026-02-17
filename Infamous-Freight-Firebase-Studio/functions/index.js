@@ -56,44 +56,67 @@ exports.updateShipmentLocation = onDocumentUpdated('shipments/{shipmentId}', asy
  */
 exports.notifyDelayedShipment = onSchedule('every 15 minutes', async () => {
   const now = Date.now();
-  const delayed = await db.collection('shipments')
-      .where('status', '==', 'in_transit')
-      .get();
+  const BATCH_SIZE = 100;
+  let lastDoc = null;
+  let totalNotifications = 0;
 
-  const notifications = [];
+  // Paginate through in-transit shipments in bounded batches
+  // to avoid scanning the entire collection in a single query.
+  // This keeps memory usage and execution time under control
+  // as the shipments collection grows.
+  // We order by document ID for stable pagination.
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    let query = db.collection('shipments')
+        .where('status', '==', 'in_transit')
+        .orderBy(admin.firestore.FieldPath.documentId())
+        .limit(BATCH_SIZE);
 
-  delayed.forEach((doc) => {
-    const data = doc.data();
-    const etaMs = data.eta?.toMillis ? data.eta.toMillis() : null;
-
-    if (etaMs && etaMs < now) {
-      notifications.push({
-        shipmentId: doc.id,
-        driverId: data.driverId || null,
-        message: `Shipment ${doc.id} is delayed.`,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
+    if (lastDoc) {
+      query = query.startAfter(lastDoc);
     }
-  });
 
-  if (!notifications.length) {
+    const snapshot = await query.get();
+
+    if (snapshot.empty) {
+      break;
+    }
+
+    const batch = db.batch();
+    let batchCount = 0;
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const etaMs = data.eta?.toMillis ? data.eta.toMillis() : null;
+
+      if (etaMs && etaMs < now) {
+        const ref = db.collection('events').doc();
+        batch.set(ref, {
+          shipmentId: doc.id,
+          driverId: data.driverId || null,
+          message: `Shipment ${doc.id} is delayed.`,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          type: 'DELAY_ALERT',
+          source: 'notifyDelayedShipment',
+        });
+        batchCount += 1;
+        totalNotifications += 1;
+      }
+    });
+
+    if (batchCount > 0) {
+      await batch.commit();
+    }
+
+    lastDoc = snapshot.docs[snapshot.docs.length - 1];
+  }
+
+  if (!totalNotifications) {
     logger.info('No delayed shipments found.');
     return;
   }
 
-  const batch = db.batch();
-  notifications.forEach((item) => {
-    const ref = db.collection('events').doc();
-    batch.set(ref, {
-      ...item,
-      type: 'DELAY_ALERT',
-      source: 'notifyDelayedShipment',
-    });
-  });
-
-  await batch.commit();
-  logger.info('Delayed shipment notifications created.', {count: notifications.length});
-
+  logger.info('Delayed shipment notifications created.', {count: totalNotifications});
   // Optional placeholders:
   // 1) Zenphi webhook integration
   // 2) Firebase Cloud Messaging push notifications
