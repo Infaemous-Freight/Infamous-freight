@@ -80,7 +80,7 @@ service cloud.firestore {
 
     match /events/{eventId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
+      allow create: if false;
       allow update, delete: if false;
     }
   }
