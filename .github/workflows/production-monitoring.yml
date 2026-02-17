@@ -2,16 +2,16 @@ name: 🔔 Production Monitoring & Alerts
 
 on:
   schedule:
-    - cron: '*/5 * * * *'   # Every 5 minutes
-    - cron: '0 * * * *'     # Every hour
-    - cron: '0 0 * * *'     # Daily at midnight
+    - cron: "*/5 * * * *" # Every 5 minutes
+    - cron: "0 * * * *" # Every hour
+    - cron: "0 0 * * *" # Daily at midnight
   workflow_dispatch:
   push:
     branches:
       - main
     paths:
-      - 'infrastructure/**'
-      - '.github/workflows/monitoring**'
+      - "infrastructure/**"
+      - ".github/workflows/monitoring**"
 
 permissions:
   contents: read
@@ -28,7 +28,7 @@ jobs:
       - name: 🏥 Check API Health
         run: |
           echo "🏥 Checking API health status..."
-          
+
           # Simulated health check
           echo "✅ API Health Check:"
           echo "  - Uptime:             99.99%"
@@ -41,7 +41,7 @@ jobs:
       - name: 🗄️ Database Health
         run: |
           echo "🗄️ Checking database health..."
-          
+
           echo "✅ Database Health Check:"
           echo "  - Master status:      ACTIVE"
           echo "  - Replica 1 status:   ACTIVE"
@@ -55,7 +55,7 @@ jobs:
       - name: 📊 Cache Status
         run: |
           echo "📊 Checking cache status..."
-          
+
           echo "✅ Cache Health Check:"
           echo "  - Redis status:       ACTIVE"
           echo "  - Connection count:   42"
@@ -67,7 +67,7 @@ jobs:
       - name: 📝 Log Aggregation
         run: |
           echo "📝 Checking log aggregation..."
-          
+
           echo "✅ Loki Health Check:"
           echo "  - Status:             ACTIVE"
           echo "  - Logs ingested/min:  45,200"
@@ -79,7 +79,7 @@ jobs:
       - name: 🔍 Distributed Tracing
         run: |
           echo "🔍 Checking distributed tracing..."
-          
+
           echo "✅ Jaeger Health Check:"
           echo "  - Status:             ACTIVE"
           echo "  - Traces/min:         12,500"
@@ -344,7 +344,14 @@ jobs:
   notification:
     name: 📧 Status Notification
     runs-on: ubuntu-latest
-    needs: [health-check, performance-monitoring, error-tracking, security-monitoring, availability-report]
+    needs:
+      [
+        health-check,
+        performance-monitoring,
+        error-tracking,
+        security-monitoring,
+        availability-report,
+      ]
     if: always()
     steps:
       - name: 📧 Send Status Report

@@ -4,13 +4,13 @@ on:
   pull_request:
     branches:
       - main
-      - 'release/**'
+      - "release/**"
   workflow_dispatch:
   push:
     branches:
       - main
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   contents: read
@@ -32,14 +32,14 @@ jobs:
           echo "║          PRE-DEPLOYMENT VALIDATION CHECKLIST                  ║"
           echo "╚════════════════════════════════════════════════════════════════╝"
           echo ""
-          
+
           echo "🔍 Code Quality Checks:"
           echo "  ✅ No console.log() statements in production code"
           echo "  ✅ No hardcoded secrets or API keys"
           echo "  ✅ No TODO/FIXME comments in critical paths"
           echo "  ✅ All error handlers properly configured"
           echo ""
-          
+
           CONSOLE_LOGS=$(git grep -c "console\\.log" -- '*.ts' '*.tsx' '*.js' '*.jsx' 2>/dev/null | grep -v "\.test\." | grep -v ".spec." | wc -l)
           if [ $CONSOLE_LOGS -eq 0 ]; then
             echo "  ✅ PASS: No console.log in production code"
@@ -51,7 +51,7 @@ jobs:
       - name: 🗄️ Database migration check
         run: |
           echo "🗄️ Database Migration Status:"
-          
+
           if [ -f "apps/api/prisma/schema.prisma" ]; then
             echo "  ✅ Prisma schema found"
             
@@ -69,7 +69,7 @@ jobs:
       - name: 🔑 Environment variables check
         run: |
           echo "🔑 Environment Configuration:"
-          
+
           if [ -f ".env.example" ] || [ -f ".env.production.example" ]; then
             echo "  ✅ Example environment files present"
             echo ""
@@ -93,7 +93,7 @@ jobs:
         run: |
           echo "🏗️ Infrastructure Readiness:"
           echo ""
-          
+
           echo "Tier 1 - Critical Infrastructure:"
           [ -f "infrastructure/patroni/patroni.yml" ] && echo "  ✅ PostgreSQL HA (Patroni)" || echo "  ❌ PostgreSQL HA missing"
           [ -f "infrastructure/pgbouncer/pgbouncer.ini" ] && echo "  ✅ Connection Pooling" || echo "  ❌ Connection Pooling missing"
@@ -101,23 +101,23 @@ jobs:
           [ -f "infrastructure/jaeger/jaeger-collector-config.yml" ] && echo "  ✅ Distributed Tracing" || echo "  ❌ Distributed Tracing missing"
           [ -f "infrastructure/vault/vault-config.hcl" ] && echo "  ✅ Secret Management" || echo "  ❌ Secret Management missing"
           echo ""
-          
+
           echo "Tier 2 - Performance Optimization:"
           [ -f "apps/api/src/services/queryOptimizationService.js" ] && echo "  ✅ Query Optimization" || echo "  ❌ Query Optimization missing"
           [ -f "apps/api/src/services/costOptimizationService.js" ] && echo "  ✅ Cost Optimization" || echo "  ❌ Cost Optimization missing"
           echo ""
-          
+
           echo "Tier 3 - Security & Compliance:"
           [ -f "infrastructure/kong/docker-compose.yml" ] && echo "  ✅ API Gateway" || echo "  ❌ API Gateway missing"
           [ -f "apps/api/src/services/complianceAuditService.js" ] && echo "  ✅ Compliance Audit" || echo "  ❌ Compliance Audit missing"
           echo ""
-          
+
           echo "Tier 4 - Multi-Region & Scaling:"
           [ -f "infrastructure/multi-region/terraform/main.tf" ] && echo "  ✅ Multi-Region Setup" || echo "  ❌ Multi-Region Setup missing"
           [ -f "apps/api/src/services/featureFlagsService.js" ] && echo "  ✅ Feature Flags" || echo "  ❌ Feature Flags missing"
           [ -f "apps/api/src/services/notificationService.js" ] && echo "  ✅ Notifications" || echo "  ❌ Notifications missing"
           echo ""
-          
+
           echo "Tier 5 - ML & Business Intelligence:"
           [ -f "apps/api/src/services/mlAnomalyDetectionService.js" ] && echo "  ✅ ML Anomaly Detection" || echo "  ❌ ML Anomaly Detection missing"
           [ -f "apps/api/src/services/businessIntelligenceService.js" ] && echo "  ✅ Business Intelligence" || echo "  ❌ Business Intelligence missing"
