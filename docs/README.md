@@ -21,6 +21,18 @@ you find the information you need.
   details for investors
 - **[Pricing Architecture Blueprint](revenue-operations/PRICING_ARCHITECTURE_BLUEPRINT.md)** -
   Production-ready pricing and revenue governance
+- **[Investor Pitch Deck Draft](investor-relations/INVESTOR_PITCH_DECK.md)** -
+  Investor-grade deck draft
+- **[Investor One-Pager](investor-relations/INVESTOR_ONE_PAGER.md)** - Short
+  executive summary
+- **[Fundraising Strategy](investor-relations/FUNDRAISING_STRATEGY.md)** - SAFE
+  vs priced round guidance
+- **[Cap Table Template](investor-relations/CAP_TABLE_TEMPLATE.md)** - Internal
+  cap table template
+- **[Dilution Scenarios](investor-relations/DILUTION_SCENARIOS.md)** - Round
+  dilution templates
+- **[Investor Outreach Strategy](investor-relations/INVESTOR_OUTREACH_STRATEGY.md)** -
+  Target investors and outreach plan
 
 ---
 
@@ -167,6 +179,8 @@ you find the information you need.
 
 - **[Legacy Protocol v1](governance/LEGACY_PROTOCOL_V1.md)** - Civilizational
   governance doctrine
+- **[Delaware C-Corp Setup](DELAWARE_C_CORP_SETUP.md)** - Corporate formation
+  checklist and status
 
 ## Session Notes
 

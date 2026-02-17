@@ -1,0 +1,70 @@
+:root {
+  /* Color system */
+  --color-slate-950: #0F172A;
+  --color-slate-800: #1F2937;
+  --color-slate-700: #334155;
+  --color-slate-500: #64748B;
+  --color-fog-200: #E2E8F0;
+  --color-fog-100: #F1F5F9;
+  --color-white: #FFFFFF;
+  --color-signal-500: #F97316;
+  --color-signal-600: #EA580C;
+
+  /* Typography */
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", Arial, sans-serif;
+  --font-data: "IBM Plex Mono", "Courier New", monospace;
+
+  /* Type scale (px) */
+  --text-64: 64px;
+  --text-48: 48px;
+  --text-36: 36px;
+  --text-28: 28px;
+  --text-22: 22px;
+  --text-18: 18px;
+  --text-16: 16px;
+  --text-14: 14px;
+  --text-12: 12px;
+
+  /* Line heights */
+  --lh-tight: 1.1;
+  --lh-title: 1.15;
+  --lh-body: 1.45;
+  --lh-caption: 1.3;
+
+  /* Spacing (8px grid) */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-96: 96px;
+
+  /* Radii */
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+
+  /* Shadows */
+  --shadow-soft: 0 12px 36px rgba(15, 23, 42, 0.18);
+  --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.14);
+
+  /* Grid */
+  --grid-columns: 12;
+  --grid-gutter: 24px;
+  --grid-margin: 96px;
+
+  /* Charts */
+  --chart-axis: #94A3B8;
+  --chart-grid: rgba(148, 163, 184, 0.35);
+  --chart-accent: #F97316;
+  --chart-neutral: #64748B;
+
+  /* Image treatment */
+  --image-overlay: rgba(15, 23, 42, 0.68);
+  --image-tint: rgba(249, 115, 22, 0.12);
+}

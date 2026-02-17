@@ -1,0 +1,175 @@
+# Prometheus Alert Rules for Infamous Freight Enterprises
+# Week 3: Production Monitoring & Alerting
+
+groups:
+  - name: api_alerts
+    interval: 30s
+    rules:
+      # High error rate alert
+      - alert: HighErrorRate
+        expr: |
+          rate(http_requests_total{job="api",status=~"5.."}[5m])
+          / rate(http_requests_total{job="api"}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "High error rate detected"
+          description: "API error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      # Slow response time alert
+      - alert: SlowResponseTime
+        expr: |
+          histogram_quantile(0.95, 
+            rate(http_request_duration_seconds_bucket{job="api"}[5m])
+          ) > 1.0
+        for: 10m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "Slow API response time"
+          description: "P95 latency is {{ $value }}s (threshold: 1s)"
+
+      # High memory usage alert
+      - alert: HighMemoryUsage
+        expr: |
+          process_resident_memory_bytes{job="api"} / 1024 / 1024 > 400
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High memory usage detected"
+          description: "API memory usage is {{ $value }}MB (threshold: 400MB)"
+
+      # API service down alert
+      - alert: APIServiceDown
+        expr: up{job="api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "API service is down"
+          description: "API service has been down for more than 1 minute"
+
+  - name: database_alerts
+    interval: 30s
+    rules:
+      # Database connection pool exhaustion
+      - alert: DatabaseConnectionPoolExhausted
+        expr: |
+          pg_stat_activity_count / pg_settings_max_connections > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Database connection pool nearly exhausted"
+          description: "{{ $value | humanizePercentage }} of connections in use"
+
+      # Slow database queries
+      - alert: SlowDatabaseQueries
+        expr: |
+          histogram_quantile(0.95,
+            rate(database_query_duration_seconds_bucket{job="api"}[5m])
+          ) > 0.5
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Slow database queries detected"
+          description: "P95 query time is {{ $value }}s (threshold: 0.5s)"
+
+      # Database is down
+      - alert: DatabaseDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+           severity: critical
+          component: database
+        annotations:
+          summary: "PostgreSQL database is down"
+          description: "Database has been unreachable for more than 1 minute"
+
+  - name: cache_alerts
+    interval: 30s
+    rules:
+      # Low cache hit rate
+      - alert: LowCacheHitRate
+        expr: |
+          rate(cache_hits_total{job="api"}[5m])
+          / (rate(cache_hits_total{job="api"}[5m]) + rate(cache_misses_total{job="api"}[5m]))
+          < 0.5
+        for: 15m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "Low cache hit rate"
+          description: "Cache hit rate is {{ $value | humanizePercentage }} (threshold: 50%)"
+
+      # Redis is down
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: cache
+        annotations:
+          summary: "Redis cache is down"
+          description: "Redis has been unreachable for more than 1 minute"
+
+      # High Redis memory usage
+      - alert: HighRedisMemoryUsage
+        expr: |
+          redis_memory_used_bytes / redis_memory_max_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "High Redis memory usage"
+          description: "Redis memory usage is {{ $value | humanizePercentage }}"
+
+  - name: infrastructure_alerts
+    interval: 30s
+    rules:
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value }}% on {{ $labels.instance }}"
+
+      # High disk usage
+      - alert: HighDiskUsage
+        expr: |
+          (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "Low disk space"
+          description: "Only {{ $value | humanizePercentage }} disk space remaining on {{ $labels.instance }}"
+
+      # Container restart alert
+      - alert: ContainerRestarting
+        expr: |
+          rate(container_restart_count[15m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "Container is restarting frequently"
+          description: "Container {{ $labels.name }} is restarting frequently"

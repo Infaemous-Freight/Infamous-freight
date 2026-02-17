@@ -167,6 +167,8 @@ small carriers, and freight operators with enterprise-grade technology.
   Production monitoring & observability
 - 🎯 **[Launch Strategy](SOFT_LAUNCH_STRATEGY_10_TO_100.md)** - 4-week rollout
   plan to 100% production
+- 🧾 **[Delaware C-Corp Setup](docs/DELAWARE_C_CORP_SETUP.md)** - Corporate
+  formation checklist and status
 
 **Status**: ✅ 100% Production Ready | 827 Tests Passing | Zero Lint Errors |
 Globally Deployed
@@ -388,7 +390,7 @@ A modern full-stack freight management platform with AI-powered features,
 real-time voice capabilities, and integrated billing system.
 
 **Company**: Infæmous Freight | **Owner**: Santorio Djuan Miles |
-**Jurisdiction**: Oklahoma, USA
+**Jurisdiction**: Delaware, USA (C-Corp) | **Ownership**: 100%
 
 ## 🏆 Platform Architecture
 
@@ -442,7 +444,10 @@ global logistics industry.
 
 **Entity**: Infæmous Freight (rebranded v2.0.0, Dec 2025)  
 **Founder/Owner**: Santorio Djuan Miles  
-**Jurisdiction**: Oklahoma, USA  
+**Entity Type**: Delaware C-Corp  
+**Ownership**: 100%  
+**Jurisdiction**: Delaware, USA  
+**Cap Table**: Clean (100%)  
 **IP**: Fully protected (Proprietary License, Copyright, Legal Framework)  
 **Status**: 100% Production Ready, Globally Deployed
 

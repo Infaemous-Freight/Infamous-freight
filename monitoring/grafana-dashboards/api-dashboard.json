@@ -1,0 +1,104 @@
+{
+    "dashboard": {
+        "title": "Infamous Freight API Dashboard",
+        "tags": [
+            "api",
+            "production",
+            "week3"
+        ],
+        "timezone": "browser",
+        "panels": [
+            {
+                "id": 1,
+                "title": "Request Rate (req/s)",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "rate(http_requests_total{job=\"api\"}[5m])",
+                        "legendFormat": "{{method}} {{path}}"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "title": "Response Time (P95)",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"api\"}[5m]))",
+                        "legendFormat": "P95 Latency"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "title": "Error Rate (%)",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "rate(http_requests_total{job=\"api\",status=~\"5..\"}[5m]) / rate(http_requests_total{job=\"api\"}[5m]) * 100",
+                        "legendFormat": "Error Rate"
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "title": "Active Connections",
+                "type": "stat",
+                "targets": [
+                    {
+                        "expr": "nodejs_active_handles_total{job=\"api\"}"
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "title": "Memory Usage (MB)",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "process_resident_memory_bytes{job=\"api\"} / 1024 / 1024",
+                        "legendFormat": "RSS Memory"
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "title": "CPU Usage (%)",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "rate(process_cpu_seconds_total{job=\"api\"}[5m]) * 100",
+                        "legendFormat": "CPU Usage"
+                    }
+                ]
+            },
+            {
+                "id": 7,
+                "title": "Database Query Time (P95)",
+                "type": "graph",
+                "targets": [
+                    {
+                        "expr": "histogram_quantile(0.95, rate(database_query_duration_seconds_bucket{job=\"api\"}[5m]))",
+                        "legendFormat": "DB Query P95"
+                    }
+                ]
+            },
+            {
+                "id": 8,
+                "title": "Cache Hit Rate (%)",
+                "type": "gauge",
+                "targets": [
+                    {
+                        "expr": "rate(cache_hits_total{job=\"api\"}[5m]) / (rate(cache_hits_total{job=\"api\"}[5m]) + rate(cache_misses_total{job=\"api\"}[5m])) * 100"
+                    }
+                ]
+            }
+        ],
+        "refresh": "10s",
+        "time": {
+            "from": "now-1h",
+            "to": "now"
+        }
+    }
+}

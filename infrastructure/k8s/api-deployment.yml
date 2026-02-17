@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: infamous-api
+  labels:
+    app: infamous-api
+    tier: backend
+    version: v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: infamous-api
+  template:
+    metadata:
+      labels:
+        app: infamous-api
+        tier: backend
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "4000"
+        prometheus.io/path: "/api/metrics"
+    spec:
+      containers:
+        - name: api
+          image: infamous-freight-api:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+              name: http
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: LOG_LEVEL
+              value: "info"
+            - name: API_PORT
+              value: "4000"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: url
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: url
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: secret
+            - name: CORS_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: api-config
+                  key: cors_origins
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /api/health/live
+              port: 4000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/health/ready
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 15"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: infamous-api-service
+  labels:
+    app: infamous-api
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 4000
+      protocol: TCP
+      name: http
+  selector:
+    app: infamous-api
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+data:
+  cors_origins: "https://infamous-freight.com,https://www.infamous-freight.com"
+  rate_limit_general: "100"
+  rate_limit_auth: "5"
+  rate_limit_ai: "20"
