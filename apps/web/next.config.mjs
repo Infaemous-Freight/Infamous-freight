@@ -2,15 +2,17 @@ import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    turbopack: {},
+    // turbopack: {},  // Disabled for static export compatibility
     typescript: {
         // Allow temporary TypeScript error bypass via env flag
         ignoreBuildErrors: process.env.ALLOW_WEB_TS_ERRORS === 'true',
     },
     reactStrictMode: true,
-    output: 'standalone', // Enable standalone output for Docker/Fly.io
+    // Firebase Hosting requires static export
+    output: process.env.BUILD_TARGET === 'firebase' ? 'export' : 'standalone',
     compress: true,
     poweredByHeader: false,
+    trailingSlash: false,
 
     // Enable instrumentation hook for Sentry
     experimental: {
@@ -27,6 +29,8 @@ const nextConfig = {
 
     // Image optimization
     images: {
+        // Disable optimization for static export (required for Firebase)
+        unoptimized: process.env.BUILD_TARGET === 'firebase',
         formats: ['image/avif', 'image/webp'],
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],

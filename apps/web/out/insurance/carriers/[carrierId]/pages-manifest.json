@@ -1,0 +1,3 @@
+{
+  "/insurance/carriers/[carrierId]": "pages/insurance/carriers/[carrierId].js"
+}

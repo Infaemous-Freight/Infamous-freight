@@ -83,3 +83,14 @@ ci-logs/
 .vercel
 .env*.local
 .vercel.api/
+
+# Firebase
+firebase-service-account*.json
+**/firebase-service-account*.json
+.firebase/
+.firebaserc.local
+firebase-debug.log
+firebase-debug.*.log
+**/GoogleService-Info.plist
+**/google-services.json
+.firebase-admin-sdk.*.json
