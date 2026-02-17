@@ -36,7 +36,7 @@ exports.updateShipmentLocation = onDocumentUpdated('shipments/{shipmentId}', asy
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
   });
 
-  await db.collection('shipments').doc(shipmentId).set({
+  await event.data.ref.set({
     lastTrackedAt: admin.firestore.FieldValue.serverTimestamp(),
     status: after.status || 'in_transit',
   }, {merge: true});
