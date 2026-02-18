@@ -13,7 +13,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useAuth } from "../src/context/AuthContext";
+import { useAuthContext } from "../src/context/AuthContext";
 import styles from "./NavigationBar.module.css";
 
 interface NavItem {
@@ -42,7 +42,7 @@ const publicNavItems: NavItem[] = [
 
 export const NavigationBar: React.FC = () => {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuthContext();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,7 +63,7 @@ export const NavigationBar: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    await logout();
+    await signOut();
     router.push("/");
   };
 
@@ -154,9 +154,9 @@ export const NavigationBar: React.FC = () => {
                   aria-haspopup="true"
                 >
                   <span className={styles.userAvatar}>
-                    {user.name?.[0] || user.email[0].toUpperCase()}
+                    {user?.email?.[0]?.toUpperCase() || "U"}
                   </span>
-                  <span className={styles.userName}>{user.name || "User"}</span>
+                  <span className={styles.userName}>{user?.email?.split("@")[0] || "User"}</span>
                   <span className={styles.chevron}>▼</span>
                 </button>
 

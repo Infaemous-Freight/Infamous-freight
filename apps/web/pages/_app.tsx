@@ -11,6 +11,7 @@ import { AuthProvider } from "../src/context/AuthContext";
 // Modern Design System (New)
 import "../src/styles/design-tokens.css";
 import "../src/styles/modern-design-system.css";
+import "../src/styles/navigation.css";
 
 // Legacy styles (can be removed after migration)
 // import "../src/styles/design-system.css";
@@ -48,6 +49,54 @@ export default function App({ Component, pageProps }: AppProps) {
       router.events.off("routeChangeStart", handleRouteChange);
       router.events.off("routeChangeComplete", handleRouteComplete);
     };
+  }, [router]);
+
+  // Global keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Command/Ctrl + K: Focus search
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        const searchInput = document.querySelector<HTMLInputElement>('[aria-label="Search"]');
+        searchInput?.focus();
+      }
+
+      // Command/Ctrl + /: Open help widget
+      if ((e.metaKey || e.ctrlKey) && e.key === "/") {
+        e.preventDefault();
+        const helpButton = document.querySelector<HTMLButtonElement>('[aria-label="Help Center"]');
+        helpButton?.click();
+      }
+
+      // Escape: Close modals/dropdowns
+      if (e.key === "Escape") {
+        const activeDropdown = document.querySelector('[aria-expanded="true"]');
+        if (activeDropdown instanceof HTMLElement) {
+          activeDropdown.click();
+        }
+      }
+
+      // g then d: Go to dashboard
+      if (e.key === "d" && document.body.dataset.lastKey === "g") {
+        router.push("/dashboard");
+        delete document.body.dataset.lastKey;
+      }
+
+      // g then h: Go home
+      if (e.key === "h" && document.body.dataset.lastKey === "g") {
+        router.push("/");
+        delete document.body.dataset.lastKey;
+      }
+
+      // Track 'g' key for Vim-style navigation
+      if (e.key === "g") {
+        document.body.dataset.lastKey = "g";
+        setTimeout(() => delete document.body.dataset.lastKey, 1000);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [router]);
 
   // Initialize Datadog RUM on app mount

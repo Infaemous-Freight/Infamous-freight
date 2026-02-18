@@ -69,8 +69,6 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({ items, autoGenerate = tr
     <nav className={styles.breadcrumb} aria-label="Breadcrumb navigation">
       <ol className={styles.breadcrumbList}>
         {breadcrumbs.map((item, index) => {
-          const isLast = index === breadcrumbs.length - 1;
-
           return (
             <li key={index} className={styles.breadcrumbItem}>
               {item.href ? (

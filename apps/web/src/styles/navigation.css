@@ -1,0 +1,102 @@
+/**
+ * Global Navigation Styles
+ * Styles for the enhanced UX navigation components
+ */
+
+/* Skip Link for Accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary, #0066cc);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+  z-index: 10000;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid var(--color-focus, #ffd700);
+  outline-offset: 2px;
+}
+
+/* Main Content Area */
+#main {
+  min-height: calc(100vh - 64px - 200px); /* viewport - nav - footer */
+  padding-top: 80px; /* Account for fixed navigation bar */
+}
+
+/* Footer Styling */
+.site-footer {
+  background: var(--color-gray-900, #1a1a1a);
+  color: var(--color-gray-300, #d1d5db);
+  padding: 48px 24px;
+  margin-top: 80px;
+  border-top: 1px solid var(--color-gray-800, #2d3748);
+}
+
+.site-footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  #main {
+    padding-top: 64px; /* Smaller nav on mobile */
+  }
+
+  .site-footer {
+    padding: 32px 16px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .skip-link {
+    display: none;
+  }
+
+  #main {
+    padding-top: 0;
+  }
+
+  .site-footer {
+    margin-top: 24px;
+    padding: 16px;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .skip-link {
+    border: 2px solid white;
+  }
+
+  .site-footer {
+    border-top: 2px solid var(--color-gray-700, #4a5568);
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .skip-link {
+    transition: none;
+  }
+
+  #main {
+    scroll-behavior: auto;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .site-footer {
+    background: var(--color-gray-950, #0a0a0a);
+    color: var(--color-gray-400, #9ca3af);
+  }
+}

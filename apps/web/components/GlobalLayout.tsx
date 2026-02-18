@@ -1,8 +1,11 @@
 import React from "react";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { getLocaleFromRouter, t } from "../lib/i18n/t";
+import NavigationBar from "./NavigationBar";
+import Breadcrumb from "./Breadcrumb";
+import HelpWidget from "./HelpWidget";
+import KeyboardShortcuts from "./KeyboardShortcuts";
 
 export default function GlobalLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -28,38 +31,11 @@ export default function GlobalLayout({ children }: { children: React.ReactNode }
         Skip to content
       </a>
 
-      <header className="site-header">
-        <nav aria-label="Primary" className="site-nav">
-          <strong className="site-brand">{t(locale, "appName")}</strong>
+      {/* Enhanced Navigation Bar */}
+      <NavigationBar />
 
-          <div className="site-nav-links">
-            <Link href="/" locale={locale} className="nav-link">
-              Home
-            </Link>
-            <Link href="/product" locale={locale} className="nav-link">
-              Product
-            </Link>
-            <Link href="/solutions" locale={locale} className="nav-link">
-              Solutions
-            </Link>
-            <Link href="/pricing" locale={locale} className="nav-link">
-              Pricing
-            </Link>
-            <Link href="/security" locale={locale} className="nav-link">
-              Security
-            </Link>
-          </div>
-
-          <span className="nav-actions">
-            <Link href="/login" locale={locale} className="btn btn-tertiary">
-              Request Demo
-            </Link>
-            <Link href="/signup" locale={locale} className="btn btn-secondary">
-              Start Free
-            </Link>
-          </span>
-        </nav>
-      </header>
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb />
 
       <main id="main" tabIndex={-1} style={{ outline: "none" }}>
         {children}
@@ -70,6 +46,12 @@ export default function GlobalLayout({ children }: { children: React.ReactNode }
           Global UX baseline: i18n (EN/ES), a11y skip-link, SEO defaults, locale formatting.
         </div>
       </footer>
+
+      {/* Floating Help Widget */}
+      <HelpWidget />
+
+      {/* Keyboard Shortcuts Modal */}
+      <KeyboardShortcuts />
     </>
   );
 }
