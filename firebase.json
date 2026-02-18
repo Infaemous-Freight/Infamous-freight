@@ -69,6 +69,7 @@
     }
   },
   "_deployment": "Option B Hybrid - Fly.io API + Firebase Hosting",
-  "_workflow_version": "3.0_enhanced",
-  "_timestamp": "2026-02-18T04:22:00Z"
+  "_workflow_version": "3.0_enhanced_retry_v2",
+  "_timestamp": "2026-02-18T04:42:00Z",
+  "_retry_attempt": "Retry #2 - Manual trigger for Firebase deployment"
 }
