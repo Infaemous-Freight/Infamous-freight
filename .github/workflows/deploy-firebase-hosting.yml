@@ -36,9 +36,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+        run: npm install -g pnpm@9
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
@@ -50,14 +48,8 @@ jobs:
         run: |
           cd apps/web
           BUILD_TARGET=firebase NODE_ENV=production pnpm build
-
-      - name: Create export directory
-        run: |
-          cd apps/web
-          mkdir -p out/_next
-          cp -r .next/server/pages/* out/
-          cp -r public/* out/ 2>/dev/null || true
-          cp -r .next/static out/_next/
+          # Verify out directory was created
+          ls -lh out/ | head -20
 
       - name: Verify export
         run: |
@@ -71,7 +63,7 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Deploy to Firebase Hosting
-        run: firebase deploy --only hosting --project infamous-freight-prod
+        run: firebase deploy --only hosting --project infamous-freight-85082765
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
