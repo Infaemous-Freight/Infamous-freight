@@ -49,28 +49,35 @@ jobs:
       - name: Build shared package
         run: |
           echo "Building shared package..."
-          pnpm --filter @infamous-freight/shared build || {
-            echo "pnpm build failed, attempting with npm..."
-            cd packages/shared && npm run build && cd ../..
-          }
+          cd packages/shared
+          npx tsc -p tsconfig.json
+          echo "✓ Shared package built"
 
       - name: Build Next.js for Firebase
         run: |
           echo "Building Next.js application..."
           cd apps/web
-          # Build Next.js directly - skip prebuild since shared is already built
-          BUILD_TARGET=firebase NODE_ENV=production npx next build || {
-            echo "next build failed, trying with full pnpm build..."
-            BUILD_TARGET=firebase NODE_ENV=production pnpm build
-          }
+          # Use npx next build directly, which skips the problematic prebuild
+          # The shared package is already built in the previous step
+          BUILD_TARGET=firebase NODE_ENV=production npx next build
+          
           # Verify out directory was created
           if [ ! -d "out" ]; then
             echo "ERROR: out directory not created!"
             ls -la
+            pwd
+            echo "Node version:"
+            node --version
+            echo "Next version:"
+            npx next --version
             exit 1
           fi
-          ls -lh out/ | head -20
+          
           echo "✓ Build successful"
+          echo "Output directory size:"
+          du -sh out/
+          echo "Files in out/:"
+          ls -lh out/ | head -20
 
       - name: Verify export
         run: |
