@@ -67,7 +67,7 @@
     "openai": "^6.17.0",
     "pdfkit": "^0.17.2",
     "pino": "^10.3.0",
-    "plaid": "^29.0.0",
+    "plaid": "^41.2.0",
     "pino-http": "^11.0.0",
     "rate-limiter-flexible": "^9.1.0",
     "redis": "^5.10.0",
