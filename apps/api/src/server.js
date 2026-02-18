@@ -75,6 +75,7 @@ const analyticsRoutesPhase2 = require("./routes/analytics.routes");
 const mlRoutes = require("./routes/ml.routes");
 const geofencingRoutes = require("./routes/geofencing.routes");
 const notificationsRoutes = require("./routes/notifications.routes");
+const firebaseNotificationsRoutes = require("./routes/notifications");
 // Phase 3 Routes
 const b2bShipperRoutes = require("./routes/b2b-shipper-api");
 const fintechRoutes = require("./routes/fintech");
@@ -216,6 +217,7 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/ml", mlRoutes);
 app.use("/api/geofencing", geofencingRoutes);
 app.use("/api/notifications", notificationsRoutes);
+app.use("/api/push-notifications", firebaseNotificationsRoutes);
 // Phase 3 Routes
 app.use("/api/b2b", b2bShipperRoutes);
 app.use("/api/fintech", fintechRoutes);
