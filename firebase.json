@@ -68,5 +68,7 @@
       "port": 4001
     }
   },
-  "_deployment": "Option B Hybrid - Fly.io API + Firebase Hosting"
+  "_deployment": "Option B Hybrid - Fly.io API + Firebase Hosting",
+  "_workflow_version": "3.0_enhanced",
+  "_timestamp": "2026-02-18T04:22:00Z"
 }
