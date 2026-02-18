@@ -23,7 +23,7 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "sentry:sourcemaps": "sentry-cli sourcemaps upload --release=$SENTRY_RELEASE .next",
     "sentry:release": "sentry-cli releases new $SENTRY_RELEASE && sentry-cli releases set-commits $SENTRY_RELEASE --auto && sentry-cli releases finalize $SENTRY_RELEASE",
-    "prebuild": "pnpm -w --filter @infamous-freight/shared build"
+    "prebuild": "if [ -z \"$SKIP_PREBUILD\" ]; then pnpm -w --filter @infamous-freight/shared build; else echo 'Prebuild skipped'; fi"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.33.0",

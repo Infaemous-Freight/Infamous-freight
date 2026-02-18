@@ -57,26 +57,19 @@ jobs:
         run: |
           echo "Building Next.js application..."
           cd apps/web
-          # Build with npm, skipping the problematic prebuild script
-          # The shared package is already built in the previous step
-          BUILD_TARGET=firebase NODE_ENV=production npm run build --ignore-scripts
+          # Build with npm, skip the prebuild since shared is already built
+          BUILD_TARGET=firebase NODE_ENV=production SKIP_PREBUILD=true npm run build
           
           # Verify out directory was created
           if [ ! -d "out" ]; then
             echo "ERROR: out directory not created!"
-            echo "PWD: $(pwd)"
-            echo "Node: $(node --version)"
-            echo "Next.js location: $(ls node_modules/.bin/next)"
-            echo "Files in current directory:"
             ls -la
             exit 1
           fi
           
           echo "✓ Build successful"
-          echo "Output directory:"
-          du -sh out/
-          echo "File count:"
           find out -type f | wc -l
+          echo "files created"
 
       - name: Verify export
         run: |
