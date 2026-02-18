@@ -56,20 +56,19 @@ jobs:
       - name: Build Next.js for Firebase
         run: |
           echo "Building Next.js application..."
-          cd apps/web
           
-          # Use SKIP_PREBUILD because shared package is already built in step 6
-          # This prevents the recursive workspace build that fails with expo
-          BUILD_TARGET=firebase NODE_ENV=production SKIP_PREBUILD=true npm run build
+          # Use --prefix to isolate build to apps/web only
+          # No workspace resolution, no recursion, no prebuild issues
+          BUILD_TARGET=firebase NODE_ENV=production SKIP_PREBUILD=true npm --prefix apps/web run build
           
           # Verify out directory was created
-          if [ ! -d "out" ]; then
+          if [ ! -d "apps/web/out" ]; then
             echo "ERROR: out directory not created!"
             exit 1
           fi
           
           echo "✓ Build successful"
-          du -sh out/
+          du -sh apps/web/out/
 
       - name: Verify export
         run: |
