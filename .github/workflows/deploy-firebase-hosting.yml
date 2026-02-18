@@ -57,19 +57,20 @@ jobs:
         run: |
           echo "Building Next.js application..."
           cd apps/web
-          # Build with npm, skip the prebuild since shared is already built
-          BUILD_TARGET=firebase NODE_ENV=production SKIP_PREBUILD=true npm run build
+          
+          # Call next build binary directly using relative path
+          # This completely bypasses npm lifecycle scripts (prebuild hook)
+          # The shared package is already built in step 6
+          BUILD_TARGET=firebase NODE_ENV=production ./node_modules/.bin/next build
           
           # Verify out directory was created
           if [ ! -d "out" ]; then
             echo "ERROR: out directory not created!"
-            ls -la
             exit 1
           fi
           
           echo "✓ Build successful"
-          find out -type f | wc -l
-          echo "files created"
+          du -sh out/
 
       - name: Verify export
         run: |
