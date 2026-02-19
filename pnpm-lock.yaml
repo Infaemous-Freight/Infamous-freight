@@ -19,7 +19,7 @@ importers:
     dependencies:
       '@vercel/analytics':
         specifier: ^1.6.1
-        version: 1.6.1(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
+        version: 1.6.1(next@16.1.6(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
     devDependencies:
       husky:
         specifier: ^9.1.7
@@ -142,8 +142,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       plaid:
-        specifier: ^29.0.0
-        version: 29.0.0
+        specifier: ^41.3.0
+        version: 41.3.0
       rate-limiter-flexible:
         specifier: ^9.1.0
         version: 9.1.0
@@ -322,7 +322,7 @@ importers:
         version: 19.2.3(@types/react@19.2.10)
       '@vercel/analytics':
         specifier: ^1.6.1
-        version: 1.6.1(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
+        version: 1.6.1(next@16.1.6(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
       '@vercel/edge-config':
         specifier: ^1.4.3
         version: 1.4.3(@opentelemetry/api@1.9.0)(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
@@ -8490,8 +8490,8 @@ packages:
   pkg-types@2.3.0:
     resolution: {integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig==}
 
-  plaid@29.0.0:
-    resolution: {integrity: sha512-bDcLcRkJxd6rI+fYsxYhSvaMvFY/k/yDlcF4KqWLQEIDXSgDtViMw59URIOfAWK+ohRTPnzQ8RAucGltLoCYKA==}
+  plaid@41.3.0:
+    resolution: {integrity: sha512-P5r7YdvXYv+prYtj+s7ODPftg8rIYHPmA7NFn2a7K3B0QL8GouhbNPfa6BHU2pYBr3cKVZDVJRm4fTv+KgUUxg==}
     engines: {node: '>=10.0.0'}
 
   playwright-core@1.58.0:
@@ -16149,7 +16149,7 @@ snapshots:
       graphql: 15.8.0
       wonka: 4.0.15
 
-  '@vercel/analytics@1.6.1(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)':
+  '@vercel/analytics@1.6.1(next@16.1.6(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)':
     optionalDependencies:
       next: 16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(@playwright/test@1.58.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
@@ -21426,7 +21426,7 @@ snapshots:
       exsolve: 1.0.8
       pathe: 2.0.3
 
-  plaid@29.0.0:
+  plaid@41.3.0:
     dependencies:
       axios: 1.13.5
     transitivePeerDependencies:
