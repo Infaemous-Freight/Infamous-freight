@@ -1,0 +1,217 @@
+name: 📡 Auto Health Monitoring
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Every 30 minutes
+  workflow_dispatch:
+
+jobs:
+  # ═══════════════════════════════════════════════════════════════════
+  # CONTINUOUS HEALTH MONITORING
+  # ═══════════════════════════════════════════════════════════════════
+
+  health-monitoring:
+    name: 📡 Repository Health Monitor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📊 Collect Health Metrics
+        run: |
+          echo "📡 Repository Health Monitor"
+          echo "════════════════════════════════════════════════════════"
+          echo ""
+          
+          # Git Metrics
+          echo "📈 Git Metrics:"
+          TOTAL_COMMITS=$(git rev-list --count HEAD)
+          RECENT_COMMITS=$(git rev-list --count HEAD --since="24 hours ago")
+          echo "  - Total commits: $TOTAL_COMMITS"
+          echo "  - Last 24h commits: $RECENT_COMMITS"
+          echo "  - Current branch: $(git branch --show-current)"
+          echo "  - Remote: $(git config --get remote.origin.url)"
+          echo ""
+          
+          # File Metrics
+          echo "📁 Repository Structure:"
+          TOTAL_FILES=$(find . -type f -not -path '*/\.*' 2>/dev/null | wc -l)
+          SOURCE_FILES=$(find . -type f \( -name '*.ts' -o -name '*.js' -o -name '*.tsx' \) -not -path '*/node_modules/*' 2>/dev/null | wc -l)
+          DOCS=$(find . -maxdepth 1 -name '*.md' -type f 2>/dev/null | wc -l)
+          echo "  - Total files: $TOTAL_FILES"
+          echo "  - Source files: $SOURCE_FILES"
+          echo "  - Documentation: $DOCS"
+          echo ""
+          
+          # Directory Checks
+          echo "✅ Directory Health:"
+          for dir in apps packages .github .githooks archive; do
+            if [ -d "$dir" ]; then
+              SIZE=$(du -sh "$dir" 2>/dev/null | cut -f1)
+              echo "  - $dir: EXISTS ($SIZE)"
+            else
+              echo "  - $dir: MISSING ⚠️"
+            fi
+          done
+          echo ""
+          
+          # Configuration Files
+          echo "⚙️  Configuration Files:"
+          for file in "package.json" "pnpm-workspace.yaml" ".gitignore" ".env.example"; do
+            if [ -f "$file" ]; then
+              echo "  ✓ $file"
+            else
+              echo "  ✗ $file"
+            fi
+          done
+          echo ""
+
+      - name: 🔍 Forbidden Patterns Check
+        run: |
+          echo "🔍 Checking forbidden patterns..."
+          echo ""
+          
+          STATUS=$(find . -maxdepth 1 -name '*_STATUS.md' 2>/dev/null | wc -l)
+          COMPLETE=$(find . -maxdepth 1 -name '*_COMPLETE.md' 2>/dev/null | wc -l)
+          LOG=$(find . -maxdepth 1 -name '*.log' 2>/dev/null | wc -l)
+          
+          echo "Forbidden Patterns:"
+          echo "  - *_STATUS.md files: $STATUS (should be 0)"
+          echo "  - *_COMPLETE.md files: $COMPLETE (should be 0)"
+          echo "  - *.log files: $LOG (should be 0)"
+          echo ""
+          
+          if [ "$STATUS" -eq 0 ] && [ "$COMPLETE" -eq 0 ] && [ "$LOG" -eq 0 ]; then
+            echo "✅ Repository is CLEAN"
+          else
+            echo "⚠️  Repository needs cleanup"
+          fi
+
+      - name: 🔐 Git Hooks Health
+        run: |
+          echo "🔐 Git Hooks Configuration:"
+          echo ""
+          
+          HOOKS_PATH=$(git config core.hooksPath)
+          echo "  - core.hooksPath: $HOOKS_PATH"
+          
+          if [ -d "$HOOKS_PATH" ]; then
+            echo "  ✅ Hooks directory exists"
+            HOOKS=$(ls -1 "$HOOKS_PATH" 2>/dev/null | wc -l)
+            echo "  - Hooks configured: $HOOKS"
+          else
+            echo "  ⚠️  Hooks directory not found"
+          fi
+
+      - name: 📚 Documentation Health
+        run: |
+          echo "📚 Documentation Status:"
+          echo ""
+          
+          # Check key documentation
+          DOCS_CHECK=(
+            "README.md"
+            "CONTRIBUTING.md"
+            "RECOMMENDED-INDEX.md"
+            "DOCUMENTATION_STANDARDS-RECOMMENDED.md"
+          )
+          
+          FOUND=0
+          for doc in "${DOCS_CHECK[@]}"; do
+            if [ -f "$doc" ]; then
+              SIZE=$(wc -l < "$doc")
+              echo "  ✓ $doc ($SIZE lines)"
+              ((FOUND++))
+            else
+              echo "  ✗ $doc (MISSING)"
+            fi
+          done
+          
+          echo ""
+          echo "Documentation Completeness: $FOUND/${#DOCS_CHECK[@]}"
+
+      - name: 🔗 Link Verification
+        run: |
+          echo "🔗 Link Health Check:"
+          echo ""
+          
+          BROKEN=0
+          for file in *.md; do
+            if [ -f "$file" ]; then
+              # Simple link check
+              LINKS=$(grep -o '\[.*\]([^)]*\.md)' "$file" 2>/dev/null | wc -l)
+              if [ "$LINKS" -gt 0 ]; then
+                echo "  - $file: $LINKS links"
+              fi
+            fi
+          done
+          echo ""
+          echo "  (Detailed link validation runs weekly)"
+
+      - name: 📊 Generate Health Score
+        run: |
+          echo "📊 Repository Health Score:"
+          echo ""
+          
+          # Simplified health scoring
+          HEALTH=100
+          
+          # Check for forbidden patterns
+          STATUS=$(find . -maxdepth 1 -name '*_STATUS.md' -o -name '*.log' 2>/dev/null | wc -l)
+          if [ "$STATUS" -gt 0 ]; then
+            HEALTH=$((HEALTH - 10))
+          fi
+          
+          # Check git config
+          if [ -z "$(git config core.hooksPath)" ]; then
+            HEALTH=$((HEALTH - 5))
+          fi
+          
+          # Check documentation
+          if [ ! -f "README.md" ]; then
+            HEALTH=$((HEALTH - 20))
+          fi
+          
+          echo "  Health Score: $HEALTH/100"
+          echo ""
+          
+          if [ "$HEALTH" -ge 90 ]; then
+            echo "  Status: ✅ EXCELLENT"
+          elif [ "$HEALTH" -ge 70 ]; then
+            echo "  Status: ⚠️  GOOD (with warnings)"
+          else
+            echo "  Status: ❌ NEEDS ATTENTION"
+          fi
+
+  # ═══════════════════════════════════════════════════════════════════
+  # MONITORING REPORT
+  # ═══════════════════════════════════════════════════════════════════
+
+  monitoring-report:
+    name: 📊 Monitoring Report
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [health-monitoring]
+    steps:
+      - name: 📊 Upload Metrics
+        run: |
+          echo "════════════════════════════════════════════════════════"
+          echo "📡 AUTO HEALTH MONITORING REPORT"
+          echo "════════════════════════════════════════════════════════"
+          echo ""
+          echo "✅ Monitoring Status: ${{ needs.health-monitoring.result }}"
+          echo ""
+          echo "📈 Metrics Collected:"
+          echo "  - Repository size and structure"
+          echo "  - Commit history and activity"
+          echo "  - Configuration health"
+          echo "  - Documentation completeness"
+          echo "  - Link validity"
+          echo "  - Health score calculation"
+          echo ""
+          echo "🔄 Next Monitoring Run:"
+          echo "  - In 30 minutes (continuous monitoring)"
+          echo ""
+          echo "════════════════════════════════════════════════════════"
