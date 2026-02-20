@@ -10,12 +10,12 @@
 
 ### Recovery Objectives
 
-| Metric | Target | Critical |
-|--------|--------|----------|
-| **RTO** (Recovery Time Objective) | 4 hours | When service must be restored |
-| **RPO** (Recovery Point Objective) | 15 minutes | Maximum data loss acceptable |
-| **MTBF** (Mean Time Between Failures) | > 1000 hours | Frequency of outages |
-| **MTTR** (Mean Time To Repair) | < 1 hour | Speed of recovery |
+| Metric                                | Target       | Critical                      |
+| ------------------------------------- | ------------ | ----------------------------- |
+| **RTO** (Recovery Time Objective)     | 4 hours      | When service must be restored |
+| **RPO** (Recovery Point Objective)    | 15 minutes   | Maximum data loss acceptable  |
+| **MTBF** (Mean Time Between Failures) | > 1000 hours | Frequency of outages          |
+| **MTTR** (Mean Time To Repair)        | < 1 hour     | Speed of recovery             |
 
 ### Budget Impact
 
@@ -354,14 +354,14 @@ fly deploy -a infamous-freight-api-eu
 
 ### Disaster Recovery Team
 
-| Role | Responsibility | Contact |
-|------|-----------------|---------|
-| **Commander** | Overall coordination | @commander |
-| **Tech Lead** | Technical decisions | @tech-lead |
-| **Infrastructure** | System recovery | @infrastructure |
-| **Database** | Data recovery | @dba |
-| **Communications** | External updates | @comms |
-| **Scribe** | Documentation | @scribe |
+| Role               | Responsibility       | Contact         |
+| ------------------ | -------------------- | --------------- |
+| **Commander**      | Overall coordination | @commander      |
+| **Tech Lead**      | Technical decisions  | @tech-lead      |
+| **Infrastructure** | System recovery      | @infrastructure |
+| **Database**       | Data recovery        | @dba            |
+| **Communications** | External updates     | @comms          |
+| **Scribe**         | Documentation        | @scribe         |
 
 ### Training
 
@@ -412,13 +412,13 @@ Before decommissioning systems after recovery:
 
 ### Recovery Costs During Incident
 
-| Item | Cost | Note |
-|------|------|------|
-| Lost revenue (per hour) | $50,000 | Varies by business |
-| Emergency staff (3 people × 8 hours) | $6,000 | Overtime rates |
-| Infrastructure failover | $2,000 | Data transfer, alternate region |
-| External consulting (if needed) | $5,000 | Crisis management |
-| **Total** | **$63,000+** | Very expensive! |
+| Item                                 | Cost         | Note                            |
+| ------------------------------------ | ------------ | ------------------------------- |
+| Lost revenue (per hour)              | $50,000      | Varies by business              |
+| Emergency staff (3 people × 8 hours) | $6,000       | Overtime rates                  |
+| Infrastructure failover              | $2,000       | Data transfer, alternate region |
+| External consulting (if needed)      | $5,000       | Crisis management               |
+| **Total**                            | **$63,000+** | Very expensive!                 |
 
 ### Prevention Investment
 

@@ -99,15 +99,15 @@
 
 ### Key Metrics to Track
 
-| Metric | Target | Current | Status |
-|--------|--------|---------|--------|
-| Root .md files | < 30 | ___ | |
-| Forbidden patterns | 0 | ___ | |
-| Broken links | 0 | ___ | |
-| Markdown lint errors | < 5 | ___ | |
-| Documentation coverage | 100% | ___ | |
-| Git hooks active | ✅ Yes | ___ | |
-| CI doc validation | ✅ Active | ___ | |
+| Metric                 | Target   | Current | Status |
+| ---------------------- | -------- | ------- | ------ |
+| Root .md files         | < 30     | ___     |        |
+| Forbidden patterns     | 0        | ___     |        |
+| Broken links           | 0        | ___     |        |
+| Markdown lint errors   | < 5      | ___     |        |
+| Documentation coverage | 100%     | ___     |        |
+| Git hooks active       | ✅ Yes    | ___     |        |
+| CI doc validation      | ✅ Active | ___     |        |
 
 ### Documentation Inventory
 
@@ -193,12 +193,12 @@ Count by category:
 
 ## 📅 Quarterly Schedule
 
-| Quarter | Date | Audit Lead | Status |
-|---------|------|-----------|--------|
-| Q1 (March) | First Monday | ___ | [ ] Todo |
-| Q2 (June) | First Monday | ___ | [ ] Todo |
-| Q3 (September) | First Monday | ___ | [ ] Todo |
-| Q4 (December) | First Monday | ___ | [ ] Todo |
+| Quarter        | Date         | Audit Lead | Status   |
+| -------------- | ------------ | ---------- | -------- |
+| Q1 (March)     | First Monday | ___        | [ ] Todo |
+| Q2 (June)      | First Monday | ___        | [ ] Todo |
+| Q3 (September) | First Monday | ___        | [ ] Todo |
+| Q4 (December)  | First Monday | ___        | [ ] Todo |
 
 ---
 

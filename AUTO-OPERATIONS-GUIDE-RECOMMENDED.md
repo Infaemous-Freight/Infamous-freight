@@ -294,14 +294,14 @@ The repository has automated self-healing at multiple levels:
 
 ### Self-Healing Scenarios
 
-| Scenario | Auto-Healing |
-|----------|--------------|
+| Scenario                          | Auto-Healing                 |
+| --------------------------------- | ---------------------------- |
 | Forbidden `*_STATUS.md` committed | ✅ Blocked by pre-commit hook |
-| Broken git configuration | ✅ Reset to correct values |
-| Missing dependencies | ✅ Auto-installed |
-| Formatting inconsistencies | ✅ Auto-formatted |
-| Outdated lock files | ✅ Regenerated |
-| Build artifacts in repo | ✅ Cleaned up |
+| Broken git configuration          | ✅ Reset to correct values    |
+| Missing dependencies              | ✅ Auto-installed             |
+| Formatting inconsistencies        | ✅ Auto-formatted             |
+| Outdated lock files               | ✅ Regenerated                |
+| Build artifacts in repo           | ✅ Cleaned up                 |
 
 ---
 
@@ -568,16 +568,16 @@ GitHub Actions alerts available in:
 
 ## Summary
 
-| Aspect | Status | Details |
-|--------|--------|---------|
-| **CI/CD** | ✅ | 5 automated workflows running |
-| **Testing** | ✅ | Auto on every change |
-| **Quality** | ✅ | Lint, type, security checks |
-| **Documentation** | ✅ | Validation on every PR |
-| **Self-Healing** | ✅ | Daily automated fixes |
-| **Monitoring** | ✅ | Every 30 minutes |
-| **Deployment** | ✅ | Automated with checksums |
-| **Dependency Mgmt** | ✅ | Weekly updates |
+| Aspect              | Status | Details                       |
+| ------------------- | ------ | ----------------------------- |
+| **CI/CD**           | ✅      | 5 automated workflows running |
+| **Testing**         | ✅      | Auto on every change          |
+| **Quality**         | ✅      | Lint, type, security checks   |
+| **Documentation**   | ✅      | Validation on every PR        |
+| **Self-Healing**    | ✅      | Daily automated fixes         |
+| **Monitoring**      | ✅      | Every 30 minutes              |
+| **Deployment**      | ✅      | Automated with checksums      |
+| **Dependency Mgmt** | ✅      | Weekly updates                |
 
 ---
 
