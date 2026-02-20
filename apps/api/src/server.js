@@ -1,13 +1,16 @@
 // IMPORTANT: Initialize Sentry instrumentation first, before requiring any other modules
 require("./instrument.js");
 
+// Load configuration module
+const config = require("./config/loadenv");
+
 // Initialize Datadog APM early, before requiring Express internals
-if (process.env.DD_TRACE_ENABLED === "true") {
+if (config.DD_TRACE_ENABLED === "true") {
   try {
     require("dd-trace").init({
-      service: process.env.DD_SERVICE || "infamous-freight-api",
-      env: process.env.DD_ENV || process.env.NODE_ENV || "development",
-      runtimeMetrics: process.env.DD_RUNTIME_METRICS_ENABLED === "true",
+      service: config.DD_SERVICE || "infamous-freight-api",
+      env: config.DD_ENV || config.NODE_ENV || "development",
+      runtimeMetrics: config.DD_RUNTIME_METRICS_ENABLED === "true",
     });
   } catch (e) {
     // Fail open if dd-trace is not installed
@@ -35,8 +38,12 @@ const {
 } = require("./middleware/logger");
 const metricsRecorderMiddleware = require("./middleware/metricsRecorder");
 const { cacheResponseMiddleware } = require("./middleware/responseCache");
+const { smartCacheMiddleware, cacheInvalidationMiddleware } = require("./middleware/smartCache");
 const { rateLimit } = require("./middleware/security");
 const { authMiddleware: jwtRotationAuth } = require("./auth/jwtRotation");
+const { apiVersioningMiddleware } = require("./middleware/apiVersioning");
+const { batchLoaderMiddleware } = require("./services/batchLoaders");
+const { queryMonitor } = require("./middleware/queryMonitoring");
 const errorHandler = require("./middleware/errorHandler");
 const { securityHeaders, handleCSPViolation } = require("./middleware/securityHeaders");
 const { initSentry: legacySentry, attachErrorHandler } = require("./config/sentry");
@@ -87,9 +94,11 @@ const advancedGeofencingRoutes = require("./routes/advanced-geofencing");
 const analyticsBIRoutes = require("./routes/analytics-bi");
 const complianceInsuranceRoutes = require("./routes/compliance-insurance");
 const phase9AdvancedRoutes = require("./routes/phase9.advanced");
+const graphqlRoutes = require("./routes/graphql");
+
 const marketplaceEnabled =
   String(
-    process.env.FEATURE_GET_TRUCKN ?? process.env.MARKETPLACE_ENABLED ?? "true",
+    config.FEATURE_GET_TRUCKN ?? config.MARKETPLACE_ENABLED ?? "true",
   ).toLowerCase() === "true";
 let marketplaceRouter;
 let marketplaceBillingRouter;
@@ -112,7 +121,7 @@ if (marketplaceEnabled) {
   ({ BullMQAdapter } = require("@bull-board/api/bullMQAdapter"));
   ({ ExpressAdapter } = require("@bull-board/express"));
   // Phase 19: Initialize metrics service (skip in test environment)
-  if (process.env.NODE_ENV !== "test") {
+  if (config.NODE_ENV !== "test") {
     try {
       const { getMetricsService } = require("./services/metricsService");
       getMetricsService(); // Initialize singleton
@@ -129,7 +138,7 @@ const { auditContextMiddleware, initializeAuditLogging } = require("./middleware
 const { withIdempotency } = require("./middleware/idempotency");
 
 const app = express();
-const DEFAULT_REQUEST_TIMEOUT_MS = Number(process.env.REQUEST_TIMEOUT_MS || 30000);
+const DEFAULT_REQUEST_TIMEOUT_MS = Number(config.REQUEST_TIMEOUT_MS || 30000);
 const idempotencyMiddleware = withIdempotency();
 
 // Prevent hung requests from consuming resources indefinitely
@@ -148,7 +157,7 @@ legacySentry(app);
 initSentry("api");
 
 // Mount Sentry request and tracing handlers (must be early)
-if (process.env.SENTRY_DSN) {
+if (config.SENTRY_DSN) {
   app.use(Sentry.Handlers.requestHandler());
   app.use(Sentry.Handlers.tracingHandler());
 }
@@ -164,10 +173,12 @@ app.use(correlationMiddleware);
 app.use(performanceMiddleware);
 app.use(bodyLoggingMiddleware); // Log request/response bodies with sensitive data redacted
 app.use(metricsRecorderMiddleware);
-app.use(cacheResponseMiddleware);
-app.use(httpLogger);
+app.use(smartCacheMiddleware()); // Smart response caching (before rate limit)
+app.use(cacheInvalidationMiddleware); // Auto-invalidate cache on mutations
 app.use(compressionMiddleware); // Add compression for all responses
-app.use(rateLimit);
+app.use(httpLogger);
+app.use(rateLimit); // Rate limit ALL requests
+app.use(apiVersioningMiddleware); // Detect API version (v1, v2)
 
 // Optional JWT rotation-ready validator (populates req.auth if configured)
 app.use(jwtRotationAuth());
@@ -177,6 +188,9 @@ app.use(auditContextMiddleware);
 
 // Idempotency middleware - Prevent duplicate operations via Idempotency-Key header
 app.use(idempotencyMiddleware);
+
+// Batch loading for N+1 prevention
+app.use(batchLoaderMiddleware);
 
 // Stripe webhooks need raw body - must be before express.json()
 if (marketplaceEnabled && marketplaceWebhooks) {
@@ -188,6 +202,17 @@ if (stripeWebhookRouter) {
 
 app.use(express.json({ limit: "12mb" }));
 app.use(express.urlencoded({ extended: true }));
+
+// Initialize Prisma query monitoring
+try {
+  const { prisma } = require("./db/prisma");
+  if (prisma && queryMonitor) {
+    prisma.$on("query", queryMonitor.onQuery.bind(queryMonitor));
+    logger.info("Prisma query monitoring initialized");
+  }
+} catch (error) {
+  logger.warn("Failed to initialize Prisma query monitoring", { error: error.message });
+}
 
 // Swagger API Documentation
 app.use(
@@ -209,6 +234,7 @@ app.use("/api", billingPaymentsRoutes);
 app.use("/api", voiceRoutes);
 app.use("/api", usersRoutes);
 app.use("/api", shipmentsRoutes);
+app.use("/api/v2/shipments", require("./routes/v2/shipments")); // API v2 with breaking changes
 app.use("/api/loads", loadboardRoutes);
 app.use("/api/webhooks", webhookRoutes);
 app.use("/api/analytics/phase11", phase11AnalyticsRoutes);
@@ -229,6 +255,7 @@ app.use("/api/v4/geofencing", advancedGeofencingRoutes);
 app.use("/api/v4/analytics", analyticsBIRoutes);
 app.use("/api/v4/compliance", complianceInsuranceRoutes);
 app.use("/api", phase9AdvancedRoutes);
+app.use("/api/graphql", graphqlRoutes);
 app.use("/api", metricsRoutes);
 app.use("/api", adminFeatureFlagsRoutes);
 app.use("/api", adminOpsRoutes);
@@ -261,7 +288,7 @@ if (marketplaceEnabled && marketplaceRouter) {
 if (marketplaceEnabled && marketplaceBillingRouter) {
   app.use("/api/marketplace/billing", marketplaceBillingRouter);
 }
-if (marketplaceEnabled && marketplaceMetricsRouter && process.env.NODE_ENV !== "test") {
+if (marketplaceEnabled && marketplaceMetricsRouter && config.NODE_ENV !== "test") {
   app.use("/api/marketplace", marketplaceMetricsRouter);
 }
 app.get("/health", (_req, res) => res.status(200).send("ok"));
@@ -273,10 +300,10 @@ try {
     dispatchQueue &&
     expiryQueue &&
     etaQueue &&
-    String(process.env.BULLBOARD_ENABLED || "true").toLowerCase() === "true"
+    String(config.BULLBOARD_ENABLED || "true").toLowerCase() === "true"
   ) {
     const serverAdapter = new ExpressAdapter();
-    serverAdapter.setBasePath(process.env.BULLBOARD_PATH || "/ops/queues");
+    serverAdapter.setBasePath(config.BULLBOARD_PATH || "/ops/queues");
     createBullBoard({
       queues: [
         new BullMQAdapter(dispatchQueue),
@@ -285,7 +312,7 @@ try {
       ],
       serverAdapter,
     });
-    app.use(process.env.BULLBOARD_PATH || "/ops/queues", serverAdapter.getRouter());
+    app.use(config.BULLBOARD_PATH || "/ops/queues", serverAdapter.getRouter());
   }
 } catch (e) {
   // Fail open if bull-board not available
@@ -300,8 +327,8 @@ app.get("/api/status", async (_req, res) => {
     return res.json({
       ok: true,
       time: new Date().toISOString(),
-      release: process.env.RELEASE_SHA || null,
-      environment: process.env.NODE_ENV || "development",
+      release: config.RELEASE_SHA || null,
+      environment: config.NODE_ENV || "development",
       queues: null,
       worker: null,
     });
@@ -326,8 +353,8 @@ app.get("/api/status", async (_req, res) => {
     res.json({
       ok: true,
       time: new Date().toISOString(),
-      release: process.env.RELEASE_SHA || null,
-      environment: process.env.NODE_ENV || "development",
+      release: config.RELEASE_SHA || null,
+      environment: config.NODE_ENV || "development",
       queues: {
         dispatch: queues[0],
         expiry: queues[1],
@@ -359,13 +386,12 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // Attach Sentry error handler (must be after all other middleware and error handler)
-if (process.env.SENTRY_DSN) {
+if (config.SENTRY_DSN) {
   app.use(Sentry.Handlers.errorHandler());
 }
 attachErrorHandler(app);
 
-const apiConfig = config.getApiConfig();
-const port = Number(process.env.PORT ?? apiConfig.port ?? 4000);
+const port = Number(config.API_PORT ?? 4000);
 const host = "0.0.0.0";
 let httpServer;
 

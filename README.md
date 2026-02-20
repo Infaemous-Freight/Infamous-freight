@@ -1,8 +1,6 @@
-<div align="center">
-
 # ♊️ Infamous Freight Enterprises
 
-### AI-Powered Freight & Logistics Automation Platform
+## AI-Powered Freight & Logistics Automation Platform
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/f6837275-9828-47d7-86ce-da52f48b6a84/deploy-status)](https://app.netlify.com/projects/infamousfreight/deploys)
 [![CI](https://github.com/MrMiless44/Infamous-freight/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/ci.yml)
@@ -10,9 +8,7 @@
 [![Deploy All](https://github.com/MrMiless44/Infamous-freight/actions/workflows/deploy-all.yml/badge.svg?branch=main)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/deploy-all.yml)
 [![codecov](https://codecov.io/gh/MrMiless44/Infamous-freight/branch/main/graph/badge.svg)](https://codecov.io/gh/MrMiless44/Infamous-freight)
 
-[Features](#-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Architecture](#-architecture) • [Contributing](#-contributing)
-
-</div>
+[Features](#features) • [Quick Start](#quick-start) • [Documentation](#documentation) • [Architecture](#architecture) • [Contributing](#contributing)
 
 ---
 
@@ -35,6 +31,7 @@
 ## ✨ Features
 
 ### Core Features
+
 - ✅ **Shipment Management** - Create, track, update, and manage shipments
 - ✅ **Driver Management** - Driver assignments, performance tracking, and routing
 - ✅ **Analytics & Reporting** - Real-time dashboards with performance metrics
@@ -45,6 +42,7 @@
 - ✅ **API Versioning** - Backward-compatible API evolution (v1, v2)
 
 ### Security & Compliance
+
 - ✅ **JWT Authentication** - Secure token-based authentication with RS256
 - ✅ **Scope-Based Authorization** - Fine-grained access control
 - ✅ **Rate Limiting** - Per-endpoint rate limits with Redis backing
@@ -54,6 +52,7 @@
 - ✅ **Secret Management** - Secure credential storage and rotation
 
 ### Deployment & Operations
+
 - ✅ **Docker & Docker Compose** - Containerized services
 - ✅ **CI/CD Pipelines** - GitHub Actions workflows for automated deployment
 - ✅ **Multi-Region Support** - Deployment to Fly.io (SJC, IAD, LHR)
@@ -68,7 +67,7 @@
 
 ### Monorepo Structure
 
-```
+```text
 infamous-freight-enterprises/
 ├── apps/
 │   ├── api/              # Express.js API (CommonJS, PostgreSQL, Prisma)
@@ -103,7 +102,8 @@ infamous-freight-enterprises/
 
 ### Technology Stack
 
-**Backend (API)**
+#### Backend (API)
+
 - **Runtime:** Node.js 20+ (CommonJS)
 - **Framework:** Express.js 4.x
 - **Database:** PostgreSQL 16 with Prisma ORM
@@ -112,7 +112,8 @@ infamous-freight-enterprises/
 - **Validation:** express-validator
 - **Testing:** Jest, Supertest
 
-**Frontend (Web)**
+#### Frontend (Web)
+
 - **Framework:** Next.js 14 (TypeScript, ESM)
 - **UI Framework:** React 18
 - **Styling:** CSS Modules / Tailwind CSS
@@ -120,13 +121,15 @@ infamous-freight-enterprises/
 - **Analytics:** Vercel Analytics, Datadog RUM
 - **Testing:** Jest, React Testing Library
 
-**Mobile**
+#### Mobile
+
 - **Framework:** React Native with Expo
 - **Push Notifications:** Firebase Cloud Messaging (FCM)
 - **Storage:** AsyncStorage
 - **Navigation:** React Navigation
 
-**DevOps & Infrastructure**
+#### DevOps & Infrastructure
+
 - **Containerization:** Docker, Docker Compose
 - **CI/CD:** GitHub Actions
 - **Hosting:** Fly.io (API), Vercel (Web), Expo (Mobile)
@@ -147,29 +150,34 @@ infamous-freight-enterprises/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/MrMiless44/Infamous-freight.git
    cd Infamous-freight
    ```
 
 2. **Install dependencies**
+
    ```bash
    corepack enable
    pnpm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
 4. **Build shared package** (required before starting API)
+
    ```bash
    pnpm build:shared
    ```
 
 5. **Set up database**
+
    ```bash
    cd apps/api
    pnpm prisma:generate
@@ -178,6 +186,7 @@ infamous-freight-enterprises/
    ```
 
 6. **Start development servers**
+
    ```bash
    # Start all services (API + Web)
    pnpm dev
@@ -202,15 +211,16 @@ docker-compose down
 
 ### Verify Installation
 
-- **API Health Check:** http://localhost:4000/api/health
-- **Web Application:** http://localhost:3000
-- **API Documentation:** http://localhost:4000/api/docs (if Swagger enabled)
+- **API Health Check:** <http://localhost:4000/api/health>
+- **Web Application:** <http://localhost:3000>
+- **API Documentation:** <http://localhost:4000/api/docs> (if Swagger enabled)
 
 ---
 
 ## 📚 Documentation
 
 ### Essential Guides
+
 - 📖 [**Complete Documentation Index**](DOCUMENTATION_INDEX.md) - Central hub for all docs
 - 🚀 [**Quick Reference**](QUICK-REFERENCE-RECOMMENDED.md) - Common commands and operations
 - 🤝 [**Contributing Guide**](CONTRIBUTING.md) - Development workflow and standards
@@ -218,14 +228,14 @@ docker-compose down
 - 🔒 [**Security Guide**](SECURITY-RECOMMENDED.md) - Security best practices
 - 🚢 [**Deployment Guide**](DEPLOYMENT-RECOMMENDED.md) - Production deployment instructions
 
-### Development
-- [Architecture Decisions](ARCHITECTURE_DECISIONS.md)
+### Development- [Architecture Decisions](ARCHITECTURE_DECISIONS.md)
 - [Database Setup (Prisma)](PRISMA-SETUP-RECOMMENDED.md)
 - [Error Handling Standards](ERROR-HANDLING-RECOMMENDED.md)
 - [Middleware Integration](MIDDLEWARE_INTEGRATION_GUIDE.md)
 - [Performance Optimization](PERFORMANCE-OPTIMIZATION-ROADMAP-RECOMMENDED.md)
 
 ### Operations
+
 - [Operations Runbook](OPERATIONS-RUNBOOK-RECOMMENDED.md)
 - [Incident Response](INCIDENT-RESPONSE-RUNBOOK-RECOMMENDED.md)
 - [Backup & Recovery](BACKUP-AND-RECOVERY-PROCEDURES-RECOMMENDED.md)
@@ -233,6 +243,7 @@ docker-compose down
 - [Load Testing Strategy](LOAD-TESTING-STRATEGY-RECOMMENDED.md)
 
 ### Team Resources
+
 - [Team Onboarding](TEAM-ONBOARDING-GUIDE-RECOMMENDED.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Changelog](CHANGELOG-RECOMMENDED.md)
@@ -329,40 +340,20 @@ pnpm logs:fly               # View Fly.io logs
 
 ### Required Environment Variables
 
-```bash
-# Node Environment
-NODE_ENV=development
+Key configuration variables (see [.env.example](.env.example) for complete list):
 
-# Application Ports
-API_PORT=4000
-WEB_PORT=3000
+| Variable | Description | Example |
+| -------- | ----------- | ------- |
+| `NODE_ENV` | Environment mode | `development` |
+| `API_PORT` | API server port | `4000` |
+| `WEB_PORT` | Web server port | `3000` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:5432/db` |
+| `JWT_SECRET` | Authentication signing key | Generate 32+ char random string |
+| `AI_PROVIDER` | AI service provider | `synthetic`, `openai`, `anthropic` |
+| `REDIS_URL` | Redis connection string | `redis://localhost:6379` |
+| `SENTRY_DSN` | Error tracking endpoint | From Sentry dashboard |
 
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/infamous_freight
-
-# Authentication
-JWT_SECRET=your-secret-key-here-minimum-32-characters
-
-# AI Configuration
-AI_PROVIDER=synthetic  # openai | anthropic | synthetic
-AI_OPENAI_KEY=sk-...   # For OpenAI
-AI_ANTHROPIC_KEY=sk-ant-...  # For Anthropic
-
-# Redis (optional, for caching and rate limiting)
-REDIS_URL=redis://localhost:6379
-
-# Error Tracking
-SENTRY_DSN=https://...@sentry.io/...
-
-# Email (optional)
-SENDGRID_API_KEY=SG...
-AWS_SES_ACCESS_KEY=...
-AWS_SES_SECRET_KEY=...
-
-# Payment Processing (optional)
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_PUBLISHABLE_KEY=pk_test_...
-```
+**Important**: Never commit actual secrets. Use the `.env` file locally (gitignored) and secret managers in production.
 
 See [.env.example](.env.example) for complete list with descriptions.
 
@@ -373,6 +364,7 @@ See [.env.example](.env.example) for complete list with descriptions.
 ### Test Coverage
 
 Current coverage thresholds:
+
 - **API**: Lines 75%, Functions 80%, Branches 70%, Statements 75%
 - **Web**: Lines 70%, Functions 75%, Branches 65%, Statements 70%
 
@@ -488,6 +480,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ## 📊 Project Status
 
 ### Current Version
+
 - **API**: v2.0.0
 - **Web**: v2.0.0
 - **Mobile**: v1.5.0
@@ -495,6 +488,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ### Roadmap
 
 #### ✅ Phase 1 - Core Platform (Complete)
+
 - [x] Shipment management system
 - [x] Driver management
 - [x] Basic analytics dashboard

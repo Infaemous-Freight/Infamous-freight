@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Infamous Freight Enterprises Logo -->
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="240" fill="#1E3A8A"/>
+  
+  <!-- Truck Icon -->
+  <g id="truck">
+    <!-- Truck Cabin -->
+    <rect x="140" y="200" width="100" height="100" rx="10" fill="#F97316"/>
+    
+    <!-- Truck Cargo -->
+    <rect x="240" y="210" width="140" height="90" rx="8" fill="#F97316"/>
+    
+    <!-- Truck Details -->
+    <rect x="160" y="220" width="50" height="40" rx="5" fill="#FFFFFF" opacity="0.3"/>
+    
+    <!-- Speed Lines (Motion Effect) -->
+    <line x1="100" y1="235" x2="130" y2="235" stroke="#06B6D4" stroke-width="4" stroke-linecap="round"/>
+    <line x1="90" y1="255" x2="125" y2="255" stroke="#06B6D4" stroke-width="4" stroke-linecap="round"/>
+    <line x1="95" y1="275" x2="130" y2="275" stroke="#06B6D4" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Wheels -->
+    <circle cx="170" cy="320" r="25" fill="#1F2937"/>
+    <circle cx="170" cy="320" r="15" fill="#9CA3AF"/>
+    <circle cx="270" cy="320" r="25" fill="#1F2937"/>
+    <circle cx="270" cy="320" r="15" fill="#9CA3AF"/>
+    <circle cx="350" cy="320" r="25" fill="#1F2937"/>
+    <circle cx="350" cy="320" r="15" fill="#9CA3AF"/>
+  </g>
+  
+  <!-- Company Initial "IF" -->
+  <text x="256" y="400" font-family="Inter, sans-serif" font-size="60" font-weight="700" fill="#FFFFFF" text-anchor="middle">IF</text>
+  
+  <!-- Accent Elements -->
+  <circle cx="400" cy="150" r="8" fill="#10B981" opacity="0.8"/>
+  <circle cx="380" cy="170" r="6" fill="#FBBF24" opacity="0.8"/>
+  <circle cx="120" cy="180" r="7" fill="#EF4444" opacity="0.8"/>
+  
+  <!-- Border Ring -->
+  <circle cx="256" cy="256" r="245" stroke="#FFFFFF" stroke-width="3" fill="none" opacity="0.2"/>
+</svg>

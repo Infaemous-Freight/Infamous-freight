@@ -13,10 +13,24 @@
     "paths": {
       "@infamous-freight/shared": ["../../packages/shared/src"],
       "@/*": ["./src/*"]
-    }
+    },
+    // Strict type checking (inherited from base)
+    // Use tsconfig.legacy.json for gradual migration
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", ".next", "out"],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "out",
+    // Legacy components under migration (use tsconfig.legacy.json)
+    "components/legacy/**/*",
+    "pages/legacy/**/*"
+  ],
   "references": [
     {
       "path": "../../packages/shared"

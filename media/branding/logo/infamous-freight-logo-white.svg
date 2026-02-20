@@ -1,0 +1,42 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- White version of the logo for dark backgrounds -->
+  
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#FFFFFF" opacity="0.1"/>
+  
+  <!-- Truck cabin -->
+  <rect x="140" y="200" width="100" height="100" rx="10" fill="#FFFFFF"/>
+  
+  <!-- Truck cargo bed -->
+  <rect x="240" y="210" width="140" height="90" rx="8" fill="#FFFFFF"/>
+  
+  <!-- Truck window detail -->
+  <rect x="150" y="210" width="80" height="50" rx="5" fill="#FFFFFF" opacity="0.7"/>
+  
+  <!-- Speed lines for motion effect -->
+  <line x1="100" y1="235" x2="130" y2="235" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+  <line x1="90" y1="260" x2="125" y2="260" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+  <line x1="95" y1="285" x2="120" y2="285" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.4"/>
+  
+  <!-- Wheels -->
+  <circle cx="170" cy="320" r="25" fill="#FFFFFF"/>
+  <circle cx="170" cy="320" r="15" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="280" cy="320" r="25" fill="#FFFFFF"/>
+  <circle cx="280" cy="320" r="15" fill="#FFFFFF" opacity="0.8"/>
+  <circle cx="360" cy="320" r="25" fill="#FFFFFF"/>
+  <circle cx="360" cy="320" r="15" fill="#FFFFFF" opacity="0.8"/>
+  
+  <!-- Company initials "IF" -->
+  <text x="256" y="400" font-family="Inter, sans-serif" font-size="60" font-weight="700" fill="#FFFFFF" text-anchor="middle">IF</text>
+  
+  <!-- Tagline -->
+  <text x="256" y="440" font-family="Inter, sans-serif" font-size="16" font-weight="400" fill="#FFFFFF" text-anchor="middle" opacity="0.8">SHIP SMARTER</text>
+  
+  <!-- Accent elements -->
+  <circle cx="100" cy="150" r="8" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="130" cy="170" r="6" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="390" cy="160" r="7" fill="#FFFFFF" opacity="0.55"/>
+  
+  <!-- Border ring -->
+  <circle cx="256" cy="256" r="245" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="0.2"/>
+</svg>

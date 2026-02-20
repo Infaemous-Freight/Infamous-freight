@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Graph Image Generator - Infamous Freight</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #F3F4F6;
+            padding: 20px;
+        }
+
+        .og-card {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #1E3A8A 0%, #1E3A8A 60%, #2563EB 100%);
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+        }
+
+        /* Background pattern */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 35px,
+                rgba(255, 255, 255, 0.1) 35px,
+                rgba(255, 255, 255, 0.1) 70px
+            );
+        }
+
+        /* Logo container */
+        .logo-container {
+            position: absolute;
+            top: 50px;
+            left: 60px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-mark {
+            width: 80px;
+            height: 80px;
+            background: #F97316;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 10px 30px rgba(249, 115, 22, 0.4);
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Content */
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 60px;
+            right: 60px;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+
+        .title {
+            font-size: 64px;
+            font-weight: 700;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 32px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.4;
+            margin-bottom: 40px;
+        }
+
+        .meta {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .meta-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(249, 115, 22, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #F97316;
+            font-weight: 700;
+        }
+
+        /* Decorative elements */
+        .accent-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .accent-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+        }
+
+        .accent-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            left: -50px;
+        }
+
+        .accent-3 {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            right: 100px;
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* Footer badge */
+        .footer-badge {
+            position: absolute;
+            bottom: 50px;
+            right: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 16px 32px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-badge-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Controls for customization */
+        .controls {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .control-group input,
+        .control-group textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .control-group input:focus,
+        .control-group textarea:focus {
+            outline: none;
+            border-color: #F97316;
+        }
+
+        .control-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            background: #F97316;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #EA580C;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Open Graph Card Preview -->
+    <div class="og-card" id="ogCard">
+        <!-- Background pattern -->
+        <div class="bg-pattern"></div>
+
+        <!-- Decorative accents -->
+        <div class="accent-circle accent-1"></div>
+        <div class="accent-circle accent-2"></div>
+        <div class="accent-circle accent-3"></div>
+
+        <!-- Logo -->
+        <div class="logo-container">
+            <div class="logo-mark">IF</div>
+            <div class="logo-text">Infamous Freight</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="title" id="cardTitle">Ship Smarter with AI-Powered Logistics</h1>
+            <p class="subtitle" id="cardSubtitle">Transform your freight operations with real-time tracking, automated routing, and intelligent analytics.</p>
+            <div class="meta">
+                <div class="meta-item">
+                    <div class="meta-icon">✓</div>
+                    <span>Real-time Tracking</span>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-icon">⚡</div>
+                    <span>Instant Quotes</span>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-icon">🔒</div>
+                    <span>Secure & Reliable</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Badge -->
+        <div class="footer-badge">
+            <div class="footer-badge-text">Try Free Today</div>
+        </div>
+    </div>
+
+    <!-- Customization Controls -->
+    <div class="controls">
+        <h2 style="margin-bottom: 24px; color: #1F2937;">Customize Open Graph Image</h2>
+        
+        <div class="control-group">
+            <label for="titleInput">Main Title</label>
+            <input type="text" id="titleInput" value="Ship Smarter with AI-Powered Logistics" placeholder="Enter main title">
+        </div>
+
+        <div class="control-group">
+            <label for="subtitleInput">Subtitle</label>
+            <textarea id="subtitleInput" placeholder="Enter subtitle">Transform your freight operations with real-time tracking, automated routing, and intelligent analytics.</textarea>
+        </div>
+
+        <div class="control-group">
+            <label for="badgeInput">Badge Text</label>
+            <input type="text" id="badgeInput" value="Try Free Today" placeholder="Enter badge text">
+        </div>
+
+        <div class="button-group">
+            <button onclick="updateCard()">Update Preview</button>
+            <button onclick="downloadAsImage()">Download as PNG (1200x630)</button>
+            <button onclick="copyMetaTags()">Copy Meta Tags</button>
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #F9FAFB; border-radius: 8px; border-left: 4px solid #F97316;">
+            <h3 style="margin-bottom: 12px; color: #1F2937;">Meta Tags for HTML</h3>
+            <pre id="metaTags" style="font-family: 'Fira Code', monospace; font-size: 13px; color: #374151; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word;"></pre>
+        </div>
+    </div>
+
+    <script>
+        function updateCard() {
+            const title = document.getElementById('titleInput').value;
+            const subtitle = document.getElementById('subtitleInput').value;
+            const badge = document.getElementById('badgeInput').value;
+
+            document.getElementById('cardTitle').textContent = title;
+            document.getElementById('cardSubtitle').textContent = subtitle;
+            document.querySelector('.footer-badge-text').textContent = badge;
+
+            updateMetaTags();
+        }
+
+        function updateMetaTags() {
+            const title = document.getElementById('titleInput').value;
+            const subtitle = document.getElementById('subtitleInput').value;
+            
+            const metaTags = `<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://infamousfreight.com/">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="${subtitle}">
+<meta property="og:image" content="https://infamousfreight.com/og-image.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://infamousfreight.com/">
+<meta property="twitter:title" content="${title}">
+<meta property="twitter:description" content="${subtitle}">
+<meta property="twitter:image" content="https://infamousfreight.com/og-image.png">
+
+<!-- LinkedIn -->
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">`;
+
+            document.getElementById('metaTags').textContent = metaTags;
+        }
+
+        function copyMetaTags() {
+            const metaTags = document.getElementById('metaTags').textContent;
+            navigator.clipboard.writeText(metaTags).then(() => {
+                alert('Meta tags copied to clipboard!');
+            });
+        }
+
+        async function downloadAsImage() {
+            // Note: This requires html2canvas library
+            alert('To download as image:\n\n1. Take a screenshot of the card above\n2. Or use a tool like html2canvas\n3. Or render this in a headless browser (Puppeteer/Playwright)\n\nRecommended: Use Puppeteer to generate 1200x630 PNG programmatically.');
+        }
+
+        // Initialize meta tags on load
+        updateMetaTags();
+    </script>
+</body>
+</html>

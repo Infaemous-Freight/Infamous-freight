@@ -1,0 +1,43 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2020",
+        "jsx": "react-native",
+        "lib": [
+            "es2020"
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ],
+            "@tests/*": [
+                "tests/*"
+            ]
+        },
+        "types": [
+            "jest",
+            "@testing-library/jest-native"
+        ],
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": false,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true
+    },
+    "include": [
+        "src",
+        "tests"
+    ],
+    "exclude": [
+        "node_modules",
+        "build"
+    ]
+}

@@ -1,0 +1,133 @@
+# Multi-stage Docker build for all services
+# Usage: docker build --target api . or docker build --target web .
+
+FROM node:20-alpine AS dependencies-builder
+
+WORKDIR /app
+
+# Copy workspace config and lock file
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+
+# Install pnpm and dependencies
+RUN npm install -g pnpm@9.15.0 && \
+    pnpm install --frozen-lockfile && \
+    pnpm store prune
+
+# ============================================
+# Builder Stage
+# ============================================
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy from dependencies stage
+COPY --from=dependencies-builder /app/node_modules ./node_modules
+COPY --from=dependencies-builder /app/.pnpm-store ./.pnpm-store
+
+# Copy entire monorepo
+COPY . .
+
+# Build all packages
+ENV NODE_ENV=production
+ENV SKIP_ENV_GEN=true
+
+RUN pnpm build
+
+# ============================================
+# API Runtime
+# ============================================
+FROM node:20-alpine AS api-runtime
+
+WORKDIR /app
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Copy from dependencies for production
+COPY --from=dependencies-builder /app/node_modules ./node_modules
+
+# Copy only API build output and config
+COPY --from=builder /app/apps/api/dist ./apps/api/dist
+COPY --from=builder /app/apps/api/package.json ./apps/api/
+COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
+COPY --from=builder /app/package.json ./
+
+# Copy shared package dist
+COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
+COPY --from=builder /app/packages/shared/package.json ./packages/shared/
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:' + (process.env.API_PORT || 4000) + '/api/health', (r) => {if (r.statusCode !== 200) throw new Error()})"
+
+EXPOSE 4000
+
+USER node
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "apps/api/dist/server.js"]
+
+# ============================================
+# Web Runtime
+# ============================================
+FROM node:20-alpine AS web-runtime
+
+WORKDIR /app
+
+# Install dumb-init
+RUN apk add --no-cache dumb-init
+
+# Copy from builder
+COPY --from=builder /app/apps/web/.next ./apps/web/.next
+COPY --from=builder /app/apps/web/public ./apps/web/public
+COPY --from=builder /app/apps/web/next.config.mjs ./apps/web/
+COPY --from=builder /app/apps/web/package.json ./apps/web/
+COPY --from=builder /app/package.json ./
+
+# Install only production dependencies for Next.js
+RUN cd apps/web && npm install --production --no-save
+
+EXPOSE 3000
+
+USER node
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["npm", "--prefix", "apps/web", "run", "start"]
+
+# ============================================
+# Prisma Migration Runner
+# ============================================
+FROM node:20-alpine AS prisma-migration
+
+WORKDIR /app
+
+COPY --from=dependencies-builder /app/node_modules ./node_modules
+COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
+COPY --from=builder /app/apps/api/package.json ./apps/api/
+
+USER node
+
+ENTRYPOINT ["node", "node_modules/.bin/prisma", "--schema", "apps/api/prisma/schema.prisma"]
+CMD ["migrate", "deploy"]
+
+# ============================================
+# Development Stage
+# ============================================
+FROM node:20-alpine AS development
+
+WORKDIR /app
+
+# Install dumb-init and build tools
+RUN apk add --no-cache dumb-init curl git bash
+
+# Copy dependencies
+COPY --from=dependencies-builder /app/node_modules ./node_modules
+
+# Copy entire monorepo (for development)
+COPY . .
+
+# Expose multiple ports for different services
+EXPOSE 3000 4000 5555 6379 5432
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["pnpm", "dev"]

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Relaxed type checking for legacy components
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "strictBindCallApply": false,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": false,
+    "alwaysStrict": false
+  },
+  "include": [
+    "components/legacy/**/*.ts",
+    "components/legacy/**/*.tsx",
+    "pages/legacy/**/*.ts",
+    "pages/legacy/**/*.tsx"
+  ],
+  "exclude": ["node_modules", ".next", "out"]
+}

@@ -67,7 +67,7 @@
   "terminal.integrated.shellIntegration.quickFixEnabled": false,
   "terminal.integrated.stickyScroll.enabled": false,
   "terminal.integrated.suggest.enabled": false,
-  "prisma.pinToPrisma6": true,
+  "prisma.pinToPrisma6": false,
   "typescript.experimental.useTsgo": true,
   "typescript.implementationsCodeLens.enabled": true,
   "typescript.implementationsCodeLens.showOnAllClassMethods": true,
