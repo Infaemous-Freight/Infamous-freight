@@ -27,7 +27,7 @@ See current status: `./manage-unlock.sh status`
    ```bash
    # Generate secure secret
    NEW_SECRET=$(openssl rand -hex 32)
-   echo "JWT_SECRET=$NEW_SECRET" >> .env
+   echo "AUTH_SECRET=$NEW_SECRET" >> .env
    ```
 
    **Risk**: Using default JWT secret = complete security breach
@@ -333,7 +333,7 @@ Watch for these indicators that limits are too high:
 1. ✅ Configuration is unlocked
 2. [ ] Run `./manage-unlock.sh validate`
 3. [ ] Review cost estimates
-4. [ ] Change JWT_SECRET if needed
+4. [ ] Change AUTH_SECRET if needed
 
 ### This Week
 

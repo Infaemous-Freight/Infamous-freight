@@ -98,8 +98,8 @@ PATTERNS=(
   "secret\s*="
   "api.?key\s*="
   "private.?key\s*="
-  "aws_access_key_id"
-  "aws_secret_access_key"
+  "aws_api_key_id"
+  "aws_api_secret_key"
   "PRIVATE KEY"
   "BEGIN RSA"
   "BEGIN DSA"
@@ -211,7 +211,7 @@ ANTHROPIC_API_KEY=sk-ant-...
 STRIPE_API_KEY=sk_live_...
 
 # JWT Secret (rotate regularly)
-JWT_SECRET=your-super-secret-jwt-key-here
+AUTH_SECRET=your-super-secret-jwt-key-here
 
 # Third-party services
 SENTRY_DSN=https://...
@@ -243,7 +243,7 @@ cp .env.example .env.local
 # Edit with real values
 cd apps/api
 echo "DATABASE_URL=postgresql://user:pass@localhost:5432/db" >> .env.local
-echo "JWT_SECRET=dev-secret-key" >> .env.local
+echo "AUTH_SECRET=dev-secret-key" >> .env.local
 
 # Load in shell
 export $(cat .env.local | xargs)
@@ -289,7 +289,7 @@ For larger teams, consider Vault:
     secrets: |
       database_url;
       api_key;
-      jwt_secret
+      auth_token
 ```
 
 ---
@@ -298,14 +298,14 @@ For larger teams, consider Vault:
 
 | Credential | Type | Rotation | Last Rotated |
 |------------|------|----------|--------------|
-| JWT_SECRET | Encryption | Monthly | Feb 2026 |
+| AUTH_SECRET | Encryption | Monthly | Feb 2026 |
 | DATABASE_PASSWORD | Auth | Quarterly | Feb 2026 |
 | API_KEYS | Auth | Quarterly | Feb 2026 |
 | SSH_KEY | Auth | Annually | Feb 2025 |
 | Certificates | PKI | Annually | Feb 2025 |
 
 **Rotations to perform before deployment**:
-- [ ] JWT_SECRET - rotate and update all instances
+- [ ] AUTH_SECRET - rotate and update all instances
 - [ ] DATABASE_PASSWORD - rotate in all environments
 - [ ] All third-party API keys - rotate each service
 - [ ] SSH keys for deployment - rotate if old

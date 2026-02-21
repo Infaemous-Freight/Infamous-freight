@@ -958,8 +958,8 @@ DOCUSIGN_ACCOUNT_ID=...
 
 # Storage (S3 for contracts)
 AWS_S3_BUCKET=infamous-contracts
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
+AWS_API_KEY=...
+AWS_API_SECRET=...
 
 # CDN
 CDN_URL=https://cdn.infamous-freight.com
@@ -1400,7 +1400,7 @@ curl -X POST http://localhost:4000/api/revops/campaigns/campaign_xyz/send \
 
 1. Opportunity exists?
 2. Org exists?
-3. S3 bucket configured? (`AWS_S3_BUCKET`, `AWS_ACCESS_KEY_ID`)
+3. S3 bucket configured? (`AWS_S3_BUCKET`, `AWS_API_KEY`)
 
 **Test**:
 

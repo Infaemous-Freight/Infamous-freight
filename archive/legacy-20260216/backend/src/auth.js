@@ -31,7 +31,7 @@ export default (prisma) => {
 
       const token = jwt.sign(
         { id: user.id, role: user.role },
-        process.env.JWT_SECRET
+        process.env.AUTH_SECRET
       );
 
       res.json({ token });

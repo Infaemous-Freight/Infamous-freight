@@ -358,7 +358,7 @@ Total: 7.9 MB (excluding node_modules & .git)
 
 ```bash
 # Authentication
-JWT_SECRET=your-secret-key
+AUTH_SECRET=your-secret-key
 
 # API Configuration
 API_PORT=4000
@@ -373,7 +373,7 @@ ANTHROPIC_API_KEY=sk-ant-...
 DATABASE_URL=postgresql://user:pass@localhost:5432/db
 
 # Billing
-STRIPE_SECRET_KEY=sk_test_...
+STRIPE_API_SECRET=sk_test_...
 PAYPAL_CLIENT_ID=...
 
 # External Services
@@ -469,7 +469,7 @@ pnpm format
    ```bash
    # Set production env vars
    export NODE_ENV=production
-   export JWT_SECRET=secure-key-here
+   export AUTH_SECRET=secure-key-here
    export DATABASE_URL=production-db-url
 
    # Start API

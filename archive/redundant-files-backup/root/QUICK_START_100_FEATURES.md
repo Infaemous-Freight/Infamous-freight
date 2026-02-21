@@ -506,7 +506,7 @@ NODE_ENV=production
 API_PORT=3001
 DATABASE_URL=postgresql://...
 REDIS_URL=redis://...
-JWT_SECRET=<strong-secret>
+AUTH_SECRET=<strong-secret>
 CORS_ORIGINS=https://app.infamousfreight.com
 ```
 

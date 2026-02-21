@@ -29,7 +29,7 @@ bash scripts/verify-implementation.sh
 
 **Environment Status**:
 
-- JWT_SECRET: Will use default (production requires config)
+- AUTH_SECRET: Will use default (production requires config)
 - SLOW_QUERY_THRESHOLD_MS: Will use default (configurable)
 - CORS_ORIGINS: Will use default (configurable)
 
@@ -208,7 +208,7 @@ Total: **6 test suites** with **50+ test cases**
 - [ ] Read IMMEDIATE_ACTIONS.md fully
 - [ ] Choose deployment platform
 - [ ] Provision production database
-- [ ] Generate production secrets (JWT_SECRET, DB password, API keys)
+- [ ] Generate production secrets (AUTH_SECRET, DB password, API keys)
 - [ ] Set up monitoring (Prometheus + Grafana or DataDog)
 
 ### Next Week (Days 6-10)

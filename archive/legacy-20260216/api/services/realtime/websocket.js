@@ -33,9 +33,9 @@ const logger = require("../../middleware/logger");
 
 class NotificationManager {
   constructor(server) {
-    this.jwtSecret = process.env.JWT_SECRET;
+    this.jwtSecret = process.env.AUTH_SECRET;
     if (!this.jwtSecret) {
-      logger.error("WebSocket service misconfigured: JWT_SECRET is not set");
+      logger.error("WebSocket service misconfigured: AUTH_SECRET is not set");
       throw new Error("Server auth misconfiguration");
     }
 

@@ -192,7 +192,7 @@ tested, and committed
 3. **API Service**
    - Port: 4000
    - Depends on: PostgreSQL, Redis
-   - Environment: DATABASE_URL, JWT_SECRET, CORS
+   - Environment: DATABASE_URL, AUTH_SECRET, CORS
    - Logging: JSON file driver
    - Restart: unless-stopped
 
@@ -458,7 +458,7 @@ npm run test:load
 ```
 DATABASE_URL=postgresql://...
 REDIS_URL=redis://...
-JWT_SECRET=...
+AUTH_SECRET=...
 CORS_ORIGINS=...
 ```
 

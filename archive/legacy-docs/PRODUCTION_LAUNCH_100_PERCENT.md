@@ -132,7 +132,7 @@ openssl rand -base64 24
 API_PORT=4000
 NODE_ENV=production
 DATABASE_URL=postgresql://user:pass@prod-db.example.com:5432/infamouz
-JWT_SECRET=<generated-secret>
+AUTH_SECRET=<generated-secret>
 CORS_ORIGINS=https://app.example.com,https://api.example.com
 LOG_LEVEL=info
 SLOW_QUERY_THRESHOLD_MS=1000
@@ -206,7 +206,7 @@ kubectl create namespace infamouz-freight
 
 # Create secrets
 kubectl create secret generic infamouz-secrets \
-  --from-literal=JWT_SECRET="$JWT_SECRET" \
+  --from-literal=AUTH_SECRET="$AUTH_SECRET" \
   --from-literal=DATABASE_URL="$DATABASE_URL" \
   -n infamouz-freight
 
@@ -225,7 +225,7 @@ kubectl logs -f deployment/infamouz-freight-api -n infamouz-freight
 heroku create infamouz-freight-api
 
 # Set config
-heroku config:set JWT_SECRET="$JWT_SECRET" -a infamouz-freight-api
+heroku config:set AUTH_SECRET="$AUTH_SECRET" -a infamouz-freight-api
 heroku config:set DATABASE_URL="$DATABASE_URL" -a infamouz-freight-api
 
 # Deploy

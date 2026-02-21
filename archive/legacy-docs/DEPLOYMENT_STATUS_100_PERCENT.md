@@ -227,10 +227,10 @@ bash scripts/verify-implementation.sh
 cp .env.example .env.local
 
 # Generate JWT secret
-export JWT_SECRET="$(openssl rand -base64 32)"
+export AUTH_SECRET="$(openssl rand -base64 32)"
 
 # Update .env.local with your values:
-# - JWT_SECRET (from above)
+# - AUTH_SECRET (from above)
 # - DATABASE_URL (production database)
 # - CORS_ORIGINS (your frontend domain)
 ```
@@ -308,7 +308,7 @@ curl https://api.domain.com/api/shipments  # Should return 401
 
 | Variable                     | Example                                         | Purpose                               |
 | ---------------------------- | ----------------------------------------------- | ------------------------------------- |
-| `JWT_SECRET`                 | `aBc123dEfGhIjKlMnOpQrStUvWxYz...`              | JWT signing key (REQUIRED)            |
+| `AUTH_SECRET`                 | `aBc123dEfGhIjKlMnOpQrStUvWxYz...`              | JWT signing key (REQUIRED)            |
 | `DATABASE_URL`               | `postgresql://user:pass@localhost:5432/db`      | Database connection (REQUIRED)        |
 | `CORS_ORIGINS`               | `https://app.domain.com,https://api.domain.com` | Allowed CORS origins (REQUIRED)       |
 | `API_PORT`                   | `4000`                                          | Server port (default 4000)            |
@@ -357,8 +357,8 @@ tail -f /var/log/api.log | grep "SLOW_QUERY"
 ## ✅ Pre-Production Checklist
 
 - [ ] Run verification script: `bash scripts/verify-implementation.sh` → All ✅
-- [ ] Set all required env vars (JWT_SECRET, DATABASE_URL, CORS_ORIGINS)
-- [ ] Generate strong JWT_SECRET: `openssl rand -base64 32`
+- [ ] Set all required env vars (AUTH_SECRET, DATABASE_URL, CORS_ORIGINS)
+- [ ] Generate strong AUTH_SECRET: `openssl rand -base64 32`
 - [ ] Test database connection: `psql "$DATABASE_URL" -c "SELECT 1"`
 - [ ] Run test suite: `pnpm --filter api test` → All passing
 - [ ] Start API locally: `pnpm api:dev`
@@ -377,11 +377,11 @@ tail -f /var/log/api.log | grep "SLOW_QUERY"
 
 ### Common Issues & Solutions
 
-**"JWT_SECRET not set"**
+**"AUTH_SECRET not set"**
 
 ```bash
 # Solution: Generate and export
-export JWT_SECRET="$(openssl rand -base64 32)"
+export AUTH_SECRET="$(openssl rand -base64 32)"
 # Or add to .env.local
 ```
 

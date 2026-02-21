@@ -75,7 +75,7 @@ services:
       NODE_ENV: development
       DATABASE_URL: postgresql://infamous:infamouspass@postgres:5432/infamous_freight
       REDIS_URL: redis://redis:6379
-      JWT_SECRET: oZXGLb9JznIwkMxPQ/TUjYf6ux8o+nWymoJYNFViqI8=
+      AUTH_SECRET: oZXGLb9JznIwkMxPQ/TUjYf6ux8o+nWymoJYNFViqI8=
       AI_PROVIDER: synthetic
       ENABLE_DEBUG_LOGGING: "true"
     depends_on:
@@ -143,7 +143,7 @@ NODE_ENV=development
 API_PORT=4000
 DATABASE_URL=postgresql://infamous:infamouspass@postgres:5432/infamous_freight
 REDIS_URL=redis://redis:6379
-JWT_SECRET=oZXGLb9JznIwkMxPQ/TUjYf6ux8o+nWymoJYNFViqI8=
+AUTH_SECRET=oZXGLb9JznIwkMxPQ/TUjYf6ux8o+nWymoJYNFViqI8=
 
 # AI (Synthetic mode - no keys required)
 AI_PROVIDER=synthetic
@@ -167,7 +167,7 @@ RATE_LIMIT_AI=10000
 
 # Testing
 NODE_ENV=development
-JWT_SECRET=test-secret-key
+AUTH_SECRET=test-secret-key
 TEST_DATABASE_URL=postgresql://infamous:infamouspass@postgres:5432/infamous_freight_test
 ```
 
@@ -289,7 +289,7 @@ REDIS_URL=redis://staging-redis.fly.dev:6379
 REDIS_PASSWORD=staging-redis-password
 
 # Auth
-JWT_SECRET=staging-jwt-secret-key-32-bytes-long
+AUTH_SECRET=staging-jwt-secret-key-32-bytes-long
 
 # AI (Real providers with test keys)
 AI_PROVIDER=openai
@@ -312,7 +312,7 @@ RATE_LIMIT_AUTH=100
 RATE_LIMIT_AI=200
 
 # Billing (test mode)
-STRIPE_SECRET_KEY=sk_test_staging_xxx
+STRIPE_API_SECRET=sk_test_staging_xxx
 STRIPE_PUBLISHABLE_KEY=pk_test_staging_xxx
 
 # Monitoring
@@ -528,7 +528,7 @@ REDIS_TLS=true
 REDIS_REJECTUNAUTHORIZED=true
 
 # Auth & Security
-JWT_SECRET=VAULT_JWT_SECRET_PROD
+AUTH_SECRET=VAULT_AUTH_SECRET_PROD
 JWT_REFRESH_SECRET=VAULT_JWT_REFRESH_SECRET
 SESSION_ENCRYPTION_KEY=VAULT_SESSION_KEY
 CSRF_TOKEN_SECRET=VAULT_CSRF_TOKEN_SECRET
@@ -572,7 +572,7 @@ RATE_LIMIT_VOICE=30
 RATE_LIMIT_BILLING=50
 
 # Billing (LIVE mode)
-STRIPE_SECRET_KEY=VAULT_STRIPE_SECRET_KEY_LIVE
+STRIPE_API_SECRET=VAULT_STRIPE_API_SECRET_LIVE
 STRIPE_PUBLISHABLE_KEY=pk_live_xxx
 STRIPE_WEBHOOK_SECRET=VAULT_STRIPE_WEBHOOK_SECRET
 STRIPE_RESTRICTED_KEYS=sk_restricted_xxx,sk_restricted_yyy

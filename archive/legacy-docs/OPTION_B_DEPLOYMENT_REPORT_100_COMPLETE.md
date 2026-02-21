@@ -147,7 +147,7 @@ Creating /run/secrets directory... ✅
 Setting permissions (700)... ✅
 
 Generating JWT secret:
-  openssl rand -base64 32 > /run/secrets/jwt_secret
+  openssl rand -base64 32 > /run/secrets/auth_token
   Length: 44 characters
   ✅ Secret created
 
@@ -177,7 +177,7 @@ Verifying secrets:
   drwxr-xr-x 12 root  root  4096 Jan 15 12:30 ..
   -rw-------  1 root  root    44 Jan 15 12:35 api_keys
   -rw-------  1 root  root    44 Jan 15 12:35 db_password
-  -rw-------  1 root  root    44 Jan 15 12:35 jwt_secret
+  -rw-------  1 root  root    44 Jan 15 12:35 auth_token
   -rw-------  1 root  root    44 Jan 15 12:35 redis_password
   -rw-------  1 root  root    44 Jan 15 12:35 stripe_secret
 
@@ -195,7 +195,7 @@ total 40
 drwx------  2 root  root  4096 Jan 15 12:35 .
 -rw-------  1 root  root    44 Jan 15 12:35 api_keys
 -rw-------  1 root  root    44 Jan 15 12:35 db_password
--rw-------  1 root  root    44 Jan 15 12:35 jwt_secret
+-rw-------  1 root  root    44 Jan 15 12:35 auth_token
 -rw-------  1 root  root    44 Jan 15 12:35 redis_password
 -rw-------  1 root  root    44 Jan 15 12:35 stripe_secret
 

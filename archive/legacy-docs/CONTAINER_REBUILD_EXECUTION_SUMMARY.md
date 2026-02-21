@@ -267,7 +267,7 @@ Before going to production:
 1. **Update .env**
 
    ```bash
-   JWT_SECRET=<generate-new-strong-secret>
+   AUTH_SECRET=<generate-new-strong-secret>
    POSTGRES_PASSWORD=<strong-password>
    REDIS_PASSWORD=<strong-password>
    ```

@@ -195,7 +195,7 @@ Before considering rebuild complete:
 
 ### Pre-Deployment Checklist
 
-- [ ] Update `JWT_SECRET` in production `.env`
+- [ ] Update `AUTH_SECRET` in production `.env`
 - [ ] Configure `CORS_ORIGINS` for allowed domains
 - [ ] Enable HTTPS in production
 - [ ] Set strong database passwords
@@ -209,7 +209,7 @@ Before considering rebuild complete:
 ```bash
 # Required in production
 API_PORT=4000
-JWT_SECRET=<generate-strong-secret>
+AUTH_SECRET=<generate-strong-secret>
 POSTGRES_PASSWORD=<strong-password>
 REDIS_PASSWORD=<strong-password>
 CORS_ORIGINS=https://yourdomain.com

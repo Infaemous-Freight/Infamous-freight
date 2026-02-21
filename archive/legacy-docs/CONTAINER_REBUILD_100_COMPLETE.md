@@ -350,7 +350,7 @@ REDIS_URL="redis://localhost:6379"
 REDIS_PASSWORD=redispass
 
 # JWT
-JWT_SECRET=your-secret-key-change-in-production
+AUTH_SECRET=your-secret-key-change-in-production
 
 # AI Provider
 AI_PROVIDER=synthetic

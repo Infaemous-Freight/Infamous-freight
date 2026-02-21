@@ -23,14 +23,14 @@
 **Before**:
 
 ```bash
-JWT_SECRET=dev-secret-change-in-production  # ❌ INSECURE
+AUTH_SECRET=dev-secret-change-in-production  # ❌ INSECURE
 JWT_REFRESH_SECRET=dev-refresh-secret-change-in-production  # ❌ INSECURE
 ```
 
 **After**:
 
 ```bash
-JWT_SECRET=oZXGLb9JznIwkMxPQ/TUjYf6ux8o+nWymoJYNFViqI8=  # ✅ SECURE
+AUTH_SECRET=oZXGLb9JznIwkMxPQ/TUjYf6ux8o+nWymoJYNFViqI8=  # ✅ SECURE
 JWT_REFRESH_SECRET=oS4XFjFJnfdWhbMZF8yeNAi6/2E3AZbBHxbcz+K0qRc=  # ✅ SECURE
 ```
 

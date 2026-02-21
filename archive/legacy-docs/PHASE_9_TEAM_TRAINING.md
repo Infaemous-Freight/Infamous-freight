@@ -107,7 +107,7 @@ flyctl logs -a infamous-freight-api --json | jq '.timestamp, .message'
 | `500 error`               | Server error              | Check Sentry, restart API if persistent   |
 | `429 Too Many Requests`   | Rate limit hit            | Check if legitimate traffic spike         |
 | `503 Service Unavailable` | API down                  | Check instances, restart if needed        |
-| `401 Unauthorized`        | Auth failed               | Check JWT_SECRET, review auth logs        |
+| `401 Unauthorized`        | Auth failed               | Check AUTH_SECRET, review auth logs        |
 | `ECONNREFUSED`            | DB connection failed      | Check database, verify connection pool    |
 | `TIMEOUT`                 | Operation taking too long | Check query performance, restart if stuck |
 
@@ -235,8 +235,8 @@ curl -s https://api.fly.dev/api/health | jq '.database'
 # 1. Check auth logs
 ./runbook-automation.sh filter-logs-by-type auth
 
-# 2. Verify JWT_SECRET is set
-flyctl secrets list -a infamous-freight-api | grep JWT_SECRET
+# 2. Verify AUTH_SECRET is set
+flyctl secrets list -a infamous-freight-api | grep AUTH_SECRET
 
 # 3. Check rate limiting on auth endpoint
 ./runbook-automation.sh filter-logs-by_type rate_limit
@@ -244,7 +244,7 @@ flyctl secrets list -a infamous-freight-api | grep JWT_SECRET
 
 **Resolution:**
 
-- If recently rotated JWT_SECRET: Verify it was set correctly
+- If recently rotated AUTH_SECRET: Verify it was set correctly
 - If rate limited: Check if legitimate users or attack
 - Clear cache if tokens cached: `./runbook-automation.sh clear-cache`
 

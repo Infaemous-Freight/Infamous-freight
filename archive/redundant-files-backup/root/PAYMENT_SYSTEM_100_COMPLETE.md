@@ -110,12 +110,12 @@ Target Metrics (Month 1):
 ```bash
 # Development Keys (Test Mode)
 STRIPE_PUBLISHABLE_KEY=pk_test_51xxxxxxxxxxxxxxxxxxxxx
-STRIPE_SECRET_KEY=sk_test_51xxxxxxxxxxxxxxxxxxxxx
+STRIPE_API_SECRET=sk_test_51xxxxxxxxxxxxxxxxxxxxx
 STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxx
 
 # Production Keys (Live Mode)
 STRIPE_PUBLISHABLE_KEY=pk_live_51xxxxxxxxxxxxxxxxxxxxx
-STRIPE_SECRET_KEY=sk_live_51xxxxxxxxxxxxxxxxxxxxx
+STRIPE_API_SECRET=sk_live_51xxxxxxxxxxxxxxxxxxxxx
 STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxx
 ```
 
@@ -123,7 +123,7 @@ STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxx
 
 ```bash
 # apps/api/.env
-STRIPE_SECRET_KEY=sk_test_51xxxxxxxxxxxxxxxxxxxxx
+STRIPE_API_SECRET=sk_test_51xxxxxxxxxxxxxxxxxxxxx
 STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxxxxxxxxxxx
 STRIPE_PRICE_ID_PRO=price_xxxxxxxxxxxxxxxxxxxxx
 STRIPE_PRICE_ID_ENTERPRISE=price_xxxxxxxxxxxxxxxxxxxxx
@@ -1617,7 +1617,7 @@ describe("Payment System", () => {
    app.use(helmet()); // Enforce HTTPS
 
 3. ✅ Store Stripe keys in environment variables (never commit)
-   STRIPE_SECRET_KEY=sk_live_xxxxx
+   STRIPE_API_SECRET=sk_live_xxxxx
 
 4. ✅ Validate all user input
    const schema = z.object({ priceId: z.string(), tier: z.enum(['pro', 'enterprise']) });
@@ -1667,7 +1667,7 @@ describe("Payment System", () => {
    WRONG: while(true) { tryPayment(); } // DoS risk
 
 9. ❌ Never expose Stripe secret key to client
-   WRONG: <script>const key = '{{STRIPE_SECRET_KEY}}'</script>
+   WRONG: <script>const key = '{{STRIPE_API_SECRET}}'</script>
 
 10. ❌ Never process refunds without admin approval
     WRONG: router.post('/refund', (req, res) => stripe.refunds.create());
@@ -1882,7 +1882,7 @@ tail -f apps/api/logs/combined.log | grep "payment"
 grep "webhook" apps/api/logs/combined.log
 
 # Environment
-echo $STRIPE_SECRET_KEY           # Verify key is set
+echo $STRIPE_API_SECRET           # Verify key is set
 stripe config --list              # Show Stripe CLI config
 ```
 

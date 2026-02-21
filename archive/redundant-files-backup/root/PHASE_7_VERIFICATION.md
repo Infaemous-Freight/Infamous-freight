@@ -205,7 +205,7 @@ abTesting.assignUserToBucket(userId, testId, 50)
 - REDIS_URL ✓
 - MASTER_KEY ✓
 - WEBHOOK_SECRET ✓
-- JWT_SECRET ✓
+- AUTH_SECRET ✓
 - Stripe keys ✓
 - SendGrid API ✓
 

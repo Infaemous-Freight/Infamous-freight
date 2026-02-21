@@ -114,12 +114,12 @@ Get your API keys first:
 ```bash
 # Set all secrets at once
 flyctl secrets set \
-  STRIPE_SECRET_KEY="sk_live_YOUR_KEY" \
+  STRIPE_API_SECRET="sk_live_YOUR_KEY" \
   STRIPE_PUBLISHABLE_KEY="pk_live_YOUR_KEY" \
   STRIPE_WEBHOOK_SECRET="whsec_YOUR_SECRET" \
   PAYPAL_CLIENT_ID="YOUR_ID" \
   PAYPAL_CLIENT_SECRET="YOUR_SECRET" \
-  JWT_SECRET="$(openssl rand -base64 32)" \
+  AUTH_SECRET="$(openssl rand -base64 32)" \
   DATABASE_URL="postgresql://..." \
   NODE_ENV="production"
 
@@ -387,7 +387,7 @@ SWITCHING TO PRODUCTION:
 UPDATING SECRETS:
 ```bash
 flyctl secrets set \
-  STRIPE_SECRET_KEY="sk_live_PRODUCTION_KEY" \
+  STRIPE_API_SECRET="sk_live_PRODUCTION_KEY" \
   STRIPE_PUBLISHABLE_KEY="pk_live_PRODUCTION_KEY" \
   PAYPAL_CLIENT_ID="PRODUCTION_ID" \
   PAYPAL_CLIENT_SECRET="PRODUCTION_SECRET"

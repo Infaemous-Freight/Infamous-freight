@@ -107,7 +107,7 @@ Phase 4: Advanced Scaling (15 days)
 ### Environment Configuration
 
 - `.env.production` - Production variables (NODE_ENV, API_PORT, DATABASE_URL,
-  JWT_SECRET, etc.)
+  AUTH_SECRET, etc.)
 
 ### Deployment Documentation
 

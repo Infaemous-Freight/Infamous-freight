@@ -47,7 +47,7 @@ REDIS_URL=redis://redis:6379
 REDIS_PASSWORD=<generate-strong-password>
 
 # JWT & Auth
-JWT_SECRET=<generate-strong-secret>
+AUTH_SECRET=<generate-strong-secret>
 JWT_EXPIRES_IN=24h
 CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
 
@@ -73,7 +73,7 @@ RATE_LIMIT_MAX=100
 VOICE_MAX_FILE_SIZE_MB=10
 
 # Stripe/PayPal
-STRIPE_SECRET_KEY=<your-key>
+STRIPE_API_SECRET=<your-key>
 STRIPE_WEBHOOK_SECRET=<your-secret>
 PAYPAL_CLIENT_ID=<your-id>
 PAYPAL_CLIENT_SECRET=<your-secret>

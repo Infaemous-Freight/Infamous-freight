@@ -77,7 +77,7 @@ This will automatically set `DATABASE_URL` secret on the API app.
 ```bash
 # JWT and Auth
 flyctl secrets set \
-  JWT_SECRET="$(openssl rand -base64 32)" \
+  AUTH_SECRET="$(openssl rand -base64 32)" \
   -a infamous-freight-api
 
 # AI Providers (optional)
@@ -89,7 +89,7 @@ flyctl secrets set \
 
 # Billing (optional)
 flyctl secrets set \
-  STRIPE_SECRET_KEY="sk_live_..." \
+  STRIPE_API_SECRET="sk_live_..." \
   PAYPAL_CLIENT_ID="..." \
   PAYPAL_CLIENT_SECRET="..." \
   -a infamous-freight-api

@@ -133,7 +133,7 @@ bash scripts/setup-ssl-certificates.sh --environment production --domain infamou
 ```bash
 # Set required environment variables
 export DATABASE_URL="postgresql://user:pass@host:5432/db"
-export JWT_SECRET="generate-random-secret-here"
+export AUTH_SECRET="generate-random-secret-here"
 export REDIS_URL="redis://host:6379"
 export NODE_ENV="production"
 
@@ -198,7 +198,7 @@ bash scripts/verify-production-deployment.sh --api-url http://localhost:3001 --w
   - [ ] `.env.production` created from `.env.production.example`
   - [ ] `DATABASE_URL` set to production database
   - [ ] `REDIS_URL` set to production Redis
-  - [ ] `JWT_SECRET` set to secure random value
+  - [ ] `AUTH_SECRET` set to secure random value
   - [ ] `NODE_ENV=production`
   - [ ] All secrets secured (not in git)
 
@@ -264,7 +264,7 @@ bash scripts/verify-production-deployment.sh --api-url http://localhost:3001 --w
 bash scripts/pre-deployment-check.sh
 
 # Check environment
-env | grep -E "DATABASE_URL|JWT_SECRET|REDIS_URL|NODE_ENV"
+env | grep -E "DATABASE_URL|AUTH_SECRET|REDIS_URL|NODE_ENV"
 
 # Verify services running
 docker-compose -f docker-compose.production.yml ps

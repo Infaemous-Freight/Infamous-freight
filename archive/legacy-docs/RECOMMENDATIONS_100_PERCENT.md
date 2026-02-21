@@ -42,10 +42,10 @@ cd apps/mobile && eas build --platform all     # Mobile
 
 **Missing Secrets:**
 
-- `JWT_SECRET` - Currently using example value
+- `AUTH_SECRET` - Currently using example value
 - `DATABASE_URL` - Production PostgreSQL connection
 - `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` - AI provider keys
-- `STRIPE_SECRET_KEY` / `PAYPAL_CLIENT_SECRET` - Payment processing
+- `STRIPE_API_SECRET` / `PAYPAL_CLIENT_SECRET` - Payment processing
 - `SENTRY_DSN` - Error tracking
 - `REDIS_URL` - Caching layer
 
@@ -53,10 +53,10 @@ cd apps/mobile && eas build --platform all     # Mobile
 
 ```bash
 # Fly.io (API)
-flyctl secrets set JWT_SECRET="$(openssl rand -base64 32)" --app infamous-freight-api
+flyctl secrets set AUTH_SECRET="$(openssl rand -base64 32)" --app infamous-freight-api
 flyctl secrets set DATABASE_URL="postgresql://..." --app infamous-freight-api
 flyctl secrets set OPENAI_API_KEY="sk-..." --app infamous-freight-api
-flyctl secrets set STRIPE_SECRET_KEY="sk_live_..." --app infamous-freight-api
+flyctl secrets set STRIPE_API_SECRET="sk_live_..." --app infamous-freight-api
 flyctl secrets set SENTRY_DSN="https://..." --app infamous-freight-api
 
 # Vercel (Web)
@@ -184,8 +184,8 @@ flyctl volumes create infamous_freight_data \
 ```bash
 # scripts/rotate-secrets.sh
 #!/bin/bash
-NEW_JWT_SECRET=$(openssl rand -base64 32)
-flyctl secrets set JWT_SECRET="$NEW_JWT_SECRET" --app infamous-freight-api
+NEW_AUTH_SECRET=$(openssl rand -base64 32)
+flyctl secrets set AUTH_SECRET="$NEW_AUTH_SECRET" --app infamous-freight-api
 echo "✅ JWT secret rotated on $(date)" >> /var/log/security-audit.log
 ```
 
@@ -817,7 +817,7 @@ async function registerForPushNotifications() {
 4. **Generate new JWT secret** (5 min)
 
    ```bash
-   flyctl secrets set JWT_SECRET="$(openssl rand -base64 32)" --app infamous-freight-api
+   flyctl secrets set AUTH_SECRET="$(openssl rand -base64 32)" --app infamous-freight-api
    ```
 
 5. **Enable Vercel Analytics** (2 min)

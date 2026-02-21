@@ -57,7 +57,7 @@ verified, and documented**.
 
 - .env file exists ✅
 - DATABASE_URL configured ✅
-- JWT_SECRET configured ✅
+- AUTH_SECRET configured ✅
 
 ✅ **Documentation**
 
@@ -294,7 +294,7 @@ Uncommitted Changes: 0
 1. **Deployment secrets** need to be added to GitHub
    - VERCEL_TOKEN
    - FLY_API_TOKEN
-   - (DATABASE_URL and JWT_SECRET already configured locally)
+   - (DATABASE_URL and AUTH_SECRET already configured locally)
 
 2. **Live deployments** are pending secret configuration
    - Expected behavior: services deploy automatically after secrets added

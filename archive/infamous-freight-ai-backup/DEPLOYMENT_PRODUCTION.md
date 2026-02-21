@@ -35,7 +35,7 @@
 
 4. **Add Stripe Keys** (After deployment)
    - Dashboard → infamous-freight-api → Environment
-   - Add `STRIPE_SECRET_KEY`: `sk_live_...`
+   - Add `STRIPE_API_SECRET`: `sk_live_...`
    - Add `STRIPE_WEBHOOK_SECRET`: `whsec_...`
    - Save changes (auto-redeploys)
 
@@ -83,9 +83,9 @@
 4. **Set Secrets**
 
    ```bash
-   flyctl secrets set STRIPE_SECRET_KEY=sk_live_...
+   flyctl secrets set STRIPE_API_SECRET=sk_live_...
    flyctl secrets set STRIPE_WEBHOOK_SECRET=whsec_...
-   flyctl secrets set JWT_SECRET=$(openssl rand -hex 32)
+   flyctl secrets set AUTH_SECRET=$(openssl rand -hex 32)
    ```
 
 5. **Deploy**
@@ -167,8 +167,8 @@
 
 ```bash
 DATABASE_URL=postgresql://user:pass@host:5432/db
-JWT_SECRET=your_32_char_random_string_here
-STRIPE_SECRET_KEY=sk_live_your_live_key_here
+AUTH_SECRET=your_32_char_random_string_here
+STRIPE_API_SECRET=sk_live_your_live_key_here
 STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
 ```
 

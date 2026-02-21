@@ -46,8 +46,8 @@ bash scripts/setup-secrets.sh
 mkdir -p /run/secrets
 
 # Generate JWT secret
-openssl rand -base64 32 > /run/secrets/jwt_secret
-chmod 600 /run/secrets/jwt_secret
+openssl rand -base64 32 > /run/secrets/auth_token
+chmod 600 /run/secrets/auth_token
 
 # Generate database password
 openssl rand -base64 32 > /run/secrets/db_password
@@ -66,7 +66,7 @@ cp .env.production /path/to/secrets/  # Requires manual setup
 ```bash
 ls -la /run/secrets/
 # Should show:
-# - jwt_secret
+# - auth_token
 # - db_password
 # - redis_password
 # - [other production secrets]

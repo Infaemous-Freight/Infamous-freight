@@ -95,7 +95,7 @@ await stripe.subscriptionItems.createUsageRecord(stripeSubscriptionItemId, {
 2. Sign up or log in to your account
 3. Go to **Settings → API Keys** (Left sidebar)
 4. Copy your keys:
-   - `STRIPE_SECRET_KEY` = `sk_live_...` (or `sk_test_...` for testing)
+   - `STRIPE_API_SECRET` = `sk_live_...` (or `sk_test_...` for testing)
    - `STRIPE_PUBLISHABLE_KEY` = `pk_live_...` (or `pk_test_...` for testing)
 5. Go to **Webhooks** and create a webhook:
    - Endpoint URL: `https://yourapp.com/api/billing/webhook`
@@ -108,7 +108,7 @@ Add to `.env` or `.env.local`:
 
 ```bash
 # Stripe Keys (100% to your account)
-STRIPE_SECRET_KEY=sk_live_YOUR_SECRET_KEY_HERE
+STRIPE_API_SECRET=sk_live_YOUR_SECRET_KEY_HERE
 STRIPE_PUBLISHABLE_KEY=pk_live_YOUR_PUBLISHABLE_KEY_HERE
 STRIPE_WEBHOOK_SECRET=whsec_YOUR_WEBHOOK_SECRET_HERE
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_YOUR_PUBLISHABLE_KEY_HERE

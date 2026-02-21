@@ -282,7 +282,7 @@
 
 ### Essential Credentials (Store Securely)
 
-- [ ] JWT_SECRET (32+ char)
+- [ ] AUTH_SECRET (32+ char)
 - [ ] DATABASE_URL (PostgreSQL)
 - [ ] Kubernetes cluster credentials
 - [ ] Docker registry credentials

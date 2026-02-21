@@ -422,7 +422,7 @@ cd apps/mobile && eas build --platform all
 
 ```bash
 # Fly.io
-flyctl secrets set JWT_SECRET="$(openssl rand -base64 32)" --app infamous-freight-api
+flyctl secrets set AUTH_SECRET="$(openssl rand -base64 32)" --app infamous-freight-api
 
 # Vercel
 vercel env add NEXT_PUBLIC_API_URL production

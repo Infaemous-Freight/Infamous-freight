@@ -169,7 +169,7 @@ services:
       LOG_LEVEL: info
       DATABASE_URL: postgresql://postgres:${DB_PASSWORD}@postgres:5432/infamous_freight
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
-      JWT_SECRET: ${JWT_SECRET}
+      AUTH_SECRET: ${AUTH_SECRET}
       CORS_ORIGINS: ${CORS_ORIGINS}
       API_PORT: 4000
     ports:
@@ -389,7 +389,7 @@ REDIS_PASSWORD=CHANGE_ME
 NODE_ENV=production
 LOG_LEVEL=info
 API_PORT=4000
-JWT_SECRET=CHANGE_ME_TO_STRONG_SECRET
+AUTH_SECRET=CHANGE_ME_TO_STRONG_SECRET
 
 # CORS
 CORS_ORIGINS=https://example.com,https://api.example.com

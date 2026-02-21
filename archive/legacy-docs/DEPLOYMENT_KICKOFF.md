@@ -54,7 +54,7 @@ bash scripts/pre-deployment-check.sh
 
 - [ ] `.env.production` file created with:
   - DATABASE_URL (valid PostgreSQL connection)
-  - JWT_SECRET (32+ characters, stored securely)
+  - AUTH_SECRET (32+ characters, stored securely)
   - REDIS_URL (Redis connection string)
   - CORS_ORIGINS (your domain)
   - GRAFANA_PASSWORD (admin password)

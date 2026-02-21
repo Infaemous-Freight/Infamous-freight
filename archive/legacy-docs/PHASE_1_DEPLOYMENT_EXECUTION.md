@@ -26,7 +26,7 @@ production-ready with comprehensive test coverage.
   - `API_PORT=3001`
   - `WEB_PORT=3000`
   - `DATABASE_URL` configured
-  - `JWT_SECRET` ready
+  - `AUTH_SECRET` ready
   - `REDIS_URL` configured
   - `CORS_ORIGINS` set
   - `GRAFANA_PASSWORD` configured

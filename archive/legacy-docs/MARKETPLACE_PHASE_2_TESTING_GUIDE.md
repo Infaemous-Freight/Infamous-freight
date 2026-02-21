@@ -29,9 +29,9 @@ docker ps | grep postgres
 cp apps/api/.env.example apps/api/.env
 
 # Edit with your values:
-# - JWT_SECRET: Use a strong random string
+# - AUTH_SECRET: Use a strong random string
 # - DATABASE_URL: postgres://user:password@localhost:5432/marketplace
-# - STRIPE_SECRET_KEY: Your Stripe test key
+# - STRIPE_API_SECRET: Your Stripe test key
 # - STRIPE_WEBHOOK_SECRET: From Stripe webhook endpoint
 ```
 
@@ -40,9 +40,9 @@ cp apps/api/.env.example apps/api/.env
 ```bash
 cat > apps/api/.env << 'EOF'
 API_PORT=4000
-JWT_SECRET=dev-secret-change-in-production
+AUTH_SECRET=dev-secret-change-in-production
 DATABASE_URL=postgresql://user:password@localhost:5432/marketplace
-STRIPE_SECRET_KEY=sk_test_...
+STRIPE_API_SECRET=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_test_...
 STRIPE_PRICE_PER_MILE=1.50
 STRIPE_PRICE_PER_MINUTE=0.25
@@ -107,7 +107,7 @@ pnpm dev
 # Create helper script to generate tokens
 cat > generate-jwt.js << 'EOF'
 const jwt = require('jsonwebtoken');
-const secret = process.env.JWT_SECRET || 'dev-secret-change-in-production';
+const secret = process.env.AUTH_SECRET || 'dev-secret-change-in-production';
 
 const shipper = {
   sub: 'shipper-user-123',
@@ -406,7 +406,7 @@ autocannon -c 5 -d 30 \
 ```bash
 # Token expired or invalid signature?
 # Regenerate with: node generate-jwt.js
-# Make sure JWT_SECRET matches in .env
+# Make sure AUTH_SECRET matches in .env
 ```
 
 ### "Price has changed since job creation" Error
@@ -515,7 +515,7 @@ You now have a production-ready marketplace with:
 2. **Monitoring**: Set up error tracking (Sentry)
 3. **Production**: Deploy to staging environment
 4. **Documentation**: Share API docs with frontend team
-5. **Security**: Enable HTTPS and set strong JWT_SECRET
+5. **Security**: Enable HTTPS and set strong AUTH_SECRET
 
 ---
 

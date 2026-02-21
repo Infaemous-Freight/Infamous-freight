@@ -31,7 +31,7 @@ Enhanced authentication and authorization testing:
 - Validates header name case-insensitivity
 - Ensures both `authorization` and `Authorization` work
 
-✅ **authenticate() without JWT_SECRET**
+✅ **authenticate() without AUTH_SECRET**
 
 - Tests missing environment variable
 - Validates 500 error response
@@ -195,7 +195,7 @@ Lines Added:        338
 ### Environment Variables
 
 ✅ `process.env.NODE_ENV`  
-✅ `process.env.JWT_SECRET`  
+✅ `process.env.AUTH_SECRET`  
 ✅ `process.env.SENTRY_DSN`  
 ✅ Performance thresholds
 
@@ -234,8 +234,8 @@ it("should handle capital Authorization header", () => {
   expect(next).toHaveBeenCalled();
 });
 
-it("should return 500 when JWT_SECRET missing", () => {
-  delete process.env.JWT_SECRET; // Missing config
+it("should return 500 when AUTH_SECRET missing", () => {
+  delete process.env.AUTH_SECRET; // Missing config
   authenticate(req, res, next);
   expect(res.status).toHaveBeenCalledWith(500);
 });

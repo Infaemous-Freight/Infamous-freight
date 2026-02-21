@@ -406,9 +406,9 @@ pnpm lint apps/api/src/lib/jobStateMachine.js
 cp apps/api/.env.example apps/api/.env
 
 # Update with production values
-# - JWT_SECRET (strong random)
+# - AUTH_SECRET (strong random)
 # - DATABASE_URL (prod database)
-# - STRIPE_SECRET_KEY (prod key)
+# - STRIPE_API_SECRET (prod key)
 # - STRIPE_WEBHOOK_SECRET (prod secret)
 ```
 
@@ -460,7 +460,7 @@ tail -f apps/api/combined.log | grep -E "correlation|error|webhook"
 ### Common Issues
 
 1. **"Missing bearer token"** → Add `-H "Authorization: Bearer $JWT"`
-2. **"Invalid JWT"** → Regenerate token with correct JWT_SECRET
+2. **"Invalid JWT"** → Regenerate token with correct AUTH_SECRET
 3. **"Price mismatch"** → Expected behavior, create new job
 4. **"Job not available"** → Race condition, another driver accepted first
 5. **Webhook failing** → Check logs for retry attempts, might succeed on retry

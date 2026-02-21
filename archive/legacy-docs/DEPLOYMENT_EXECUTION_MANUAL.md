@@ -75,10 +75,10 @@ nano .env.local
 NODE_ENV=production
 API_PORT=4000
 DATABASE_URL=postgresql://user:pass@host:5432/infamous_freight
-JWT_SECRET=<generate with: openssl rand -base64 32>
+AUTH_SECRET=<generate with: openssl rand -base64 32>
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
-STRIPE_SECRET_KEY=sk_live_...
+STRIPE_API_SECRET=sk_live_...
 PAYPAL_CLIENT_SECRET=...
 SENTRY_DSN=https://...@sentry.io/...
 REDIS_URL=redis://:password@host:6379
@@ -159,10 +159,10 @@ cd /workspaces/Infamous-freight-enterprises
 
 # Set secrets
 flyctl secrets set \
-  JWT_SECRET="$(openssl rand -base64 32)" \
+  AUTH_SECRET="$(openssl rand -base64 32)" \
   DATABASE_URL="postgresql://user:pass@host:5432/db" \
   OPENAI_API_KEY="sk-..." \
-  STRIPE_SECRET_KEY="sk_live_..." \
+  STRIPE_API_SECRET="sk_live_..." \
   PAYPAL_CLIENT_SECRET="..." \
   SENTRY_DSN="https://...@sentry.io/..." \
   REDIS_URL="redis://:pass@host:6379" \

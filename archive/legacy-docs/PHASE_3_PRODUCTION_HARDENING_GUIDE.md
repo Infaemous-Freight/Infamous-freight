@@ -420,7 +420,7 @@ model DriverRating {
 ```
 API_PORT=4000
 DATABASE_URL=postgresql://user:pass@staging-db:5432/marketplace
-STRIPE_SECRET_KEY=sk_test_...
+STRIPE_API_SECRET=sk_test_...
 REDIS_HOST=staging-redis
 REDIS_PORT=6379
 NODE_ENV=staging

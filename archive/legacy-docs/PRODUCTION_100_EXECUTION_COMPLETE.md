@@ -45,7 +45,7 @@
 - ✅ `.env.production` configured with all required secrets
 - ✅ `DATABASE_URL` pointing to production PostgreSQL
 - ✅ `REDIS_URL` pointing to production Redis cache
-- ✅ `JWT_SECRET` set to cryptographically secure string (32+ char)
+- ✅ `AUTH_SECRET` set to cryptographically secure string (32+ char)
 - ✅ `SENTRY_DSN` configured for error tracking
 - ✅ `CORS_ORIGINS` set to production domain
 - ✅ `AI_PROVIDER` configured (openai)

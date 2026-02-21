@@ -79,7 +79,7 @@ approved for production deployment by all required stakeholders.
 - ✅ API_PORT configured as `3001`
 - ✅ WEB_PORT configured as `3000`
 - ✅ DATABASE_URL configured
-- ✅ JWT_SECRET generated and secured
+- ✅ AUTH_SECRET generated and secured
 - ✅ Redis configuration complete
 - ✅ CORS_ORIGINS configured for Vercel
 - ✅ GRAFANA_PASSWORD set

@@ -139,7 +139,7 @@ When adding new API endpoints:
 ### Tests Failing?
 
 ```bash
-cd api && JWT_SECRET=test-secret pnpm test
+cd api && AUTH_SECRET=test-secret pnpm test
 ```
 
 ### Database Error?

@@ -185,7 +185,7 @@ docker build -t infamousfreight/api:latest .
 # Test locally
 docker run -p 4000:4000 \
   -e DATABASE_URL="postgresql://..." \
-  -e JWT_SECRET="your-secret" \
+  -e AUTH_SECRET="your-secret" \
   infamousfreight/api:latest
 
 # Push to registry (GHCR)

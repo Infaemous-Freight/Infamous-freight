@@ -214,7 +214,7 @@ curl http://localhost:4000/api/health
 # 4. Generate JWT token
 node -e "
 const jwt = require('jsonwebtoken');
-const secret = process.env.JWT_SECRET || 'dev-secret';
+const secret = process.env.AUTH_SECRET || 'dev-secret';
 const token = jwt.sign({
   sub: 'driver-123',
   role: 'DRIVER',

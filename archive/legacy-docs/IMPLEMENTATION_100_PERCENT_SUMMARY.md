@@ -141,7 +141,7 @@ complete checklist.
 **Key steps:**
 
 1. ✅ Run verification script
-2. ✅ Set environment variables (JWT_SECRET, CORS_ORIGINS, etc.)
+2. ✅ Set environment variables (AUTH_SECRET, CORS_ORIGINS, etc.)
 3. ✅ Run full test suite
 4. ✅ Install Husky hooks: `npx husky install`
 5. ✅ Deploy to production

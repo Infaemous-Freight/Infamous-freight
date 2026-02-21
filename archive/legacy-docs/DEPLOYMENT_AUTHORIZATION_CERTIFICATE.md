@@ -167,7 +167,7 @@ Stage 8: Load Testing                 ✅ Post-deployment
 ### Before Deployment: 6 Items to Complete
 
 1. **✓ Create .env.production**
-   - DATABASE_URL, JWT_SECRET, REDIS_URL, CORS_ORIGINS, GRAFANA_PASSWORD
+   - DATABASE_URL, AUTH_SECRET, REDIS_URL, CORS_ORIGINS, GRAFANA_PASSWORD
    - See: DEPLOYMENT_PRE-FLIGHT_CHECKLIST.md
 
 2. **✓ Database Backup**

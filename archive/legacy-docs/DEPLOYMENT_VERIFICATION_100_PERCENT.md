@@ -188,7 +188,7 @@ docker run -d \
   --name test-api \
   -p 4000:3001 \
   -e DATABASE_URL="postgresql://user:pass@localhost:5432/db" \
-  -e JWT_SECRET="test-secret" \
+  -e AUTH_SECRET="test-secret" \
   ghcr.io/mrmiless44/infamous-freight-api:latest
 
 # Wait 10 seconds for startup
@@ -506,7 +506,7 @@ Use this checklist to verify deployment is 100% green:
 
 - [ ] All secrets configured in Fly.io
 - [ ] DATABASE_URL set correctly
-- [ ] JWT_SECRET set (production value)
+- [ ] AUTH_SECRET set (production value)
 - [ ] SENTRY_DSN configured
 - [ ] CORS_ORIGINS includes Vercel URL
 - [ ] Feature flags set correctly

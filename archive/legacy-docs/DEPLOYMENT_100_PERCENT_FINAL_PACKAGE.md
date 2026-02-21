@@ -83,10 +83,10 @@
 - ✅ Docker Secrets file loading (/run/secrets/)
 - ✅ Environment variable fallback
 - ✅ Manages 9+ credential types:
-  - JWT_SECRET & JWT_REFRESH_SECRET
+  - AUTH_SECRET & JWT_REFRESH_SECRET
   - POSTGRES_PASSWORD & DATABASE_URL
   - REDIS_PASSWORD
-  - STRIPE_SECRET_KEY
+  - STRIPE_API_SECRET
   - PAYPAL_SECRET
   - SENDGRID_API_KEY
   - AWS credentials

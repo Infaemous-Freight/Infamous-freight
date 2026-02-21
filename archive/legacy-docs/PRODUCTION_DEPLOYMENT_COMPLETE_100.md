@@ -127,7 +127,7 @@ nano .env.production
 
 ```bash
 # Authentication
-JWT_SECRET="$(openssl rand -base64 32)"
+AUTH_SECRET="$(openssl rand -base64 32)"
 JWT_REFRESH_SECRET="$(openssl rand -base64 32)"
 
 # Database (Fly.io PostgreSQL)
@@ -139,12 +139,12 @@ REDIS_URL="redis://:${PASSWORD}@redis-prod:6379"
 
 # API Keys
 OPENAI_API_KEY="sk-..." # Your OpenAI key
-STRIPE_SECRET_KEY="sk_live_..." # Stripe production key
+STRIPE_API_SECRET="sk_live_..." # Stripe production key
 SENTRY_DSN="https://..." # Sentry production DSN
 
 # AWS S3
-AWS_ACCESS_KEY_ID="AKIA..."
-AWS_SECRET_ACCESS_KEY="..."
+AWS_API_KEY="AKIA..."
+AWS_API_SECRET="..."
 AWS_S3_BUCKET="infamous-freight-production"
 
 # Email (SendGrid)
@@ -156,14 +156,14 @@ SENDGRID_API_KEY="SG...."
 ```bash
 # Set all required secrets
 flyctl secrets set \
-  JWT_SECRET="${JWT_SECRET}" \
+  AUTH_SECRET="${AUTH_SECRET}" \
   DATABASE_URL="${DATABASE_URL}" \
   REDIS_URL="${REDIS_URL}" \
   OPENAI_API_KEY="${OPENAI_API_KEY}" \
-  STRIPE_SECRET_KEY="${STRIPE_SECRET_KEY}" \
+  STRIPE_API_SECRET="${STRIPE_API_SECRET}" \
   SENTRY_DSN="${SENTRY_DSN}" \
-  AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
-  AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
+  AWS_API_KEY="${AWS_API_KEY}" \
+  AWS_API_SECRET="${AWS_API_SECRET}" \
   SENDGRID_API_KEY="${SENDGRID_API_KEY}" \
   --app infamous-freight-api
 

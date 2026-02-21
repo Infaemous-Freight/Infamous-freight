@@ -24,7 +24,7 @@
 **Environment Validation**
 
 - [ ] DATABASE_URL set correctly
-- [ ] JWT_SECRET is cryptographically secure
+- [ ] AUTH_SECRET is cryptographically secure
 - [ ] REDIS_URL configured and tested
 - [ ] NODE_ENV=production
 - [ ] API_PORT configured (default: 4000)

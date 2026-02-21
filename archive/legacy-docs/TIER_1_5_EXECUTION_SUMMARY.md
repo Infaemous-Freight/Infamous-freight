@@ -108,7 +108,7 @@ npm audit
 cp .env.example .env.production
 
 # 3. Review and configure:
-- JWT_SECRET rotation policy
+- AUTH_SECRET rotation policy
 - CORS_ORIGINS for production
 - Database encryption settings
 - Backup encryption keys

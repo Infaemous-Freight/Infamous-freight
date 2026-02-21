@@ -55,7 +55,7 @@ find ./scripts -name "*.sh" | wc -l  # Should be 3
 
 # ✅ STEP 4: Verify secrets are configured
 ./scripts/setup-secrets.sh --verify
-# Expected: ✅ JWT_SECRET, DB_PASSWORD, REDIS_PASSWORD, etc.
+# Expected: ✅ AUTH_SECRET, DB_PASSWORD, REDIS_PASSWORD, etc.
 
 # ✅ STEP 5: Check port availability
 lsof -i -P -n | grep LISTEN | head -20
@@ -178,7 +178,7 @@ pnpm prisma:studio
 
 ```bash
 # ✅ STEP 1: Verify JWT secrets
-cat /run/secrets/jwt_secret 2>/dev/null || echo "ENV: $JWT_SECRET" | wc -c
+cat /run/secrets/auth_token 2>/dev/null || echo "ENV: $AUTH_SECRET" | wc -c
 # Expected: >32 characters
 
 # ✅ STEP 2: Verify no secrets in git

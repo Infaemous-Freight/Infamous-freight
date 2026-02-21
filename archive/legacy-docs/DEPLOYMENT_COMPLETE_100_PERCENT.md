@@ -500,7 +500,7 @@ git push origin main
 
 Before deploying to production:
 
-- [ ] Environment variables configured (JWT_SECRET, DATABASE_URL,
+- [ ] Environment variables configured (AUTH_SECRET, DATABASE_URL,
       OPENAI_API_KEY)
 - [ ] GitHub Secrets set (VERCEL_TOKEN, FLY_API_TOKEN, etc.)
 - [ ] Local tests passing: `pnpm test`

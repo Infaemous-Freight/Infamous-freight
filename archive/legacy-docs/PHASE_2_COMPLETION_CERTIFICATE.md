@@ -180,7 +180,7 @@ Handles Stripe events (webhook endpoint).
 
 ```bash
 # 1. Get Stripe test keys from https://dashboard.stripe.com
-export STRIPE_SECRET_KEY="sk_test_..."
+export STRIPE_API_SECRET="sk_test_..."
 export STRIPE_WEBHOOK_SECRET="whsec_..."
 
 # 2. Start API
@@ -213,7 +213,7 @@ Add to `apps/api/.env`:
 
 ```bash
 # Stripe API Keys (from Stripe Dashboard)
-STRIPE_SECRET_KEY=sk_test_...
+STRIPE_API_SECRET=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
 # App URLs (for Checkout redirects)
@@ -277,7 +277,7 @@ PUBLIC_API_URL=http://localhost:3001
 
 ## 📋 Deployment Checklist
 
-- [ ] Set STRIPE_SECRET_KEY in production
+- [ ] Set STRIPE_API_SECRET in production
 - [ ] Set STRIPE_WEBHOOK_SECRET in production
 - [ ] Set PUBLIC_APP_URL to production domain
 - [ ] Configure Stripe webhook endpoint in dashboard

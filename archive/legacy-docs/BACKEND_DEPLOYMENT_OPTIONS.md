@@ -29,7 +29,7 @@ Railway is the fastest way to deploy your Express.js backend.
    ```bash
    # In Railway dashboard → Project Settings → Variables
    DATABASE_URL=postgresql://user:pass@host:5432/infamousfreight
-   JWT_SECRET=your-secret-key-here
+   AUTH_SECRET=your-secret-key-here
    AI_PROVIDER=synthetic
    NODE_ENV=production
    ```
@@ -103,7 +103,7 @@ Fly.io offers excellent performance and is production-ready.
 
    ```bash
    flyctl secrets set DATABASE_URL="postgresql://..."
-   flyctl secrets set JWT_SECRET="your-secret"
+   flyctl secrets set AUTH_SECRET="your-secret"
    flyctl secrets set AI_PROVIDER="synthetic"
    ```
 
@@ -170,7 +170,7 @@ Heroku is still popular for quick deployments (note: free tier ended).
 4. **Set Environment Variables**
 
    ```bash
-   heroku config:set JWT_SECRET="your-secret-key"
+   heroku config:set AUTH_SECRET="your-secret-key"
    heroku config:set AI_PROVIDER="synthetic"
    heroku config:set NODE_ENV="production"
    # DATABASE_URL is set automatically
@@ -239,7 +239,7 @@ Deploy using Docker Compose to your own server or VPS.
    ```bash
    cat > .env.production << 'EOF'
    DATABASE_URL=postgresql://postgres:password@db:5432/infamousfreight
-   JWT_SECRET=your-secret-key-here
+   AUTH_SECRET=your-secret-key-here
    AI_PROVIDER=synthetic
    NODE_ENV=production
    API_PORT=4000
@@ -335,7 +335,7 @@ eb init -p node.js-20 infamous-freight-api --region us-east-1
 
 # Create environment and deploy
 eb create production
-eb setenv DATABASE_URL="postgresql://..." JWT_SECRET="..."
+eb setenv DATABASE_URL="postgresql://..." AUTH_SECRET="..."
 
 # Deploy updated code
 git push

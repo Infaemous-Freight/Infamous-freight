@@ -1225,18 +1225,18 @@ WEB_PORT=3000
 NODE_ENV=production
 
 # Authentication
-JWT_SECRET="your-jwt-secret-here"
+AUTH_SECRET="your-jwt-secret-here"
 JWT_EXPIRES_IN="7d"
 
 # External APIs
-STRIPE_SECRET_KEY="sk_live_..."
+STRIPE_API_SECRET="sk_live_..."
 STRIPE_WEBHOOK_SECRET="whsec_..."
 OPENAI_API_KEY="sk-..."
 ANTHROPIC_API_KEY="sk-ant-..."
 
 # AWS Services
-AWS_ACCESS_KEY_ID="AKIA..."
-AWS_SECRET_ACCESS_KEY="..."
+AWS_API_KEY="AKIA..."
+AWS_API_SECRET="..."
 AWS_S3_BUCKET="infamousfreight-prod"
 AWS_SES_REGION="us-east-1"
 
@@ -1267,7 +1267,7 @@ docker build -t infamousfreight-api:latest .
 docker run -d \
   -p 3001:4000 \
   -e DATABASE_URL="postgresql://..." \
-  -e JWT_SECRET="..." \
+  -e AUTH_SECRET="..." \
   --name infamousfreight-api \
   infamousfreight-api:latest
 
@@ -1377,8 +1377,8 @@ cp apps/web/.env.example apps/web/.env
 
 # Configure required variables
 # - DATABASE_URL
-# - JWT_SECRET
-# - STRIPE_SECRET_KEY (for payments)
+# - AUTH_SECRET
+# - STRIPE_API_SECRET (for payments)
 # - OPENAI_API_KEY (for AI features)
 ```
 

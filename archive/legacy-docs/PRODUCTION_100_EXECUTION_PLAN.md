@@ -39,7 +39,7 @@ is production-ready with:
   - [ ] Set all required secrets (see below)
   - [ ] Verify `DATABASE_URL` points to production PostgreSQL
   - [ ] Verify `REDIS_URL` points to production Redis
-  - [ ] Set `JWT_SECRET` to cryptographically secure string
+  - [ ] Set `AUTH_SECRET` to cryptographically secure string
 
 - [ ] **Database**
   - [ ] Backup current database:

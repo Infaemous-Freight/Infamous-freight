@@ -16,7 +16,7 @@
 ```bash
 # Create file: .env.production
 DATABASE_URL=postgresql://postgres:password@localhost:5432/infamous_freight
-JWT_SECRET=your-32-character-minimum-secret-key-here
+AUTH_SECRET=your-32-character-minimum-secret-key-here
 REDIS_URL=redis://localhost:6379
 NODE_ENV=production
 API_PORT=3001
@@ -32,7 +32,7 @@ LOG_LEVEL=info
 # 1. Create the file
 cat > .env.production << 'EOF'
 DATABASE_URL=postgresql://postgres:password@localhost:5432/infamous_freight
-JWT_SECRET=your-32-character-minimum-secret-key-here
+AUTH_SECRET=your-32-character-minimum-secret-key-here
 REDIS_URL=redis://localhost:6379
 NODE_ENV=production
 API_PORT=3001
@@ -45,8 +45,8 @@ EOF
 ls -la .env.production
 cat .env.production
 
-# 3. Check JWT_SECRET length
-grep JWT_SECRET .env.production | wc -c  # Should be > 32 chars
+# 3. Check AUTH_SECRET length
+grep AUTH_SECRET .env.production | wc -c  # Should be > 32 chars
 ```
 
 ---

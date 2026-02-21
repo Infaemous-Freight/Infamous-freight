@@ -153,7 +153,7 @@ const PieChart = dynamic(() => import("recharts").then((m) => m.PieChart));
 - ✅ Coverage upload to codecov for api tests
 - ✅ Per-package lint/type/build validation
 - ✅ Prisma schema validation
-- ✅ Environment variables set for test mode (JWT_SECRET)
+- ✅ Environment variables set for test mode (AUTH_SECRET)
 - ✅ Graceful handling of optional checks
 
 ---

@@ -59,7 +59,7 @@ Copy these to Railway Variables tab:
 NODE_ENV=production
 PORT=${{RAILWAY_PORT}}
 DATABASE_URL=${{DATABASE_URL}}
-JWT_SECRET=<GENERATE_STRONG_SECRET>
+AUTH_SECRET=<GENERATE_STRONG_SECRET>
 CORS_ORIGINS=https://infamous-freight-enterprises-git-f34b9b-santorio-miles-projects.vercel.app
 AI_PROVIDER=synthetic
 LOG_LEVEL=info
@@ -68,8 +68,8 @@ SENTRY_DSN=<IF_USING_SENTRY>
 
 **Required Actions:**
 
-- [ ] Generate JWT_SECRET (use: https://generate-secret.vercel.app/32)
-- [ ] Copy JWT_SECRET and save securely
+- [ ] Generate AUTH_SECRET (use: https://generate-secret.vercel.app/32)
+- [ ] Copy AUTH_SECRET and save securely
 - [ ] Add all environment variables
 - [ ] Verify DATABASE_URL is present
 
@@ -147,7 +147,7 @@ SENTRY_DSN=<IF_USING_SENTRY>
 ### JWT Authentication Fails
 
 - **Issue:** `Invalid token` errors
-- **Fix:** Ensure `JWT_SECRET` matches between deploys
+- **Fix:** Ensure `AUTH_SECRET` matches between deploys
 - **Note:** Changing secret invalidates all existing tokens
 
 ---

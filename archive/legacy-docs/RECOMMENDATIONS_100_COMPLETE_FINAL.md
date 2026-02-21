@@ -120,18 +120,18 @@ pnpm add jsonwebtoken
 ```javascript
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-in-prod";
+const AUTH_SECRET = process.env.AUTH_SECRET || "dev-secret-change-in-prod";
 const TOKEN_EXPIRY = "24h";
 
 function generateToken(userId, email, role = "user") {
-  return jwt.sign({ sub: userId, email, role }, JWT_SECRET, {
+  return jwt.sign({ sub: userId, email, role }, AUTH_SECRET, {
     expiresIn: TOKEN_EXPIRY,
   });
 }
 
 function verifyToken(token) {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, AUTH_SECRET);
   } catch (err) {
     return null;
   }
@@ -275,7 +275,7 @@ async function loadShipments() {
 **.env configuration**:
 
 ```bash
-JWT_SECRET=your-super-secret-key-change-this-in-production
+AUTH_SECRET=your-super-secret-key-change-this-in-production
 ```
 
 **Test it**:
@@ -1030,7 +1030,7 @@ touch __tests__/api.test.js
 pnpm test
 
 # 5. Start with security enabled
-JWT_SECRET=your-secret node mock-server.js
+AUTH_SECRET=your-secret node mock-server.js
 
 # Week 2 Setup
 # 1. Start database

@@ -19,7 +19,7 @@ these procedures carefully to maintain security and availability.
 
 **Rotation Frequency**:
 
-- JWT_SECRET: Quarterly (or immediately if suspected compromise)
+- AUTH_SECRET: Quarterly (or immediately if suspected compromise)
 - API Keys: Quarterly
 - Database passwords: Annually
 - Third-party keys: Per service SLA (typically quarterly)
@@ -84,7 +84,7 @@ JWT secrets can be rotated with gradual migration since tokens have expiration.
 2. **Update primary secret**:
 
    ```bash
-   JWT_SECRET=new-secret
+   AUTH_SECRET=new-secret
    JWT_VALID_SECRETS=new-secret,old-secret
    ```
 
@@ -98,14 +98,14 @@ JWT secrets can be rotated with gradual migration since tokens have expiration.
 
    ```bash
    JWT_VALID_SECRETS=new-secret
-   JWT_SECRET=new-secret
+   AUTH_SECRET=new-secret
    ```
 
 2. **Deploy API** with only new secret
 
 3. **Document** in CHANGELOG:
    ```
-   - [SECURITY] Rotated JWT_SECRET per quarterly policy
+   - [SECURITY] Rotated AUTH_SECRET per quarterly policy
    ```
 
 ### Emergency JWT Rotation (Suspected Compromise)
@@ -157,7 +157,7 @@ Most services allow creating new keys without deleting old ones:
 
 ```bash
 # Railway
-railway variables set STRIPE_SECRET_KEY=sk_live_new_key
+railway variables set STRIPE_API_SECRET=sk_live_new_key
 
 # Vercel
 vercel --environment production env set NEXT_PUBLIC_OPENAI_KEY=sk-...
@@ -344,7 +344,7 @@ Maintain log of secret rotations:
 
 ## 2026-02-14
 
-- **Secret**: JWT_SECRET
+- **Secret**: AUTH_SECRET
 - **Rotation Type**: Scheduled
 - **Reason**: Quarterly policy
 - **Completed By**: @devops
@@ -377,15 +377,15 @@ Before production rotation, test locally:
 
 ```bash
 # Test JWT rotation
-JWT_SECRET=old-secret pnpm test --testNamePattern=auth
+AUTH_SECRET=old-secret pnpm test --testNamePattern=auth
 
-JWT_SECRET=new-secret pnpm test --testNamePattern=auth
+AUTH_SECRET=new-secret pnpm test --testNamePattern=auth
 
 # Test database credential change
 DATABASE_URL=postgresql://new_user:newpass@localhost/db pnpm test
 
 # Test API key update
-STRIPE_SECRET_KEY=sk_test_new_key pnpm test --testNamePattern=billing
+STRIPE_API_SECRET=sk_test_new_key pnpm test --testNamePattern=billing
 ```
 
 ## Tools & Services

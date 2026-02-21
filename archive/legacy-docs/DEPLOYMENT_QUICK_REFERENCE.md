@@ -7,7 +7,7 @@
 flyctl deploy --remote-only
 
 # 2. Set all secrets at once
-flyctl secrets set STRIPE_SECRET_KEY="sk_live_..." STRIPE_PUBLISHABLE_KEY="pk_live_..." STRIPE_WEBHOOK_SECRET="whsec_..." PAYPAL_CLIENT_ID="..." PAYPAL_CLIENT_SECRET="..." JWT_SECRET="$(openssl rand -base64 32)" DATABASE_URL="postgresql://..."
+flyctl secrets set STRIPE_API_SECRET="sk_live_..." STRIPE_PUBLISHABLE_KEY="pk_live_..." STRIPE_WEBHOOK_SECRET="whsec_..." PAYPAL_CLIENT_ID="..." PAYPAL_CLIENT_SECRET="..." AUTH_SECRET="$(openssl rand -base64 32)" DATABASE_URL="postgresql://..."
 
 # 3. Run migrations
 flyctl ssh console -C "cd /app/api && pnpm prisma migrate deploy"
@@ -42,13 +42,13 @@ curl https://infamous-freight-enterprises.fly.dev/health
 
 | Key                    | Format             | Where to Find                            |
 | ---------------------- | ------------------ | ---------------------------------------- |
-| STRIPE_SECRET_KEY      | `sk_live_...`      | https://dashboard.stripe.com/apikeys     |
+| STRIPE_API_SECRET      | `sk_live_...`      | https://dashboard.stripe.com/apikeys     |
 | STRIPE_PUBLISHABLE_KEY | `pk_live_...`      | https://dashboard.stripe.com/apikeys     |
 | STRIPE_WEBHOOK_SECRET  | `whsec_...`        | https://dashboard.stripe.com/webhooks    |
 | PAYPAL_CLIENT_ID       | UUID format        | https://developer.paypal.com/dashboard/  |
 | PAYPAL_CLIENT_SECRET   | Long string        | https://developer.paypal.com/dashboard/  |
 | DATABASE_URL           | `postgresql://...` | Your database provider                   |
-| JWT_SECRET             | 32+ char random    | Generate with: `openssl rand -base64 32` |
+| AUTH_SECRET             | 32+ char random    | Generate with: `openssl rand -base64 32` |
 
 ---
 

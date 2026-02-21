@@ -99,7 +99,7 @@ curl http://localhost:4000/api/health | grep voice
 
 **Environment:**
 ```bash
-STRIPE_SECRET_KEY=sk_test_xxx         # Test mode in dev
+STRIPE_API_SECRET=sk_test_xxx         # Test mode in dev
 STRIPE_PRICE_STARTER=price_xxx        # 3 plan price IDs
 STRIPE_PRICE_GROWTH=price_xxx
 STRIPE_PRICE_ENTERPRISE=price_xxx

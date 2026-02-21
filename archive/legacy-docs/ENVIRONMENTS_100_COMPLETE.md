@@ -121,7 +121,7 @@ NODE_ENV=staging
 LOG_LEVEL=debug
 SENTRY_ENVIRONMENT=staging
 DATABASE_URL=postgresql://staging-db
-STRIPE_SECRET_KEY=sk_test_*  # Test mode
+STRIPE_API_SECRET=sk_test_*  # Test mode
 ```
 
 ### Production Environment
@@ -132,7 +132,7 @@ NODE_ENV=production
 LOG_LEVEL=info
 SENTRY_ENVIRONMENT=production
 DATABASE_URL=postgresql://production-db
-STRIPE_SECRET_KEY=sk_live_*  # Live mode
+STRIPE_API_SECRET=sk_live_*  # Live mode
 ENABLE_RATE_LIMITING=true
 TRUST_PROXY=true
 ```
@@ -174,12 +174,12 @@ Edit the copied files with your actual values:
 
 ```bash
 # Required for development
-JWT_SECRET=your_random_32_character_minimum_secret
+AUTH_SECRET=your_random_32_character_minimum_secret
 DATABASE_URL=postgresql://user:pass@localhost:5432/infamous_freight
 
 # Optional (for full functionality)
 OPENAI_API_KEY=sk-your-key
-STRIPE_SECRET_KEY=sk_test_your-key
+STRIPE_API_SECRET=sk_test_your-key
 GOOGLE_MAPS_API_KEY=your-key
 ```
 
@@ -263,7 +263,7 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_<test_or_live>_*
 
 ```bash
 # Set secrets via CLI
-fly secrets set JWT_SECRET=your-secret
+fly secrets set AUTH_SECRET=your-secret
 fly secrets set DATABASE_URL=postgres://...
 ```
 

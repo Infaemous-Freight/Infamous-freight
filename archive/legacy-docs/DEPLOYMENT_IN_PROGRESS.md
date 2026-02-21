@@ -26,7 +26,7 @@ This will:
 
 - ✅ Create the app if it doesn't exist
 - ✅ Create PostgreSQL database (with your confirmation)
-- ✅ Generate and set JWT_SECRET
+- ✅ Generate and set AUTH_SECRET
 - ✅ Deploy the application
 - ✅ Verify the deployment
 - ✅ Test the health endpoint
@@ -44,7 +44,7 @@ flyctl pg create --name infamous-freight-db --region iad
 flyctl pg attach infamous-freight-db -a infamous-freight-api
 
 # 3. Set JWT secret
-flyctl secrets set JWT_SECRET=$(openssl rand -base64 32) -a infamous-freight-api
+flyctl secrets set AUTH_SECRET=$(openssl rand -base64 32) -a infamous-freight-api
 
 # 4. Deploy
 flyctl deploy
@@ -98,7 +98,7 @@ node dist/server.js
 
 ```bash
 # For Stripe
-flyctl secrets set STRIPE_SECRET_KEY="sk_live_..." -a infamous-freight-api
+flyctl secrets set STRIPE_API_SECRET="sk_live_..." -a infamous-freight-api
 flyctl secrets set STRIPE_PUBLISHABLE_KEY="pk_live_..." -a infamous-freight-api
 
 # For PayPal
@@ -152,7 +152,7 @@ If deployment fails:
 - [ ] App created on Fly.io
 - [ ] PostgreSQL database created
 - [ ] Database attached to app
-- [ ] JWT_SECRET set
+- [ ] AUTH_SECRET set
 - [ ] Application deployed
 - [ ] Health check passes
 - [ ] Database migrations run (if needed)

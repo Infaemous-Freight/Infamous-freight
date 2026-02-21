@@ -29,7 +29,7 @@ DRAFT → REQUIRES_PAYMENT → (Stripe Checkout) → Webhook → OPEN
 ### Files Modified
 
 - ✅ `apps/api/.env.example`
-  - Added STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET
+  - Added STRIPE_API_SECRET, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET
   - Added PUBLIC_APP_URL, PUBLIC_API_URL for Checkout redirects
 
 - ✅ `apps/api/prisma/schema.prisma`
@@ -225,7 +225,7 @@ processedEvents.add(event.id);
 
 ```bash
 # 1. Export Stripe test keys
-export STRIPE_SECRET_KEY="sk_test_..."
+export STRIPE_API_SECRET="sk_test_..."
 export STRIPE_WEBHOOK_SECRET="whsec_..."
 
 # 2. Start API
@@ -323,7 +323,7 @@ curl http://localhost:4000/api/marketplace/jobs/$JOB_ID \
 
 ## 🚀 Deployment Checklist
 
-- [ ] Copy `STRIPE_SECRET_KEY` from Stripe Dashboard
+- [ ] Copy `STRIPE_API_SECRET` from Stripe Dashboard
 - [ ] Copy `STRIPE_WEBHOOK_SECRET` from Webhook Endpoint settings
 - [ ] Set `PUBLIC_APP_URL` to production domain
 - [ ] Set `PUBLIC_API_URL` to API domain

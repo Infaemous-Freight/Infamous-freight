@@ -19,7 +19,7 @@
 
 - [ ] Dependency audit passed (`pnpm audit`)
 - [ ] No high/critical vulnerabilities
-- [ ] JWT_SECRET is set (32+ characters)
+- [ ] AUTH_SECRET is set (32+ characters)
 - [ ] Database credentials are secure
 - [ ] API keys are in environment variables
 - [ ] CORS_ORIGINS is restricted to known domains
@@ -71,7 +71,7 @@ API_PORT=4000
 WEB_PORT=3000
 DATABASE_URL=postgresql://user:pass@staging-db:5432/freight_staging
 REDIS_URL=redis://staging-redis:6379
-JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
+AUTH_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
 CORS_ORIGINS=https://staging.yourdomain.com
 LOG_LEVEL=info
 PROMETHEUS_URL=http://staging-prometheus:9090

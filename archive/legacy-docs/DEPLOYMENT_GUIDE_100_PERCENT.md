@@ -36,7 +36,7 @@ curl http://localhost:4000/api/metrics
 
 ```bash
 # Authentication
-JWT_SECRET=your-random-secret-key
+AUTH_SECRET=your-random-secret-key
 
 # Database
 DATABASE_URL=postgresql://user:pass@localhost:5432/infamous_freight
@@ -137,7 +137,7 @@ curl -s http://localhost:4000/api/metrics | head -20
 
 ## Production Checklist
 
-- [ ] `JWT_SECRET` set to strong random value
+- [ ] `AUTH_SECRET` set to strong random value
 - [ ] `DATABASE_URL` points to production PostgreSQL
 - [ ] `CORS_ORIGINS` set to production domains only
 - [ ] `SENTRY_DSN` configured for error tracking

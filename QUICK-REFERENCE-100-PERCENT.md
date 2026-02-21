@@ -167,7 +167,7 @@ pnpm build:watch       # Watch mode for development
 ```bash
 DATABASE_URL=postgresql://user:pass@localhost:5432/infamous_freight
 REDIS_URL=redis://localhost:6379
-JWT_SECRET=your-secret-here
+AUTH_SECRET=your-secret-here
 NODE_ENV=development
 API_PORT=4000
 WEB_PORT=3000
@@ -179,7 +179,7 @@ WEB_PORT=3000
 DATABASE_URL=postgresql://user:pass@localhost:5432/infamous_freight
 
 # Authentication
-JWT_SECRET=your-secret-here
+AUTH_SECRET=your-secret-here
 JWT_EXPIRES_IN=7d
 
 # AI Provider
@@ -195,7 +195,7 @@ ENABLE_AI_AUTOMATION=true
 ENABLE_VOICE_PROCESSING=true
 
 # Payment Processing
-STRIPE_SECRET_KEY=sk_test_...
+STRIPE_API_SECRET=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 

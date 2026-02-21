@@ -85,7 +85,7 @@ VERCEL_PROJECT_ID_WEB=<your-vercel-project-id>
 FLY_API_TOKEN=<your-fly-io-token>
 FLY_APP_NAME=infamous-freight-api
 DATABASE_URL=postgresql://...
-JWT_SECRET=<32+ character random string>
+AUTH_SECRET=<32+ character random string>
 OPENAI_API_KEY=<if-using-openai>
 TEST_JWT_TOKEN=<for-smoke-tests>
 ```
@@ -266,7 +266,7 @@ Before deploying to production, verify:
   - [ ] `.env.local` contains all required variables
   - [ ] GitHub Secrets configured (see Step 3)
   - [ ] Database URL valid
-  - [ ] JWT_SECRET is 32+ characters
+  - [ ] AUTH_SECRET is 32+ characters
 
 - [ ] **Git**
   - [ ] All changes committed

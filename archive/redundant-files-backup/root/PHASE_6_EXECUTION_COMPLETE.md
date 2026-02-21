@@ -231,8 +231,8 @@ pnpm dev
 ```env
 # Add to .env
 BACKUP_S3_BUCKET=infamous-freight-backups
-AWS_ACCESS_KEY_ID=your_key
-AWS_SECRET_ACCESS_KEY=your_secret
+AWS_API_KEY=your_key
+AWS_API_SECRET=your_secret
 BACKUP_RETENTION_DAYS=30
 ```
 

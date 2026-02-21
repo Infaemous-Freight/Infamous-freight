@@ -44,7 +44,7 @@
 
 ```bash
 # Set test keys
-flyctl secrets set STRIPE_SECRET_KEY="sk_test_YOUR_KEY_HERE"
+flyctl secrets set STRIPE_API_SECRET="sk_test_YOUR_KEY_HERE"
 flyctl secrets set STRIPE_PUBLISHABLE_KEY="pk_test_YOUR_KEY_HERE"
 flyctl secrets set STRIPE_WEBHOOK_SECRET="whsec_YOUR_SECRET_HERE"
 ```
@@ -53,7 +53,7 @@ flyctl secrets set STRIPE_WEBHOOK_SECRET="whsec_YOUR_SECRET_HERE"
 
 ```bash
 # Set live keys
-flyctl secrets set STRIPE_SECRET_KEY="sk_live_YOUR_KEY_HERE"
+flyctl secrets set STRIPE_API_SECRET="sk_live_YOUR_KEY_HERE"
 flyctl secrets set STRIPE_PUBLISHABLE_KEY="pk_live_YOUR_KEY_HERE"
 flyctl secrets set STRIPE_WEBHOOK_SECRET="whsec_YOUR_SECRET_HERE"
 ```
@@ -99,7 +99,7 @@ open https://infamous-freight.fly.dev/pricing
 2. **Run these commands** (replace with your actual keys):
 
 ```bash
-flyctl secrets set STRIPE_SECRET_KEY="sk_test_YOUR_KEY"
+flyctl secrets set STRIPE_API_SECRET="sk_test_YOUR_KEY"
 flyctl secrets set STRIPE_PUBLISHABLE_KEY="pk_test_YOUR_KEY"
 flyctl secrets set STRIPE_WEBHOOK_SECRET="whsec_YOUR_SECRET"
 ```
@@ -110,7 +110,7 @@ Create a `.env.production` file:
 
 ```bash
 cat > .env.production << 'EOF'
-STRIPE_SECRET_KEY=sk_test_YOUR_KEY
+STRIPE_API_SECRET=sk_test_YOUR_KEY
 STRIPE_PUBLISHABLE_KEY=pk_test_YOUR_KEY
 STRIPE_WEBHOOK_SECRET=whsec_YOUR_SECRET
 EOF

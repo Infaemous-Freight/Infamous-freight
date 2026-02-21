@@ -102,7 +102,7 @@ DATABASE_URL=postgresql://infamous:your-secure-password@postgres:5432/infamous_f
 # API
 NODE_ENV=production
 API_PORT=3001
-JWT_SECRET=your-jwt-secret-key
+AUTH_SECRET=your-jwt-secret-key
 
 # Web
 WEB_PORT=3000
@@ -111,7 +111,7 @@ WEB_PORT=3000
 REDIS_URL=redis://redis:6379
 
 # Payment (Stripe)
-STRIPE_SECRET_KEY=sk_live_your_key
+STRIPE_API_SECRET=sk_live_your_key
 STRIPE_PUBLISHABLE_KEY=pk_live_your_key
 
 # Optional: Sentry, Datadog, etc.
@@ -188,7 +188,7 @@ pnpm --filter @infamous-freight/shared build
 cp .env.example .env
 
 # Edit .env with your values
-# Key vars: DATABASE_URL, JWT_SECRET, STRIPE_SECRET_KEY, etc.
+# Key vars: DATABASE_URL, AUTH_SECRET, STRIPE_API_SECRET, etc.
 ```
 
 ### Step 4: Set Up Database

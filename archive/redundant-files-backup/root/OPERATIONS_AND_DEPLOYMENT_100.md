@@ -35,7 +35,7 @@ All systems have been optimized for production deployment with:
 
 ### Security
 
-- [ ] JWT_SECRET configured (>32 characters, cryptographically random)
+- [ ] AUTH_SECRET configured (>32 characters, cryptographically random)
 - [ ] CORS_ORIGINS whitelist configured
 - [ ] Rate limiters calibrated for expected traffic
 - [ ] API keys generated for server-to-server communication
@@ -351,11 +351,11 @@ resources:
 
 ```bash
 # Every 90 days
-export NEW_JWT_SECRET=$(openssl rand -base64 32)
+export NEW_AUTH_SECRET=$(openssl rand -base64 32)
 export NEW_STRIPE_KEY=$(aws secretsmanager get-random-password --query 'RandomPassword' --output text)
 
 # Update secrets manager
-aws secretsmanager update-secret --secret-id infamous-freight/jwt-secret --secret-string "$NEW_JWT_SECRET"
+aws secretsmanager update-secret --secret-id infamous-freight/jwt-secret --secret-string "$NEW_AUTH_SECRET"
 
 # Redeploy
 kubectl rollout restart deployment/api -n infamous-freight

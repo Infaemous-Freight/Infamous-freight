@@ -295,7 +295,7 @@ npm install --prefix api && npm start --prefix api
 
 | Variable                     | Required | Default | Purpose               |
 | ---------------------------- | -------- | ------- | --------------------- |
-| `JWT_SECRET`                 | ✅ YES   | (none)  | JWT signing key       |
+| `AUTH_SECRET`                 | ✅ YES   | (none)  | JWT signing key       |
 | `DATABASE_URL`               | ✅ YES   | (none)  | PostgreSQL connection |
 | `CORS_ORIGINS`               | ✅ YES   | `*`     | Allowed CORS origins  |
 | `SLOW_QUERY_THRESHOLD_MS`    | ❌ No    | `1000`  | Slow query threshold  |
@@ -314,7 +314,7 @@ npm install --prefix api && npm start --prefix api
 
 ### Environment (5 min)
 
-- [ ] Generate JWT_SECRET: `openssl rand -base64 32`
+- [ ] Generate AUTH_SECRET: `openssl rand -base64 32`
 - [ ] Set DATABASE_URL to production database
 - [ ] Set CORS_ORIGINS to frontend domain(s)
 - [ ] Verify .env.local is in .gitignore
@@ -388,7 +388,7 @@ You'll know deployment is successful when:
 
 | Problem                      | Solution                                              |
 | ---------------------------- | ----------------------------------------------------- |
-| `JWT_SECRET not found`       | `export JWT_SECRET="$(openssl rand -base64 32)"`      |
+| `AUTH_SECRET not found`       | `export AUTH_SECRET="$(openssl rand -base64 32)"`      |
 | `Cannot connect to DB`       | Verify `DATABASE_URL` format and Postgres is running  |
 | `CORS errors in browser`     | Update `CORS_ORIGINS` to include frontend domain      |
 | `Rate limit too strict`      | Increase `RATE_LIMIT_GENERAL_MAX` in .env             |

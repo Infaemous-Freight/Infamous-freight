@@ -469,7 +469,7 @@ d76f05a  feat: Add 14+ worldwide enterprise features
 DATABASE_URL=postgresql://user:pass@host:5432/infamous
 
 # Authentication
-JWT_SECRET=your-secret-key-min-32-chars
+AUTH_SECRET=your-secret-key-min-32-chars
 CORS_ORIGINS=https://domain1.com,https://domain2.com
 
 # API Configuration
@@ -488,7 +488,7 @@ SAML_ENABLED=true
 OKTA_SSO_URL=https://...
 
 # Stripe/PayPal
-STRIPE_SECRET_KEY=sk_xxx
+STRIPE_API_SECRET=sk_xxx
 PAYPAL_CLIENT_ID=xxx
 
 # Error Tracking

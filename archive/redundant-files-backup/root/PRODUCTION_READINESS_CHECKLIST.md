@@ -99,7 +99,7 @@ psql $DATABASE_URL -f apps/api/database-optimization.sql
 
 ```bash
 # Check JWT secrets
-grep "JWT_SECRET" .env | grep -v "dev-secret"
+grep "AUTH_SECRET" .env | grep -v "dev-secret"
 
 # Test rate limiting
 ./manage-unlock.sh status

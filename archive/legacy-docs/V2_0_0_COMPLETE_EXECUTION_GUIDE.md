@@ -154,7 +154,7 @@ git checkout main
 
 # 4. Configure
 nano .env.production
-# Update: POSTGRES_PASSWORD, REDIS_URL, JWT_SECRET, GRAFANA_PASSWORD
+# Update: POSTGRES_PASSWORD, REDIS_URL, AUTH_SECRET, GRAFANA_PASSWORD
 
 # 5. Deploy
 docker compose -f docker-compose.production.yml up -d

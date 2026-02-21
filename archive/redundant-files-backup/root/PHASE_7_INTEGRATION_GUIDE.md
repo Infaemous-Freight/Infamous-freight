@@ -37,13 +37,13 @@ MASTER_KEY=$(node -e "console.log(require('crypto').randomBytes(32).toString('he
 WEBHOOK_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
 
 # Stripe
-STRIPE_SECRET_KEY=sk_test_xxxxx
+STRIPE_API_SECRET=sk_test_xxxxx
 
 # SendGrid
 SENDGRID_API_KEY=SG.xxxxx
 
 # JWT
-JWT_SECRET=your-secret-key
+AUTH_SECRET=your-secret-key
 
 # API
 API_PORT=4000

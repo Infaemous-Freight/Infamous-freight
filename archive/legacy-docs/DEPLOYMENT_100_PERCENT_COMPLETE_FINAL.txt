@@ -196,7 +196,7 @@ Procedure:
 
 Command:
   export DATABASE_URL="postgresql://user:pass@host:5432/db"
-  export JWT_SECRET="cryptographically-secure-string"
+  export AUTH_SECRET="cryptographically-secure-string"
   export REDIS_URL="redis://host:6379"
   export NODE_ENV="production"
   
@@ -357,7 +357,7 @@ Option 1: Automated Execution
   
   # Phase 4: Deploy
   export DATABASE_URL="postgresql://..."
-  export JWT_SECRET="random-secret"
+  export AUTH_SECRET="random-secret"
   export REDIS_URL="redis://..."
   bash scripts/deploy-production.sh
   

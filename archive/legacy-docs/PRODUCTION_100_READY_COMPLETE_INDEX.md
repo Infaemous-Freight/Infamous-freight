@@ -85,7 +85,7 @@ bash scripts/setup-ssl-certificates.sh --environment production --domain infamou
 
 ```bash
 export DATABASE_URL="postgresql://..."
-export JWT_SECRET="random-secret-here"
+export AUTH_SECRET="random-secret-here"
 export REDIS_URL="redis://..."
 export NODE_ENV="production"
 
@@ -206,7 +206,7 @@ bash scripts/setup-ssl-certificates.sh --environment production --domain infamou
 # ✅ Prepare Phase 4 & 5
 # Set environment variables
 export DATABASE_URL="postgresql://user:pass@host:5432/db"
-export JWT_SECRET="generate-cryptographically-secure-string"
+export AUTH_SECRET="generate-cryptographically-secure-string"
 export REDIS_URL="redis://host:6379"
 export NODE_ENV="production"
 ```
@@ -263,7 +263,7 @@ Before deployment, review in order:
 
 ```bash
 # 1. Verify environment variables
-env | grep -E "DATABASE_URL|JWT_SECRET|REDIS_URL|NODE_ENV|API_PORT|WEB_PORT"
+env | grep -E "DATABASE_URL|AUTH_SECRET|REDIS_URL|NODE_ENV|API_PORT|WEB_PORT"
 # All should be set
 
 # 2. Verify services running

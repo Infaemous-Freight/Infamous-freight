@@ -393,7 +393,7 @@ API_URL=https://api.infamousfreight.com
 API_PORT=4000
 
 # Security
-JWT_SECRET=<your-jwt-secret>
+AUTH_SECRET=<your-jwt-secret>
 SESSION_SECRET=<your-session-secret>
 
 # Database

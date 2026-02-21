@@ -471,11 +471,11 @@ c6bcf15 feat: Complete E2E testing suite - 67+ tests
 
 All required environment variables documented:
 
-- JWT_SECRET
+- AUTH_SECRET
 - API_PORT
 - DATABASE_URL
 - AI_PROVIDER (OpenAI, Anthropic, or Synthetic)
-- STRIPE_SECRET_KEY
+- STRIPE_API_SECRET
 - PAYPAL_CLIENT_ID
 - CORS_ORIGINS
 - SENTRY_DSN
@@ -529,7 +529,7 @@ All required environment variables documented:
 
    ```bash
    export NODE_ENV=production
-   export JWT_SECRET=<production-secret>
+   export AUTH_SECRET=<production-secret>
    export DATABASE_URL=<production-db>
    npm start
    ```

@@ -118,9 +118,9 @@ All required variables already configured in `.env.example`:
 
 ```
 API_PORT=4000
-JWT_SECRET=<your-secret>
+AUTH_SECRET=<your-secret>
 DATABASE_URL=<postgres-url>
-STRIPE_SECRET_KEY=<stripe-key>
+STRIPE_API_SECRET=<stripe-key>
 STRIPE_WEBHOOK_SECRET=<webhook-secret>
 STRIPE_PRICE_PER_MILE=1.50
 STRIPE_PRICE_PER_MINUTE=0.25

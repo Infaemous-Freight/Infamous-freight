@@ -147,7 +147,7 @@ https://github.com/MrMiless44/Infamous-freight-enterprises/settings/secrets/acti
 VERCEL_TOKEN       - Get from https://vercel.com/account/tokens
 FLY_API_TOKEN      - Get from https://fly.io/user/personal_access_tokens
 DATABASE_URL       - PostgreSQL connection string
-JWT_SECRET         - Random 32+ character string
+AUTH_SECRET         - Random 32+ character string
 REDIS_URL          - Redis connection string (optional for initial deploy)
 ```
 

@@ -89,9 +89,9 @@ bash scripts/verify-implementation.sh
 # Expected: All ✅ marks
 
 # 2. Setup environment (1 min)
-export JWT_SECRET="$(openssl rand -base64 32)"
+export AUTH_SECRET="$(openssl rand -base64 32)"
 cat > .env.local << 'EOF'
-JWT_SECRET="$JWT_SECRET"
+AUTH_SECRET="$AUTH_SECRET"
 DATABASE_URL="postgresql://user:pass@host:5432/db"
 CORS_ORIGINS="https://frontend.domain.com"
 EOF

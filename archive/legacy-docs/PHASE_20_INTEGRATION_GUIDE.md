@@ -274,7 +274,7 @@ HANDLER (routes/webhooks.js) // ============================================
 - Handle Stripe events (payment success, invoice updates, etc.) \*/ import
   Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '');
+const stripe = new Stripe(process.env.STRIPE_API_SECRET || '');
 
 export async function handleStripeWebhook(req, res) { const sig =
 req.headers['stripe-signature']; const webhookSecret =

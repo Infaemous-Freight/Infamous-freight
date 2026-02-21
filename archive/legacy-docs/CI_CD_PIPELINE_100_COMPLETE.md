@@ -297,7 +297,7 @@ Required Secrets:
 ✅ SLACK_WEBHOOK_URL - Slack notifications
 ✅ EMAIL_USERNAME - SMTP username
 ✅ EMAIL_PASSWORD - SMTP password
-✅ JWT_SECRET - JWT signing key
+✅ AUTH_SECRET - JWT signing key
 ```
 
 **Action**: All secrets should be configured in GitHub organization settings
@@ -312,7 +312,7 @@ Required Secrets:
 API_PORT=4000
 DATABASE_URL=postgresql://user:pass@host:5432/db
 REDIS_URL=redis://host:6379
-JWT_SECRET=your-secret-key
+AUTH_SECRET=your-secret-key
 CORS_ORIGINS=https://verified-domains.com
 LOG_LEVEL=info
 NODE_ENV=production

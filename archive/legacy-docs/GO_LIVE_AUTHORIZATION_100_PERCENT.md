@@ -223,7 +223,7 @@ bash scripts/setup-ssl-certificates.sh --environment development
 ```bash
 # Set required environment variables
 export DATABASE_URL="postgresql://user:pass@host:5432/db"
-export JWT_SECRET="generate-secure-random-string-here"
+export AUTH_SECRET="generate-secure-random-string-here"
 export REDIS_URL="redis://host:6379"
 export NODE_ENV="production"
 export API_PORT="3001"

@@ -26,7 +26,7 @@ or self-hosted fallbacks.
 
 1. Copy `.env.example` to `.env` and set production values:
    - `APP_URL`, `API_URL`, `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_API_BASE`
-   - `JWT_SECRET` (32+ char random string)
+   - `AUTH_SECRET` (32+ char random string)
    - `DATABASE_URL` (managed Postgres or local via Compose)
    - `REDIS_URL` (managed Redis or local via Compose)
    - `CORS_ORIGINS` including your web domain(s)
@@ -119,7 +119,7 @@ docker compose logs -f web
 ```
 
 - Verify CORS settings allow your web origin(s).
-- Ensure `JWT_SECRET` and other secrets are set in `.env` before starting.
+- Ensure `AUTH_SECRET` and other secrets are set in `.env` before starting.
 
 ## 9) Rollback & Updates
 

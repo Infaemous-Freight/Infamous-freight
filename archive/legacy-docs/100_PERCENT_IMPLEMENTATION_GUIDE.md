@@ -452,7 +452,7 @@ docker-compose ps
 ./scripts/setup-secrets.sh
 
 # Creates:
-# secrets/jwt_secret.txt
+# secrets/auth_token.txt
 # secrets/jwt_refresh_secret.txt
 # secrets/db_password.txt
 # secrets/redis_password.txt
@@ -477,17 +477,17 @@ const apiKey = getSecret("custom_api_key", "CUSTOM_API_KEY", "default");
 
 ```bash
 # Create secrets
-docker secret create jwt_secret secrets/jwt_secret.txt
+docker secret create auth_token secrets/auth_token.txt
 
 # Reference in compose
 secrets:
-  jwt_secret:
+  auth_token:
     external: true
 
 services:
   api:
     secrets:
-      - jwt_secret
+      - auth_token
 ```
 
 **Security Best Practices**:

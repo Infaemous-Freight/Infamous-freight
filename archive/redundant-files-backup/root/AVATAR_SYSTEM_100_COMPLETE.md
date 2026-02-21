@@ -669,7 +669,7 @@ OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
 
 # Security
-JWT_SECRET=your-secret-key
+AUTH_SECRET=your-secret-key
 
 # Rate Limiting
 RATE_LIMIT_GENERAL=100

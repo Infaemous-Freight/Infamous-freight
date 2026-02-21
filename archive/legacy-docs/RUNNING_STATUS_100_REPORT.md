@@ -243,7 +243,7 @@ cat > /workspaces/Infamous-freight-enterprises/api/.env << 'EOF'
 NODE_ENV=development
 API_PORT=4000
 DATABASE_URL=postgresql://localhost:5432/mock
-JWT_SECRET=dev-secret-key-for-testing
+AUTH_SECRET=dev-secret-key-for-testing
 EOF
 
 # Modify code to skip database connection
@@ -460,7 +460,7 @@ export PATH="/home/vscode/.local/bin:$PATH"
 export NODE_ENV=development
 export API_PORT=4000
 export DATABASE_URL="postgresql://user:pass@host:5432/db"
-export JWT_SECRET="your-secret-key"
+export AUTH_SECRET="your-secret-key"
 ```
 
 ---

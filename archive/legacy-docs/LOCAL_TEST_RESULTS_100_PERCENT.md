@@ -155,13 +155,13 @@
 ```
 ✅ NODE_ENV (set in CI/CD)
 ✅ DATABASE_URL (to be set per environment)
-✅ JWT_SECRET (to be set per environment)
+✅ AUTH_SECRET (to be set per environment)
 ```
 
 ### Warnings (Default Fallbacks Available)
 
 ```
-⚠️  JWT_SECRET not set (will use default "test-secret" in dev)
+⚠️  AUTH_SECRET not set (will use default "test-secret" in dev)
 ⚠️  SLOW_QUERY_THRESHOLD_MS not set (will use default 1000ms)
 ⚠️  CORS_ORIGINS not set (will use default)
 ```

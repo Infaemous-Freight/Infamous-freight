@@ -41,7 +41,7 @@ full details
 
 ```
 [ ] Create .env.production file with all required variables
-    DATABASE_URL, JWT_SECRET (32+ chars), REDIS_URL, CORS_ORIGINS, etc.
+    DATABASE_URL, AUTH_SECRET (32+ chars), REDIS_URL, CORS_ORIGINS, etc.
 
 [ ] Create database backup
     Command: pg_dump -h localhost -U postgres -d infamous_freight > backup.sql

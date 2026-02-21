@@ -71,7 +71,7 @@
   - [x] Prisma format check
   - [x] Prisma schema validation
 
-- [x] Environment variables set (JWT_SECRET for tests)
+- [x] Environment variables set (AUTH_SECRET for tests)
 - [x] Error handling (continue-on-error for optional checks)
 - [x] Proper dependency ordering (shared builds first)
 - [x] Vercel status notifications maintained

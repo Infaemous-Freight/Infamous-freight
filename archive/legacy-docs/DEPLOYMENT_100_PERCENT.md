@@ -110,7 +110,7 @@
 - ✅ `FLY_API_TOKEN` - Fly.io deployment
 - ✅ `DATABASE_URL` - PostgreSQL connection
 - ✅ `REDIS_URL` - Redis connection
-- ✅ `JWT_SECRET` - Authentication
+- ✅ `AUTH_SECRET` - Authentication
 
 ### Netlify Environment Variables
 

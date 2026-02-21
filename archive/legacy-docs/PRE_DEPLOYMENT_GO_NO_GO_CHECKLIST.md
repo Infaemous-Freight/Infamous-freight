@@ -48,7 +48,7 @@ ls -la docker-compose*.yml monitoring/prometheus.yml monitoring/nginx/conf.d/def
 
 ### 1.3 Secrets Configured
 
-- [ ] JWT_SECRET generated (32+ characters)
+- [ ] AUTH_SECRET generated (32+ characters)
 - [ ] DATABASE_PASSWORD set
 - [ ] REDIS_PASSWORD set (if needed)
 - [ ] Secrets mounted in /run/secrets/ or env

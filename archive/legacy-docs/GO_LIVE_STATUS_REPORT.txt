@@ -106,7 +106,7 @@ PHASE 3: UAT EXECUTION (4-8 hours)
 
 PHASE 4: PRODUCTION DEPLOYMENT (20-30 minutes)
   Command: export DATABASE_URL="postgresql://..."
-           export JWT_SECRET="secure-random-string"
+           export AUTH_SECRET="secure-random-string"
            export REDIS_URL="redis://..."
            export NODE_ENV="production"
            
@@ -438,7 +438,7 @@ Execution Commands:
   
   3. Execute UAT scenarios (see UAT_COMPLETE_EXECUTION_PACKAGE.md)
   
-  4. export DATABASE_URL="..." && export JWT_SECRET="..." && \
+  4. export DATABASE_URL="..." && export AUTH_SECRET="..." && \
      bash scripts/deploy-production.sh
   
   5. bash scripts/verify-production-deployment.sh

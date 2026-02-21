@@ -75,12 +75,12 @@ flyctl deploy --remote-only
 
 ```bash
 flyctl secrets set \
-  STRIPE_SECRET_KEY=sk_live_YOUR_KEY \
+  STRIPE_API_SECRET=sk_live_YOUR_KEY \
   STRIPE_PUBLISHABLE_KEY=pk_live_YOUR_KEY \
   STRIPE_WEBHOOK_SECRET=whsec_YOUR_SECRET \
   PAYPAL_CLIENT_ID=YOUR_ID \
   PAYPAL_CLIENT_SECRET=YOUR_SECRET \
-  JWT_SECRET=your-super-secret-key \
+  AUTH_SECRET=your-super-secret-key \
   DATABASE_URL=postgresql://user:pass@host/db
 ```
 

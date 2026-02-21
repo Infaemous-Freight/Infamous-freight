@@ -4,7 +4,7 @@ dotenv.config();
 const required = [
   "DATABASE_URL",
   "PORT",
-  "JWT_SECRET",
+  "AUTH_SECRET",
   "AI_SYNTHETIC_ENGINE_URL",
   "AI_SYNTHETIC_API_KEY",
   "AI_SECURITY_MODE",

@@ -146,9 +146,9 @@
 
 - ⏳ `FLY_API_TOKEN` - Fly.io authentication
 - ⏳ `DATABASE_URL` - PostgreSQL connection
-- ⏳ `JWT_SECRET` - Token signing key
+- ⏳ `AUTH_SECRET` - Token signing key
 - ⏳ `OPENAI_API_KEY` - AI provider
-- ⏳ `STRIPE_SECRET_KEY` - Payment processing
+- ⏳ `STRIPE_API_SECRET` - Payment processing
 
 ### **Monitoring** ✅
 

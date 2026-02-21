@@ -67,7 +67,7 @@ WEB_PORT=3000
 ### JWT Authentication Configured
 
 ```env
-JWT_SECRET=dev-secret-change-in-production
+AUTH_SECRET=dev-secret-change-in-production
 JWT_REFRESH_SECRET=dev-refresh-secret-change-in-production
 JWT_EXPIRES_IN=7d
 JWT_REFRESH_EXPIRES_IN=30d

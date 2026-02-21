@@ -37,7 +37,7 @@ WEBSOCKET_PORT=8080
 
 # Existing variables
 DATABASE_URL=postgresql://...
-JWT_SECRET=your-secret
+AUTH_SECRET=your-secret
 ```
 
 #### Mobile (.env)

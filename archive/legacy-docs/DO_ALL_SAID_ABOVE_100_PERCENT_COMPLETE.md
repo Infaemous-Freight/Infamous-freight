@@ -123,7 +123,7 @@ bash scripts/setup-ssl-certificates.sh \
 
 ```bash
 export DATABASE_URL="postgresql://..."
-export JWT_SECRET="secure-random-string"
+export AUTH_SECRET="secure-random-string"
 export REDIS_URL="redis://..."
 export NODE_ENV="production"
 

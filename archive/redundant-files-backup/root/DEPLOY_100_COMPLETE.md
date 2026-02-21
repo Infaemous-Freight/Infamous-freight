@@ -109,8 +109,8 @@ aws s3 ls s3://infamousfreight-prod
 
 # ✓ Secrets configured
 echo $DATABASE_URL | head -c 10
-echo $JWT_SECRET | head -c 10
-echo $STRIPE_SECRET_KEY | head -c 10
+echo $AUTH_SECRET | head -c 10
+echo $STRIPE_API_SECRET | head -c 10
 ```
 
 **Expected Results**:

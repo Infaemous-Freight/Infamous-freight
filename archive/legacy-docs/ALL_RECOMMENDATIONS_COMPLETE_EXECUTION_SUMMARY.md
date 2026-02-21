@@ -308,7 +308,7 @@ SENTRY_DSN=https://your-sentry-dsn
 NEXT_PUBLIC_DD_APP_ID=your-app-id
 NEXT_PUBLIC_DD_CLIENT_TOKEN=your-token
 NEXT_PUBLIC_DD_SITE=datadoghq.com
-JWT_SECRET=your-jwt-secret
+AUTH_SECRET=your-jwt-secret
 DATABASE_URL=your-db-url
 
 # Optional Rate Limit Tuning

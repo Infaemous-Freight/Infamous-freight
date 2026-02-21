@@ -52,7 +52,7 @@ Complete environment configuration for Infæmous Freight Enterprises monorepo ac
 |----------|-----------|--------|-------|
 | **Database** | `DATABASE_URL` | ✅ | Fly.io PostgreSQL configured |
 | **API Config** | `API_PORT`, `NODE_ENV` | ✅ | Production defaults |
-| **Auth** | `JWT_SECRET`, `JWT_REFRESH_SECRET` | ✅ | Secure keys generated |
+| **Auth** | `AUTH_SECRET`, `JWT_REFRESH_SECRET` | ✅ | Secure keys generated |
 | **Caching** | `REDIS_*` | ✅ | Redis cluster config |
 | **AI** | `AI_PROVIDER`, `AI_*` | ✅ | Synthetic mode with failover |
 | **Billing** | `STRIPE_*`, `PAYPAL_*` | ✅ | Placeholder values |
@@ -65,7 +65,7 @@ Complete environment configuration for Infæmous Freight Enterprises monorepo ac
 NODE_ENV=production
 DATABASE_URL=postgresql://infamous-freight-db.flycast
 REDIS_URL=redis://localhost:6379
-JWT_SECRET=oZXGLb9JznIwkMxPQ/TUjYf6ux8o+nWymoJYNFViqI8=
+AUTH_SECRET=oZXGLb9JznIwkMxPQ/TUjYf6ux8o+nWymoJYNFViqI8=
 AI_PROVIDER=synthetic
 MARKETPLACE_ENABLED=true
 ```
@@ -107,7 +107,7 @@ MARKETPLACE_ENABLED=true
 NODE_ENV=development
 API_PORT=4000
 DATABASE_URL=postgresql://infamous:infamouspass@localhost:5432/infamous_freight
-JWT_SECRET=oZXGLb9JznIwkMxPQ/TUjYf6ux8o+nWymoJYNFViqI8=
+AUTH_SECRET=oZXGLb9JznIwkMxPQ/TUjYf6ux8o+nWymoJYNFViqI8=
 AI_PROVIDER=synthetic
 REDIS_URL=redis://localhost:6379
 ```
@@ -132,7 +132,7 @@ REDIS_URL=redis://localhost:6379
 | **Next.js** | `NODE_ENV`, `WEB_PORT`, `NEXT_TELEMETRY_*` | 3 | ✅ |
 | **App** | `NEXT_PUBLIC_APP_*`, `NEXT_PUBLIC_ENV` | 3 | ✅ |
 | **API** | `API_BASE_URL`, `NEXT_PUBLIC_API_*` | 3 | ✅ |
-| **Auth** | `NEXTAUTH_*`, `JWT_SECRET` | 3 | ✅ |
+| **Auth** | `NEXTAUTH_*`, `AUTH_SECRET` | 3 | ✅ |
 | **Supabase** | `NEXT_PUBLIC_SUPABASE_*`, `SUPABASE_*` | 4 | ✅ |
 | **Stripe** | `NEXT_PUBLIC_STRIPE_*`, `STRIPE_*` | 9 | ✅ |
 | **Maps** | `NEXT_PUBLIC_GOOGLE_*`, `NEXT_PUBLIC_MAPBOX_*` | 2 | ✅ |
@@ -265,8 +265,8 @@ grep "^NEXT_PUBLIC_API_BASE_URL" apps/web/.env && echo "✓ Web API"
 grep "^EXPO_PUBLIC_API_URL" apps/mobile/.env && echo "✓ Mobile API"
 
 echo "\n=== Authentication ==="
-grep "^JWT_SECRET" .env && echo "✓ Root JWT"
-grep "^JWT_SECRET" apps/api/.env && echo "✓ API JWT"
+grep "^AUTH_SECRET" .env && echo "✓ Root JWT"
+grep "^AUTH_SECRET" apps/api/.env && echo "✓ API JWT"
 grep "^NEXTAUTH_SECRET" apps/web/.env && echo "✓ Web NextAuth"
 
 echo "\n=== Features ==="
@@ -350,7 +350,7 @@ Before deploying to production:
 - [ ] Replace all `sk_test_*` with real Stripe secret keys
 - [ ] Update `DATABASE_URL` to production PostgreSQL
 - [ ] Set `NODE_ENV=production`
-- [ ] Generate new `JWT_SECRET` using cryptographic random
+- [ ] Generate new `AUTH_SECRET` using cryptographic random
 - [ ] Configure real Supabase credentials if using
 - [ ] Enable Sentry with real DSN
 - [ ] Enable Datadog monitoring
@@ -414,7 +414,7 @@ If you have real API keys:
 ```bash
 # Update .env files with real credentials
 # Example: Stripe keys
-STRIPE_SECRET_KEY=sk_live_...
+STRIPE_API_SECRET=sk_live_...
 STRIPE_PUBLISHABLE_KEY=pk_live_...
 
 # Rebuild shared (if types changed)

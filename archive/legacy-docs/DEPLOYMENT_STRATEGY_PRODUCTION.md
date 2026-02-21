@@ -91,7 +91,7 @@ resource "fly_app" "api" {
     NODE_ENV               = "production"
     LOG_LEVEL              = "info"
     DATABASE_URL           = data.fly_secret.db_url.value
-    JWT_SECRET             = data.fly_secret.jwt_secret.value
+    AUTH_SECRET             = data.fly_secret.auth_token.value
     REDIS_URL              = fly_app.redis.internal_url
   }
 }

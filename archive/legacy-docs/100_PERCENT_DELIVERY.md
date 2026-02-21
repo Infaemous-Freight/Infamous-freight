@@ -169,7 +169,7 @@ This runs everything automatically:
 ./scripts/setup-production.sh
 
 # 2. Configure secrets
-flyctl secrets set JWT_SECRET="$(openssl rand -base64 32)" --app infamous-freight-api
+flyctl secrets set AUTH_SECRET="$(openssl rand -base64 32)" --app infamous-freight-api
 
 # 3. Deploy via CI/CD
 git push origin main
@@ -373,7 +373,7 @@ cd apps/web && vercel --prod
 
 ### Production Readiness
 
-- [ ] JWT_SECRET is set (32+ bytes)
+- [ ] AUTH_SECRET is set (32+ bytes)
 - [ ] CORS_ORIGINS is configured
 - [ ] Sentry DSN is set
 - [ ] Database backups are enabled

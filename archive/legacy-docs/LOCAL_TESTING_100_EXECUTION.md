@@ -324,8 +324,8 @@ pnpm --filter web dev
 ### **Authentication failing**
 
 ```bash
-# Check JWT_SECRET
-echo $JWT_SECRET
+# Check AUTH_SECRET
+echo $AUTH_SECRET
 
 # Check token format in curl commands
 # Should be: Authorization: Bearer <token>

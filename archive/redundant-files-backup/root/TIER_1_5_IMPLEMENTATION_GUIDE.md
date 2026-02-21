@@ -176,8 +176,8 @@ EMAIL_FROM="noreply@infamous-freight.com"
 
 # AWS Configuration (Tier 2, 4)
 AWS_REGION="us-east-1"
-AWS_ACCESS_KEY_ID="your-key"
-AWS_SECRET_ACCESS_KEY="your-secret"
+AWS_API_KEY="your-key"
+AWS_API_SECRET="your-secret"
 
 # Cost Optimization (Tier 2)
 DATADOG_API_KEY="your-dd-api-key"

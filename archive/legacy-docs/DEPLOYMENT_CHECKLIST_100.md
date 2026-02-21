@@ -188,7 +188,7 @@ Details: node --check src/server.js succeeds without errors
 **Required Variables**:
 
 ```
-JWT_SECRET                  ✅
+AUTH_SECRET                  ✅
 DATABASE_URL                ✅
 CORS_ORIGINS                ✅
 NODE_ENV                    ✅
@@ -254,7 +254,7 @@ NODE_ENV=production        ✅ Ready
 ```bash
 # 1. Verify environment
 export NODE_ENV=production
-export JWT_SECRET="<your-secret>"
+export AUTH_SECRET="<your-secret>"
 export DATABASE_URL="postgresql://..."
 export CORS_ORIGINS="https://yourdomain.com"
 
@@ -277,7 +277,7 @@ docker build -f apps/api/Dockerfile -t infamous-freight-api:latest .
 # Run container
 docker run -d \
   -p 3001:4000 \
-  -e JWT_SECRET="<secret>" \
+  -e AUTH_SECRET="<secret>" \
   -e DATABASE_URL="postgresql://..." \
   -e CORS_ORIGINS="https://yourdomain.com" \
   infamous-freight-api:latest

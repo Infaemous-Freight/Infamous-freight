@@ -71,7 +71,7 @@ describe("End-to-End Flows", () => {
 
         const token = jwt.sign(
           { sub: user.id, email: user.email, scopes: ["read:shipments", "write:shipments"] },
-          process.env.JWT_SECRET || "test-secret",
+          process.env.AUTH_SECRET || "test-secret",
           { expiresIn: "1h" },
         );
 
@@ -95,7 +95,7 @@ describe("End-to-End Flows", () => {
 
       const token = jwt.sign(
         { sub: user.id, email: user.email, scopes: ["read:shipments", "write:shipments"] },
-        process.env.JWT_SECRET || "test-secret",
+        process.env.AUTH_SECRET || "test-secret",
         { expiresIn: "1h" },
       );
 
@@ -465,7 +465,7 @@ describe("End-to-End Flows", () => {
           email: "billing@example.com",
           scopes: ["billing:write", "write:shipments"],
         },
-        process.env.JWT_SECRET || "test-secret",
+        process.env.AUTH_SECRET || "test-secret",
         { expiresIn: "1h" },
       );
     });
@@ -534,7 +534,7 @@ describe("End-to-End Flows", () => {
           email: "ai@example.com",
           scopes: ["ai:command", "read:shipments", "write:shipments"],
         },
-        process.env.JWT_SECRET || "test-secret",
+        process.env.AUTH_SECRET || "test-secret",
         { expiresIn: "1h" },
       );
     });
@@ -605,7 +605,7 @@ describe("End-to-End Flows", () => {
           email: "voice@example.com",
           scopes: ["voice:command", "write:shipments"],
         },
-        process.env.JWT_SECRET || "test-secret",
+        process.env.AUTH_SECRET || "test-secret",
         { expiresIn: "1h" },
       );
     });
@@ -728,7 +728,7 @@ describe("End-to-End Flows", () => {
     test("should recover from failed payment and retry", async () => {
       authToken = jwt.sign(
         { sub: "retry-user", scopes: ["billing:write", "write:shipments"] },
-        process.env.JWT_SECRET || "test-secret",
+        process.env.AUTH_SECRET || "test-secret",
         { expiresIn: "1h" },
       );
 
@@ -764,7 +764,7 @@ describe("End-to-End Flows", () => {
     test("should handle multiple concurrent operations", async () => {
       authToken = jwt.sign(
         { sub: "perf-user", scopes: ["read:shipments", "write:shipments"] },
-        process.env.JWT_SECRET || "test-secret",
+        process.env.AUTH_SECRET || "test-secret",
         { expiresIn: "1h" },
       );
 

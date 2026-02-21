@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const AUTH_SECRET = process.env.AUTH_SECRET;
 
 function authHybrid(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -18,7 +18,7 @@ function authHybrid(req, res, next) {
   if (authHeader && authHeader.startsWith("Bearer ")) {
     const token = authHeader.slice(7);
     try {
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const decoded = jwt.verify(token, AUTH_SECRET);
       req.auth = {
         mode: "jwt",
         subject: decoded.sub || decoded.id,

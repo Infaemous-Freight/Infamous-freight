@@ -132,7 +132,7 @@ Set these in Railway Dashboard:
 ```env
 NODE_ENV=production
 API_PORT=3001
-JWT_SECRET=<generated-random-value>
+AUTH_SECRET=<generated-random-value>
 DATABASE_URL=<auto-set-by-railway-postgres-plugin>
 REDIS_URL=<auto-set-by-railway-redis-plugin>
 SENTRY_DSN=https://key@sentry.io/project
@@ -230,7 +230,7 @@ docker build -t infamous-freight-api:v1.2.3 -f apps/api/Dockerfile .
 docker run -p 4000:3001 \
   -e DATABASE_URL="postgresql://..." \
   -e REDIS_URL="redis://..." \
-  -e JWT_SECRET="..." \
+  -e AUTH_SECRET="..." \
   infamous-freight-api:v1.2.3
 
 # Or use docker-compose
@@ -414,7 +414,7 @@ pnpm prisma migrate resolve --rolled-back [migration_name]
 **Critical** (must be set):
 
 - `NODE_ENV=production`
-- `JWT_SECRET` (use strong random value)
+- `AUTH_SECRET` (use strong random value)
 - `DATABASE_URL` (auto-set by Railway)
 - `REDIS_URL` (auto-set by Railway)
 - `SENTRY_DSN` (error tracking)
@@ -432,7 +432,7 @@ pnpm prisma migrate resolve --rolled-back [migration_name]
 
 - `ENABLE_AI_COMMANDS=true`
 - `ENABLE_VOICE_PROCESSING=true`
-- `STRIPE_SECRET_KEY` (if using Stripe)
+- `STRIPE_API_SECRET` (if using Stripe)
 - `SENDGRID_API_KEY` (if emailing)
 
 ## SSL/TLS Setup

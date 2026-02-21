@@ -202,11 +202,11 @@ flyctl waf create -a infamous-freight-api
 ### Task 3.3: Implement Secret Rotation
 
 ```bash
-# Generate new JWT_SECRET
+# Generate new AUTH_SECRET
 NEW_SECRET=$(openssl rand -base64 32)
 
 # Set in production
-flyctl secrets set JWT_SECRET=$NEW_SECRET -a infamous-freight-api
+flyctl secrets set AUTH_SECRET=$NEW_SECRET -a infamous-freight-api
 
 # Configure rotation schedule:
 # - Daily: Random check for exposure

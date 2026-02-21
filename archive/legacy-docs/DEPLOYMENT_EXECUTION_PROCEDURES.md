@@ -58,7 +58,7 @@ pnpm --version        # 8.15.9+
 
 # 2. Setup environment
 cp .env.example .env.production
-# Update: POSTGRES_PASSWORD, JWT_SECRET, REDIS_PASSWORD, API_PORT, WEB_PORT
+# Update: POSTGRES_PASSWORD, AUTH_SECRET, REDIS_PASSWORD, API_PORT, WEB_PORT
 
 # 3. Create directories
 mkdir -p nginx/ssl logs scripts/backups monitoring/{prometheus,grafana}

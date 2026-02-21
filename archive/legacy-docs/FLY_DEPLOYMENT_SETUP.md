@@ -137,7 +137,7 @@ Set production secrets in Fly.io:
 flyctl secrets set DATABASE_URL="postgresql://..." -a infamous-freight-api
 
 # JWT
-flyctl secrets set JWT_SECRET="your-secret-key" -a infamous-freight-api
+flyctl secrets set AUTH_SECRET="your-secret-key" -a infamous-freight-api
 
 # AI Provider
 flyctl secrets set OPENAI_API_KEY="sk-..." -a infamous-freight-api
@@ -147,7 +147,7 @@ flyctl secrets set ANTHROPIC_API_KEY="sk-ant-..." -a infamous-freight-api
 flyctl secrets set SENTRY_DSN="https://..." -a infamous-freight-api
 
 # Billing
-flyctl secrets set STRIPE_SECRET_KEY="sk_live_..." -a infamous-freight-api
+flyctl secrets set STRIPE_API_SECRET="sk_live_..." -a infamous-freight-api
 flyctl secrets set PAYPAL_CLIENT_ID="..." -a infamous-freight-api
 flyctl secrets set PAYPAL_CLIENT_SECRET="..." -a infamous-freight-api
 ```

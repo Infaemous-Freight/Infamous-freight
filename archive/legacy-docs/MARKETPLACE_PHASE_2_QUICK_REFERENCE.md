@@ -13,7 +13,7 @@
 ```bash
 node -e "
 const jwt = require('jsonwebtoken');
-const secret = process.env.JWT_SECRET || 'dev-secret';
+const secret = process.env.AUTH_SECRET || 'dev-secret';
 
 const shipper = {
   sub: 'shipper-123',
@@ -199,7 +199,7 @@ grep "webhook.*retry" apps/api/combined.log | tail -20
 | Error                      | Cause            | Fix                                   |
 | -------------------------- | ---------------- | ------------------------------------- |
 | "Missing bearer token"     | No auth header   | Add `-H "Authorization: Bearer $JWT"` |
-| "Invalid or expired token" | Bad JWT          | Regenerate with correct JWT_SECRET    |
+| "Invalid or expired token" | Bad JWT          | Regenerate with correct AUTH_SECRET    |
 | "Insufficient scope"       | Wrong role       | Use correct token (shipper vs driver) |
 | "Price has changed"        | Stale data       | Create new job with current prices    |
 | "Job not available"        | Already accepted | Try different job                     |
@@ -335,7 +335,7 @@ Total: 4 files modified, 1 new file, ~365 lines added
 
 Before going live:
 
-- [ ] Set strong `JWT_SECRET` (min 32 random chars)
+- [ ] Set strong `AUTH_SECRET` (min 32 random chars)
 - [ ] Enable HTTPS on all endpoints
 - [ ] Configure real Stripe prod keys (not test)
 - [ ] Set up error monitoring (Sentry)
@@ -366,7 +366,7 @@ have working code examples.
 
 ## 📞 Key Contacts
 
-- JWT Issues → Check JWT_SECRET in .env
+- JWT Issues → Check AUTH_SECRET in .env
 - Auth Failures → Check user scopes in token
 - Webhook Failures → Check Stripe webhook secret
 - Database Errors → Check DATABASE_URL connection

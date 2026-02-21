@@ -306,7 +306,7 @@ Infamous-freight-enterprises/
 ### Authentication & Authorization
 
 **JWT-Based Auth**:
-- Secret: `JWT_SECRET` environment variable
+- Secret: `AUTH_SECRET` environment variable
 - JWKS: `jwks-rsa` for public key resolution
 - Scopes: Scope-based access control (security.js middleware)
 - Test Secret: "test-secret" for Jest
@@ -577,7 +577,7 @@ pages/
 **API**:
 - `API_PORT` → 4000 (default) or 3001 (Docker)
 - `NODE_ENV` → production/development
-- `JWT_SECRET` → Authentication key
+- `AUTH_SECRET` → Authentication key
 - `DATABASE_URL` → PostgreSQL connection
 
 **AI Integration**:
@@ -587,7 +587,7 @@ pages/
 - `AI_MODEL` → Model selection
 
 **Payment Processing**:
-- `STRIPE_SECRET_KEY` → Stripe API key
+- `STRIPE_API_SECRET` → Stripe API key
 - `STRIPE_PUBLISHABLE_KEY` → Public Stripe key
 - `STRIPE_WEBHOOK_SECRET` → Webhook signing
 - `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`
@@ -595,7 +595,7 @@ pages/
 **Third-Party Services**:
 - `SENDGRID_API_KEY` → Email service
 - `MAPBOX_API_KEY` → Maps API
-- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` → AWS services
+- `AWS_API_KEY`, `AWS_API_SECRET` → AWS services
 - `FIREBASE_*` → Firebase configuration
 - `SENTRY_DSN` → Error tracking
 

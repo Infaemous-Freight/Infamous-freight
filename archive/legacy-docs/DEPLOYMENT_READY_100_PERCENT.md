@@ -43,7 +43,7 @@ curl http://localhost:4000/api/health | jq .
 ```bash
 # Set production environment
 export NODE_ENV=production
-export JWT_SECRET="your-secret-here"
+export AUTH_SECRET="your-secret-here"
 export DATABASE_URL="postgresql://..."
 export CORS_ORIGINS="https://yourdomain.com"
 
@@ -52,7 +52,7 @@ node apps/api/src/server.js
 
 # Or use Docker
 docker run -d -p 3001:4000 \
-  -e JWT_SECRET="your-secret" \
+  -e AUTH_SECRET="your-secret" \
   -e DATABASE_URL="postgresql://..." \
   infamous-freight-api:2.2.0
 ```
@@ -209,7 +209,7 @@ for i in {1..101}; do curl -s http://localhost:4000/api/health > /dev/null; done
 
 ### Issue: API won't start
 
-→ Check DATABASE_URL and JWT_SECRET environment variables  
+→ Check DATABASE_URL and AUTH_SECRET environment variables  
 → Verify port 4000 is not already in use  
 → See DEPLOYMENT_CHECKLIST_100.md Section 6 for details
 

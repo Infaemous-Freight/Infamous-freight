@@ -308,7 +308,7 @@ services:
       LOG_LEVEL: info
       DATABASE_URL: postgresql://${DB_USER:-postgres}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
       REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
-      JWT_SECRET: ${JWT_SECRET}
+      AUTH_SECRET: ${AUTH_SECRET}
       CORS_ORIGINS: ${CORS_ORIGINS}
     ports:
       - "4000:4000"
@@ -409,7 +409,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
 
 ```yaml
 environment:
-  JWT_SECRET: ${JWT_SECRET} # From .env, not hardcoded
+  AUTH_SECRET: ${AUTH_SECRET} # From .env, not hardcoded
   DATABASE_URL: ${DATABASE_URL}
 ```
 

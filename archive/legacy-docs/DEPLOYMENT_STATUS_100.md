@@ -388,7 +388,7 @@ kubectl apply -f k8s/deployment.yaml
 | Port 3001 already in use  | Kill: `lsof -ti:3001 \| xargs kill -9`               |
 | Node modules missing      | Run: `pnpm install`                                  |
 | Database migration failed | Run: `cd apps/api && pnpm prisma:migrate:dev`        |
-| JWT auth failing          | Verify `JWT_SECRET` env var is set                   |
+| JWT auth failing          | Verify `AUTH_SECRET` env var is set                   |
 | Avatar upload fails       | Check `apps/api/public/uploads/avatars/` permissions |
 | Build errors              | Run: `pnpm --filter @infamous-freight/shared build`  |
 

@@ -148,7 +148,7 @@ Components Verified:  42 total
 - ✅ JWT-based authentication
 - ✅ Scope-based authorization (per-route)
 - ✅ Supported scopes: `ai:command`, `voice:ingest`, `voice:command`, etc.
-- ✅ Token validation: HS256 (configurable via JWT_SECRET)
+- ✅ Token validation: HS256 (configurable via AUTH_SECRET)
 
 ### Rate Limiting
 

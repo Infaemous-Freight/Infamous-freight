@@ -260,14 +260,14 @@ WEB_PORT=3000
 DATABASE_URL=postgresql://postgres:YOUR_PASSWORD_HERE@localhost:5432/infamous_prod
 
 # Generate secure secrets
-JWT_SECRET=                    # Generate: openssl rand -base64 32
+AUTH_SECRET=                    # Generate: openssl rand -base64 32
 JWT_REFRESH_SECRET=            # Generate: openssl rand -base64 32
 SESSION_SECRET=                # Generate: openssl rand -base64 32
 
 # API keys (get from providers)
 OPENAI_API_KEY=               # From https://platform.openai.com/api-keys
 ANTHROPIC_API_KEY=            # From https://console.anthropic.com/
-STRIPE_SECRET_KEY=            # From https://dashboard.stripe.com/apikeys
+STRIPE_API_SECRET=            # From https://dashboard.stripe.com/apikeys
 STRIPE_WEBHOOK_SECRET=        # From Stripe webhook settings
 PAYPAL_CLIENT_ID=             # From https://developer.paypal.com/
 PAYPAL_CLIENT_SECRET=         # From PayPal developer dashboard
@@ -297,7 +297,7 @@ SMTP_PASS=your-app-password
 # Generate JWT secrets
 openssl rand -base64 32
 
-# Run this 3 times for JWT_SECRET, JWT_REFRESH_SECRET, SESSION_SECRET
+# Run this 3 times for AUTH_SECRET, JWT_REFRESH_SECRET, SESSION_SECRET
 ```
 
 **Get API Keys:**

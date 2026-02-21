@@ -77,7 +77,7 @@ flyctl secrets set \
   DAT_CUSTOMER_KEY="your_key" \
   TRUCKSTOP_API_KEY="your_key" \
   CONVOY_API_KEY="your_key" \
-  JWT_SECRET="your_secret" \
+  AUTH_SECRET="your_secret" \
   SENTRY_DSN="your_sentry_dsn"
 
 # Monitor deployment
@@ -189,7 +189,7 @@ TRUCKSTOP_API_KEY=your_api_key
 CONVOY_API_KEY=your_api_key
 
 # Authentication
-JWT_SECRET=your_secret_key_min_32_chars
+AUTH_SECRET=your_secret_key_min_32_chars
 JWT_EXPIRATION=24h
 
 # Security

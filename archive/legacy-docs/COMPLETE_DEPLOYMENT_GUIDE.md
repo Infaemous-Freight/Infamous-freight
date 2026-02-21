@@ -207,11 +207,11 @@ export REDIS_PORT=6379
 export REDIS_PASSWORD=your-secure-password
 
 # Security
-export JWT_SECRET=your-very-long-random-secret
+export AUTH_SECRET=your-very-long-random-secret
 export CORS_ORIGINS=https://infamous-freight.app,https://api.infamous-freight.app
 
 # Stripe (Production Keys)
-export STRIPE_SECRET_KEY=sk_live_xxxxx
+export STRIPE_API_SECRET=sk_live_xxxxx
 export STRIPE_WEBHOOK_SECRET=whsec_live_xxxxx
 
 # Monitoring

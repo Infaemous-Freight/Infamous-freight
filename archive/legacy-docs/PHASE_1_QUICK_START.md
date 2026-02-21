@@ -140,7 +140,7 @@ docker-compose -f docker-compose.production.yml logs --since 5m | grep -i "error
 # API won't start
 echo "🔧 Troubleshooting API..."
 docker-compose -f docker-compose.production.yml logs api --tail=100
-# Check: DATABASE_URL, JWT_SECRET in .env.production
+# Check: DATABASE_URL, AUTH_SECRET in .env.production
 
 # Web won't load
 echo "🔧 Troubleshooting Web..."

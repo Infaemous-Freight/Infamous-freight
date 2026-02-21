@@ -334,7 +334,7 @@ pnpm test
 
 1. Check deployment logs on your platform
 2. Verify DATABASE_URL is correct
-3. Verify JWT_SECRET is set
+3. Verify AUTH_SECRET is set
 4. Check that database is accessible
 5. Restart the service
 

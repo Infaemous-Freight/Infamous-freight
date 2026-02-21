@@ -82,7 +82,7 @@ postgresql://infamous-freight-db.flycast
 - [x] `DATABASE_URL` - Fly.io database endpoint
 - [x] `API_PORT` - Configured (4000)
 - [x] `API_BASE_URL` - Set correctly
-- [x] `JWT_SECRET` - Configured for signing
+- [x] `AUTH_SECRET` - Configured for signing
 - [x] `NODE_ENV` - Set to production
 - [x] `CORS_ORIGINS` - Configured
 - [x] `REDIS_URL` - Optional, fallback available
@@ -160,7 +160,7 @@ curl -H "Authorization: Bearer <token>" http://localhost:4000/api/shipments
 ```bash
 # Set environment variables in Fly.io
 flyctl secrets set DATABASE_URL=postgresql://infamous-freight-db.flycast
-flyctl secrets set JWT_SECRET=<your-secret>
+flyctl secrets set AUTH_SECRET=<your-secret>
 flyctl secrets set SENTRY_DSN=<your-sentry-dsn>
 ```
 
@@ -391,7 +391,7 @@ WEB_PORT=3000
 NODE_ENV=production
 
 # Security
-JWT_SECRET=<your-secret>
+AUTH_SECRET=<your-secret>
 CORS_ORIGINS=https://infamous-freight-enterprises.vercel.app
 
 # Monitoring

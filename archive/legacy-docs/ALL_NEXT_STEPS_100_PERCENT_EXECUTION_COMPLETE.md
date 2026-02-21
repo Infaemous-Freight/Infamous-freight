@@ -76,7 +76,7 @@ bash scripts/verify-implementation.sh  # ✅ Passes 23/23 checks
 
 # 2. Set up environment
 cp .env.example .env.local
-export JWT_SECRET="your-32-char-secret"
+export AUTH_SECRET="your-32-char-secret"
 export DATABASE_URL="your-database-url"
 export CORS_ORIGINS="your-domain.com"
 

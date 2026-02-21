@@ -61,7 +61,7 @@ before drivers can see them.
 
 ```bash
 # Stripe API Keys (from Stripe Dashboard)
-STRIPE_SECRET_KEY=sk_test_...
+STRIPE_API_SECRET=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
 # App URLs (for Checkout redirects)
@@ -194,7 +194,7 @@ curl http://localhost:4000/api/marketplace/jobs/job-abc123 \
 
 ```bash
 # 1. Export Stripe keys
-export STRIPE_SECRET_KEY="sk_test_..."
+export STRIPE_API_SECRET="sk_test_..."
 export STRIPE_WEBHOOK_SECRET="whsec_..."
 
 # 2. Start API

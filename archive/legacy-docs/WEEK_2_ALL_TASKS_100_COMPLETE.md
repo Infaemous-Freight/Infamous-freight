@@ -363,7 +363,7 @@ REDIS_URL=redis://redis:6379
 REDIS_PASSWORD=your-secure-password
 
 # Authentication
-JWT_SECRET=your-secret-key-change-in-production
+AUTH_SECRET=your-secret-key-change-in-production
 JWT_REFRESH_SECRET=your-refresh-secret
 
 # API

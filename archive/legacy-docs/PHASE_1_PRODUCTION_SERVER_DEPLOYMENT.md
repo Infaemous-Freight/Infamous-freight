@@ -260,14 +260,14 @@ POSTGRES_PASSWORD=<STRONG-RANDOM-PASSWORD-MIN-32-CHARS>
 REDIS_URL=redis://<REDIS-PASSWORD>@redis.yourdomain.com:6379
 
 # JWT Secret (Generate: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
-JWT_SECRET=<GENERATE-NEW-SECRET-MIN-32-CHARS>
+AUTH_SECRET=<GENERATE-NEW-SECRET-MIN-32-CHARS>
 
 # AI Provider (default: synthetic, or use openai/anthropic)
 AI_PROVIDER=synthetic
 # Optional: OPENAI_API_KEY=sk-...
 
 # Stripe Integration
-STRIPE_SECRET_KEY=sk_live_...
+STRIPE_API_SECRET=sk_live_...
 STRIPE_PUBLISHABLE_KEY=pk_live_...
 
 # Monitoring
@@ -520,7 +520,7 @@ docker logs -f infamous-api
 
 # Common issues:
 # - DATABASE_URL not set
-# - JWT_SECRET not set
+# - AUTH_SECRET not set
 # - Port 4000 already in use
 # - Node.js version mismatch
 ```

@@ -93,12 +93,12 @@ highest production standards.
 
 - ✅ Docker Secrets file-based loading (/run/secrets/)
 - ✅ Environment variable fallback for development
-- ✅ JWT_SECRET & JWT_REFRESH_SECRET management
+- ✅ AUTH_SECRET & JWT_REFRESH_SECRET management
 - ✅ POSTGRES_PASSWORD & DATABASE_URL management
 - ✅ REDIS_PASSWORD management
-- ✅ STRIPE_SECRET_KEY & PAYPAL_SECRET management
+- ✅ STRIPE_API_SECRET & PAYPAL_SECRET management
 - ✅ SENDGRID_API_KEY management
-- ✅ AWS_ACCESS_KEY_ID & AWS_SECRET_ACCESS_KEY management
+- ✅ AWS_API_KEY & AWS_API_SECRET management
 - ✅ Datadog API keys management
 - ✅ Sensitive data clearing function
 - ✅ Secrets validation function

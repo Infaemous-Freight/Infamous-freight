@@ -30,7 +30,7 @@ ensures 100% completion of the production deployment.
 
 - [ ] **Environment Variables**
   - [ ] DATABASE_URL (PostgreSQL production connection)
-  - [ ] JWT_SECRET (cryptographically secure)
+  - [ ] AUTH_SECRET (cryptographically secure)
   - [ ] REDIS_URL (Redis production connection)
   - [ ] NODE_ENV=production
   - [ ] AI_PROVIDER (openai, anthropic, or synthetic)
@@ -565,7 +565,7 @@ Deploy to production and verify all services are operational.
 # Verify all environment variables are set
 required_vars=(
   "DATABASE_URL"
-  "JWT_SECRET"
+  "AUTH_SECRET"
   "REDIS_URL"
   "NODE_ENV"
   "API_PORT"

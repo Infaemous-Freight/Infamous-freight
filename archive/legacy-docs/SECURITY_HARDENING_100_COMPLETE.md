@@ -202,8 +202,8 @@ const user = await prisma.user.create({
 # scripts/rotate-secrets.sh
 
 # Rotate JWT secret monthly
-NEW_JWT_SECRET=$(openssl rand -base64 32)
-flyctl secrets set JWT_SECRET="$NEW_JWT_SECRET" --app infamous-freight-api
+NEW_AUTH_SECRET=$(openssl rand -base64 32)
+flyctl secrets set AUTH_SECRET="$NEW_AUTH_SECRET" --app infamous-freight-api
 
 # Rotate database password quarterly
 NEW_DB_PASSWORD=$(openssl rand -base64 32)
@@ -334,15 +334,15 @@ function verifyTOTP(secret, token) {
 
 ```bash
 # Development (.env - NEVER commit)
-JWT_SECRET="dev-secret-only-for-testing"
+AUTH_SECRET="dev-secret-only-for-testing"
 OPENAI_API_KEY="sk-..."
 DATABASE_URL="postgresql://localhost:5432/dev"
 
 # Staging (Fly.io secrets)
-flyctl secrets set JWT_SECRET="$(openssl rand -base64 32)" --config staging
+flyctl secrets set AUTH_SECRET="$(openssl rand -base64 32)" --config staging
 
 # Production (Fly.io secrets)
-flyctl secrets set JWT_SECRET="$(openssl rand -base64 32)" --app infamous-freight-api
+flyctl secrets set AUTH_SECRET="$(openssl rand -base64 32)" --app infamous-freight-api
 ```
 
 ### 4.2 Secrets Rotation Automation
@@ -363,7 +363,7 @@ jobs:
       - name: Rotate JWT Secret
         run: |
           NEW_SECRET=$(openssl rand -base64 32)
-          flyctl secrets set JWT_SECRET="$NEW_SECRET" --app infamous-freight-api
+          flyctl secrets set AUTH_SECRET="$NEW_SECRET" --app infamous-freight-api
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
