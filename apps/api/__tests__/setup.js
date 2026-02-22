@@ -1,9 +1,12 @@
 // Test environment setup
 process.env.NODE_ENV = "test";
-process.env.JWT_SECRET = "test-secret-key-for-jwt-validation";
+process.env.JWT_SECRET = "test-secret-key-for-jwt-validation-min-32-chars-required";
 process.env.CORS_ORIGINS = "http://localhost:3000";
 process.env.LOG_LEVEL = "error";
 process.env.PERSISTENCE_MODE = "json";
+process.env.API_BASE_URL = "http://localhost:4000";
+process.env.WEB_BASE_URL = "http://localhost:3000";
+process.env.DATABASE_URL = "postgresql://test:test@localhost:5432/test";
 
 // Polyfill global for Node.js environment
 if (typeof global === "undefined") {
@@ -21,6 +24,30 @@ jest.mock("@sentry/node", () => ({
   Handlers: {
     requestHandler: () => (req, res, next) => next(),
     errorHandler: () => (err, req, res, next) => next(err),
+  },
+}));
+
+// Mock @infamous-freight/shared first before other mocks
+jest.mock("@infamous-freight/shared", () => ({
+  ApiResponse: class {
+    constructor(config) {
+      Object.assign(this, { success: true, ...config });
+    }
+  },
+  HTTP_STATUS: {
+    OK: 200,
+    CREATED: 201,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    INTERNAL_SERVER_ERROR: 500,
+  },
+  SHIPMENT_STATUSES: {
+    PENDING: "pending",
+    IN_TRANSIT: "in_transit",
+    DELIVERED: "delivered",
+    CANCELED: "canceled",
   },
 }));
 

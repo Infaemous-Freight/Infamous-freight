@@ -12,7 +12,7 @@
     "build": "expo build",
     "build:android": "eas build --platform android",
     "build:ios": "eas build --platform ios",
-    "typecheck": "echo 'mobile typecheck skipped'",
+    "typecheck": "echo 'mobile: React/RN type setup pending'",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest"
   },

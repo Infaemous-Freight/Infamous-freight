@@ -24,4 +24,8 @@ module.exports = {
   setupFilesAfterEnv: ["<rootDir>/__tests__/setup.js"],
   // Allow Jest to transform ES modules from @infamous-freight/shared
   transformIgnorePatterns: ["node_modules/(?!(@infamous-freight)/)"],
+  // Map @infamous-freight/shared to the built dist
+  moduleNameMapper: {
+    "^@infamous-freight/shared$": "<rootDir>/../../packages/shared/dist/index.js",
+  },
 };

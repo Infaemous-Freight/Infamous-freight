@@ -28,7 +28,7 @@ export const Modal: React.FC<ModalProps> = ({
   closeOnEscape = true,
   showCloseButton = true,
   footer,
-}) => {
+}): React.ReactPortal | null => {
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 

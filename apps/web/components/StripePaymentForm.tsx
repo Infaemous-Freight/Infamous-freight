@@ -66,7 +66,7 @@ function PaymentFormContent({ amount, description, onSuccess, onError }: Payment
 
   const returnUrl = useMemo(() => window.location.href, []);
 
-  const handleExpressConfirm = async (event: ExpressCheckoutConfirmEvent) => {
+  const handleExpressConfirm = async (event: ExpressCheckoutConfirmEvent | undefined) => {
     if (!stripe || !elements) {
       return;
     }
@@ -79,13 +79,17 @@ function PaymentFormContent({ amount, description, onSuccess, onError }: Payment
     });
 
     if (result.error) {
-      event?.complete?.("fail");
+      if (event && typeof event.complete === "function") {
+        event.complete("fail");
+      }
       setError(result.error.message || "Express checkout failed");
       onError?.(result.error.message || "Express checkout failed");
       return;
     }
 
-    event?.complete?.("success");
+    if (event && typeof event.complete === "function") {
+      event.complete("success");
+    }
     setSuccess(true);
     if (result.paymentIntent?.id) {
       onSuccess?.(result.paymentIntent.id);
@@ -432,7 +436,7 @@ function SubscriptionPaymentContent({
     setLoading(false);
   };
 
-  const handleExpressConfirm = async (event: ExpressCheckoutConfirmEvent) => {
+  const handleExpressConfirm = async (event: ExpressCheckoutConfirmEvent | undefined) => {
     if (!stripe || !elements) {
       return;
     }
@@ -445,14 +449,18 @@ function SubscriptionPaymentContent({
     });
 
     if (result.error) {
-      event?.complete?.("fail");
+      if (event && typeof event.complete === "function") {
+        event.complete("fail");
+      }
       const message = result.error.message || "Express checkout failed";
       setError(message);
       onError?.(message);
       return;
     }
 
-    event?.complete?.("success");
+    if (event && typeof event.complete === "function") {
+      event.complete("success");
+    }
     if (result.paymentIntent?.status === "succeeded" && result.paymentIntent.id) {
       onSuccess?.(result.paymentIntent.id);
     }

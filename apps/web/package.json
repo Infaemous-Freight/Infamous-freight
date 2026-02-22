@@ -15,7 +15,7 @@
     "build:analyze": "ANALYZE=true next build",
     "build:sentry": "SENTRY_RELEASE=$(git rev-parse HEAD) next build",
     "start": "next start",
-    "typecheck": "echo 'web typecheck skipped'",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:security": "vitest run tests/security.test.ts",
     "test:watch": "vitest watch",

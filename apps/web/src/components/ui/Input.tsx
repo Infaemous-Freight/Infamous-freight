@@ -5,13 +5,14 @@
 
 import React from "react";
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   label?: string;
   error?: string;
   hint?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   fullWidth?: boolean;
+  size?: "sm" | "md" | "lg";
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(

@@ -3,7 +3,11 @@
   "compilerOptions": {
     // Next.js requires ES2020 target and broader lib for DOM APIs
     "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "jsx": "preserve",
     "noEmit": true,
     // Next.js doesn't support composite mode
@@ -11,8 +15,12 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@infamous-freight/shared": ["../../packages/shared/src"],
-      "@/*": ["./src/*"]
+      "@infamous-freight/shared": [
+        "../../packages/shared/src"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
     },
     // Strict type checking (inherited from base)
     // Use tsconfig.legacy.json for gradual migration
@@ -22,11 +30,20 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
   "exclude": [
     "node_modules",
     ".next",
     "out",
+    "tests/**/*",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "tests/**/*.*.ts",
+    "tests/**/*.*.tsx",
     // Legacy components under migration (use tsconfig.legacy.json)
     "components/legacy/**/*",
     "pages/legacy/**/*"

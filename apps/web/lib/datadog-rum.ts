@@ -92,7 +92,7 @@ export function trackPageView(name: string, context?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
 
   import("@datadog/browser-rum").then(({ datadogRum }) => {
-    datadogRum.addViewAction(name, context);
+    datadogRum.addAction(name, context);
   });
 }
 

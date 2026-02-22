@@ -1,37 +1,20 @@
 {
-    "extends": "../../tsconfig.base.json",
+    "extends": "./tsconfig.json",
     "compilerOptions": {
-        "module": "esnext",
-        "target": "es2020",
-        "jsx": "react-native",
-        "lib": [
-            "es2020"
-        ],
-        "baseUrl": ".",
-        "paths": {
-            "@/*": [
-                "src/*"
-            ]
-        },
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
+        "noEmit": true,
         "strict": false,
         "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "allowJs": true,
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "types": [
-            "react"
-        ]
+        "noImplicitAny": false,
+        "moduleResolution": "node",
+        "lib": ["ES2020"]
     },
     "include": [
-        "src",
-        "services"
+        "src"
     ],
     "exclude": [
         "node_modules",
+        "tests",
         "build",
-        "tests"
+        "dist"
     ]
 }

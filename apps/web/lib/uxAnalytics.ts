@@ -60,7 +60,7 @@ interface UXEvent {
   action: UXEventAction;
   label?: string;
   value?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -71,11 +71,11 @@ export function trackUXEvent(event: UXEvent): void {
 
   // Track with standard analytics
   trackEvent(`${category}:${action}`, {
-    label,
-    value,
+    label: label ?? undefined,
+    value: value ?? undefined,
     ...metadata,
     timestamp: Date.now(),
-  });
+  } as Record<string, string | number | boolean | undefined>);
 
   // Log for debugging in development
   if (process.env.NODE_ENV === "development") {
