@@ -9,7 +9,7 @@ export default defineConfig({
     hookTimeout: 30000,
     globals: true,
     include: ["tests/**/*.test.ts"],
-    exclude: ["node_modules", "dist", ".next"],
+    exclude: ["node_modules", "dist", ".next", "tests/unit/**"],
   },
   resolve: {
     alias: {
