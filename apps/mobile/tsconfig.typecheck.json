@@ -22,8 +22,7 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "types": [
-            "react",
-            "react-native"
+            "react"
         ]
     },
     "include": [
