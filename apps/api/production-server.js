@@ -1,5 +1,4 @@
 // apps/api/production-server.js - Production-Ready API with Database Persistence
-/* eslint-env node */
 /* global URLSearchParams */
 const http = require("http");
 const { generateToken, authenticate } = require("./auth");
@@ -73,7 +72,7 @@ async function handleRequest(req, res) {
   const startReqTime = Date.now();
 
   // Apply metrics middleware
-  metricsMiddleware(req, res, () => {});
+  metricsMiddleware(req, res, () => { });
 
   try {
     // Rate limiting
