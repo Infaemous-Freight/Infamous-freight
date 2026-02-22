@@ -1,23 +1,35 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "module": "esnext",
-    "target": "es2020",
-    "jsx": "react-native",
-    "lib": ["es2020"],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "module": "esnext",
+        "target": "es2020",
+        "jsx": "react-native",
+        "lib": [
+            "es2020"
+        ],
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ]
+        },
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": false,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "typeRoots": ["./node_modules/@types"]
     },
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": false,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true
-  },
-  "include": ["src", "services"],
-  "exclude": ["node_modules", "build", "tests"]
+    "include": [
+        "src",
+        "services"
+    ],
+    "exclude": [
+        "node_modules",
+        "build",
+        "tests"
+    ]
 }
