@@ -131,12 +131,12 @@ docker stats
 
 **22 CVEs Documented** (See: [SECURITY.md](./SECURITY.md))
 
-| Severity | Count | Status | Impact |
-|----------|-------|--------|--------|
-| 🔴 CRITICAL | 1 | Mitigated | fast-xml-parser (aws-sdk) - Input validation deployed |
-| 🟠 HIGH | 13 | Mobile only | React Native 0.73.4 - Not in staging |
-| 🟡 MODERATE | 4 | Acceptable | ajv ReDoS - Build-time only |
-| 🟢 LOW | 4 | Acceptable | Transitive dependencies |
+| Severity   | Count | Status      | Impact                                                |
+| ---------- | ----- | ----------- | ----------------------------------------------------- |
+| 🔴 CRITICAL | 1     | Mitigated   | fast-xml-parser (aws-sdk) - Input validation deployed |
+| 🟠 HIGH     | 13    | Mobile only | React Native 0.73.4 - Not in staging                  |
+| 🟡 MODERATE | 4     | Acceptable  | ajv ReDoS - Build-time only                           |
+| 🟢 LOW      | 4     | Acceptable  | Transitive dependencies                               |
 
 **Critical Mitigation (DEPLOYED)**:
 - Input validation on all S3 XML responses
