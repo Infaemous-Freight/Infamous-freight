@@ -12,7 +12,7 @@ type BidRow = {
   created_at: string;
 };
 
-export default function BidList({ bids, canAccept }: { bids: BidRow[]; canAccept: boolean }) {
+export default function BidList({ bids, canAccept }: { bids: BidRow[]; canAccept: boolean }): React.ReactElement {
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);

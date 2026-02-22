@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function ConnectRefresh() {
+export default function ConnectRefresh(): React.ReactElement {
   return (
     <div className="page">
       <section className="section">

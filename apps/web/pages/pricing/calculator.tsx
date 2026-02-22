@@ -18,7 +18,7 @@ interface CostBreakdown {
   totalCost: number;
 }
 
-export default function CostCalculator() {
+export default function CostCalculator(): React.ReactElement {
   const [shipment, setShipment] = useState<ShipmentData>({
     weight: 10,
     distance: 100,

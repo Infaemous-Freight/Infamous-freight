@@ -4,7 +4,7 @@ import Head from "next/head";
 import { supabaseBrowser } from "../../src/lib/supabase/browser";
 import { trackEvent } from "../../src/lib/analytics";
 
-export default function AuthCallbackPage() {
+export default function AuthCallbackPage(): React.ReactElement {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(true);

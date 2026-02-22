@@ -39,6 +39,7 @@ export const Modal: React.FC<ModalProps> = ({
         document.body.style.overflow = "unset";
       };
     }
+    return undefined;
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;

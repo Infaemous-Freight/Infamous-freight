@@ -9,7 +9,7 @@ import { trackEvent } from "../src/lib/analytics";
 import SEOHead from "../components/SEOHead";
 import { trackPageLoad } from "../lib/performance";
 
-export default function Home() {
+export default function Home(): React.ReactElement {
   useEffect(() => {
     trackEvent("home_view");
     trackPageLoad("home");

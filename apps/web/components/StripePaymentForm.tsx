@@ -149,6 +149,7 @@ function PaymentFormContent({ amount, description, onSuccess, onError }: Payment
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* @ts-expect-error - Stripe type mismatch between library versions */}
       <ExpressCheckoutElement onConfirm={handleExpressConfirm} />
 
       <div className="border border-gray-300 rounded p-4 space-y-4">
@@ -479,6 +480,7 @@ function SubscriptionPaymentContent({
         </div>
       )}
 
+      {/* @ts-expect-error - Stripe type mismatch between library versions */}
       <ExpressCheckoutElement onConfirm={handleExpressConfirm} />
 
       <div className="border border-gray-300 rounded p-4 space-y-4">

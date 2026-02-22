@@ -21,7 +21,7 @@ const sampleCertificates = [
   },
 ];
 
-export default function CarrierInsuranceDetail() {
+export default function CarrierInsuranceDetail(): React.ReactElement {
   const router = useRouter();
   const { carrierId } = router.query;
 

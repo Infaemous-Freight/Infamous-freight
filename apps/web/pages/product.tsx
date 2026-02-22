@@ -24,7 +24,7 @@ const capabilities = [
   "Genesis recommendations with Impact + Confidence",
 ];
 
-export default function ProductPage() {
+export default function ProductPage(): React.ReactElement {
   useEffect(() => {
     trackEvent("product_view");
   }, []);

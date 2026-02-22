@@ -46,7 +46,7 @@ function resolveImage(apiBase: string, url?: string) {
   return url;
 }
 
-export default function GenesisPage() {
+export default function GenesisPage(): React.ReactElement {
   const router = useRouter();
   const locale = getLocaleFromRouter(router.locale);
   const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";

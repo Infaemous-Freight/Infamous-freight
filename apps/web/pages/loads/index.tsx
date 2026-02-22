@@ -13,7 +13,7 @@ type Load = {
   payoutCents: number;
 };
 
-export default function LoadsPage() {
+export default function LoadsPage(): React.ReactElement {
   const [token, setToken] = useState("");
   const [loads, setLoads] = useState<Load[]>([]);
   const [err, setErr] = useState("");

@@ -14,7 +14,7 @@ type Active = {
   payoutCents: number;
 };
 
-export default function ActiveLoadPage() {
+export default function ActiveLoadPage(): React.ReactElement {
   const [token, setToken] = useState("");
   const [active, setActive] = useState<Active | null>(null);
   const [podFile, setPodFile] = useState<File | null>(null);

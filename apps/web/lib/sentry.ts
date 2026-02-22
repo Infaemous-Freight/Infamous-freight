@@ -190,12 +190,12 @@ export function startPerformanceMetric(
  * const safeUpdate = withErrorTracking(updateShipment, 'updateShipment');
  * await safeUpdate(shipmentId);
  */
-export function withErrorTracking<T extends (...args: unknown[]) => Promise<unknown>>(
+export function withErrorTracking<T extends (...args: any[]) => Promise<any>>(
   fn: T,
   functionName?: string,
   context?: Record<string, unknown>,
 ): T {
-  const wrappedFn = async (...args: Parameters<T>): Promise<ReturnType<T>> => {
+  const wrappedFn = async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> => {
     const name = functionName || fn.name || "anonymous";
 
     addBreadcrumb(`Calling ${name}`, "function-call", "info", {
@@ -204,7 +204,7 @@ export function withErrorTracking<T extends (...args: unknown[]) => Promise<unkn
 
     try {
       const result = await fn(...args);
-      return result;
+      return result as Awaited<ReturnType<T>>;
     } catch (error) {
       logError(error, {
         function: name,

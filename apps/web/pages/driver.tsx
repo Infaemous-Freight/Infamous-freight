@@ -4,7 +4,7 @@ import { api } from "../lib/api";
 import { getBrowserLocation, getToken } from "../lib/session";
 import { isGetTrucknEnabled } from "../lib/feature-flags";
 
-export default function DriverDashboard() {
+export default function DriverDashboard(): React.ReactElement {
   const [token, setToken] = useState("");
   const [err, setErr] = useState("");
   const [msg, setMsg] = useState("");

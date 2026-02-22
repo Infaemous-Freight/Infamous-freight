@@ -41,7 +41,7 @@ const solutionBlocks = [
   },
 ];
 
-export default function SolutionsPage() {
+export default function SolutionsPage(): React.ReactElement {
   useEffect(() => {
     trackEvent("solutions_view");
   }, []);

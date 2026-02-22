@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function ThreadSummaryButton({ threadId }: { threadId: string }) {
+export default function ThreadSummaryButton({ threadId }: { threadId: string }): React.ReactElement {
   const [busy, setBusy] = useState(false);
 
   async function handleClick() {

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import AuthButton from "@/components/AuthButton";
-import { isGetTrucknEnabled } from "@/lib/feature-flags";
+import { isGetTrucknEnabled } from "../../lib/feature-flags";
 
-export default function Nav() {
+export default function Nav(): React.ReactElement {
   const getTrucknEnabled = isGetTrucknEnabled();
 
   return (

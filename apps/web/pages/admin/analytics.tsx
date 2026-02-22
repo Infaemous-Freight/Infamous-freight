@@ -29,7 +29,7 @@ interface Dashboard {
   apiLatency: MetricData[];
 }
 
-export default function AnalyticsDashboard() {
+export default function AnalyticsDashboard(): React.ReactElement {
   const [dashboardData, setDashboardData] = useState<Dashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState("7d");

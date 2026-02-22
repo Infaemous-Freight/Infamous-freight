@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-export default function SignupPage() {
+export default function SignupPage(): React.ReactElement {
   const router = useRouter();
 
   useEffect(() => {

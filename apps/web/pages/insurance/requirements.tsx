@@ -28,7 +28,7 @@ const requirements = [
   },
 ];
 
-export default function InsuranceRequirements() {
+export default function InsuranceRequirements(): React.ReactElement {
   return (
     <main style={{ padding: 24, fontFamily: "sans-serif" }}>
       <header style={{ marginBottom: 24 }}>

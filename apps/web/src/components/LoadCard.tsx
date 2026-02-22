@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Load } from "@/types/db";
 
-export default function LoadCard({ load }: { load: Load }) {
+export default function LoadCard({ load }: { load: Load }): React.ReactElement {
   return (
     <Link href={`/loads/${load.id}`} className="card marketplace-card">
       <div className="marketplace-card-header">

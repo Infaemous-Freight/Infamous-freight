@@ -103,7 +103,7 @@ export function getSoftwareApplicationData(): SoftwareApplication {
 }
 
 // Component to inject structured data
-export function StructuredData({ data }: { data: Organization | WebSite | SoftwareApplication }) {
+export function StructuredData({ data }: { data: Organization | WebSite | SoftwareApplication }): React.ReactElement {
   // Escape HTML special characters to prevent XSS
   const jsonLd = JSON.stringify(data)
     .replace(/</g, "\u003c")

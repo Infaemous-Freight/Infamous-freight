@@ -9,7 +9,7 @@ interface ErrorPageProps {
   eventId?: string;
 }
 
-function CustomErrorPage({ statusCode, err, eventId }: ErrorPageProps) {
+function CustomErrorPage({ statusCode, err, eventId }: ErrorPageProps): React.ReactElement {
   if (!statusCode && err) {
     Sentry.captureException(err);
   }

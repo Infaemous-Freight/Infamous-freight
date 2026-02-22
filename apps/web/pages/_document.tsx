@@ -1,7 +1,7 @@
 import { Html, Head, Main, NextScript } from "next/document";
 import { getOrganizationData, getWebSiteData, StructuredData } from "../lib/structured-data";
 
-export default function Document() {
+export default function Document(): React.ReactElement {
   return (
     <Html lang="en">
       <Head>

@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-export default function PrivacyPolicy() {
+export default function PrivacyPolicy(): React.ReactElement {
   return (
     <>
       <Head>

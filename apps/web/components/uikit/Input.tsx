@@ -6,7 +6,7 @@
 import React, { InputHTMLAttributes, ReactNode } from "react";
 import styles from "./Input.module.css";
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size"> {
   label?: string;
   error?: string;
   hint?: string;

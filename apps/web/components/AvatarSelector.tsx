@@ -31,7 +31,7 @@ export function AvatarSelector({
   token,
   onSelectionChange,
   showUpload = true,
-}: AvatarSelectorProps) {
+}: AvatarSelectorProps): React.ReactElement {
   const [systemAvatars, setSystemAvatars] = useState<Avatar[]>([]);
   const [userAvatars, setUserAvatars] = useState<Avatar[]>([]);
   const [currentSelection, setCurrentSelection] = useState<AvatarSelection | null>(null);

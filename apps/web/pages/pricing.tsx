@@ -151,7 +151,7 @@ function TierCard(props: {
   priceMonthly: number;
   aiIncluded: number;
   aiOverage: number;
-  bullets: string[];
+  bullets: readonly string[];
   ctaHref: string;
   ctaLabel: string;
   mostPopular?: boolean;

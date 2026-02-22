@@ -42,7 +42,7 @@ const activationGrid = [
   },
 ];
 
-export default function Home() {
+export default function Home(): React.ReactElement {
   useEffect(() => {
     trackEvent("home_view");
     trackPageLoad("home");

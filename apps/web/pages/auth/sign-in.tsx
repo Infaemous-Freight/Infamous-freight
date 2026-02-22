@@ -5,7 +5,7 @@ import Head from "next/head";
 import { supabaseBrowser } from "../../src/lib/supabase/browser";
 import { trackEvent } from "../../src/lib/analytics";
 
-export default function SignInPage() {
+export default function SignInPage(): React.ReactElement {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

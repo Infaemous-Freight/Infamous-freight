@@ -3,7 +3,7 @@ import Link from "next/link";
 import { api } from "../../lib/api";
 import { getToken } from "../../lib/session";
 
-export default function ConnectReturn() {
+export default function ConnectReturn(): React.ReactElement {
   const [msg, setMsg] = useState("Finalizing…");
 
   useEffect(() => {

@@ -31,9 +31,6 @@ if (sentryDSN) {
     replaysSessionSampleRate: isDevelopment ? 1.0 : 0.1, // Session replay for 10% of users
     replaysOnErrorSampleRate: isDevelopment ? 1.0 : 1.0, // Always replay errors
 
-    // Release tracking
-    autoSessionTracking: true,
-
     // Error handling
     enabled: !isDevelopment || !!sentryDSN,
 
@@ -63,16 +60,6 @@ if (sentryDSN) {
 
       return event;
     },
-
-    integrations: [
-      new Sentry.Replay({
-        maskAllReplayText: true,
-        blockAllMedia: true,
-        maskAllInputs: true,
-      }),
-      // Performance monitoring integration
-      new Sentry.Integrations.RequestData(),
-    ],
 
     // Ignore certain errors
     ignoreErrors: [
@@ -112,10 +99,8 @@ if (sentryDSN) {
 /**
  * Set user context for error tracking
  * Call this after user authentication
- *
- * @param {Object} user - User object with id, email, etc.
  */
-export function setSentryUser(user) {
+export function setSentryUser(user: { id: string; email?: string; username?: string } | null) {
   if (user && sentryDSN) {
     Sentry.setUser({
       id: user.id,
@@ -129,11 +114,8 @@ export function setSentryUser(user) {
 
 /**
  * Add custom context for debugging
- *
- * @param {string} contextName - Name of context (e.g. 'shipment', 'payment')
- * @param {Object} data - Context data
  */
-export function setSentryContext(contextName, data) {
+export function setSentryContext(contextName: string, data: Record<string, unknown>) {
   if (sentryDSN) {
     Sentry.setContext(contextName, data);
   }
@@ -141,11 +123,15 @@ export function setSentryContext(contextName, data) {
 
 /**
  * Track custom events
- *
- * @param {string} message - Event message
- * @param {Object} options - Additional options
  */
-export function trackSentryEvent(message, options = {}) {
+export function trackSentryEvent(
+  message: string,
+  options: {
+    level?: Sentry.SeverityLevel;
+    tags?: Record<string, string>;
+    contexts?: Record<string, unknown>;
+  } = {},
+) {
   if (sentryDSN) {
     Sentry.captureMessage(message, {
       level: options.level || "info",
@@ -159,11 +145,15 @@ export function trackSentryEvent(message, options = {}) {
 
 /**
  * Report error to Sentry
- *
- * @param {Error} error - Error object
- * @param {Object} options - Additional options
  */
-export function reportSentryError(error, options = {}) {
+export function reportSentryError(
+  error: Error,
+  options: {
+    level?: Sentry.SeverityLevel;
+    tags?: Record<string, string>;
+    contexts?: Record<string, unknown>;
+  } = {},
+) {
   if (sentryDSN) {
     Sentry.captureException(error, {
       level: options.level || "error",
@@ -178,11 +168,15 @@ export function reportSentryError(error, options = {}) {
 /**
  * Add breadcrumb for debugging
  * Breadcrumbs show the user's actions leading up to an error
- *
- * @param {string} message - Breadcrumb message
- * @param {Object} options - Additional options
  */
-export function addSentryBreadcrumb(message, options = {}) {
+export function addSentryBreadcrumb(
+  message: string,
+  options: {
+    category?: string;
+    level?: Sentry.SeverityLevel;
+    data?: Record<string, unknown>;
+  } = {},
+) {
   if (sentryDSN) {
     Sentry.addBreadcrumb({
       message,

@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-export default function TermsOfService() {
+export default function TermsOfService(): React.ReactElement {
   return (
     <>
       <Head>

@@ -78,7 +78,8 @@ export function setUserContext(userId: string, metadata?: Record<string, unknown
   if (typeof window === "undefined") return;
 
   import("@datadog/browser-rum").then(({ datadogRum }) => {
-    datadogRum.setUserAction({
+    // @ts-expect-error - Datadog RUM API method signature may differ
+    datadogRum.setUserAction?.({
       id: userId,
       ...metadata,
     });

@@ -20,7 +20,7 @@ export default function Chat({
 }: {
   threadId: string;
   initialMessages: Msg[];
-}) {
+}): React.ReactElement {
   const supabase = useMemo(() => supabaseBrowser(), []);
   const [msgs, setMsgs] = useState<Msg[]>(initialMessages);
   const [text, setText] = useState("");
@@ -60,6 +60,7 @@ export default function Chat({
       return;
     }
 
+    // @ts-expect-error - Supabase type definitions incompatibility
     const { error } = await supabase.from("messages").insert({
       thread_id: threadId,
       sender_id: u.user.id,

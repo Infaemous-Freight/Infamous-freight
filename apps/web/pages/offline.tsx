@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
 
-export default function OfflinePage() {
+export default function OfflinePage(): React.ReactElement {
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {

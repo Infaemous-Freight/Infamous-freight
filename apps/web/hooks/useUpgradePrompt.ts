@@ -79,9 +79,11 @@ export function useUpgradePrompt() {
 
     const shipmentUsagePercent = ((data.usage?.shipments_created || 0) / 1000) * 100;
     const teamSize = data.user?.team_members_count || 0;
-    const daysOnPro = Math.floor(
-      (Date.now() - new Date(data.subscription.created_at).getTime()) / (1000 * 60 * 60 * 24),
-    );
+    const daysOnPro = data.subscription
+      ? Math.floor(
+          (Date.now() - new Date(data.subscription.created_at).getTime()) / (1000 * 60 * 60 * 24),
+        )
+      : 0;
 
     if ((shipmentUsagePercent > 70 || teamSize >= 5 || daysOnPro >= 30) && teamSize >= 2) {
       setPromptType("pro-to-enterprise");

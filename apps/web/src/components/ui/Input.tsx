@@ -28,6 +28,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       id,
       required,
       disabled,
+      size,
       ...props
     },
     ref,
@@ -38,12 +39,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     const containerStyles = ["relative", fullWidth ? "w-full" : "w-auto"].join(" ");
 
+    const sizeClass = size === "sm" ? "py-1 text-sm" : size === "lg" ? "py-3 text-lg" : "py-2 text-base";
+
     const inputStyles = [
       "block",
       "w-full",
       "px-4",
-      "py-2",
-      "text-base",
+      sizeClass,
       "border",
       "rounded-lg",
       "transition-all",

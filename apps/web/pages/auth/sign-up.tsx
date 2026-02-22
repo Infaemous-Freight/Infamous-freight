@@ -13,7 +13,7 @@ interface SignUpFormData {
   company: string;
 }
 
-export default function SignUpPage() {
+export default function SignUpPage(): React.ReactElement {
   const router = useRouter();
   const [formData, setFormData] = useState<SignUpFormData>({
     email: "",

@@ -57,7 +57,7 @@ export function OptimizedImage({
   enableBlur = false,
   quality = 85,
   ...props
-}: OptimizedImageProps) {
+}: OptimizedImageProps): React.ReactElement {
   return (
     <Image
       {...props}
@@ -88,7 +88,7 @@ interface AvatarImageProps {
   priority?: boolean;
 }
 
-export function AvatarImage({ src, alt, size = 48, priority = false }: AvatarImageProps) {
+export function AvatarImage({ src, alt, size = 48, priority = false }: AvatarImageProps): React.ReactElement {
   return (
     <OptimizedImage
       src={src}
@@ -123,7 +123,7 @@ interface HeroImageProps {
   className?: string;
 }
 
-export function HeroImage({ src, alt, className }: HeroImageProps) {
+export function HeroImage({ src, alt, className }: HeroImageProps): React.ReactElement {
   return (
     <OptimizedImage
       src={src}
@@ -162,7 +162,7 @@ interface ThumbnailImageProps {
   height?: number;
 }
 
-export function ThumbnailImage({ src, alt, width = 300, height = 200 }: ThumbnailImageProps) {
+export function ThumbnailImage({ src, alt, width = 300, height = 200 }: ThumbnailImageProps): React.ReactElement {
   return (
     <OptimizedImage
       src={src}

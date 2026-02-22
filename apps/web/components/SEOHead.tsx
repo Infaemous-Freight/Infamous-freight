@@ -27,7 +27,7 @@ export default function SEOHead({
     "route optimization",
     "AI logistics",
   ],
-}: SEOHeadProps) {
+}: SEOHeadProps): React.ReactElement {
   const router = useRouter();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://infamous-freight-as-3gw.fly.dev";
   const fullUrl = `${siteUrl}${router.asPath}`;

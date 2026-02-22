@@ -17,7 +17,7 @@ export default function OptimizedImage({
   height = 600,
   priority = false,
   className,
-}: OptimizedImageProps) {
+}: OptimizedImageProps): React.ReactElement {
   const [isLoading, setIsLoading] = useState(true);
 
   return (

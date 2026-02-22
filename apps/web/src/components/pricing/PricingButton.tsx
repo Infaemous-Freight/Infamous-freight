@@ -19,6 +19,7 @@ export function PricingButton({
 
   return (
     <Link className={`${base} ${styles}`} href={href}>
+      {/* @ts-expect-error - React 19 ReactNode type incompatibility */}
       {children}
     </Link>
   );

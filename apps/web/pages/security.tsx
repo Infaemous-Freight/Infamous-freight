@@ -21,7 +21,7 @@ const securityPoints = [
   },
 ];
 
-export default function SecurityPage() {
+export default function SecurityPage(): React.ReactElement {
   useEffect(() => {
     trackEvent("security_view");
   }, []);

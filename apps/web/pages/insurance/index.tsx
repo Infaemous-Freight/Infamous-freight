@@ -4,7 +4,7 @@
  * Page: Insurance Center Dashboard
  */
 
-export default function InsuranceDashboard() {
+export default function InsuranceDashboard(): React.ReactElement {
   return (
     <main style={{ padding: 24, fontFamily: "sans-serif" }}>
       <header style={{ marginBottom: 24 }}>

@@ -5,6 +5,6 @@ const AvatarManager = dynamic(() => import("../../components/AvatarManager"), {
   loading: () => <main style={{ padding: 24 }}>Loading avatar settings…</main>,
 });
 
-export default function AvatarSettingsPage() {
+export default function AvatarSettingsPage(): React.ReactElement {
   return <AvatarManager />;
 }

@@ -45,7 +45,7 @@ const STAKEHOLDER_DISPLAY = {
   CTO: "🎯 CTO",
 };
 
-export default function SignOffDashboard() {
+export default function SignOffDashboard(): React.ReactElement {
   const [signoffs, setSignoffs] = useState<SignOffRequest[]>([]);
   const [filter, setFilter] = useState<"all" | "pending" | "completed">("all");
   const [selectedSignoff, setSelectedSignoff] = useState<SignOffRequest | null>(null);

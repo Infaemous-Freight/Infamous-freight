@@ -274,7 +274,7 @@ export const generateAccessibleId = (prefix: string = "a11y"): string => {
   return `${prefix}-${idCounter}-${Date.now()}`;
 };
 
-export default {
+const accessibility: Record<string, unknown> = {
   getAriaAttributes,
   meetsContrastRequirement,
   getContrastRatio,
@@ -293,3 +293,5 @@ export default {
   validateFieldAccessibility,
   generateAccessibleId,
 };
+
+export default accessibility;

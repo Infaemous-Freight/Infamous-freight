@@ -15,7 +15,7 @@ interface ResetPasswordState {
   message: string | null;
 }
 
-export default function ResetPasswordPage() {
+export default function ResetPasswordPage(): React.ReactElement {
   const router = useRouter();
   const [state, setState] = useState<ResetPasswordState>({
     step: "request",

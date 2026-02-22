@@ -21,7 +21,7 @@ const categories = [
   { value: "general", label: "💬 General Feedback" },
 ];
 
-export default function FeedbackWidget() {
+export default function FeedbackWidget(): React.ReactElement {
   const [isOpen, setIsOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState<FeedbackForm>({

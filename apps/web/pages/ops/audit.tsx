@@ -13,7 +13,7 @@ type AuditEvent = {
   metadata: Record<string, unknown> | null;
 };
 
-export default function OpsAuditPage() {
+export default function OpsAuditPage(): React.ReactElement {
   const [events, setEvents] = useState<AuditEvent[]>([]);
   const [q, setQ] = useState("");
   const [action, setAction] = useState("");

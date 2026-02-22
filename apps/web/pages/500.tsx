@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 
-export default function Custom500() {
+export default function Custom500(): React.ReactElement {
   return (
     <>
       <Head>

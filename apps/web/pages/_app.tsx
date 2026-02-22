@@ -21,7 +21,7 @@ import "../src/styles/navigation.css";
 // Initialize Sentry is handled by next.config.mjs automatically
 // No manual initialization needed here
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps): React.ReactElement {
   const router = useRouter();
   const isProduction = process.env.NEXT_PUBLIC_ENV === "production";
 
@@ -117,6 +117,7 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [isProduction]);
 
   return (
+    // @ts-expect-error - Sentry ErrorBoundary type incompatibility with React 19
     <SentryErrorBoundary>
       <AuthProvider>
         <GlobalLayout>

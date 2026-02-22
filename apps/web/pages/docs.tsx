@@ -9,7 +9,7 @@ const docsSections = [
   "Security and audit logging",
 ];
 
-export default function DocsPage() {
+export default function DocsPage(): React.ReactElement {
   useEffect(() => {
     trackEvent("docs_view");
   }, []);

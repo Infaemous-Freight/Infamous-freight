@@ -33,7 +33,7 @@ export class TestHelpers {
 
   // Performance testing
   static async measurePerformance<T>(
-    name: string,
+    _name: string,
     fn: () => Promise<T>,
   ): Promise<{ result: T; duration: number }> {
     const start = performance.now();

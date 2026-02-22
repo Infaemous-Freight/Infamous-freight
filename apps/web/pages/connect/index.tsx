@@ -9,7 +9,7 @@ type ConnectStatus = {
   payouts_enabled?: boolean;
 };
 
-export default function ConnectPage() {
+export default function ConnectPage(): React.ReactElement {
   const [token, setToken] = useState("");
   const [status, setStatus] = useState<ConnectStatus | null>(null);
   const [err, setErr] = useState("");

@@ -37,7 +37,7 @@ interface ValidationStatus {
   anomalies: Anomaly[];
 }
 
-export default function ValidationDashboard() {
+export default function ValidationDashboard(): React.ReactElement {
   const [status, setStatus] = useState<ValidationStatus | null>(null);
   const [metrics, setMetrics] = useState<ValidationMetrics[]>([]);
   const [autoRefresh, setAutoRefresh] = useState(true);

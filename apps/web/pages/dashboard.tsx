@@ -256,7 +256,7 @@ function DashboardContent() {
   );
 }
 
-export default function DashboardPage() {
+export default function DashboardPage(): React.ReactElement {
   return (
     <ProtectedRoute>
       <DashboardContent />

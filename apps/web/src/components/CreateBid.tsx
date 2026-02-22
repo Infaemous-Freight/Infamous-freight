@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 
-export default function CreateBid({ loadId }: { loadId: string }) {
+export default function CreateBid({ loadId }: { loadId: string }): React.ReactElement {
   const [amount, setAmount] = useState("0");
   const [message, setMessage] = useState("");
   const [err, setErr] = useState<string | null>(null);
@@ -28,6 +28,7 @@ export default function CreateBid({ loadId }: { loadId: string }) {
     }
     const amountCents = Math.round(parsedAmount * 100);
 
+    // @ts-expect-error - Supabase type definitions incompatibility
     const { error } = await supabase.from("bids").insert({
       load_id: loadId,
       carrier_id: u.user.id,

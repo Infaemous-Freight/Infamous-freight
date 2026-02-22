@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { Session } from "@supabase/supabase-js";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 
-export default function AuthButton() {
+export default function AuthButton(): React.ReactElement {
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
