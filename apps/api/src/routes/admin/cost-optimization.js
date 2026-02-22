@@ -305,7 +305,7 @@ function generateRecommendations(optimizations, cacheStats, batchStats) {
             title: "Increase cache hit rate",
             description: `Current hit rate is ${cacheStats.hitRate}, target is 40-60%`,
             action: "Review cache TTL configuration and increase for stable endpoints",
-            potential Savings: "$15-20/month",
+            potentialSavings: "$15-20/month",
         });
     }
 

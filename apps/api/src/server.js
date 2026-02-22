@@ -2,15 +2,15 @@
 require("./instrument.js");
 
 // Load configuration module
-const config = require("./config/loadenv");
+const envConfig = require("./config/loadenv");
 
 // Initialize Datadog APM early, before requiring Express internals
-if (config.DD_TRACE_ENABLED === "true") {
+if (envConfig.DD_TRACE_ENABLED === "true") {
   try {
     require("dd-trace").init({
-      service: config.DD_SERVICE || "infamous-freight-api",
-      env: config.DD_ENV || config.NODE_ENV || "development",
-      runtimeMetrics: config.DD_RUNTIME_METRICS_ENABLED === "true",
+      service: envConfig.DD_SERVICE || "infamous-freight-api",
+      env: envConfig.DD_ENV || envConfig.NODE_ENV || "development",
+      runtimeMetrics: envConfig.DD_RUNTIME_METRICS_ENABLED === "true",
     });
   } catch (e) {
     // Fail open if dd-trace is not installed

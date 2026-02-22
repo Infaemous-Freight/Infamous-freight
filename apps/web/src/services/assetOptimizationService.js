@@ -26,7 +26,7 @@ class AssetOptimizationService {
     /**
      * Optimize image for multiple formats and sizes
      */
-    async optimizeImage(inputPath, outputPrefix) {
+    async optimizeImage(inputPath, _outputPrefix) {
         try {
             const originalBuffer = await fs.readFile(inputPath);
             const originalSize = originalBuffer.length;
