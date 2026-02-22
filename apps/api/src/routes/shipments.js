@@ -22,6 +22,11 @@ const {
 const { cacheMiddleware, invalidateCache } = require("../middleware/cache");
 const { exportToCSV, exportToPDF, exportToJSON } = require("../services/export");
 const { emitShipmentUpdate } = require("../services/websocket");
+const {
+  validateShipmentUpdate,
+  logStatusChange,
+  getShipmentStateInfo,
+} = require("../services/shipmentValidator");
 
 const router = express.Router();
 
@@ -237,9 +242,17 @@ router.patch(
       const { status, driverId } = req.body;
       const updates = {};
 
+      // Fetch full shipment for validation
       const existing = await prisma.shipment.findUnique({
         where: { id: req.params.id },
-        select: { id: true, userId: true },
+        select: {
+          id: true,
+          userId: true,
+          status: true,
+          driverId: true,
+          trackingId: true,
+          createdAt: true,
+        },
       });
 
       if (!existing) {
@@ -252,6 +265,30 @@ router.patch(
 
       if (status !== undefined) updates.status = status;
       if (driverId !== undefined) updates.driverId = driverId;
+
+      // Validate shipment state machine and business rules
+      const validation = validateShipmentUpdate(existing, updates);
+      if (!validation.valid) {
+        const Sentry = require("@sentry/node");
+        Sentry.addBreadcrumb({
+          category: "validation",
+          message: "Invalid shipment update",
+          level: "warning",
+          data: {
+            shipmentId: req.params.id,
+            errors: validation.errors,
+            attempted: updates,
+          },
+        });
+
+        return res.status(400).json({
+          ok: false,
+          error: "Invalid shipment state transition",
+          details: validation.errors,
+          current: existing.status,
+          requested: updates.status,
+        });
+      }
 
       const Sentry = require("@sentry/node");
       Sentry.addBreadcrumb({
@@ -291,6 +328,15 @@ router.patch(
                 }),
                 provider: "system",
               },
+            });
+
+            // Audit log status change
+            logStatusChange({
+              shipmentId: shipment.id,
+              fromStatus: existing.status,
+              toStatus: status,
+              userId: req.user?.sub,
+              reason: "Status update via API",
             });
           }
 
