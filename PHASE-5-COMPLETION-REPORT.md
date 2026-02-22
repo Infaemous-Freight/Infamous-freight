@@ -180,14 +180,14 @@ CANCELLED   → PENDING (reactivation)
 
 ## 🎁 Business Value Delivered
 
-| Category | Impact | Result |
-|----------|--------|--------|
-| **Data Integrity** | Prevents invalid shipment states | Safe state machine ✅ |
-| **User Experience** | Graceful error handling | No white screen crashes ✅ |
-| **Performance** | Eliminates N+1 queries | 40-60% latency reduction ✅ |
-| **Observability** | Request tracing + logging | Full audit trail ✅ |
-| **Reliability** | Error tracking with Sentry | Better debugging ✅ |
-| **Testing** | Critical path coverage | 20+ new unit tests ✅ |
+| Category            | Impact                           | Result                     |
+| ------------------- | -------------------------------- | -------------------------- |
+| **Data Integrity**  | Prevents invalid shipment states | Safe state machine ✅       |
+| **User Experience** | Graceful error handling          | No white screen crashes ✅  |
+| **Performance**     | Eliminates N+1 queries           | 40-60% latency reduction ✅ |
+| **Observability**   | Request tracing + logging        | Full audit trail ✅         |
+| **Reliability**     | Error tracking with Sentry       | Better debugging ✅         |
+| **Testing**         | Critical path coverage           | 20+ new unit tests ✅       |
 
 ---
 
