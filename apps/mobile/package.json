@@ -12,7 +12,7 @@
     "build": "expo build",
     "build:android": "eas build --platform android",
     "build:ios": "eas build --platform ios",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc -p tsconfig.jest.json --noEmit",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "jest"
   },
@@ -33,8 +33,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.9",
+    "@eslint/js": "^9.39.2",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
     "@types/react": "^18.2.55",
     "@types/react-native": "^0.73.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
     "typescript": "^5.3.3"
   }
 }
