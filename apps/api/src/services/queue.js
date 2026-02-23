@@ -7,6 +7,7 @@
 const { Queue, Worker, QueueScheduler } = require("bullmq");
 const Redis = require("ioredis");
 const { logger } = require("../middleware/logger");
+const prisma = require("../lib/prisma");
 
 // Create Redis connection
 const redisConnection = new Redis(process.env.REDIS_URL || "redis://localhost:6379", {
@@ -290,10 +291,17 @@ function startAuditWorker() {
           userId: job.data.userId,
         });
 
-        // TODO: Persist audit log to database
-        // await prisma.auditLog.create({
-        //   data: job.data,
-        // });
+        // Persist audit log to database
+        await prisma.auditLog.create({
+          data: {
+            userId: job.data.userId,
+            action: job.data.action,
+            resource: job.data.resource,
+            changes: job.data.changes,
+            metadata: job.data.metadata,
+            timestamp: job.data.timestamp ? new Date(job.data.timestamp) : new Date(),
+          },
+        });
 
         job.progress(100);
         return { logged: true };

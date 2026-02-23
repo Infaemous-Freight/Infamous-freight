@@ -6,6 +6,7 @@
 
 const { logger } = require("../middleware/logger");
 const { queueAuditLog } = require("./queue");
+const prisma = require("../lib/prisma");
 
 /**
  * Audit event types
@@ -274,29 +275,40 @@ async function logSystemError(error, context = {}) {
  */
 async function generateAuditReport(startDate, endDate, filters = {}) {
   try {
-    // TODO: Query audit logs from database
-    // const report = await prisma.auditLog.findMany({
-    //   where: {
-    //     timestamp: {
-    //       gte: startDate,
-    //       lte: endDate,
-    //     },
-    //     ...filters,
-    //   },
-    //   orderBy: { timestamp: 'desc' },
-    // });
+    const where = {
+      timestamp: {
+        gte: new Date(startDate),
+        lte: new Date(endDate),
+      },
+      ...filters,
+    };
+
+    const report = await prisma.auditLog.findMany({
+      where,
+      orderBy: { timestamp: "desc" },
+    });
 
     logger.info("Generated audit report", {
       startDate,
       endDate,
-      // count: report.length,
+      count: report.length,
     });
 
     return {
       startDate,
       endDate,
-      // events: report,
-      // summary: generateAuditSummary(report),
+      events: report,
+      summary: {
+        totalEvents: report.length,
+        eventsByAction: report.reduce((acc, log) => {
+          acc[log.action] = (acc[log.action] || 0) + 1;
+          return acc;
+        }, {}),
+        eventsByResource: report.reduce((acc, log) => {
+          if (log.resource) acc[log.resource] = (acc[log.resource] || 0) + 1;
+          return acc;
+        }, {}),
+      },
     };
   } catch (error) {
     logger.error("Failed to generate audit report", { error: error.message });
@@ -310,19 +322,30 @@ async function generateAuditReport(startDate, endDate, filters = {}) {
  */
 async function exportAuditLogs(userId, format = "json", startDate, endDate) {
   try {
-    // TODO: Implement export
+    const where = { userId };
+    if (startDate || endDate) {
+      where.timestamp = {};
+      if (startDate) where.timestamp.gte = new Date(startDate);
+      if (endDate) where.timestamp.lte = new Date(endDate);
+    }
+
+    const logs = await prisma.auditLog.findMany({
+      where,
+      orderBy: { timestamp: "desc" },
+    });
+
     // Log the export action
-    await logDataExport(userId, "audit_logs", "N/A", "local");
+    await logDataExport(userId, "audit_logs", logs.length, "local");
 
     logger.info("Audit logs exported", {
       userId,
       format,
-      // count: logs.length,
+      count: logs.length,
     });
 
     return {
       format,
-      data: [], // TODO: actual data
+      data: logs,
     };
   } catch (error) {
     logger.error("Failed to export audit logs", { error: error.message });
@@ -338,14 +361,42 @@ async function getAuditStats(days = 30) {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
-    // TODO: Query audit logs
+    const logs = await prisma.auditLog.findMany({
+      where: { timestamp: { gte: startDate } },
+      select: { action: true, resource: true, userId: true },
+    });
+
+    const eventsByType = logs.reduce((acc, log) => {
+      acc[log.action] = (acc[log.action] || 0) + 1;
+      return acc;
+    }, {});
+
+    const userCounts = logs.reduce((acc, log) => {
+      acc[log.userId] = (acc[log.userId] || 0) + 1;
+      return acc;
+    }, {});
+
+    const resourceCounts = logs.reduce((acc, log) => {
+      if (log.resource) acc[log.resource] = (acc[log.resource] || 0) + 1;
+      return acc;
+    }, {});
+
+    const securityActions = ["failed_login", "rate_limit_exceeded", "unauthorized_access", "invalid_token"];
+    const securityEvents = logs.filter((log) => securityActions.includes(log.action)).length;
+
     const stats = {
       period: `Last ${days} days`,
-      totalEvents: 0,
-      eventsByType: {},
-      topUsers: [],
-      topResources: [],
-      securityEvents: 0,
+      totalEvents: logs.length,
+      eventsByType,
+      topUsers: Object.entries(userCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([userId, count]) => ({ userId, count })),
+      topResources: Object.entries(resourceCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10)
+        .map(([resource, count]) => ({ resource, count })),
+      securityEvents,
     };
 
     return stats;
@@ -364,20 +415,19 @@ async function cleanupOldAuditLogs(daysToKeep = 365) {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
 
-    // TODO: Delete old audit logs
-    // const result = await prisma.auditLog.deleteMany({
-    //   where: {
-    //     timestamp: { lt: cutoffDate },
-    //   },
-    // });
+    const result = await prisma.auditLog.deleteMany({
+      where: {
+        timestamp: { lt: cutoffDate },
+      },
+    });
 
     logger.info("Cleaned up audit logs", {
       daysToKeep,
       cutoffDate,
-      // deleted: result.count,
+      deleted: result.count,
     });
 
-    return { success: true };
+    return { success: true, deleted: result.count };
   } catch (error) {
     logger.error("Failed to cleanup audit logs", { error: error.message });
     throw error;

@@ -254,10 +254,22 @@ function mapStripeStatus(stripeStatus) {
 
 /**
  * Find user by Stripe payment intent (for missing local records)
+ * Retrieves the payment intent from Stripe and extracts userId from metadata
  */
 async function findUserByStripePaymentIntent(paymentIntentId) {
-  // TODO: Implement lookup in Stripe metadata or payment records
-  return null;
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    if (paymentIntent.metadata && paymentIntent.metadata.userId) {
+      return paymentIntent.metadata.userId;
+    }
+    return null;
+  } catch (error) {
+    logger.warn("Failed to retrieve payment intent from Stripe", {
+      paymentIntentId,
+      error: error.message,
+    });
+    return null;
+  }
 }
 
 module.exports = {

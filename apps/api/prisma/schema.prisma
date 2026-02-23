@@ -1811,6 +1811,44 @@ model UserConsent {
 }
 
 // ============================================
+// GENERAL AUDIT LOG (cross-service)
+// ============================================
+
+model AuditLog {
+  id             String   @id @default(uuid())
+  userId         String
+  action         String
+  resource       String?
+  resourceType   String?
+  resourceId     String?
+  recordId       String?
+  entityType     String?
+  entityId       String?
+  method         String?
+  status         String?
+  ipAddress      String?
+  userAgent      String?
+  reason         String?
+  changeType     String?
+  dataSnapshot   String?
+  beforeSnapshot String?
+  afterSnapshot  String?
+  details        String?
+  metadata       Json?
+  changes        Json?
+  timestamp      DateTime @default(now())
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([timestamp])
+  @@index([createdAt])
+  @@index([userId, action])
+  @@map("audit_logs")
+}
+
+// ============================================
 // COMPLIANCE AUDITS & REPORTS (TIER 1)
 // ============================================
 
