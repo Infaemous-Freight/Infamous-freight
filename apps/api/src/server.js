@@ -61,6 +61,7 @@ const aiSimRoutes = require("./routes/aiSim.internal");
 const phase10AiRoutes = require("./routes/phase10.ai");
 const usersRoutes = require("./routes/users");
 const shipmentsRoutes = require("./routes/shipments");
+const recommendationsRoutes = require("./routes/recommendations");
 const analyticsRoutes = require("./routes/analytics");
 const phase11AnalyticsRoutes = require("./routes/phase11.analytics");
 const metricsRoutes = require("./routes/metrics");
@@ -234,6 +235,7 @@ app.use("/api", billingPaymentsRoutes);
 app.use("/api", voiceRoutes);
 app.use("/api", usersRoutes);
 app.use("/api", shipmentsRoutes);
+app.use("/api/recommendations", recommendationsRoutes);
 app.use("/api/v2/shipments", require("./routes/v2/shipments")); // API v2 with breaking changes
 app.use("/api/loads", loadboardRoutes);
 app.use("/api/webhooks", webhookRoutes);

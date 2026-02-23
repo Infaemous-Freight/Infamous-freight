@@ -11,6 +11,7 @@
 
 const express = require("express");
 const router = express.Router();
+const { prisma } = require("../db/prisma");
 const recommendationService = require("../services/recommendationService");
 const { authenticate, requireScope, limiters, auditLog } = require("../middleware/security");
 const { body, param, query, validationResult } = require("express-validator");
