@@ -1,55 +1,21 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
-CREATE TABLE tenants (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  company_name TEXT NOT NULL,
-  subscription_tier TEXT DEFAULT 'starter',
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE,
-  email TEXT UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL,
-  role TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE brokers (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tenant_id UUID REFERENCES tenants(id),
-  company_name TEXT,
-  mc_number TEXT,
-  credit_score INT DEFAULT 70
-);
-
-CREATE TABLE loads (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tenant_id UUID REFERENCES tenants(id),
-  broker_id UUID REFERENCES brokers(id),
-  rate NUMERIC,
-  mileage NUMERIC,
-  status TEXT DEFAULT 'Draft',
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE invoices (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tenant_id UUID REFERENCES tenants(id),
-  load_id UUID REFERENCES loads(id),
-  amount NUMERIC,
-  status TEXT DEFAULT 'Pending',
-  due_date DATE,
-  paid_at TIMESTAMP
-);
-
-CREATE TABLE audit_logs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tenant_id UUID,
-  user_id UUID,
-  action_type TEXT,
-  entity_type TEXT,
-  entity_id UUID,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+-- -----------------------------------------------------------------------------
+-- DEPRECATED SCHEMA FILE
+--
+-- This project manages its PostgreSQL schema via:
+--   - Prisma schema + migrations: apps/api/prisma/schema.prisma
+--   - Supabase migrations:        supabase/migrations/
+--
+-- To avoid schema drift and confusion about the source of truth, this
+-- standalone schema.sql file is intentionally kept free of executable DDL.
+--
+-- If you need to change the database schema:
+--   1. Update apps/api/prisma/schema.prisma
+--   2. Generate a Prisma migration (see CONTRIBUTING / QUICK_REFERENCE)
+--   3. For Supabase-managed resources, add a new migration under
+--      supabase/migrations/
+--
+-- Do NOT reintroduce CREATE TABLE / ALTER TABLE statements here for the
+-- production application database.
+--
+-- You may use this file for ad-hoc notes or example queries only.
+-- -----------------------------------------------------------------------------
