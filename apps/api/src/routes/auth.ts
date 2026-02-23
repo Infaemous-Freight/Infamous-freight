@@ -4,15 +4,52 @@ import { pool } from "../lib/db";
 
 export default async function authRoutes(app: FastifyInstance) {
   app.post("/register", async (req: any, reply) => {
-    const { tenantId, email, password, role = "dispatcher" } = req.body;
+    const { email, password, role = "dispatcher", tenantName } = req.body;
+
+    // Basic input validation
+    if (typeof email !== "string" || !email.includes("@")) {
+      return reply.code(400).send({ error: "Invalid email" });
+    }
+
+    if (typeof password !== "string" || password.length < 8) {
+      return reply.code(400).send({ error: "Password must be at least 8 characters long" });
+    }
+
+    const allowedRoles = ["dispatcher", "driver", "admin"];
+    if (typeof role !== "string" || !allowedRoles.includes(role)) {
+      return reply.code(400).send({ error: "Invalid role" });
+    }
+
+    if (typeof tenantName !== "string" || tenantName.trim().length === 0) {
+      return reply.code(400).send({ error: "Invalid tenant name" });
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const { rows } = await pool.query(
-      "INSERT INTO users (tenant_id, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, tenant_id, email, role",
-      [tenantId, email, passwordHash, role],
-    );
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
 
-    reply.code(201).send(rows[0]);
+      // Create a new tenant for self-signup instead of trusting a caller-supplied tenantId
+      const tenantResult = await client.query(
+        "INSERT INTO tenants (name) VALUES ($1) RETURNING id",
+        [tenantName.trim()],
+      );
+      const tenantId = tenantResult.rows[0].id;
+
+      const { rows } = await client.query(
+        "INSERT INTO users (tenant_id, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, tenant_id, email, role",
+        [tenantId, email, passwordHash, role],
+      );
+
+      await client.query("COMMIT");
+      reply.code(201).send(rows[0]);
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw err;
+    } finally {
+      client.release();
+    }
   });
 
   app.post("/login", async (req: any, reply) => {
