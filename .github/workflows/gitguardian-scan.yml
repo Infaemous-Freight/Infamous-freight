@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main, develop]
 
+concurrency:
+  group: gitguardian-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
   security-events: write
