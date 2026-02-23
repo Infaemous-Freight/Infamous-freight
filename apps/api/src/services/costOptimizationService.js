@@ -2,8 +2,16 @@
 // Tracks AWS/GCP spending and identifies cost reduction opportunities
 
 const logger = require('./logger');
-const AWS = require('aws-sdk');
-const { CostExplorer } = require('aws-sdk');
+const {
+    CostExplorerClient,
+    GetCostAndUsageCommand,
+} = require('@aws-sdk/client-cost-explorer');
+const {
+    CloudWatchClient,
+    GetMetricStatisticsCommand,
+} = require('@aws-sdk/client-cloudwatch');
+const { EC2Client, DescribeInstancesCommand } = require('@aws-sdk/client-ec2');
+const { RDSClient } = require('@aws-sdk/client-rds');
 
 class CostOptimizationService {
     constructor(config = {}) {
@@ -12,10 +20,24 @@ class CostOptimizationService {
         this.forecastingEnabled = config.forecastingEnabled !== false;
         this.anomalyThreshold = config.anomalyThreshold || 1.2; // 20% increase triggers alert
 
-        this.costExplorer = new CostExplorer({ region: this.awsRegion });
-        this.cloudWatch = new AWS.CloudWatch({ region: this.awsRegion });
-        this.ec2 = new AWS.EC2({ region: this.awsRegion });
-        this.rds = new AWS.RDS({ region: this.awsRegion });
+        const credentials =
+            process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
+                ? {
+                    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+                    sessionToken: process.env.AWS_SESSION_TOKEN,
+                }
+                : undefined;
+
+        const clientOptions = {
+            region: this.awsRegion,
+            ...(credentials ? { credentials } : {}),
+        };
+
+        this.costExplorer = new CostExplorerClient(clientOptions);
+        this.cloudWatch = new CloudWatchClient(clientOptions);
+        this.ec2 = new EC2Client(clientOptions);
+        this.rds = new RDSClient(clientOptions);
     }
 
     /**
@@ -36,7 +58,9 @@ class CostOptimizationService {
                 ],
             };
 
-            const response = await this.costExplorer.getCostAndUsage(params).promise();
+            const response = await this.costExplorer.send(
+                new GetCostAndUsageCommand(params)
+            );
 
             const costs = {
                 total: 0,
@@ -191,7 +215,7 @@ class CostOptimizationService {
             const recommendations = [];
 
             // Check EC2 instances
-            const ec2Instances = await this.ec2.describeInstances().promise();
+            const ec2Instances = await this.ec2.send(new DescribeInstancesCommand({}));
 
             for (const reservation of ec2Instances.Reservations) {
                 for (const instance of reservation.Instances) {
@@ -238,11 +262,15 @@ class CostOptimizationService {
                 Statistics: ['Average'],
             };
 
-            const cpuResponse = await this.cloudWatch.getMetricStatistics(params).promise();
+            const cpuResponse = await this.cloudWatch.send(
+                new GetMetricStatisticsCommand(params)
+            );
 
             // Network metrics
             params.MetricName = 'NetworkIn';
-            const networkResponse = await this.cloudWatch.getMetricStatistics(params).promise();
+            const networkResponse = await this.cloudWatch.send(
+                new GetMetricStatisticsCommand(params)
+            );
 
             const cpuValues = cpuResponse.Datapoints.map((d) => d.Average);
             const networkValues = networkResponse.Datapoints.map((d) => d.Average);

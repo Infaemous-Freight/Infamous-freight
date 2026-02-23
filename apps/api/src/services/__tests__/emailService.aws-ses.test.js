@@ -6,27 +6,31 @@
 
 const emailService = require("../emailService.aws-ses");
 
-// Mock AWS SDK
-jest.mock("aws-sdk", () => {
-    const mockSendEmail = jest.fn().mockReturnValue({
-        promise: jest.fn().mockResolvedValue({ MessageId: "mock-message-id-123" }),
-    });
-    const mockGetSendQuota = jest.fn().mockReturnValue({
-        promise: jest.fn().mockResolvedValue({
-            Max24HourSend: 200,
-            SentLast24Hours: 50,
-            MaxSendRate: 1,
-        }),
+// Mock AWS SDK v3 (SES)
+jest.mock("@aws-sdk/client-ses", () => {
+    const mockSend = jest.fn((command) => {
+        if (command && command.__type === "GetSendQuotaCommand") {
+            return Promise.resolve({
+                Max24HourSend: 200,
+                SentLast24Hours: 50,
+                MaxSendRate: 1,
+            });
+        }
+
+        return Promise.resolve({ MessageId: "mock-message-id-123" });
     });
 
     return {
-        SES: jest.fn().mockImplementation(() => ({
-            sendEmail: mockSendEmail,
-            getSendQuota: mockGetSendQuota,
+        SESClient: jest.fn().mockImplementation(() => ({
+            send: mockSend,
         })),
-        config: {
-            update: jest.fn(),
-        },
+        SendEmailCommand: jest.fn((input) => ({ __type: "SendEmailCommand", input })),
+        GetSendQuotaCommand: jest.fn(() => ({ __type: "GetSendQuotaCommand" })),
+        VerifyEmailIdentityCommand: jest.fn((input) => ({
+            __type: "VerifyEmailIdentityCommand",
+            input,
+        })),
+        __mockSesSend: mockSend,
     };
 });
 
@@ -83,13 +87,9 @@ describe("AWS SES Email Service", () => {
         });
 
         it("should handle AWS SES errors", async () => {
-            const AWS = require("aws-sdk");
+            const { __mockSesSend } = require("@aws-sdk/client-ses");
             const mockError = new Error("AWS SES Error");
-            AWS.SES.mockImplementationOnce(() => ({
-                sendEmail: jest.fn().mockReturnValue({
-                    promise: jest.fn().mockRejectedValue(mockError),
-                }),
-            }));
+            __mockSesSend.mockRejectedValueOnce(mockError);
 
             const result = await emailService.sendEmail({
                 to: "recipient@example.com",
@@ -177,19 +177,15 @@ describe("AWS SES Email Service", () => {
         });
 
         it("should handle partial batch failures", async () => {
-            const AWS = require("aws-sdk");
+            const { __mockSesSend } = require("@aws-sdk/client-ses");
             let callCount = 0;
-            AWS.SES.mockImplementation(() => ({
-                sendEmail: jest.fn().mockReturnValue({
-                    promise: jest.fn().mockImplementation(() => {
-                        callCount++;
-                        if (callCount === 2) {
-                            return Promise.reject(new Error("Failed email"));
-                        }
-                        return Promise.resolve({ MessageId: `msg-${callCount}` });
-                    }),
-                }),
-            }));
+            __mockSesSend.mockImplementation(() => {
+                callCount++;
+                if (callCount === 2) {
+                    return Promise.reject(new Error("Failed email"));
+                }
+                return Promise.resolve({ MessageId: `msg-${callCount}` });
+            });
 
             const emails = [
                 { to: "recipient1@example.com", subject: "Email 1", text: "Body 1" },
@@ -218,12 +214,8 @@ describe("AWS SES Email Service", () => {
         });
 
         it("should handle quota retrieval errors", async () => {
-            const AWS = require("aws-sdk");
-            AWS.SES.mockImplementationOnce(() => ({
-                getSendQuota: jest.fn().mockReturnValue({
-                    promise: jest.fn().mockRejectedValue(new Error("Quota error")),
-                }),
-            }));
+            const { __mockSesSend } = require("@aws-sdk/client-ses");
+            __mockSesSend.mockRejectedValueOnce(new Error("Quota error"));
 
             const quota = await emailService.getSendQuota();
 

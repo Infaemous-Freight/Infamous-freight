@@ -40,6 +40,10 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.72.1",
     "@aws-sdk/client-s3": "^3.995.0",
+    "@aws-sdk/client-cloudwatch": "^3.995.0",
+    "@aws-sdk/client-cost-explorer": "^3.995.0",
+    "@aws-sdk/client-ec2": "^3.995.0",
+    "@aws-sdk/client-rds": "^3.995.0",
     "@aws-sdk/client-ses": "^3.995.0",
     "@aws-sdk/s3-request-presigner": "^3.995.0",
     "@bull-board/api": "^6.16.4",
@@ -53,7 +57,6 @@
     "@sendgrid/mail": "^8.1.6",
     "@sentry/node": "^10.38.0",
     "@sentry/profiling-node": "^10.38.0",
-    "aws-sdk": "^2.1693.0",
     "axios": "^1.13.5",
     "bullmq": "^5.67.2",
     "compression": "^1.8.1",

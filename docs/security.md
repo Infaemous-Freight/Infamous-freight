@@ -297,6 +297,10 @@ Every security-relevant event is logged:
 - Critical vulnerabilities patched within 24 hours
 - Lockfiles (`pnpm-lock.yaml`) committed and verified in CI
 
+### Dependency Advisory Notes
+
+- React Native CLI advisory on `ip` is addressed by pinning the CLI toolchain and `ip` via `pnpm.overrides` until upstream publishes a permanent fix in the mobile stack.
+
 ### Incident Response
 
 **Severity Levels:**

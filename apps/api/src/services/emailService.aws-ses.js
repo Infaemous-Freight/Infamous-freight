@@ -4,7 +4,12 @@
  * Free tier: 62,000 emails/month via AWS SES
  */
 
-const AWS = require("aws-sdk");
+const {
+    SESClient,
+    SendEmailCommand,
+    GetSendQuotaCommand,
+    VerifyEmailIdentityCommand,
+} = require("@aws-sdk/client-ses");
 const logger = require("../utils/logger");
 
 // Initialize AWS SES
@@ -15,12 +20,15 @@ const SES_FROM_NAME = process.env.AWS_SES_FROM_NAME || process.env.SENDGRID_FROM
 let sesClient;
 
 if (process.env.AWS_SES_ACCESS_KEY && process.env.AWS_SES_SECRET_KEY) {
-    AWS.config.update({
+    const options = {
         region: SES_REGION,
-        accessKeyId: process.env.AWS_SES_ACCESS_KEY,
-        secretAccessKey: process.env.AWS_SES_SECRET_KEY,
-    });
-    sesClient = new AWS.SES({ apiVersion: "2010-12-01" });
+        credentials: {
+            accessKeyId: process.env.AWS_SES_ACCESS_KEY,
+            secretAccessKey: process.env.AWS_SES_SECRET_KEY,
+        },
+    };
+
+    sesClient = new SESClient(options);
     logger.info("AWS SES email service initialized", { region: SES_REGION });
 } else {
     logger.warn("AWS SES credentials not configured - email service disabled");
@@ -69,7 +77,7 @@ async function sendEmail({ to, subject, text, html }) {
             },
         };
 
-        const result = await sesClient.sendEmail(params).promise();
+        const result = await sesClient.send(new SendEmailCommand(params));
 
         logger.info("Email sent successfully via AWS SES", {
             to: recipients,
@@ -277,7 +285,7 @@ async function verifyEmailAddress(email) {
             EmailAddress: email,
         };
 
-        const result = await sesClient.verifyEmailIdentity(params).promise();
+        const result = await sesClient.send(new VerifyEmailIdentityCommand(params));
         logger.info("Email verification initiated", { email });
         return result;
     } catch (error) {
@@ -296,7 +304,7 @@ async function getSendQuota() {
     }
 
     try {
-        const result = await sesClient.getSendQuota().promise();
+        const result = await sesClient.send(new GetSendQuotaCommand({}));
         return {
             max24HourSend: result.Max24HourSend,
             maxSendRate: result.MaxSendRate,
