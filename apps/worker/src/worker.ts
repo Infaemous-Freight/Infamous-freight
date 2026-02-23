@@ -20,26 +20,39 @@ new Worker(
 
     const doc = new PDFDocument();
     const buffers: Buffer[] = [];
-    doc.on("data", buffers.push.bind(buffers));
-    doc.on("end", async () => {
-      const pdf = Buffer.concat(buffers);
 
-      const s3 = new AWS.S3();
-      await s3
-        .putObject({
-          Bucket: process.env.S3_BUCKET!,
-          Key: `invoices/${invoiceId}.pdf`,
-          Body: pdf,
-          ContentType: "application/pdf",
-        })
-        .promise();
+    await new Promise<void>((resolve, reject) => {
+      doc.on("data", buffers.push.bind(buffers));
+
+      doc.on("error", (err) => {
+        reject(err);
+      });
+
+      doc.on("end", async () => {
+        const pdf = Buffer.concat(buffers);
+
+        const s3 = new AWS.S3();
+        try {
+          await s3
+            .putObject({
+              Bucket: process.env.S3_BUCKET!,
+              Key: `invoices/${invoiceId}.pdf`,
+              Body: pdf,
+              ContentType: "application/pdf",
+            })
+            .promise();
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+
+      doc.fontSize(18).text(`Invoice #${invoice.id}`);
+      doc.moveDown();
+      doc.fontSize(12).text(`Amount: $${invoice.amount}`);
+      doc.text(`Status: ${invoice.status}`);
+      doc.end();
     });
-
-    doc.fontSize(18).text(`Invoice #${invoice.id}`);
-    doc.moveDown();
-    doc.fontSize(12).text(`Amount: $${invoice.amount}`);
-    doc.text(`Status: ${invoice.status}`);
-    doc.end();
   },
   { connection },
 );
