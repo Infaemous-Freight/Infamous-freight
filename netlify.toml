@@ -3,8 +3,8 @@
   publish = "apps/web/.next"
 
 [build.environment]
-  NODE_VERSION = "24"
-  PNPM_VERSION = "10.28.2"
+  NODE_VERSION = "20.19.0"
+  PNPM_VERSION = "9.15.0"
   # Public API endpoint configuration for the web app.
   # Update these to point at the correct production API base URL for this environment.
   NEXT_PUBLIC_API_URL = "https://infamous-freight-api.fly.dev"

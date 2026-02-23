@@ -3,12 +3,13 @@
 
 [build]
   base = "apps/web"
-  command = "cd ../.. && pnpm install && pnpm --filter web build"
+  command = "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter web build"
   publish = "apps/web/.next"
   functions = "apps/web/.netlify/functions"
 
 [build.environment]
-  NODE_VERSION = "24"
+  NODE_VERSION = "20.19.0"
+  PNPM_VERSION = "9.15.0"
   NPM_FLAGS = "--version"
   NEXT_TELEMETRY_DISABLED = "1"
 
