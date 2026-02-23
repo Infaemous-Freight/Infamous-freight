@@ -9,7 +9,8 @@ Dispatcher SaaS platform for small and mid-sized carriers (1–10 trucks).
 1. Clone repository.
 2. Install dependencies:
    ```bash
-   npm install
+   corepack enable
+   pnpm install
    ```
 3. Run the app/services for your target workspace (web/api/mobile) based on package scripts.
 
