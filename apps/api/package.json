@@ -19,7 +19,7 @@
     "clean": "rm -rf coverage .cache .turbo dist node_modules",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix",
-    "test": "echo 'tests pending shared package setup'",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:edge": "jest edge-cases",
