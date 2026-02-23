@@ -4,6 +4,7 @@ const { authenticate, requireScope, limiters, auditLog } = require("../middlewar
 const { handleValidationErrors } = require("../middleware/validation");
 const { body } = require("express-validator");
 const { logger } = require("../middleware/logger");
+const { stripeClient } = require("../billing/stripe");
 
 /**
  * POST /api/billing/payment-intent
@@ -141,19 +142,43 @@ router.post(
   async (req, res, next) => {
     try {
       const { planId } = req.body;
+      const stripe = stripeClient();
 
-      logger.info("Subscription created", {
+      if (!stripe || !process.env.STRIPE_PRICE_ID) {
+        return res.status(503).json({
+          success: false,
+          error: "Stripe is not configured",
+        });
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        mode: "subscription",
+        customer_email: req.user.email,
+        line_items: [
+          {
+            price: process.env.STRIPE_PRICE_ID,
+            quantity: 1,
+          },
+        ],
+        success_url: process.env.SUCCESS_URL,
+        cancel_url: process.env.CANCEL_URL,
+        metadata: {
+          userId: req.user.sub,
+          requestedPlanId: planId,
+        },
+      });
+
+      logger.info("Subscription checkout session created", {
         userId: req.user.sub,
         planId,
+        sessionId: session.id,
       });
 
       res.status(201).json({
         success: true,
         data: {
-          subscriptionId: `sub_${Date.now()}`,
-          status: "active",
-          planId,
-          renewalDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          checkoutUrl: session.url,
+          sessionId: session.id,
         },
       });
     } catch (err) {

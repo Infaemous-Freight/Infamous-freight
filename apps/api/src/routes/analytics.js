@@ -15,6 +15,10 @@ const express = require("express");
 const router = express.Router();
 const { authenticate, requireScope } = require("../middleware/security");
 const analyticsService = require("../services/analytics");
+const {
+  calculateLaneProfitability,
+  calculateBrokerScore,
+} = require("../services/profitabilityEngine");
 
 // All analytics routes require authentication and analytics scope
 router.use(authenticate);
@@ -137,6 +141,48 @@ router.get("/costs", async (req, res, next) => {
     res.json({
       success: true,
       data: costs,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * GET /api/analytics/lane-profit
+ * AI-assisted lane profitability recommendation
+ */
+router.get("/lane-profit", async (req, res, next) => {
+  try {
+    const profitability = calculateLaneProfitability({
+      rate: req.query.rate,
+      mileage: req.query.mileage,
+      fuelPrice: req.query.fuelPrice,
+      mpg: req.query.mpg,
+      detentionHours: req.query.detentionHours,
+      brokerScore: req.query.brokerScore,
+    });
+
+    res.json({
+      success: true,
+      data: profitability,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * POST /api/analytics/broker-risk
+ * Weighted broker risk scoring (0-100)
+ */
+router.post("/broker-risk", async (req, res, next) => {
+  try {
+    const score = calculateBrokerScore(req.body);
+    res.json({
+      success: true,
+      data: {
+        score,
+      },
     });
   } catch (err) {
     next(err);

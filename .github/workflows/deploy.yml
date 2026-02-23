@@ -9,6 +9,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+
+
+  security_scan:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+      - uses: github/codeql-action/analyze@v3
+
   changes:
     runs-on: ubuntu-latest
     outputs:
@@ -40,7 +55,7 @@ jobs:
 
   verify:
     runs-on: ubuntu-latest
-    needs: [changes]
+    needs: [changes, security_scan]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -63,8 +78,28 @@ jobs:
         env:
           NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
 
-  deploy_api:
+
+
+  db_migrate:
     needs: [changes, verify]
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: pnpm
+      - run: corepack enable
+      - run: corepack install
+      - run: pnpm install --frozen-lockfile
+      - name: Apply DB migrations
+        run: pnpm --filter api prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  deploy_api:
+    needs: [changes, verify, db_migrate]
     if: needs.changes.outputs.api == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -98,3 +133,15 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - run: cd apps/mobile && eas build --platform all --non-interactive
+
+
+  canary_api:
+    needs: [deploy_api]
+    if: needs.deploy_api.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Canary health check
+        run: |
+          curl -fsS "$CANARY_URL/health"
+        env:
+          CANARY_URL: ${{ secrets.API_CANARY_URL }}

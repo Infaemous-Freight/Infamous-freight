@@ -1,0 +1,67 @@
+openapi: 3.0.3
+info:
+  title: INFÆMOUS FREIGHT API
+  version: 2.0.0
+servers:
+  - url: /api
+paths:
+  /auth/login:
+    post:
+      summary: Login user
+      responses:
+        '200':
+          description: JWT token
+  /loads:
+    get:
+      summary: List loads
+      responses:
+        '200':
+          description: Loads returned
+    post:
+      summary: Create load
+      responses:
+        '201':
+          description: Load created
+  /invoices/generate/{loadId}:
+    post:
+      summary: Generate invoice
+      parameters:
+        - in: path
+          name: loadId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invoice generated
+  /analytics/lane-profit:
+    get:
+      summary: Calculate lane profitability recommendation
+      parameters:
+        - in: query
+          name: rate
+          schema: { type: number }
+        - in: query
+          name: mileage
+          schema: { type: number }
+        - in: query
+          name: fuelPrice
+          schema: { type: number }
+        - in: query
+          name: mpg
+          schema: { type: number }
+        - in: query
+          name: detentionHours
+          schema: { type: number }
+        - in: query
+          name: brokerScore
+          schema: { type: number }
+      responses:
+        '200':
+          description: Profitability payload
+  /billing/subscribe:
+    post:
+      summary: Create Stripe subscription checkout session
+      responses:
+        '201':
+          description: Checkout session URL
