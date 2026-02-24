@@ -1,0 +1,143 @@
+{
+    "locales": {
+        "en": "الإنجليزية",
+        "es": "الإسبانية",
+        "fr": "الفرنسية",
+        "de": "الألمانية",
+        "pt": "البرتغالية",
+        "zh": "الصينية",
+        "ja": "اليابانية",
+        "ko": "الكورية",
+        "ar": "العربية",
+        "he": "العبرية",
+        "ru": "الروسية",
+        "it": "الإيطالية"
+    },
+    "errors": {
+        "notFound": "المورد غير موجود",
+        "unauthorized": "وصول غير مصرح",
+        "forbidden": "وصول محظور",
+        "badRequest": "طلب غير صالح",
+        "internalServerError": "خطأ داخلي في الخادم",
+        "invalidLocale": "لغة غير صالحة محددة",
+        "localeNotAllowed": "فقط لغة {{locale}} مسموح بها لهذا النقطة",
+        "validationFailed": "فشل التحقق",
+        "missingField": "{{field}} مطلوب",
+        "invalidFormat": "تنسيق {{field}} غير صالح",
+        "tooManyRequests": "طلبات كثيرة جداً، يرجى المحاولة لاحقاً"
+    },
+    "messages": {
+        "success": "تمت العملية بنجاح",
+        "created": "تم إنشاء المورد بنجاح",
+        "updated": "تم تحديث المورد بنجاح",
+        "deleted": "تم حذف المورد بنجاح",
+        "localeUpdated": "تم تحديث تفضيلات اللغة",
+        "welcomeBack": "مرحباً بعودتك، {{name}}!",
+        "accountCreated": "تم إنشاء الحساب بنجاح"
+    },
+    "shipments": {
+        "statuses": {
+            "CREATED": "تم الإنشاء",
+            "IN_TRANSIT": "قيد النقل",
+            "DELIVERED": "تم التسليم",
+            "CANCELLED": "ملغي"
+        },
+        "created": "تم إنشاء الشحنة بنجاح",
+        "updated": "تم تحديث الشحنة بنجاح",
+        "notFound": "الشحنة غير موجودة",
+        "trackingNumber": "رقم التتبع",
+        "origin": "المنشأ",
+        "destination": "الوجهة",
+        "estimatedDelivery": "التسليم المقدر",
+        "actualDelivery": "التسليم الفعلي",
+        "weight": "الوزن",
+        "dimensions": "الأبعاد",
+        "carrier": "الناقل"
+    },
+    "auth": {
+        "login": "تسجيل الدخول",
+        "logout": "تسجيل الخروج",
+        "register": "التسجيل",
+        "forgotPassword": "نسيت كلمة المرور",
+        "resetPassword": "إعادة تعيين كلمة المرور",
+        "changePassword": "تغيير كلمة المرور",
+        "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صالحة",
+        "accountLocked": "الحساب مقفل بسبب محاولات فاشلة كثيرة",
+        "passwordResetSent": "تم إرسال بريد إلكتروني لإعادة تعيين كلمة المرور",
+        "passwordChanged": "تم تغيير كلمة المرور بنجاح",
+        "sessionExpired": "انتهت الجلسة، يرجى تسجيل الدخول مرة أخرى",
+        "emailVerificationRequired": "يرجى التحقق من عنوان بريدك الإلكتروني"
+    },
+    "gdpr": {
+        "consentRecorded": "تم تسجيل الموافقة بنجاح",
+        "dataExported": "تم استلام طلب تصدير البيانات",
+        "dataErased": "تم استلام طلب حذف الحساب",
+        "dataPortable": "تصدير البيانات المحمولة جاهز",
+        "breachReported": "تم الإبلاغ عن خرق البيانات للسلطات",
+        "consentTypes": {
+            "necessary": "ضروري",
+            "analytics": "التحليلات",
+            "marketing": "التسويق",
+            "ai_processing": "معالجة الذكاء الاصطناعي",
+            "location_tracking": "تتبع الموقع"
+        },
+        "purposes": {
+            "service_delivery": "تقديم الخدمة",
+            "analytics": "التحليلات",
+            "marketing": "التسويق",
+            "personalization": "التخصيص"
+        }
+    },
+    "soc2": {
+        "incidentReported": "تم الإبلاغ عن حادث أمني",
+        "anomalyDetected": "تم اكتشاف شذوذ في سلوك النظام",
+        "accessAudited": "تم تدقيق الوصول إلى البيانات بنجاح",
+        "eventLogged": "تم تسجيل حدث الأمان"
+    },
+    "twoFactor": {
+        "setupComplete": "اكتمل إعداد المصادقة الثنائية",
+        "verificationSuccess": "نجح التحقق",
+        "verificationFailed": "رمز التحقق غير صالح",
+        "disabled": "تم تعطيل المصادقة الثنائية",
+        "backupCodeUsed": "تم استخدام رمز النسخ الاحتياطي بنجاح",
+        "invalidBackupCode": "رمز النسخ الاحتياطي غير صالح"
+    },
+    "validation": {
+        "email": "مطلوب عنوان بريد إلكتروني صالح",
+        "phone": "مطلوب رقم هاتف صالح",
+        "uuid": "مطلوب UUID صالح",
+        "minLength": "يجب أن يكون {{field}} على الأقل {{min}} أحرف",
+        "maxLength": "يجب ألا يتجاوز {{field}} {{max}} حرفاً",
+        "numeric": "يجب أن يكون {{field}} رقماً",
+        "positive": "يجب أن يكون {{field}} موجباً"
+    },
+    "common": {
+        "yes": "نعم",
+        "no": "لا",
+        "cancel": "إلغاء",
+        "save": "حفظ",
+        "delete": "حذف",
+        "edit": "تحرير",
+        "view": "عرض",
+        "close": "إغلاق",
+        "loading": "جاري التحميل...",
+        "search": "بحث",
+        "filter": "تصفية",
+        "sort": "فرز",
+        "page": "صفحة",
+        "of": "من",
+        "total": "المجموع",
+        "actions": "الإجراءات",
+        "status": "الحالة",
+        "date": "التاريخ",
+        "time": "الوقت",
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "address": "العنوان",
+        "city": "المدينة",
+        "state": "الولاية",
+        "country": "البلد",
+        "zipCode": "الرمز البريدي"
+    }
+}

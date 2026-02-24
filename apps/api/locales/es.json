@@ -1,0 +1,143 @@
+{
+    "locales": {
+        "en": "Inglés",
+        "es": "Español",
+        "fr": "Francés",
+        "de": "Alemán",
+        "pt": "Portugués",
+        "zh": "Chino",
+        "ja": "Japonés",
+        "ko": "Coreano",
+        "ar": "Árabe",
+        "he": "Hebreo",
+        "ru": "Ruso",
+        "it": "Italiano"
+    },
+    "errors": {
+        "notFound": "Recurso no encontrado",
+        "unauthorized": "Acceso no autorizado",
+        "forbidden": "Acceso prohibido",
+        "badRequest": "Solicitud no válida",
+        "internalServerError": "Error interno del servidor",
+        "invalidLocale": "Idioma no válido especificado",
+        "localeNotAllowed": "Solo se permite el idioma {{locale}} para este endpoint",
+        "validationFailed": "Validación fallida",
+        "missingField": "{{field}} es requerido",
+        "invalidFormat": "Formato de {{field}} no válido",
+        "tooManyRequests": "Demasiadas solicitudes, por favor intente más tarde"
+    },
+    "messages": {
+        "success": "Operación completada exitosamente",
+        "created": "Recurso creado exitosamente",
+        "updated": "Recurso actualizado exitosamente",
+        "deleted": "Recurso eliminado exitosamente",
+        "localeUpdated": "Preferencia de idioma actualizada",
+        "welcomeBack": "¡Bienvenido de nuevo, {{name}}!",
+        "accountCreated": "Cuenta creada exitosamente"
+    },
+    "shipments": {
+        "statuses": {
+            "CREATED": "Creado",
+            "IN_TRANSIT": "En Tránsito",
+            "DELIVERED": "Entregado",
+            "CANCELLED": "Cancelado"
+        },
+        "created": "Envío creado exitosamente",
+        "updated": "Envío actualizado exitosamente",
+        "notFound": "Envío no encontrado",
+        "trackingNumber": "Número de Seguimiento",
+        "origin": "Origen",
+        "destination": "Destino",
+        "estimatedDelivery": "Entrega Estimada",
+        "actualDelivery": "Entrega Real",
+        "weight": "Peso",
+        "dimensions": "Dimensiones",
+        "carrier": "Transportista"
+    },
+    "auth": {
+        "login": "Iniciar Sesión",
+        "logout": "Cerrar Sesión",
+        "register": "Registrarse",
+        "forgotPassword": "Olvidé mi Contraseña",
+        "resetPassword": "Restablecer Contraseña",
+        "changePassword": "Cambiar Contraseña",
+        "invalidCredentials": "Correo o contraseña no válidos",
+        "accountLocked": "Cuenta bloqueada por demasiados intentos fallidos",
+        "passwordResetSent": "Correo de restablecimiento de contraseña enviado",
+        "passwordChanged": "Contraseña cambiada exitosamente",
+        "sessionExpired": "Sesión expirada, por favor inicie sesión nuevamente",
+        "emailVerificationRequired": "Por favor verifique su dirección de correo"
+    },
+    "gdpr": {
+        "consentRecorded": "Consentimiento registrado exitosamente",
+        "dataExported": "Solicitud de exportación de datos recibida",
+        "dataErased": "Solicitud de eliminación de cuenta recibida",
+        "dataPortable": "Exportación de datos portables lista",
+        "breachReported": "Brecha de datos reportada a las autoridades",
+        "consentTypes": {
+            "necessary": "Necesario",
+            "analytics": "Analítica",
+            "marketing": "Marketing",
+            "ai_processing": "Procesamiento de IA",
+            "location_tracking": "Seguimiento de Ubicación"
+        },
+        "purposes": {
+            "service_delivery": "Entrega de Servicios",
+            "analytics": "Analítica",
+            "marketing": "Marketing",
+            "personalization": "Personalización"
+        }
+    },
+    "soc2": {
+        "incidentReported": "Incidente de seguridad reportado",
+        "anomalyDetected": "Anomalía detectada en el comportamiento del sistema",
+        "accessAudited": "Acceso a datos auditado exitosamente",
+        "eventLogged": "Evento de seguridad registrado"
+    },
+    "twoFactor": {
+        "setupComplete": "Configuración de autenticación de dos factores completa",
+        "verificationSuccess": "Verificación exitosa",
+        "verificationFailed": "Código de verificación no válido",
+        "disabled": "Autenticación de dos factores deshabilitada",
+        "backupCodeUsed": "Código de respaldo utilizado exitosamente",
+        "invalidBackupCode": "Código de respaldo no válido"
+    },
+    "validation": {
+        "email": "Se requiere una dirección de correo válida",
+        "phone": "Se requiere un número de teléfono válido",
+        "uuid": "Se requiere un UUID válido",
+        "minLength": "{{field}} debe tener al menos {{min}} caracteres",
+        "maxLength": "{{field}} no debe exceder {{max}} caracteres",
+        "numeric": "{{field}} debe ser un número",
+        "positive": "{{field}} debe ser positivo"
+    },
+    "common": {
+        "yes": "Sí",
+        "no": "No",
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "view": "Ver",
+        "close": "Cerrar",
+        "loading": "Cargando...",
+        "search": "Buscar",
+        "filter": "Filtrar",
+        "sort": "Ordenar",
+        "page": "Página",
+        "of": "de",
+        "total": "Total",
+        "actions": "Acciones",
+        "status": "Estado",
+        "date": "Fecha",
+        "time": "Hora",
+        "name": "Nombre",
+        "email": "Correo",
+        "phone": "Teléfono",
+        "address": "Dirección",
+        "city": "Ciudad",
+        "state": "Estado",
+        "country": "País",
+        "zipCode": "Código Postal"
+    }
+}

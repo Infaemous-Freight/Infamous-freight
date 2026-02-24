@@ -1,69 +1,145 @@
-import { useEffect, useRef, useState } from "react";
-import { SocketClient, ShipmentUpdate, VehicleUpdate, Notification } from "../lib/socketClient";
-
-type TrackingState = {
-  connected: boolean;
-  shipmentUpdate: ShipmentUpdate | null;
-  vehicleUpdate: VehicleUpdate | null;
-  notifications: Notification[];
-};
-
 /**
- * React hook for real-time shipment tracking via WebSocket.
+ * Shipment Tracking Hook - Phase 6 Tier 2.1
  *
- * @param token  - JWT access token for WebSocket authentication
- * @param shipmentId - Shipment ID to subscribe to (optional)
- * @param vehicleId  - Vehicle ID to subscribe to (optional)
+ * React hook for real-time shipment tracking
+ * Usage: const { shipment, location, status } = useShipmentTracking(shipmentId);
  */
-export function useShipmentTracking(
-  token: string | null,
-  shipmentId?: string,
-  vehicleId?: string,
-): TrackingState & { clearNotifications: () => void } {
-  const clientRef = useRef<SocketClient | null>(null);
-  const [connected, setConnected] = useState(false);
-  const [shipmentUpdate, setShipmentUpdate] = useState<ShipmentUpdate | null>(null);
-  const [vehicleUpdate, setVehicleUpdate] = useState<VehicleUpdate | null>(null);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  // Connect / disconnect when token changes
+import { useEffect, useState } from "react";
+import { useWebSocket } from "../lib/useWebSocket";
+
+interface ShipmentData {
+  id: string;
+  status: string;
+  location?: {
+    lat: number;
+    lng: number;
+  };
+  estimatedDelivery?: string;
+  driver?: {
+    id: string;
+    name: string;
+  };
+  lastUpdate?: string;
+}
+
+interface ShipmentTrackingStatus {
+  loading: boolean;
+  error: string | null;
+  connected: boolean;
+}
+
+export function useShipmentTracking(shipmentId: string, userId?: string) {
+  const [shipmentData, setShipmentData] = useState<ShipmentData | null>(null);
+  const [trackingStatus, setTrackingStatus] = useState<ShipmentTrackingStatus>({
+    loading: true,
+    error: null,
+    connected: false,
+  });
+
+  const { socket, status, subscribeToShipment } = useWebSocket({ userId });
+
+  // Fetch initial shipment data
   useEffect(() => {
-    if (!token) return;
+    if (!shipmentId) {
+      return;
+    }
 
-    const client = new SocketClient(token);
-    clientRef.current = client;
+    const fetchShipment = async () => {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+        const response = await fetch(`${apiUrl}/api/shipments/${shipmentId}`);
 
-    client.connect({
-      onConnect: () => setConnected(true),
-      onDisconnect: () => setConnected(false),
-      onShipmentUpdate: (update) => setShipmentUpdate(update),
-      onVehicleUpdate: (update) => setVehicleUpdate(update),
-      onNotification: (notification) =>
-        setNotifications((prev) => [notification, ...prev].slice(0, 50)),
+        if (!response.ok) {
+          throw new Error("Failed to fetch shipment");
+        }
+
+        const data = await response.json();
+
+        if (data.success && data.data) {
+          setShipmentData(data.data);
+          setTrackingStatus({
+            loading: false,
+            error: null,
+            connected: status.connected,
+          });
+        } else {
+          throw new Error(data.message || "Invalid response");
+        }
+      } catch (error) {
+        console.error("[ShipmentTracking] Failed to fetch shipment:", error);
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        setTrackingStatus({
+          loading: false,
+          error: errorMessage,
+          connected: status.connected,
+        });
+      }
+    };
+
+    fetchShipment();
+  }, [shipmentId, status.connected]);
+
+  // Subscribe to real-time updates
+  useEffect(() => {
+    if (!shipmentId || !socket) {
+      return;
+    }
+
+    setTrackingStatus((prev) => ({
+      ...prev,
+      connected: status.connected,
+    }));
+
+    const unsubscribe = subscribeToShipment(shipmentId, (update) => {
+      console.log("[ShipmentTracking] Received update:", update);
+
+      setShipmentData((prev) => {
+        if (!prev) return prev;
+
+        return {
+          ...prev,
+          ...update,
+          lastUpdate: new Date().toISOString(),
+        };
+      });
     });
 
-    return () => {
-      client.disconnect();
-      clientRef.current = null;
-      setConnected(false);
-    };
-  }, [token]);
+    return unsubscribe;
+  }, [shipmentId, socket, status.connected, subscribeToShipment]);
 
-  // Subscribe / unsubscribe when connected or tracked IDs change
-  useEffect(() => {
-    const client = clientRef.current;
-    if (!client || !connected) return;
+  // Refresh shipment data manually
+  const refresh = async () => {
+    setTrackingStatus((prev) => ({ ...prev, loading: true }));
 
-    if (shipmentId) client.subscribeShipment(shipmentId);
-    if (vehicleId) client.subscribeVehicle(vehicleId);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+      const response = await fetch(`${apiUrl}/api/shipments/${shipmentId}`);
+      const data = await response.json();
 
-    return () => {
-      if (shipmentId) client.unsubscribeShipment(shipmentId);
-      if (vehicleId) client.unsubscribeVehicle(vehicleId);
-    };
-  }, [connected, shipmentId, vehicleId]);
+      if (data.success && data.data) {
+        setShipmentData(data.data);
+        setTrackingStatus({
+          loading: false,
+          error: null,
+          connected: status.connected,
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      setTrackingStatus({
+        loading: false,
+        error: errorMessage,
+        connected: status.connected,
+      });
+    }
+  };
 
-  const clearNotifications = () => setNotifications([]);
-
-  return { connected, shipmentUpdate, vehicleUpdate, notifications, clearNotifications };
+  return {
+    shipment: shipmentData,
+    status: trackingStatus,
+    refresh,
+  };
 }
+
+export default useShipmentTracking;

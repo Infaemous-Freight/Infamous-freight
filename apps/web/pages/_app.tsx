@@ -4,6 +4,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import * as Sentry from "@sentry/nextjs";
+import { appWithTranslation } from "next-i18next";
 import GlobalLayout from "../components/GlobalLayout";
 import { initDatadogRUM } from "../src/lib/datadog";
 import SentryErrorBoundary from "../components/SentryErrorBoundary";
@@ -12,6 +13,8 @@ import { AuthProvider } from "../src/context/AuthContext";
 import "../src/styles/design-tokens.css";
 import "../src/styles/modern-design-system.css";
 import "../src/styles/navigation.css";
+// Phase 7 Tier 5: RTL Support
+import "../src/styles/rtl.css";
 
 // Legacy styles (can be removed after migration)
 // import "../src/styles/design-system.css";
@@ -21,9 +24,28 @@ import "../src/styles/navigation.css";
 // Initialize Sentry is handled by next.config.mjs automatically
 // No manual initialization needed here
 
-export default function App({ Component, pageProps }: AppProps): React.ReactElement {
+// RTL Locales (Arabic, Hebrew)
+const RTL_LOCALES = ["ar", "he"];
+
+function App({ Component, pageProps }: AppProps): React.ReactElement {
   const router = useRouter();
   const isProduction = process.env.NEXT_PUBLIC_ENV === "production";
+
+  // Phase 7 Tier 5: Set document direction based on locale
+  useEffect(() => {
+    const locale = router.locale || "en";
+    const isRTL = RTL_LOCALES.includes(locale);
+
+    document.documentElement.dir = isRTL ? "rtl" : "ltr";
+    document.documentElement.lang = locale;
+
+    // Update HTML class for RTL-specific styling
+    if (isRTL) {
+      document.documentElement.classList.add("rtl");
+    } else {
+      document.documentElement.classList.remove("rtl");
+    }
+  }, [router.locale]);
 
   // Initialize monitoring on app mount
   useEffect(() => {
@@ -110,7 +132,7 @@ export default function App({ Component, pageProps }: AppProps): React.ReactElem
         initDatadogRUM();
       } else {
         // Avoid client-side errors when env is missing; log once in dev tools
-         
+
         console.warn("Datadog RUM not initialized: missing NEXT_PUBLIC_DD_* configuration");
       }
     }
@@ -129,3 +151,6 @@ export default function App({ Component, pageProps }: AppProps): React.ReactElem
     </SentryErrorBoundary>
   );
 }
+
+// Phase 7 Tier 5: Wrap with i18next translation provider
+export default appWithTranslation(App);

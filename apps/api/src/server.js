@@ -69,6 +69,10 @@ const adminFeatureFlagsRoutes = require("./routes/admin/feature-flags");
 const adminOpsRoutes = require("./routes/admin/ops");
 const adminAuditLogsRoutes = require("./routes/admin/audit-logs");
 const insuranceRoutes = require("./modules/insurance/routes");
+const gdprRoutes = require("./routes/gdpr"); // Phase 7: GDPR compliance
+const soc2Routes = require("./routes/soc2"); // Phase 7: SOC2 compliance
+const twoFactorRoutes = require("./routes/2fa"); // Phase 7: Two-Factor Authentication
+const localeRoutes = require("./routes/locale"); // Phase 7 Tier 5: Localization
 const avatarsRouter = require("./avatars/routes");
 const genesisRouter = require("./genesis/routes");
 const satelliteRouter = require("./satellite/routes");
@@ -97,6 +101,13 @@ const analyticsBIRoutes = require("./routes/analytics-bi");
 const complianceInsuranceRoutes = require("./routes/compliance-insurance");
 const phase9AdvancedRoutes = require("./routes/phase9.advanced");
 const graphqlRoutes = require("./routes/graphql");
+// Phase 6 Routes - Tier 1: Production Optimization
+const cacheRoutes = require("./routes/cache");
+const {
+  initializeRedis,
+  cacheMiddleware,
+  invalidationMiddleware
+} = require("./middleware/redisCache");
 
 const marketplaceEnabled =
   String(
@@ -177,8 +188,15 @@ app.use(bodyLoggingMiddleware); // Log request/response bodies with sensitive da
 app.use(metricsRecorderMiddleware);
 app.use(smartCacheMiddleware); // Smart response caching (before rate limit)
 app.use(cacheInvalidationMiddleware); // Auto-invalidate cache on mutations
+app.use(cacheMiddleware()); // Phase 6: Redis caching middleware
+app.use(invalidationMiddleware()); // Phase 6: Auto-invalidate Redis cache on mutations
 app.use(compressionMiddleware); // Add compression for all responses
 app.use(httpLogger);
+
+// Phase 7 Tier 5: Detect and set locale for all requests (must be before routes)
+const { detectLocale } = require("./middleware/i18n");
+app.use(detectLocale);
+
 app.use(rateLimit); // Rate limit ALL requests
 app.use(apiVersioningMiddleware); // Detect API version (v1, v2)
 
@@ -230,6 +248,11 @@ app.use(
 // Routes
 app.use("/api", healthRoutes);
 app.use("/api", healthDetailedRoutes);
+app.use("/api/cache", cacheRoutes); // Phase 6: Cache management routes
+app.use("/api/gdpr", gdprRoutes); // Phase 7: GDPR compliance routes
+app.use("/api/soc2", soc2Routes); // Phase 7: SOC2 compliance routes
+app.use("/api/2fa", twoFactorRoutes); // Phase 7: Two-Factor Authentication routes
+app.use("/api/locale", localeRoutes); // Phase 7 Tier 5: Localization routes
 app.use("/api", aiRoutes);
 app.use("/api", phase10AiRoutes);
 app.use("/api", billingRoutes);
@@ -403,6 +426,16 @@ if (require.main === module) {
   httpServer = app.listen(port, host, async () => {
     logger.info(`Infamous Freight API listening on ${host}:${port}`);
 
+    // Phase 6: Initialize Redis caching
+    try {
+      await initializeRedis();
+      logger.info("Redis caching initialized successfully");
+    } catch (error) {
+      logger.warn("Redis caching initialization failed (continuing without cache)", {
+        error: error.message,
+      });
+    }
+
     // Initialize Prisma audit logging
     try {
       const { prisma } = require("./db/prisma");
@@ -410,6 +443,61 @@ if (require.main === module) {
       logger.info("Prisma audit logging initialized");
     } catch (error) {
       logger.warn("Audit logging initialization failed", { error: error.message });
+    }
+
+    // Phase 7: Initialize GDPR Compliance Service
+    try {
+      const gdprService = require("./services/gdprCompliance");
+      await gdprService.initialize();
+      logger.info("GDPR Compliance Service initialized successfully");
+    } catch (error) {
+      logger.warn("GDPR Compliance Service initialization failed", {
+        error: error.message,
+      });
+    }
+
+    // Phase 7: Initialize SOC2 Compliance Service
+    try {
+      const soc2Service = require("./services/soc2Compliance");
+      await soc2Service.initialize();
+      logger.info("SOC2 Compliance Service initialized successfully");
+    } catch (error) {
+      logger.warn("SOC2 Compliance Service initialization failed", {
+        error: error.message,
+      });
+    }
+
+    // Phase 7: Initialize Two-Factor Authentication Service
+    try {
+      const twoFactorService = require("./services/twoFactorAuth");
+      await twoFactorService.initialize();
+      logger.info("Two-Factor Authentication Service initialized successfully");
+    } catch (error) {
+      logger.warn("Two-Factor Authentication Service initialization failed", {
+        error: error.message,
+      });
+    }
+
+    // Phase 7 Tier 5: Initialize Internationalization (i18n)
+    try {
+      const { initializeI18n } = require("./middleware/i18n");
+      initializeI18n();
+      logger.info("i18n Service initialized successfully");
+    } catch (error) {
+      logger.warn("i18n Service initialization failed", {
+        error: error.message,
+      });
+    }
+
+    // Phase 7 Tier 5: Initialize Localization Service
+    try {
+      const localizationService = require("./services/localization");
+      localizationService.initializeLocalization();
+      logger.info("Localization Service initialized successfully");
+    } catch (error) {
+      logger.warn("Localization Service initialization failed", {
+        error: error.message,
+      });
     }
 
     // Initialize Real-Time WebSocket server

@@ -1,0 +1,143 @@
+{
+    "locales": {
+        "en": "Englisch",
+        "es": "Spanisch",
+        "fr": "Französisch",
+        "de": "Deutsch",
+        "pt": "Portugiesisch",
+        "zh": "Chinesisch",
+        "ja": "Japanisch",
+        "ko": "Koreanisch",
+        "ar": "Arabisch",
+        "he": "Hebräisch",
+        "ru": "Russisch",
+        "it": "Italienisch"
+    },
+    "errors": {
+        "notFound": "Ressource nicht gefunden",
+        "unauthorized": "Unbefugter Zugriff",
+        "forbidden": "Zugriff verboten",
+        "badRequest": "Ungültige Anfrage",
+        "internalServerError": "Interner Serverfehler",
+        "invalidLocale": "Ungültige Sprache angegeben",
+        "localeNotAllowed": "Nur {{locale}} Sprache ist für diesen Endpunkt erlaubt",
+        "validationFailed": "Validierung fehlgeschlagen",
+        "missingField": "{{field}} ist erforderlich",
+        "invalidFormat": "Ungültiges {{field}} Format",
+        "tooManyRequests": "Zu viele Anfragen, bitte versuchen Sie es später noch einmal"
+    },
+    "messages": {
+        "success": "Operation erfolgreich abgeschlossen",
+        "created": "Ressource erfolgreich erstellt",
+        "updated": "Ressource erfolgreich aktualisiert",
+        "deleted": "Ressource erfolgreich gelöscht",
+        "localeUpdated": "Spracheinstellung aktualisiert",
+        "welcomeBack": "Willkommen zurück, {{name}}!",
+        "accountCreated": "Konto erfolgreich erstellt"
+    },
+    "shipments": {
+        "statuses": {
+            "CREATED": "Erstellt",
+            "IN_TRANSIT": "Unterwegs",
+            "DELIVERED": "Geliefert",
+            "CANCELLED": "Storniert"
+        },
+        "created": "Sendung erfolgreich erstellt",
+        "updated": "Sendung erfolgreich aktualisiert",
+        "notFound": "Sendung nicht gefunden",
+        "trackingNumber": "Sendungsnummer",
+        "origin": "Herkunft",
+        "destination": "Ziel",
+        "estimatedDelivery": "Geschätzte Lieferung",
+        "actualDelivery": "Tatsächliche Lieferung",
+        "weight": "Gewicht",
+        "dimensions": "Abmessungen",
+        "carrier": "Spediteur"
+    },
+    "auth": {
+        "login": "Anmelden",
+        "logout": "Abmelden",
+        "register": "Registrieren",
+        "forgotPassword": "Passwort vergessen",
+        "resetPassword": "Passwort zurücksetzen",
+        "changePassword": "Passwort ändern",
+        "invalidCredentials": "Ungültige E-Mail oder Passwort",
+        "accountLocked": "Konto gesperrt aufgrund zu vieler fehlgeschlagener Versuche",
+        "passwordResetSent": "Passwort-Zurücksetzungs-E-Mail gesendet",
+        "passwordChanged": "Passwort erfolgreich geändert",
+        "sessionExpired": "Sitzung abgelaufen, bitte erneut anmelden",
+        "emailVerificationRequired": "Bitte verifizieren Sie Ihre E-Mail-Adresse"
+    },
+    "gdpr": {
+        "consentRecorded": "Einwilligung erfolgreich aufgezeichnet",
+        "dataExported": "Datenexportanfrage erhalten",
+        "dataErased": "Kontolöschungsanfrage erhalten",
+        "dataPortable": "Portabler Datenexport bereit",
+        "breachReported": "Datenpanne den Behörden gemeldet",
+        "consentTypes": {
+            "necessary": "Erforderlich",
+            "analytics": "Analytik",
+            "marketing": "Marketing",
+            "ai_processing": "KI-Verarbeitung",
+            "location_tracking": "Standortverfolgung"
+        },
+        "purposes": {
+            "service_delivery": "Dienstleistungserbringung",
+            "analytics": "Analytik",
+            "marketing": "Marketing",
+            "personalization": "Personalisierung"
+        }
+    },
+    "soc2": {
+        "incidentReported": "Sicherheitsvorfall gemeldet",
+        "anomalyDetected": "Anomalie im Systemverhalten erkannt",
+        "accessAudited": "Datenzugriff erfolgreich geprüft",
+        "eventLogged": "Sicherheitsereignis protokolliert"
+    },
+    "twoFactor": {
+        "setupComplete": "Zwei-Faktor-Authentifizierung eingerichtet",
+        "verificationSuccess": "Verifizierung erfolgreich",
+        "verificationFailed": "Ungültiger Verifizierungscode",
+        "disabled": "Zwei-Faktor-Authentifizierung deaktiviert",
+        "backupCodeUsed": "Backup-Code erfolgreich verwendet",
+        "invalidBackupCode": "Ungültiger Backup-Code"
+    },
+    "validation": {
+        "email": "Gültige E-Mail-Adresse erforderlich",
+        "phone": "Gültige Telefonnummer erforderlich",
+        "uuid": "Gültige UUID erforderlich",
+        "minLength": "{{field}} muss mindestens {{min}} Zeichen lang sein",
+        "maxLength": "{{field}} darf {{max}} Zeichen nicht überschreiten",
+        "numeric": "{{field}} muss eine Zahl sein",
+        "positive": "{{field}} muss positiv sein"
+    },
+    "common": {
+        "yes": "Ja",
+        "no": "Nein",
+        "cancel": "Abbrechen",
+        "save": "Speichern",
+        "delete": "Löschen",
+        "edit": "Bearbeiten",
+        "view": "Ansehen",
+        "close": "Schließen",
+        "loading": "Laden...",
+        "search": "Suchen",
+        "filter": "Filtern",
+        "sort": "Sortieren",
+        "page": "Seite",
+        "of": "von",
+        "total": "Gesamt",
+        "actions": "Aktionen",
+        "status": "Status",
+        "date": "Datum",
+        "time": "Uhrzeit",
+        "name": "Name",
+        "email": "E-Mail",
+        "phone": "Telefon",
+        "address": "Adresse",
+        "city": "Stadt",
+        "state": "Bundesland",
+        "country": "Land",
+        "zipCode": "Postleitzahl"
+    }
+}

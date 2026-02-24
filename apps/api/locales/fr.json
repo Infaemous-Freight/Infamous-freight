@@ -1,0 +1,143 @@
+{
+    "locales": {
+        "en": "Anglais",
+        "es": "Espagnol",
+        "fr": "Français",
+        "de": "Allemand",
+        "pt": "Portugais",
+        "zh": "Chinois",
+        "ja": "Japonais",
+        "ko": "Coréen",
+        "ar": "Arabe",
+        "he": "Hébreu",
+        "ru": "Russe",
+        "it": "Italien"
+    },
+    "errors": {
+        "notFound": "Ressource introuvable",
+        "unauthorized": "Accès non autorisé",
+        "forbidden": "Accès interdit",
+        "badRequest": "Requête invalide",
+        "internalServerError": "Erreur interne du serveur",
+        "invalidLocale": "Langue non valide spécifiée",
+        "localeNotAllowed": "Seule la langue {{locale}} est autorisée pour ce point d'accès",
+        "validationFailed": "Validation échouée",
+        "missingField": "{{field}} est requis",
+        "invalidFormat": "Format {{field}} invalide",
+        "tooManyRequests": "Trop de requêtes, veuillez réessayer plus tard"
+    },
+    "messages": {
+        "success": "Opération réussie",
+        "created": "Ressource créée avec succès",
+        "updated": "Ressource mise à jour avec succès",
+        "deleted": "Ressource supprimée avec succès",
+        "localeUpdated": "Préférence linguistique mise à jour",
+        "welcomeBack": "Bon retour, {{name}} !",
+        "accountCreated": "Compte créé avec succès"
+    },
+    "shipments": {
+        "statuses": {
+            "CREATED": "Créé",
+            "IN_TRANSIT": "En Transit",
+            "DELIVERED": "Livré",
+            "CANCELLED": "Annulé"
+        },
+        "created": "Envoi créé avec succès",
+        "updated": "Envoi mis à jour avec succès",
+        "notFound": "Envoi introuvable",
+        "trackingNumber": "Numéro de Suivi",
+        "origin": "Origine",
+        "destination": "Destination",
+        "estimatedDelivery": "Livraison Estimée",
+        "actualDelivery": "Livraison Réelle",
+        "weight": "Poids",
+        "dimensions": "Dimensions",
+        "carrier": "Transporteur"
+    },
+    "auth": {
+        "login": "Connexion",
+        "logout": "Déconnexion",
+        "register": "S'inscrire",
+        "forgotPassword": "Mot de passe oublié",
+        "resetPassword": "Réinitialiser le mot de passe",
+        "changePassword": "Changer le mot de passe",
+        "invalidCredentials": "Email ou mot de passe invalide",
+        "accountLocked": "Compte verrouillé en raison de trop de tentatives échouées",
+        "passwordResetSent": "E-mail de réinitialisation envoyé",
+        "passwordChanged": "Mot de passe changé avec succès",
+        "sessionExpired": "Session expirée, veuillez vous reconnecter",
+        "emailVerificationRequired": "Veuillez vérifier votre adresse e-mail"
+    },
+    "gdpr": {
+        "consentRecorded": "Consentement enregistré avec succès",
+        "dataExported": "Demande d'exportation de données reçue",
+        "dataErased": "Demande de suppression de compte reçue",
+        "dataPortable": "Exportation de données portables prête",
+        "breachReported": "Violation de données signalée aux autorités",
+        "consentTypes": {
+            "necessary": "Nécessaire",
+            "analytics": "Analytique",
+            "marketing": "Marketing",
+            "ai_processing": "Traitement IA",
+            "location_tracking": "Suivi de Localisation"
+        },
+        "purposes": {
+            "service_delivery": "Livraison de Services",
+            "analytics": "Analytique",
+            "marketing": "Marketing",
+            "personalization": "Personnalisation"
+        }
+    },
+    "soc2": {
+        "incidentReported": "Incident de sécurité signalé",
+        "anomalyDetected": "Anomalie détectée dans le comportement du système",
+        "accessAudited": "Accès aux données audité avec succès",
+        "eventLogged": "Événement de sécurité enregistré"
+    },
+    "twoFactor": {
+        "setupComplete": "Configuration de l'authentification à deux facteurs terminée",
+        "verificationSuccess": "Vérification réussie",
+        "verificationFailed": "Code de vérification invalide",
+        "disabled": "Authentification à deux facteurs désactivée",
+        "backupCodeUsed": "Code de secours utilisé avec succès",
+        "invalidBackupCode": "Code de secours invalide"
+    },
+    "validation": {
+        "email": "Adresse e-mail valide requise",
+        "phone": "Numéro de téléphone valide requis",
+        "uuid": "UUID valide requis",
+        "minLength": "{{field}} doit contenir au moins {{min}} caractères",
+        "maxLength": "{{field}} ne doit pas dépasser {{max}} caractères",
+        "numeric": "{{field}} doit être un nombre",
+        "positive": "{{field}} doit être positif"
+    },
+    "common": {
+        "yes": "Oui",
+        "no": "Non",
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "view": "Voir",
+        "close": "Fermer",
+        "loading": "Chargement...",
+        "search": "Rechercher",
+        "filter": "Filtrer",
+        "sort": "Trier",
+        "page": "Page",
+        "of": "de",
+        "total": "Total",
+        "actions": "Actions",
+        "status": "Statut",
+        "date": "Date",
+        "time": "Heure",
+        "name": "Nom",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "address": "Adresse",
+        "city": "Ville",
+        "state": "État",
+        "country": "Pays",
+        "zipCode": "Code Postal"
+    }
+}

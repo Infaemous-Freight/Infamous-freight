@@ -1,0 +1,241 @@
+.languageSwitcher {
+  position: relative;
+  display: inline-block;
+}
+
+.currentButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--color-background-secondary, #f5f5f5);
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary, #333);
+  transition: all 0.2s ease;
+}
+
+.currentButton:hover {
+  background: var(--color-background-hover, #e8e8e8);
+  border-color: var(--color-border-hover, #999);
+}
+
+.currentButton:focus {
+  outline: 2px solid var(--color-primary, #007bff);
+  outline-offset: 2px;
+}
+
+.flag {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.label {
+  flex: 1;
+  text-align: left;
+}
+
+.arrow {
+  font-size: 10px;
+  color: var(--color-text-secondary, #666);
+  transition: transform 0.2s ease;
+}
+
+.currentButton[aria-expanded="true"] .arrow {
+  transform: rotate(180deg);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 998;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 999;
+  width: 320px;
+  max-height: 480px;
+  background: var(--color-background, #fff);
+  border: 1px solid var(--color-border, #ddd);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid var(--color-border, #ddd);
+}
+
+.dropdownHeader h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary, #333);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--color-text-secondary, #666);
+  transition: color 0.2s ease;
+}
+
+.closeButton:hover {
+  color: var(--color-text-primary, #333);
+}
+
+.localeList {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.localeButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s ease;
+}
+
+.localeButton:hover {
+  background: var(--color-background-hover, #f5f5f5);
+}
+
+.localeButton.active {
+  background: var(--color-primary-light, #e3f2fd);
+}
+
+.localeName {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.localeName strong {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary, #333);
+}
+
+.englishName {
+  font-size: 12px;
+  color: var(--color-text-secondary, #666);
+}
+
+.checkmark {
+  font-size: 18px;
+  color: var(--color-primary, #007bff);
+  font-weight: bold;
+}
+
+/* RTL Support */
+[dir="rtl"] .label {
+  text-align: right;
+}
+
+[dir="rtl"] .dropdown {
+  right: auto;
+  left: 0;
+}
+
+[dir="rtl"] .arrow {
+  transform: rotate(180deg);
+}
+
+[dir="rtl"] .currentButton[aria-expanded="true"] .arrow {
+  transform: rotate(0deg);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .dropdown {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: 70vh;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .localeList {
+    max-height: calc(70vh - 60px);
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .currentButton {
+    background: var(--color-background-secondary-dark, #2a2a2a);
+    border-color: var(--color-border-dark, #444);
+    color: var(--color-text-primary-dark, #fff);
+  }
+
+  .currentButton:hover {
+    background: var(--color-background-hover-dark, #333);
+  }
+
+  .dropdown {
+    background: var(--color-background-dark, #1a1a1a);
+    border-color: var(--color-border-dark, #444);
+  }
+
+  .dropdownHeader h3 {
+    color: var(--color-text-primary-dark, #fff);
+  }
+
+  .localeButton:hover {
+    background: var(--color-background-hover-dark, #2a2a2a);
+  }
+
+  .localeButton.active {
+    background: var(--color-primary-dark, #1976d2);
+  }
+
+  .localeName strong {
+    color: var(--color-text-primary-dark, #fff);
+  }
+
+  .englishName {
+    color: var(--color-text-secondary-dark, #999);
+  }
+}

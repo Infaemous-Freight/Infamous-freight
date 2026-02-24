@@ -1,0 +1,143 @@
+{
+    "locales": {
+        "en": "English",
+        "es": "Spanish",
+        "fr": "French",
+        "de": "German",
+        "pt": "Portuguese",
+        "zh": "Chinese",
+        "ja": "Japanese",
+        "ko": "Korean",
+        "ar": "Arabic",
+        "he": "Hebrew",
+        "ru": "Russian",
+        "it": "Italian"
+    },
+    "errors": {
+        "notFound": "Resource not found",
+        "unauthorized": "Unauthorized access",
+        "forbidden": "Access forbidden",
+        "badRequest": "Invalid request",
+        "internalServerError": "Internal server error",
+        "invalidLocale": "Invalid locale specified",
+        "localeNotAllowed": "Only {{locale}} locale is allowed for this endpoint",
+        "validationFailed": "Validation failed",
+        "missingField": "{{field}} is required",
+        "invalidFormat": "Invalid {{field}} format",
+        "tooManyRequests": "Too many requests, please try again later"
+    },
+    "messages": {
+        "success": "Operation completed successfully",
+        "created": "Resource created successfully",
+        "updated": "Resource updated successfully",
+        "deleted": "Resource deleted successfully",
+        "localeUpdated": "Language preference updated",
+        "welcomeBack": "Welcome back, {{name}}!",
+        "accountCreated": "Account created successfully"
+    },
+    "shipments": {
+        "statuses": {
+            "CREATED": "Created",
+            "IN_TRANSIT": "In Transit",
+            "DELIVERED": "Delivered",
+            "CANCELLED": "Cancelled"
+        },
+        "created": "Shipment created successfully",
+        "updated": "Shipment updated successfully",
+        "notFound": "Shipment not found",
+        "trackingNumber": "Tracking Number",
+        "origin": "Origin",
+        "destination": "Destination",
+        "estimatedDelivery": "Estimated Delivery",
+        "actualDelivery": "Actual Delivery",
+        "weight": "Weight",
+        "dimensions": "Dimensions",
+        "carrier": "Carrier"
+    },
+    "auth": {
+        "login": "Login",
+        "logout": "Logout",
+        "register": "Register",
+        "forgotPassword": "Forgot Password",
+        "resetPassword": "Reset Password",
+        "changePassword": "Change Password",
+        "invalidCredentials": "Invalid email or password",
+        "accountLocked": "Account locked due to too many failed attempts",
+        "passwordResetSent": "Password reset email sent",
+        "passwordChanged": "Password changed successfully",
+        "sessionExpired": "Session expired, please login again",
+        "emailVerificationRequired": "Please verify your email address"
+    },
+    "gdpr": {
+        "consentRecorded": "Consent recorded successfully",
+        "dataExported": "Data export request received",
+        "dataErased": "Account deletion request received",
+        "dataPortable": "Portable data export ready",
+        "breachReported": "Data breach reported to authorities",
+        "consentTypes": {
+            "necessary": "Necessary",
+            "analytics": "Analytics",
+            "marketing": "Marketing",
+            "ai_processing": "AI Processing",
+            "location_tracking": "Location Tracking"
+        },
+        "purposes": {
+            "service_delivery": "Service Delivery",
+            "analytics": "Analytics",
+            "marketing": "Marketing",
+            "personalization": "Personalization"
+        }
+    },
+    "soc2": {
+        "incidentReported": "Security incident reported",
+        "anomalyDetected": "Anomaly detected in system behavior",
+        "accessAudited": "Data access audited successfully",
+        "eventLogged": "Security event logged"
+    },
+    "twoFactor": {
+        "setupComplete": "Two-factor authentication setup complete",
+        "verificationSuccess": "Verification successful",
+        "verificationFailed": "Invalid verification code",
+        "disabled": "Two-factor authentication disabled",
+        "backupCodeUsed": "Backup code used successfully",
+        "invalidBackupCode": "Invalid backup code"
+    },
+    "validation": {
+        "email": "Valid email address required",
+        "phone": "Valid phone number required",
+        "uuid": "Valid UUID required",
+        "minLength": "{{field}} must be at least {{min}} characters",
+        "maxLength": "{{field}} must not exceed {{max}} characters",
+        "numeric": "{{field}} must be a number",
+        "positive": "{{field}} must be positive"
+    },
+    "common": {
+        "yes": "Yes",
+        "no": "No",
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "edit": "Edit",
+        "view": "View",
+        "close": "Close",
+        "loading": "Loading...",
+        "search": "Search",
+        "filter": "Filter",
+        "sort": "Sort",
+        "page": "Page",
+        "of": "of",
+        "total": "Total",
+        "actions": "Actions",
+        "status": "Status",
+        "date": "Date",
+        "time": "Time",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address",
+        "city": "City",
+        "state": "State",
+        "country": "Country",
+        "zipCode": "ZIP Code"
+    }
+}
