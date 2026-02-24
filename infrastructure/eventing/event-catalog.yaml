@@ -1,0 +1,49 @@
+version: 1
+broker:
+  production: kafka
+  bootstrap: redis-streams
+
+topics:
+  - name: load-events
+    retention: 7d
+    events:
+      - LOAD_CREATED
+      - LOAD_STATUS_UPDATED
+  - name: finance-events
+    retention: 30d
+    events:
+      - INVOICE_GENERATED
+      - PAYMENT_RECEIVED
+      - FACTORING_OFFER_CREATED
+      - FACTORING_OFFER_ACCEPTED
+  - name: broker-events
+    retention: 30d
+    events:
+      - BROKER_SCORE_UPDATED
+      - BROKER_CREDIT_SYNCED
+  - name: telemetry-events
+    retention: 14d
+    events:
+      - ELD_DRIVER_LOCATION_UPDATED
+      - ELD_HOS_UPDATED
+  - name: analytics-events
+    retention: 90d
+    events:
+      - METRIC_ROLLUP_REQUESTED
+      - DASHBOARD_REFRESH_REQUESTED
+
+consumers:
+  analytics-service:
+    - load-events
+    - finance-events
+    - broker-events
+    - telemetry-events
+  billing-service:
+    - finance-events
+    - load-events
+  scoring-service:
+    - broker-events
+    - load-events
+  dispatch-realtime-service:
+    - load-events
+    - telemetry-events
