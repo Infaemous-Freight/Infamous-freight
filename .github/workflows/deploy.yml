@@ -9,6 +9,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+
+
+  security_scan:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+      - uses: github/codeql-action/analyze@v3
+
   changes:
     runs-on: ubuntu-latest
     outputs:
@@ -40,7 +55,7 @@ jobs:
 
   verify:
     runs-on: ubuntu-latest
-    needs: [changes]
+    needs: [changes, security_scan]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -63,8 +78,43 @@ jobs:
         env:
           NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
 
-  deploy_api:
+
+
+  db_migrate:
     needs: [changes, verify]
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: pnpm
+      - run: corepack enable
+      - run: corepack install
+      - run: pnpm install --frozen-lockfile
+      - name: Apply DB migrations
+        run: |
+          # Apply Prisma migrations
+          pnpm --filter api prisma migrate deploy
+
+          # Install PostgreSQL client to apply Supabase SQL migrations
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+          # Apply Supabase SQL migrations in deterministic order
+          if [ -d "supabase/migrations" ]; then
+            find supabase/migrations -type f -name '*.sql' -print0 \
+              | sort -z \
+              | xargs -0 -I {} sh -c 'echo "Applying migration: {}" && psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$1"' _ {}
+          else
+            echo "No supabase/migrations directory found; skipping Supabase SQL migrations."
+          fi
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  deploy_api:
+    needs: [changes, verify, db_migrate]
     if: needs.changes.outputs.api == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -98,3 +148,45 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - run: cd apps/mobile && eas build --platform all --non-interactive
+
+
+  canary_api:
+    needs: [changes, deploy_api]
+    if: needs.deploy_api.result == 'success' && needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Canary health check
+        run: |
+          set -u
+          MAX_RETRIES=3
+          RETRY_DELAY_SECONDS=10
+          EXPECTED_BODY_SUBSTRING='"status":"ok"'
+
+          attempt=1
+          while [ "$attempt" -le "$MAX_RETRIES" ]; do
+            echo "Canary health check attempt $attempt/$MAX_RETRIES..."
+
+            # Perform health check with explicit timeout; do not fail the script automatically on curl error
+            RESPONSE="$(curl --fail --show-error --silent --max-time 30 "$CANARY_URL/health" 2>&1)"
+            CURL_EXIT_CODE=$?
+
+            if [ "$CURL_EXIT_CODE" -eq 0 ] && echo "$RESPONSE" | grep -q "$EXPECTED_BODY_SUBSTRING"; then
+              echo "Canary health check passed with expected response."
+              exit 0
+            fi;
+
+            echo "Canary attempt $attempt failed (exit code: $CURL_EXIT_CODE). Response:"
+            echo "$RESPONSE"
+
+            if [ "$attempt" -lt "$MAX_RETRIES" ]; then
+              echo "Retrying in ${RETRY_DELAY_SECONDS}s..."
+              sleep "$RETRY_DELAY_SECONDS"
+            fi
+
+            attempt=$((attempt + 1))
+          done
+
+          echo "::error::Canary health check failed after ${MAX_RETRIES} attempts for ${CANARY_URL}/health"
+          exit 1
+        env:
+          CANARY_URL: ${{ secrets.API_CANARY_URL }}
