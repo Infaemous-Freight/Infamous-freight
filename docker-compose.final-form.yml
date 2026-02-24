@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  kafka:
+    image: bitnami/kafka:3.8
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+
+  redis:
+    image: redis:7-alpine
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-changeme}
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:-changeme}"]
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  dispatch-realtime-service:
+    image: node:20-alpine
+    command: ["sh", "-c", "echo 'Scaffold: wire Fastify websocket runtime here' && sleep infinity"]
+    depends_on:
+      - redis
+
+  ingestion-service:
+    image: node:20-alpine
+    command: ["sh", "-c", "echo 'Scaffold: wire ELD and broker ingestion workers here' && sleep infinity"]
+    depends_on:
+      - kafka
+
+  rate-prediction-service:
+    build:
+      context: ./ai/rate-prediction-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
