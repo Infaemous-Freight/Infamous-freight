@@ -151,6 +151,16 @@ router.post(
         });
       }
 
+      // Ensure we have an email for the authenticated user before creating the session
+      if (!req.user || !req.user.email) {
+        logger.warn("Subscribe attempted without user email", {
+          userId: req.user ? req.user.sub : undefined,
+        });
+        return res.status(400).json({
+          success: false,
+          error: "User email is required to create a subscription.",
+        });
+      }
       const session = await stripe.checkout.sessions.create({
         mode: "subscription",
         customer_email: req.user.email,
