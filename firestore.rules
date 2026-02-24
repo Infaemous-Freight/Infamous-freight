@@ -1,52 +1,30 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper functions
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-    
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-    
-    function hasRole(role) {
-      return isAuthenticated() && 
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
-    }
-    
-    // Users collection
+
     match /users/{userId} {
-      allow read: if isAuthenticated();
-      allow write: if isOwner(userId) || hasRole('admin');
+      allow read, write: if request.auth != null
+        && request.auth.uid == userId;
     }
-    
-    // Shipments collection
-    match /shipments/{shipmentId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && hasRole('admin');
-      allow update, delete: if hasRole('admin') || hasRole('operator');
+
+    match /companies/{companyId} {
+      allow read, write: if request.auth != null
+        && resource.data.companyId == request.auth.uid;
     }
-    
-    // Notifications collection
-    match /notifications/{notificationId} {
-      allow read: if isAuthenticated() && 
-                     resource.data.userId == request.auth.uid;
-      allow create: if hasRole('admin') || hasRole('system');
-      allow update, delete: if isAuthenticated() && 
-                               resource.data.userId == request.auth.uid;
+
+    match /loads/{loadId} {
+      allow read, write: if request.auth != null
+        && request.auth.token.companyId == resource.data.companyId;
     }
-    
-    // Analytics collection (read-only for users)
-    match /analytics/{document=**} {
-      allow read: if hasRole('admin');
-      allow write: if hasRole('system');
+
+    match /carriers/{carrierId} {
+      allow read, write: if request.auth != null
+        && request.auth.token.companyId == resource.data.companyId;
     }
-    
-    // Push tokens collection
-    match /pushTokens/{tokenId} {
-      allow read, write: if isAuthenticated() && 
-                            resource.data.userId == request.auth.uid;
+
+    match /invoices/{invoiceId} {
+      allow read, write: if request.auth != null
+        && request.auth.token.companyId == resource.data.companyId;
     }
   }
 }

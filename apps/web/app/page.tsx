@@ -1,35 +1,18 @@
-"use client";
+import Link from "next/link";
 
-import { useEffect, useState } from "react";
-
-type Load = {
-  id: string;
-  rate: number;
-  status: string;
-};
-
-export default function Dashboard() {
-  const [loads, setLoads] = useState<Load[]>([]);
-
-  useEffect(() => {
-    fetch("http://localhost:3000/loads", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then(setLoads)
-      .catch(() => setLoads([]));
-  }, []);
-
+export default function Home() {
   return (
-    <div className="min-h-screen bg-black p-8 text-green-400">
-      <h1 className="mb-6 text-3xl">INFÆMOUS FREIGHT</h1>
-      {loads.map((load) => (
-        <div key={load.id} className="mb-2 border p-4">
-          ${load.rate} • {load.status}
-        </div>
-      ))}
-    </div>
+    <main className="p-6">
+      <h1 className="text-3xl font-bold">INFÆMOUS FREIGHT Dispatcher</h1>
+      <p className="mt-3">MVP v1 foundation with auth, billing, and load ops.</p>
+      <div className="mt-5 flex gap-3">
+        <Link href="/login" className="rounded bg-black px-4 py-2 text-white">
+          Login
+        </Link>
+        <Link href="/register" className="rounded border px-4 py-2">
+          Register
+        </Link>
+      </div>
+    </main>
   );
 }

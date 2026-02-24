@@ -8,7 +8,7 @@
     "name": "Santorio Djuan Miles",
     "email": "237955567+MrMiless44@users.noreply.github.com"
   },
-  "copyright": "Copyright © 2025 Infæmous Freight. All Rights Reserved.",
+  "copyright": "Copyright \u00a9 2025 Inf\u00e6mous Freight. All Rights Reserved.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -51,7 +51,8 @@
     "recharts": "^3.7.0",
     "stripe": "^20.3.0",
     "styled-jsx": "^5.1.7",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "firebase": "^11.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
