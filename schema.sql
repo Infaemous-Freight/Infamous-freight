@@ -1,0 +1,21 @@
+-- -----------------------------------------------------------------------------
+-- DEPRECATED SCHEMA FILE
+--
+-- This project manages its PostgreSQL schema via:
+--   - Prisma schema + migrations: apps/api/prisma/schema.prisma
+--   - Supabase migrations:        supabase/migrations/
+--
+-- To avoid schema drift and confusion about the source of truth, this
+-- standalone schema.sql file is intentionally kept free of executable DDL.
+--
+-- If you need to change the database schema:
+--   1. Update apps/api/prisma/schema.prisma
+--   2. Generate a Prisma migration (see CONTRIBUTING / QUICK_REFERENCE)
+--   3. For Supabase-managed resources, add a new migration under
+--      supabase/migrations/
+--
+-- Do NOT reintroduce CREATE TABLE / ALTER TABLE statements here for the
+-- production application database.
+--
+-- You may use this file for ad-hoc notes or example queries only.
+-- -----------------------------------------------------------------------------
