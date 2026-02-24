@@ -136,8 +136,8 @@ jobs:
 
 
   canary_api:
-    needs: [deploy_api]
-    if: needs.deploy_api.result == 'success'
+    needs: [changes, deploy_api]
+    if: needs.deploy_api.result == 'success' && needs.changes.outputs.api == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Canary health check
