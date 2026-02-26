@@ -57,11 +57,11 @@ jobs:
         continue-on-error: true
 
       - name: Lint (api)
-        run: cd api && pnpm lint
+        run: cd apps/api && pnpm lint
         continue-on-error: false
 
       - name: Lint (web)
-        run: cd web && pnpm lint || echo "No linter configured"
+        run: cd apps/web && pnpm lint || echo "No linter configured"
         continue-on-error: true
 
       - name: notify vercel (lint)
@@ -75,11 +75,11 @@ jobs:
         continue-on-error: false
 
       - name: Typecheck (api)
-        run: cd api && pnpm typecheck
+        run: cd apps/api && pnpm typecheck
         continue-on-error: false
 
       - name: Typecheck (web)
-        run: cd web && pnpm typecheck
+        run: cd apps/web && pnpm typecheck
         continue-on-error: false
 
       - name: Typecheck (e2e)
@@ -97,7 +97,7 @@ jobs:
         continue-on-error: false
 
       - name: Test (api)
-        run: cd api && pnpm test --coverage
+        run: cd apps/api && pnpm test --coverage
         continue-on-error: false
         env:
           JWT_SECRET: test-secret-key-for-ci
@@ -106,7 +106,7 @@ jobs:
       - name: Upload coverage reports
         uses: codecov/codecov-action@v3
         with:
-          files: ./api/coverage/lcov.info
+          files: ./apps/api/coverage/lcov.info
           flags: api
           fail_ci_if_error: false
 
@@ -127,11 +127,11 @@ jobs:
         continue-on-error: false
 
       - name: Build (api)
-        run: cd api && pnpm build
+        run: cd apps/api && pnpm build
         continue-on-error: false
 
       - name: Build (web)
-        run: cd web && pnpm build
+        run: cd apps/web && pnpm build
         continue-on-error: false
 
       - name: notify vercel (build)
@@ -141,10 +141,9 @@ jobs:
 
       # === PRISMA VALIDATION ===
       - name: Prisma format check
-        run: cd api && pnpm prisma format --check || (echo "Prisma schema needs formatting" && exit 1)
+        run: cd apps/api && pnpm prisma format --check || (echo "Prisma schema needs formatting" && exit 1)
         continue-on-error: false
 
       - name: Prisma validate
-        run: cd api && pnpm prisma validate
+        run: cd apps/api && pnpm prisma validate
         continue-on-error: false
-
