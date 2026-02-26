@@ -2,12 +2,9 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("session");
-
-  if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
+  // Temporarily allow all /dashboard requests through without checking for a
+  // session cookie. A proper server-side session should be wired up before
+  // re-enabling auth gating here.
   return NextResponse.next();
 }
 
