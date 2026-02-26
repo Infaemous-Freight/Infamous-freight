@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 import { stripe } from "@/lib/stripe";
 
+export const runtime = "nodejs";
 export async function POST(req: Request) {
   // Authenticate request using Bearer JWT
   const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
