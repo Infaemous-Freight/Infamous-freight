@@ -40,7 +40,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Web - Generate consumer contracts
-        run: pnpm --filter @infamous-freight/web test:contract
+        run: pnpm --filter web test:contract
         continue-on-error: true
 
       - name: Upload Pact files

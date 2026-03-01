@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - "apps/api/**"
-      - "packages/**"
+      - "packages/shared/**"
       - "pnpm-lock.yaml"
   workflow_call: {}
 
@@ -39,7 +39,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build API
-        run: pnpm --filter infamous-freight-api build
+        run: pnpm --filter api build
 
       - name: Prisma migrate deploy (guarded + locked)
         run: |
@@ -58,7 +58,7 @@ jobs:
               echo "Failed to acquire Prisma migration lock within 180 seconds." >&2
               exit 1
             fi
-            pnpm --filter infamous-freight-api prisma migrate deploy
+            pnpm --filter api prisma migrate deploy
           else
             echo "No apps/api/prisma changes detected; skipping Prisma migrate deploy."
           fi

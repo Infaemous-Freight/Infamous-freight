@@ -6,7 +6,7 @@ on:
       package-name:
         required: true
         type: string
-        description: "Package name to test (e.g., infamous-freight-api, infamous-freight-web)"
+        description: "Workspace package name to test (e.g., api, web, @infamous-freight/shared)"
       node-version:
         required: false
         type: string
