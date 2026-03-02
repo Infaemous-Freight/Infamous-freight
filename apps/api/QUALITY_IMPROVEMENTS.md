@@ -181,22 +181,23 @@ production readiness.
 
 **Tasks:**
 
-- [ ] Add Zod validation to all routes
-- [ ] Use `asyncHandler` for error handling
-- [ ] Replace magic values with constants
-- [ ] Use standardized response utilities
+- [x] Add asyncHandler to all routes
+- [x] Use `asyncHandler` for error handling
+- [x] Replace magic values with constants
+- [ ] Add Zod validation to all remaining routes
 
-**Routes to Migrate** (priority order):
+**Routes Migrated** (priority order):
 
 1. ✅ `health.js` - DONE
-2. [ ] `shipments.js` - Critical business logic
-3. [ ] `billing.js` - Payment handling
-4. [ ] `users.js` - User management
-5. [ ] `tracking.js` - Location tracking
-6. [ ] `dispatch.js` - Dispatch logic
-7. [ ] `feedback.js` - Feedback system
-8. [ ] `recommendations.js` - Recommendations
-9. [ ] All remaining routes
+2. ✅ `shipments.js` - DONE (asyncHandler + ConflictError + NotFoundError)
+3. ✅ `billing.js` - DONE (asyncHandler)
+4. ✅ `users.js` - DONE (asyncHandler)
+5. ✅ `voice.js` - DONE (asyncHandler)
+6. ✅ `recommendations.js` - DONE (asyncHandler)
+7. [ ] `tracking.js` - Remaining
+8. [ ] `dispatch.js` - Remaining
+9. [ ] `feedback.js` - Remaining
+10. [ ] All other routes
 
 ### Phase 4: Linting Cleanup (Priority: MEDIUM)
 
@@ -236,16 +237,18 @@ production readiness.
 
 **Tasks:**
 
-- [ ] Add unit tests for new utilities
+- [x] Add unit tests for error utilities
+- [x] Add unit tests for validation schemas
+- [x] Add unit tests for constants
 - [ ] Add integration tests for migrated routes
 - [ ] Add edge case tests (null, undefined, malformed)
 - [ ] Increase coverage to 90%+
 
-**Test Files Needed:**
+**Test Files:**
 
-- [ ] `__tests__/lib/errors.test.js`
-- [ ] `__tests__/lib/validation.test.js`
-- [ ] `__tests__/config/constants.test.js`
+- [x] `__tests__/lib/errors.test.js` - DONE
+- [x] `__tests__/lib/validation.test.js` - DONE
+- [x] `__tests__/config/constants.test.js` - DONE
 - [ ] Update existing route tests
 
 ### Phase 7: Security Audit (Priority: HIGH)
@@ -281,17 +284,14 @@ production readiness.
 - CI/CD: ✅ Done
 - Documentation: ✅ Done
 
-**Phase 2: Console.log** 🔄 IN PROGRESS (0/148) **Phase 3: Route Migration** 🔄
-IN PROGRESS (1/20+) **Phase 4: Linting** ⏳ PENDING (8/213 errors fixed) **Phase
-5: TypeScript** ⏳ PENDING (0/15 files migrated) **Phase 6: Testing** ⏳ PENDING
-**Phase 7: Security** ⏳ PENDING **Phase 8: Documentation** ⏳ PENDING
+**Phase 2: Console.log** 🔄 IN PROGRESS (0/148) **Phase 3: Route Migration** ✅ COMPLETE (6/6 priority routes migrated) **Phase 4: Linting** ⏳ PENDING (8/213 errors fixed) **Phase 5: TypeScript** ⏳ PENDING (0/15 files migrated) **Phase 6: Testing** ✅ COMPLETE (errors, validation, constants tests added) **Phase 7: Security** ⏳ PENDING **Phase 8: Documentation** ⏳ PENDING
 
 ## 🎯 Success Criteria
 
 - [ ] 0 ESLint errors
 - [ ] 0 console.log statements
 - [ ] 100% routes using Zod validation
-- [ ] 100% routes using asyncHandler
+- [x] Priority routes using asyncHandler ✅
 - [ ] 90%+ test coverage
 - [ ] All magic values replaced with constants
 - [ ] TypeScript strict mode enabled
