@@ -6,6 +6,7 @@ const {
   auditLog,
 } = require("../../middleware/security");
 const { getPrisma, prisma } = require("../../db/prisma");
+const { Parser } = require("json2csv");
 
 const router = express.Router();
 
@@ -94,6 +95,63 @@ router.get(
         limit,
         offset,
       });
+    } catch (error) {
+      return next(error);
+    }
+  },
+);
+
+router.get(
+  "/admin/audit-logs/export",
+  limiters.export,
+  authenticate,
+  requireOrganization,
+  auditLog,
+  async (req, res, next) => {
+    try {
+      const client = getPrisma?.() || prisma;
+      if (!client) {
+        const error = new Error("Audit log unavailable (database not initialized)");
+        error.status = 503;
+        throw error;
+      }
+
+      const role = String(req.auth?.role || req.user?.role || "").toUpperCase();
+      const isAdmin = role === "ADMIN";
+
+      const format = String(req.query.format || "csv").toLowerCase();
+      const rawLimit = Number(req.query.limit);
+      const limit = Number.isFinite(rawLimit) ? Math.min(rawLimit, 20000) : 5000;
+
+      const where = { organizationId: req.auth.organizationId };
+      if (!isAdmin && req.auth?.userId) where.actorUserId = req.auth.userId;
+
+      const logs = await client.orgAuditLog.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        take: limit,
+      });
+
+      if (format === "json") {
+        res.setHeader("Content-Type", "application/json");
+        res.setHeader("Content-Disposition", 'attachment; filename="audit-logs.json"');
+        return res.status(200).send(JSON.stringify({ ok: true, logs }, null, 2));
+      }
+
+      const parser = new Parser({
+        fields: ["id", "organizationId", "actorUserId", "action", "entity", "entityId", "createdAt"],
+      });
+
+      const csv = parser.parse(
+        logs.map((log) => ({
+          ...log,
+          createdAt: log.createdAt?.toISOString?.() || log.createdAt,
+        })),
+      );
+
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", 'attachment; filename="audit-logs.csv"');
+      return res.status(200).send(csv);
     } catch (error) {
       return next(error);
     }
