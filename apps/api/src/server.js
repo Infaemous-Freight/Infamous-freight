@@ -456,6 +456,15 @@ if (require.main === module) {
       });
     }
 
+    // Start AI command worker (BullMQ)
+    try {
+      const { startAiCommandWorker } = require("./worker/aiCommandWorker");
+      startAiCommandWorker();
+      logger.info("AI command worker started");
+    } catch (error) {
+      logger.warn("AI worker failed to start", { error: error.message });
+    }
+
     // Initialize worker heartbeat monitoring
     try {
       const { startHeartbeat } = require("./worker/heartbeat");

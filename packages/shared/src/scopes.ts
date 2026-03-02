@@ -112,6 +112,7 @@ export const SCOPE_CATEGORIES = {
     VIEW_ANALYTICS: "admin:view_analytics",
     RATINGS: "admin:ratings",
     MANAGE_PAYMENTS: "admin:manage_payments",
+    OPS: "admin:ops",
   },
 
   // Role-based scopes (single word)
