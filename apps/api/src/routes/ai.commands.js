@@ -17,7 +17,10 @@ const { aiCommandQueue } = require("../queue/aiCommandQueue");
 const router = express.Router();
 
 function getOrgAiApprovalMode() {
-  return String(process.env.AI_APPROVAL_MODE || "REQUIRE_APPROVAL").toUpperCase();
+  const mode = String(process.env.AI_APPROVAL_MODE || "REQUIRE_APPROVAL").toUpperCase();
+  return ["SUGGEST_ONLY", "REQUIRE_APPROVAL", "AUTO_EXECUTE"].includes(mode)
+    ? mode
+    : "REQUIRE_APPROVAL";
 }
 
 function enforceAiCommandsEnabled(_req, res, next) {
