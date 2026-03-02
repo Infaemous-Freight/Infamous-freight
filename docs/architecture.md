@@ -20,6 +20,21 @@ server-side for observability, auditability, and resilience.
 Client (Web / Mobile) → API Gateway → AI Orchestration → Business Logic Engine →
 Data + Memory Layer → Automation + Jobs
 
+## Implementation Path Map (Authoritative)
+
+Use the following repository paths as the execution reference for current
+implementation ownership:
+
+- **UI implementation:** `apps/web/`
+- **AI implementation:** `apps/ai/`
+- **Financial/billing implementation:** `apps/api/src/routes/billing.js`,
+  `apps/api/src/services/`, and `payments/`
+- **Shared contracts/types/utilities:** `packages/shared/`
+
+> Note: legacy references to `packages/ui`, `packages/ai-engine`, and
+> `packages/financial` are obsolete in this repository and should not be used
+> for implementation work.
+
 ## Architecture Freeze Policy
 
 To stop structural churn, the architecture is frozen and changes to core
