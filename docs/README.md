@@ -31,6 +31,8 @@ you find the information you need.
   dilution templates
 - **[Investor Outreach Strategy](investor-relations/INVESTOR_OUTREACH_STRATEGY.md)** -
   Target investors and outreach plan
+- **[National AI Freight Execution Pack](strategy/NATIONAL_AI_FREIGHT_EXECUTION_PACK.md)** -
+  Unified Stripe, AI engine, investor, architecture, and legal execution plan
 
 ---
 
