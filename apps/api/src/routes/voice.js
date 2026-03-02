@@ -1,5 +1,6 @@
 const express = require("express");
 const multer = require("multer");
+const { asyncHandler } = require("../lib/errors");
 const { limiters, authenticate, requireScope, auditLog } = require("../middleware/security");
 const { validateString, handleValidationErrors } = require("../middleware/validation");
 const aiVoiceService = require("../services/aiVoiceService");
@@ -36,8 +37,7 @@ router.post(
   requireScope("voice:ingest"),
   auditLog,
   upload.single("audio"),
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       // Feature flag check
       if (process.env.ENABLE_VOICE_PROCESSING === "false") {
         return res.status(503).json({
@@ -137,10 +137,7 @@ router.post(
       }
 
       res.json(result);
-    } catch (err) {
-      next(err);
-    }
-  },
+  }),
 );
 
 /**
@@ -156,8 +153,7 @@ router.post(
   auditLog,
   validateString("text", { maxLength: 500 }),
   handleValidationErrors,
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const { text } = req.body;
 
       logger.info("Processing voice command", {
@@ -210,10 +206,7 @@ router.post(
       };
 
       res.json(result);
-    } catch (err) {
-      next(err);
-    }
-  },
+  }),
 );
 
 module.exports = router;

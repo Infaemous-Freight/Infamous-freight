@@ -1,5 +1,6 @@
 const express = require("express");
 const { prisma } = require("../db/prisma");
+const { asyncHandler } = require("../lib/errors");
 const { cacheMiddleware, invalidateCache } = require("../middleware/cache");
 const { limiters, authenticate, requireScope, auditLog } = require("../middleware/security");
 const {
@@ -22,8 +23,7 @@ router.get(
   requireScope("users:read"),
   cacheMiddleware(30),
   auditLog,
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const user = await prisma.user.findUnique({
         where: { id: req.user.sub },
         include: {
@@ -43,10 +43,7 @@ router.get(
         ok: true,
         user,
       });
-    } catch (err) {
-      next(err);
-    }
-  },
+  }),
 );
 
 /**
@@ -65,8 +62,7 @@ router.patch(
     handleValidationErrors,
   ],
   auditLog,
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const { name, email } = req.body;
       const user = await prisma.user.update({
         where: { id: req.user.sub },
@@ -79,10 +75,7 @@ router.patch(
       });
 
       await invalidateCache(`*users*${req.user.sub}*`);
-    } catch (err) {
-      next(err);
-    }
-  },
+  }),
 );
 
 /**
@@ -97,8 +90,7 @@ router.get(
   requireScope("admin"),
   cacheMiddleware(30),
   auditLog,
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const { take = 50, skip = 0 } = req.query;
       const limit = Math.min(Number(take) || 50, 100);
       const offset = Number(skip) || 0;
@@ -126,10 +118,5 @@ router.get(
         total,
         pagination: { take: limit, skip: offset },
       });
-    } catch (err) {
-      next(err);
-    }
-  },
+  }),
 );
-
-module.exports = router;

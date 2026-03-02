@@ -17,6 +17,7 @@ const stripe = process.env.STRIPE_SECRET_KEY
   ? require("stripe")(process.env.STRIPE_SECRET_KEY)
   : null;
 const { prisma } = require("../db/prisma");
+const { asyncHandler } = require("../lib/errors");
 const router = express.Router();
 
 // Stripe configuration - 100% to merchant account
@@ -54,7 +55,7 @@ router.post(
   validateString("amount"),
   validateString("currency"),
   handleValidationErrors,
-  async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     try {
       if (!requirePrisma(res)) return;
       const { amount, currency = "usd", description, metadata = {} } = req.body;
@@ -99,9 +100,9 @@ router.post(
         paymentIntentId: paymentIntent.id,
       });
     } catch (err) {
-      next(err);
+      throw err;
     }
-  },
+  }),
 );
 
 /**
@@ -118,7 +119,7 @@ router.post(
   requireStripe,
   auditLog,
   handleValidationErrors,
-  async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     try {
       if (!requirePrisma(res)) return;
       const { email = req.user.email, name } = req.body;
@@ -168,9 +169,9 @@ router.post(
         customerId,
       });
     } catch (err) {
-      next(err);
+      throw err;
     }
-  },
+  }),
 );
 
 /**
@@ -188,7 +189,7 @@ router.post(
   auditLog,
   validateString("priceId"),
   handleValidationErrors,
-  async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     try {
       if (!requirePrisma(res)) return;
       const { priceId, email = req.user.email, metadata = {} } = req.body;
@@ -281,9 +282,9 @@ router.post(
         nextBillingDate: new Date(subscription.current_period_end * 1000).toISOString(),
       });
     } catch (err) {
-      next(err);
+      throw err;
     }
-  },
+  }),
 );
 
 /**
@@ -298,7 +299,7 @@ router.get(
   requireOrganization,
   requireScope("billing:read"),
   auditLog,
-  async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     try {
       if (!requirePrisma(res)) return;
       const subscriptions = await prisma.subscription.findMany({
@@ -320,9 +321,9 @@ router.get(
         count: subscriptions.length,
       });
     } catch (err) {
-      next(err);
+      throw err;
     }
-  },
+  }),
 );
 
 /**
@@ -338,7 +339,7 @@ router.post(
   requireScope("billing:write"),
   requireStripe,
   auditLog,
-  async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     try {
       if (!requirePrisma(res)) return;
       const { id } = req.params;
@@ -376,9 +377,9 @@ router.post(
         subscriptionId: id,
       });
     } catch (err) {
-      next(err);
+      throw err;
     }
-  },
+  }),
 );
 
 /**
@@ -390,7 +391,7 @@ router.post(
   limiters.webhook,
   requireStripe,
   express.raw({ type: "application/json" }),
-  async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     try {
       if (!requirePrisma(res)) return;
       const sig = req.headers["stripe-signature"];
@@ -498,9 +499,9 @@ router.post(
 
       res.json({ received: true });
     } catch (err) {
-      next(err);
+      throw err;
     }
-  },
+  }),
 );
 
 /**
@@ -514,7 +515,7 @@ router.get(
   authenticate,
   requireScope("billing:read"),
   auditLog,
-  async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     try {
       if (!requirePrisma(res)) return;
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -548,9 +549,9 @@ router.get(
         },
       });
     } catch (err) {
-      next(err);
+      throw err;
     }
-  },
+  }),
 );
 
 module.exports = router;

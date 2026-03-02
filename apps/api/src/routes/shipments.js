@@ -1,6 +1,7 @@
 const express = require("express");
 const { randomUUID } = require("crypto");
 const { prisma } = require("../db/prisma");
+const { asyncHandler, ConflictError, NotFoundError } = require("../lib/errors");
 const {
   limiters,
   authenticate,
@@ -44,8 +45,7 @@ router.get(
     validateEnumQuery("status", SHIPMENT_STATUSES).optional(),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const { status, driverId } = req.query;
       const where = {};
 
@@ -74,10 +74,7 @@ router.get(
       });
 
       res.json({ ok: true, shipments });
-    } catch (err) {
-      next(err);
-    }
-  },
+  }),
 );
 
 // Get shipment by ID
@@ -91,8 +88,7 @@ router.get(
   auditLog,
   validateUUID("id"),
   handleValidationErrors,
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const shipment = await prisma.shipment.findUnique({
         where: { id: req.params.id },
         include: {
@@ -116,10 +112,7 @@ router.get(
       }
 
       res.json({ ok: true, shipment });
-    } catch (err) {
-      next(err);
-    }
-  },
+  }),
 );
 
 // Create shipment with transaction
@@ -137,7 +130,7 @@ router.post(
     validateString("reference", { maxLength: 64 }).optional(),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     try {
       const { reference, trackingId, origin, destination, driverId } = req.body;
 
@@ -214,13 +207,11 @@ router.post(
         type: "created",
         shipment: result,
       });
-    } catch (err) {
-      if (err.code === "P2002") {
-        return res.status(409).json({ ok: false, error: "Reference already exists" });
-      }
-      next(err);
+  } catch (err) {
+      if (err.code === "P2002") throw new ConflictError("Reference already exists");
+      throw err;
     }
-  },
+  }),
 );
 
 // Update shipment status with transaction
@@ -237,7 +228,7 @@ router.patch(
     validateString("driverId", { maxLength: 100 }).optional(),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     try {
       const { status, driverId } = req.body;
       const updates = {};
@@ -357,13 +348,11 @@ router.patch(
         shipment: result,
         changes: updates,
       });
-    } catch (err) {
-      if (err.code === "P2025") {
-        return res.status(404).json({ ok: false, error: "Shipment not found" });
-      }
-      next(err);
+  } catch (err) {
+      if (err.code === "P2025") throw new NotFoundError("Shipment not found");
+      throw err;
     }
-  },
+  }),
 );
 
 // Delete shipment
@@ -375,7 +364,7 @@ router.delete(
   requireScope("shipments:write"),
   auditLog,
   [validateUUID("id"), handleValidationErrors],
-  async (req, res, next) => {
+  asyncHandler(async (req, res) => {
     try {
       const existing = await prisma.shipment.findUnique({
         where: { id: req.params.id },
@@ -397,13 +386,11 @@ router.delete(
       res.json({ ok: true, message: "Shipment deleted successfully" });
 
       await invalidateCache("*shipments*");
-    } catch (err) {
-      if (err.code === "P2025") {
-        return res.status(404).json({ ok: false, error: "Shipment not found" });
-      }
-      next(err);
+  } catch (err) {
+      if (err.code === "P2025") throw new NotFoundError("Shipment not found");
+      throw err;
     }
-  },
+  }),
 );
 
 // Export shipments
@@ -415,8 +402,7 @@ router.get(
   requireScope("shipments:read"),
   auditLog,
   [validateEnumQuery("status", SHIPMENT_STATUSES).optional(), handleValidationErrors],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const { format } = req.params;
       const { status, driverId } = req.query;
 
@@ -484,10 +470,7 @@ router.get(
             error: "Invalid format. Use: csv, pdf, or json",
           });
       }
-    } catch (err) {
-      next(err);
-    }
-  },
+  }),
 );
 
 module.exports = router;

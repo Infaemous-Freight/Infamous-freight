@@ -12,6 +12,7 @@
 const express = require("express");
 const router = express.Router();
 const { prisma } = require("../db/prisma");
+const { asyncHandler } = require("../lib/errors");
 const recommendationService = require("../services/recommendationService");
 const { authenticate, requireScope, limiters, auditLog } = require("../middleware/security");
 const { body, param, query, validationResult } = require("express-validator");
@@ -39,8 +40,7 @@ router.post(
     body("budget").optional().isFloat({ min: 0 }).withMessage("Budget must be positive"),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const recommendations = await recommendationService.getServiceRecommendations(req.body);
       res.status(200).json({
         success: true,
@@ -48,10 +48,7 @@ router.post(
         count: recommendations.length,
         message: "Service recommendations generated successfully",
       });
-    } catch (error) {
-      next(error);
-    }
-  },
+  }),
 );
 
 /**
@@ -75,8 +72,7 @@ router.post(
     body("avoidHighways").optional().isBoolean().withMessage("avoidHighways must be boolean"),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const recommendations = await recommendationService.getRouteRecommendations(req.body);
       res.status(200).json({
         success: true,
@@ -84,10 +80,7 @@ router.post(
         count: recommendations.length,
         message: "Route recommendations generated successfully",
       });
-    } catch (error) {
-      next(error);
-    }
-  },
+  }),
 );
 
 /**
@@ -112,8 +105,7 @@ router.post(
       .withMessage("Special requirements must be an array"),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const recommendations = await recommendationService.getDriverRecommendations(req.body);
       res.status(200).json({
         success: true,
@@ -121,10 +113,7 @@ router.post(
         count: recommendations.length,
         message: "Driver recommendations generated successfully",
       });
-    } catch (error) {
-      next(error);
-    }
-  },
+  }),
 );
 
 /**
@@ -151,8 +140,7 @@ router.post(
       .withMessage("Preferred fuel type must be a string"),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const recommendations = await recommendationService.getVehicleRecommendations(req.body);
       res.status(200).json({
         success: true,
@@ -160,10 +148,7 @@ router.post(
         count: recommendations.length,
         message: "Vehicle recommendations generated successfully",
       });
-    } catch (error) {
-      next(error);
-    }
-  },
+  }),
 );
 
 /**
@@ -189,18 +174,14 @@ router.post(
     body("customerId").optional().isString().withMessage("Customer ID must be a string"),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const recommendations = await recommendationService.getPricingRecommendations(req.body);
       res.status(200).json({
         success: true,
         data: recommendations,
         message: "Pricing recommendations generated successfully",
       });
-    } catch (error) {
-      next(error);
-    }
-  },
+  }),
 );
 
 /**
@@ -216,8 +197,7 @@ router.get(
     param("customerId").isString().notEmpty().withMessage("Customer ID is required"),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const { customerId } = req.params;
       const recommendations =
         await recommendationService.getPersonalizedRecommendations(customerId);
@@ -226,10 +206,7 @@ router.get(
         data: recommendations,
         message: "Personalized recommendations generated successfully",
       });
-    } catch (error) {
-      next(error);
-    }
-  },
+  }),
 );
 
 /**
@@ -252,8 +229,7 @@ router.post(
       .withMessage("Limit must be between 1 and 50"),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const { itemType, itemId, limit = 10 } = req.body;
 
       // Get similar items based on type
@@ -270,10 +246,7 @@ router.post(
         count: similar.length,
         message: `Similar ${itemType}s found successfully`,
       });
-    } catch (error) {
-      next(error);
-    }
-  },
+  }),
 );
 
 /**
@@ -300,8 +273,7 @@ router.post(
     body("feedback").optional().isString().withMessage("Feedback must be a string"),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const { recommendationId, recommendationType, itemId, action, rating, feedback } = req.body;
 
       // Store feedback
@@ -322,10 +294,7 @@ router.post(
         success: true,
         message: "Feedback recorded successfully",
       });
-    } catch (error) {
-      next(error);
-    }
-  },
+  }),
 );
 
 /**
@@ -345,8 +314,7 @@ router.get(
       .withMessage("Invalid time range"),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const { customerId } = req.params;
       const { timeRange = "month" } = req.query;
 
@@ -407,10 +375,7 @@ router.get(
         timeRange,
         message: "Customer insights generated successfully",
       });
-    } catch (error) {
-      next(error);
-    }
-  },
+  }),
 );
 
 /**
@@ -433,8 +398,7 @@ router.get(
       .withMessage("Limit must be between 1 and 50"),
     handleValidationErrors,
   ],
-  async (req, res, next) => {
-    try {
+  asyncHandler(async (req, res) => {
       const { category = "all", limit = 10 } = req.query;
 
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -484,10 +448,7 @@ router.get(
         period: "Last 30 days",
         message: "Trending data retrieved successfully",
       });
-    } catch (error) {
-      next(error);
-    }
-  },
+  }),
 );
 
 /**
