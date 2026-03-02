@@ -44,6 +44,9 @@ router.post(
       if (!client) {
         return res.status(503).json({ ok: false, error: "Database not initialized" });
       }
+      if (!client) {
+        return res.status(503).json({ ok: false, error: "Database not initialized" });
+      }
 
       const { command } = req.body;
       const orgId = req.auth.organizationId;
