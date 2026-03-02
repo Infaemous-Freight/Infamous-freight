@@ -149,4 +149,6 @@ function startAiCommandWorker() {
   return worker;
 }
 
-module.exports = { startAiCommandWorker };
+const aiCommandWorker = startAiCommandWorker();
+
+module.exports = { startAiCommandWorker, aiCommandWorker };
