@@ -64,6 +64,8 @@ you find the information you need.
 
 - **[Architecture Overview](ARCHITECTURE.md)** - System architecture and design
   decisions
+- **[SaaS Freight Execution Blueprint](architecture/SAAS_FREIGHT_EXECUTION_BLUEPRINT.md)** -
+  End-to-end implementation blueprint for multi-tenant freight operations
 - **[Project Summary](PROJECT_SUMMARY.md)** - High-level project overview
 - **[AI Dispatch Operator Execution Plan](AI_DISPATCH_OPERATOR_EXECUTION_PLAN.md)** -
   AI operations workforce details
