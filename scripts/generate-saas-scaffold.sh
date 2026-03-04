@@ -5,9 +5,9 @@ REPO_NAME="${1:-infamous-freight}"
 mkdir -p "$REPO_NAME"
 cd "$REPO_NAME"
 
-cat > package.json <<'JSON'
+cat > package.json <<JSON
 {
-  "name": "infamous-freight",
+  "name": "${REPO_NAME}",
   "private": true,
   "packageManager": "pnpm@9.15.4",
   "scripts": {
