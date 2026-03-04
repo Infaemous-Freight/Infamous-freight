@@ -81,7 +81,7 @@ cat > packages/shared/package.json <<'JSON'
 JSON
 
 cat > packages/shared/src/index.ts <<'TS'
-export * from './types.js';
+export * from './types';
 TS
 
 cat > packages/shared/src/types.ts <<'TS'
