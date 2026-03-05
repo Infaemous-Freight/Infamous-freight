@@ -62,6 +62,15 @@ export async function handleWebhookEvent({ event, payload }) {
     const commentBody = payload.comment?.body || "";
     if (!commentBody.trim().startsWith("/copilot run")) return;
 
+    const authorAssociation = payload.comment?.author_association;
+    const isTrustedAuthor =
+      authorAssociation === "OWNER" ||
+      authorAssociation === "MEMBER" ||
+      authorAssociation === "COLLABORATOR";
+
+    if (!isTrustedAuthor) return;
+
+    if (!hasLabel(payload, "copilot-task")) return;
     const issueNumber = payload.issue?.number;
     if (!issueNumber) return;
 
