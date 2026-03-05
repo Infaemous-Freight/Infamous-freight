@@ -30,41 +30,45 @@ function getPrisma() {
     attachSlowQueryLogger(basePrisma);
 
     // Track query performance for admin analytics using Prisma Client Extensions (v7)
-    prisma = basePrisma.$extends({
-      query: {
-        $allModels: {
-          async $allOperations({ model, operation, args, query }) {
-            const start = Date.now();
-            try {
-              const result = await query(args);
-              const duration = Date.now() - start;
+    if (typeof basePrisma.$extends === "function") {
+      prisma = basePrisma.$extends({
+        query: {
+          $allModels: {
+            async $allOperations({ model, operation, args, query }) {
+              const start = Date.now();
+              try {
+                const result = await query(args);
+                const duration = Date.now() - start;
 
-              if (duration >= DEFAULT_THRESHOLD) {
-                console.warn(`Slow query detected: ${model}.${operation} took ${duration}ms`);
+                if (duration >= DEFAULT_THRESHOLD) {
+                  console.warn(`Slow query detected: ${model}.${operation} took ${duration}ms`);
+                }
+
+                recordQuery({
+                  model,
+                  action: operation,
+                  duration,
+                  args,
+                });
+
+                return result;
+              } catch (error) {
+                recordQuery({
+                  model,
+                  action: operation,
+                  duration: Date.now() - start,
+                  args,
+                  error,
+                });
+                throw error;
               }
-
-              recordQuery({
-                model,
-                action: operation,
-                duration,
-                args,
-              });
-
-              return result;
-            } catch (error) {
-              recordQuery({
-                model,
-                action: operation,
-                duration: Date.now() - start,
-                args,
-                error,
-              });
-              throw error;
-            }
+            },
           },
         },
-      },
-    });
+      });
+    } else {
+      prisma = basePrisma;
+    }
   }
   return prisma;
 }

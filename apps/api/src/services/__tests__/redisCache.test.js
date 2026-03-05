@@ -3,7 +3,6 @@
  * Unit tests for RedisCache class and caching middleware
  */
 
-const { describe, it, expect, beforeEach, afterEach, vi } = require("vitest");
 const { RedisCache, getCache } = require("../redisCache");
 
 describe("RedisCache", () => {
@@ -13,26 +12,26 @@ describe("RedisCache", () => {
     cache = new RedisCache("redis://localhost:6379");
     // Mock client methods
     cache.client = {
-      get: vi.fn(),
-      setEx: vi.fn(),
-      del: vi.fn(),
-      keys: vi.fn(),
-      ping: vi.fn(),
-      connect: vi.fn(),
-      disconnect: vi.fn(),
-      on: vi.fn(),
-      incrBy: vi.fn(),
-      decrBy: vi.fn(),
-      sAdd: vi.fn(),
-      sIsMember: vi.fn(),
-      sMembers: vi.fn(),
-      flushAll: vi.fn(),
+      get: jest.fn(),
+      setEx: jest.fn(),
+      del: jest.fn(),
+      keys: jest.fn(),
+      ping: jest.fn(),
+      connect: jest.fn(),
+      disconnect: jest.fn(),
+      on: jest.fn(),
+      incrBy: jest.fn(),
+      decrBy: jest.fn(),
+      sAdd: jest.fn(),
+      sIsMember: jest.fn(),
+      sMembers: jest.fn(),
+      flushAll: jest.fn(),
     };
     cache.connected = true;
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("get()", () => {
@@ -107,7 +106,7 @@ describe("RedisCache", () => {
   describe("getOrCompute()", () => {
     it("should return cached value without computing", async () => {
       const testData = { id: 1 };
-      const computeFn = vi.fn();
+      const computeFn = jest.fn();
 
       cache.client.get.mockResolvedValue(JSON.stringify(testData));
 
@@ -120,7 +119,7 @@ describe("RedisCache", () => {
 
     it("should compute and cache value on miss", async () => {
       const testData = { id: 1, computed: true };
-      const computeFn = vi.fn().mockResolvedValue(testData);
+      const computeFn = jest.fn().mockResolvedValue(testData);
 
       cache.client.get.mockResolvedValue(null);
       cache.client.setEx.mockResolvedValue("OK");
@@ -237,7 +236,7 @@ describe("RedisCache", () => {
 
     it("should execute and cache query on miss", async () => {
       const queryResult = [{ id: 1 }, { id: 2 }];
-      const queryFn = vi.fn().mockResolvedValue(queryResult);
+      const queryFn = jest.fn().mockResolvedValue(queryResult);
 
       cache.client.get.mockResolvedValue(null);
       cache.client.setEx.mockResolvedValue("OK");

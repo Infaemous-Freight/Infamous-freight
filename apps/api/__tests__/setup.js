@@ -49,7 +49,13 @@ jest.mock("@infamous-freight/shared", () => ({
     DELIVERED: "delivered",
     CANCELED: "canceled",
   },
+  validateScope: jest.fn(() => true),
+  hasScope: jest.fn(() => true),
+  hasAllScopes: jest.fn(() => true),
 }));
+
+global.__PRISMA_MOCK__ = global.__PRISMA_MOCK__ || {};
+global.__PRISMA_MOCK__.$on = global.__PRISMA_MOCK__.$on || jest.fn();
 
 // Mock external services
 jest.mock("../src/services/aiSyntheticClient", () => ({
