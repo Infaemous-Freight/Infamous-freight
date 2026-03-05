@@ -44,11 +44,23 @@ function normalizeText(value) {
     .trim();
 }
 
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function detectIntent(commandText) {
   const normalized = normalizeText(commandText);
 
   for (const intent of KEYWORD_INTENTS) {
-    if (intent.keywords.some((keyword) => normalized.includes(keyword))) {
+    const sortedKeywords = intent.keywords.slice().sort((a, b) => b.length - a.length);
+
+    if (
+      sortedKeywords.some((keyword) => {
+        const escaped = escapeRegExp(keyword);
+        const pattern = new RegExp(`\\b${escaped}\\b`);
+        return pattern.test(normalized);
+      })
+    ) {
       return intent;
     }
   }
