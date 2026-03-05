@@ -64,6 +64,8 @@ you find the information you need.
 
 - **[Architecture Overview](ARCHITECTURE.md)** - System architecture and design
   decisions
+- **[Autonomous Logistics Platform Blueprint](architecture/AUTONOMOUS_LOGISTICS_PLATFORM_BLUEPRINT.md)** -
+  Implementable autonomous freight decision-system architecture
 - **[SaaS Freight Execution Blueprint](architecture/SAAS_FREIGHT_EXECUTION_BLUEPRINT.md)** -
   End-to-end implementation blueprint for multi-tenant freight operations
 - **[Technical Architecture Blueprint (100%)](architecture/TECHNICAL_ARCHITECTURE_BLUEPRINT_100.md)** -
