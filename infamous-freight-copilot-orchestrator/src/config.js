@@ -2,13 +2,13 @@ export const CONFIG = {
   owner: "MrMiless44",
   repo: "Infamous-freight",
 
-  // triggers
+  // Triggers
   copilotLabel: "copilot-task",
   runCommand: "/copilot run",
 
-  // Copilot agent login (GitHub docs say suggestedActors returns copilot-swe-agent when enabled)
+  // Copilot agent login commonly returned via suggestedActors
   copilotLogin: "copilot-swe-agent",
 
-  // default branch to use in agentAssignment (must match repo default; some users report default-branch coupling)
+  // Must match your repo default branch ("main" or "master")
   baseRef: "main"
 };

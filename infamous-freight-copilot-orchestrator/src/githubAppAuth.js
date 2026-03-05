@@ -2,10 +2,13 @@ import { App } from "@octokit/app";
 
 export function makeApp() {
   const appId = process.env.GITHUB_APP_ID;
-  const privateKey = process.env.GITHUB_PRIVATE_KEY_PEM?.replace(/\\n/g, "\n");
+  const privateKeyRaw = process.env.GITHUB_PRIVATE_KEY_PEM;
 
   if (!appId) throw new Error("Missing GITHUB_APP_ID");
-  if (!privateKey) throw new Error("Missing GITHUB_PRIVATE_KEY_PEM");
+  if (!privateKeyRaw) throw new Error("Missing GITHUB_PRIVATE_KEY_PEM");
+
+  // If env stored with \n, unescape
+  const privateKey = privateKeyRaw.replace(/\\n/g, "\n");
 
   return new App({ appId, privateKey });
 }
