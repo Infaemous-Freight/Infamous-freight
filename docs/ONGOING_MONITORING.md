@@ -10,6 +10,18 @@ Effective ongoing monitoring ensures early detection of issues, prevents
 technical debt accumulation, and maintains system reliability. This guide
 provides actionable procedures for daily, weekly, and monthly tasks.
 
+## Strategic Monitoring Cadence
+
+Use the following fixed cadence for market and business monitoring:
+
+| Task | Frequency | Time |
+| --- | --- | --- |
+| Monitor freight industry news | Daily | 8:00 AM |
+| Check platform reliability and incidents | Daily | 9:00 AM |
+| Watch competitor funding and launches | Daily | 12:00 PM |
+| Monitor trucking and brokerage regulations | Weekly (Monday) | 7:30 AM |
+| Review Infamous Freight revenue engine | Weekly (Friday) | 4:00 PM |
+
 ## Minimum Ops Stack (Locked)
 
 - **Central Logs**: API request + error logs
