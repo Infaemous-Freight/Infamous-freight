@@ -121,3 +121,173 @@ for the decision, scope, and allowed changes.
   stores.
 - **Observability**: Structured logging, request IDs, distributed tracing, SLO
   dashboards, alerting hooks into monitoring tools.
+
+## Complete Platform Blueprint (Genesis-Centered)
+
+The platform interaction model is centered on the Genesis Avatar as the single
+command and feedback interface for operators, brokers, and shippers.
+
+```mermaid
+flowchart TD
+
+U[User / Operator / Broker / Shipper]
+
+U --> APP[Mobile App Interface]
+U --> WEB[Web Dashboard]
+
+APP --> AV[Genesis Avatar AI]
+WEB --> AV
+
+AV --> AI[AI Command Engine]
+
+AI --> SHIP[Shipment Manager]
+AI --> ROUTE[Routing Optimization Engine]
+AI --> LOAD[Load Board System]
+AI --> NOTIF[Notification Engine]
+
+SHIP --> TRACK[Tracking System]
+ROUTE --> TRACK
+LOAD --> SHIP
+
+TRACK --> DATA[Analytics Engine]
+
+DATA --> DASH[Dashboard Widgets]
+
+NOTIF --> U
+DASH --> U
+```
+
+### Interaction Principle
+
+Users do not interact directly with backend modules. The canonical flow is:
+
+**Avatar → AI Engine → Logistics Modules → Data/Insights → User Actions**
+
+This preserves a consistent, intelligent operator experience while keeping
+orchestration and decisioning centralized.
+
+### Mobile App Layout
+
+Bottom navigation:
+
+- Home
+- Load Board
+- Shipments
+- Routes
+- Alerts
+- Profile
+
+Home dashboard composition:
+
+- Genesis Avatar panel
+- Active shipments list
+- Quick actions (Create Shipment, View Load Board, Optimize Routes)
+- Alerts stream
+
+The Avatar remains available as a persistent floating action element for AI
+command entry.
+
+### Load Board (Easy Access)
+
+The load board is treated as a real-time marketplace and exposed as a primary
+navigation destination across mobile and web.
+
+Core elements:
+
+- Search and filters (location, distance, weight, equipment/type)
+- Available load cards with lane, weight, and rate
+- One-tap claim action
+- AI recommendation strip (“Best load for your route today”)
+
+AI load matching factors:
+
+- Driver location
+- Fuel cost context
+- Route efficiency
+- Load profitability
+- Deadhead distance
+
+### Web Dashboard Layout
+
+Desktop dashboard composition:
+
+- Left sidebar: Dashboard, Load Board, Shipments, Routes, Analytics,
+  Notifications, Support
+- Main panel: map + active shipments, shipment cards, alerts panel, and KPI
+  widgets
+
+Recommended KPI widgets:
+
+- Active Shipments
+- Available Loads
+- Routes Optimized Today
+- Revenue Today
+
+### Genesis Avatar Behavioral States
+
+| State      | Meaning                                     |
+| ---------- | ------------------------------------------- |
+| Idle       | Waiting for commands                        |
+| Suggesting | Recommending loads/actions                  |
+| Alert      | Shipment issue requires attention           |
+| Critical   | Delay/route issue requires immediate action |
+
+### Analytics Engine Focus
+
+Operational intelligence should prioritize:
+
+- Average delivery time
+- Fuel efficiency
+- Load profitability
+- Driver performance
+- Route efficiency
+
+### Production-Oriented Repo Shape (Target)
+
+```text
+/apps
+   /mobile
+   /web
+
+/packages
+   /ai
+   /logistics
+   /loadboard
+   /tracking
+   /notifications
+
+/components
+   Avatar
+   Dashboard
+   ShipmentCard
+   RouteMap
+   LoadBoardCard
+
+/modules
+   aiEngine
+   shipmentManager
+   loadBoardManager
+   routingEngine
+   analyticsEngine
+
+/assets
+   avatars
+   icons
+```
+
+### Ecosystem Flywheel
+
+1. Shippers post loads.
+2. Loads surface in the Load Board.
+3. Carriers claim loads.
+4. AI optimizes routes and assignment.
+5. Tracking and analytics improve execution.
+6. Better outcomes compound into revenue and efficiency.
+
+### Strategic Expansion Opportunities
+
+- AI autodispatch
+- Smart rate prediction
+- National carrier network enrollment
+- Broker marketplace onboarding
+- Predictive freight intelligence for congestion and delay risk
