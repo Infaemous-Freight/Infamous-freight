@@ -224,7 +224,7 @@ Operational questions to answer quickly:
 
 Minimum stack:
 
-- Structured logs (`requestId`, `orgId`, `userId`).
+- Structured logs (`requestId`, `organizationId`, `userId`).
 - Metrics: latency, queue lag, job failure rate.
 - Traces: API → DB → queue → worker.
 - Alerting: payment webhook failures, tracking ingestion drops, DB saturation.
