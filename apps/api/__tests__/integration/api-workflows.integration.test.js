@@ -6,7 +6,7 @@
 
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
-const { prisma } = require('../../../src/db/prisma');
+const { prisma } = require('../../src/db/prisma');
 
 const TEST_JWT_SECRET = process.env.JWT_SECRET || 'test-secret-key';
 const VALID_UUID = '550e8400-e29b-41d4-a716-446655440000';
@@ -35,8 +35,8 @@ describe('API Integration Tests - Complete Workflows', () => {
     let userToken;
     let adminToken;
 
-    before(async () => {
-        app = require('../../../src/app');
+    beforeAll(async () => {
+        app = require('../../src/app');
 
         userToken = generateTestToken(TEST_USER_ID, [
             'shipment:read',

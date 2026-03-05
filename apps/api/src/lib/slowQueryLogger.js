@@ -9,6 +9,8 @@ const Sentry = require("@sentry/node");
 const SLOW_QUERY_THRESHOLD_MS = parseInt(process.env.SLOW_QUERY_THRESHOLD_MS || "1000", 10);
 
 function attachSlowQueryLogger(prisma) {
+  if (!prisma || typeof prisma.$on !== "function") return prisma;
+
   prisma.$on("query", (e) => {
     const durationMs = e.duration;
 

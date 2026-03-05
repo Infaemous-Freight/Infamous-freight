@@ -46,6 +46,8 @@ router.get(
   }),
 );
 
+module.exports = router;
+
 /**
  * PATCH /api/users/me
  * Update current user profile
