@@ -137,8 +137,11 @@ async function githubRequest(token, method, path, data) {
 function detectCopilotAssignee(assignees) {
   return assignees.find((assignee) => {
     const login = assignee?.login?.toLowerCase() || "";
-    const type = assignee?.type?.toLowerCase() || "";
-    return login.includes("copilot") || (type === "bot" && login.includes("github"));
+    const isCopilotLogin =
+      login === "github-copilot[bot]" ||
+      login === "github-copilot" ||
+      login.includes("copilot");
+    return isCopilotLogin;
   });
 }
 
