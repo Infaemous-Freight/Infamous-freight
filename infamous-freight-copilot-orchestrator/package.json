@@ -1,0 +1,16 @@
+{
+  "name": "infamous-freight-copilot-orchestrator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "@octokit/app": "^15.0.0",
+    "@octokit/request": "^9.0.0",
+    "express": "^4.19.2"
+  }
+}
