@@ -8,7 +8,7 @@ const app = express();
 app.get("/health", (_, res) => res.status(200).send("ok"));
 
 // Raw body is REQUIRED for signature verification
-app.post("/github/webhook", express.raw({ type: "application/json" }), async (req, res) => {
+app.post("/github/webhook", express.raw({ type: "application/json", limit: "2mb" }), async (req, res) => {
   const delivery = req.get("X-GitHub-Delivery") || "";
   const event = req.get("X-GitHub-Event") || "";
   const signature = req.get("X-Hub-Signature-256") || "";
