@@ -185,7 +185,7 @@ telemetry.
 
 ## 7) Revenue engine architecture
 
-Treat finance like a bank: deterministic, traceable, reconciliable.
+Treat finance like a bank: deterministic, traceable, reconcilable.
 
 ### Ledger approach
 
