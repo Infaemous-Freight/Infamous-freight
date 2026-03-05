@@ -64,4 +64,68 @@ describe("aiFreightCommandEngine", () => {
     expect(result.summary).toBe("Carrier shortlist generated");
     expect(result.outputs[0].carrierScore).toBeGreaterThan(90);
   });
+
+  it("executes rate prediction plan and returns pricing output", () => {
+    const result = executePlan(
+      {
+        tools: [
+          {
+            name: "predictRate",
+            arguments: {
+              distanceMiles: 740,
+              fuelPricePerGallon: 3.9,
+              seasonalityIndex: 1.03,
+              marketCapacityIndex: 0.95,
+              carrierDemandIndex: 1.08,
+              historicalSpotRatePerMile: 2.48,
+            },
+          },
+        ],
+      },
+      {},
+    );
+
+    expect(result).toBeDefined();
+    expect(Array.isArray(result.outputs)).toBe(true);
+    expect(result.outputs.length).toBeGreaterThan(0);
+    expect(result.outputs[0].predictedRatePerMile).toBeGreaterThan(0);
+  });
+
+  it("executes delay prediction plan and returns tracking output", () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date("2024-01-01T00:00:00Z"));
+
+    const result = executePlan(
+      {
+        tools: [
+          {
+            name: "predictDelay",
+            arguments: {
+              shipmentId: "IF-1202",
+            },
+          },
+        ],
+      },
+      {},
+    );
+
+    expect(result).toBeDefined();
+    expect(Array.isArray(result.outputs)).toBe(true);
+    expect(result.outputs.length).toBeGreaterThan(0);
+    expect(typeof result.outputs[0]).toBe("object");
+
+    jest.useRealTimers();
+  });
+
+  it("executes default plan branch for unknown tool", () => {
+    const result = executePlan(
+      {
+        tools: [{ name: "unknownTool", arguments: {} }],
+      },
+      {},
+    );
+
+    expect(result).toBeDefined();
+    expect(result.summary).toBeDefined();
+  });
 });
