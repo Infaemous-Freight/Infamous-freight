@@ -241,12 +241,16 @@ CREATE TABLE shipments (
 
 Freight emits events continuously:
 
-- `shipment_created`
-- `carrier_assigned`
-- `location_update`
-- `delay_detected`
-- `delivery_confirmed`
+- `shipment.created`
+- `shipment.carrier_assigned`
+- `location.update`
+- `shipment.delay_detected`
+- `shipment.delivered`
 
+Canonical event topics follow the pattern `<domain>.<event>`. Existing systems
+may use transport-specific naming (e.g. agent engine: `shipment.assigned`,
+websockets: `location:update`, webhooks: `loads:new`); these should map
+cleanly onto the canonical topics above.
 Streaming options:
 
 - Kafka (high-throughput, replay-heavy workloads)
