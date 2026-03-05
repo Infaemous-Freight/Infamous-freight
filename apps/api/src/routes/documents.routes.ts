@@ -18,9 +18,42 @@ const storage = multer.diskStorage({
   }
 });
 
+const ALLOWED_MIME_TYPES = new Set<string>([
+  'application/pdf',
+  'image/png',
+  'image/jpeg',
+  'image/jpg',
+  'image/gif',
+  'text/plain',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+]);
+
+const ALLOWED_EXTENSIONS = new Set<string>([
+  '.pdf',
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.gif',
+  '.txt',
+  '.doc',
+  '.docx'
+]);
+
 const upload = multer({
   storage,
-  limits: { fileSize: 25 * 1024 * 1024 } // 25MB
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
+  fileFilter: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const isMimeAllowed = ALLOWED_MIME_TYPES.has(file.mimetype);
+    const isExtAllowed = ALLOWED_EXTENSIONS.has(ext);
+
+    if (isMimeAllowed && isExtAllowed) {
+      return cb(null, true);
+    }
+
+    return cb(new Error('Invalid file type'));
+  }
 });
 
 export const documentsRoutes = Router();
