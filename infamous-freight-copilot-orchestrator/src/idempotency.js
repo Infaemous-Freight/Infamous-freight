@@ -14,8 +14,17 @@ function load() {
 
 function save(set) {
   try {
+    // Ensure the in-memory set does not grow unbounded: keep only the last 5000 entries.
+    const recent = [...set].slice(-5000);
+    if (set.size > recent.length) {
+      set.clear();
+      for (const id of recent) {
+        set.add(id);
+      }
+    }
+
     fs.mkdirSync(path.dirname(FILE), { recursive: true });
-    fs.writeFileSync(FILE, JSON.stringify([...set].slice(-5000)), "utf8");
+    fs.writeFileSync(FILE, JSON.stringify(recent), "utf8");
   } catch {
     // ignore
   }
