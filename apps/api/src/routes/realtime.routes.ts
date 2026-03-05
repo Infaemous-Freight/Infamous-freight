@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware/auth.js';
 import { requireTenant } from '../middleware/tenant.js';
-import { prisma } from '../lib/prisma.js';
+import prisma from '../lib/prisma.js';
 
 export const realtimeRoutes = Router();
 realtimeRoutes.use(requireAuth, requireTenant);
