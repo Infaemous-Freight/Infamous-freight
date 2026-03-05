@@ -22,6 +22,9 @@ router.post("/webhook", limiters.webhook, async (req, res) => {
     return res.status(401).json({ error: "invalid webhook signature" });
   }
 
+  if (!deliveryId) {
+    return res.status(400).json({ error: "missing X-GitHub-Delivery header" });
+  }
   if (markDeliveryProcessed(deliveryId)) {
     return res.status(200).json({ ok: true, deduplicated: true });
   }
