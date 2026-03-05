@@ -69,7 +69,11 @@ you find the information you need.
 - **[SaaS Freight Execution Blueprint](architecture/SAAS_FREIGHT_EXECUTION_BLUEPRINT.md)** -
   End-to-end implementation blueprint for multi-tenant freight operations
 - **[Technical Architecture Blueprint (100%)](architecture/TECHNICAL_ARCHITECTURE_BLUEPRINT_100.md)** -
-  Full target-state architecture for event-driven, multi-tenant freight operations
+  Full target-state architecture for event-driven, multi-tenant freight
+  operations
+- **[Full Platform Execution Blueprint](INFAMOUS_FREIGHT_FULL_PLATFORM_EXECUTION_BLUEPRINT.md)** -
+  Unified ecosystem blueprint for mobile, web, AI avatar, marketplace, tracking,
+  analytics, and revenue
 - **[Project Summary](PROJECT_SUMMARY.md)** - High-level project overview
 - **[AI Dispatch Operator Execution Plan](AI_DISPATCH_OPERATOR_EXECUTION_PLAN.md)** -
   AI operations workforce details
