@@ -1,30 +1,21 @@
 # @compliance
 
-Internal compliance domain for Infamous Freight.
+## Purpose
+Canonical compliance code domain.
 
-This module centralizes compliance-related logic, schemas, types, and API
-wiring.
+## Owns
+- compliance rules
+- compliance schemas
+- compliance APIs
+- reusable compliance validation logic
 
-## Responsibilities
+## Does not own
+- legacy/transitional content in `compliance/`
+- security response policy docs in `.security/`
 
-- evaluate carrier compliance status
-- validate required documents
-- check document expiration
-- verify operational eligibility
-- produce audit-friendly compliance results
+## Runbook / entrypoints
+- import as internal compliance domain package/module
+- wire through app/service APIs as needed
 
-## Structure
-
-- `api/` — route wiring and API surface
-- `schemas/` — validation schemas
-- `services/` — orchestration logic
-- `rules/` — pure business/compliance rules
-- `types/` — shared contracts
-
-## Design Rules
-
-- keep rules pure and deterministic
-- keep services orchestration-focused
-- keep API thin
-- never trust client-supplied tenant scope
-- return structured compliance findings, not vague booleans
+## Owner
+Compliance Engineering

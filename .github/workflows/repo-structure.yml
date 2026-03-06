@@ -1,0 +1,31 @@
+name: Repo Structure
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  repo-structure:
+    name: repo-structure
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run repository structure check
+        run: node scripts/repo-structure-check.mjs
+
+      - name: Run root README coverage check
+        run: node scripts/root-readme-check.mjs

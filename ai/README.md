@@ -1,17 +1,21 @@
-# AI Services
+# ai
 
-This directory contains AI and ML services for Infamous Freight.
+## Purpose
+Standalone AI / ML services, especially Python-based inference and rate prediction.
 
-## Current service
-- `rate-prediction-service` — predicts freight rates from shipment and lane features
+## Owns
+- model-serving runtimes
+- inference APIs
+- feature engineering local to ML services
+- ML-specific Docker/runtime assets
 
-## Top-level files
-- `Dockerfile` — container image definition
-- `main.py` — local/dev entrypoint
-- `requirements.txt` — Python dependencies
+## Does not own
+- TypeScript app-layer AI runtime inside `apps/ai`
+- shared contracts that belong in `packages/shared`
 
-## Design goals
-- deterministic feature engineering
-- testable model-serving code
-- containerized deployment
-- clean separation between API, model logic, and schemas
+## Runbook / entrypoints
+- service entrypoint: see local service README/files
+- Docker runtime: see `docker/` and local Dockerfile
+
+## Owner
+AI Platform

@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+set -e
+
+echo "==> Running repository structure guard"
+node scripts/repo-structure-check.mjs
+bash scripts/deprecated-root-guard.sh
