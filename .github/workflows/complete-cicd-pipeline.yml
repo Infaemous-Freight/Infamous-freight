@@ -280,7 +280,7 @@ jobs:
       - name: 🔐 Dependency check
         run: |
           echo "🔐 Running dependency security checks..."
-          pnpm audit --production 2>&1 || echo "⚠️  Some vulnerabilities found"
+          pnpm audit --prod 2>&1 || echo "⚠️  Some vulnerabilities found"
         continue-on-error: true
 
   performance-check:
