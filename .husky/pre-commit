@@ -39,8 +39,12 @@ fi
 echo "==> Lint-fixing staged JS/TS files"
 ESLINT_TARGETS="$(printf '%s\n' "$STAGED_FILES" | grep -E '\.(js|jsx|ts|tsx)$' || true)"
 if [ -n "$ESLINT_TARGETS" ]; then
-  printf '%s\n' "$ESLINT_TARGETS" | tr '\n' '\0' | xargs -0 pnpm exec eslint --fix
-  printf '%s\n' "$ESLINT_TARGETS" | tr '\n' '\0' | xargs -0 git add
+  if node -e "const p=require('./package.json');const d={...(p.dependencies||{}),...(p.devDependencies||{})};process.exit(d.eslint?0:1);" 2>/dev/null; then
+    printf '%s\n' "$ESLINT_TARGETS" | tr '\n' '\0' | xargs -0 pnpm exec eslint --fix
+    printf '%s\n' "$ESLINT_TARGETS" | tr '\n' '\0' | xargs -0 git add
+  else
+    echo "Skipping eslint autofix: no root eslint dependency declared."
+  fi
 fi
 
 echo "==> Running docs validation when docs files are staged"
