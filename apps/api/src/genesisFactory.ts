@@ -1,8 +1,40 @@
-export function makeGenesis(auth: { tenantId: string; sub: string; role: any }) {
-  // The Genesis integration is not yet wired into the API workspace.
-  // Once @infamous/genesis is added as a proper dependency (workspace:*),
-  // this function should be updated to delegate to createGenesis.
-  throw new Error(
-    `makeGenesis is not available in apps/api: @infamous/genesis is not wired in for tenant ${auth.tenantId} and user ${auth.sub}.`,
-  );
+import { prisma } from "./db/prisma.js";
+import { createPrismaSessionStore } from "../../../packages/genesis/src/memory/adapters/prismaSessionStore.js";
+
+/**
+ * Creates a Genesis runtime surface for the authenticated user.
+ */
+export function makeGenesis(auth: { tenantId: string; sub: string; role: string }) {
+  const sessionStore = createPrismaSessionStore(prisma as any, 25);
+
+  return {
+    sessionStore,
+    auth,
+    alerts: {
+      /**
+       * Returns shipment telemetry for non-delivered shipments in this tenant.
+       */
+      async getShipmentTelemetry() {
+        const nowMs = Date.now();
+
+        const rows = await (prisma as any).shipment.findMany({
+          where: {
+            tenantId: auth.tenantId,
+            status: { not: "DELIVERED" }
+          },
+          take: 250,
+          orderBy: { updatedAt: "desc" },
+          select: { id: true, status: true, etaMs: true, lastPingMs: true }
+        });
+
+        return rows.map((s: any) => ({
+          shipmentId: s.id,
+          status: s.status,
+          etaMs: s.etaMs ? Number(s.etaMs) : undefined,
+          lastPingMs: s.lastPingMs ? Number(s.lastPingMs) : undefined,
+          nowMs
+        }));
+      }
+    }
+  };
 }

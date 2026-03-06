@@ -8,17 +8,22 @@ datasource db {
 }
 
 model Tenant {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  shipments Shipment[]
-  loads     Load[]
+  id               String            @id @default(cuid())
+  name             String
+  createdAt        DateTime          @default(now())
+  shipments        Shipment[]
+  loads            Load[]
+  genesisSessions  GenesisSession[]
+  carriers         Carrier[]
+  drivers          Driver[]
+  savedLoadSearches SavedLoadSearch[]
+  assignments      ShipmentAssignment[]
 }
 
 model Shipment {
-  id          String   @id @default(cuid())
+  id          String               @id @default(cuid())
   tenantId    String
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  tenant      Tenant               @relation(fields: [tenantId], references: [id])
   ref         String
   originCity  String
   originState String
@@ -26,28 +31,121 @@ model Shipment {
   destState   String
   weightLb    Int
   rateCents   Int
-  status      String   @default("CREATED")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  status      String               @default("CREATED")
+  etaMs       BigInt?
+  lastPingMs  BigInt?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  assignments ShipmentAssignment[]
 
   @@index([tenantId])
   @@unique([tenantId, ref])
 }
 
 model Load {
-  id          String   @id @default(cuid())
-  tenantId    String
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  originCity  String
-  originState String
-  destCity    String
-  destState   String
-  distanceMi  Int
-  weightLb    Int
-  rateCents   Int
-  status      String   @default("OPEN")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String               @id @default(cuid())
+  tenantId         String
+  tenant           Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  originCity       String
+  originState      String
+  destCity         String
+  destState        String
+  distanceMi       Int
+  weightLb         Int
+  rateCents        Int
+  status           String               @default("OPEN")
+  claimedByUserId  String?
+  claimedAt        DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  assignments      ShipmentAssignment[]
 
   @@index([tenantId])
+  @@index([status])
+  @@index([claimedByUserId])
+}
+
+model GenesisSession {
+  k         String   @id
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId    String?
+  payload   Json
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([userId])
+  @@map("genesis_sessions")
+}
+
+model ShipmentAssignment {
+  id         String    @id @default(cuid())
+  tenantId   String
+  tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  shipmentId String
+  shipment   Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  loadId     String?
+  load       Load?     @relation(fields: [loadId], references: [id], onDelete: SetNull)
+  carrierId  String?
+  carrier    Carrier?  @relation(fields: [carrierId], references: [id], onDelete: SetNull)
+  driverId   String?
+  driver     Driver?   @relation(fields: [driverId], references: [id], onDelete: SetNull)
+  assignedBy String?
+  status     String    @default("ASSIGNED")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([tenantId])
+  @@index([shipmentId])
+  @@index([loadId])
+  @@index([carrierId])
+  @@index([driverId])
+  @@index([assignedBy])
+  @@map("shipment_assignments")
+}
+
+model Carrier {
+  id        String               @id @default(cuid())
+  tenantId  String
+  tenant    Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name      String
+  mcNumber  String?
+  dotNumber String?
+  createdAt DateTime             @default(now())
+  drivers   Driver[]
+  assignments ShipmentAssignment[]
+
+  @@index([tenantId])
+  @@map("carriers")
+}
+
+model Driver {
+  id          String               @id @default(cuid())
+  tenantId    String
+  tenant      Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  carrierId   String?
+  carrier     Carrier?             @relation(fields: [carrierId], references: [id], onDelete: SetNull)
+  name        String
+  phone       String?
+  createdAt   DateTime             @default(now())
+  assignments ShipmentAssignment[]
+
+  @@index([tenantId])
+  @@index([carrierId])
+  @@map("drivers")
+}
+
+model SavedLoadSearch {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId    String?
+  name      String
+  filters   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([userId])
+  @@map("saved_load_searches")
 }

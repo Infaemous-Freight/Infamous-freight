@@ -6,6 +6,8 @@ import { ai } from "./routes/ai.js";
 import { loadboard } from "./routes/loadboard.js";
 import { shipments } from "./routes/shipments.js";
 import { tenants } from "./routes/tenants.js";
+import { realtime } from "./routes/realtime.js";
+import { assignments } from "./routes/assignments.js";
 import { HttpError } from "./utils/errors.js";
 
 const app = express();
@@ -17,6 +19,8 @@ app.use("/tenants", tenants);
 app.use("/shipments", shipments);
 app.use("/loadboard", loadboard);
 app.use("/ai", ai);
+app.use("/realtime", realtime);
+app.use("/assignments", assignments);
 
 app.use((err: any, _req: any, res: any, _next: any) => {
   const status = err instanceof HttpError ? err.status : 500;
