@@ -36,7 +36,7 @@ echo "🏗️ Building shared package..."
 pnpm --filter @infamous-freight/shared build
 
 # Install repo git hooks
-if [ -x ".githooks/install.sh" ]; then
+if [ -f ".githooks/install.sh" ]; then
     echo "==> Installing repo git hooks"
     bash .githooks/install.sh
 fi
