@@ -26,8 +26,6 @@
     "paths": {
       "@infamous-freight/shared": ["./packages/shared/src"],
       "@infamous-freight/shared/*": ["./packages/shared/src/*"],
-      "@infamous/shared": ["packages/shared/src/index.ts"],
-      "@infamous/shared/*": ["packages/shared/src/*"],
       "@infamous/genesis": ["packages/genesis/src/index.ts"],
       "@infamous/genesis/*": ["packages/genesis/src/*"]
     },
