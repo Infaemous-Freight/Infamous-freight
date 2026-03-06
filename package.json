@@ -12,7 +12,7 @@
     "prisma:validate": "pnpm --filter ./apps/api exec prisma validate",
     "prisma:migrate:deploy": "pnpm --filter ./apps/api exec prisma migrate deploy",
     "secret:scan": "bash ./scripts/check-secrets.sh",
-    "prepare": "husky",
+    "prepare": "if [ -d .git ] && [ \"${HUSKY:-1}\" != \"0\" ]; then husky; fi",
     "hooks:install": "husky",
     "lint:docs": "prettier --check \"**/*.md\""
   },
