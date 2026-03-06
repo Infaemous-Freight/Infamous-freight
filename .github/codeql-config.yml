@@ -1,17 +1,23 @@
-name: "CodeQL Configuration"
+name: "Infamous Freight CodeQL Config"
 
-paths:
-  - src
-
-paths-ignore:
-  - archive
-  - node_modules
-  - .next
-  - dist
-  - coverage
-  - .git
+disable-default-queries: false
 
 queries:
   - uses: security-and-quality
 
-disable-default-queries: false
+paths-ignore:
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/.next/**"
+  - "**/coverage/**"
+  - "**/.turbo/**"
+  - "**/generated/**"
+  - "**/*.min.js"
+  - "**/*.bundle.js"
+
+paths:
+  - "apps"
+  - "packages"
+  - "prisma"
+  - "scripts"

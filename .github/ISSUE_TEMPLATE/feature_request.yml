@@ -1,141 +1,55 @@
-name: ✨ Feature Request
-description: Suggest an idea or enhancement for this project
-title: "[Feature]: "
-labels: ["enhancement", "needs-discussion"]
-assignees:
-  - MrMiless44
-
+name: Feature Request
+description: Propose a new feature or enhancement
+title: "[Feature] "
+labels:
+  - enhancement
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for suggesting a feature! Please provide as much detail as possible to help us understand your idea.
-
-  - type: dropdown
-    id: component
-    attributes:
-      label: Component
-      description: Which part of the system would this feature affect?
-      options:
-        - API (Express.js backend)
-        - Web (Next.js frontend)
-        - Mobile (React Native)
-        - Shared Package
-        - CI/CD Workflows
-        - Database (Prisma)
-        - Deployment
-        - Documentation
-        - Infrastructure
-      multiple: true
-    validations:
-      required: true
-
   - type: textarea
     id: problem
     attributes:
-      label: Problem Statement
-      description: What problem does this feature solve? Is your feature request related to a problem?
-      placeholder: "Example: I'm always frustrated when... It would be helpful if..."
+      label: Problem
+      description: What problem are we solving?
+      placeholder: Brokers need a faster way to move from load creation to carrier assignment.
     validations:
       required: true
 
   - type: textarea
-    id: solution
+    id: proposal
     attributes:
       label: Proposed Solution
-      description: Describe the solution you'd like to see
-      placeholder: |
-        Example: 
-        - Add a new API endpoint `/api/shipments/bulk-update`
-        - Support batch updates for multiple shipments
-        - Return summary of successful/failed updates
+      description: Describe the desired behavior.
+      placeholder: Add an assign carrier action directly in the load board row actions.
     validations:
       required: true
-
-  - type: textarea
-    id: alternatives
-    attributes:
-      label: Alternatives Considered
-      description: Have you considered any alternative solutions or features?
-      placeholder: "Example: I also considered using webhooks, but that would require..."
-
-  - type: dropdown
-    id: priority
-    attributes:
-      label: Priority
-      description: How important is this feature to you?
-      options:
-        - Critical (Blocking project progress)
-        - High (Important for user experience)
-        - Medium (Nice to have)
-        - Low (Future consideration)
-    validations:
-      required: true
-
-  - type: textarea
-    id: use-case
-    attributes:
-      label: Use Case
-      description: Describe your specific use case for this feature
-      placeholder: |
-        Example:
-        As a fleet manager, I need to update the status of multiple shipments 
-        at once when a driver completes their route, so I can save time instead 
-        of updating each shipment individually.
-    validations:
-      required: true
-
-  - type: textarea
-    id: acceptance
-    attributes:
-      label: Acceptance Criteria
-      description: How would you know this feature is complete and working correctly?
-      placeholder: |
-        - [ ] API endpoint accepts array of shipment IDs and status
-        - [ ] Validates all inputs before processing
-        - [ ] Returns summary with success/failure counts
-        - [ ] Updates shipment history for audit trail
-        - [ ] Test coverage > 80%
 
   - type: textarea
     id: impact
     attributes:
-      label: Impact & Benefits
-      description: What would be the impact of implementing this feature?
-      placeholder: |
-        Example:
-        - Reduces manual work by 70%
-        - Improves data accuracy
-        - Enables new business workflows
-        - Supports 500+ daily operations
+      label: Business / Operational Impact
+      placeholder: Reduces dispatch friction and improves load conversion speed.
 
-  - type: textarea
-    id: technical
+  - type: dropdown
+    id: area
     attributes:
-      label: Technical Considerations
-      description: Any technical details, dependencies, or constraints to consider?
-      placeholder: |
-        Example:
-        - Requires database migration for new columns
-        - May need rate limiting for bulk operations
-        - Should integrate with existing audit log system
-
-  - type: textarea
-    id: mockup
-    attributes:
-      label: Mockups / Examples
-      description: Provide mockups, wireframes, or examples from other systems
-      placeholder: "Drag and drop images here, or paste links to similar features in other applications"
+      label: Area
+      options:
+        - API
+        - Web
+        - Mobile
+        - Shared packages
+        - Prisma / DB
+        - CI/CD
+        - Infra
+        - Docs
+    validations:
+      required: true
 
   - type: checkboxes
-    id: checklist
+    id: risk
     attributes:
-      label: Pre-submission Checklist
-      description: Please verify before submitting
+      label: Risk / Guardrails
       options:
-        - label: I have searched existing issues/PRs to avoid duplicates
-          required: true
-        - label: This feature aligns with the project's goals
-          required: false
-        - label: I am willing to help implement this feature
-          required: false
+        - label: This may affect auth / RBAC
+        - label: This may affect tenant isolation
+        - label: This may affect schema / migrations
+        - label: This may affect performance

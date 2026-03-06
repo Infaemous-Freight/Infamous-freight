@@ -1,40 +1,15 @@
-name: 🐛 Bug Report
-description: Report a bug or unexpected behavior
-title: "[Bug]: "
-labels: ["bug", "needs-triage"]
-assignees:
-  - MrMiless44
-
+name: Bug Report
+description: Report a reproducible bug
+title: "[Bug] "
+labels:
+  - bug
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to report a bug! Please fill out the sections below to help us understand and fix the issue.
-
-  - type: dropdown
-    id: component
-    attributes:
-      label: Component
-      description: Which part of the system is affected?
-      options:
-        - API (Express.js backend)
-        - Web (Next.js frontend)
-        - Mobile (React Native)
-        - Shared Package
-        - CI/CD Workflows
-        - Database (Prisma)
-        - Deployment (Vercel/Render/Fly)
-        - Documentation
-      multiple: false
-    validations:
-      required: true
-
   - type: textarea
-    id: description
+    id: summary
     attributes:
-      label: Bug Description
-      description: A clear and concise description of what the bug is
-      placeholder: "Example: The shipment status API endpoint returns 500 error when..."
+      label: Summary
+      description: What is broken?
+      placeholder: Shipment status does not update after dispatch confirmation.
     validations:
       required: true
 
@@ -42,12 +17,11 @@ body:
     id: steps
     attributes:
       label: Steps to Reproduce
-      description: How can we reproduce this issue?
+      description: Give exact steps.
       placeholder: |
-        1. Go to '...'
-        2. Click on '...'
-        3. Enter '...'
-        4. See error
+        1. Go to ...
+        2. Click ...
+        3. Observe ...
     validations:
       required: true
 
@@ -55,8 +29,7 @@ body:
     id: expected
     attributes:
       label: Expected Behavior
-      description: What did you expect to happen?
-      placeholder: "Example: API should return 200 with shipment data"
+      placeholder: Shipment should transition from scheduled to in_transit.
     validations:
       required: true
 
@@ -64,63 +37,37 @@ body:
     id: actual
     attributes:
       label: Actual Behavior
-      description: What actually happened?
-      placeholder: "Example: API returns 500 Internal Server Error"
+      placeholder: UI stays on scheduled and API returns 500.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - API
+        - Web
+        - Mobile
+        - Shared packages
+        - Prisma / DB
+        - CI/CD
+        - Infra
+        - Docs
     validations:
       required: true
 
   - type: textarea
     id: logs
     attributes:
-      label: Error Logs / Screenshots
-      description: Include any relevant logs, error messages, or screenshots
-      placeholder: |
-        Paste error logs here or drag & drop screenshots
-      render: shell
-
-  - type: dropdown
-    id: severity
-    attributes:
-      label: Severity
-      description: How severe is this bug?
-      options:
-        - Critical (System unusable, data loss, security issue)
-        - High (Major functionality broken, workaround exists)
-        - Medium (Feature impaired, minor impact)
-        - Low (Cosmetic issue, minor annoyance)
-    validations:
-      required: true
-
-  - type: textarea
-    id: environment
-    attributes:
-      label: Environment
-      description: What environment is affected?
-      value: |
-        - **OS:** [e.g., macOS 13, Ubuntu 22.04, Windows 11]
-        - **Browser:** [e.g., Chrome 120, Safari 17]
-        - **Node.js:** [e.g., 20.10.0]
-        - **Package Manager:** [e.g., pnpm 8.15.9]
-        - **Environment:** [e.g., Development, Staging, Production]
-    validations:
-      required: false
-
-  - type: textarea
-    id: additional
-    attributes:
-      label: Additional Context
-      description: Any other context about the problem
-      placeholder: "Example: This started happening after commit abc123..."
+      label: Logs / Screenshots / Evidence
+      placeholder: Paste stack traces, screenshots, CI logs, or request/response data here.
 
   - type: checkboxes
-    id: checklist
+    id: checks
     attributes:
-      label: Pre-submission Checklist
-      description: Please verify the following before submitting
+      label: Pre-flight
       options:
-        - label: I have searched existing issues to avoid duplicates
-          required: true
-        - label: I have included all relevant error logs/screenshots
-          required: false
-        - label: I have tested this on the latest version
-          required: false
+        - label: I searched for existing issues
+        - label: I included reproducible steps
+        - label: I removed secrets from logs and screenshots
