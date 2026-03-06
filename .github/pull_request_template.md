@@ -39,7 +39,7 @@ Services checked:
 Migration command:
 
 ```bash
-pnpm prisma migrate deploy
+pnpm prisma:migrate:deploy
 ```
 
 ### Health checks
