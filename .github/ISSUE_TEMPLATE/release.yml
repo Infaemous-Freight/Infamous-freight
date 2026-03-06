@@ -16,14 +16,19 @@ body:
       label: Checklist
       options:
         - label: CI is green
+          required: true
         - label: Tests are passing
+          required: true
         - label: Security scan is clean
+          required: true
         - label: Version has been updated
+          required: true
         - label: Release notes are ready
+          required: true
         - label: Deployment plan is ready
+          required: true
         - label: Rollback plan is ready
-    validations:
-      required: true
+          required: true
 
   - type: textarea
     id: scope
