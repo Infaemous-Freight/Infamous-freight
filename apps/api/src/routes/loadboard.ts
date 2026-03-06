@@ -19,9 +19,10 @@ loadboard.get("/", requireAuth, async (req, res, next) => {
 loadboard.post("/", requireAuth, async (req, res, next) => {
   try {
     const body = parseOrThrow(zCreateLoad, req.body);
+    const tenantId = zTenantId.parse((req as any).auth.tenantId);
     const row = await prisma.load.create({
       data: {
-        tenantId: body.tenantId,
+        tenantId,
         originCity: body.originCity,
         originState: body.originState,
         destCity: body.destCity,
