@@ -80,9 +80,9 @@ pnpm install
 
 ### Run core apps
 ```bash
-pnpm dev:api
-pnpm dev:web
-pnpm dev:worker
+pnpm --filter ./apps/api dev
+pnpm --filter ./apps/web dev
+pnpm --filter ./apps/worker dev
 ```
 
 ### Run platform checks
