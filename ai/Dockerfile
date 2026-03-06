@@ -10,6 +10,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Create a non-root user and group to run the application
+RUN groupadd -r appuser && useradd -r -g appuser appuser && chown -R appuser:appuser /app
+
+USER appuser
 EXPOSE 8000
 
 CMD ["python", "main.py"]
