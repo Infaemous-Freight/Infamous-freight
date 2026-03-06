@@ -80,7 +80,7 @@ jobs:
 
       - name: Run Phase 9 tests
         run: pnpm --filter api test -- apps/api/tests/phase9.test.js
-        continue-on-error: true
+        continue-on-error: false
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/infamous_test
           JWT_SECRET: test-secret
