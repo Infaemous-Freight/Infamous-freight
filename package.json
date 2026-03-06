@@ -12,5 +12,9 @@
     "prisma:format": "pnpm --filter ./apps/api exec prisma format",
     "prisma:validate": "pnpm --filter ./apps/api exec prisma validate",
     "prisma:migrate:status": "pnpm --filter ./apps/api exec prisma migrate status"
+  },
+  "volta": {
+    "node": "20.11.0",
+    "pnpm": "9.0.0"
   }
 }
