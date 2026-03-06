@@ -11,7 +11,10 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
-    "typecheck": "pnpm -r exec tsc --noEmit"
+    "typecheck": "pnpm -r exec tsc --noEmit",
+    "secret:scan": "pnpm -r secret:scan",
+    "prisma:generate": "pnpm --filter api prisma:generate",
+    "prisma:migrate:deploy": "pnpm --filter api prisma:migrate:deploy"
   },
   "devDependencies": {
     "prettier": "^3.2.5"
