@@ -18,10 +18,16 @@ shipments.get("/", requireAuth, async (req, res, next) => {
 
 shipments.post("/", requireAuth, async (req, res, next) => {
   try {
+    const tenantId = zTenantId.parse((req as any).auth.tenantId);
     const body = parseOrThrow(zCreateShipment, req.body);
+
+    if ((body as any).tenantId !== undefined && (body as any).tenantId !== tenantId) {
+      return res.status(400).json({ error: "tenantId in body does not match authenticated tenant" });
+    }
+
     const row = await prisma.shipment.create({
       data: {
-        tenantId: body.tenantId,
+        tenantId,
         ref: body.ref,
         originCity: body.originCity,
         originState: body.originState,
