@@ -17,7 +17,7 @@
     {
       "label": "Typecheck",
       "type": "shell",
-      "command": "pnpm typecheck",
+      "command": "pnpm -r --if-present typecheck",
       "group": "build",
       "problemMatcher": ["$tsc"]
     },
