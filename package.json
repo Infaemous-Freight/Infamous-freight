@@ -8,5 +8,9 @@
   },
   "devDependencies": {
     "turbo": "^2.0.0"
+  },
+  "volta": {
+    "node": "22.22.0",
+    "pnpm": "9.0.0"
   }
 }

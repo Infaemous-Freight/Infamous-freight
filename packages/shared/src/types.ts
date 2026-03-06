@@ -44,6 +44,8 @@ export interface Load extends TenantScoped {
   weightLb: number;
   rateCents: number;
   status: LoadStatus;
+  claimedByUserId?: ID;
+  claimedAt?: string;
   createdAt: string;
   updatedAt: string;
 }

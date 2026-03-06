@@ -7,6 +7,13 @@ import { parseOrThrow } from "../utils/validate.js";
 
 export const loadboard = Router();
 
+/**
+ * Lists available loads for the authenticated tenant.
+ *
+ * Security:
+ * - Requires authentication.
+ * - Restricts the query to `auth.tenantId`.
+ */
 loadboard.get("/", requireAuth, async (req, res, next) => {
   try {
     const tenantId = zTenantId.parse((req as any).auth.tenantId);
@@ -16,6 +23,13 @@ loadboard.get("/", requireAuth, async (req, res, next) => {
   }
 });
 
+/**
+ * Creates a new load under the authenticated tenant.
+ *
+ * Security:
+ * - Requires authentication.
+ * - Writes only inside `auth.tenantId` scope.
+ */
 loadboard.post("/", requireAuth, async (req, res, next) => {
   try {
     const body = parseOrThrow(zCreateLoad, req.body);
@@ -38,12 +52,25 @@ loadboard.post("/", requireAuth, async (req, res, next) => {
   }
 });
 
+/**
+ * Attempts to atomically claim an OPEN load for the authenticated tenant.
+ * Returns HTTP 409 if the load is already claimed or unavailable.
+ */
 loadboard.post("/:id/claim", requireAuth, async (req, res, next) => {
   try {
     const tenantId = zTenantId.parse((req as any).auth.tenantId);
-    await claimLoad(tenantId, req.params.id);
-    res.json({ ok: true });
+    const userId = (req as any).auth?.sub;
+    if (typeof userId !== "string" || userId.length === 0) {
+      return res.status(401).json({ error: "Invalid authentication token." });
+    }
+    const claimed = await claimLoad(tenantId, req.params.id, userId);
+
+    if (!claimed) {
+      return res.status(409).json({ error: "Load already claimed or not available." });
+    }
+
+    return res.json({ ok: true });
   } catch (e) {
-    next(e);
+    return next(e);
   }
 });

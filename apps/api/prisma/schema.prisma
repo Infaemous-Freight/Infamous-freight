@@ -46,6 +46,8 @@ model Load {
   weightLb    Int
   rateCents   Int
   status      String   @default("OPEN")
+  claimedByUserId String?
+  claimedAt   DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

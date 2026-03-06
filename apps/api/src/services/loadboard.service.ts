@@ -1,6 +1,9 @@
 import type { Load } from "@infamous/shared";
 import { prisma } from "../db/prisma.js";
 
+/**
+ * Lists loads scoped to a single tenant in reverse chronological order.
+ */
 export async function listLoads(tenantId: string): Promise<Load[]> {
   const rows = await prisma.load.findMany({
     where: { tenantId },
@@ -19,20 +22,32 @@ export async function listLoads(tenantId: string): Promise<Load[]> {
     weightLb: r.weightLb,
     rateCents: r.rateCents,
     status: r.status as any,
+    claimedByUserId: r.claimedByUserId ?? undefined,
+    claimedAt: r.claimedAt ? r.claimedAt.toISOString() : undefined,
     createdAt: r.createdAt.toISOString(),
     updatedAt: r.updatedAt.toISOString()
   }));
 }
 
-export async function claimLoad(tenantId: string, loadId: string) {
-  const load = await prisma.load.findFirst({ where: { id: loadId, tenantId } });
-  if (!load) throw new Error("Load not found");
-  if (load.status !== "OPEN") throw new Error("Load not open");
-
-  await prisma.load.updateMany({
-    where: { id: loadId, tenantId },
-    data: { status: "CLAIMED" }
+/**
+ * Atomically claims an OPEN load in tenant scope.
+ *
+ * Returns true if the claim succeeds and false if another claimant already won.
+ */
+export async function claimLoad(tenantId: string, loadId: string, userId?: string) {
+  const updated = await prisma.load.updateMany({
+    where: {
+      id: loadId,
+      tenantId,
+      status: "OPEN",
+      claimedByUserId: null
+    },
+    data: {
+      status: "CLAIMED",
+      claimedByUserId: userId ?? null,
+      claimedAt: new Date()
+    }
   });
 
-  return { ...load, status: "CLAIMED" };
+  return updated.count > 0;
 }
