@@ -1,217 +1,51 @@
-name: 🔴 Workflow Failure Report
+name: Workflow Failure Report
 description: Report a GitHub Actions workflow failure that needs investigation
-title: "[Workflow Failure]: "
-labels: ["workflow-failure", "ci-cd", "needs-investigation"]
-assignees:
-  - MrMiless44
+title: "[CI Failure]: "
+labels:
+  - ci
 
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Use this template to report GitHub Actions workflow failures. This helps us track and resolve CI/CD issues quickly.
-
-        **Quick Links:**
-        - [Workflow Guide](.github/WORKFLOW_GUIDE.md)
-        - [Decision Tree](.github/WORKFLOW_DECISION_TREE.md)
-        - [Actions Tab](https://github.com/MrMiless44/Infamous-freight-enterprises/actions)
-
-  - type: dropdown
+  - type: input
     id: workflow
     attributes:
-      label: Workflow Name
+      label: Workflow name
       description: Which workflow failed?
-      options:
-        - CI/CD Pipeline
-        - CI
-        - E2E Tests
-        - Deploy API (Render)
-        - Deploy Web (Vercel)
-        - Deploy to Fly.io
-        - Docker Build & Push
-        - GitHub Pages Deploy
-        - Auto PR for Test Fixes
-        - CodeQL Analysis
-        - Quality Checks
-        - GHCR Build
-        - Production Deploy
-      multiple: false
+      placeholder: CI / Deploy / E2E / Security
     validations:
       required: true
 
   - type: input
-    id: run-id
+    id: job
     attributes:
-      label: Workflow Run ID or URL
-      description: Provide the GitHub Actions run ID or URL
-      placeholder: "https://github.com/MrMiless44/Infamous-freight-enterprises/actions/runs/123456789"
+      label: Job name
+      description: Which job failed?
+      placeholder: validate / build / deploy / e2e
     validations:
-      required: true
-
-  - type: input
-    id: commit
-    attributes:
-      label: Commit SHA
-      description: Which commit triggered the workflow?
-      placeholder: "abc123def456"
-    validations:
-      required: true
-
-  - type: dropdown
-    id: branch
-    attributes:
-      label: Branch
-      description: Which branch was this running on?
-      options:
-        - main
-        - develop
-        - feature/*
-        - fix/*
-        - release/*
-        - Other (specify in description)
-    validations:
-      required: true
-
-  - type: dropdown
-    id: failure-type
-    attributes:
-      label: Failure Type
-      description: What type of failure occurred?
-      options:
-        - Build Error
-        - Test Failure
-        - Lint Error
-        - Type Check Error
-        - Security Scan Failure
-        - Deployment Failure
-        - Timeout
-        - Out of Memory
-        - Rate Limit Exceeded
-        - External Service Failure
-        - Configuration Error
-        - Unknown
-      multiple: false
-    validations:
-      required: true
-
-  - type: textarea
-    id: error-message
-    attributes:
-      label: Error Message
-      description: Copy the error message from the workflow log
-      placeholder: |
-        Paste the exact error message here
-      render: shell
-    validations:
-      required: true
-
-  - type: textarea
-    id: failure-step
-    attributes:
-      label: Failed Step
-      description: Which step in the workflow failed?
-      placeholder: |
-        Example:
-        - Job: test
-        - Step: Run API tests
-        - Command: pnpm --filter api test
-    validations:
-      required: true
-
-  - type: dropdown
-    id: reproducible
-    attributes:
-      label: Reproducibility
-      description: Can you reproduce this failure?
-      options:
-        - Always fails (100% reproducible)
-        - Intermittent (fails sometimes)
-        - First occurrence
-        - Can't reproduce locally
-    validations:
-      required: true
-
-  - type: textarea
-    id: context
-    attributes:
-      label: Additional Context
-      description: What changed before this failure? Any relevant PR/commit details?
-      placeholder: |
-        Example:
-        - This started after merging PR #123
-        - Changed database schema in commit abc123
-        - Added new dependency: package-name@1.0.0
-
-  - type: textarea
-    id: local-tests
-    attributes:
-      label: Local Testing Results
-      description: Did you test this locally? What were the results?
-      placeholder: |
-        Example:
-        - Ran `pnpm test` locally: ✅ Passed
-        - Ran `pnpm lint` locally: ✅ Passed
-        - Ran `pnpm build` locally: ✅ Passed
-        - Issue only occurs in CI environment
-
-  - type: dropdown
-    id: impact
-    attributes:
-      label: Impact
-      description: What is the impact of this failure?
-      options:
-        - Critical (Blocking all deployments)
-        - High (Blocking PR merges)
-        - Medium (Affecting specific features)
-        - Low (Can be worked around)
-    validations:
-      required: true
-
-  - type: textarea
-    id: workaround
-    attributes:
-      label: Temporary Workaround
-      description: Is there a temporary workaround being used?
-      placeholder: |
-        Example:
-        - Re-running the workflow usually works
-        - Skipping the failing test temporarily
-        - Using a different deployment method
+      required: false
 
   - type: textarea
     id: logs
     attributes:
-      label: Full Error Logs
-      description: Paste the complete error logs (expand the failing step in GitHub Actions)
-      placeholder: "Paste full logs here..."
-      render: shell
+      label: Failure logs
+      description: Paste the relevant logs or error output.
+      placeholder: Add the failing step output here.
+    validations:
+      required: true
 
-  - type: checkboxes
-    id: troubleshooting
+  - type: textarea
+    id: cause
     attributes:
-      label: Troubleshooting Steps Attempted
-      description: What have you tried so far?
-      options:
-        - label: Re-ran the workflow
-        - label: Checked workflow file syntax with actionlint
-        - label: Verified secrets are configured correctly
-        - label: Checked for rate limiting issues
-        - label: Reviewed recent commits for breaking changes
-        - label: Tested locally and it passes
-        - label: Checked external service status (Vercel, Render, etc.)
-        - label: Reviewed [WORKFLOW_GUIDE.md](.github/WORKFLOW_GUIDE.md)
+      label: Suspected cause
+      description: What do you think caused the failure?
+      placeholder: Node mismatch, missing secret, pnpm install failure, etc.
+    validations:
+      required: false
 
-  - type: checkboxes
-    id: checklist
+  - type: textarea
+    id: impact
     attributes:
-      label: Pre-submission Checklist
-      description: Please verify before submitting
-      options:
-        - label: I have included the workflow run URL
-          required: true
-        - label: I have included the complete error message
-          required: true
-        - label: I have attempted basic troubleshooting steps
-          required: false
-        - label: I have checked if this is a known issue
-          required: true
+      label: Impact
+      description: What does this failure block?
+      placeholder: Blocks PR merge / deploy / release.
+    validations:
+      required: false

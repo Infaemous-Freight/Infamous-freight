@@ -1,96 +1,45 @@
-name: 🤖 Copilot Task
-description: Agent-ready issue template for Copilot Coding Agent implementation work
+name: Copilot Task
+description: Agent-ready issue template for Copilot Coding Agent
 title: "[Copilot Task]: "
-labels: ["copilot-task", "needs-triage"]
+labels:
+  - copilot
+
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Use this template to create narrow, implementation-ready tasks for Copilot Coding Agent.
-
-        **Rules of engagement**
-        - Keep scope small and explicit.
-        - Include acceptance criteria and non-goals.
-        - Attach logs/snippets when reporting failures.
-
   - type: textarea
-    id: context
+    id: task
     attributes:
-      label: Context
-      description: What problem are we solving and why?
-      placeholder: |
-        Example:
-        - CI failing in API test suites after Prisma schema changes
-        - Need conflict handling for duplicate shipment creation
+      label: Task Description
+      description: What should Copilot implement or fix?
+      placeholder: Describe the task in concrete terms.
     validations:
       required: true
 
   - type: textarea
-    id: scope
+    id: files
     attributes:
-      label: In-Scope Changes
-      description: List exactly what Copilot is allowed to change.
+      label: Files to inspect
+      description: List relevant files or directories.
       placeholder: |
-        1. apps/api/src/routes/shipments.js
-        2. apps/api/tests/shipments.test.js
-        3. __tests__/setup.js mocks
+        .github/workflows/...
+        apps/api/...
+        packages/shared/...
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected outcome
+      description: What should the final result be?
+      placeholder: Describe the desired output or behavior.
     validations:
       required: true
 
   - type: textarea
-    id: boundaries
+    id: constraints
     attributes:
-      label: Out-of-Scope / Do-Not-Touch
-      description: Files, modules, or behaviors that must not be changed.
-      placeholder: |
-        - No refactors outside shipment route/tests
-        - Do not modify workflow files
-        - Do not change auth middleware behavior
+      label: Constraints
+      description: Any safety, scope, or style constraints?
+      placeholder: Do not change API contracts. Keep fix minimal. Preserve CI behavior.
     validations:
-      required: true
-
-  - type: textarea
-    id: acceptance
-    attributes:
-      label: Acceptance Criteria
-      description: Define clear completion conditions.
-      placeholder: |
-        - [ ] All shipment route tests pass
-        - [ ] Duplicate shipment returns HTTP 409
-        - [ ] `pnpm test` passes locally for affected package(s)
-    validations:
-      required: true
-
-  - type: textarea
-    id: reproduction
-    attributes:
-      label: Reproduction / Failure Evidence
-      description: Logs, stack traces, links to failing workflow runs.
-      placeholder: |
-        - Actions run URL:
-        - Error signatures:
-        - Stack trace snippet:
-      render: shell
-
-  - type: textarea
-    id: execution-order
-    attributes:
-      label: Preferred Execution Order
-      description: Ordered checklist to reduce thrash.
-      placeholder: |
-        1. Reproduce failing tests
-        2. Patch route-level error mapping
-        3. Update test/mocks
-        4. Re-run lint + tests
-
-  - type: checkboxes
-    id: checklist
-    attributes:
-      label: Pre-Assignment Checklist
-      options:
-        - label: I included explicit acceptance criteria.
-          required: true
-        - label: I listed out-of-scope boundaries.
-          required: true
-        - label: I attached logs or failure signatures when relevant.
-          required: false
+      required: false

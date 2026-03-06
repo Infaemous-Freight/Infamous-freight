@@ -1,73 +1,54 @@
 name: Bug Report
 description: Report a reproducible bug
-title: "[Bug] "
+title: "[Bug]: "
 labels:
   - bug
+
 body:
   - type: textarea
-    id: summary
+    id: description
     attributes:
-      label: Summary
-      description: What is broken?
-      placeholder: Shipment status does not update after dispatch confirmation.
+      label: Description
+      description: What happened?
+      placeholder: Describe the bug clearly.
     validations:
       required: true
 
   - type: textarea
-    id: steps
+    id: reproduce
     attributes:
-      label: Steps to Reproduce
-      description: Give exact steps.
+      label: Steps to reproduce
+      description: How can we reproduce the issue?
       placeholder: |
         1. Go to ...
         2. Click ...
-        3. Observe ...
+        3. See error ...
     validations:
       required: true
 
   - type: textarea
     id: expected
     attributes:
-      label: Expected Behavior
-      placeholder: Shipment should transition from scheduled to in_transit.
+      label: Expected behavior
+      description: What should happen?
+      placeholder: Describe the expected result.
     validations:
-      required: true
+      required: false
 
-  - type: textarea
-    id: actual
+  - type: input
+    id: environment
     attributes:
-      label: Actual Behavior
-      placeholder: UI stays on scheduled and API returns 500.
+      label: Environment
+      description: Node version, OS, browser, device, etc.
+      placeholder: Node 20 / macOS / Chrome 128
     validations:
-      required: true
-
-  - type: dropdown
-    id: area
-    attributes:
-      label: Area
-      options:
-        - API
-        - Web
-        - Mobile
-        - Shared packages
-        - Prisma / DB
-        - CI/CD
-        - Infra
-        - Docs
-    validations:
-      required: true
+      required: false
 
   - type: textarea
     id: logs
     attributes:
-      label: Logs / Screenshots / Evidence
-      placeholder: Paste stack traces, screenshots, CI logs, or request/response data here.
-
-  - type: checkboxes
-    id: checks
-    attributes:
-      label: Pre-flight
-      options:
-        - label: I searched for existing issues
-        - label: I included reproducible steps
-        - label: I removed secrets from logs and screenshots
+      label: Logs or screenshots
+      description: Paste logs, stack traces, or screenshots if available.
+      placeholder: Add relevant logs or screenshots here.
+    validations:
+      required: false
