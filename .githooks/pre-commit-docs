@@ -14,8 +14,8 @@ if [ -z "$DOC_FILES" ]; then
 fi
 
 echo "==> Formatting docs"
-echo "$DOC_FILES" | tr '\n' '\0' | xargs -0 pnpm exec prettier --write
-echo "$DOC_FILES" | tr '\n' '\0' | xargs -0 git add
+echo "$DOC_FILES" | tr '\n' '\0' | xargs -0 pnpm exec prettier --write --
+echo "$DOC_FILES" | tr '\n' '\0' | xargs -0 git add --
 
 if [ -f package.json ]; then
   if node -e "const p=require('./package.json'); process.exit(p.scripts && p.scripts['lint:docs'] ? 0 : 1)" 2>/dev/null; then
