@@ -1,24 +1,25 @@
 # Rate Prediction Service
 
-FastAPI microservice scaffold for predictive freight rate estimation.
+FastAPI microservice for freight rate inference.
 
 ## Endpoints
 
 - `GET /health`
-- `POST /predict`
-
-## Inputs
-
-The `/predict` endpoint expects:
-
-- `mileage`
-- `fuel_price`
-- `seasonality_index`
-- `broker_score`
+- `POST /predict-rate`
 
 ## Run locally
 
+From the `ai/` directory:
+
 ```bash
 pip install -r requirements.txt
-uvicorn app:app --host 0.0.0.0 --port 8081 --reload
+python main.py
+```
+
+## Test
+
+From the `ai/rate-prediction-service/` directory:
+
+```bash
+PYTHONPATH=. pytest -q
 ```

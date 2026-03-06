@@ -1,33 +1,13 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pathlib import Path
+import sys
 
-app = FastAPI()
+SERVICE_ROOT = Path(__file__).parent / "rate-prediction-service"
+if str(SERVICE_ROOT) not in sys.path:
+    sys.path.insert(0, str(SERVICE_ROOT))
 
-# Configure CORS to allow requests from the frontend
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+from app.api import app
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-class Load(BaseModel):
-    origin: str
-    destination: str
-    weight: float
-    miles: float
+if __name__ == "__main__":
+    import uvicorn
 
-
-@app.post("/optimize")
-def optimize(load: Load):
-    profit = (load.weight * 1.4) - (load.miles * 0.6)
-    return {
-        "recommended": profit > 500,
-        "estimated_profit": round(profit, 2)
-    }
+    uvicorn.run(app, host="0.0.0.0", port=8000)
