@@ -99,7 +99,7 @@ jobs:
           if [ -d "supabase/migrations" ]; then
             find supabase/migrations -type f -name '*.sql' -print0 \
               | sort -z \
-              | xargs -0 -I {} sh -c 'echo "Applying migration: {}" && psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$1"' _ {}
+              | xargs -0 -I {} sh -c 'echo "Applying migration: $1" && psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$1"' _ {}
           else
             echo "No supabase/migrations directory found; skipping."
           fi
