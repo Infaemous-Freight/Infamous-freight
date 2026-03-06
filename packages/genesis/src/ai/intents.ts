@@ -1,0 +1,8 @@
+export type Intent =
+  | "RECOMMEND_LOADS"
+  | "AUTO_ASSIGN_BEST_LOAD"
+  | "OPEN_LOADBOARD"
+  | "TRACK_SHIPMENTS"
+  | "OPTIMIZE_ROUTES"
+  | "HELP"
+  | "UNKNOWN";

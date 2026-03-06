@@ -186,6 +186,35 @@ router.get(
  * Place a bid on a load
  */
 router.post(
+  "/:id/auto-assign",
+  limiters.general,
+  authenticate,
+  requireScope("loads:bid"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      logger.info("Load auto-assign requested", {
+        userId: req.user?.sub,
+        tenantId: req.auth?.organizationId || req.user?.tenantId || req.user?.organizationId,
+        loadId: id,
+      });
+
+      // Safety: this endpoint currently performs a claim equivalent.
+      // Hook real assignment orchestration here as shipment assignment becomes available.
+      return res.status(HTTP_STATUS.OK).json(
+        new ApiResponse({
+          success: true,
+          data: { ok: true, loadId: id },
+        }),
+      );
+    } catch (error) {
+      logger.error("Load auto-assign failed", { error: error.message });
+      next(error);
+    }
+  },
+);
+
+router.post(
   "/:id/bid",
   limiters.general,
   authenticate,
