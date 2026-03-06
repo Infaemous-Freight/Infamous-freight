@@ -7,6 +7,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -19,12 +23,12 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9.0.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.22.0'
+          node-version-file: '.nvmrc'
           cache: 'pnpm'
 
       - name: Install dependencies
