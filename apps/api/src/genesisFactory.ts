@@ -1,5 +1,5 @@
 import { prisma } from "./db/prisma.js";
-import { createPrismaSessionStore } from "../../../packages/genesis/src/memory/adapters/prismaSessionStore.js";
+import { createPrismaSessionStore } from "@infamous/genesis";
 
 /**
  * Creates a Genesis runtime surface for the authenticated user.
