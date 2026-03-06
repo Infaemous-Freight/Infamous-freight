@@ -66,6 +66,6 @@ Recommended required checks for `main`:
 - `Analyze`
 - `secret-scan`
 - `dependency-review`
-- `repo-structure`
+- `sanity`
 
 Preview deploy checks should remain non-blocking unless they are consistently stable and intentionally required.
