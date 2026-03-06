@@ -74,12 +74,20 @@ export function createGenesis(init: GenesisInit): GenesisAPI {
     try {
       const out = routeCommand({ role, policy, policyCtx }, req);
       setAvatarState(out.avatarState, out.message);
-      sessions.pushCommand(ctx.tenantId, ctx.userId, {
-        input,
-        intent: String(out.action?.type ?? "NONE"),
-        avatarState: out.avatarState,
+      sessions
+        .pushCommand(ctx.tenantId, ctx.userId, {
+          input,
+          intent: String(out.action?.type ?? "NONE"),
+          avatarState: out.avatarState,
+        })
+        .catch((err) => {
+          // Best-effort: failures here should not break command handling
+          console.error("Failed to persist session command history", err);
+        });
+      maybeAutoAlert().catch((err) => {
+        // Best-effort: auto-alert failures are logged but do not affect the main command flow
+        console.error("Failed to run auto-alert after command", err);
       });
-      void maybeAutoAlert();
       void audit(init.audit, {
         at: new Date(ctx.now()).toISOString(),
         tenantId: ctx.tenantId,
