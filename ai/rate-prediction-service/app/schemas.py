@@ -8,8 +8,8 @@ class RatePredictionRequest(BaseModel):
     destination_state: str = Field(..., min_length=2)
     distance_miles: float = Field(..., gt=0)
     equipment_type: str = Field(..., min_length=1)
-    weight_lbs: Optional[float] = Field(default=0, ge=0)
-    fuel_index: Optional[float] = Field(default=0, ge=0)
+    weight_lbs: float = Field(default=0.0, ge=0)
+    fuel_index: float = Field(default=0.0, ge=0)
 
 
 class RatePredictionResponse(BaseModel):
