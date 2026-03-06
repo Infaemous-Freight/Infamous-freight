@@ -42,7 +42,170 @@ updates:
           - "@vitest/*"
           - "playwright"
           - "@playwright/*"
-
+  - package-ecosystem: npm
+    directory: "/apps/api"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - dependencies
+      - npm
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      typescript-eslint:
+        patterns:
+          - "typescript"
+          - "@types/*"
+          - "eslint*"
+          - "@eslint/*"
+          - "@typescript-eslint/*"
+      react-stack:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "next"
+          - "@types/react"
+          - "@types/react-dom"
+      prisma-stack:
+        patterns:
+          - "prisma"
+          - "@prisma/*"
+      testing-stack:
+        patterns:
+          - "jest"
+          - "@jest/*"
+          - "vitest"
+          - "@vitest/*"
+          - "playwright"
+          - "@playwright/*"
+  - package-ecosystem: npm
+    directory: "/apps/web"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - dependencies
+      - npm
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      typescript-eslint:
+        patterns:
+          - "typescript"
+          - "@types/*"
+          - "eslint*"
+          - "@eslint/*"
+          - "@typescript-eslint/*"
+      react-stack:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "next"
+          - "@types/react"
+          - "@types/react-dom"
+      prisma-stack:
+        patterns:
+          - "prisma"
+          - "@prisma/*"
+      testing-stack:
+        patterns:
+          - "jest"
+          - "@jest/*"
+          - "vitest"
+          - "@vitest/*"
+          - "playwright"
+          - "@playwright/*"
+  - package-ecosystem: npm
+    directory: "/apps/mobile"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - dependencies
+      - npm
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      typescript-eslint:
+        patterns:
+          - "typescript"
+          - "@types/*"
+          - "eslint*"
+          - "@eslint/*"
+          - "@typescript-eslint/*"
+      react-stack:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "next"
+          - "@types/react"
+          - "@types/react-dom"
+      prisma-stack:
+        patterns:
+          - "prisma"
+          - "@prisma/*"
+      testing-stack:
+        patterns:
+          - "jest"
+          - "@jest/*"
+          - "vitest"
+          - "@vitest/*"
+          - "playwright"
+          - "@playwright/*"
+  - package-ecosystem: npm
+    directory: "/packages/shared"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - dependencies
+      - npm
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      typescript-eslint:
+        patterns:
+          - "typescript"
+          - "@types/*"
+          - "eslint*"
+          - "@eslint/*"
+          - "@typescript-eslint/*"
+      react-stack:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "next"
+          - "@types/react"
+          - "@types/react-dom"
+      prisma-stack:
+        patterns:
+          - "prisma"
+          - "@prisma/*"
+      testing-stack:
+        patterns:
+          - "jest"
+          - "@jest/*"
+          - "vitest"
+          - "@vitest/*"
+          - "playwright"
+          - "@playwright/*"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
