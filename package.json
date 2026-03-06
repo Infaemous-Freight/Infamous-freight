@@ -1,7 +1,7 @@
 {
   "name": "infamous-freight",
   "private": true,
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@9",
   "scripts": {
     "dev:ai": "pnpm --filter ai dev",
     "dev:api": "pnpm --filter api dev",
@@ -16,9 +16,13 @@
     "prisma:generate": "pnpm --filter api prisma:generate",
     "prisma:migrate:deploy": "pnpm --filter api prisma:migrate:deploy",
     "repo:audit": "bash scripts/repo-audit.sh",
-    "repo:bootstrap-readmes": "bash scripts/bootstrap-readmes.sh"
+    "repo:bootstrap-readmes": "bash scripts/bootstrap-readmes.sh",
+    "ci:sanity": "pnpm install --frozen-lockfile"
   },
   "devDependencies": {
     "prettier": "^3.2.5"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }

@@ -13,12 +13,16 @@
       "requiresLinearHistory": true,
       "requiresStatusChecks": true,
       "requiresStrictStatusChecks": true,
-      "restrictsPushes": false,
+      "restrictsPushes": true,
       "restrictsReviewDismissals": false,
       "requiredStatusCheckContexts": [
-        "CI / Lint, Typecheck, Test, Build",
-        "CodeQL / Analyze",
-        "Dependency Review / dependency-review"
+        "CI",
+        "Security",
+        "Analyze",
+        "secret-scan",
+        "dependency-review",
+        "repo-structure",
+        "sanity"
       ]
     }
   ]
