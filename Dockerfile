@@ -21,4 +21,4 @@ COPY --from=build /app ./
 
 EXPOSE 3000
 
-CMD ["pnpm", "--filter", "./apps/api", "start"]
+CMD ["node", "apps/api/dist/index.js"]
