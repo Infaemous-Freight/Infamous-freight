@@ -20,7 +20,8 @@ app.use("/ai", ai);
 
 app.use((err: any, _req: any, res: any, _next: any) => {
   const status = err instanceof HttpError ? err.status : 500;
-  res.status(status).json({ error: err?.message ?? "Server error" });
+  const message = err instanceof HttpError ? err.message : "Server error";
+  res.status(status).json({ error: message });
 });
 
 app.listen(ENV.API_PORT, () => {
