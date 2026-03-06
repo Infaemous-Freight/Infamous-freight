@@ -90,12 +90,18 @@
       "label": "Prisma Generate",
       "type": "shell",
       "command": "pnpm exec prisma generate",
+      "options": {
+        "cwd": "apps/api"
+      },
       "problemMatcher": []
     },
     {
       "label": "Prisma Migrate Dev",
       "type": "shell",
       "command": "pnpm exec prisma migrate dev",
+      "options": {
+        "cwd": "apps/api"
+      },
       "problemMatcher": []
     }
   ]
