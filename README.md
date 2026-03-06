@@ -1,114 +1,91 @@
 # Infamous Freight
 
-AI-powered freight and logistics automation platform.
+AI-powered freight and logistics automation platform connecting shippers, brokers, and carriers with real-time tracking, intelligent load orchestration, and automated workflow execution.
 
-This repository is a platform monorepo containing product applications, shared packages,
-AI/ML services, operational tooling, infrastructure code, compliance domains,
-testing systems, and developer automation.
+## Platform Overview
 
-## Canonical repository map
+Infamous Freight is a multi-tenant logistics SaaS designed to automate freight operations across carrier networks, broker systems, and shipper integrations.
 
-### Runtime applications
-- `apps/` — first-class runnable product applications
-  - `apps/api` — backend API
-  - `apps/web` — web application
-  - `apps/mobile` — mobile application
-  - `apps/worker` — background jobs / async processing
-  - `apps/ai` — TypeScript app-layer AI runtime, if used
+Core capabilities include:
 
-### Shared code
-- `packages/` — reusable internal packages
-  - `packages/shared` — contracts, constants, schemas, utilities
-  - `packages/genesis` — Genesis avatar / assistant package
+- AI-driven load matching
+- real-time shipment tracking
+- automated carrier assignment
+- broker workflow automation
+- multi-tenant SaaS architecture
+- observability and operational telemetry
+- production CI/CD deployment pipelines
 
-### Standalone services and platform domains
-- `services/` — standalone service domains
-- `payments/` — payments-specific logic and integrations
-- `ai/` — standalone AI / ML service runtime, especially Python-based inference
+## Architecture
 
-### Compliance and security
-- `@compliance/` — canonical compliance code domain
-- `compliance/` — transitional or legacy compliance content
-- `.security/` — security policy, incident response, and reporting docs
+The platform is structured as a monorepo:
 
-### Infrastructure and deployment
-- `docker/` — local container orchestration and service Dockerfiles
-- `deploy/` — deployment scripts and release mechanics
-- `infrastructure/` — shared infra assets not tied to a single tool
-- `k8s/` — Kubernetes manifests
-- `terraform/` — infrastructure as code
-- `nginx/` — proxy/edge config
-- `supabase/` — Supabase-specific assets
+apps/
+web
+api
+mobile
 
-### Testing and validation
-- `tests/` — shared integration/system tests
-- `e2e/` — end-to-end tests
-- `k6/` — canonical performance/load testing
-- `load-tests/` — transitional performance tests
-- `tools/load-tests/` — load-testing tooling
-- `validation-data/` — validation datasets and fixtures
+packages/
+shared
+genesis
 
-### Operations and observability
-- `monitoring/` — dashboards, health checks, alerting assets
-- `observability/` — telemetry, traces, logs, metrics instrumentation
-- `ops/` — operational runbooks and procedures
+ai/
+inference
+orchestration
 
-### Developer control plane
-- `.codex` — AI coding-agent guardrails
-- `.devcontainer/` — development container setup
-- `.github/` — repo automation and governance
-- `.husky/` — canonical git hooks
-- `.vscode/` — workspace defaults
+infrastructure/
+terraform
+k8s
+deploy
 
-### Supporting roots
-- `docs/` — canonical documentation
-- `configs/` — shared configuration assets
-- `scripts/` — repo scripts and automation
-- `examples/` — example usage and demos
-- `eslint-rules/` — custom lint rules
-- `plugins/` — custom plugins, including eslint plugins
-- `public/` — public assets
-- `media/` — media assets
-- `Infamous-Freight-Firebase-Studio/` — dedicated subproject
-- `infamous-freight-copilot-orchestrator/` — dedicated subproject
-- `infamous-freight-gh-app/` — dedicated subproject
-- `my-neon-app/` — dedicated subproject
+monitoring/
+observability/
 
-## Canonical rules
+.github/
+workflows/
 
-1. `apps/` is the primary home for runnable product applications.
-2. `packages/` is the primary home for reusable TypeScript libraries.
-3. `ai/` is the primary home for standalone Python/ML services.
-4. `@compliance/` is the canonical home for compliance code and schemas.
-5. `k6/` is the preferred home for load/performance scenarios.
-6. Infrastructure may remain split by tool, but every infra root must be documented.
-7. New top-level directories require justification, ownership, and a README.
+## Core Components
 
-## Fast start
+### Web Platform
+Next.js application for brokers, shippers, and operational dashboards.
 
-### Install
-```bash
-pnpm install
-```
+### API
+TypeScript/Node service layer powering logistics workflows, carrier networks, and shipment state.
 
-### Run core apps
-```bash
-pnpm dev:api
-pnpm dev:web
-pnpm dev:worker
-```
+### Mobile
+Driver-oriented mobile interface for real-time updates and delivery workflows.
 
-### Run quality checks
-```bash
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
-```
+### AI Services
+Machine learning and rule engines supporting:
 
-## Required reading
-- `ARCHITECTURE.md`
-- `REPO_MAP.md`
-- `OWNERSHIP.md`
-- `CONSOLIDATION_PLAN.md`
-- `CONTRIBUTING.md`
+- load recommendation
+- anomaly detection
+- route optimization
+- operational automation
+
+### Infrastructure
+Infrastructure-as-code supporting containerized deployment across cloud environments.
+
+## CI/CD
+
+The repository uses GitHub Actions pipelines for:
+
+- lint
+- typecheck
+- automated testing
+- production builds
+- deployment automation
+- security scanning
+
+## Security
+
+Security controls include:
+
+- dependency review
+- secret scanning
+- CodeQL analysis
+- least-privilege workflow permissions
+
+## Vision
+
+Infamous Freight aims to become the operating system for freight logistics, enabling automated coordination between carriers, brokers, and shippers through intelligent software infrastructure.
