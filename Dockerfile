@@ -10,7 +10,7 @@ RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
 RUN pnpm prisma:generate
-RUN pnpm build
+RUN pnpm --filter ./apps/api build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
