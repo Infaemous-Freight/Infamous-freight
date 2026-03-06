@@ -10,7 +10,7 @@
     {
       "label": "Lint",
       "type": "shell",
-      "command": "pnpm lint",
+      "command": "pnpm -r --if-present lint",
       "group": "build",
       "problemMatcher": ["$eslint-stylish"]
     },
