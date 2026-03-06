@@ -44,13 +44,21 @@ Infamous Freight is designed as a modular SaaS platform.
 
 ## Tech Stack
 
-- Node.js
-- TypeScript
-- Next.js
-- React
-- Prisma
-- Docker
-- GitHub Actions
+- Frontend
+  - Next.js
+  - React
+  - TypeScript
+  - Tailwind CSS
+- Backend
+  - Node.js
+  - Express
+  - Prisma ORM
+  - PostgreSQL
+- Mobile
+  - React Native
+  - Expo
+- Infrastructure
+  - Kubernetes
 
 ## Roadmap
 
