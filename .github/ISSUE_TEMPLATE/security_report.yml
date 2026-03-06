@@ -7,15 +7,18 @@ labels: ["security"]
 body:
 
 - type: textarea
+  id: vulnerability_description
   attributes:
     label: Vulnerability description
   validations:
     required: true
 
 - type: textarea
+  id: impact
   attributes:
     label: Impact
 
 - type: textarea
+  id: steps_to_reproduce
   attributes:
     label: Steps to reproduce
