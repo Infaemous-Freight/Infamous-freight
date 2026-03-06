@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 env:
-  NODE_VERSION: '22'
+  NODE_VERSION: '22.22.0'
   PNPM_VERSION: '9.15.0'
   CI: true
 
