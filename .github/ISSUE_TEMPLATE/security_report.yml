@@ -1,0 +1,42 @@
+name: Security issue reporting
+description: Report a potential security vulnerability
+title: "[Security]: "
+labels:
+  - security
+
+body:
+  - type: textarea
+    id: vulnerability
+    attributes:
+      label: Vulnerability description
+      description: Describe the vulnerability.
+      placeholder: Explain the issue clearly and responsibly.
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: What could an attacker do?
+      placeholder: Describe the security impact.
+    validations:
+      required: false
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Provide safe, minimal reproduction details.
+      placeholder: Describe how to reproduce the issue.
+    validations:
+      required: false
+
+  - type: textarea
+    id: mitigation
+    attributes:
+      label: Suggested mitigation
+      description: If known, suggest a fix or mitigation.
+      placeholder: Describe possible mitigations.
+    validations:
+      required: false

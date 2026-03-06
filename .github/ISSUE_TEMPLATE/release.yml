@@ -1,64 +1,44 @@
 name: Release
 description: Production deployment checklist
-title: "Release: <version>"
-labels: ["release"]
+title: "[Release]: "
+labels:
+  - release
+
 body:
   - type: markdown
     attributes:
       value: |
-        Complete all items before production deployment.
+        Confirm the following before releasing.
 
   - type: checkboxes
-    id: build
+    id: checklist
     attributes:
-      label: Build Verification
+      label: Checklist
       options:
-        - label: lint passed
-        - label: typecheck passed
-        - label: tests passed
-        - label: build passed
+        - label: CI is green
+        - label: Tests are passing
+        - label: Security scan is clean
+        - label: Version has been updated
+        - label: Release notes are ready
+        - label: Deployment plan is ready
+        - label: Rollback plan is ready
+    validations:
+      required: true
 
-  - type: checkboxes
-    id: env
+  - type: textarea
+    id: scope
     attributes:
-      label: Environment Variables
-      options:
-        - label: production env verified
-        - label: staging env verified
-        - label: secrets configured
+      label: Release scope
+      description: What is included in this release?
+      placeholder: Summarize the changes shipping in this release.
+    validations:
+      required: true
 
-  - type: checkboxes
-    id: migration
+  - type: textarea
+    id: risks
     attributes:
-      label: Database Migration
-      options:
-        - label: migration reviewed
-        - label: staging migration successful
-        - label: backup snapshot confirmed
-
-  - type: checkboxes
-    id: health
-    attributes:
-      label: Health Checks
-      options:
-        - label: API health OK
-        - label: DB connectivity OK
-        - label: Redis connectivity OK
-
-  - type: checkboxes
-    id: observability
-    attributes:
-      label: Observability
-      options:
-        - label: Sentry reporting errors
-        - label: logs visible
-        - label: metrics dashboards healthy
-
-  - type: checkboxes
-    id: rollout
-    attributes:
-      label: Rollout Plan
-      options:
-        - label: rollout strategy defined
-        - label: rollback version identified
-        - label: monitoring window scheduled
+      label: Risks / notes
+      description: Known risks, migrations, or operator notes.
+      placeholder: Add deployment caveats or known risks.
+    validations:
+      required: false
