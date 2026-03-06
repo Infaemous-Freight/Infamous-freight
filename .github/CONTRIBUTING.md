@@ -3,7 +3,7 @@
 ## Local setup
 1. Open the repo in the devcontainer.
 2. Install hooks:
-   - `pnpm hooks:install`
+   - `pnpm husky install`
 3. Validate before push:
    - `pnpm lint`
    - `pnpm typecheck`
