@@ -16,12 +16,9 @@
       "restrictsPushes": true,
       "restrictsReviewDismissals": false,
       "requiredStatusCheckContexts": [
-        "CI",
-        "Security",
-        "Analyze",
-        "secret-scan",
-        "dependency-review",
-        "repo-structure"
+        "CI / Lint, Typecheck, Test, Build",
+        "CodeQL / Analyze",
+        "Dependency Review / dependency-review"
       ]
     }
   ]
