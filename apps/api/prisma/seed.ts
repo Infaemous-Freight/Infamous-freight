@@ -13,6 +13,8 @@ async function main() {
   });
 }
 
-main().finally(async () => {
-  await (prisma as any).$disconnect?.();
-});
+if (require.main === module) {
+  main().finally(async () => {
+    await (prisma as any).$disconnect?.();
+  });
+}
