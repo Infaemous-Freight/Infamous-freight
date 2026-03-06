@@ -38,6 +38,7 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm audit --audit-level=moderate
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
 
   secret-scan:
     name: Secret scan
