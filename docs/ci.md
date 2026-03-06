@@ -4,7 +4,7 @@ This document defines the runtime and validation contract for Infamous Freight C
 
 ## Standard runtime
 
-- Node.js: `20`
+- Node.js: `22`
 - pnpm: `9`
 - install command: `pnpm install --frozen-lockfile`
 
