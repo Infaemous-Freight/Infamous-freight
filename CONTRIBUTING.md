@@ -80,7 +80,7 @@ Do not commit:
 - credentials
 - .env files with sensitive data
 
-If you discover a security issue, do not post it publicly in an issue or discussion thread. Report it privately to the maintainer.
+If you discover a security issue, do not post it publicly in an issue or discussion thread. Report it privately by emailing `security@infamousfreight.com` as described in `SECURITY.md`.
 
 ## Documentation
 
