@@ -1,21 +1,6 @@
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut,
-  type User as FirebaseUser,
-} from "firebase/auth";
-
-import { auth } from "@/lib/firebase";
-
-export const registerWithEmail = (email: string, password: string) =>
-  createUserWithEmailAndPassword(auth, email, password);
-
-export const loginWithEmail = (email: string, password: string) =>
-  signInWithEmailAndPassword(auth, email, password);
-
-export const logout = () => signOut(auth);
-
-export const observeAuthState = (
-  callback: (user: FirebaseUser | null) => void,
-) => onAuthStateChanged(auth, callback);
+export function getDemoAuth() {
+  return {
+    token: process.env.NEXT_PUBLIC_DEMO_JWT ?? "PASTE_A_JWT_HERE",
+    tenantId: process.env.NEXT_PUBLIC_DEMO_TENANT ?? "PASTE_TENANT_ID_HERE"
+  };
+}

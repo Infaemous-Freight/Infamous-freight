@@ -1,25 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "lib": ["ES2020"],
-    "jsx": "react-native",
-    "declaration": true,
-    "outDir": "./dist",
-    "strict": false,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleSuffixes": [".native", ""],
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
+    "target": "ES2022",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
+      "@infamous/shared": ["../../packages/shared/src"],
       "@infamous-freight/shared": ["../../packages/shared/src"]
     }
-  },
-  "include": ["src", "services"],
-  "exclude": ["node_modules", "dist", "build"]
+  }
 }

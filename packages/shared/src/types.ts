@@ -1,44 +1,60 @@
-export type ApiResponse<T> = {
-  success: boolean;
-  data?: T;
-  error?: string;
-};
+export type ID = string;
 
-export enum EnforcementLevel {
-  Notice = "notice",
-  Restriction = "restriction",
-  Suspension = "suspension",
-  Termination = "termination",
+export type Role = "ADMIN" | "OPERATOR" | "CARRIER" | "BROKER" | "SHIPPER";
+
+export type ShipmentStatus =
+  | "CREATED"
+  | "POSTED"
+  | "ASSIGNED"
+  | "PICKED_UP"
+  | "IN_TRANSIT"
+  | "DELIVERED"
+  | "CANCELLED";
+
+export type LoadStatus = "OPEN" | "CLAIMED" | "ASSIGNED" | "CLOSED";
+
+export type AvatarState = "idle" | "suggesting" | "alert" | "critical";
+
+export interface TenantScoped {
+  tenantId: ID;
 }
 
-export type ShipmentStatus = "CREATED" | "IN_TRANSIT" | "DELIVERED" | "CANCELLED";
-
-export interface Shipment {
-  id: string;
+export interface Shipment extends TenantScoped {
+  id: ID;
+  ref: string;
+  originCity: string;
+  originState: string;
+  destCity: string;
+  destState: string;
+  weightLb: number;
+  rateCents: number;
   status: ShipmentStatus;
-  origin: string;
-  destination: string;
-  weightKg: number;
   createdAt: string;
+  updatedAt: string;
 }
 
-// Central enum for all payment-related events. Extend this as new
-// payment event types are introduced (e.g., when adding new webhooks).
-export enum PaymentEventType {
-  CHARGEBACK = "CHARGEBACK",
-  REFUND = "REFUND",
-  PAYMENT_SUCCEEDED = "PAYMENT_SUCCEEDED",
-  PAYMENT_FAILED = "PAYMENT_FAILED",
+export interface Load extends TenantScoped {
+  id: ID;
+  lane: string;
+  originCity: string;
+  originState: string;
+  destCity: string;
+  destState: string;
+  distanceMi: number;
+  weightLb: number;
+  rateCents: number;
+  status: LoadStatus;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface ChargebackPayload {
-  reason: string;
-  [key: string]: unknown;
+export interface AICommandRequest extends TenantScoped {
+  input: string;
+  context?: Record<string, unknown>;
 }
 
-export type PaymentEvent = {
-  id: string;
-  type: PaymentEventType.CHARGEBACK;
-  userId: string;
-  payload: ChargebackPayload;
-};
+export interface AICommandResponse {
+  avatarState: AvatarState;
+  action?: { type: string; payload?: Record<string, unknown> };
+  message: string;
+}
