@@ -1,43 +1,64 @@
-# Contributor Covenant Code of Conduct
+# Code of Conduct
 
-## Our Pledge
-We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
+## Our Commitment
 
-We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.  
+We want the Infamous Freight community to be respectful, constructive, and welcoming.
 
-## Our Standards
-Examples of behavior that contributes to a positive environment for our community include:
+Participants in this project are expected to help create an environment that supports collaboration, technical curiosity, and professional conduct.
 
-* Demonstrating empathy and kindness toward other people.  
-* Being respectful of differing opinions, viewpoints, and experiences.  
-* Giving and gracefully accepting constructive feedback.  
-* Accepting responsibility and apologizing to those affected by our mistakes, and learning from the experience.  
-* Focusing on what is best not just for us as individuals, but for the overall community.
+## Expected Behavior
 
-Examples of unacceptable behavior by participants include:
+Examples of behavior that contribute to a healthy community include:
 
-* The use of sexualized language or imagery, and sexual attention or advances of any kind.
-* Trolling, insulting or derogatory comments, and personal or political attacks.
-* Public or private harassment.
-* Publishing others' private information, such as a physical or electronic address, without explicit permission.
-* Other conduct which could reasonably be considered inappropriate in a professional setting.
+- being respectful in communication
+- accepting constructive feedback
+- focusing on facts, evidence, and technical clarity
+- being thoughtful when disagreeing
+- helping others learn
+- keeping discussion productive and relevant
 
-## Enforcement Responsibilities
-Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior and will take appropriate and fair corrective action in response to any instances of unacceptable behavior.
+## Unacceptable Behavior
 
-Community leaders have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, and will communicate reasons for moderation decisions when appropriate.
+Examples of unacceptable behavior include:
+
+- harassment or intimidation
+- personal attacks
+- hateful or discriminatory language
+- abusive or insulting behavior
+- trolling or deliberate disruption
+- doxxing or sharing private information
+- spam or repeated off-topic posting
 
 ## Scope
-This Code of Conduct applies within all community spaces, and it also applies when an individual is officially representing the community in public spaces.
 
-Examples of representing our community include using an official e-mail address, posting via an official social media account, or acting as an appointed representative at an online or offline event.
+This Code of Conduct applies to:
+
+- GitHub Discussions
+- Issues
+- Pull Requests
+- code review interactions
+- community conversations related to this repository
 
 ## Enforcement
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the community leaders. All complaints will be reviewed and investigated promptly and fairly.
 
-All community leaders are obligated to respect the privacy and security of the reporter of any incident.
+Project maintainers may take action in response to behavior that violates this Code of Conduct, including:
 
-## Attribution
-This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), version 2.0, available at https://www.contributor-covenant.org/version/2/0/.
+- warnings
+- comment removal
+- discussion or issue locking
+- temporary restrictions
+- permanent removal from participation spaces
 
-For more information, see the [Contributor Covenant](https://www.contributor-covenant.org) site.
+## Reporting
+
+If you experience or witness unacceptable behavior, report it privately to the maintainer rather than escalating publicly.
+
+## Maintainer Standards
+
+Maintainers are expected to apply this Code of Conduct fairly and consistently.
+
+## Final Note
+
+We are building serious software in a complicated industry. That is already enough chaos. There is no need to add clown fog.
+
+Be respectful. Be clear. Build well.

@@ -1,52 +1,125 @@
 # Contributing to Infamous Freight
 
-Thank you for your interest in contributing to Infamous Freight! We appreciate your help in making this project better. Below are some guidelines to follow when contributing.
+Thank you for your interest in contributing to Infamous Freight.
 
-## Setup Instructions
+We welcome contributions that improve the platform, documentation, workflows, developer experience, and long-term architecture.
 
-1. **Fork the Repository**:  Click the `Fork` button on the top right corner of the repository page to create your own copy of the repo.
-   
-2. **Clone Your Fork**:  Clone it locally using the following command:
-   ```bash
-   git clone https://github.com/your-username/Infamous-freight.git
-   ```
-   Replace `your-username` with your GitHub username.
+## Ways to Contribute
 
-3. **Install Dependencies**:  Navigate to the project directory and install the necessary dependencies:
-   ```bash
-   cd Infamous-freight
-   npm install  # or yarn install if you prefer Yarn
-   ```
+You can contribute by helping with:
 
-4. **Set Up Your Environment**:  Create a `.env` file from the `.env.example` template and configure it according to your setup.
+- bug fixes
+- feature development
+- documentation improvements
+- workflow and CI/CD enhancements
+- UI/UX improvements
+- architecture discussions
+- API design suggestions
+- test coverage improvements
 
-## Testing Procedures
+## Before You Start
 
-To ensure your changes don’t break the project, please run the tests before submitting a pull request:
+Please review the following before contributing:
 
-1. **Run Unit Tests**:
-   ```bash
-   npm test  # or yarn test
-   ```
+- open Issues
+- open Pull Requests
+- GitHub Discussions
+- project documentation
 
-2. **Check Linting**:  Ensure your code adheres to the project's style guide by running:
-   ```bash
-   npm run lint
-   ```
+This helps avoid duplicate work and keeps contribution flow clean.
+
+## Contribution Process
+
+1. Fork the repository.
+2. Create a new branch from the appropriate base branch.
+3. Make focused changes.
+4. Write clear commit messages.
+5. Run relevant checks locally.
+6. Open a pull request with a clear description.
+
+## Branch Naming Suggestions
+
+Use descriptive branch names such as:
+
+```text
+feature/load-board-ranking
+fix/auth-token-refresh
+docs/readme-update
+chore/ci-hardening
+```
 
 ## Pull Request Guidelines
 
-When ready, please submit a pull request with the following:
+Pull requests should:
 
-1. **Descriptive Title**: Use a descriptive title for your PR that reflects the changes made.
+- have a clear and specific title
+- explain what changed
+- explain why the change was made
+- stay focused on one logical improvement
+- include testing notes when applicable
+- avoid unrelated refactors unless necessary
 
-2. **Detailed Description**: Provide a detailed description of the changes you made and why they are important.
-   - Mention any issues this PR addresses (e.g., fixes #issue_number).
+## Code Quality Expectations
 
-3. **Link Related Issues**: If applicable, link to relevant issues or discussions related to your changes.
+Contributions should aim for:
 
-4. **Small and Focused PRs**: Try to make your pull requests small and focused on a single change or improvement.
+- readable code
+- consistent structure
+- strong typing where applicable
+- minimal complexity
+- maintainable abstractions
+- safe handling of configuration and secrets
 
-5. **Request a Review**: Once you submit your PR, request a review from maintainers or other contributors.
+## Security Requirements
 
-Thank you for contributing! We look forward to your improvements and suggestions!
+Do not commit:
+
+- API keys
+- tokens
+- passwords
+- credentials
+- .env files with sensitive data
+
+If you discover a security issue, do not post it publicly in an issue or discussion thread. Report it privately to the maintainer.
+
+## Documentation
+
+If your change affects behavior, setup, architecture, or developer workflow, update the relevant documentation alongside the code.
+
+## Testing
+
+Before submitting a pull request, run the relevant checks for the areas you changed, such as:
+
+```bash
+pnpm install
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
+
+If the repository uses scoped commands, run the appropriate workspace-level checks as well.
+
+## Discussions First for Big Changes
+
+For major architecture changes or new platform directions, open a GitHub Discussion first before implementing large changes. This keeps the repo from mutating into a random code jungle.
+
+## Review Process
+
+All contributions are reviewed before merging. Feedback may include requests for:
+
+- code cleanup
+- documentation updates
+- tests
+- scope reduction
+- architectural alignment
+
+## Licensing
+
+By contributing to this repository, you agree that your contributions will be licensed under the same MIT License that governs this project.
+
+## Questions
+
+For questions, use GitHub Discussions or open an issue if the topic is actionable and specific.
+
+Thanks for helping build Infamous Freight.
