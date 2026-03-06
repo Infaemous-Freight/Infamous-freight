@@ -60,6 +60,9 @@ loadboard.post("/:id/claim", requireAuth, async (req, res, next) => {
   try {
     const tenantId = zTenantId.parse((req as any).auth.tenantId);
     const userId = (req as any).auth?.sub;
+    if (typeof userId !== "string" || userId.length === 0) {
+      return res.status(401).json({ error: "Invalid authentication token." });
+    }
     const claimed = await claimLoad(tenantId, req.params.id, userId);
 
     if (!claimed) {
