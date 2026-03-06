@@ -33,4 +33,4 @@ jobs:
         run: pnpm build
 
       - name: Run Lighthouse CI
-        run: pnpm dlx @lhci/cli@0.13.x autorun
+        run: pnpm dlx @lhci/cli@0.13.x autorun --config=lighthouserc.json
