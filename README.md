@@ -3,7 +3,7 @@
 ![CI](https://github.com/MrMiless44/Infamous-freight/actions/workflows/ci.yml/badge.svg)
 ![Security](https://github.com/MrMiless44/Infamous-freight/actions/workflows/security.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Node](https://img.shields.io/badge/node-20-green)
+![Node](https://img.shields.io/badge/node-22-green)
 ![pnpm](https://img.shields.io/badge/pnpm-9-orange)
 
 AI-powered freight logistics platform with real-time shipment tracking, carrier networks, and intelligent load orchestration.
