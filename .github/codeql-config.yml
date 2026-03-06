@@ -1,23 +1,8 @@
-name: "Infamous Freight CodeQL Config"
-
-disable-default-queries: false
+name: codeql-config
 
 queries:
   - uses: security-and-quality
 
-paths:
-  - apps
-  - packages
-  - prisma
-  - scripts
-
 paths-ignore:
-  - "**/node_modules/**"
-  - "**/dist/**"
-  - "**/build/**"
-  - "**/.next/**"
-  - "**/coverage/**"
-  - "**/.turbo/**"
-  - "**/generated/**"
-  - "**/*.min.js"
-  - "**/*.bundle.js"
+  - node_modules
+  - dist

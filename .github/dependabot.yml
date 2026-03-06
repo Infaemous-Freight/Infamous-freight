@@ -1,58 +1,12 @@
 version: 2
 
 updates:
-  - package-ecosystem: npm
+  - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: weekly
-      day: monday
-      time: "06:00"
-    open-pull-requests-limit: 10
-    versioning-strategy: increase
-    labels:
-      - dependencies
-      - npm
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    groups:
-      typescript-eslint:
-        patterns:
-          - "typescript"
-          - "@types/*"
-          - "eslint*"
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-      react-stack:
-        patterns:
-          - "react"
-          - "react-dom"
-          - "next"
-          - "@types/react"
-          - "@types/react-dom"
-      prisma-stack:
-        patterns:
-          - "prisma"
-          - "@prisma/*"
-      testing-stack:
-        patterns:
-          - "jest"
-          - "@jest/*"
-          - "vitest"
-          - "@vitest/*"
-          - "playwright"
-          - "@playwright/*"
+      interval: "weekly"
 
-  - package-ecosystem: github-actions
+  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: weekly
-      day: monday
-      time: "06:30"
-    open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - github-actions
-    commit-message:
-      prefix: "chore"
-      include: "scope"
+      interval: "weekly"

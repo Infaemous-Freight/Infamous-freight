@@ -1,24 +1,14 @@
-# Default owner
+# Global owner
 * @MrMiless44
 
-# Repo governance / control plane
-/.github/ @MrMiless44
-/.github/workflows/ @MrMiless44
-/.github/actions/ @MrMiless44
-/.github/codeql/ @MrMiless44
-/.github/agents/ @MrMiless44
-/.github/copilot-agents/ @MrMiless44
-/.github/skills/ @MrMiless44
-
-# Core platform
+# API services
 /apps/api/ @MrMiless44
-/apps/web/ @MrMiless44
-/apps/mobile/ @MrMiless44
-/packages/shared/ @MrMiless44
-/packages/ui/ @MrMiless44
-/packages/config/ @MrMiless44
-/prisma/ @MrMiless44
 
-# Security / environment sensitive
-/.devcontainer/ @MrMiless44
-/.githooks/ @MrMiless44
+# Web frontend
+/apps/web/ @MrMiless44
+
+# GitHub workflows
+/.github/ @MrMiless44
+
+# Infrastructure
+/docker/ @MrMiless44
