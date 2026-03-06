@@ -68,10 +68,10 @@ jobs:
           - 6379:6379
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
 
@@ -84,7 +84,7 @@ jobs:
           run_install: false
 
       - name: Setup pnpm cache
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           cache: pnpm

@@ -19,19 +19,19 @@ jobs:
             echo "igfx_present=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Set up pnpm
+        if: steps.igfx-assets.outputs.igfx_present == 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+
       - name: Set up Node.js
         if: steps.igfx-assets.outputs.igfx_present == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "22"
           cache: pnpm
           cache-dependency-path: igfx/pnpm-lock.yaml
-
-      - name: Set up pnpm
-        if: steps.igfx-assets.outputs.igfx_present == 'true'
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9
 
       - name: Install dependencies
         if: steps.igfx-assets.outputs.igfx_present == 'true'
