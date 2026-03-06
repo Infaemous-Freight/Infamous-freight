@@ -44,8 +44,20 @@ app.post("/github/webhook", express.raw({ type: "application/json" }), async (re
     return res.status(401).send("bad signature");
   }
 
-  const payload = JSON.parse(req.body.toString("utf8"));
+  let payload;
+  try {
+    payload = JSON.parse(req.body.toString("utf8"));
+  } catch (err) {
+    auditLog({
+      level: "warn",
+      action: "bad_payload",
+      delivery,
+      event,
+      message: String(err?.message || err)
+    });
 
+    return res.status(400).send("invalid JSON payload");
+  }
   try {
     const t0 = Date.now();
     await handleWebhookEvent({ event, delivery, payload });
