@@ -1,20 +1,9 @@
-version: 2
-
-updates:
-  - package-ecosystem: npm
-    directory: /
-    schedule:
-      interval: weekly
-    labels:
-      - dependencies
-      - security
-    open-pull-requests-limit: 10
-
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
-    labels:
-      - dependencies
-      - github-actions
-    open-pull-requests-limit: 10
+# NOTE: This file is intentionally not used as a Dependabot configuration.
+# Dependabot only reads configuration from `.github/dependabot.yml`.
+# The active configuration for this repository lives in that file.
+#
+# This stub file exists to avoid confusion if someone looks for
+# `.github/workflows/dependabot.yml`. Do not add a Dependabot `version: 2`
+# config or `updates:` blocks here; make all changes in `.github/dependabot.yml`.
+#
+# If this file is no longer needed, it can be safely deleted.
