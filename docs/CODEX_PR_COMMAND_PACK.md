@@ -23,7 +23,7 @@ Use these ready-to-paste PR comments to drive Codex review/fix loops efficiently
 ## 4) If CI/tests are failing
 
 ```text
-@codex fix the failing CI and test issues on this pull request first. Prioritize the top repeating failures, keep patches minimal, and avoid unrelated refactors. Focus on mocks, auth/rbac middleware compatibility, Prisma guards, path/import issues, and test stability. After updating the PR, summarize the root causes and the exact files changed.
+@codex fix the failing CI and test issues on this pull request first. Prioritize the top repeating failures, keep patches minimal, and avoid unrelated refactors. Focus on mocks, auth/RBAC middleware compatibility, Prisma guards, path/import issues, and test stability. After updating the PR, summarize the root causes and the exact files changed.
 ```
 
 ## 5) Backend/auth/API focused
