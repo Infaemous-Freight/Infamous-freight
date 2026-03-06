@@ -9,9 +9,8 @@ const app = express();
 
 app.get("/health", (_, res) => res.status(200).send("ok"));
 
-// Admin endpoints use normal JSON parsing
-app.use(express.json());
-app.use(adminRouter());
+// Admin endpoints use normal JSON parsing, scoped under /admin
+app.use("/admin", express.json(), adminRouter());
 
 // Webhook endpoint MUST use raw body for signature verification
 app.post("/github/webhook", express.raw({ type: "application/json", limit: "2mb" }), async (req, res) => {
