@@ -23,6 +23,17 @@ body:
     validations:
       required: false
 
+  - type: input
+    id: run_url
+    attributes:
+      label: GitHub Actions run URL or ID
+      description: >
+        Paste the URL of the failing GitHub Actions run
+        (e.g. https://github.com/owner/repo/actions/runs/123456789)
+        or the numeric run ID.
+      placeholder: https://github.com/owner/repo/actions/runs/123456789
+    validations:
+      required: true
   - type: textarea
     id: logs
     attributes:
