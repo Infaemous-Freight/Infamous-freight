@@ -14,7 +14,9 @@
     "typecheck": "pnpm -r exec tsc --noEmit",
     "secret:scan": "pnpm -r secret:scan",
     "prisma:generate": "pnpm --filter api prisma:generate",
-    "prisma:migrate:deploy": "pnpm --filter api prisma:migrate:deploy"
+    "prisma:migrate:deploy": "pnpm --filter api prisma:migrate:deploy",
+    "repo:audit": "bash scripts/repo-audit.sh",
+    "repo:bootstrap-readmes": "bash scripts/bootstrap-readmes.sh"
   },
   "devDependencies": {
     "prettier": "^3.2.5"

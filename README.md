@@ -1,138 +1,114 @@
 # Infamous Freight
 
-**AI-Powered Freight & Logistics Automation Platform**
+AI-powered freight and logistics automation platform.
 
-Infamous Freight is a modern freight-tech platform designed to connect carriers, brokers, and shippers through automation, real-time visibility, intelligent workflows, and scalable multi-tenant SaaS infrastructure.
+This repository is a platform monorepo containing product applications, shared packages,
+AI/ML services, operational tooling, infrastructure code, compliance domains,
+testing systems, and developer automation.
 
-## Overview
+## Canonical repository map
 
-The platform is built to support a live logistics ecosystem with:
+### Runtime applications
+- `apps/` — first-class runnable product applications
+  - `apps/api` — backend API
+  - `apps/web` — web application
+  - `apps/mobile` — mobile application
+  - `apps/worker` — background jobs / async processing
+  - `apps/ai` — TypeScript app-layer AI runtime, if used
 
-- Carrier network management
-- Broker network operations
-- Shipper integrations
-- AI dispatch assistance
-- Real-time shipment tracking
-- Load board marketplace access
-- Freight pricing intelligence
-- Multi-tenant workspace architecture
-- API-first integration patterns
-- Production-grade CI/CD and deployment workflows
+### Shared code
+- `packages/` — reusable internal packages
+  - `packages/shared` — contracts, constants, schemas, utilities
+  - `packages/genesis` — Genesis avatar / assistant package
 
-## Core Vision
+### Standalone services and platform domains
+- `services/` — standalone service domains
+- `payments/` — payments-specific logic and integrations
+- `ai/` — standalone AI / ML service runtime, especially Python-based inference
 
-Infamous Freight is designed to become a unified operating system for freight movement.
+### Compliance and security
+- `@compliance/` — canonical compliance code domain
+- `compliance/` — transitional or legacy compliance content
+- `.security/` — security policy, incident response, and reporting docs
 
-The long-term goal is to create a logistics intelligence platform where:
+### Infrastructure and deployment
+- `docker/` — local container orchestration and service Dockerfiles
+- `deploy/` — deployment scripts and release mechanics
+- `infrastructure/` — shared infra assets not tied to a single tool
+- `k8s/` — Kubernetes manifests
+- `terraform/` — infrastructure as code
+- `nginx/` — proxy/edge config
+- `supabase/` — Supabase-specific assets
 
-- carriers can manage capacity and loads
-- brokers can automate posting and matching
-- shippers can gain visibility and operational control
-- developers can integrate through APIs and automation workflows
-- AI can assist with dispatch, routing, pricing, and exception handling
+### Testing and validation
+- `tests/` — shared integration/system tests
+- `e2e/` — end-to-end tests
+- `k6/` — canonical performance/load testing
+- `load-tests/` — transitional performance tests
+- `tools/load-tests/` — load-testing tooling
+- `validation-data/` — validation datasets and fixtures
 
-## Platform Modules
+### Operations and observability
+- `monitoring/` — dashboards, health checks, alerting assets
+- `observability/` — telemetry, traces, logs, metrics instrumentation
+- `ops/` — operational runbooks and procedures
 
-### Carrier Network
+### Developer control plane
+- `.codex` — AI coding-agent guardrails
+- `.devcontainer/` — development container setup
+- `.github/` — repo automation and governance
+- `.husky/` — canonical git hooks
+- `.vscode/` — workspace defaults
 
-Tools for onboarding carriers, managing fleet data, monitoring availability, and supporting operational performance.
+### Supporting roots
+- `docs/` — canonical documentation
+- `configs/` — shared configuration assets
+- `scripts/` — repo scripts and automation
+- `examples/` — example usage and demos
+- `eslint-rules/` — custom lint rules
+- `plugins/` — custom plugins, including eslint plugins
+- `public/` — public assets
+- `media/` — media assets
+- `Infamous-Freight-Firebase-Studio/` — dedicated subproject
+- `infamous-freight-copilot-orchestrator/` — dedicated subproject
+- `infamous-freight-gh-app/` — dedicated subproject
+- `my-neon-app/` — dedicated subproject
 
-### Broker Network
+## Canonical rules
 
-Broker-focused workflows for posting loads, managing relationships, evaluating carrier fit, and automating dispatch coordination.
+1. `apps/` is the primary home for runnable product applications.
+2. `packages/` is the primary home for reusable TypeScript libraries.
+3. `ai/` is the primary home for standalone Python/ML services.
+4. `@compliance/` is the canonical home for compliance code and schemas.
+5. `k6/` is the preferred home for load/performance scenarios.
+6. Infrastructure may remain split by tool, but every infra root must be documented.
+7. New top-level directories require justification, ownership, and a README.
 
-### Shipper Integration
+## Fast start
 
-Interfaces and APIs for customer load creation, shipment visibility, tracking events, and status synchronization.
-
-### Load Board
-
-A central marketplace layer for searching, ranking, matching, and managing freight opportunities.
-
-### AI Dispatch Assistant
-
-An intelligent assistant for dispatch workflows, recommendations, task automation, and operational support.
-
-### Shipment Tracking
-
-Real-time tracking support for freight lifecycle visibility, status updates, event history, and exception management.
-
-### Analytics & Intelligence
-
-Operational reporting, freight performance metrics, load movement insights, pricing logic, and network optimization.
-
-## Repository Structure
-
-```text
-apps/
-  api/
-  web/
-  mobile/
-
-packages/
-  shared/
-  auth/
-  ui/
-  config/
-  database/
-
-.github/
-  workflows/
+### Install
+```bash
+pnpm install
 ```
 
-## Technology Direction
+### Run core apps
+```bash
+pnpm dev:api
+pnpm dev:web
+pnpm dev:worker
+```
 
-This repository is designed around a modern TypeScript monorepo and production SaaS approach.
+### Run quality checks
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+```
 
-Typical stack direction includes:
-
-- TypeScript
-- Node.js
-- Express or Nest-style API services
-- Next.js web application
-- React Native / Expo mobile app
-- Prisma ORM
-- PostgreSQL
-- Redis
-- Docker
-- GitHub Actions
-- Fly.io and/or cloud deployment workflows
-
-## Development Goals
-
-- Clean multi-tenant architecture
-- Secure authentication and authorization
-- Stable CI/CD pipelines
-- Scalable API services
-- Production-ready deployment patterns
-- Strong developer ergonomics
-- Clear separation of app and package responsibilities
-
-## Discussions
-
-GitHub Discussions is used to organize platform thinking across:
-
-- announcements
-- architecture discussion
-- feature ideas
-- technical Q&A
-- project showcase
-
-## Contributing
-
-Contributions, architecture ideas, workflow improvements, bug fixes, and integration concepts are welcome.
-
-Please review CONTRIBUTING.md before opening a pull request.
-
-## Code of Conduct
-
-Please review CODE_OF_CONDUCT.md before participating in discussions or contributing code.
-
-## License
-
-This project is licensed under the MIT License. See LICENSE for details.
-
----
-
-Infamous Freight  
-Built to power the future of freight logistics.
+## Required reading
+- `ARCHITECTURE.md`
+- `REPO_MAP.md`
+- `OWNERSHIP.md`
+- `CONSOLIDATION_PLAN.md`
+- `.github/CONTRIBUTING.md`
