@@ -1,6 +1,6 @@
-name: Codex Fix Task
-description: Deterministic tasking for AI coding and review work
-title: "[Codex Fix]: "
+name: AI Task: Bugfix
+description: Structured tasking for AI-assisted bug fixing and code review work
+title: "[AI Task Bugfix]: "
 labels:
   - ai-task
 
