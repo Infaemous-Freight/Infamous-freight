@@ -21,6 +21,9 @@ on:
           - staging
           - production
 
+permissions:
+  contents: read
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -35,6 +38,9 @@ jobs:
     name: Validate & Test
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -173,6 +179,9 @@ jobs:
     if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/develop'
     environment: staging
     timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write
     steps:
       - uses: actions/checkout@v3
 
@@ -198,7 +207,7 @@ jobs:
           curl -f https://staging.infamous.com || exit 1
 
       - name: Notify deployment
-        if: always()
+        if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v6
         with:
           script: |
@@ -218,6 +227,8 @@ jobs:
     needs: deploy-staging
     if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/develop'
     timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v3
 
@@ -256,6 +267,9 @@ jobs:
     needs: validate
     timeout-minutes: 30
     continue-on-error: true
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - uses: actions/checkout@v3
 
@@ -285,6 +299,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     environment: production
     timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
 
@@ -375,6 +391,9 @@ jobs:
     needs: deploy-production
     if: github.ref == 'refs/heads/main' && success()
     timeout-minutes: 10
+    permissions:
+      contents: read
+      deployments: write
     steps:
       - uses: actions/checkout@v3
 
@@ -411,6 +430,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     environment: production
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v3
 
