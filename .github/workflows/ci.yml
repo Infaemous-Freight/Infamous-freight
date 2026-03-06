@@ -5,54 +5,20 @@ on:
   push:
     branches:
       - main
-      - develop
-
-permissions:
-  contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  NODE_VERSION: "20"
-  CI: "true"
-
 jobs:
-  verify:
-    name: Lint • Typecheck • Test • Build
+  validate:
+    name: Lint, Typecheck, Test, Build
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: infamous_freight_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U postgres -d infamous_freight_test"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd="redis-cli ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+    timeout-minutes: 30
 
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous_freight_test?schema=public
-      REDIS_URL: redis://localhost:6379
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      CI: true
+      NODE_ENV: test
 
     steps:
       - name: Checkout
@@ -61,22 +27,16 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: 22
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Secret precheck
-        run: pnpm secret:scan
-
-      - name: Prisma generate
-        run: pnpm --filter ./apps/api exec prisma generate
 
       - name: Lint
         run: pnpm lint

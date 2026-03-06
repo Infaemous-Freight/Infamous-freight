@@ -1,21 +1,5 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
 contact_links:
-  - name: 📚 Documentation
-    url: https://github.com/MrMiless44/Infamous-freight-enterprises/blob/main/.github/INDEX.md
-    about: Browse comprehensive documentation for workflows, security, and performance
-
-  - name: 🚀 Quick Reference
-    url: https://github.com/MrMiless44/Infamous-freight-enterprises/blob/main/QUICK_REFERENCE.md
-    about: Command cheat sheet and development workflows
-
-  - name: 🔧 Workflow Guide
-    url: https://github.com/MrMiless44/Infamous-freight-enterprises/blob/main/.github/WORKFLOW_GUIDE.md
-    about: Detailed guide for all GitHub Actions workflows
-
-  - name: 💬 Discussions
-    url: https://github.com/MrMiless44/Infamous-freight-enterprises/discussions
-    about: Ask questions and discuss ideas with the community
-
-  - name: 🔒 Security Issues
-    url: https://github.com/MrMiless44/Infamous-freight-enterprises/security/advisories/new
-    about: Report security vulnerabilities privately
+  - name: Security issue reporting
+    url: "https://github.com/MrMiless44/Infamous-freight/security/policy"
+    about: Please follow the security policy for reporting vulnerabilities.
