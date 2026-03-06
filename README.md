@@ -111,4 +111,4 @@ pnpm build
 - `REPO_MAP.md`
 - `OWNERSHIP.md`
 - `CONSOLIDATION_PLAN.md`
-- `.github/CONTRIBUTING.md`
+- `CONTRIBUTING.md`
