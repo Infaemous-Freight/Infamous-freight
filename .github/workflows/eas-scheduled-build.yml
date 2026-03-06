@@ -10,19 +10,24 @@ concurrency:
   group: eas-scheduled-build
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9.0.0
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: "22.22.0"
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
@@ -38,13 +43,13 @@ jobs:
           eas build --platform all --profile production --non-interactive
 
       - name: Slack notify (success)
-        if: success() && secrets.SLACK_WEBHOOK_URL != ''
+        if: success() && env.SLACK_WEBHOOK_URL != ''
         run: |
           payload=$(jq -n --arg text "Scheduled EAS build succeeded (main @ ${{ github.sha }})" '{text:$text}')
-          curl -X POST -H 'Content-type: application/json' --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"
+          curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
 
       - name: Slack notify (failure)
-        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
         run: |
           payload=$(jq -n --arg text "Scheduled EAS build failed (main @ ${{ github.sha }})" '{text:$text}')
-          curl -X POST -H 'Content-type: application/json' --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"
+          curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
