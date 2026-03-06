@@ -125,7 +125,7 @@ jobs:
       - name: Deploy to Fly.io
         run: |
           if [ -n "$FLY_API_TOKEN" ]; then
-            flyctl deploy --remote-only
+            flyctl deploy --config apps/api/fly.toml --remote-only
           else
             echo "⚠️ FLY_API_TOKEN not found in secrets"
             echo "To enable automatic Fly.io deployments:"
