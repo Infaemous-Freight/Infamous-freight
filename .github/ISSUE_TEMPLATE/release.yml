@@ -12,6 +12,7 @@ body:
       Confirm the following before releasing.
 
 - type: checkboxes
+  id: release_checklist
   attributes:
     label: Checklist
     options:
