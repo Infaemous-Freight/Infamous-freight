@@ -23,7 +23,7 @@ model Tenant {
 model Shipment {
   id          String               @id @default(cuid())
   tenantId    String
-  tenant      Tenant               @relation(fields: [tenantId], references: [id])
+  tenant      Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   ref         String
   originCity  String
   originState String
