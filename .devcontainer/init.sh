@@ -34,7 +34,7 @@ fi
 if [ -f package.json ]; then
   if node -e "const p=require('./package.json'); process.exit(p.devDependencies && p.devDependencies.husky ? 0 : 1)" 2>/dev/null; then
     echo "==> Installing Husky hooks"
-    pnpm exec husky || true
+    pnpm exec husky
   fi
 fi
 
