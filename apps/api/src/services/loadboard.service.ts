@@ -29,8 +29,10 @@ export async function claimLoad(tenantId: string, loadId: string) {
   if (!load) throw new Error("Load not found");
   if (load.status !== "OPEN") throw new Error("Load not open");
 
-  return prisma.load.update({
-    where: { id: loadId },
+  await prisma.load.updateMany({
+    where: { id: loadId, tenantId },
     data: { status: "CLAIMED" }
   });
+
+  return { ...load, status: "CLAIMED" };
 }
