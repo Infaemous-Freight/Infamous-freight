@@ -28,9 +28,9 @@ if [ -f pnpm-workspace.yaml ]; then
   echo "==> Detected pnpm workspace"
 fi
 
-if [ -f prisma/schema.prisma ]; then
-  echo "==> Prisma schema detected"
-  pnpm exec prisma generate || true
+if [ -f package.json ] && jq -e '.scripts["prisma:generate"]' package.json >/dev/null 2>&1; then
+  echo "==> Running Prisma client generation via workspace script"
+  pnpm prisma:generate || true
 fi
 
 if pnpm -r exec -- bash -lc 'exit 0' >/dev/null 2>&1; then
