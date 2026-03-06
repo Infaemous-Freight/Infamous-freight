@@ -12,7 +12,7 @@ Commands verified locally:
 ```bash
 pnpm lint
 pnpm typecheck
-pnpm test -- --runInBand
+pnpm test
 pnpm build
 ```
 
