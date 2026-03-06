@@ -97,4 +97,4 @@ pnpm -r --if-present build
 - `ARCHITECTURE.md`
 - `REPO_MAP.md`
 - `OWNERSHIP.md`
-- `.github/CONTRIBUTING.md`
+- `CONTRIBUTING.md`
