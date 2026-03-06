@@ -13,7 +13,7 @@
       "requiresLinearHistory": true,
       "requiresStatusChecks": true,
       "requiresStrictStatusChecks": true,
-      "restrictsPushes": true,
+      "restrictsPushes": false,
       "restrictsReviewDismissals": false,
       "requiredStatusCheckContexts": [
         "CI",
