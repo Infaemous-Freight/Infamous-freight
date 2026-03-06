@@ -31,7 +31,7 @@
     {
       "label": "Build",
       "type": "shell",
-      "command": "pnpm build",
+      "command": "pnpm -r --if-present build",
       "group": "build",
       "problemMatcher": ["$tsc"]
     },
