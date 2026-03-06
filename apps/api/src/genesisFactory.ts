@@ -10,7 +10,10 @@ export function makeGenesis(auth: { tenantId: string; sub: string; role: string 
       async getShipmentTelemetry() {
         const nowMs = Date.now();
         const rows = await (prisma as any).shipment.findMany({
-          where: { status: { not: "DELIVERED" } },
+          where: {
+            user: { organizationId: auth.tenantId },
+            status: { not: "DELIVERED" }
+          },
           take: 250,
           orderBy: { updatedAt: "desc" }
         });
