@@ -8,17 +8,13 @@ body:
 
 - type: textarea
   id: vulnerability_description
-  attributes:
-    label: Vulnerability description
-  validations:
-    required: true
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report a potential security vulnerability.
 
-- type: textarea
-  id: impact
-  attributes:
-    label: Impact
+        To protect our users, **do not disclose security vulnerabilities in public issues.**
 
-- type: textarea
-  id: steps_to_reproduce
-  attributes:
-    label: Steps to reproduce
+        Please follow our security policy and the instructions in `SECURITY.md` (or the security contact links shown on the repository) to report vulnerabilities through a private and responsible disclosure channel.
+
+        If you arrived here from the issue chooser, please close this draft and use the private security reporting channel instead.
