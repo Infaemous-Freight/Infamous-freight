@@ -1,75 +1,35 @@
 {
   "folders": [
-    {
-      "name": "🚀 Root",
-      "path": ".",
-    },
-    {
-      "name": "📦 API",
-      "path": "./api",
-    },
-    {
-      "name": "🌐 Web",
-      "path": "./web",
-    },
-    {
-      "name": "📱 Mobile",
-      "path": "./mobile",
-    },
-    {
-      "name": "🔧 Shared",
-      "path": "./packages/shared",
-    },
-    {
-      "name": "🧪 E2E",
-      "path": "./e2e",
-    },
+    { "path": "." }
   ],
   "settings": {
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "npm.packageManager": "pnpm",
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit",
+      "source.fixAll.eslint": "explicit"
     },
-    "eslint.workingDirectories": ["./api", "./web", "./packages/shared"],
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "typescript.enablePromptUseWorkspaceTsdk": true,
     "files.exclude": {
-      "**/node_modules": true,
-      "**/dist": true,
-      "**/.next": true,
+      "**/.turbo": true,
       "**/coverage": true,
-      "**/build": true,
-    },
-    "search.exclude": {
-      "**/node_modules": true,
       "**/dist": true,
-      "**/.next": true,
-      "**/coverage": true,
       "**/build": true,
-      "pnpm-lock.yaml": true,
-    },
-    "files.associations": {
-      ".env.example": "dotenv",
-      ".env.local": "dotenv",
-      ".lintstagedrc": "json",
-    },
-    "[javascript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-    },
-    "[typescript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-    },
-    "[json]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-    },
-    "[markdown]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
-    },
-    "npm.packageManager": "pnpm",
-    "terminal.integrated.env.linux": {
-      "PNPM_HOME": "/home/vscode/.local/share/pnpm",
-      "PATH": "/home/vscode/.local/share/pnpm:${env:PATH}",
-    },
+      "**/.next": true,
+      "**/node_modules": true
+    }
   },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "Prisma.prisma",
+      "ms-vscode.vscode-typescript-next",
+      "eamodio.gitlens",
+      "ms-azuretools.vscode-docker",
+      "GitHub.copilot",
+      "GitHub.copilot-chat",
+      "ms-playwright.playwright"
+    ]
+  }
 }

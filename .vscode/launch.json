@@ -2,100 +2,54 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "command": "npm start",
-      "name": "Run npm start",
-      "request": "launch",
-      "type": "node-terminal"
-    },
-    {
-      "command": "npm start",
-      "name": "Run npm start",
-      "request": "launch",
-      "type": "node-terminal"
-    },
-    {
-      "name": "Launch Chrome",
-      "request": "launch",
-      "type": "chrome",
-      "url": "http://localhost:8080",
-      "webRoot": "${workspaceFolder}"
-    },
-    {
-      "name": "Attach to Chrome",
-      "port": 9222,
-      "request": "attach",
-      "type": "chrome",
-      "webRoot": "${workspaceFolder}"
-    },
-    {
-      "name": "Launch via NPM",
-      "request": "launch",
-      "runtimeArgs": ["run-script", "debug"],
-      "runtimeExecutable": "npm",
-      "skipFiles": ["<node_internals>/**"],
-      "type": "node"
-    },
-    {
-      "command": "npm start",
-      "name": "Run npm start",
-      "request": "launch",
-      "type": "node-terminal"
-    },
-    {
-      "name": "API Debugger",
+      "name": "Launch API (Node)",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/apps/api/src/server.js",
-      "restart": true,
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@infamous/api", "dev"],
+      "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}/apps/api",
+      "skipFiles": ["<node_internals>/**"],
       "env": {
         "NODE_ENV": "development",
-        "DEBUG": "infamous-freight:*"
-      },
-      "skipFiles": ["<node_internals>/**"]
+        "NODE_OPTIONS": "--inspect"
+      }
     },
     {
-      "name": "API Debugger (Attach)",
-      "type": "node",
-      "request": "attach",
-      "port": 9229,
-      "skipFiles": ["<node_internals>/**"]
+      "name": "Launch Web (Next.js)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm --filter web dev",
+      "cwd": "${workspaceFolder}"
     },
     {
-      "name": "Jest Tests",
+      "name": "Launch Mobile (Expo)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm --filter mobile dev",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Debug Current Jest File",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": ["--runInBand", "--detectOpenHandles"],
-      "cwd": "${workspaceFolder}/apps/api",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "exec",
+        "jest",
+        "${fileBasenameNoExtension}",
+        "--runInBand"
+      ],
+      "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
-    },
-    {
-      "name": "Single Test File",
-      "type": "node",
-      "request": "launch",
-      "program": "${workspaceFolder}/node_modules/.bin/jest",
-      "args": ["${file}", "--runInBand"],
-      "cwd": "${workspaceFolder}/apps/api",
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Run playwright E2E",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["playwright", "test"],
-      "cwd": "${workspaceFolder}/e2e",
-      "console": "integratedTerminal"
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"]
     }
   ],
   "compounds": [
     {
-      "name": "API + Tests",
-      "configurations": ["API Debugger", "Jest Tests"]
+      "name": "Launch Web + API",
+      "configurations": ["Launch API (Node)", "Launch Web (Next.js)"]
     }
   ]
 }

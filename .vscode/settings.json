@@ -1,229 +1,50 @@
 {
-  "python-envs.defaultEnvManager": "ms-python.python:system",
-  "python-envs.pythonProjects": [],
-  "terminal.integrated.shellIntegration": false,
-  "files.readonlyInclude": {
-    "{**/.c4z/.extsrcs/*.PROTSYM.cbl,**/.c4z/.extsrcs/*.PROTSYM.listing}": true
-  },
-  "idf.pythonInstallPath": "/home/codespace/.python/current/bin/python",
-  "robotcode.disableExtension": true,
-  "remote.autoForwardPortsFallback": 0,
+  "typescript.tsdk": "node_modules/typescript/lib",
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "eslint.workingDirectories": [
-    "./apps/api",
-    "./apps/web",
-    "./packages/shared"
-  ],
-  "terminal.integrated.shellIntegration.enabled": true,
-  "terminal.integrated.shellIntegration.decorationsEnabled": "both",
-  "typescript.tsdk": "node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
   "files.exclude": {
-    "**/node_modules": true,
-    "**/dist": true,
-    "**/.next": true,
+    "**/.DS_Store": true,
+    "**/.turbo": true,
     "**/coverage": true,
-    "**/build": true
+    "**/dist": true,
+    "**/build": true,
+    "**/.next": true,
+    "**/node_modules": true
   },
   "search.exclude": {
-    "**/node_modules": true,
-    "**/dist": true,
-    "**/.next": true,
+    "**/.turbo": true,
     "**/coverage": true,
+    "**/dist": true,
     "**/build": true,
-    "pnpm-lock.yaml": true
+    "**/.next": true,
+    "**/node_modules": true,
+    "**/pnpm-lock.yaml": false
   },
-  "files.associations": {
-    ".env.example": "dotenv",
-    ".env.local": "dotenv",
-    ".lintstagedrc": "json"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.workingDirectories": [
+    { "mode": "auto" }
+  ],
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "npm.packageManager": "pnpm",
-  "[jsonc]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "github.codespaces.defaultExtensions": [
-    "GitHub.copilot",
-    "GitHub.codespaces",
-    "GitHub.vscode-pull-request-github",
-    "Github.copilot"
-  ],
-  "terminal.integrated.shellIntegration.quickFixEnabled": false,
-  "terminal.integrated.stickyScroll.enabled": false,
-  "terminal.integrated.suggest.enabled": false,
-  "prisma.pinToPrisma6": false,
-  "typescript.experimental.useTsgo": true,
-  "typescript.implementationsCodeLens.enabled": true,
-  "typescript.implementationsCodeLens.showOnAllClassMethods": true,
-  "typescript.implementationsCodeLens.showOnInterfaceMethods": true,
-  "typescript.preferGoToSourceDefinition": true,
-  "typescript.referencesCodeLens.enabled": true,
-  "typescript.referencesCodeLens.showOnAllFunctions": true,
-  "terminal.explorerKind": "both",
-  "terminal.integrated.accessibleViewFocusOnCommandExecution": true,
-  "editor.codeActions.triggerOnFocusChange": true,
-  // === Extension-Specific Settings (59 Extensions) ===
-  // Import Cost - Bundle size warnings
-  "importCost.largePackageSize": 100,
-  "importCost.mediumPackageSize": 50,
-  "importCost.smallPackageColor": "#7cc36e",
-  "importCost.mediumPackageColor": "#7cc36e",
-  "importCost.largePackageColor": "#d44e40",
-  // TODO Highlighting
-  "todohighlight.isEnable": true,
-  "todohighlight.keywords": [
-    {
-      "text": "TODO:",
-      "color": "#fff",
-      "backgroundColor": "#ffbd2e",
-      "overviewRulerColor": "grey"
-    },
-    {
-      "text": "FIXME:",
-      "color": "#fff",
-      "backgroundColor": "#f06292",
-      "overviewRulerColor": "grey"
-    },
-    {
-      "text": "NOTE:",
-      "color": "#fff",
-      "backgroundColor": "#64b5f6"
-    }
-  ],
-  // Better Comments
-  "better-comments.tags": [
-    {
-      "tag": "!",
-      "color": "#FF2D00",
-      "strikethrough": false,
-      "underline": false,
-      "backgroundColor": "transparent",
-      "bold": false,
-      "italic": false
-    },
-    {
-      "tag": "?",
-      "color": "#3498DB",
-      "strikethrough": false,
-      "underline": false,
-      "backgroundColor": "transparent",
-      "bold": false,
-      "italic": false
-    },
-    {
-      "tag": "//",
-      "color": "#474747",
-      "strikethrough": true,
-      "underline": false,
-      "backgroundColor": "transparent",
-      "bold": false,
-      "italic": false
-    },
-    {
-      "tag": "todo",
-      "color": "#FF8C00",
-      "strikethrough": false,
-      "underline": false,
-      "backgroundColor": "transparent",
-      "bold": false,
-      "italic": false
-    },
-    {
-      "tag": "*",
-      "color": "#98C379",
-      "strikethrough": false,
-      "underline": false,
-      "backgroundColor": "transparent",
-      "bold": false,
-      "italic": false
-    }
-  ],
-  // Markdown
-  "markdown.extension.toc.levels": "2..6",
-  "markdown.extension.toc.unorderedList.marker": "-",
-  "markdown.extension.print.absoluteImgPath": false,
-  "markdown.extension.preview.autoShowPreviewToSide": false,
-  "[markdown]": {
-    "editor.defaultFormatter": "yzhang.markdown-all-in-one",
-    "editor.quickSuggestions": {
-      "comments": "on",
-      "strings": "on",
-      "other": "on"
-    }
-  },
-  // GitLens
-  "gitlens.codeLens.enabled": true,
-  "gitlens.currentLine.enabled": true,
-  "gitlens.hovers.currentLine.over": "line",
-  "gitlens.statusBar.enabled": true,
-  "gitlens.views.repositories.location": "scm",
-  // Jest
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "debug.node.autoAttach": "smart",
   "jest.autoRun": "off",
-  "jest.showCoverageOnLoad": false,
-  "jest.rootPath": "api",
-  // Playwright
-  "playwright.reuseBrowser": false,
-  "playwright.showTrace": false,
-  // Database Client
-  "database-client.enableCodeLens": true,
-  // Error Lens
-  "errorLens.enabled": true,
-  "errorLens.enabledDiagnosticLevels": [
-    "error",
-    "warning"
-  ],
-  "errorLens.followCursor": "activeLine",
-  // Path Intellisense
-  "path-intellisense.autoSlashAfterDirectory": true,
-  "path-intellisense.extensionOnImport": true,
-  // Spell Checker
-  "cSpell.enabled": true,
-  "cSpell.words": [
-    "Infæmous",
-    "pnpm",
-    "Prisma",
-    "middlewares",
-    "auditLog",
-    "requireScope",
-    "limiters",
-    "Supabase",
-    "healthcheck",
-    "PostgreSQL",
-    "dotenv",
-    "monorepo",
-    "devcontainer",
-    "Codex",
-    "webhint",
-    "jsonc"
-  ],
-  // TODO Tree
-  "todo-tree.general.tags": [
-    "TODO",
-    "FIXME",
-    "NOTE",
-    "HACK",
-    "XXX"
-  ],
-  "todo-tree.highlights.defaultHighlight": {
-    "foreground": "white",
-    "background": "orange",
-    "icon": "check",
-    "type": "text"
+  "editor.rulers": [100],
+  "json.schemaDownload.enable": true,
+  "files.associations": {
+    "*.env.*": "dotenv",
+    ".env": "dotenv"
   }
 }

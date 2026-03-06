@@ -1,34 +1,19 @@
 {
   "recommendations": [
-    // === Core Development ===
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
+    "Prisma.prisma",
     "ms-vscode.vscode-typescript-next",
-    "christian-kohler.path-intellisense",
-    "usernamehw.errorlens",
-    // === Testing ===
-    "orta.vscode-jest",
-    "ms-playwright.playwright",
-    // === API & Database ===
-    "prisma.prisma",
-    "cweijan.vscode-database-client2",
-    "humao.rest-client",
-    // === Frontend ===
-    "bradlc.vscode-tailwindcss",
-    "styled-components.vscode-styled-components",
-    // === Mobile (React Native/Expo) ===
-    "msjsdiag.vscode-react-native",
-    "expo.vscode-expo-tools",
-    // === CI/CD & Infra ===
-    "github.vscode-github-actions",
+    "eamodio.gitlens",
     "ms-azuretools.vscode-docker",
-    "redhat.vscode-yaml",
-    "hashicorp.terraform",
-    "redhat.vscode-xml",
-    // === Docs ===
-    "davidanson.vscode-markdownlint",
-    "yzhang.markdown-all-in-one",
-    "shd101wyy.markdown-preview-enhanced"
+    "GitHub.copilot",
+    "GitHub.copilot-chat",
+    "ms-playwright.playwright",
+    "yoavbls.pretty-ts-errors",
+    "christian-kohler.path-intellisense",
+    "streetsidesoftware.code-spell-checker"
   ],
-  "unwantedRecommendations": []
+  "unwantedRecommendations": [
+    "HookyQR.beautify"
+  ]
 }

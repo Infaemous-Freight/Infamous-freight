@@ -2,23 +2,105 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Codex: Start",
+      "label": "Install dependencies",
       "type": "shell",
-      "command": "codex",
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
+      "command": "pnpm install",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "pnpm -r --if-present lint",
+      "group": "build",
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Typecheck",
+      "type": "shell",
+      "command": "pnpm -r --if-present typecheck",
+      "group": "build",
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Test",
+      "type": "shell",
+      "command": "pnpm -r --if-present test -- --runInBand",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Build",
+      "type": "shell",
+      "command": "pnpm -r --if-present build",
+      "group": "build",
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Dev: Web",
+      "type": "shell",
+      "command": "pnpm --filter web dev",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": [
+          {
+            "regexp": ".",
+            "file": 1,
+            "location": 2,
+            "message": 3
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "ready|started server|compiled successfully|Local:"
+        }
+      }
+    },
+    {
+      "label": "Dev: API",
+      "type": "shell",
+      "command": "pnpm --filter @infamous/api dev",
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": [
+          {
+            "regexp": ".",
+            "file": 1,
+            "location": 2,
+            "message": 3
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".",
+          "endsPattern": "ready|listening|started|Local:"
+        }
+      }
+    },
+    {
+      "label": "Dev: Mobile",
+      "type": "shell",
+      "command": "pnpm --filter ./apps/mobile dev",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Prisma Generate",
+      "type": "shell",
+      "command": "pnpm exec prisma generate",
+      "options": {
+        "cwd": "apps/api"
       },
       "problemMatcher": []
     },
     {
-      "label": "Codex: Exec (prompt)",
+      "label": "Prisma Migrate Dev",
       "type": "shell",
-      "command": "codex exec",
-      "args": ["--help"],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
+      "command": "pnpm exec prisma migrate dev",
+      "options": {
+        "cwd": "apps/api"
       },
       "problemMatcher": []
     }
