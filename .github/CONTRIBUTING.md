@@ -17,10 +17,17 @@ Install dependencies:
 pnpm install
 ```
 
-Run development server:
+Run development servers (choose the ones you need):
 
 ```bash
-pnpm dev
+# API (apps/api)
+pnpm dev:api
+
+# Web app (apps/web)
+pnpm dev:web
+
+# Mobile app (apps/mobile)
+pnpm dev:mobile
 ```
 
 ---
