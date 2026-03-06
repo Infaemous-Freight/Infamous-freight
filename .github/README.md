@@ -38,7 +38,6 @@ Templates include:
 - workflow failure reports
 - AI coding tasks
 - release checklists
-- security reports
 
 ---
 
