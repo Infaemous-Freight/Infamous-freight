@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@infamous-freight/shared";
 
 export const requiredDocumentTypeSchema = z.enum([
   "insurance",
