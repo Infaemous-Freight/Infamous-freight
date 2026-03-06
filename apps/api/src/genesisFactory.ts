@@ -1,5 +1,5 @@
 import prisma from "./lib/prisma.js";
-import { createPrismaSessionStore } from "../../packages/genesis/src/memory/adapters/prismaSessionStore";
+import { createPrismaSessionStore } from "../../packages/genesis/dist/memory/adapters/prismaSessionStore.js";
 
 export function makeGenesis(auth: { tenantId: string; sub: string; role: string }) {
   const sessionStore = createPrismaSessionStore(prisma as any, 25);
