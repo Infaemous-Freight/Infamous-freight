@@ -50,7 +50,7 @@ assignments.patch("/:id/status", authenticate as any, async (req, res, next) => 
     await (prisma as any).shipmentAssignment.update({ where: { id: row.id }, data: { status } });
     await (prisma as any).shipment.update({ where: { id: row.shipmentId }, data: { status } });
 
-    sseBroadcast(tenantId, "shipment.updated", { id: row.id, status });
+    sseBroadcast(tenantId, "assignment.updated", { id: row.id, status });
     res.json({ ok: true });
   } catch (e) {
     next(e);
