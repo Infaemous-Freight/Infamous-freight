@@ -10,8 +10,13 @@ export function connectSSE(onEvent: (type: string, data: unknown) => void) {
 
   const token = typeof window !== "undefined" ? window.localStorage.getItem("accessToken") : null;
 
-  const es = token != null ? new EventSourcePolyfill(url, { headers: { Authorization: `Bearer ${token}` } }) : new EventSource(url);
+  if (!token) {
+    throw new Error("Cannot connect SSE without access token");
+  }
 
+  const es = new EventSourcePolyfill(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   es.addEventListener("load.updated", (e: MessageEvent) => onEvent("load.updated", JSON.parse(e.data)));
   es.addEventListener("assignment.created", (e: MessageEvent) =>
     onEvent("assignment.created", JSON.parse(e.data))
