@@ -1,7 +1,8 @@
 import express from "express";
 
 const app = express();
-const port = Number(process.env.PORT || 3001);
+const parsedPort = Number(process.env.PORT);
+const port = Number.isInteger(parsedPort) && parsedPort > 0 ? parsedPort : 3001;
 
 app.use(express.json());
 
