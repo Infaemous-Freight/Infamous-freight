@@ -33,9 +33,10 @@ System components:
 - session hijacking
 
 Mitigation:
-JWT RS256
-secure cookies
-short token TTL
+- JWT HS256 by default using `JWT_SECRET`
+- Optional JWT RS256 validation via JWKS when `AUTH_JWKS_URI` is configured
+- secure cookies
+- short token TTL
 
 ### Multi-tenant isolation failure
 
