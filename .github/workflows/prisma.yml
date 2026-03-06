@@ -61,7 +61,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Prisma format
-        run: pnpm --filter ./apps/api exec prisma format
+        run: pnpm --filter ./apps/api exec prisma format --check
 
       - name: Prisma validate
         run: pnpm --filter ./apps/api exec prisma validate
