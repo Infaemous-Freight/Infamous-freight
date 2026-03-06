@@ -15,7 +15,7 @@ CI runs:
 3. test
 4. build
 
-Deploy occurs only after validation passes.
+Deployments are managed via GitHub Actions workflows; some are triggered automatically after CI runs, while others are manually triggered (`workflow_dispatch`) and may run independently of CI status.
 
 ## Monitoring
 
