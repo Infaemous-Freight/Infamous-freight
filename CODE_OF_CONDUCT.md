@@ -51,7 +51,7 @@ Project maintainers may take action in response to behavior that violates this C
 
 ## Reporting
 
-If you experience or witness unacceptable behavior, report it privately to the maintainer rather than escalating publicly.
+If you experience or witness unacceptable behavior, report it privately to the maintainer rather than escalating publicly. You can contact the maintainers at security@infamousfreight.com, as documented in SECURITY.md.
 
 ## Maintainer Standards
 
