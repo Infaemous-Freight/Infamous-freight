@@ -106,6 +106,10 @@ you find the information you need.
 - **[Workspace Improvements](development/WORKSPACE_IMPROVEMENTS.md)** - IDE and
   workspace setup
 
+## Automation Workflows
+
+- **[Genesis Executive Command System](automation/GENESIS_EXECUTIVE_COMMAND_SYSTEM.md)** - Master prompt and routing structure for `genesis@manus.bot`
+
 ### Planning & Roadmap
 
 - **[Next Steps](development/NEXT_STEPS.md)** - Planned features and
