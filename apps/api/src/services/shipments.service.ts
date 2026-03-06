@@ -27,5 +27,14 @@ export async function updateShipmentStatus(tenantId: string, shipmentId: string,
   const s = await prisma.shipment.findFirst({ where: { id: shipmentId, tenantId } });
   if (!s) throw new Error("Shipment not found");
 
-  return prisma.shipment.update({ where: { id: shipmentId }, data: { status } });
+  const result = await prisma.shipment.updateMany({
+    where: { id: shipmentId, tenantId },
+    data: { status }
+  });
+
+  if (result.count === 0) {
+    throw new Error("Shipment not found");
+  }
+
+  return prisma.shipment.findFirst({ where: { id: shipmentId, tenantId } });
 }
