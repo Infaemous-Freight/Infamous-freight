@@ -29,7 +29,7 @@ This document defines the runtime contract, required checks, and merge rules for
 
 ### `ci-sanity.yml` — Sanity Check
 
-Lightweight pipeline that validates the dependency install succeeds with the frozen lockfile. Runs on every push and pull request.
+Lightweight pipeline that validates the dependency install succeeds with the frozen lockfile. Runs on push to `main`/`master` and on pull requests.
 
 **Jobs:**
 1. `sanity` — Checks out code, sets up pnpm and Node 20, runs `pnpm install --frozen-lockfile`.
