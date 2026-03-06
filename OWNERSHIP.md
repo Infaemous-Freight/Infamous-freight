@@ -1,5 +1,8 @@
 # Ownership Map
 
+This document is a human-readable map of high-level ownership domains across the monorepo.
+
+For automated review and approval rules, see the root `OWNERS` file and `.github/CODEOWNERS`, which are the authoritative sources used by tooling.
 ## Product applications
 - `apps/api` — Platform Backend
 - `apps/web` — Web Platform
