@@ -2,7 +2,6 @@
 
 ![CI](https://github.com/MrMiless44/Infamous-freight/actions/workflows/ci.yml/badge.svg)
 ![Security](https://github.com/MrMiless44/Infamous-freight/actions/workflows/security.yml/badge.svg)
-![Repo Structure](https://github.com/MrMiless44/Infamous-freight/actions/workflows/repo-structure.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Node](https://img.shields.io/badge/node-20-green)
 ![pnpm](https://img.shields.io/badge/pnpm-9-orange)
