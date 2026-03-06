@@ -51,7 +51,7 @@ echo "==> Running docs validation when docs files are staged"
 DOC_TARGETS="$(printf '%s\n' "$STAGED_FILES" | grep -E '(^README\.md$|^docs/|\.md$)' || true)"
 if [ -n "$DOC_TARGETS" ]; then
   if node -e "const p=require('./package.json'); process.exit(p.scripts && p.scripts['lint:docs'] ? 0 : 1)" 2>/dev/null; then
-    pnpm run lint:docs
+    printf '%s\n' "$DOC_TARGETS" | tr '\n' '\0' | xargs -0 pnpm exec prettier --check
   fi
 fi
 
