@@ -7,7 +7,7 @@
   "dependencies": {
     "@infamous/shared": "workspace:*",
     "expo": "^52.0.0",
-    "expo-router": "^4.0.0",
+    "expo-router": "^55.0.4",
     "react": "^18.3.1",
     "react-native": "^0.76.0"
   },
