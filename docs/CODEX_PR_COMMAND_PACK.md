@@ -109,7 +109,7 @@ Review pass checklist:
 ## 12) If Codex is too vague
 
 ```text
-@codex address all current review comments with concrete code changes. Do not just summarize the issues. Update the PR directly, keep the patch set minimal, and prioritize deterministic fixes over speculative refactors. Validate auth/rbac behavior, Prisma safety, test setup compatibility, and CI reliability. Then post a file-by-file summary of what changed.
+@codex address all current review comments with concrete code changes. Do not just summarize the issues. Update the PR directly, keep the patch set minimal, and prioritize deterministic fixes over speculative refactors. Validate auth/RBAC behavior, Prisma safety, test setup compatibility, and CI reliability. Then post a file-by-file summary of what changed.
 ```
 
 ## 13) If Codex keeps thrashing
