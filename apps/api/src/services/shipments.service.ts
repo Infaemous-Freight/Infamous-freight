@@ -17,13 +17,13 @@ export async function listShipments(tenantId: string): Promise<Shipment[]> {
     destState: r.destState,
     weightLb: r.weightLb,
     rateCents: r.rateCents,
-    status: r.status as any,
+    status: r.status as Shipment["status"],
     createdAt: r.createdAt.toISOString(),
     updatedAt: r.updatedAt.toISOString()
   }));
 }
 
-export async function updateShipmentStatus(tenantId: string, shipmentId: string, status: string) {
+export async function updateShipmentStatus(tenantId: string, shipmentId: string, status: Shipment["status"]) {
   const s = await prisma.shipment.findFirst({ where: { id: shipmentId, tenantId } });
   if (!s) throw new Error("Shipment not found");
 
