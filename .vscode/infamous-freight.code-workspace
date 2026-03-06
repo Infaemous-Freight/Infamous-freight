@@ -31,20 +31,5 @@
       "GitHub.copilot-chat",
       "ms-playwright.playwright"
     ]
-  },
-  "launch": {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "Launch API (Node)",
-        "type": "node",
-        "request": "launch",
-        "runtimeExecutable": "pnpm",
-        "runtimeArgs": ["--filter", "api", "dev"],
-        "cwd": "${workspaceFolder}",
-        "console": "integratedTerminal",
-        "skipFiles": ["<node_internals>/**"]
-      }
-    ]
   }
 }
