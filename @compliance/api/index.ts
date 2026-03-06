@@ -1,0 +1,1 @@
+export { registerComplianceRoutes } from "./routes";
