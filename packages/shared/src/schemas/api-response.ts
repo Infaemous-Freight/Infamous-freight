@@ -6,8 +6,13 @@ export const apiErrorSchema = z.object({
 });
 
 export const apiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
-  z.object({
-    ok: z.boolean(),
-    data: dataSchema.optional(),
-    error: apiErrorSchema.optional()
-  });
+  z.discriminatedUnion("ok", [
+    z.object({
+      ok: z.literal(true),
+      data: dataSchema,
+    }),
+    z.object({
+      ok: z.literal(false),
+      error: apiErrorSchema,
+    }),
+  ]);
