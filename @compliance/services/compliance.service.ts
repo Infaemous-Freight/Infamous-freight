@@ -4,7 +4,11 @@ import type { CarrierComplianceInput, ComplianceResult } from "../types/complian
 
 export class ComplianceService {
   evaluateCarrier(input: CarrierComplianceInput): ComplianceResult {
-    const parsed = carrierComplianceInputSchema.parse(input);
-    return evaluateCarrierCompliance(parsed);
+    const result = carrierComplianceInputSchema.safeParse(input);
+    if (!result.success) {
+      const messages = result.error.issues.map((issue) => issue.message).join(", ");
+      throw new Error(`Invalid carrier compliance input: ${messages}`);
+    }
+    return evaluateCarrierCompliance(result.data);
   }
 }
