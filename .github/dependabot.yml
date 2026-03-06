@@ -1,183 +1,55 @@
 version: 2
 
 updates:
-  # Root JS/TS dependencies (Next.js / tooling)
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: npm
+    directory: /
     schedule:
-      interval: "daily"
-      time: "04:00"
-      timezone: "America/Chicago"
+      interval: weekly
     open-pull-requests-limit: 10
     labels:
-      - automated
       - dependencies
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    groups:
-      minor-and-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
+      - security
 
-  # GitHub Actions dependencies
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: npm
+    directory: /apps/api
     schedule:
-      interval: "weekly"
-      time: "05:00"
-      timezone: "America/Chicago"
-    open-pull-requests-limit: 5
-    labels:
-      - automated
-      - ci
-      - dependencies
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-
-  # API dependencies
-  - package-ecosystem: "npm"
-    directory: "/api"
-    schedule:
-      interval: "daily"
-      time: "04:10"
-      timezone: "America/Chicago"
+      interval: weekly
     open-pull-requests-limit: 10
     labels:
-      - automated
       - dependencies
-      - infra
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    groups:
-      minor-and-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
+      - security
 
-  # Mobile dependencies
-  - package-ecosystem: "npm"
-    directory: "/mobile"
+  - package-ecosystem: npm
+    directory: /apps/web
     schedule:
-      interval: "daily"
-      time: "04:20"
-      timezone: "America/Chicago"
+      interval: weekly
     open-pull-requests-limit: 10
     labels:
-      - automated
       - dependencies
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    groups:
-      minor-and-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
+      - security
 
-  # Web (Next.js) dependencies
-  - package-ecosystem: "npm"
-    directory: "/web"
+  - package-ecosystem: npm
+    directory: /apps/mobile
     schedule:
-      interval: "daily"
-      time: "04:30"
-      timezone: "America/Chicago"
+      interval: weekly
     open-pull-requests-limit: 10
     labels:
-      - automated
       - dependencies
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    groups:
-      minor-and-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
+      - security
 
-  # Shared package dependencies
-  - package-ecosystem: "npm"
-    directory: "/packages/shared"
+  - package-ecosystem: npm
+    directory: /packages/shared
     schedule:
-      interval: "daily"
-      time: "04:40"
-      timezone: "America/Chicago"
+      interval: weekly
     open-pull-requests-limit: 10
     labels:
-      - automated
       - dependencies
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    groups:
-      minor-and-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-
-  # Playwright E2E test dependencies
-  - package-ecosystem: "npm"
-    directory: "/tests/e2e"
+      - security
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: "daily"
-      time: "04:50"
-      timezone: "America/Chicago"
+      interval: weekly
     open-pull-requests-limit: 10
     labels:
-      - automated
+      - github-actions
       - dependencies
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-    groups:
-      minor-and-patch:
-        patterns:
-          - "*"
-        update-types:
-          - "minor"
-          - "patch"
-
-  # Devcontainer configuration (VS Code / devcontainers)
-  - package-ecosystem: "devcontainers"
-    directory: "/.devcontainer"
-    schedule:
-      interval: "weekly"
-      time: "05:10"
-      timezone: "America/Chicago"
-    open-pull-requests-limit: 5
-    labels:
-      - automated
-      - dependencies
-      - infra
-    commit-message:
-      prefix: "chore"
-      include: "scope"
-
-  # Docker images (Dockerfiles)
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      time: "05:20"
-      timezone: "America/Chicago"
-    open-pull-requests-limit: 5
-    labels:
-      - automated
-      - dependencies
-      - infra
-    commit-message:
-      prefix: "chore"
-      include: "scope"
