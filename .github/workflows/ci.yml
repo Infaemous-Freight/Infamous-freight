@@ -2,148 +2,231 @@ name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches: [main, develop]
   pull_request:
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
+env:
+  NODE_VERSION: '22'
+  PNPM_VERSION: '9.15.0'
+  CI: true
+
 jobs:
-  ci:
+  changes:
+    name: Detect changes
     runs-on: ubuntu-latest
+    outputs:
+      shared: ${{ steps.filter.outputs.shared }}
+      api: ${{ steps.filter.outputs.api }}
+      web: ${{ steps.filter.outputs.web }}
+      mobile: ${{ steps.filter.outputs.mobile }}
+      e2e: ${{ steps.filter.outputs.e2e }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect changed paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            shared:
+              - 'packages/shared/**'
+              - 'packages/**'
+              - 'pnpm-lock.yaml'
+              - 'package.json'
+              - 'pnpm-workspace.yaml'
+              - 'tsconfig*.json'
+            api:
+              - 'apps/api/**'
+              - 'packages/**'
+              - 'supabase/**'
+              - 'pnpm-lock.yaml'
+              - 'package.json'
+              - 'pnpm-workspace.yaml'
+              - 'tsconfig*.json'
+            web:
+              - 'apps/web/**'
+              - 'packages/**'
+              - 'pnpm-lock.yaml'
+              - 'package.json'
+              - 'pnpm-workspace.yaml'
+              - 'tsconfig*.json'
+            mobile:
+              - 'apps/mobile/**'
+              - 'packages/**'
+              - 'pnpm-lock.yaml'
+              - 'package.json'
+              - 'pnpm-workspace.yaml'
+              - 'tsconfig*.json'
+            e2e:
+              - 'e2e/**'
+              - 'apps/**'
+              - 'packages/**'
+              - 'pnpm-lock.yaml'
+              - 'package.json'
+              - 'pnpm-workspace.yaml'
+
+  verify:
+    name: Lint • Typecheck • Test • Build
+    runs-on: ubuntu-latest
+    needs: changes
     timeout-minutes: 45
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: infamous_freight_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d infamous_freight_ci"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+
+    env:
+      NODE_ENV: test
+      JWT_SECRET: test-secret-key-for-ci
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous_freight_ci?schema=public
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/infamous_freight_ci?schema=public
+      REDIS_URL: redis://localhost:6379
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 9.15.0
+          version: ${{ env.PNPM_VERSION }}
 
-      - name: Setup Node + pnpm cache
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22.22.0
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
 
-      - name: Guard: no package-lock.json anywhere
+      - name: Guard - no package-lock.json
+        shell: bash
         run: |
           if git ls-files '**/package-lock.json' | grep -q .; then
-            echo "ERROR: package-lock.json found. Use pnpm only."
+            echo "::error::package-lock.json found. This repo should use pnpm only."
             git ls-files '**/package-lock.json'
             exit 1
           fi
 
-      - name: Guard: no committed node_modules
+      - name: Guard - no committed node_modules
+        shell: bash
         run: |
           if git ls-files '**/node_modules/**' | grep -q .; then
-            echo "ERROR: node_modules tracked in git. Remove it from version control."
-            git ls-files '**/node_modules/**' | head
+            echo "::error::Tracked node_modules found. Remove them from git."
+            git ls-files '**/node_modules/**' | head -50
             exit 1
           fi
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # === LINT ACROSS ALL PACKAGES ===
-      - name: Lint (shared)
-        run: cd packages/shared && pnpm lint || echo "No linter configured"
-        continue-on-error: true
+      - name: Build shared
+        if: needs.changes.outputs.shared == 'true' || needs.changes.outputs.api == 'true' || needs.changes.outputs.web == 'true' || needs.changes.outputs.mobile == 'true' || needs.changes.outputs.e2e == 'true'
+        run: |
+          if [ -d packages/shared ]; then
+            cd packages/shared
+            pnpm build
+          fi
 
-      - name: Lint (api)
+      - name: Prisma format check
+        if: needs.changes.outputs.api == 'true'
+        run: cd apps/api && pnpm prisma format --check
+
+      - name: Prisma validate
+        if: needs.changes.outputs.api == 'true'
+        run: cd apps/api && pnpm prisma validate
+
+      - name: Prisma generate
+        if: needs.changes.outputs.api == 'true'
+        run: cd apps/api && pnpm prisma generate
+
+      - name: Lint shared
+        if: needs.changes.outputs.shared == 'true'
+        run: cd packages/shared && pnpm lint
+
+      - name: Lint API
+        if: needs.changes.outputs.api == 'true'
         run: cd apps/api && pnpm lint
-        continue-on-error: false
 
-      - name: Lint (web)
-        run: cd apps/web && pnpm lint || echo "No linter configured"
-        continue-on-error: true
+      - name: Lint web
+        if: needs.changes.outputs.web == 'true'
+        run: cd apps/web && pnpm lint
 
-      - name: notify vercel (lint)
-        uses: vercel/repository-dispatch/actions/status@v1
-        with:
-          name: Vercel - genesis: lint
+      - name: Lint mobile
+        if: needs.changes.outputs.mobile == 'true'
+        run: cd apps/mobile && pnpm lint
 
-      # === TYPE-CHECK ACROSS ALL PACKAGES ===
-      - name: Typecheck (shared)
+      - name: Typecheck shared
+        if: needs.changes.outputs.shared == 'true'
         run: cd packages/shared && pnpm typecheck
-        continue-on-error: false
 
-      - name: Typecheck (api)
+      - name: Typecheck API
+        if: needs.changes.outputs.api == 'true'
         run: cd apps/api && pnpm typecheck
-        continue-on-error: false
 
-      - name: Typecheck (web)
+      - name: Typecheck web
+        if: needs.changes.outputs.web == 'true'
         run: cd apps/web && pnpm typecheck
-        continue-on-error: false
 
-      - name: Typecheck (e2e)
-        run: cd e2e && pnpm typecheck || echo "No typecheck in e2e"
-        continue-on-error: true
+      - name: Typecheck mobile
+        if: needs.changes.outputs.mobile == 'true'
+        run: cd apps/mobile && pnpm typecheck
 
-      - name: notify vercel (typecheck)
-        uses: vercel/repository-dispatch/actions/status@v1
-        with:
-          name: Vercel - genesis: typecheck
+      - name: Typecheck e2e
+        if: needs.changes.outputs.e2e == 'true'
+        run: cd e2e && pnpm typecheck
 
-      # === TEST ACROSS ALL PACKAGES ===
-      - name: Build shared (pre-test)
-        run: cd packages/shared && pnpm build
-        continue-on-error: false
+      - name: Test API
+        if: needs.changes.outputs.api == 'true'
+        run: cd apps/api && pnpm test -- --runInBand --coverage
 
-      - name: Test (api)
-        run: cd apps/api && pnpm test --coverage
-        continue-on-error: false
-        env:
-          JWT_SECRET: test-secret-key-for-ci
-          NODE_ENV: test
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
+      - name: Upload API coverage
+        if: always() && needs.changes.outputs.api == 'true'
+        uses: codecov/codecov-action@v4
         with:
           files: ./apps/api/coverage/lcov.info
           flags: api
           fail_ci_if_error: false
 
-      - name: Test (e2e)
-        run: cd e2e && pnpm test || echo "No e2e tests configured"
-        continue-on-error: true
-        env:
-          NODE_ENV: test
+      - name: Test e2e
+        if: needs.changes.outputs.e2e == 'true'
+        run: cd e2e && pnpm test
 
-      - name: notify vercel (test)
-        uses: vercel/repository-dispatch/actions/status@v1
-        with:
-          name: Vercel - genesis: test
-
-      # === BUILD ACROSS ALL PACKAGES ===
-      - name: Build (shared)
-        run: cd packages/shared && pnpm build
-        continue-on-error: false
-
-      - name: Build (api)
+      - name: Build API
+        if: needs.changes.outputs.api == 'true'
         run: cd apps/api && pnpm build
-        continue-on-error: false
 
-      - name: Build (web)
+      - name: Build web
+        if: needs.changes.outputs.web == 'true'
         run: cd apps/web && pnpm build
-        continue-on-error: false
 
-      - name: notify vercel (build)
-        uses: vercel/repository-dispatch/actions/status@v1
-        with:
-          name: Vercel - genesis: build
-
-      # === PRISMA VALIDATION ===
-      - name: Prisma format check
-        run: cd apps/api && pnpm prisma format --check || (echo "Prisma schema needs formatting" && exit 1)
-        continue-on-error: false
-
-      - name: Prisma validate
-        run: cd apps/api && pnpm prisma validate
-        continue-on-error: false
+      - name: Build mobile
+        if: needs.changes.outputs.mobile == 'true'
+        run: cd apps/mobile && pnpm build

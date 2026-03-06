@@ -1,16 +1,22 @@
 {
   "name": "infamous-freight",
   "private": true,
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "turbo dev",
-    "build": "turbo build"
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "prisma:generate": "cd apps/api && pnpm prisma generate",
+    "prisma:validate": "cd apps/api && pnpm prisma validate",
+    "prisma:migrate:deploy": "cd apps/api && pnpm prisma migrate deploy"
   },
   "devDependencies": {
     "turbo": "^2.0.0"
   },
   "volta": {
     "node": "22.22.0",
-    "pnpm": "9.0.0"
+    "pnpm": "9.15.0"
   }
 }
