@@ -4,7 +4,7 @@ set -euo pipefail
 COMMIT_MSG_FILE="${1:?commit message file is required}"
 COMMIT_MSG="$(head -n 1 "$COMMIT_MSG_FILE")"
 
-PATTERN='^(feat|fix|docs|style|refactor|test|chore|build|ci|perf|revert)(\([a-zA-Z0-9._/-]+\))?: .{1,}$'
+PATTERN='^(feat|fix|docs|style|refactor|test|chore|build|ci|perf|revert)(\([a-zA-Z0-9._/-]+\))?(!)?: .{1,}$'
 
 if [[ ! "$COMMIT_MSG" =~ $PATTERN ]]; then
   echo "❌ Invalid commit message."
