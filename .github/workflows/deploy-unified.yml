@@ -34,7 +34,7 @@ permissions:
   deployments: write
 
 concurrency:
-  group: ci-${ github.ref }-${ github.workflow }
+  group: ci-${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
