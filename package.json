@@ -11,5 +11,8 @@
     "prisma:generate": "pnpm --filter ./apps/api exec prisma generate",
     "prisma:validate": "pnpm --filter ./apps/api exec prisma validate",
     "prisma:migrate:deploy": "pnpm --filter ./apps/api exec prisma migrate deploy"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
   }
 }
