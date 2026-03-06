@@ -33,10 +33,6 @@ if [ -f package.json ] && jq -e '.scripts["prisma:generate"]' package.json >/dev
   pnpm prisma:generate || true
 fi
 
-if pnpm -r exec -- bash -lc 'exit 0' >/dev/null 2>&1; then
-  :
-fi
-
 if [ -f package.json ] && jq -e '.scripts.build' package.json >/dev/null 2>&1; then
   echo "==> Build script detected at root"
 fi
