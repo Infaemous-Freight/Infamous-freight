@@ -4,5 +4,8 @@ queries:
   - uses: security-and-quality
 
 paths-ignore:
-  - node_modules
-  - dist
+  - '**/node_modules/**'
+  - '**/dist/**'
+  - '**/.next/**'
+  - '**/build/**'
+  - '**/coverage/**'
