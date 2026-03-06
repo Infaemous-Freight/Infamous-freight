@@ -1,46 +1,52 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Initialization script for Infamous Freight Enterprises dev container
-# This script ensures all dependencies are installed and properly configured
+echo "==> Initializing Infamous Freight dev container"
 
-set -e
+cd "/workspaces/${LOCAL_WORKSPACE_FOLDER_BASENAME:-$(basename "$(pwd)")}" 2>/dev/null || cd "$(pwd)"
 
-echo "🚀 Initializing Infamous Freight Enterprises dev container..."
+echo "==> Toolchain"
+node --version
+npm --version
 
-# Ensure Node.js is installed
-if ! command -v node &> /dev/null; then
-    echo "📦 Installing Node.js..."
-    sudo apk add --no-cache nodejs npm
+if ! command -v pnpm >/dev/null 2>&1; then
+  echo "==> Enabling pnpm via corepack"
+  corepack enable
+  corepack prepare pnpm@9.15.0 --activate
 fi
 
-# Verify Node.js
-echo "✓ Node.js $(node --version)"
-echo "✓ npm $(npm --version)"
+pnpm --version
 
-# Ensure pnpm is available
-if ! command -v pnpm &> /dev/null; then
-    echo "📦 Installing pnpm..."
-    npm install -g pnpm
+if [ -f package.json ]; then
+  echo "==> Installing workspace dependencies"
+  pnpm install --frozen-lockfile || pnpm install
+else
+  echo "==> No package.json found at repo root; skipping install"
 fi
 
-echo "✓ pnpm $(pnpm --version)"
-
-# Install dependencies if needed
-if [ ! -d "node_modules" ]; then
-    echo "📦 Installing workspace dependencies..."
-    pnpm install
+if [ -f pnpm-workspace.yaml ]; then
+  echo "==> Detected pnpm workspace"
 fi
 
-# Build shared package
-echo "🏗️ Building shared package..."
-pnpm --filter @infamous-freight/shared build
+if [ -f prisma/schema.prisma ]; then
+  echo "==> Prisma schema detected"
+  pnpm exec prisma generate || true
+fi
 
-echo ""
-echo "✅ Initialization complete!"
-echo ""
-echo "🎯 Next steps:"
-echo "   pnpm dev              # Start all services"
-echo "   pnpm test             # Run all tests"
-echo "   pnpm test:coverage    # Generate coverage reports"
-echo "   pnpm build            # Build all packages"
-echo ""
+if pnpm -r exec -- bash -lc 'exit 0' >/dev/null 2>&1; then
+  :
+fi
+
+if [ -f package.json ] && jq -e '.scripts.build' package.json >/dev/null 2>&1; then
+  echo "==> Build script detected at root"
+fi
+
+echo
+echo "✅ Dev container initialization complete"
+echo
+echo "Common commands:"
+echo "  pnpm install"
+echo "  pnpm lint"
+echo "  pnpm typecheck"
+echo "  pnpm test -- --runInBand"
+echo "  pnpm build"

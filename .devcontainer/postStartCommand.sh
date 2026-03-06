@@ -1,13 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Ensure Codex CLI is available in the devcontainer (optional, fail open)
+echo "==> Running post-start checks"
+
+cd "/workspaces/${LOCAL_WORKSPACE_FOLDER_BASENAME:-$(basename "$(pwd)")}" 2>/dev/null || cd "$(pwd)"
+
+if ! command -v pnpm >/dev/null 2>&1; then
+  corepack enable
+  corepack prepare pnpm@9.15.0 --activate
+fi
+
+if command -v psql >/dev/null 2>&1; then
+  echo "==> PostgreSQL client available"
+fi
+
+if command -v redis-cli >/dev/null 2>&1; then
+  echo "==> Redis client available"
+fi
+
 if command -v npm >/dev/null 2>&1; then
   if ! command -v codex >/dev/null 2>&1; then
-    echo "Codex CLI not found. Installing @openai/codex globally..."
-    npm install -g @openai/codex 2>/dev/null || true
+    echo "==> Installing Codex CLI (fail-open)"
+    npm install -g @openai/codex >/dev/null 2>&1 || true
   fi
-  codex --version 2>/dev/null || true
-else
-  echo "ℹ npm not available; skipping Codex CLI install"
+
+  codex --version >/dev/null 2>&1 && echo "==> Codex CLI ready" || true
 fi
+
+echo "✅ Post-start complete"

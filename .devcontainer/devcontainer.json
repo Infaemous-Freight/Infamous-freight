@@ -1,98 +1,72 @@
-// Simplified devcontainer for Infamous Freight Enterprises
-// Node.js/TypeScript monorepo with API (Express), Web (Next.js), Mobile (Expo)
 {
-  "name": "Infamous Freight Dev Environment",
+  "name": "Infamous Freight Dev Container",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-  // Essential features only - removed 300+ unnecessary features
+
+  "shutdownAction": "stopCompose",
+  "remoteUser": "vscode",
+  "overrideCommand": true,
+  "updateRemoteUserUID": true,
+
   "features": {
-    // Core development tools
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "24",
-      "nodeGypDependencies": true
-    },
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "version": "latest",
-      "moby": true
-    },
-    "ghcr.io/devcontainers/features/git:1": {
-      "version": "latest",
-      "ppa": false
-    },
-    "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": true,
       "configureZshAsDefaultShell": true,
       "installOhMyZsh": true,
-      "upgradePackages": true
+      "upgradePackages": true,
+      "username": "vscode"
     },
-    // Database and infrastructure
-    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
-    // Cloud deployment tools
-    "ghcr.io/dhoeric/features/flyctl:1": {},
-    "ghcr.io/devcontainers/features/azure-cli:1": {},
-    "ghcr.io/devcontainers/features/aws-cli:1": {},
-    // AI/ML coding assistant
-    "ghcr.io/jsburckhardt/devcontainer-features/codex:1": {},
-    // Development utilities
-    "ghcr.io/devcontainers-extra/features/pnpm:2": {
-      "version": "9.15.0"
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true
     }
   },
+
   "customizations": {
     "vscode": {
       "settings": {
-        "mssql.connections": [
-          {
-            "server": "localhost,1433",
-            "database": "",
-            "authenticationType": "SqlLogin",
-            "user": "sa",
-            "password": "P@ssw0rd",
-            "emptyPasswordInput": false,
-            "savePassword": false,
-            "profileName": "mssql-container"
-          }
-        ],
         "typescript.tsdk": "node_modules/typescript/lib",
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
           "source.fixAll.eslint": "explicit"
-        }
+        },
+        "files.eol": "\n",
+        "terminal.integrated.defaultProfile.linux": "zsh"
       },
-      // Essential extensions for Node.js/TypeScript development
       "extensions": [
         "GitHub.copilot",
         "GitHub.copilot-chat",
         "ms-vscode.vscode-typescript-next",
-        "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
         "Prisma.prisma",
         "ms-playwright.playwright",
+        "eamodio.gitlens",
+        "ms-azuretools.vscode-docker",
         "christian-kohler.path-intellisense",
         "YoavBls.pretty-ts-errors",
-        "ms-azuretools.vscode-docker",
-        "eamodio.gitlens",
         "streetsidesoftware.code-spell-checker"
       ]
     }
   },
-  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+
+  "postCreateCommand": "bash .devcontainer/init.sh",
   "postStartCommand": "bash .devcontainer/postStartCommand.sh",
-  // Forward ports for API, Web, and common services
-  "forwardPorts": [3000, 3001, 4000, 5432, 6379, 8080],
+
+  "forwardPorts": [3000, 3001, 4000, 5432, 6379],
   "portsAttributes": {
     "3000": {
       "label": "Web (Next.js)",
       "onAutoForward": "notify"
     },
     "3001": {
-      "label": "API (Docker)",
+      "label": "API",
       "onAutoForward": "notify"
     },
     "4000": {
-      "label": "API (Standalone)",
+      "label": "Alt API",
       "onAutoForward": "notify"
     },
     "5432": {
@@ -104,5 +78,9 @@
       "onAutoForward": "silent"
     }
   },
-  "remoteUser": "vscode"
+
+  "containerEnv": {
+    "PNPM_HOME": "/home/vscode/.local/share/pnpm",
+    "PATH": "/home/vscode/.local/share/pnpm:${containerEnv:PATH}"
+  }
 }
