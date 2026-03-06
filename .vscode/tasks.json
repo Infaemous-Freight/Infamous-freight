@@ -82,7 +82,7 @@
     {
       "label": "Dev: Mobile",
       "type": "shell",
-      "command": "pnpm --filter mobile dev",
+      "command": "pnpm --filter ./apps/mobile dev",
       "isBackground": true,
       "problemMatcher": []
     },
