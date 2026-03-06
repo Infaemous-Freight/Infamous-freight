@@ -42,16 +42,16 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint
+        run: pnpm -r --if-present lint
 
       - name: Typecheck
-        run: pnpm typecheck
+        run: pnpm -r --if-present typecheck
 
       - name: Test
-        run: pnpm test -- --runInBand
+        run: pnpm -r --if-present test -- --runInBand
 
       - name: Build
-        run: pnpm build
+        run: pnpm -r --if-present build
 
   deploy-staging:
     name: Deploy to Staging
