@@ -1,0 +1,51 @@
+name: Codex Fix Task
+description: Deterministic tasking for AI coding and review work
+title: "[Codex Fix]: "
+labels:
+  - ai-task
+
+body:
+  - type: textarea
+    id: issue
+    attributes:
+      label: Issue
+      description: What is broken?
+      placeholder: Describe the exact failure or bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: root_cause
+    attributes:
+      label: Root cause hypothesis
+      description: What do you think is causing the issue?
+      placeholder: Explain the likely root cause.
+    validations:
+      required: false
+
+  - type: textarea
+    id: files
+    attributes:
+      label: Files affected
+      description: Which files or directories are likely involved?
+      placeholder: List relevant files.
+    validations:
+      required: false
+
+  - type: textarea
+    id: fix
+    attributes:
+      label: Desired fix
+      description: What should be changed?
+      placeholder: Describe the intended fix clearly.
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation plan
+      description: How should the fix be verified?
+      placeholder: lint, typecheck, tests, build, workflow rerun, etc.
+    validations:
+      required: false
