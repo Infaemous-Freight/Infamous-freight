@@ -1,25 +1,71 @@
 # Contributing to Infamous Freight
 
-## Local setup
-1. Open the repo in the devcontainer.
-2. Install hooks:
-   - `pnpm hooks:install`
-3. Validate before push:
-   - `pnpm lint`
-   - `pnpm typecheck`
-   - `pnpm test -- --runInBand`
-   - `pnpm build`
+Thank you for contributing to Infamous Freight.
 
-## Commit format
+## Development Setup
+
+Clone the repository:
+
+```bash
+git clone https://github.com/MrMiless44/Infamous-freight.git
+cd Infamous-freight
+```
+
+Install dependencies:
+
+```bash
+pnpm install
+```
+
+Run development servers (choose the ones you need):
+
+```bash
+# API (apps/api)
+pnpm dev:api
+
+# Web app (apps/web)
+pnpm dev:web
+
+# Mobile app (apps/mobile)
+pnpm dev:mobile
+```
+
+---
+
+## Branching Strategy
+
+Create feature branches from `main`.
+
+Examples:
+
+- `feature/load-optimization`
+- `fix/api-timeout`
+
+---
+
+## Pull Request Rules
+
+Before opening a pull request:
+
+- CI must pass
+- code must build
+- lint checks must pass
+- tests must run
+
+PRs should include:
+
+- a clear description
+- related issue reference
+- screenshots or logs if applicable
+
+---
+
+## Commit Style
+
 Use conventional commits.
 
 Examples:
-- `feat(api): add shipment event logging`
-- `fix(web): prevent invalid load status transition`
-- `chore(ci): harden dependency review workflow`
 
-## Rules
-- Do not weaken auth, RBAC, or tenant isolation.
-- Do not remove validation to make tests pass.
-- Do not commit secrets.
-- Keep patches narrow and root-cause focused.
+- `feat: add shipment tracking API`
+- `fix: resolve pnpm workspace install issue`
+- `docs: update architecture section`
