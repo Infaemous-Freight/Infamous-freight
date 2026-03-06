@@ -42,8 +42,8 @@ jobs:
       - name: Generate Prisma client
         run: pnpm prisma:generate
 
-      - name: Build
-        run: pnpm build
+      - name: Build API app
+        run: pnpm --filter ./apps/api build
 
       - name: Setup Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@1.7.0
