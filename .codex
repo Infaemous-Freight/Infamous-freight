@@ -1,0 +1,573 @@
+# Infamous Freight — Codex Repository Instructions
+
+You are working inside **Infamous Freight**, an AI-powered freight and logistics automation platform.
+Treat this repository as a production-grade, multi-tenant SaaS system for logistics operations.
+
+Your goals:
+- review pull requests carefully
+- propose safe, minimal, correct patches
+- preserve architecture consistency
+- enforce security, type safety, and reliability
+- avoid speculative refactors unless explicitly requested
+- prefer deterministic fixes over broad rewrites
+
+---
+
+## Product Context
+
+Infamous Freight may include:
+- shipper workflows
+- broker workflows
+- carrier workflows
+- load board access
+- shipment tracking
+- dispatch operations
+- document handling
+- notifications
+- analytics
+- AI-assisted command flows
+- invoicing and payment workflows
+- operational dashboards
+- mobile driver workflows
+
+Assume business logic matters. Do not simplify away critical domain fields such as:
+- loadId
+- shipmentId
+- trackingId
+- tenantId
+- workspaceId
+- organizationId
+- customerId
+- carrierId
+- brokerId
+- shipperId
+- origin
+- destination
+- pickupDate
+- deliveryDate
+- status
+- rate
+- equipmentType
+- bolNumber
+- podReference
+- invoiceReference
+
+Do not remove validation or auditability unless explicitly instructed.
+
+---
+
+## Core Operating Rules
+
+### 1) Safety first
+- Never introduce secrets into code.
+- Never hardcode API keys, tokens, passwords, database URLs, private credentials, or signing secrets.
+- Never weaken authentication, RBAC, tenant isolation, audit logging, or webhook verification to make tests pass.
+
+### 2) Smallest safe patch
+- Prefer the smallest change that fully solves the problem.
+- Do not perform unrelated cleanup in the same patch unless explicitly asked.
+
+### 3) Root-cause fixes
+- Fix causes, not symptoms.
+- Avoid brittle mocks, sleeps, retries-without-reason, and test-only hacks unless unavoidable.
+
+### 4) Type correctness
+- Prefer explicit types.
+- Avoid `any`, unsafe casts, and silent nullish behavior.
+- Preserve shared contract types across apps and packages.
+
+### 5) Production realism
+- Treat staging and production concerns as real.
+- Respect migrations, health checks, observability, queues, idempotency, and external integration failure modes.
+
+### 6) No fake success
+- Do not claim tests pass unless they pass.
+- Do not claim a migration is safe unless verified.
+- Do not mark TODOs complete if they are not complete.
+
+---
+
+## Expected Stack
+
+Assume the repository commonly uses some or all of:
+- TypeScript
+- Node.js
+- Express
+- Next.js
+- React
+- Expo / React Native
+- Prisma
+- PostgreSQL
+- Jest / Vitest
+- ESLint
+- Prettier
+- pnpm
+- GitHub Actions
+- Docker
+- Sentry / structured logging / observability
+
+If the actual implementation differs, follow the repo’s real structure, scripts, and lockfiles.
+
+---
+
+## Likely Monorepo Shape
+
+Prefer the existing structure if present, but expect patterns like:
+- `apps/api`
+- `apps/web`
+- `apps/mobile`
+- `packages/shared`
+- `packages/ui`
+- `packages/config`
+- `prisma`
+- `.github/workflows`
+
+Never invent a new top-level structure unless explicitly requested.
+
+---
+
+## Commands
+
+Prefer existing scripts from `package.json`. Infer cautiously only when needed.
+
+Common commands:
+- `pnpm install`
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm build`
+
+Scoped examples:
+- `pnpm --filter api test`
+- `pnpm --filter web build`
+- `pnpm --filter mobile typecheck`
+
+When fixing CI:
+1. identify the failing job
+2. reproduce only the relevant command
+3. fix the smallest root cause
+4. rerun the narrow command first
+5. rerun broader validation only after targeted success
+
+---
+
+## Pull Request Review Order
+
+### 1. Correctness
+Check:
+- whether the code does what the change intends
+- edge cases
+- async flows properly awaited
+- status transitions are valid
+- error branches are deliberate
+- no silent partial writes
+
+### 2. Security
+Check:
+- auth middleware preserved
+- permission checks present
+- tenant/workspace boundaries enforced
+- input validation present
+- unsafe DB access avoided
+- secrets not leaked
+- webhook verification preserved
+- file upload constraints enforced
+
+### 3. Data integrity
+Check:
+- Prisma operations scoped safely
+- transactions used where related writes must succeed together
+- migrations are backward-compatible where possible
+- nullable fields are handled deliberately
+- destructive paths are guarded
+
+### 4. Type safety
+Check:
+- shared types updated consistently
+- API contracts align with consumers
+- no widening to `any`
+- schemas and inferred types still line up
+
+### 5. Reliability
+Check:
+- health checks intact
+- meaningful logging preserved
+- idempotency considered for retry-prone actions
+- timeouts and race conditions are handled
+- background jobs and external calls fail safely
+
+### 6. Tests
+Check:
+- existing tests updated if behavior changed
+- new logic covered
+- fixtures and mocks are realistic
+- no test pollution or global state leakage
+
+### 7. Performance
+Check:
+- no obvious N+1 queries
+- large lists are paginated
+- overfetching is avoided
+- client rerenders are not made worse unnecessarily
+
+---
+
+## Architecture Rules
+
+### Tenant isolation
+Any tenant-owned resource must be filtered by the authenticated tenant, workspace, or organization scope.
+
+Never approve code that:
+- fetches cross-tenant data without authorization
+- updates records by `id` alone when tenant scoping is required
+- trusts client-supplied tenant identifiers without server verification
+
+Preferred pattern:
+- derive tenant scope from authenticated context
+- validate permissions server-side
+- include tenant scope in all relevant queries and mutations
+
+### Auth / RBAC
+Do not remove or bypass:
+- auth middleware
+- permission checks
+- scope validation
+- role checks
+- audit-related hooks
+
+If tests fail because auth helpers are missing, fix test harness or mocks instead of weakening production code.
+
+### Shared contracts
+If an API response shape changes, update:
+- shared types
+- validators / schemas
+- frontend consumers
+- tests
+
+Do not patch only one side of a contract.
+
+### Validation
+Prefer existing schema-based validation systems.
+Validate:
+- request body
+- params
+- query string
+- webhook payloads
+- upload metadata
+- enum transitions
+- status transitions
+
+---
+
+## Database / Prisma Rules
+
+When touching Prisma or database logic:
+
+1. Prefer explicit `select` / `include`
+   - avoid overfetching
+   - avoid accidental exposure of sensitive fields
+
+2. Scope all tenant-owned records properly
+
+3. Use transactions for related writes when consistency matters
+   Examples:
+   - shipment + event log
+   - invoice + payment state
+   - load assignment + dispatch status
+   - document upload + metadata row
+
+4. Be careful with destructive operations
+   - prefer soft delete if the domain already uses it
+   - never delete records casually to satisfy tests
+
+5. Migrations must be rollout-safe
+   - additive first when possible
+   - backfill before enforcing NOT NULL where needed
+   - preserve old reads during deploy windows
+
+6. Avoid:
+   - unchecked raw SQL unless necessary
+   - unsafe string interpolation
+   - broad `updateMany` / `deleteMany` without protective filters
+
+7. Treat these as high-sensitivity areas if present:
+   - rates
+   - invoices
+   - payment status
+   - shipment events
+   - audit logs
+   - user roles
+   - tenant memberships
+
+---
+
+## API Rules
+
+When editing backend endpoints:
+- preserve response shape unless change is intentional
+- return consistent error formats
+- validate input early
+- do not swallow errors silently
+- avoid leaking stack traces to clients
+- prefer idempotent behavior for retry-prone actions
+- ensure webhook handlers verify signatures if implemented
+- ensure third-party failures are logged with enough context
+
+For logistics state flows, preserve valid transitions.
+
+Illustrative patterns:
+- load: `draft -> posted -> booked -> in_transit -> delivered -> closed`
+- shipment: `created -> scheduled -> picked_up -> in_transit -> delivered -> exception`
+- invoice: `draft -> issued -> sent -> paid | overdue | void`
+
+Do not allow impossible transitions without explicit domain approval.
+
+---
+
+## Frontend Rules
+
+When editing web or mobile UI:
+1. preserve contract alignment with backend types
+2. handle loading, empty, error, and success states
+3. avoid client-side assumptions about privileged data
+4. keep forms validated
+5. keep table/list rendering efficient
+6. do not hide domain errors with vague messaging
+7. prefer shared components if the repo already has them
+
+For logistics UX, prioritize clarity:
+- shipment identifiers visible
+- statuses easy to scan
+- origin/destination readable
+- timestamps timezone-aware where applicable
+- money formatted correctly
+- action buttons disabled when invalid
+
+---
+
+## Mobile / Expo / React Native Rules
+
+If mobile exists:
+- respect safe-area handling
+- avoid web-only APIs in shared code paths
+- keep environment access explicit
+- do not break navigation, auth persistence, or background resume flows
+- preserve offline behavior if already implemented
+
+If a Genesis Avatar or assistant UI exists, do not break:
+- overlay layering
+- root layout integration
+- navigation container compatibility
+- performance-sensitive rendering paths
+
+---
+
+## Testing Rules
+
+When tests fail, prefer this sequence:
+
+### Step 1: identify the failure class
+Common classes:
+- missing mock exports
+- path alias resolution
+- Prisma/db initialization
+- env loading
+- async timing
+- snapshot drift
+- shared type breakage
+- auth/permission assumptions
+
+### Step 2: fix harness before patching production code
+Examples:
+- missing test helpers
+- incomplete auth mocks
+- missing `$on`
+- missing `validateScope`
+- missing `hasScope`
+- missing `hasAllScopes`
+- missing env bootstrap
+- incorrect `moduleNameMapper`
+- tsconfig path issues
+
+### Step 3: keep mocks realistic
+Mock the real contract, not fantasy behavior.
+
+### Step 4: verify narrow then broad
+- rerun failing file
+- rerun package tests
+- rerun full suite only after targeted fix
+
+Do not:
+- skip tests casually
+- add `setTimeout` hacks
+- weaken assertions without reason
+- convert correctness failures into snapshot acceptance
+
+---
+
+## CI / Release Checklist
+
+For release-oriented PRs, ensure:
+- lint green
+- typecheck green
+- tests green
+- build green
+- env vars verified for staging and production
+- migration plan reviewed
+- health checks valid
+- observability intact
+- rollout plan present
+- rollback path present
+
+If a PR affects infrastructure, auth, billing, tenant isolation, uploads, webhooks, or schema migrations, review extra strictly.
+
+---
+
+## Observability Rules
+
+Preserve or improve:
+- structured logs
+- correlation/request IDs if present
+- Sentry or equivalent error capture
+- audit events
+- critical workflow metrics
+
+Do not remove logs that help debug:
+- failed dispatch flows
+- failed shipment updates
+- payment or invoice issues
+- webhook failures
+- auth failures
+- background sync errors
+
+Never log secrets, tokens, private credentials, or raw sensitive payloads.
+
+---
+
+## Security Red Flags
+
+Escalate or block changes that:
+- bypass auth
+- remove tenant filters
+- trust client role claims
+- expose admin routes
+- leak secrets in code or logs
+- disable signature verification
+- allow unrestricted uploads
+- permit path traversal or unsafe file handling
+- open SSRF vectors
+- use unsafe raw SQL
+- disable validation to “fix” tests
+
+---
+
+## Freight Domain Red Flags
+
+Be skeptical of code that:
+- overwrites shipment status without event logging
+- loses tracking history
+- allows booking without required parties
+- issues invoices without shipment/load linkage
+- mutates rates with no traceability
+- lets users access loads from other tenants
+- collapses broker, carrier, and shipper distinctions incorrectly
+- removes timestamps or actor attribution from operational changes
+
+---
+
+## Style Guidance
+
+- Match existing code style.
+- Prefer readable names.
+- Prefer explicitness over cleverness.
+- Keep functions focused.
+- Keep comments sparse but useful.
+- Do not add vanity abstractions.
+- Do not refactor unrelated files for aesthetics.
+
+---
+
+## What to Do When Asked to “Fix Everything”
+
+If asked to broadly address feedback:
+1. group failures by root cause
+2. fix highest-leverage issues first
+3. keep changes organized by subsystem
+4. avoid mixing unrelated refactors
+5. summarize what changed and what remains
+
+Preferred order:
+- broken test harness / config
+- type contract drift
+- auth / scope issues
+- Prisma guardrails
+- path alias resolution
+- flaky async tests
+- UI regressions
+- cleanup only after correctness
+
+---
+
+## Expected Review Output Style
+
+When reviewing or suggesting changes:
+- be concrete
+- point to root cause
+- suggest the minimal safe patch
+- call out risk level
+- mention affected areas
+- distinguish blocker vs non-blocker
+
+Useful labels:
+- blocker
+- high risk
+- correctness
+- security
+- data integrity
+- type safety
+- test reliability
+- performance
+- nice to have
+
+---
+
+## Preferred Change Patterns
+
+### Good
+- narrow patch
+- scoped query fix
+- transaction for related writes
+- shared type update across consumers
+- realistic test mock repair
+- additive migration path
+- explicit null handling
+
+### Bad
+- broad rewrite for a small bug
+- auth bypass to satisfy tests
+- tenant filter removal
+- `as any` everywhere
+- skipped tests without justification
+- raw SQL for convenience
+- fake green CI through brittle mocks
+
+---
+
+## Final Instruction
+
+Optimize for:
+- correctness
+- security
+- tenant isolation
+- data integrity
+- type safety
+- deterministic tests
+- stable releases
+
+Do not optimize for:
+- flashy rewrites
+- over-abstraction
+- unnecessary churn
+- pretending things work
+
+When uncertain, preserve current architecture and make the smallest safe improvement.

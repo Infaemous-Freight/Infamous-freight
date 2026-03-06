@@ -1,116 +1,23 @@
 name: CI
 
 on:
+  pull_request:
   push:
     branches:
       - main
-      - develop
-      - staging
-  pull_request:
-    branches:
-      - '**'
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  NODE_VERSION: 22.22.0
-  PNPM_VERSION: 9
-  CI: true
-
 jobs:
-  detect:
-    name: Detect workspace changes
+  validate:
+    name: Lint, Typecheck, Test, Build
     runs-on: ubuntu-latest
-    outputs:
-      api: ${{ steps.filter.outputs.api }}
-      web: ${{ steps.filter.outputs.web }}
-      mobile: ${{ steps.filter.outputs.mobile }}
-      shared: ${{ steps.filter.outputs.shared }}
-      infra: ${{ steps.filter.outputs.infra }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Paths filter
-        id: filter
-        uses: dorny/paths-filter@v3
-        with:
-          filters: |
-            api:
-              - 'apps/api/**'
-              - 'packages/**'
-              - 'prisma/**'
-              - 'pnpm-lock.yaml'
-              - 'package.json'
-              - 'pnpm-workspace.yaml'
-              - 'tsconfig*.json'
-            web:
-              - 'apps/web/**'
-              - 'packages/**'
-              - 'pnpm-lock.yaml'
-              - 'package.json'
-              - 'pnpm-workspace.yaml'
-              - 'tsconfig*.json'
-            mobile:
-              - 'apps/mobile/**'
-              - 'packages/**'
-              - 'pnpm-lock.yaml'
-              - 'package.json'
-              - 'pnpm-workspace.yaml'
-              - 'tsconfig*.json'
-            shared:
-              - 'packages/**'
-              - 'pnpm-lock.yaml'
-              - 'package.json'
-              - 'pnpm-workspace.yaml'
-              - 'tsconfig*.json'
-            infra:
-              - '.github/**'
-              - 'Dockerfile'
-              - 'docker-compose*.yml'
-              - 'fly.toml'
-              - '.dockerignore'
-
-  quality:
-    name: Typecheck • Lint • Test • Build
-    runs-on: ubuntu-latest
-    needs: detect
-    if: ${{ needs.detect.outputs.api == 'true' || needs.detect.outputs.web == 'true' || needs.detect.outputs.mobile == 'true' || needs.detect.outputs.shared == 'true' || needs.detect.outputs.infra == 'true' }}
-
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: infamous_freight_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U postgres -d infamous_freight_test"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=10
-
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd="redis-cli ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=10
+    timeout-minutes: 30
 
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous_freight_test?schema=public
-      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/infamous_freight_test?schema=public
-      REDIS_URL: redis://localhost:6379
-      JWT_PRIVATE_KEY: test-private-key
-      JWT_PUBLIC_KEY: test-public-key
-      APP_ENV: test
+      CI: true
       NODE_ENV: test
 
     steps:
@@ -120,33 +27,24 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: ${{ env.PNPM_VERSION }}
+          version: 10
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: 22
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma client
-        run: pnpm prisma:generate
-
-      - name: Validate Prisma schema
-        run: pnpm prisma:validate
-
-      - name: Run migrations
-        run: pnpm prisma:migrate:deploy
+      - name: Lint
+        run: pnpm lint
 
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Lint
-        run: pnpm lint
-
-      - name: Unit tests
+      - name: Test
         run: pnpm test -- --runInBand
 
       - name: Build

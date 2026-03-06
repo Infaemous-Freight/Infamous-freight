@@ -1,82 +1,50 @@
+## Summary
+Describe what changed and why.
+
+## Scope
+- [ ] API
+- [ ] Web
+- [ ] Mobile
+- [ ] Shared packages
+- [ ] Prisma / DB
+- [ ] CI/CD
+- [ ] Infra
+- [ ] Docs / Config
+
+## Risk Review
+- [ ] Auth reviewed
+- [ ] Tenant isolation preserved
+- [ ] Input validation reviewed
+- [ ] Error handling reviewed
+- [ ] Logging / observability preserved
+- [ ] No secrets added
+- [ ] No unsafe raw SQL added
+
+## Freight Domain Review
+- [ ] Shipment / load status transitions reviewed
+- [ ] Tracking integrity preserved
+- [ ] Rate / invoice changes are traceable
+- [ ] Cross-tenant access is not introduced
+
+## Testing
+- [ ] lint
+- [ ] typecheck
+- [ ] test
+- [ ] build
+
+## DB / Migration
+- [ ] No migration
+- [ ] Migration included
+- [ ] Backfill required
+- [ ] Rollback considered
+- [ ] Tenant scoping reviewed in DB queries
+
 ## Release Checklist
+- [ ] env vars verified
+- [ ] health checks verified
+- [ ] observability verified
+- [ ] rollout plan noted
+- [ ] rollback plan noted
 
-### Build integrity
-- [ ] lint passes
-- [ ] typecheck passes
-- [ ] tests pass
-- [ ] build succeeds
-- [ ] CI pipeline green
-
-Commands verified locally:
-
-```bash
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
-```
-
-### Environment verification
-- [ ] production environment variables verified
-- [ ] staging environment variables verified
-- [ ] secrets configured correctly
-- [ ] no placeholder credentials
-- [ ] external integrations verified
-
-Services checked:
-- [ ] database
-- [ ] redis / queues
-- [ ] sentry
-- [ ] storage
-- [ ] email / notification provider
-
-### Database migration
-- [ ] migration reviewed
-- [ ] staging migration executed
-- [ ] backup snapshot confirmed
-- [ ] rollback plan documented
-
-Migration command:
-
-```bash
-pnpm prisma:migrate:deploy
-```
-
-### Health checks
-- [ ] API health endpoint OK
-- [ ] DB connectivity OK
-- [ ] Redis connectivity OK
-- [ ] background workers healthy
-- [ ] auth flow verified
-- [ ] core routes tested
-
-Critical flows tested:
-- [ ] load board
-- [ ] shipment creation
-- [ ] shipment tracking
-- [ ] carrier matching
-
-### Observability
-- [ ] Sentry configured
-- [ ] logs visible
-- [ ] request metrics visible
-- [ ] dashboards healthy
-
-Dashboards checked:
-- [ ] error rate
-- [ ] latency
-- [ ] DB performance
-- [ ] queue health
-
-### Rollout plan
-- [ ] release owner assigned
-- [ ] deployment window scheduled
-- [ ] rollout method chosen
-- [ ] rollback version identified
-- [ ] rollback commands documented
-
-Rollout method:
-- [ ] full deploy
-- [ ] canary
-- [ ] blue/green
-- [ ] feature flag release
+## Notes for Reviewers
+Add any known tradeoffs, follow-ups, or risk areas here.

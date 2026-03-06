@@ -1,0 +1,65 @@
+name: Codex Fix Task
+description: Deterministic tasking for AI coding and review work
+title: "[Codex] "
+labels:
+  - codex
+  - engineering
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: Describe the exact problem to solve.
+      placeholder: Fix the failing PR checks caused by missing auth test mocks in apps/api.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Root Cause Clues
+      description: Paste failing files, CI jobs, logs, or review comments.
+      placeholder: |
+        - apps/api test suite failing
+        - missing validateScope export in __tests__/setup
+        - prisma mock missing $on
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      description: Guardrails for the fix
+      options:
+        - label: Preserve auth
+        - label: Preserve tenant isolation
+        - label: Do not weaken tests
+        - label: Minimal patch only
+        - label: Do not introduce secrets
+        - label: Preserve existing API contracts unless required
+
+  - type: checkboxes
+    id: affected_areas
+    attributes:
+      label: Affected Areas
+      options:
+        - label: apps/api
+        - label: apps/web
+        - label: apps/mobile
+        - label: packages/shared
+        - label: packages/ui
+        - label: prisma
+        - label: github actions
+        - label: infra/config
+
+  - type: checkboxes
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      options:
+        - label: failing case fixed
+        - label: tests updated where required
+        - label: no unrelated refactor
+        - label: lint/typecheck/test/build pass or remaining failures explained
+        - label: auth and tenant boundaries remain intact
