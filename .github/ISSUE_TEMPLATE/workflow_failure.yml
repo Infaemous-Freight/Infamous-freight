@@ -9,15 +9,18 @@ body:
 - type: input
   attributes:
     label: Workflow name
+    id: workflow-name
     placeholder: CI / Deploy / Test
 
 - type: textarea
   attributes:
     label: Failure logs
     description: Paste relevant logs
+    id: failure-logs
   validations:
     required: true
 
 - type: textarea
   attributes:
     label: Suspected cause
+    id: suspected-cause
