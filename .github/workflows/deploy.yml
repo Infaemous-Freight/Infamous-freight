@@ -46,7 +46,7 @@ jobs:
         run: pnpm build
 
       - name: Setup Flyctl
-        uses: superfly/flyctl-actions/setup-flyctl@master
+        uses: superfly/flyctl-actions/setup-flyctl@1.7.0
 
       - name: Deploy
         run: flyctl deploy --remote-only
