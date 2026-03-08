@@ -12,20 +12,6 @@
     "types": ["node"]
   },
   "include": [
-    "src/server.ts",
-    "src/app.ts",
-    "src/routes/ai.ts",
-    "src/routes/carriers.ts",
-    "src/routes/rates.ts",
-    "src/routes/shipments.ts",
-    "src/services/ai-command.service.ts",
-    "src/services/carrier-intelligence.service.ts",
-    "src/services/rate-prediction.service.ts",
-    "src/services/eta-risk.service.ts",
-    "src/services/orchestration.service.ts",
-    "src/middleware/error-handler.ts",
-    "src/middleware/request-id.ts",
-    "src/lib/logger.ts",
-    "src/types/domain.ts"
+    "src/**/*.ts"
   ]
 }
