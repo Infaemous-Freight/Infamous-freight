@@ -210,7 +210,7 @@ export async function apiFetch<T>(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
-      ...(init?.headers ?? {})
+      ...Object.fromEntries(new Headers(init?.headers).entries())
     }
   });
 
