@@ -6,5 +6,5 @@
     "allowJs": false,
     "noEmit": true
   },
-  "include": ["app/**/*.ts", "app/**/*.tsx"]
+  "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"]
 }
