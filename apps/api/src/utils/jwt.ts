@@ -10,8 +10,16 @@ export type AuthClaims = {
 };
 
 export function verifyAccessToken(token: string): AuthClaims {
-  const decoded = jwt.verify(token, env.jwtPublicKey ?? env.jwtSecret, {
-    algorithms: ["RS256", "HS256"],
+  const verificationKey = env.jwtPublicKey ?? env.jwtSecret;
+
+  if (!verificationKey) {
+    throw new Error("JWT verification key is not configured");
+  }
+
+  const algorithms = env.jwtPublicKey ? (["RS256"] as jwt.Algorithm[]) : (["HS256"] as jwt.Algorithm[]);
+
+  const decoded = jwt.verify(token, verificationKey, {
+    algorithms,
   });
 
   return decoded as AuthClaims;
