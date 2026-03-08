@@ -9,7 +9,7 @@
     "dev:api": "npm --workspace apps/api run dev",
     "dev:web": "npm --workspace apps/web run dev",
     "dev:mobile": "npm --workspace apps/mobile run dev",
-    "build": "npm run build --workspaces",
+    "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces",
     "lint": "npm run lint --workspaces"
   },
