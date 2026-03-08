@@ -1,15 +1,8 @@
-import express from "express";
+import { createApp } from "./app.js";
 
-const app = express();
-const parsedPort = Number(process.env.PORT);
-const port = Number.isInteger(parsedPort) && parsedPort > 0 ? parsedPort : 3001;
+const app = createApp();
+const port = Number(process.env.PORT || 4000);
 
-app.use(express.json());
-
-app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "ok", service: "api" });
-});
-
-app.listen(port, () => {
-  console.log(`Infamous Freight API listening on port ${port}`);
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Infamous Freight API running on :${port}`);
 });
