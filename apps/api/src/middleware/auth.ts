@@ -12,11 +12,20 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   const token = header.slice(7);
 
   try {
-    const decoded = jwt.verify(token, env.JWT_PUBLIC_KEY, {
-      algorithms: ["RS256"]
-    }) as Express.Request["auth"];
+    const publicKey =
+      env.JWT_PUBLIC_KEY && env.JWT_PUBLIC_KEY.includes("\\n")
+        ? env.JWT_PUBLIC_KEY.replace(/\\n/g, "\n")
+        : env.JWT_PUBLIC_KEY;
 
-    req.auth = decoded;
+    const decoded = jwt.verify(token, publicKey, {
+      algorithms: ["RS256"]
+    });
+
+    if (!decoded || typeof decoded !== "object") {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    req.auth = decoded as Express.Request["auth"];
     next();
   } catch {
     res.status(401).json({ error: "Invalid token" });
