@@ -1,46 +1,86 @@
 import { Router } from "express";
 import { prisma } from "../lib/prisma.js";
 import { requireScope } from "../middleware/requireScope.js";
+import { z, ZodError } from "zod";
 
 export const loadsRouter = Router();
 
-loadsRouter.get("/", requireScope("load.read"), async (req, res) => {
-  const organizationId = req.auth!.organizationId;
-  const db = prisma as any;
+loadsRouter.get(
+  "/",
+  requireScope("load.read"),
+  async (req, res, next) => {
+    try {
+      const organizationId = req.auth!.organizationId;
+      const db = prisma as any;
 
-  const loads = await db.load.findMany({
-    where: { organizationId },
-    orderBy: { createdAt: "desc" },
-    include: {
-      driver: true,
-      carrier: true,
-      routePlan: true,
-    },
-  });
+      const loads = await db.load.findMany({
+        where: { organizationId },
+        orderBy: { createdAt: "desc" },
+        include: {
+          driver: true,
+          carrier: true,
+          routePlan: true,
+        },
+      });
 
-  return res.json(loads);
+      return res.json(loads);
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+
+const createLoadSchema = z.object({
+  referenceNumber: z.string(),
+  originLat: z.number(),
+  originLng: z.number(),
+  destinationLat: z.number(),
+  destinationLng: z.number(),
+  pickupWindowStart: z.coerce.date(),
+  pickupWindowEnd: z.coerce.date(),
+  deliveryDeadline: z.coerce.date(),
+  weightLbs: z.number(),
+  hazmat: z.boolean().optional().default(false),
+  trailerType: z.string().optional(),
 });
 
-loadsRouter.post("/", requireScope("load.create"), async (req, res) => {
-  const organizationId = req.auth!.organizationId;
-  const db = prisma as any;
+loadsRouter.post(
+  "/",
+  requireScope("load.create"),
+  async (req, res, next) => {
+    try {
+      const organizationId = req.auth!.organizationId;
+      const db = prisma as any;
 
-  const load = await db.load.create({
-    data: {
-      organizationId,
-      referenceNumber: req.body.referenceNumber,
-      originLat: req.body.originLat,
-      originLng: req.body.originLng,
-      destinationLat: req.body.destinationLat,
-      destinationLng: req.body.destinationLng,
-      pickupWindowStart: new Date(req.body.pickupWindowStart),
-      pickupWindowEnd: new Date(req.body.pickupWindowEnd),
-      deliveryDeadline: new Date(req.body.deliveryDeadline),
-      weightLbs: req.body.weightLbs,
-      hazmat: req.body.hazmat ?? false,
-      trailerType: req.body.trailerType,
-    },
-  });
+      const parsedBody = createLoadSchema.parse(req.body);
 
-  return res.status(201).json(load);
-});
+      const load = await db.load.create({
+        data: {
+          organizationId,
+          referenceNumber: parsedBody.referenceNumber,
+          originLat: parsedBody.originLat,
+          originLng: parsedBody.originLng,
+          destinationLat: parsedBody.destinationLat,
+          destinationLng: parsedBody.destinationLng,
+          pickupWindowStart: parsedBody.pickupWindowStart,
+          pickupWindowEnd: parsedBody.pickupWindowEnd,
+          deliveryDeadline: parsedBody.deliveryDeadline,
+          weightLbs: parsedBody.weightLbs,
+          hazmat: parsedBody.hazmat ?? false,
+          trailerType: parsedBody.trailerType,
+        },
+      });
+
+      return res.status(201).json(load);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({
+          message: "Invalid request body",
+          errors: error.errors,
+        });
+      }
+
+      return next(error);
+    }
+  }
+);
