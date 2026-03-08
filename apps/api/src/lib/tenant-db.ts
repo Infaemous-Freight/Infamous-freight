@@ -1,14 +1,15 @@
 import { prisma } from "./prisma.js";
+import { Prisma } from "@prisma/client";
 
 export async function withOrganizationContext<T>(
   organizationId: string,
-  fn: (tx: typeof prisma) => Promise<T>
+  fn: (tx: Prisma.TransactionClient) => Promise<T>
 ): Promise<T> {
-  return prisma.$transaction(async (tx: any) => {
-    await tx.$executeRawUnsafe(
-      `SELECT set_config('app.current_organization_id', '${organizationId}', true)`
+  return prisma.$transaction(async (tx) => {
+    await tx.$executeRaw(
+      Prisma.sql`SELECT set_config('app.current_organization_id', ${organizationId}, true)`
     );
 
-    return fn(tx as typeof prisma);
+    return fn(tx);
   });
 }
