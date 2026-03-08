@@ -1,15 +1,17 @@
-import express from "express";
+import { createServer } from "node:http";
+import { WebSocketServer } from "ws";
+import { createApp } from "./app.js";
+import { env } from "./config/env.js";
+import { startWorkers } from "./lib/queue.js";
+import { registerTrackingSocket } from "./lib/ws.js";
 
-const app = express();
-const parsedPort = Number(process.env.PORT);
-const port = Number.isInteger(parsedPort) && parsedPort > 0 ? parsedPort : 3001;
+const app = createApp();
+const server = createServer(app);
+const wss = new WebSocketServer({ server, path: "/ws/tracking" });
 
-app.use(express.json());
+registerTrackingSocket(wss);
 
-app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "ok", service: "api" });
-});
-
-app.listen(port, () => {
-  console.log(`Infamous Freight API listening on port ${port}`);
+server.listen(env.PORT, () => {
+  startWorkers();
+  console.log(`Infamous Freight API running on :${env.PORT}`);
 });

@@ -53,3 +53,110 @@ model Load {
 
   @@index([tenantId])
 }
+
+enum UserRole {
+  ORG_ADMIN
+  DISPATCHER
+  DRIVER
+}
+
+enum RefreshTokenStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+model Organization {
+  id              String           @id @default(cuid())
+  name            String
+  users           User[]
+  refreshTokens   RefreshToken[]
+  idempotencyKeys IdempotencyKey[]
+  gpsPings        GpsPing[]
+  drivers         Driver[]
+  loads           OrgLoad[]
+}
+
+model User {
+  id             String         @id @default(cuid())
+  organizationId String
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String         @unique
+  name           String?
+  role           UserRole
+  scopes         Json
+  refreshTokens  RefreshToken[]
+}
+
+model RefreshToken {
+  id             String             @id @default(cuid())
+  organizationId String
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash      String             @unique
+  status         RefreshTokenStatus @default(ACTIVE)
+  expiresAt      DateTime
+  createdAt      DateTime           @default(now())
+  revokedAt      DateTime?
+
+  @@index([organizationId])
+  @@index([userId])
+}
+
+model IdempotencyKey {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  key            String
+  method         String
+  path           String
+  requestHash    String
+  responseCode   Int?
+  responseBody   Json?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([organizationId, key])
+  @@index([organizationId, path])
+}
+
+model Driver {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  truck          Truck?
+  status         String       @default("AVAILABLE")
+  currentLat     Float?
+  currentLng     Float?
+  gpsPings       GpsPing[]
+}
+
+model Truck {
+  id       String @id @default(cuid())
+  driverId String @unique
+  driver   Driver @relation(fields: [driverId], references: [id], onDelete: Cascade)
+}
+
+model GpsPing {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  driverId       String
+  driver         Driver       @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  loadId         String?
+  lat            Float
+  lng            Float
+  speedMph       Float?
+  heading        Float?
+  recordedAt     DateTime
+  createdAt      DateTime     @default(now())
+}
+
+model OrgLoad {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  driverId       String?
+  status         String       @default("OPEN")
+}
