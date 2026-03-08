@@ -24,20 +24,20 @@ export class DispatchOptimizer {
       const validity = this.constraints.validate(driver, load);
       if (!validity.valid) continue;
 
-      const deadhead = await this.routeProvider.estimateRoute(
-        driver.currentLat,
-        driver.currentLng,
-        load.originLat,
-        load.originLng
-      );
-
-      const linehaul = await this.routeProvider.estimateRoute(
-        load.originLat,
-        load.originLng,
-        load.destinationLat,
-        load.destinationLng
-      );
-
+      const [deadhead, linehaul] = await Promise.all([
+        this.routeProvider.estimateRoute(
+          driver.currentLat,
+          driver.currentLng,
+          load.originLat,
+          load.originLng
+        ),
+        this.routeProvider.estimateRoute(
+          load.originLat,
+          load.originLng,
+          load.destinationLat,
+          load.destinationLng
+        )
+      ]);
       const totalHours = (deadhead.durationMin + linehaul.durationMin) / 60;
       if (totalHours > driver.hoursRemaining) continue;
 
