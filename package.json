@@ -11,7 +11,7 @@
     "dev:mobile": "npm --workspace apps/mobile run dev",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "lint": "npm run lint --workspaces"
+    "lint": "npm run lint --workspaces --if-present"
   },
   "devDependencies": {
     "prettier": "^3.2.5"
