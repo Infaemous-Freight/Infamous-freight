@@ -9,12 +9,12 @@ export function errorHandler(err: unknown, req: Request, res: Response, _next: N
     return res.status(err.statusCode).json({
       error: err.message,
       details: err.details,
-      requestId: req.requestId
+      requestId: (req as any).correlationId ?? (req as any).id
     });
   }
 
   return res.status(500).json({
     error: "Internal server error",
-    requestId: req.requestId
+    requestId: (req as any).correlationId ?? (req as any).id
   });
 }
