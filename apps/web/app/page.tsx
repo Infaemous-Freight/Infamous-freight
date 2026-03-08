@@ -1,17 +1,44 @@
-import Link from "next/link";
+async function getLoads() {
+  const baseUrl = process.env.API_URL ?? "http://localhost:4000";
 
-export default function Home() {
+  const res = await fetch(`${baseUrl}/loads`, {
+    headers: {
+      Authorization: `Bearer ${process.env.DEMO_JWT ?? ""}`
+    },
+    cache: "no-store"
+  });
+
+  if (!res.ok) {
+    return [];
+  }
+
+  return res.json();
+}
+
+export default async function Page() {
+  const loads = await getLoads();
+
   return (
-    <main className="p-6">
-      <h1 className="text-3xl font-bold">INFÆMOUS FREIGHT Dispatcher</h1>
-      <p className="mt-3">MVP v1 foundation with auth, billing, and load ops.</p>
-      <div className="mt-5 flex gap-3">
-        <Link href="/login" className="rounded bg-black px-4 py-2 text-white">
-          Login
-        </Link>
-        <Link href="/register" className="rounded border px-4 py-2">
-          Register
-        </Link>
+    <main style={{ padding: 24, fontFamily: "Arial, sans-serif" }}>
+      <h1>Infamous Freight Admin</h1>
+      <p>Loads dashboard</p>
+
+      <div style={{ display: "grid", gap: 12 }}>
+        {loads.map((load: any) => (
+          <div
+            key={load.id}
+            style={{
+              border: "1px solid #ddd",
+              padding: 16,
+              borderRadius: 12
+            }}
+          >
+            <strong>{load.referenceNumber}</strong>
+            <div>Status: {load.status}</div>
+            <div>Weight: {load.weightLbs} lbs</div>
+            <div>Trailer: {load.trailerType}</div>
+          </div>
+        ))}
       </div>
     </main>
   );

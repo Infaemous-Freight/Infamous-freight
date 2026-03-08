@@ -198,3 +198,25 @@ export function createServerClient(token?: string): ApiClient {
   const baseUrl = process.env.API_BASE_URL || "http://localhost:4000/api";
   return new ApiClient({ baseUrl, token });
 }
+
+export async function apiFetch<T>(
+  baseUrl: string,
+  path: string,
+  token: string,
+  init?: RequestInit
+): Promise<T> {
+  const res = await fetch(`${baseUrl}${path}`, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      ...(init?.headers ?? {})
+    }
+  });
+
+  if (!res.ok) {
+    throw new Error(`API request failed: ${res.status}`);
+  }
+
+  return res.json() as Promise<T>;
+}
