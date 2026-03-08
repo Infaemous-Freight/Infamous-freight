@@ -30,6 +30,9 @@ export const zAICommand = z.object({
   context: z.record(z.string(), z.any()).optional()
 });
 
+/** Base environment schema. Fields are optional to support all environments (dev/test/prod).
+ *  Use at call-site: `EnvSchema.parse(process.env)` — add stricter validation per-app as needed.
+ */
 export const EnvSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
   API_PORT: z.coerce.number().default(3001),
