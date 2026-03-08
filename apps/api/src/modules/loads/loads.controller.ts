@@ -8,9 +8,11 @@ export class LoadsController {
   }
 
   async create(req: Request, res: Response) {
+    const { id, organizationId, createdAt, updatedAt, ...allowedData } = req.body ?? {};
+
     const created = await prisma.load.create({
       data: {
-        ...req.body,
+        ...allowedData,
         organizationId: req.auth!.organizationId
       }
     });
