@@ -10,7 +10,7 @@
     "dev:web": "npm --workspace apps/web run dev",
     "dev:mobile": "npm --workspace apps/mobile run dev",
     "build": "npm run build --workspaces --if-present",
-    "test": "npm run test --workspaces",
+    "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces"
   },
   "devDependencies": {
