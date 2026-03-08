@@ -1,44 +1,72 @@
-name: Infamous Freight CI
+name: CI
 
-on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
+on: [push, pull_request]
 
 jobs:
-  api-ci:
-    runs-on: ubuntu-latest  # Recommend using GitHub-hosted runners for better scalability
-
+  lint:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          cd api && npm install
+          cd ../web && npm install
+          cd ../mobile && npm install
 
-      - name: Lint
-        run: pnpm lint  # Add linting with ESLint
+      - name: Lint code
+        run: |
+          cd api && npm run lint
+          cd ../web && npm run lint
+          cd ../mobile && npm run lint
 
-      - name: Typecheck
-        run: pnpm typecheck
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Run Tests
-        run: pnpm test --if-present  # Ensure tests are run before building
+      - name: Run tests
+        run: |
+          cd api && npm test
+          cd ../web && npm test
+          cd ../mobile && npm test
 
-      - name: Build
-        run: pnpm build
+  type-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Security Audit
-        run: pnpm audit  # Check for dependencies with vulnerabilities
+      - name: Type check
+        run: |
+          cd api && npm run type-check
+          cd ../web && npm run type-check
+          cd ../mobile && npm run type-check
 
-      - name: Health summary
-        run: echo "CI passed for Infamous Freight API"
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run security scan
+        run: |
+          cd api && npm audit
+          cd ../web && npm audit
+          cd ../mobile && npm audit
+
+  validate-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Validate .env file
+        run: |
+          if [ ! -f .env ]; then
+            echo ".env file is missing!"
+            exit 1
+          fi
+          # Add more validation checks as necessary here
