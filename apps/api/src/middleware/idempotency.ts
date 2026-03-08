@@ -36,7 +36,7 @@ export async function idempotencyMiddleware(
       });
     }
 
-    if (existing.responseCode && existing.responseBody) {
+    if (existing.responseCode != null && existing.responseBody != null) {
       return res.status(existing.responseCode).json(existing.responseBody);
     }
   } else {
