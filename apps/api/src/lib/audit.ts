@@ -1,4 +1,4 @@
-import { prisma } from "./prisma.js";
+import prisma from "./prisma.js";
 
 type AuditInput = {
   organizationId: string;
