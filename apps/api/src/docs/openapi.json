@@ -1,0 +1,42 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Infamous Freight API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/loads": {
+      "get": {
+        "summary": "List loads"
+      },
+      "post": {
+        "summary": "Create load"
+      }
+    },
+    "/dispatch/{loadId}/recommend": {
+      "post": {
+        "summary": "Recommend drivers for a load"
+      }
+    },
+    "/dispatch/{loadId}/assign/{driverId}": {
+      "post": {
+        "summary": "Assign driver to load"
+      }
+    },
+    "/anomalies/gps/{driverId}/evaluate": {
+      "post": {
+        "summary": "Evaluate GPS anomalies for a driver"
+      }
+    }
+  }
+}

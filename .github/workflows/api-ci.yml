@@ -1,0 +1,73 @@
+name: API CI
+
+on:
+  push:
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/api-ci.yml"
+  pull_request:
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/api-ci.yml"
+
+jobs:
+  api:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: infamous_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d infamous_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+
+    defaults:
+      run:
+        working-directory: apps/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+
+      - run: npm run prisma:generate
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous_test
+
+      - run: npm run lint
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous_test
+          REDIS_URL: redis://localhost:6379
+          JWT_PUBLIC_KEY: test-public-key
+          NODE_ENV: test
+
+      - run: npm run test
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous_test
+          REDIS_URL: redis://localhost:6379
+          JWT_PUBLIC_KEY: test-public-key
+          NODE_ENV: test
+
+      - run: npm run build
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous_test
+          REDIS_URL: redis://localhost:6379
+          JWT_PUBLIC_KEY: test-public-key
+          NODE_ENV: test

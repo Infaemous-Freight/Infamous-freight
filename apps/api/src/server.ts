@@ -1,15 +1,13 @@
-import express from "express";
+import { createApp } from "./app.js";
+import { env } from "./config/env.js";
+import { startWorkers } from "./lib/queue.js";
+import { initTelemetry } from "./lib/telemetry.js";
 
-const app = express();
-const parsedPort = Number(process.env.PORT);
-const port = Number.isInteger(parsedPort) && parsedPort > 0 ? parsedPort : 3001;
+initTelemetry();
 
-app.use(express.json());
+const app = createApp();
 
-app.get("/health", (_req, res) => {
-  res.status(200).json({ status: "ok", service: "api" });
-});
-
-app.listen(port, () => {
-  console.log(`Infamous Freight API listening on port ${port}`);
+app.listen(env.PORT, () => {
+  startWorkers();
+  console.log(`Infamous Freight API running on :${env.PORT}`);
 });

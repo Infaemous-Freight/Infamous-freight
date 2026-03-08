@@ -7,49 +7,209 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Tenant {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  shipments Shipment[]
-  loads     Load[]
+enum UserRole {
+  SUPER_ADMIN
+  ORG_ADMIN
+  DISPATCHER
+  DRIVER
+  ANALYST
 }
 
-model Shipment {
-  id          String   @id @default(cuid())
-  tenantId    String
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  ref         String
-  originCity  String
-  originState String
-  destCity    String
-  destState   String
-  weightLb    Int
-  rateCents   Int
-  status      String   @default("CREATED")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+enum LoadStatus {
+  CREATED
+  ASSIGNED
+  IN_TRANSIT
+  DELIVERED
+  EXCEPTION
+}
 
-  @@index([tenantId])
-  @@unique([tenantId, ref])
+enum TrailerType {
+  DRY_VAN
+  REEFER
+  FLATBED
+  POWER_ONLY
+}
+
+model Organization {
+  id        String      @id @default(cuid())
+  name      String
+  users     User[]
+  drivers   Driver[]
+  trucks    Truck[]
+  carriers  Carrier[]
+  loads     Load[]
+  routes    RoutePlan[]
+  gpsPings  GpsPing[]
+  anomalies Anomaly[]
+  audits    AuditLog[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model User {
+  id             String       @id @default(cuid())
+  email          String       @unique
+  name           String
+  role           UserRole
+  scopes         String[]
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
+}
+
+model Driver {
+  id               String       @id @default(cuid())
+  organizationId   String
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name             String
+  status           String
+  currentLat       Float?
+  currentLng       Float?
+  hoursDrivenToday Float        @default(0)
+  hoursRemaining   Float        @default(11)
+  trailerType      TrailerType
+  hazmatCertified  Boolean      @default(false)
+  truckId          String?      @unique
+  truck            Truck?       @relation(fields: [truckId], references: [id])
+  loads            Load[]
+  gpsPings         GpsPing[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  @@index([organizationId])
+}
+
+model Truck {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  unitNumber     String
+  maxWeightLbs   Int
+  trailerType    TrailerType
+  active         Boolean      @default(true)
+  driver         Driver?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([organizationId])
+}
+
+model Carrier {
+  id              String       @id @default(cuid())
+  organizationId  String
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name            String
+  mcNumber        String?
+  dotNumber       String?
+  riskScore       Float        @default(0)
+  suspiciousFlags Int          @default(0)
+  loads           Load[]
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([organizationId])
 }
 
 model Load {
-  id          String   @id @default(cuid())
-  tenantId    String
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  originCity  String
-  originState String
-  destCity    String
-  destState   String
-  distanceMi  Int
-  weightLb    Int
-  rateCents   Int
-  status      String   @default("OPEN")
-  claimedByUserId String?
-  claimedAt   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                String       @id @default(cuid())
+  organizationId    String
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  referenceNumber   String       @unique
+  status            LoadStatus   @default(CREATED)
+  originLat         Float
+  originLng         Float
+  destinationLat    Float
+  destinationLng    Float
+  pickupWindowStart DateTime
+  pickupWindowEnd   DateTime
+  deliveryDeadline  DateTime
+  weightLbs         Int
+  hazmat            Boolean      @default(false)
+  trailerType       TrailerType
+  driverId          String?
+  driver            Driver?      @relation(fields: [driverId], references: [id])
+  carrierId         String?
+  carrier           Carrier?     @relation(fields: [carrierId], references: [id])
+  routePlan         RoutePlan?
+  anomalies         Anomaly[]
+  gpsPings          GpsPing[]
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 
-  @@index([tenantId])
+  @@index([organizationId])
+  @@index([status])
+  @@index([driverId])
+  @@index([carrierId])
+}
+
+model RoutePlan {
+  id                 String       @id @default(cuid())
+  organizationId     String
+  organization       Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loadId             String       @unique
+  load               Load         @relation(fields: [loadId], references: [id], onDelete: Cascade)
+  plannedDistanceMi  Float
+  plannedDurationMin Int
+  encodedPath        String?
+  riskScore          Float        @default(0)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@index([organizationId])
+}
+
+model GpsPing {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  driverId       String
+  driver         Driver       @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  loadId         String?
+  load           Load?        @relation(fields: [loadId], references: [id])
+  lat            Float
+  lng            Float
+  speedMph       Float?
+  heading        Float?
+  recordedAt     DateTime
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@index([driverId, recordedAt])
+  @@index([loadId, recordedAt])
+}
+
+model Anomaly {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  loadId         String?
+  load           Load?        @relation(fields: [loadId], references: [id])
+  driverId       String?
+  driver         Driver?      @relation(fields: [driverId], references: [id])
+  type           String
+  severity       String
+  score          Float
+  details        Json
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@index([type])
+}
+
+model AuditLog {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  actorUserId    String?
+  action         String
+  entityType     String
+  entityId       String?
+  metadata       Json
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId])
+  @@index([action])
 }

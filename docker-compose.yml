@@ -1,155 +1,31 @@
-# Copyright © 2025 Infæmous Freight. All Rights Reserved.
-# Proprietary and Confidential - See COPYRIGHT file for details.
-# Docker Compose Configuration for Multi-Service Deployment
-
 version: "3.9"
 
 services:
-  # PostgreSQL database
   postgres:
-    image: postgres:16-alpine
-    container_name: infamous_postgres
-    restart: unless-stopped
-    profiles: ["dev", "monitoring", "prod"]
+    image: postgres:16
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-infamous}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-infamouspass}
-      POSTGRES_DB: ${POSTGRES_DB:-infamous_freight}
-      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.utf8"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./scripts/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: infamous
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-infamous} -d ${POSTGRES_DB:-infamous_freight}",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    networks:
-      - infamous-network
-    security_opt:
-      - no-new-privileges:true
+      - "5432:5432"
 
-  # Redis cache (recommended for production)
   redis:
-    image: redis:7-alpine
-    container_name: infamous_redis
-    restart: unless-stopped
-    profiles: ["dev", "monitoring", "prod"]
-    command: >
-      redis-server
-      --requirepass ${REDIS_PASSWORD:-redispass}
-      --maxmemory 256mb
-      --maxmemory-policy allkeys-lru
-      --save 60 1000
-      --appendonly yes
-    volumes:
-      - redis_data:/data
+    image: redis:7
     ports:
-      - "${REDIS_PORT:-6379}:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-    networks:
-      - infamous-network
-    security_opt:
-      - no-new-privileges:true
+      - "6379:6379"
 
-  # API server
   api:
     build:
-      context: .
-      dockerfile: apps/api/Dockerfile
-      args:
-        - NODE_ENV=production
-    container_name: infamous_api
-    restart: unless-stopped
-    profiles: ["dev", "prod"]
-    env_file:
-      - .env
+      context: ./apps/api
     environment:
-      NODE_ENV: production
-      PORT: ${API_PORT:-4000}
-      DATABASE_URL: postgresql://${POSTGRES_USER:-infamous}:${POSTGRES_PASSWORD:-infamouspass}@postgres:5432/${POSTGRES_DB:-infamous_freight}?schema=public&connection_limit=10&pool_timeout=20
-      REDIS_URL: redis://:${REDIS_PASSWORD:-redispass}@redis:6379
+      PORT: 4000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/infamous
+      REDIS_URL: redis://redis:6379
+      JWT_PUBLIC_KEY: ${JWT_PUBLIC_KEY}
+      NODE_ENV: development
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - postgres
+      - redis
     ports:
-      - "${API_PORT:-4000}:${API_PORT:-4000}"
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:${API_PORT:-4000}/api/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-    networks:
-      - infamous-network
-    security_opt:
-      - no-new-privileges:true
-    read_only: false
-    tmpfs:
-      - /tmp
-      - /app/logs
-
-  # Web frontend (Next.js)
-  web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-      args:
-        - NODE_ENV=production
-        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:4000}
-    container_name: infamous_web
-    restart: unless-stopped
-    env_file:
-      - .env
-    environment:
-      NODE_ENV: production
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api:4000}
-      PORT: 3000
-    depends_on:
-      api:
-        condition: service_healthy
-    ports:
-      - "${WEB_PORT:-3000}:3000"
-    healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3000 || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 90s
-    networks:
-      - infamous-network
-    security_opt:
-      - no-new-privileges:true
-    read_only: false
-    tmpfs:
-      - /tmp
-      - /app/.next/cache
-
-volumes:
-  postgres_data:
-    driver: local
-    name: infamous_postgres_data
-  redis_data:
-    driver: local
-    name: infamous_redis_data
-
-networks:
-  infamous-network:
-    driver: bridge
-    name: infamous-network
-  default:
-    name: infamous_network
+      - "4000:4000"
