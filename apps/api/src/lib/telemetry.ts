@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/node";
-import { env } from "../config/env.js";
+import { env } from "../config/env";
 
 export function initTelemetry() {
   if (!env.SENTRY_DSN) return;
