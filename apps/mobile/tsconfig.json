@@ -1,7 +1,18 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/components/*": ["./src/components/*"],
+      "@/screens/*": ["./src/screens/*"],
+      "@/navigation/*": ["./src/navigation/*"],
+      "@/services/*": ["./src/services/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/theme/*": ["./src/theme/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/lib/*": ["./lib/*"]
+    }
   },
   "include": ["app", "src"]
 }

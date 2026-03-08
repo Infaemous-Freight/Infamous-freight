@@ -37,8 +37,8 @@
 
     // Path Aliases for Shared Packages
     "paths": {
-      "@infamous-freight/shared": ["./packages/shared/src"],
-      "@infamous-freight/shared/*": ["./packages/shared/src/*"]
+      "@infamous/shared": ["./packages/shared/src"],
+      "@infamous/shared/*": ["./packages/shared/src/*"]
     },
     "baseUrl": "."
   },
