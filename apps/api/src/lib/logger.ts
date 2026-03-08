@@ -1,3 +1,12 @@
-import { logger, httpLogger } from '../middleware/logger';
+import pino from "pino";
 
-export { logger, httpLogger };
+export const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  transport:
+    process.env.NODE_ENV !== "production"
+      ? {
+          target: "pino-pretty",
+          options: { colorize: true }
+        }
+      : undefined
+});
