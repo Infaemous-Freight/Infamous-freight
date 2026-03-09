@@ -25,9 +25,8 @@ apps/
   mobile/    React Native / Expo mobile workflows
 
 packages/
+  genesis/   Core domain logic and orchestration
   shared/    Shared types, schemas, and utilities
-  config/    Shared linting/TypeScript config (planned)
-  ui/        Reusable UI package (planned)
 
 docs/
   architecture/
