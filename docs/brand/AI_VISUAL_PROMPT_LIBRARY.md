@@ -1,6 +1,6 @@
 # Infæmous Freight AI Visual Prompt Library
 
-Use this library to keep all generated images and video in a coherent brand universe:
+Use this library to keep all generated images and videos in a coherent brand universe:
 
 - **Brand domain:** AI-driven freight and logistics automation
 - **Visual system:** dark enterprise interface, neon-green accents
