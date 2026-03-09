@@ -33,8 +33,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: npm audit (root)
-        run: npm audit --audit-level=high
+      # npm audit step removed: this repo uses pnpm-lock.yaml and pnpm-based auditing
 
       - name: pnpm audit (all workspaces)
-        run: pnpm audit --prod --audit-level high
+        run: pnpm -r audit --prod --audit-level high
