@@ -1,8 +1,8 @@
-# Infæmous Freight Technical Architecture
+# Infamous Freight Technical Architecture
 
 ## Platform Overview
 
-Infæmous Freight is a monorepo-based logistics platform with three runtime surfaces:
+Infamous Freight is a monorepo-based logistics platform with three runtime surfaces:
 
 - **API** (`apps/api`) for shipment, dispatch, rate, and orchestration operations.
 - **Web** (`apps/web`) for operations, monitoring, and carrier workflows.
