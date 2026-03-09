@@ -4,12 +4,12 @@
 
 Core endpoint groups should map to route modules under `apps/api/src/routes`:
 
-- `GET /health` - service and dependency health checks.
-- `POST /ai/command` - natural language or structured orchestration command execution.
-- `GET /shipments`, `POST /shipments`, `PATCH /shipments/:id` - shipment lifecycle operations.
-- `GET /carriers`, `POST /carriers`, `PATCH /carriers/:id` - carrier lifecycle operations.
-- `POST /rates/quote` - dynamic rate estimation and quote generation.
-- `POST /dispatch/optimize` - dispatch recommendation or automated assignment execution.
+- `GET /api/health` - service and dependency health checks.
+- `POST /api/ai/command` - natural language or structured orchestration command execution.
+- `GET /api/shipments`, `POST /api/shipments`, `PATCH /api/shipments/:id` - shipment lifecycle operations.
+- `POST /api/carriers/rank` - carrier ranking and recommendation.
+- `POST /api/rates/predict` - dynamic rate estimation and quote generation.
+- `POST /api/dispatch/optimize` - dispatch recommendation or automated assignment execution.
 
 ## Database Models
 
