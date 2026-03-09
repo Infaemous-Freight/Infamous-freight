@@ -116,7 +116,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run tests with coverage
-        run: pnpm test
+        run: pnpm test -- --coverage
 
       - name: Upload coverage artifacts
         if: always()
