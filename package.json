@@ -3,8 +3,9 @@
   "private": true,
   "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "dev": "pnpm --filter @infamous/api dev",
+    "dev": "pnpm --filter ./apps/api dev",
     "build": "pnpm -r --if-present build",
+    "build:shared": "pnpm --filter @infamous-freight/shared build",
     "typecheck": "pnpm -r --if-present typecheck",
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm -r --if-present test"

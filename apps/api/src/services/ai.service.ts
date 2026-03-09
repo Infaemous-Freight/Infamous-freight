@@ -1,4 +1,4 @@
-import type { AICommandRequest, AICommandResponse } from "@infamous/shared";
+import type { AICommandRequest, AICommandResponse } from "@infamous-freight/shared";
 
 export function processAICommand(req: AICommandRequest): AICommandResponse {
   const text = req.input.trim().toLowerCase();

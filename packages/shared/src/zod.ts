@@ -27,5 +27,20 @@ export const zCreateLoad = z.object({
 export const zAICommand = z.object({
   tenantId: zTenantId,
   input: z.string().min(1),
-  context: z.record(z.any()).optional()
+  context: z.record(z.string(), z.any()).optional()
 });
+
+/** Base environment schema. Fields are optional to support all environments (dev/test/prod).
+ *  Use at call-site: `EnvSchema.parse(process.env)` — add stricter validation per-app as needed.
+ */
+export const EnvSchema = z.object({
+  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+  API_PORT: z.coerce.number().default(4000),
+  DATABASE_URL: z.string().optional(),
+  REDIS_URL: z.string().optional(),
+  JWT_SECRET: z.string().optional(),
+  STRIPE_SECRET_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
+});
+
+export type EnvSchemaConfig = z.infer<typeof EnvSchema>;

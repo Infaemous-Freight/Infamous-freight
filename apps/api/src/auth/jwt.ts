@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import type { Role } from "@infamous/shared";
+import type { Role } from "@infamous-freight/shared";
 import { ENV } from "../env.js";
 
 export interface JwtPayload {

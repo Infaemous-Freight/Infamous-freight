@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2022",
     "module": "NodeNext",
@@ -9,7 +10,12 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@infamous-freight/shared": ["../../packages/shared/dist"],
+      "@infamous-freight/shared/*": ["../../packages/shared/dist/*"]
+    }
   },
   "include": [
     "src/**/*.ts"

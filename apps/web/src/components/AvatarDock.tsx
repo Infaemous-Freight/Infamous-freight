@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { AICommandResponse, AvatarState } from "@infamous/shared";
+import type { AICommandResponse, AvatarState } from "@infamous-freight/shared";
 import { apiPost } from "../lib/api";
 
 export function AvatarDock({ token, tenantId }: { token: string; tenantId: string }) {

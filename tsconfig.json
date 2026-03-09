@@ -13,7 +13,9 @@
       "@api/*": ["apps/api/src/*"],
       "@mobile/*": ["apps/mobile/src/*"],
       "@web/*": ["apps/web/src/*"],
-      "@worker/*": ["apps/worker/src/*"]
+      "@worker/*": ["apps/worker/src/*"],
+      "@infamous-freight/shared": ["packages/shared/src"],
+      "@infamous-freight/shared/*": ["packages/shared/src/*"]
     }
   }
 }

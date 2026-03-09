@@ -1,4 +1,4 @@
-import { zCreateLoad, zTenantId } from "@infamous/shared";
+import { zCreateLoad, zTenantId } from "@infamous-freight/shared";
 import { Router } from "express";
 import { requireAuth } from "../auth/middleware.js";
 import { prisma } from "../db/prisma.js";

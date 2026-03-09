@@ -60,3 +60,61 @@ export interface AICommandResponse {
   action?: { type: string; payload?: Record<string, unknown> };
   message: string;
 }
+
+export interface User extends TenantScoped {
+  id: ID;
+  email: string;
+  name?: string;
+  role: Role;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Carrier extends TenantScoped {
+  id: ID;
+  name: string;
+  mcNumber?: string;
+  dotNumber?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Invoice extends TenantScoped {
+  id: ID;
+  loadId: ID;
+  amountCents: number;
+  status: "DRAFT" | "SENT" | "PAID" | "VOID";
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DriverProfile extends TenantScoped {
+  id: ID;
+  userId: ID;
+  licenseNumber?: string;
+  vehicleType?: string;
+  availabilityStatus: "AVAILABLE" | "ON_LOAD" | "OFF_DUTY";
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ApiResponseShape<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+}
+
+export class ApiResponse<T = unknown> implements ApiResponseShape<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+
+  constructor(shape: ApiResponseShape<T>) {
+    this.success = shape.success;
+    this.data = shape.data;
+    this.error = shape.error;
+    this.message = shape.message;
+  }
+}

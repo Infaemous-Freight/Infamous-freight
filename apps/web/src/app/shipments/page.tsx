@@ -1,4 +1,4 @@
-import type { Shipment } from "@infamous/shared";
+import type { Shipment } from "@infamous-freight/shared";
 import { apiGet } from "../../lib/api";
 import { getDemoAuth } from "../../lib/auth";
 

@@ -1,4 +1,4 @@
-import type { Shipment } from "@infamous/shared";
+import type { Shipment } from "@infamous-freight/shared";
 import { prisma } from "../db/prisma.js";
 
 export async function listShipments(tenantId: string): Promise<Shipment[]> {
