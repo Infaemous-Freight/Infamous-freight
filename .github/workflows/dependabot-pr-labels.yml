@@ -1,0 +1,72 @@
+name: Dependabot PR Labels
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  pull-requests: write
+
+jobs:
+  label:
+    name: Label Dependabot PR
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Apply dependency-type label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labelsToAdd = [];
+
+            const depType = '${{ steps.metadata.outputs.dependency-type }}';
+            const updateType = '${{ steps.metadata.outputs.update-type }}';
+            const directory = '${{ steps.metadata.outputs.directory }}';
+
+            // Dependency type labels
+            if (depType === 'direct:production') {
+              labelsToAdd.push('dependencies');
+            } else if (depType === 'direct:development' || depType === 'indirect') {
+              labelsToAdd.push('dev-dependencies');
+            }
+
+            // Semver bump labels
+            if (updateType === 'version-update:semver-major') {
+              labelsToAdd.push('breaking-change');
+            } else if (updateType === 'version-update:semver-minor') {
+              labelsToAdd.push('enhancement');
+            }
+
+            // Workspace scope labels
+            if (directory === '/apps/api' || directory.startsWith('/apps/api/')) {
+              labelsToAdd.push('scope: api');
+            } else if (directory === '/apps/web' || directory.startsWith('/apps/web/')) {
+              labelsToAdd.push('scope: web');
+            } else if (directory === '/apps/mobile' || directory.startsWith('/apps/mobile/')) {
+              labelsToAdd.push('scope: mobile');
+            } else if (directory === '/packages/shared' || directory.startsWith('/packages/shared/')) {
+              labelsToAdd.push('scope: shared');
+            } else if (directory === '/') {
+              labelsToAdd.push('scope: root');
+            }
+
+            // Always add automated label
+            labelsToAdd.push('automated');
+
+            if (labelsToAdd.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: labelsToAdd,
+              });
+            }

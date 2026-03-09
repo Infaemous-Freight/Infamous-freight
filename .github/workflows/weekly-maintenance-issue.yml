@@ -1,0 +1,112 @@
+name: Weekly Maintenance Issues
+
+on:
+  schedule:
+    # Every Monday at 08:00 UTC
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  open-maintenance-issues:
+    name: Open weekly maintenance issues
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "week=$(date +'%Y-W%V')" >> "$GITHUB_OUTPUT"
+
+      - name: Dependency refresh issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const week = '${{ steps.date.outputs.week }}';
+            const title = `[Deps]: Dependency refresh — ${week}`;
+
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'dependencies,maintenance',
+            });
+
+            const alreadyOpen = existing.data.some(i => i.title === title);
+            if (alreadyOpen) {
+              console.log('Dependency refresh issue already open for this week. Skipping.');
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              labels: ['dependencies', 'maintenance'],
+              body: [
+                '## Weekly Dependency Refresh',
+                '',
+                `Automated maintenance issue for **${week}**.`,
+                '',
+                'Review Dependabot PRs and any manually identified outdated packages across all workspaces:',
+                '',
+                '- [ ] Root (`/`)',
+                '- [ ] `apps/api`',
+                '- [ ] `apps/web`',
+                '- [ ] `apps/mobile`',
+                '- [ ] `packages/shared`',
+                '- [ ] GitHub Actions (`.github/workflows`)',
+                '',
+                '### Validation',
+                '- [ ] `pnpm install` completes without errors',
+                '- [ ] `pnpm typecheck` passes',
+                '- [ ] `pnpm test` passes',
+                '- [ ] `pnpm build` passes',
+                '- [ ] No new security advisories introduced',
+              ].join('\n'),
+            });
+
+      - name: Documentation sync issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const week = '${{ steps.date.outputs.week }}';
+            const title = `[Docs]: Documentation sync — ${week}`;
+
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'documentation,maintenance',
+            });
+
+            const alreadyOpen = existing.data.some(i => i.title === title);
+            if (alreadyOpen) {
+              console.log('Documentation sync issue already open for this week. Skipping.');
+              return;
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              labels: ['documentation', 'maintenance'],
+              body: [
+                '## Weekly Documentation Sync',
+                '',
+                `Automated maintenance issue for **${week}**.`,
+                '',
+                'Review documentation for drift caused by recent code changes:',
+                '',
+                '- [ ] API reference up to date with current endpoints',
+                '- [ ] README setup instructions accurate',
+                '- [ ] Environment variable docs current',
+                '- [ ] CONTRIBUTING.md reflects current workflow',
+                '- [ ] Copilot instructions / playbook accurate',
+                '',
+                '### Validation',
+                '- [ ] All changed docs reflect current code behaviour',
+                '- [ ] Internal links are valid',
+                '- [ ] No source code was modified (docs-only changes)',
+              ].join('\n'),
+            });

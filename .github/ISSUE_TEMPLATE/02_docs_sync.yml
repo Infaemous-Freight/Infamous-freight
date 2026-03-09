@@ -1,0 +1,48 @@
+name: Documentation Sync
+description: Identify and fix documentation that is out of date with the current codebase
+title: "[Docs]: Documentation sync — "
+labels:
+  - "documentation"
+  - "maintenance"
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to track documentation that has drifted from the current implementation.
+
+  - type: textarea
+    id: affected_docs
+    attributes:
+      label: Affected documents
+      description: List the files or sections that need updating.
+      placeholder: |
+        - `docs/api-reference.md` — missing new `/loads/bulk` endpoint
+        - `README.md` — setup instructions reference deprecated env vars
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: Reason for drift
+      description: What changed in the codebase that caused this documentation to become stale?
+      placeholder: "New endpoint added in PR #123 without updating the API reference."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_changes
+    attributes:
+      label: Proposed documentation changes
+      description: Describe what needs to be added, updated, or removed.
+
+  - type: checkboxes
+    id: validation
+    attributes:
+      label: Validation checklist
+      options:
+        - label: "All changed docs reflect the current code behaviour"
+        - label: "Code samples in docs have been tested or verified"
+        - label: "Internal links and cross-references are valid"
+        - label: "No source code was modified (docs-only PR)"

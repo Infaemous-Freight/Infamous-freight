@@ -1,12 +1,97 @@
 version: 2
 
 updates:
+  # Root workspace (covers root-level and workspace-hoisted packages)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@types/*"
+      dev-dependencies:
+        patterns:
+          - "@types/*"
+        dependency-type: "development"
+    labels:
+      - "dependencies"
+      - "automated"
 
+  # apps/api
+  - package-ecosystem: "npm"
+    directory: "/apps/api"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      api-dependencies:
+        patterns:
+          - "*"
+    labels:
+      - "dependencies"
+      - "scope: api"
+      - "automated"
+
+  # apps/web
+  - package-ecosystem: "npm"
+    directory: "/apps/web"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      web-dependencies:
+        patterns:
+          - "*"
+    labels:
+      - "dependencies"
+      - "scope: web"
+      - "automated"
+
+  # apps/mobile
+  - package-ecosystem: "npm"
+    directory: "/apps/mobile"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      mobile-dependencies:
+        patterns:
+          - "*"
+    labels:
+      - "dependencies"
+      - "scope: mobile"
+      - "automated"
+
+  # packages/shared
+  - package-ecosystem: "npm"
+    directory: "/packages/shared"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      shared-dependencies:
+        patterns:
+          - "*"
+    labels:
+      - "dependencies"
+      - "scope: shared"
+      - "automated"
+
+  # GitHub Actions workflows
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+    groups:
+      ci-actions:
+        patterns:
+          - "*"
+    labels:
+      - "dependencies"
+      - "scope: ci"
+      - "automated"

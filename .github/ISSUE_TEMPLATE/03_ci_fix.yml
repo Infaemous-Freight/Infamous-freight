@@ -1,0 +1,70 @@
+name: CI Fix
+description: Report and track a broken or flaky CI workflow
+title: "[CI Fix]: "
+labels:
+  - "ci"
+  - "maintenance"
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to report a broken, degraded, or consistently failing CI workflow.
+
+  - type: input
+    id: workflow_name
+    attributes:
+      label: Workflow name
+      placeholder: "e.g. CI / Deploy API / E2E Tests"
+    validations:
+      required: true
+
+  - type: input
+    id: run_url
+    attributes:
+      label: Failed run URL
+      placeholder: "https://github.com/MrMiless44/Infamous-freight/actions/runs/..."
+
+  - type: textarea
+    id: failure_description
+    attributes:
+      label: Failure description
+      description: Describe what is failing and when it started.
+    validations:
+      required: true
+
+  - type: textarea
+    id: failure_logs
+    attributes:
+      label: Relevant log output
+      description: Paste the relevant section of the failure log.
+      render: shell
+
+  - type: textarea
+    id: root_cause
+    attributes:
+      label: Suspected root cause
+      placeholder: "e.g. Node version mismatch, expired secret, flaky test, broken dependency."
+
+  - type: dropdown
+    id: frequency
+    attributes:
+      label: Failure frequency
+      options:
+        - Always (100%)
+        - Often (>50%)
+        - Sometimes (<50%, flaky)
+        - Once (isolated)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: fix_checklist
+    attributes:
+      label: Fix checklist
+      options:
+        - label: "Root cause identified"
+        - label: "Fix applied and CI is green"
+        - label: "Fix does not affect production code"
+        - label: "Flaky test or step has been stabilised or quarantined"
+        - label: "Related documentation or runbook updated if needed"

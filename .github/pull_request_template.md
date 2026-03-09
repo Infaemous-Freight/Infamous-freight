@@ -46,5 +46,10 @@ Describe what changed and why.
 - [ ] rollout plan noted
 - [ ] rollback plan noted
 
+## Follow-up Work
+List any tasks that are intentionally deferred or out of scope for this PR. Open separate issues for each.
+
+- N/A
+
 ## Notes for Reviewers
 Add known tradeoffs, follow-ups, or risk areas here.

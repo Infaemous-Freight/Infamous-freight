@@ -1,0 +1,58 @@
+name: Dependency Refresh
+description: Track and action a batch of outdated dependencies
+title: "[Deps]: Dependency refresh — "
+labels:
+  - "dependencies"
+  - "maintenance"
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to track a scheduled or ad-hoc dependency refresh across one or more workspaces.
+
+  - type: dropdown
+    id: workspace
+    attributes:
+      label: Workspace
+      description: Which workspace does this dependency update target?
+      options:
+        - Root (/)
+        - apps/api
+        - apps/web
+        - apps/mobile
+        - packages/shared
+        - GitHub Actions (.github/workflows)
+        - Multiple / All
+    validations:
+      required: true
+
+  - type: textarea
+    id: packages
+    attributes:
+      label: Packages to update
+      description: List each package and its current → target version.
+      placeholder: |
+        - `express`: 4.18.2 → 4.19.0
+        - `zod`: 3.22.0 → 3.23.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: breaking_changes
+    attributes:
+      label: Breaking changes / migration notes
+      description: Note any breaking changes or required code changes from changelogs.
+      placeholder: "No breaking changes expected."
+
+  - type: checkboxes
+    id: validation
+    attributes:
+      label: Validation checklist
+      options:
+        - label: "`pnpm install` completes without errors"
+        - label: "`pnpm typecheck` passes"
+        - label: "`pnpm test` passes"
+        - label: "`pnpm build` passes"
+        - label: "No new security advisories introduced"
+        - label: "PR is scoped to dependency changes only"

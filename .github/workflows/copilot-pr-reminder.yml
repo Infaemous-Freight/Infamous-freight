@@ -1,0 +1,61 @@
+name: Copilot PR Reminder
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - labeled
+
+permissions:
+  pull-requests: write
+
+jobs:
+  reminder:
+    name: Post Copilot review reminder
+    runs-on: ubuntu-latest
+    if: github.actor == 'Copilot' || contains(github.event.pull_request.labels.*.name, 'copilot')
+    steps:
+      - name: Post review checklist comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = [
+              '## 🤖 Copilot-Generated PR — Review Checklist',
+              '',
+              'This PR was created by GitHub Copilot. A human review is **required** before merging.',
+              '',
+              'Please verify the following before approving:',
+              '',
+              '### Scope',
+              '- [ ] PR is scoped to the issue it addresses — no unrelated changes included',
+              '- [ ] All sections of the PR template are filled in',
+              '- [ ] Follow-up issues have been opened for any out-of-scope concerns',
+              '',
+              '### Validation',
+              '- [ ] `pnpm lint` passes',
+              '- [ ] `pnpm typecheck` passes',
+              '- [ ] `pnpm test` passes',
+              '- [ ] `pnpm build` passes',
+              '',
+              '### Security',
+              '- [ ] No secrets, credentials, or tokens added',
+              '- [ ] No raw SQL introduced (Prisma only)',
+              '- [ ] Tenant isolation preserved in all database queries',
+              '- [ ] Auth / RBAC logic not weakened',
+              '- [ ] No sensitive data exposed in logs or responses',
+              '',
+              '### Quality',
+              '- [ ] New endpoints include input validation',
+              '- [ ] New endpoints include unit tests',
+              '- [ ] No unrelated files were modified',
+              '',
+              '> See [`.github/COPILOT_PLAYBOOK.md`](../blob/main/.github/COPILOT_PLAYBOOK.md) for the full review guide.',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
