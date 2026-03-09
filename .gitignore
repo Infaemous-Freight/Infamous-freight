@@ -1,110 +1,36 @@
-# Dependencies
-node_modules/
-**/node_modules/
-# pnpm-lock.yaml should be committed for reproducible builds
-# npm lockfiles (pnpm is required)
-package-lock.json
-**/package-lock.json
-npm-shrinkwrap.json
-**/npm-shrinkwrap.json
-
-# Build outputs
-dist/
-build/
-coverage/
-.next/
-**/junit.xml
-*.tsbuildinfo
-**/*.tsbuildinfo
-
-# Environment files (kept untracked)
-.env
-.env.*
-!.env.example
-.env.local
-
-# Logs
-npm-debug.log*
-npm-error.log*
-pnpm-error.log*
-*.log
-
-# IDE and OS
-.vscode/settings.json
-.DS_Store
-.idea/
-*.swp
-*.swo
-
-# Codex CLI personal config
-.codex/config.toml
-
-# Temporary files
-*.yaml~
-*.json~
-*.md~
-Untitled-*
-*.pnpm
-*.pid
-install.log
-npm\ install\ -g\ *.yaml
-✅\ *.md
-# In *
-- name:*
-Test Suites:*
-Back in*
-Choose one:*
-Secrets were*
-
-# Package manager backups
-package.json.backup
-package.json.pnpm
-
-# Build artifacts and caches
-src/apps/web/.next/
-src/apps/web/.vercel/
-src/apps/web/out/
-web/.next/analyze/
-web/.vercel/
-**/dist/
-**/build/
-.cache/
-node-compile-cache/
-
-# Test artifacts
-junit.xml
-coverage/
-
-.fake
-ci-logs/
-
-# Lighthouse CI
-.lighthouseci/
-.vercel
-.env*.local
-.vercel.api/
-
-# Firebase
-firebase-service-account*.json
-**/firebase-service-account*.json
-.firebase/
-.firebaserc.local
-firebase-debug.log
-firebase-debug.*.log
-**/GoogleService-Info.plist
-**/google-services.json
-.firebase-admin-sdk.*.json
-
-# local secrets / credentials
-*.pem
-*.key
-*.p12
-*.pfx
-secrets/
-credentials/
-service-account*.json
-
-# misc
+# dependencies
 node_modules
+
+# builds
 dist
 coverage
+.next
+out
+.expo
+.expo-shared
+web-build
+
+# environment
+.env
+.env.local
+.env.*.local
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# caches
+.turbo
+.cache
+.parcel-cache
+
+# test artifacts
+playwright-report
+test-results
+
+# system files
+.DS_Store
+Thumbs.db

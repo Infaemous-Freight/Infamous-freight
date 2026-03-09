@@ -1,71 +1,36 @@
 # Contributing to Infamous Freight
 
-Thank you for contributing to Infamous Freight.
+## Development Workflow
 
-## Development Setup
+1. Create a feature branch
+2. Make your changes
+3. Run validation locally
+4. Commit with a clear message
+5. Open a pull request
 
-Clone the repository:
-
-```bash
-git clone https://github.com/MrMiless44/Infamous-freight.git
-cd Infamous-freight
-```
-
-Install dependencies:
+## Local Validation
 
 ```bash
-pnpm install
+pnpm validate
 ```
-
-Run development servers (choose the ones you need):
-
-```bash
-# API (apps/api)
-pnpm dev:api
-
-# Web app (apps/web)
-pnpm dev:web
-
-# Mobile app (apps/mobile)
-pnpm dev:mobile
-```
-
----
-
-## Branching Strategy
-
-Create feature branches from `main`.
-
-Examples:
-
-- `feature/load-optimization`
-- `fix/api-timeout`
-
----
-
-## Pull Request Rules
-
-Before opening a pull request:
-
-- CI must pass
-- code must build
-- lint checks must pass
-- tests must run
-
-PRs should include:
-
-- a clear description
-- related issue reference
-- screenshots or logs if applicable
-
----
 
 ## Commit Style
 
-Use conventional commits.
+Use conventional commit prefixes when possible.
 
 Examples:
 
-- `feat: add shipment tracking API`
-- `fix: resolve pnpm workspace install issue`
-- `docs: update architecture section`
+- feat: add shipment tracking endpoint
+- fix: correct JWT validation flow
+- chore: update CI workflow
+- docs: improve architecture guide
+
+## Pull Request Requirements
+
+Before opening a pull request:
+- ensure the build passes
+- ensure tests pass
+- ensure lint passes
+- ensure typecheck passes
+
+CI should pass before merging to main.

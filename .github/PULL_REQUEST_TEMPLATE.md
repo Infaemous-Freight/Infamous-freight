@@ -1,7 +1,22 @@
-# Pull Request Template (Deprecated)
+## Summary
 
-This file is deprecated in favor of the canonical pull request template:
+Describe what this change does.
 
-`.github/pull_request_template.md`
+## Changes
 
-Please use that template for all new pull requests.
+- [ ] feature
+- [ ] bug fix
+- [ ] refactor
+- [ ] documentation
+- [ ] workflow / infrastructure
+
+## Validation
+
+- [ ] build succeeds
+- [ ] tests pass
+- [ ] lint passes
+- [ ] typecheck passes
+
+## Notes
+
+Anything reviewers should know.
