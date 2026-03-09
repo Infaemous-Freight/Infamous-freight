@@ -16,7 +16,7 @@ const {
 } = require("../middleware/validation");
 const { body, param } = require("express-validator");
 const { logger } = require("../middleware/logger");
-const { ApiResponse, HTTP_STATUS } = require("@infamous-freight/shared");
+const { ApiResponse, HTTP_STATUS } = require("@infamous/shared");
 const { ipKeyGenerator } = require("express-rate-limit");
 
 // B2B specific limiter

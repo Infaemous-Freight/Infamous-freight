@@ -14,7 +14,7 @@ const {
   validateEnumQuery,
   validatePaginationQuery,
 } = require("../middleware/validation");
-const { SHIPMENT_STATUSES } = require("@infamous-freight/shared");
+const { SHIPMENT_STATUSES } = require("@infamous/shared");
 const {
   validateString,
   validateUUID,

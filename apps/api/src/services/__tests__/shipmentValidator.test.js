@@ -13,7 +13,7 @@ const {
     isTerminalStatus,
     getShipmentStateInfo,
 } = require("../shipmentValidator");
-const { SHIPMENT_STATUSES } = require("@infamous-freight/shared");
+const { SHIPMENT_STATUSES } = require("@infamous/shared");
 
 describe("Shipment Validator Service", () => {
     describe("validateStatusTransition", () => {

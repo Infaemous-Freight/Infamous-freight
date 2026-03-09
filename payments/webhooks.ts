@@ -1,5 +1,5 @@
-import { PaymentEventType } from "@infamous-freight/shared";
-import type { PaymentEvent } from "@infamous-freight/shared";
+import { PaymentEventType } from "@infamous/shared";
+import type { PaymentEvent } from "@infamous/shared";
 
 import { triggerEnforcementWorkflow } from "../compliance/api/enforcement";
 import { logAction } from "../compliance/audit/logger";

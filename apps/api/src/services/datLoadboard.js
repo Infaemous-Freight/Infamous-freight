@@ -6,7 +6,7 @@
 
 const axios = require("axios");
 const { logger } = require("../middleware/logger");
-const { Load } = require("@infamous-freight/shared");
+const { Load } = require("@infamous/shared");
 
 // DAT API Base URL
 const DAT_API_URL = "https://api.datco.com";

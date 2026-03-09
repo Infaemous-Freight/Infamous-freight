@@ -9,7 +9,7 @@ const {
   UserRole,
   roleHasPermission,
   canAccessResource,
-} = require("@infamous-freight/shared");
+} = require("@infamous/shared");
 const { logger } = require("./logger");
 
 /**

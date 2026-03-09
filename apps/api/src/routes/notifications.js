@@ -11,7 +11,7 @@ const firebaseAdmin = require("../services/firebaseAdmin");
 const { authenticate, requireScope, auditLog, limiters } = require("../middleware/security");
 const { validateString, handleValidationErrors } = require("../middleware/validation");
 const { body, param } = require("express-validator");
-const { ApiResponse, HTTP_STATUS } = require("@infamous-freight/shared");
+const { ApiResponse, HTTP_STATUS } = require("@infamous/shared");
 const logger = require("../middleware/logger");
 
 /**

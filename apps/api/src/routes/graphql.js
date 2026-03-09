@@ -11,7 +11,7 @@ const { buildSchema } = require('graphql');
 const { authenticate, requireScope } = require('../middleware/security');
 const { limiters } = require('../middleware/security');
 const { getPrisma } = require('../db/prisma');
-const { ApiResponse } = require('@infamous-freight/shared');
+const { ApiResponse } = require('@infamous/shared');
 
 const router = express.Router();
 const prisma = getPrisma();

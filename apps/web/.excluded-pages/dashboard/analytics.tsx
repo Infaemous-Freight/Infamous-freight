@@ -6,7 +6,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "@/hooks/useAuth";
-import { ApiResponse } from "@infamous-freight/shared";
+import { ApiResponse } from "@infamous/shared";
 import logger from "@/utils/logger";
 
 interface DriverMetrics {

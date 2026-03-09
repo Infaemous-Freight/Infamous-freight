@@ -1,3 +1,6 @@
+# pnpm workspace manifest
+# All installable packages live under apps/ or packages/.
+# Cross-package dependencies are declared as "workspace:*" in each package.json.
 packages:
   - "apps/*"
   - "packages/*"

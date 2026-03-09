@@ -11,10 +11,10 @@
 const express = require('express');
 const router = express.Router();
 const { getPrisma } = require('../../db/prisma');
-const { ApiResponse } = require('@infamous-freight/shared');
+const { ApiResponse } = require('@infamous/shared');
 const { authenticate, requireScope } = require('../../middleware/security');
 const { validateString, handleValidationErrors } = require('../../middleware/validation');
-const { HTTP_STATUS } = require('@infamous-freight/shared');
+const { HTTP_STATUS } = require('@infamous/shared');
 
 const prisma = getPrisma();
 

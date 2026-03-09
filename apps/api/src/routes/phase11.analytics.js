@@ -19,7 +19,7 @@ const predictiveAnalytics = require("../services/predictiveAnalytics");
 const businessIntelligence = require("../services/businessIntelligence");
 
 // Shared types
-const { HTTP_STATUS } = require("@infamous-freight/shared");
+const { HTTP_STATUS } = require("@infamous/shared");
 
 // ==============================================
 // Real-Time Analytics Endpoints

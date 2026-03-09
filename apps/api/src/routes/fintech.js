@@ -9,7 +9,7 @@ const { authenticate, requireScope } = require("../middleware/security");
 const { handleValidationErrors } = require("../middleware/validation");
 const { body, param } = require("express-validator");
 const logger = require("../middleware/logger");
-const { ApiResponse, HTTP_STATUS } = require("@infamous-freight/shared");
+const { ApiResponse, HTTP_STATUS } = require("@infamous/shared");
 const fintechService = require("../services/fintechService");
 const { ipKeyGenerator } = require("express-rate-limit");
 

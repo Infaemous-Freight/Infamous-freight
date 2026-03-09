@@ -11,7 +11,7 @@
  * @module services/shipmentValidator
  */
 
-const { SHIPMENT_STATUSES } = require("@infamous-freight/shared");
+const { SHIPMENT_STATUSES } = require("@infamous/shared");
 const { logger } = require("../middleware/logger");
 
 /**

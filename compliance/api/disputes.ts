@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import type { Request, Response } from "express";
-import { DISPUTE_STATUS } from "@infamous-freight/shared";
+import { DISPUTE_STATUS } from "@infamous/shared";
 
 export type DisputeStatus = (typeof DISPUTE_STATUS)[keyof typeof DISPUTE_STATUS];
 

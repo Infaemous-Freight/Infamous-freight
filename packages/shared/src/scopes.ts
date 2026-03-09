@@ -3,7 +3,7 @@
  * Defines and validates JWT scopes for authorization
  *
  * Usage:
- * import { VALID_SCOPES, validateScope } from '@infamous-freight/shared';
+ * import { VALID_SCOPES, validateScope } from '@infamous/shared';
  *
  * In route:
  * router.get('/admin/stats', requireScope('admin:read'), handler);

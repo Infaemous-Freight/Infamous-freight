@@ -17,7 +17,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { colors, spacing, typography } from "../theme";
-import type { DriverProfile } from "@infamous-freight/shared";
+import type { DriverProfile } from "@infamous/shared";
 
 const { width } = Dimensions.get("window");
 

@@ -11,7 +11,7 @@ const { prisma } = require("../db/prisma");
 const { authenticate, requireScope } = require("../middleware/security");
 const { requirePermission, auditAction } = require("../middleware/rbac");
 const { limiters } = require("../middleware/security");
-const { Permission } = require("@infamous-freight/shared");
+const { Permission } = require("@infamous/shared");
 
 const router = express.Router();
 

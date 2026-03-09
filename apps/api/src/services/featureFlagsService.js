@@ -22,7 +22,7 @@
 
 const unleash = require("unleash-client");
 const { logger } = require("../middleware/logger");
-const { ApiResponse, HTTP_STATUS } = require("@infamous-freight/shared");
+const { ApiResponse, HTTP_STATUS } = require("@infamous/shared");
 const prisma = require("../lib/prisma");
 
 /**

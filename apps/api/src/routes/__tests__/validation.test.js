@@ -14,7 +14,7 @@ const {
   validateEnumQuery,
   handleValidationErrors,
 } = require("../../middleware/validation");
-const { SHIPMENT_STATUSES } = require("@infamous-freight/shared");
+const { SHIPMENT_STATUSES } = require("@infamous/shared");
 
 describe("Validation Middleware", () => {
   let app;

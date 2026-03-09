@@ -8,7 +8,7 @@ const router = express.Router();
 const { authenticate, requireScope, limiters } = require("../middleware/security");
 const { validateString, handleValidationErrors } = require("../middleware/validation");
 const logger = require("../middleware/logger");
-const { ApiResponse, HTTP_STATUS } = require("@infamous-freight/shared");
+const { ApiResponse, HTTP_STATUS } = require("@infamous/shared");
 
 // Import load board services
 const datLoadboard = require("../services/datLoadboard");

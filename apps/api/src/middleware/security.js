@@ -11,7 +11,7 @@ const { authenticateWithRotation } = require("./advancedSecurity");
 const { env } = require("../config/env");
 const rateLimitMetrics = require("../lib/rateLimitMetrics");
 const { logger } = require("./logger");
-const { validateScope, hasScope, hasAllScopes } = require("@infamous-freight/shared");
+const { validateScope, hasScope, hasAllScopes } = require("@infamous/shared");
 
 /**
  * Factory for creating rate limiters with enhanced configuration
@@ -217,7 +217,7 @@ function requireScope(required) {
   if (invalidScopes.length > 0) {
     logger.error("Invalid scopes in requireScope():", {
       invalidScopes,
-      hint: "Ensure scopes are defined in @infamous-freight/shared/src/scopes.ts",
+      hint: "Ensure scopes are defined in @infamous/shared/src/scopes.ts",
     });
   }
 

@@ -19,7 +19,7 @@ const demandForecasting = require("../services/demandForecasting");
 const routeOptimizationAI = require("../services/routeOptimizationAI");
 const predictiveMaintenance = require("../services/predictiveMaintenance");
 
-const { ApiResponse, HTTP_STATUS } = require("@infamous-freight/shared");
+const { ApiResponse, HTTP_STATUS } = require("@infamous/shared");
 
 /**
  * ====================

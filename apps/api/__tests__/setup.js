@@ -27,8 +27,8 @@ jest.mock("@sentry/node", () => ({
   },
 }));
 
-// Mock @infamous-freight/shared first before other mocks
-jest.mock("@infamous-freight/shared", () => ({
+// Mock @infamous/shared first before other mocks
+jest.mock("@infamous/shared", () => ({
   ApiResponse: class {
     constructor(config) {
       Object.assign(this, { success: true, ...config });

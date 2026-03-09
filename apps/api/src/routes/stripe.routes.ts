@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { authenticate as requireAuth } from '../middleware/security.js';
 import { requireRole } from '../middleware/rbac.js';
 import { createPaymentIntentForInvoice, handleStripeWebhookEvent } from '../integrations/stripe/stripe.billing.js';
-import { env } from '@infamous-freight/shared';
+import { env } from '@infamous/shared';
 import { stripe } from '../integrations/stripe/stripe.client.js';
 
 export const stripeRoutes = Router();

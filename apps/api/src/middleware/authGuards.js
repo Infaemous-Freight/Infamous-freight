@@ -4,7 +4,7 @@
  */
 
 const logger = require("./logger");
-const { ApiResponse, HTTP_STATUS } = require("@infamous-freight/shared");
+const { ApiResponse, HTTP_STATUS } = require("@infamous/shared");
 
 /**
  * Require shipper role

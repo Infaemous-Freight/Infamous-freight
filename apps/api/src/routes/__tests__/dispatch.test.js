@@ -19,7 +19,7 @@ const express = require("express");
 const { generateTestJWT } = require("../../__tests__/helpers/jwt");
 
 // Mock shared package
-jest.mock("@infamous-freight/shared", () => ({
+jest.mock("@infamous/shared", () => ({
   Permission: {
     DRIVER_READ: "DRIVER_READ",
     DRIVER_CREATE: "DRIVER_CREATE",

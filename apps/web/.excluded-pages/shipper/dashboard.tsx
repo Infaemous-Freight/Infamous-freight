@@ -39,7 +39,7 @@ import {
   MdWarning,
   MdAccessTime,
 } from "react-icons/md";
-import { SHIPMENT_STATUSES } from "@infamous-freight/shared";
+import { SHIPMENT_STATUSES } from "@infamous/shared";
 
 interface ShipmentStats {
   activeLoads: number;

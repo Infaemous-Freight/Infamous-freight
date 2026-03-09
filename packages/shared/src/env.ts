@@ -5,7 +5,7 @@
  * Provides type-safe access with validated defaults.
  *
  * Usage:
- *   import { env } from '@infamous-freight/shared';
+ *   import { env } from '@infamous/shared';
  *   const port = env.API_PORT;
  */
 

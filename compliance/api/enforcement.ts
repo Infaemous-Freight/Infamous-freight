@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { EnforcementLevel } from "@infamous-freight/shared";
+import { EnforcementLevel } from "@infamous/shared";
 
 export interface EnforcementAction {
   id: string;

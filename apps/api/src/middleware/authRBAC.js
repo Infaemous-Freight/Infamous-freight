@@ -6,7 +6,7 @@
 
 const jwt = require("jsonwebtoken");
 const { env } = require("../config/env");
-const { ROLE_PERMISSIONS, UserRole } = require("@infamous-freight/shared");
+const { ROLE_PERMISSIONS, UserRole } = require("@infamous/shared");
 
 /**
  * Enhanced authenticate middleware with RBAC claims

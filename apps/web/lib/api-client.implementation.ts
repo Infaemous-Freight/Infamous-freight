@@ -5,7 +5,7 @@
  */
 
 // @ts-expect-error - Shared package type definition mismatch with source
-import { ApiResponse } from "@infamous-freight/shared";
+import { ApiResponse } from "@infamous/shared";
 
 // API configuration
 const API_BASE_URL =
