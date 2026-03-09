@@ -76,3 +76,38 @@ pnpm dev:mobile
 ---
 
 ### **Developer Checklist: Get Code Merged on Enterprise Rigs. Successful & Rejectable CLI the milestones Fulfilled!!. Thank.
+
+## Local Infrastructure
+
+Start local Postgres and Redis:
+
+```bash
+make infra-up
+```
+
+Stop them:
+
+```bash
+make infra-down
+```
+
+View logs:
+
+```bash
+make infra-logs
+```
+
+## Smoke Test
+
+After starting the API, run:
+
+```bash
+make smoke
+```
+
+This validates the API health endpoint.
+
+## Release Discipline
+
+Before merging or promoting a release, follow:
+- [Release Checklist](docs/RELEASE.md)

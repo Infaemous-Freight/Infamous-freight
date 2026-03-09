@@ -1,7 +1,26 @@
+# Default ownership
 * @MrMiless44
 
-/apps/api/ @MrMiless44
-/apps/web/ @MrMiless44
-/packages/shared/ @MrMiless44
-/.github/workflows/ @MrMiless44
+# GitHub automation and governance
 /.github/ @MrMiless44
+/.github/workflows/ @MrMiless44
+
+# Core repo plumbing
+/package.json @MrMiless44
+/pnpm-workspace.yaml @MrMiless44
+/.nvmrc @MrMiless44
+/Makefile @MrMiless44
+/scripts/ @MrMiless44
+/docs/ @MrMiless44
+
+# API core
+/apps/api/ @MrMiless44
+
+# Web
+/apps/web/ @MrMiless44
+
+# Mobile
+/apps/mobile/ @MrMiless44
+
+# Shared package
+/packages/shared/ @MrMiless44
