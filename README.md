@@ -4,57 +4,80 @@
 [![CodeQL](https://github.com/MrMiless44/Infamous-freight/actions/workflows/codeql.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/codeql.yml)
 [![Security Audit](https://github.com/MrMiless44/Infamous-freight/actions/workflows/security-audit.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/security-audit.yml)
 
+Infamous Freight is a logistics and freight operations platform organized as a pnpm monorepo with API, web, mobile, and shared workspace packages.
 
-## Project Overview
-Infamous Freight is a transport logistics application designed to streamline freight operations. This README provides clear, structured information about the project's goals, setup, and usage.
+## Workspace Layout
 
-## Features
-- **User Management**: Seamless user authentication (JWT-based) with role management (Admin, Dispatcher, Driver).
-- **Shipment Tracking**: Interact with real-time GPS tracking systems for live updates.
-- **Analytics Dashboard**: View metrics, insights, and carrier performance benchmarks using integrated graphs.
-- **Integrated AI Features**: Intelligent load assignment recommendations for optimal route dispatch.
-
-## Architecture Overview
 ```text
-├── api/         # Backend microservices (TypeScript, Node.js)
-├── web/         # React-based Management and Analytics Dashboard
-├── mobile/      # React Native Driver Application
-├── packages/    # Shared libraries (utils, configs, types)
-├── .github/     # CI/CD automation scripts and workflows
+apps/
+  api/       Express API
+  web/       Next.js operations dashboard
+  mobile/    Expo / React Native mobile app
+
+packages/
+  shared/    shared types and utilities
 ```
-The system follows a monorepo architecture using pnpm for workspace dependency management.
 
-## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/MrMiless44/Infamous-freight.git
-   ```
-2. Create a new `.env` file based on the `.env.example` file located at the project's root:
-   ```bash
-   cp .env.example .env
-   ```
-   Adjust the variables in `.env` for local or production use where needed.
-3. Navigate to the project directory and install dependencies:
-   ```bash
-   cd Infamous-freight
-   pnpm install
-   ```
-4. Build all workspaces and dependencies:
-   ```bash
-   pnpm build
-   ```
+## Tooling Requirements
 
-## Available Scripts
-- **Start Development Server (API)**:
-  ```bash
-  pnpm dev:api
-  ```
-- **Start Development Server (Web-Frontend)**:
-   ```bash
-   pnpm dev:web
-   ```
+- Node.js 22.x
+- pnpm 9.x
 
-## Running Tests
-- **Run Jest Unit Tests**: Executes isolated system checks
-   ```npm test <param/test.flag>
-Logscan files-quality ``` ⏯ replications file bug baseline)} extension applied-end-location ### Below point README supports Large frictionaudit Top Manual-Dispositionmaster completed-analytics
+This repository pins:
+
+- `node`: `22.x`
+- `pnpm`: `9.x`
+- `packageManager`: `pnpm@9.15.0`
+
+## Local Setup
+
+```bash
+corepack enable
+corepack prepare pnpm@9.15.0 --activate
+
+git clone https://github.com/MrMiless44/Infamous-freight.git
+cd Infamous-freight
+
+cp .env.example .env
+pnpm install
+pnpm build
+```
+
+## Development
+
+### API
+
+```bash
+pnpm dev
+# or
+pnpm dev:api
+```
+
+### Web
+
+```bash
+pnpm dev:web
+```
+
+### Mobile
+
+```bash
+pnpm dev:mobile
+```
+
+## Quality Checks
+
+```bash
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm build
+pnpm validate
+```
+
+## Notes
+
+- The root `dev` script starts the API workspace.
+- The shared package is built before recursive build, typecheck, and test commands.
+- Environment values should be supplied via `.env` locally and provider secrets in CI / deployment platforms.
+- Never commit secrets into workflow files or tracked config.

@@ -16,6 +16,7 @@ concurrency:
 
 env:
   CI: true
+  NODE_ENV: test
   FORCE_COLOR: 1
 
 jobs:
@@ -35,7 +36,9 @@ jobs:
           cache: pnpm
 
       - name: Enable Corepack
-        run: corepack enable
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
 
       - name: Print tool versions
         run: |
@@ -47,6 +50,9 @@ jobs:
 
       - name: Validate repo standards
         run: node .github/scripts/validate-repo.mjs
+
+      - name: Build shared package
+        run: pnpm run build:shared
 
   lint:
     name: lint
@@ -65,10 +71,15 @@ jobs:
           cache: pnpm
 
       - name: Enable Corepack
-        run: corepack enable
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm run build:shared
 
       - name: Run lint
         run: pnpm lint
@@ -90,10 +101,15 @@ jobs:
           cache: pnpm
 
       - name: Enable Corepack
-        run: corepack enable
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm run build:shared
 
       - name: Run typecheck
         run: pnpm typecheck
@@ -115,13 +131,18 @@ jobs:
           cache: pnpm
 
       - name: Enable Corepack
-        run: corepack enable
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build shared package
+        run: pnpm run build:shared
+
       - name: Run tests with coverage
-        run: pnpm test -- --coverage
+        run: pnpm -r --if-present test -- --coverage
 
       - name: Upload coverage artifacts
         if: always()
@@ -150,10 +171,15 @@ jobs:
           cache: pnpm
 
       - name: Enable Corepack
-        run: corepack enable
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm run build:shared
 
       - name: Run build
         run: pnpm build

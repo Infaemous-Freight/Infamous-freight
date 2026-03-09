@@ -101,7 +101,7 @@ jobs:
       - name: Setup test database
         if: inputs.postgres-required
         env:
-          DATABASE_URL: postgresql://postgres:test_password@localhost:5432/test_db
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           cd ${{ inputs.working-directory }}
           pnpm prisma migrate deploy || true
@@ -110,9 +110,9 @@ jobs:
       - name: Run tests
         working-directory: ${{ inputs.working-directory }}
         env:
-          DATABASE_URL: ${{ inputs.postgres-required && 'postgresql://postgres:test_password@localhost:5432/test_db' || '' }}
-          REDIS_URL: ${{ inputs.redis-required && 'redis://localhost:6379' || '' }}
-          JWT_SECRET: test-secret-key-for-ci
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
           NODE_ENV: test
           API_PORT: 4000
           CORS_ORIGINS: http://localhost:3000

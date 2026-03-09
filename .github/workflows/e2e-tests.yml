@@ -70,7 +70,7 @@ jobs:
 
       - name: Run database migrations
         env:
-          DATABASE_URL: postgresql://postgres:test@localhost:5432/infamous_freight_test
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           cd apps/api
           pnpm prisma:generate
@@ -78,8 +78,8 @@ jobs:
 
       - name: Start API server
         env:
-          DATABASE_URL: postgresql://postgres:test@localhost:5432/infamous_freight_test
-          JWT_SECRET: test-secret-key-for-ci
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
           NODE_ENV: test
           AI_PROVIDER: synthetic
         run: |

@@ -8,10 +8,15 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "pnpm --filter @infamous/api dev",
-    "build": "pnpm -r build",
+    "dev:api": "pnpm --filter @infamous/api dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:mobile": "pnpm --filter mobile dev",
     "build:shared": "pnpm --filter @infamous-freight/shared build",
-    "typecheck": "pnpm -r --if-present typecheck",
-    "lint": "pnpm -r lint",
-    "test": "pnpm -r --if-present test"
+    "build": "pnpm run build:shared && pnpm -r build",
+    "typecheck": "pnpm run build:shared && pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm run build:shared && pnpm -r --if-present test",
+    "test:ci": "pnpm run build:shared && pnpm -r --if-present test -- --runInBand",
+    "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test"
   }
 }
