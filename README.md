@@ -75,4 +75,67 @@ pnpm dev:mobile
 
 ---
 
-### **Developer Checklist: Get Code Merged on Enterprise Rigs. Successful & Rejectable CLI the milestones Fulfilled!!. Thank.
+---
+
+## Validation
+
+Before opening a pull request, run the full validation suite locally:
+
+```bash
+pnpm run validate
+# or step-by-step:
+pnpm build
+pnpm typecheck
+pnpm lint
+pnpm test
+```
+
+You can also use the helper script:
+
+```bash
+bash scripts/validate-local.sh
+```
+
+---
+
+## Contributing
+
+See [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md) for the full guide.
+
+Quick summary:
+
+1. Create a feature branch from `main` (e.g. `feature/load-optimization`).
+2. Make your changes with tests.
+3. Run `pnpm run validate` — all checks must pass.
+4. Open a pull request and fill in the PR template completely.
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+- `feat: add shipment tracking API`
+- `fix: resolve pnpm workspace install issue`
+- `docs: update architecture section`
+
+---
+
+## Architecture
+
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full technical overview.
+
+```
+Client (Web / Mobile)
+  └── API Gateway (Express + Prisma)
+        └── AI Orchestration Layer
+              └── Business Logic Engine
+                    └── Data Layer (PostgreSQL + Redis)
+```
+
+- **`apps/api`** — Express REST API, JWT auth, Prisma ORM, PostgreSQL.
+- **`apps/web`** — Next.js 14 operations dashboard, TypeScript, Tailwind CSS.
+- **`apps/mobile`** — React Native + Expo cross-platform app.
+- **`packages/shared`** — Domain types, Zod schemas, shared utilities.
+
+---
+
+## Deployment
+
+See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for environment setup, secrets management, and platform-specific guides.
