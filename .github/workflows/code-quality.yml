@@ -127,7 +127,7 @@ jobs:
 
       - name: Setup test database
         env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/infamous_freight_test
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           cd apps/api
           pnpm prisma:generate
@@ -135,9 +135,9 @@ jobs:
 
       - name: Run API tests
         env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/infamous_freight_test
-          REDIS_URL: redis://localhost:6379
-          JWT_SECRET: test-secret-key-for-ci
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_REFRESH_SECRET: test-refresh-secret-key-for-ci
           NODE_ENV: test
         run: pnpm --filter api test
@@ -237,7 +237,7 @@ jobs:
         env:
           # Provide minimal env vars for build
           NEXT_PUBLIC_API_URL: http://localhost:4000
-          DATABASE_URL: postgresql://user:pass@localhost:5432/db
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SKIP_ENV_VALIDATION: true
 
   code-quality-summary:

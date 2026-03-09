@@ -28,10 +28,15 @@ jobs:
           cache: pnpm
 
       - name: Enable Corepack
-        run: corepack enable
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: npm audit (root)
+        run: npm audit --audit-level=high || true
 
       - name: pnpm audit (monorepo)
         run: pnpm -r audit --prod --audit-level high

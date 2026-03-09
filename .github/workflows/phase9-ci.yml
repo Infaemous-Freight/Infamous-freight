@@ -61,21 +61,21 @@ jobs:
           DATABASE_URL="postgresql://test:test@localhost:5432/infamous_test" npx prisma migrate deploy
           cd ../..
         env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/infamous_test
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run unit tests
         run: npm run test --filter api
         env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/infamous_test
-          JWT_SECRET: test-secret
-          REDIS_URL: redis://localhost:6379
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
 
       - name: Run Phase 9 tests
         run: npm run test -- apps/api/tests/phase9.test.js
         env:
-          DATABASE_URL: postgresql://test:test@localhost:5432/infamous_test
-          JWT_SECRET: test-secret
-          REDIS_URL: redis://localhost:6379
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
 
       - name: Generate coverage report
         run: npm run test:coverage --filter api

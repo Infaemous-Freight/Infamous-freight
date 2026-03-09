@@ -194,8 +194,8 @@ jobs:
       - name: Test rate limiting
         working-directory: apps/api
         env:
-          REDIS_URL: redis://localhost:6379
-          DATABASE_URL: postgresql://postgres:test@localhost:5432/test_db
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           # Simple rate limiting test
           node -e "
