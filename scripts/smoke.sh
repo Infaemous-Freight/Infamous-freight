@@ -11,6 +11,6 @@ response="$(curl --silent --show-error --fail "${HEALTH_URL}")"
 echo "==> Health response:"
 echo "${response}"
 
-echo "${response}" | grep '"ok":true' >/dev/null
+echo "${response}" | grep -E '"ok"[[:space:]]*:[[:space:]]*true' >/dev/null
 
 echo "Smoke test passed."
