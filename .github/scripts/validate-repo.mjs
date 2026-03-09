@@ -22,7 +22,7 @@ if (!fs.existsSync(path.join(root, ".nvmrc"))) {
 }
 
 if (!fs.existsSync(path.join(root, "pnpm-lock.yaml"))) {
-  fail("Missing pnpm-lock.yaml. CI must use a committed lockfile for reproducible installs.");
+  fail("Missing pnpm-lock.yaml. Reproducible installs require a committed lockfile.");
 }
 
 if (!fs.existsSync(path.join(root, "package.json"))) {
@@ -33,7 +33,7 @@ const nvmrc = readFile(".nvmrc").trim();
 const pkg = readJson("package.json");
 
 if (!pkg.packageManager) {
-  fail('Root package.json must define "packageManager", e.g. "pnpm@9.15.0".');
+  fail('Root package.json must define "packageManager", for example "pnpm@9.15.0".');
 }
 
 if (!String(pkg.packageManager).startsWith("pnpm@")) {

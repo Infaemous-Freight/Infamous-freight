@@ -7,11 +7,11 @@
   },
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "dev": "pnpm --filter ./apps/api dev",
+    "dev": "pnpm --filter @infamous/api dev",
     "build": "pnpm -r build",
     "build:shared": "pnpm --filter @infamous-freight/shared build",
-    "typecheck": "pnpm -r --if-present typecheck",
-    "lint": "pnpm -r --if-present lint",
-    "test": "pnpm -r --if-present test"
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
   }
 }
