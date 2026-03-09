@@ -16,7 +16,7 @@
     "typecheck": "pnpm run build:shared && pnpm -r --if-present typecheck",
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm run build:shared && pnpm -r --if-present test",
-    "test:ci": "pnpm run build:shared && pnpm -r --if-present test -- --runInBand",
+    "test:ci": "pnpm run build:shared && pnpm -r --if-present test",
     "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test"
   }
 }
