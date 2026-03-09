@@ -12,7 +12,7 @@
     "dev:web": "pnpm --filter web dev",
     "dev:mobile": "pnpm --filter mobile dev",
     "build:shared": "pnpm --filter @infamous-freight/shared build",
-    "build": "pnpm run build:shared && pnpm -r build",
+    "build": "pnpm run build:shared && pnpm -r --filter '!@infamous-freight/shared' build",
     "typecheck": "pnpm run build:shared && pnpm -r --if-present typecheck",
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm run build:shared && pnpm -r --if-present test",
