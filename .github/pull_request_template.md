@@ -1,55 +1,33 @@
 ## Summary
-Describe what changed and why.
+- what changed
+- why it changed
 
 ## Scope
-- [ ] API
-- [ ] Web
-- [ ] Mobile
-- [ ] Shared packages
-- [ ] Prisma / DB
-- [ ] CI/CD
-- [ ] Infra
-- [ ] Docs / Config
+- [ ] api
+- [ ] web
+- [ ] shared
+- [ ] ci
+- [ ] security
+- [ ] docs
 
-## Risk Review
-- [ ] Auth reviewed
-- [ ] Tenant isolation preserved
-- [ ] Input validation reviewed
-- [ ] Error handling reviewed
-- [ ] Logging / observability preserved
-- [ ] No secrets added
-- [ ] No unsafe raw SQL added
-
-## Freight Domain Review
-- [ ] Shipment / load status transitions reviewed
-- [ ] Tracking integrity preserved
-- [ ] Rate / invoice changes are traceable
-- [ ] Cross-tenant access is not introduced
-
-## Testing
+## Validation
+- [ ] sanity
 - [ ] lint
 - [ ] typecheck
 - [ ] test
 - [ ] build
+- [ ] codeql
+- [ ] audit
 
-## DB / Migration
-- [ ] No migration
-- [ ] Migration included
-- [ ] Backfill required
-- [ ] Rollback considered
-- [ ] Tenant scoping reviewed in DB queries
+## Risk
+- migration risk:
+- operational risk:
+- rollback plan:
 
-## Release Checklist
-- [ ] env vars verified
-- [ ] health checks verified
-- [ ] observability verified
-- [ ] rollout plan noted
-- [ ] rollback plan noted
+## Coverage
+- current coverage:
+- changed files covered:
+- known uncovered paths:
 
-## Follow-up Work
-List any tasks that are intentionally deferred or out of scope for this PR. Open separate issues for each.
-
-- N/A
-
-## Notes for Reviewers
-Add known tradeoffs, follow-ups, or risk areas here.
+## Notes
+- additional context

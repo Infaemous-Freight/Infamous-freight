@@ -2,12 +2,13 @@
   "name": "infamous-freight",
   "private": true,
   "engines": {
-    "node": "20.x"
+    "node": "22.x",
+    "pnpm": "9.x"
   },
-  "packageManager": "pnpm@9",
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "pnpm --filter ./apps/api dev",
-    "build": "pnpm -r --if-present build",
+    "build": "pnpm -r build",
     "build:shared": "pnpm --filter @infamous-freight/shared build",
     "typecheck": "pnpm -r --if-present typecheck",
     "lint": "pnpm -r --if-present lint",
