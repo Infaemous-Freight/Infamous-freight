@@ -33,5 +33,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: pnpm audit
+      - name: pnpm audit (all workspaces)
         run: pnpm audit --prod --audit-level high
