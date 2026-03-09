@@ -1,36 +1,45 @@
 # Infamous Freight
 
-[![CI](https://github.com/MrMiless44/Infamous-freight/actions/workflows/ci.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/MrMiless44/Infamous-freight/actions/workflows/codeql.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/codeql.yml)
-[![Security Audit](https://github.com/MrMiless44/Infamous-freight/actions/workflows/security-audit.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/security-audit.yml)
+[![CI](https://github.com/MrMiless44/Infamous-freight/actions/workflows/ci.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/ci.yml) [![CodeQL](https://github.com/MrMiless44/Infamous-freight/actions/workflows/codeql.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/codeql.yml) [![Security Audit](https://github.com/MrMiless44/Infamous-freight/actions/workflows/security-audit.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/security-audit.yml)
 
-Infamous Freight is a logistics and freight operations platform organized as a pnpm monorepo with API, web, mobile, and shared workspace packages.
+## About
 
-## Workspace Layout
+ The **Infamous Freight** repository powers a cutting-edge AI-driven freight operations platform. It's enterprise-ready and emphasizes dispatch, fleet intelligence, and driver coaching.
 
-```text
+Built as a `pnpm` monorepo, this repository spans backend services, frontend apps, and mobile solutions tailored for seamless logistics management.
+
+### Key Features:
+1. AI-Powered Dispatch: Enhances productivity by automating load assignments.
+2. Fleet Intelligence: Offers actionable insights for route optimization and maintenance planning.
+3. Driver Coaching: Personalized driver performance improvement through analytics.
+
+---
+
+### Monorepo Layout:
+```plaintext
 apps/
-  api/       Express API
-  web/       Next.js operations dashboard
-  mobile/    Expo / React Native mobile app
+  api/       Express API for backend processing.
+  web/       Operations Dashboard powered by Next.js.
+  mobile/    Cross-platform app on React Native with Expo.
 
 packages/
-  shared/    shared types and utilities
+  shared/    Workspace for types, configs, and utility functions.
 ```
 
-## Tooling Requirements
+---
 
-- Node.js 22.x
-- pnpm 9.x
+### Developer Tooling
+#### Requirements:
+- Node: 22.x
+- pnpm: 9.x
 
-This repository pins:
-
-- `node`: `22.x`
-- `pnpm`: `9.x`
+#### Configuration Pins:
+- Node.js: Version `22.x`
+- pnpm version: `9.x`
 - `packageManager`: `pnpm@9.15.0`
 
-## Local Setup
-
+---
+## Setting Up Locally:
 ```bash
 corepack enable
 corepack prepare pnpm@9.15.0 --activate
@@ -42,42 +51,28 @@ cp .env.example .env
 pnpm install
 pnpm build
 ```
+#### Environment Variables:
+- Secrets should remain in `.env` and never surface in workflows, commits, or scripts to CI stations.
 
-## Development
+---
 
-### API
-
+## Development Scripts
+#### API:
 ```bash
 pnpm dev
-# or
+# Optional:
+# Direct, API-only invoke
 pnpm dev:api
 ```
-
-### Web
-
+#### Web:
 ```bash
 pnpm dev:web
 ```
-
-### Mobile
-
+#### Mobile:
 ```bash
 pnpm dev:mobile
 ```
 
-## Quality Checks
+---
 
-```bash
-pnpm typecheck
-pnpm lint
-pnpm test
-pnpm build
-pnpm validate
-```
-
-## Notes
-
-- The root `dev` script starts the API workspace.
-- The shared package is built before recursive build, typecheck, and test commands.
-- Environment values should be supplied via `.env` locally and provider secrets in CI / deployment platforms.
-- Never commit secrets into workflow files or tracked config.
+### **Developer Checklist: Get Code Merged on Enterprise Rigs. Successful & Rejectable CLI the milestones Fulfilled!!. Thank.
