@@ -94,10 +94,12 @@ jobs:
           echo "🔐 Git Hooks Configuration:"
           echo ""
           
-          HOOKS_PATH=$(git config core.hooksPath)
-          echo "  - core.hooksPath: $HOOKS_PATH"
-          
-          if [ -d "$HOOKS_PATH" ]; then
+          HOOKS_PATH="$(git config --get core.hooksPath 2>/dev/null || true)"
+          echo "  - core.hooksPath: ${HOOKS_PATH:-<unset>}"
+
+          if [ -z "$HOOKS_PATH" ]; then
+            echo "  ℹ️  Repository is using default .git/hooks or no custom hooks path"
+          elif [ -d "$HOOKS_PATH" ]; then
             echo "  ✅ Hooks directory exists"
             HOOKS=$(ls -1 "$HOOKS_PATH" 2>/dev/null | wc -l)
             echo "  - Hooks configured: $HOOKS"
@@ -165,7 +167,8 @@ jobs:
           fi
           
           # Check git config
-          if [ -z "$(git config core.hooksPath)" ]; then
+          HOOKS_PATH="$(git config --get core.hooksPath 2>/dev/null || true)"
+          if [ -z "$HOOKS_PATH" ]; then
             HEALTH=$((HEALTH - 5))
           fi
           
