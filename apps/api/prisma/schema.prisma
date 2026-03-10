@@ -3,53 +3,228 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-model Tenant {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  shipments Shipment[]
-  loads     Load[]
+enum Role {
+  ADMIN
+  BROKER
+  SHIPPER
+  CARRIER
+  DRIVER
+}
+
+enum EquipmentType {
+  VAN
+  REEFER
+  FLATBED
+}
+
+enum ShipmentStatus {
+  CREATED
+  POSTED
+  BOOKED
+  IN_TRANSIT
+  DELAYED
+  DELIVERED
+  CANCELLED
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AlertOperator {
+  GT
+  LT
+  GTE
+  LTE
+  EQ
+  NEQ
+}
+
+enum AnomalyType {
+  SPIKE
+  DROP
+  STALE_METRIC
+}
+
+model Organization {
+  id                  String              @id @default(uuid())
+  name                String
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  users               User[]
+  carriers            Carrier[]
+  shipments           Shipment[]
+  bookings            Booking[]
+  monitoringRules     MonitoringRule[]
+  monitoringMetrics   MonitoringMetric[]
+  monitoringAlerts    MonitoringAlert[]
+  monitoringAnomalies MonitoringAnomaly[]
+  webhookTargets      WebhookTarget[]
+  generatedInsights   GeneratedInsight[]
+}
+
+model User {
+  id             String       @id @default(uuid())
+  organizationId String
+  email          String       @unique
+  fullName       String
+  passwordHash   String
+  role           Role
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Carrier {
+  id                   String          @id @default(uuid())
+  organizationId       String
+  displayName          String
+  mcNumber             String?         @unique
+  dotNumber            String?         @unique
+  onTimeRate           Float           @default(0.90)
+  tenderAcceptanceRate Float           @default(0.90)
+  safetyScore          Float           @default(0.90)
+  priceCompetitiveness Float           @default(0.80)
+  serviceRating        Float           @default(0.90)
+  equipmentTypes       EquipmentType[]
+  activeLanes          String[]
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  organization         Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  bookings             Booking[]
+  assignedShipments    Shipment[]      @relation("BookedCarrierShipments")
 }
 
 model Shipment {
-  id          String   @id @default(cuid())
-  tenantId    String
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  ref         String
-  originCity  String
-  originState String
-  destCity    String
-  destState   String
-  weightLb    Int
-  rateCents   Int
-  status      String   @default("CREATED")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([tenantId])
-  @@unique([tenantId, ref])
+  id              String         @id @default(uuid())
+  organizationId  String
+  referenceNumber String         @unique
+  origin          String
+  destination     String
+  distanceMiles   Int
+  equipmentType   EquipmentType
+  weightLbs       Int
+  pickupAt        DateTime
+  status          ShipmentStatus @default(CREATED)
+  bookedCarrierId String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  organization    Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  bookedCarrier   Carrier?       @relation("BookedCarrierShipments", fields: [bookedCarrierId], references: [id])
+  bookings        Booking[]
 }
 
-model Load {
-  id          String   @id @default(cuid())
-  tenantId    String
-  tenant      Tenant   @relation(fields: [tenantId], references: [id])
-  originCity  String
-  originState String
-  destCity    String
-  destState   String
-  distanceMi  Int
-  weightLb    Int
-  rateCents   Int
-  status      String   @default("OPEN")
-  claimedByUserId String?
-  claimedAt   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Booking {
+  id                String       @id @default(uuid())
+  organizationId    String
+  shipmentId        String
+  carrierId         String
+  pricePerMile      Float
+  estimatedLinehaul Float
+  marginPct         Float
+  notes             String?
+  createdAt         DateTime     @default(now())
+  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  shipment          Shipment     @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  carrier           Carrier      @relation(fields: [carrierId], references: [id], onDelete: Cascade)
 
-  @@index([tenantId])
+  @@index([organizationId])
+  @@index([shipmentId])
+  @@index([carrierId])
+}
+
+model MonitoringRule {
+  id             String          @id @default(uuid())
+  organizationId String
+  name           String
+  metricKey      String
+  operator       AlertOperator
+  threshold      Float
+  severity       AlertSeverity
+  enabled        Boolean         @default(true)
+  tagsJson       Json?
+  channelsJson   Json?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  alerts         MonitoringAlert[]
+
+  @@index([organizationId, metricKey])
+}
+
+model MonitoringMetric {
+  id             String          @id @default(uuid())
+  organizationId String
+  key            String
+  value          Float
+  tagsJson       Json?
+  recordedAt     DateTime        @default(now())
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  alerts         MonitoringAlert[]
+
+  @@index([organizationId, key, recordedAt])
+}
+
+model MonitoringAlert {
+  id             String           @id @default(uuid())
+  organizationId String
+  ruleId         String
+  metricId       String
+  severity       AlertSeverity
+  reason         String
+  createdAt      DateTime         @default(now())
+  resolvedAt     DateTime?
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  rule           MonitoringRule   @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  metric         MonitoringMetric @relation(fields: [metricId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, severity, createdAt])
+}
+
+model MonitoringAnomaly {
+  id             String       @id @default(uuid())
+  organizationId String
+  type           AnomalyType
+  metricKey      String
+  currentValue   Float
+  expectedMin    Float
+  expectedMax    Float
+  createdAt      DateTime     @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, metricKey, createdAt])
+}
+
+model WebhookTarget {
+  id             String       @id @default(uuid())
+  organizationId String
+  name           String
+  url            String
+  enabled        Boolean      @default(true)
+  eventTypesJson Json
+  secret         String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, enabled])
+}
+
+model GeneratedInsight {
+  id                  String       @id @default(uuid())
+  organizationId      String
+  summary             String
+  recommendationsJson Json
+  createdAt           DateTime     @default(now())
+  organization        Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, createdAt])
 }

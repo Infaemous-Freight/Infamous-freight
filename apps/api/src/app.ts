@@ -8,6 +8,7 @@ import aiRoutes from "./routes/ai.js";
 import carrierRoutes from "./routes/carriers.js";
 import rateRoutes from "./routes/rates.js";
 import shipmentRoutes from "./routes/shipments.js";
+import healthRoutes from "./routes/health.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ export function createApp() {
     });
   });
 
+  app.use("/api", healthRoutes);
   app.use("/api/ai", aiRoutes);
   app.use("/api/carriers", carrierRoutes);
   app.use("/api/rates", rateRoutes);
