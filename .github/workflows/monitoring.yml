@@ -1,0 +1,80 @@
+name: Monitoring
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health-check:
+    name: Health Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check API health
+        id: api
+        env:
+          API_URL: ${{ secrets.HEALTH_API_URL || 'https://infamous-freight-api.fly.dev/api/health' }}
+        run: |
+          echo "Checking API: $API_URL"
+          HTTP_CODE=$(curl -s --connect-timeout 5 --max-time 15 -o /dev/null -w "%{http_code}" "$API_URL" || echo "000")
+          echo "API HTTP status: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "api_status=down" >> $GITHUB_OUTPUT
+            echo "❌ API health check failed (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+          echo "api_status=up" >> $GITHUB_OUTPUT
+          echo "✅ API is healthy"
+
+      - name: Check Web health
+        id: web
+        env:
+          WEB_URL: ${{ secrets.HEALTH_WEB_URL || 'https://infamous-freight-enterprises.vercel.app' }}
+        run: |
+          echo "Checking Web: $WEB_URL"
+          HTTP_CODE=$(curl -s --connect-timeout 5 --max-time 15 -o /dev/null -w "%{http_code}" "$WEB_URL" || echo "000")
+          echo "Web HTTP status: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "web_status=down" >> $GITHUB_OUTPUT
+            echo "❌ Web health check failed (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+          echo "web_status=up" >> $GITHUB_OUTPUT
+          echo "✅ Web is healthy"
+
+      - name: Measure response time
+        if: success()
+        env:
+          API_URL: ${{ secrets.HEALTH_API_URL || 'https://infamous-freight-api.fly.dev/api/health' }}
+        run: |
+          TIME=$(curl -s -o /dev/null -w "%{time_total}" "$API_URL" || echo "0")
+          echo "API response time: ${TIME}s"
+          if (( $(echo "$TIME > 10" | bc -l) )); then
+            echo "⚠️  Slow response detected: ${TIME}s"
+          fi
+
+      - name: Alert on failure
+        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        run: |
+          payload=$(jq -n \
+            --arg text "🔴 UPTIME ALERT: Production health check failed. View run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            '{text:$text}')
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"
+
+  daily-report:
+    name: Daily Health Report
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 2 * * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Check API
+        run: |
+          echo "Running daily health report..."
+          curl -fsS "${{ secrets.HEALTH_API_URL || 'https://infamous-freight-api.fly.dev/api/health' }}"
+
+      - name: Check Web
+        run: |
+          curl -fsS "${{ secrets.HEALTH_WEB_URL || 'https://infamous-freight-enterprises.vercel.app' }}"

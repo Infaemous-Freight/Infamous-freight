@@ -1,6 +1,12 @@
 name: Deploy Web (Vercel)
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - "packages/shared/**"
+      - "pnpm-lock.yaml"
   workflow_dispatch:
   workflow_call:
     outputs:
@@ -8,9 +14,17 @@ on:
         description: "Deployed Vercel app URL"
         value: ${{ jobs.deploy-web.outputs.deploy_url }}
 
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-web
+  cancel-in-progress: true
+
 jobs:
   deploy-web:
     runs-on: ubuntu-latest
+    environment: production
     outputs:
       deploy_url: ${{ steps.deploy.outputs.deploy_url }}
     env:
@@ -69,3 +83,21 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **URL**: ${{ steps.deploy.outputs.deploy_url }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Dashboard**: https://vercel.com/dashboard" >> $GITHUB_STEP_SUMMARY
+
+      - name: Slack notify (success)
+        if: success() && secrets.SLACK_WEBHOOK_URL != ''
+        run: |
+          payload=$(jq -n \
+            --arg text "✅ Deploy Success: ${{ github.workflow }} @ ${{ github.ref_name }} (commit ${{ github.sha }})" \
+            '{text:$text}')
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"
+
+      - name: Slack notify (failure)
+        if: failure() && secrets.SLACK_WEBHOOK_URL != ''
+        run: |
+          payload=$(jq -n \
+            --arg text "❌ Deploy Failed: ${{ github.workflow }} @ ${{ github.ref_name }} (commit ${{ github.sha }})" \
+            '{text:$text}')
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$payload" "${{ secrets.SLACK_WEBHOOK_URL }}"
