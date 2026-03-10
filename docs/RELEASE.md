@@ -15,7 +15,7 @@
 2. Tag the release: `git tag -a v<version> -m "Release <version>"`.
 3. Push changes: `git push && git push --tags`.
 4. Publish release and changelog:
-   - Generate changelog (e.g. `scripts/changelog.sh` if available, or create one manually).
+   - Generate changelog (e.g. using `git log`, `git diff`, `conventional-changelog`, or your team's standard tooling).
    - Include full migration and rollback notes.
 
 ## Post-Release
