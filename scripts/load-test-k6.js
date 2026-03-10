@@ -1,5 +1,9 @@
 /* eslint-env es6 */
 /* global __ENV */
+// NOTE: This file must remain .js (not .mjs) because it is executed by the k6
+// load-testing binary, which uses its own module system and does not support
+// Node.js ESM resolution.  The `import` statements here are k6-specific ESM,
+// not standard Node.js ESM.
 
 import http from "k6/http";
 import { check, sleep, group } from "k6";
