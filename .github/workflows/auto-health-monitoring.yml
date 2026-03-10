@@ -21,6 +21,7 @@ jobs:
 
       - name: 📊 Collect Health Metrics
         run: |
+          set -euxo pipefail
           echo "📡 Repository Health Monitor"
           echo "════════════════════════════════════════════════════════"
           echo ""
@@ -70,6 +71,7 @@ jobs:
 
       - name: 🔍 Forbidden Patterns Check
         run: |
+          set -euxo pipefail
           echo "🔍 Checking forbidden patterns..."
           echo ""
           
@@ -91,22 +93,31 @@ jobs:
 
       - name: 🔐 Git Hooks Health
         run: |
+          set -euxo pipefail
           echo "🔐 Git Hooks Configuration:"
           echo ""
-          
-          HOOKS_PATH=$(git config core.hooksPath)
-          echo "  - core.hooksPath: $HOOKS_PATH"
-          
-          if [ -d "$HOOKS_PATH" ]; then
-            echo "  ✅ Hooks directory exists"
-            HOOKS=$(ls -1 "$HOOKS_PATH" 2>/dev/null | wc -l)
-            echo "  - Hooks configured: $HOOKS"
+
+          # Safe retrieval when core.hooksPath is not configured.
+          HOOKS_PATH="$(git config --get core.hooksPath || true)"
+
+          if [ -n "$HOOKS_PATH" ]; then
+            echo "  - core.hooksPath: $HOOKS_PATH"
+
+            if [ -d "$HOOKS_PATH" ]; then
+              echo "  ✅ Hooks directory exists"
+              HOOKS=$(find "$HOOKS_PATH" -maxdepth 1 -type f 2>/dev/null | wc -l)
+              echo "  - Hooks configured: $HOOKS"
+            else
+              echo "  ⚠️  Hooks path is set but directory was not found"
+            fi
           else
-            echo "  ⚠️  Hooks directory not found"
+            echo "  - core.hooksPath: not configured"
+            echo "  ℹ️  Using default .git/hooks behavior"
           fi
 
       - name: 📚 Documentation Health
         run: |
+          set -euxo pipefail
           echo "📚 Documentation Status:"
           echo ""
           
@@ -134,6 +145,7 @@ jobs:
 
       - name: 🔗 Link Verification
         run: |
+          set -euxo pipefail
           echo "🔗 Link Health Check:"
           echo ""
           
@@ -152,6 +164,7 @@ jobs:
 
       - name: 📊 Generate Health Score
         run: |
+          set -euxo pipefail
           echo "📊 Repository Health Score:"
           echo ""
           
@@ -165,7 +178,8 @@ jobs:
           fi
           
           # Check git config
-          if [ -z "$(git config core.hooksPath)" ]; then
+          HOOKS_PATH="$(git config --get core.hooksPath || true)"
+          if [ -z "$HOOKS_PATH" ]; then
             HEALTH=$((HEALTH - 5))
           fi
           
@@ -197,6 +211,7 @@ jobs:
     steps:
       - name: 📊 Upload Metrics
         run: |
+          set -euxo pipefail
           echo "════════════════════════════════════════════════════════"
           echo "📡 AUTO HEALTH MONITORING REPORT"
           echo "════════════════════════════════════════════════════════"
