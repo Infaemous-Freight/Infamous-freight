@@ -17,6 +17,11 @@
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm run build:shared && pnpm -r --if-present test",
     "test:ci": "pnpm run build:shared && pnpm -r --if-present test -- --runInBand",
+    "format:check": "prettier --check . --ignore-unknown",
+    "format": "prettier --write . --ignore-unknown",
     "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.0"
   }
 }

@@ -159,7 +159,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 🔨 Build shared package
-        run: pnpm --filter @infamous/shared build || echo "⚠️  Shared build not configured"
+        run: pnpm --filter @infamous-freight/shared build || echo "⚠️  Shared build not configured"
         continue-on-error: true
 
       - name: 🔨 Build API

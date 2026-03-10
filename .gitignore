@@ -21,6 +21,7 @@ coverage/
 .env
 .env.*
 !.env.example
+!.env.*.example
 .env.local
 
 # Logs
@@ -47,14 +48,11 @@ Untitled-*
 *.pnpm
 *.pid
 install.log
-npm\ install\ -g\ *.yaml
-✅\ *.md
-# In *
-- name:*
-Test Suites:*
-Back in*
-Choose one:*
-Secrets were*
+
+# Binary artifacts (should not be committed)
+*.zip
+*.tar.gz
+*.tar
 
 # Package manager backups
 package.json.backup

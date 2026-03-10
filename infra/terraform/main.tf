@@ -1,6 +1,6 @@
 /**
  * Terraform Infrastructure-as-Code Configuration
- * Deploy Infæmous Freight to Fly.io with Terraform
+ * Deploy Infamous Freight to Fly.io with Terraform
  * Enables version control, reproducibility, and team collaboration
  */
 

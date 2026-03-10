@@ -40,12 +40,8 @@ infra:
   - changed-files:
       - any-glob-to-any-file:
           - "docker/**"
-          - "deploy/**"
+          - "infra/**"
           - "infrastructure/**"
-          - "k8s/**"
-          - "terraform/**"
-          - "nginx/**"
-          - "supabase/**"
 
 security:
   - changed-files:

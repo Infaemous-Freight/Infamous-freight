@@ -1,6 +1,6 @@
 # Vercel Project Settings Execution Plan
 
-This guide captures the latest Vercel project settings checklist for Infæmous
+This guide captures the latest Vercel project settings checklist for Infamous
 Freight, aligned with the current production deployment standard.
 
 ## Phase 1 — Lock production + Git
