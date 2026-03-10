@@ -18,6 +18,9 @@ env:
   PNPM_VERSION: '9.15.0'
   CACHE_DIR: .cache
 
+permissions:
+  contents: read
+
 jobs:
   # ═══════════════════════════════════════════════════════════════════
   # AUTOMATED QUALITY CHECKS

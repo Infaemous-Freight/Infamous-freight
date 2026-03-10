@@ -15,6 +15,9 @@ concurrency:
   group: docker-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   docker-build:
     name: Verify Docker Build

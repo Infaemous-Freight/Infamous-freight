@@ -32,6 +32,9 @@ on:
         required: false
         description: "Deployment webhook URL"
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     name: Deploy ${{ inputs.app-name }} to ${{ inputs.platform }}

@@ -3,6 +3,9 @@ name: Auto Deploy (Change Detection)
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   changes:
     runs-on: ubuntu-latest

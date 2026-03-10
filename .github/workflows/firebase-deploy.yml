@@ -16,6 +16,9 @@ on:
 env:
   NODE_VERSION: "18.x"
 
+permissions:
+  contents: read
+
 jobs:
   # Verify Firebase configuration
   verify:

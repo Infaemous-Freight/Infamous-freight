@@ -38,6 +38,9 @@ on:
         default: false
         description: "Whether Redis service is needed"
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Test ${{ inputs.package-name }}

@@ -18,6 +18,9 @@ on:
 env:
   NODE_VERSION: "24.x"
 
+permissions:
+  contents: read
+
 jobs:
   deploy-hosting:
     runs-on: ubuntu-latest

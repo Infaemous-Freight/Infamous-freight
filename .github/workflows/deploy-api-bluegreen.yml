@@ -12,6 +12,9 @@ concurrency:
   group: deploy-api-bluegreen
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

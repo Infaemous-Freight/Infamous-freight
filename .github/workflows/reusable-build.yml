@@ -33,6 +33,9 @@ on:
         default: "dist"
         description: "Path to artifact files"
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build ${{ inputs.package-name }}

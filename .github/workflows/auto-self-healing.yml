@@ -8,6 +8,9 @@ on:
     paths:
       - '.github/workflows/auto-self-healing.yml'
 
+permissions:
+  contents: write
+
 jobs:
   # ═══════════════════════════════════════════════════════════════════
   # AUTOMATED FIXES & HEALING

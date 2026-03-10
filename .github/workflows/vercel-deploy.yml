@@ -8,6 +8,9 @@ on:
         description: "Deployed Vercel app URL"
         value: ${{ jobs.deploy-web.outputs.deploy_url }}
 
+permissions:
+  contents: read
+
 jobs:
   deploy-web:
     runs-on: ubuntu-latest

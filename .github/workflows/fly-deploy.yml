@@ -11,6 +11,9 @@ on:
         description: "Fly.io health check URL"
         value: ${{ jobs.deploy-api.outputs.health_url }}
 
+permissions:
+  contents: read
+
 jobs:
   deploy-api:
     runs-on: ubuntu-latest
