@@ -1,3 +1,4 @@
+# Default ownership
 * @MrMiless44
 
 # Repository governance
@@ -16,7 +17,3 @@
 # Documentation and infrastructure
 /docs/ @MrMiless44
 /infrastructure/ @MrMiless44
-# Security and release governance
-/.github/SECURITY.md @MrMiless44
-/docs/RELEASE.md @MrMiless44
-/OWNERS @MrMiless44
