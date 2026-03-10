@@ -1,5 +1,5 @@
 {
-  "name": "worker",
+  "name": "@infamous-freight/worker",
   "private": true,
   "version": "0.0.0",
   "type": "module",

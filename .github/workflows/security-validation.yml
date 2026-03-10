@@ -49,7 +49,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run security header tests
-        run: pnpm --filter web test:security --run
+        run: pnpm --filter @infamous-freight/web test:security --run
         continue-on-error: true
 
       - name: Upload test results

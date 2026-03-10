@@ -159,15 +159,15 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: 🔨 Build shared package
-        run: pnpm --filter @infamous/shared build || echo "⚠️  Shared build not configured"
+        run: pnpm --filter @infamous-freight/shared build || echo "⚠️  Shared build not configured"
         continue-on-error: true
 
       - name: 🔨 Build API
-        run: pnpm --filter api build || echo "⚠️  API build not configured"
+        run: pnpm --filter @infamous-freight/api build || echo "⚠️  API build not configured"
         continue-on-error: true
 
       - name: 🔨 Build Web
-        run: pnpm --filter web build || echo "⚠️  Web build not configured"
+        run: pnpm --filter @infamous-freight/web build || echo "⚠️  Web build not configured"
         continue-on-error: true
 
       - name: 💾 Cache build artifacts

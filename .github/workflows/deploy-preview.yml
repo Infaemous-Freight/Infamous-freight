@@ -45,4 +45,4 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build preview
-        run: pnpm --filter web build
+        run: pnpm --filter @infamous-freight/web build
