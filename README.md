@@ -121,7 +121,6 @@ packages/
 
 - Next.js
 - TypeScript
-- TailwindCSS
 
 ### Mobile
 
