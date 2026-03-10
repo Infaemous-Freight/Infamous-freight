@@ -50,14 +50,14 @@ clean: ## Remove build artifacts and dependency caches
 	find . -name "*.tsbuildinfo" -not -path "*/node_modules/*" -delete 2>/dev/null || true
 	@echo "Build artifacts removed."
 
-infra-up: ## Start local infrastructure and API via docker compose
-	docker-compose up -d
+infra-up: ## Start local infrastructure and API via Docker Compose
+	docker compose up -d
 
 infra-down: ## Stop local infrastructure and API
-	docker-compose down
+	docker compose down
 
-infra-logs: ## Tail docker compose logs
-	docker-compose logs -f
+infra-logs: ## Tail Docker Compose logs
+	docker compose logs -f
 
 smoke: ## Run local HTTP smoke test
 	bash scripts/smoke.sh
