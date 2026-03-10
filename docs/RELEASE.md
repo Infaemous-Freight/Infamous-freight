@@ -21,6 +21,6 @@
 
 ## Post-Release
 
-- [ ] Confirm application health (`/health`) in staging and production.
+- [ ] Confirm application health (`/api/health` — or `/health` if routed via proxy as documented in `docs/smoke-health.md`) in staging and production.
 - [ ] Monitor logs for errors or regressions.
 - [ ] Validate new metrics or changes in behavior.
