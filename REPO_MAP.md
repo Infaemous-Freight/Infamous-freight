@@ -53,7 +53,6 @@
 - `scripts/` — repo automation scripts
 
 ## Satellite projects
-- `Infamous-Freight-Firebase-Studio/`
 - `infamous-freight-copilot-orchestrator/`
 - `infamous-freight-gh-app/`
 - `my-neon-app/`

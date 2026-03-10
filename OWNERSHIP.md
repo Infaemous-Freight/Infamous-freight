@@ -49,7 +49,6 @@
 - `eslint-rules/` — Tooling Platform
 
 ## Satellite projects
-- `Infamous-Freight-Firebase-Studio/` — Satellite Project Owner
 - `infamous-freight-copilot-orchestrator/` — Satellite Project Owner
 - `infamous-freight-gh-app/` — Satellite Project Owner
 - `my-neon-app/` — Satellite Project Owner

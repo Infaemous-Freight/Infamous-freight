@@ -95,7 +95,6 @@ Rules:
 
 ### 8. Project satellite layer
 Dedicated roots:
-- `Infamous-Freight-Firebase-Studio/`
 - `infamous-freight-copilot-orchestrator/`
 - `infamous-freight-gh-app/`
 - `my-neon-app/`
