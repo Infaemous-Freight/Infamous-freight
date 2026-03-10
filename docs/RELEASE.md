@@ -28,7 +28,7 @@ In the rare event that the automated release workflow is unavailable or intentio
    `git tag -a v<version> -m "Release <version>"`
 3. Push commits and tags:
    `git push && git push --tags`
-4. Generate or update the changelog.
+4. Review and finalize GitHub auto-generated release notes (no local CHANGELOG.md is maintained).
 5. Publish the GitHub Release with migration notes and rollback notes.
 
 ## Post-Release
