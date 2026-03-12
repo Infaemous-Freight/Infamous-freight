@@ -1,60 +1,77 @@
 import React from "react";
-import { BILLING } from "@/config/billing";
 import { Badge } from "@/components/pricing/Badge";
 import { PricingButton } from "@/components/pricing/PricingButton";
 
-function annualPrice(monthly: number) {
-  const discounted = monthly * (1 - BILLING.annualDiscountPct / 100);
-  return Math.round(discounted * 100) / 100;
-}
+const starterCheckoutLink = "https://buy.stripe.com/28EdRa5yA2Fs6kuanZcV210";
+const professionalCheckoutLink = "https://buy.stripe.com/9B66oIe56eoaeR0gMncV211";
+
+const starterFeatures = [
+  "Dispatch board",
+  "Load tracking",
+  "Invoicing lite",
+  "Basic AI assistance",
+  "1 user included",
+] as const;
+
+const professionalFeatures = [
+  "Everything in Starter",
+  "Advanced route optimization",
+  "Predictive ETAs",
+  "Billing automation",
+  "API access",
+  "Role-based access",
+  "Priority support",
+  "3 users included",
+] as const;
+
+const enterpriseFeatures = [
+  "Enterprise controls",
+  "Advanced AI automation",
+  "Custom integrations",
+  "Dedicated onboarding",
+  "SLA options",
+  "Minimum monthly platform spend",
+] as const;
 
 export default function PricingPage() {
-  const tiers = BILLING.tiers;
-
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="mx-auto max-w-6xl px-6 py-16">
         <header className="mb-12">
           <div className="mb-4 inline-flex items-center gap-2">
             <Badge>Infæmous Freight</Badge>
-            <Badge>AI Monetization Ready</Badge>
+            <Badge>Commercial Engine Live</Badge>
           </div>
-          <h1 className="text-4xl font-black tracking-tight">AI-Powered Freight Operations</h1>
+          <h1 className="text-4xl font-black tracking-tight">Pricing</h1>
           <p className="mt-3 max-w-2xl text-white/70">
-            Seat subscriptions + usage-based AI billing + enterprise invoicing — built for dispatch,
-            fleets, and logistics automation.
+            Starter, Professional, and Enterprise plans built for owner-operators, growing fleets,
+            and logistics networks.
           </p>
-
-          <div className="mt-6 inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80">
-            <span className="font-semibold text-white">Pricing shown monthly.</span>
-            <span className="inline-flex items-center gap-2">
-              Pay annually and save
-              <span className="rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs font-semibold">
-                {BILLING.annualDiscountPct}%
-              </span>
-            </span>
-          </div>
         </header>
 
         <div className="grid gap-6 md:grid-cols-3">
-          <TierCard
-            name={tiers.operator.name}
-            priceMonthly={tiers.operator.priceMonthly}
-            aiIncluded={tiers.operator.aiIncluded}
-            aiOverage={tiers.operator.aiOverage}
-            bullets={tiers.operator.bullets}
-            ctaHref={tiers.operator.stripeLink}
-            ctaLabel="Start Operating"
+          <PricingTierCard
+            name="Starter"
+            priceLabel="$49 / month"
+            audience="For owner-operators and small fleets."
+            includes={starterFeatures}
+            addOns={["Additional user: $15 / month", "Truck tracking: $5 / truck / month"]}
+            ctaHref={starterCheckoutLink}
+            ctaLabel="Start with Starter"
           />
 
-          <TierCard
-            name={tiers.fleet.name}
-            priceMonthly={tiers.fleet.priceMonthly}
-            aiIncluded={tiers.fleet.aiIncluded}
-            aiOverage={tiers.fleet.aiOverage}
-            bullets={tiers.fleet.bullets}
-            ctaHref={tiers.fleet.stripeLink}
-            ctaLabel="Run Your Fleet"
+          <PricingTierCard
+            name="Professional"
+            priceLabel="$149 / month"
+            audience="For growing fleets and dispatch teams."
+            includes={professionalFeatures}
+            addOns={[
+              "Additional user: $25 / month",
+              "Truck tracking: $7 / truck / month",
+              "Weather intelligence: $29 / month",
+            ]}
+            ctaHref={professionalCheckoutLink}
+            ctaLabel="Upgrade to Professional"
             mostPopular
           />
 
@@ -62,102 +79,31 @@ export default function PricingPage() {
         </div>
 
         <section className="mt-12 rounded-3xl border border-white/10 bg-white/5 p-8">
-          <h2 className="text-xl font-black">AI usage model (transparent)</h2>
-          <p className="mt-2 text-white/70">
-            Includes a monthly AI action allowance. Overage is billed automatically. Alerts at 80%.
-            Hard cap at 200% unless upgraded.
-          </p>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            <ComparisonBox
-              label="Operator included"
-              value={`${tiers.operator.aiIncluded} actions`}
-            />
-            <ComparisonBox label="Fleet included" value={`${tiers.fleet.aiIncluded} actions`} />
-            <ComparisonBox
-              label="Enterprise included"
-              value={`${tiers.enterprise.aiIncluded} actions`}
-            />
-          </div>
-        </section>
-
-        <section className="mt-12 grid gap-6 md:grid-cols-2">
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-8">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-black">{BILLING.addOns.intelligence.name}</h2>
-              <Badge>$299/mo</Badge>
-            </div>
-            <p className="mt-2 text-white/70">
-              Premium operational intelligence layer for risk, delay prediction, and routing
-              signals.
-            </p>
-            <ul className="mt-5 space-y-2 text-sm text-white/80">
-              {BILLING.addOns.intelligence.bullets.map((bullet) => (
-                <li key={bullet} className="flex gap-2">
-                  <span className="text-white/60">•</span> {bullet}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-6">
-              <PricingButton href="/contact-sales" variant="secondary">
-                Add to Fleet / Enterprise
-              </PricingButton>
-            </div>
-          </div>
-
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-8">
-            <h2 className="text-xl font-black">Enterprise billing (invoice-first)</h2>
-            <p className="mt-2 text-white/70">
-              Contract + Stripe invoices (ACH preferred). Optional onboarding fee. Minimum monthly
-              spend applies.
-            </p>
-            <div className="mt-6 grid gap-3">
-              <PricingButton href="/contact-sales">Contact Sales</PricingButton>
-            </div>
-            <div className="mt-5 text-xs text-white/60">
-              Note: Enterprise is intentionally not self-serve.
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-12 rounded-3xl border border-white/10 bg-white/5 p-8">
-          <h2 className="text-xl font-black">FAQ</h2>
-          <div className="mt-6 grid gap-6 md:grid-cols-2 text-sm">
-            <FAQ
-              q="What is an AI action?"
-              a="A billable AI operation: dispatch decision, route optimization, report generation, coaching summary, etc."
-            />
-            <FAQ
-              q="Do you warn before overages?"
-              a="Yes—alerts trigger at 80% usage in the dashboard + email/SMS if enabled."
-            />
-            <FAQ
-              q="What happens at the hard cap?"
-              a="AI automation pauses at 200% of included usage unless you upgrade or approve higher limits."
-            />
-            <FAQ
-              q="How does Enterprise billing work?"
-              a="Invoice-first with contract terms. ACH preferred. You can still attach usage billing."
-            />
-          </div>
+          <h2 className="text-xl font-black">How activation works</h2>
+          <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm text-white/80">
+            <li>Customer completes Stripe Checkout.</li>
+            <li>Subscription is created.</li>
+            <li>Webhook fires and tenant is provisioned.</li>
+            <li>Organization ID is generated and dashboard unlocks.</li>
+            <li>Onboarding flow begins.</li>
+          </ol>
         </section>
       </div>
     </div>
   );
 }
 
-function TierCard(props: {
+function PricingTierCard(props: {
   name: string;
-  priceMonthly: number;
-  aiIncluded: number;
-  aiOverage: number;
-  bullets: readonly string[];
+  priceLabel: string;
+  audience: string;
+  includes: readonly string[];
+  addOns: readonly string[];
   ctaHref: string;
   ctaLabel: string;
   mostPopular?: boolean;
 }) {
-  const { name, priceMonthly, aiIncluded, aiOverage, bullets, ctaHref, ctaLabel, mostPopular } =
-    props;
+  const { name, priceLabel, audience, includes, addOns, ctaHref, ctaLabel, mostPopular } = props;
 
   return (
     <div
@@ -170,31 +116,23 @@ function TierCard(props: {
         {mostPopular ? <Badge>Most Popular</Badge> : null}
       </div>
 
-      <div className="mt-4">
-        <div className="text-4xl font-black">
-          ${priceMonthly}
-          <span className="text-base font-semibold text-white/60">/seat</span>
-        </div>
-        <div className="mt-1 text-xs text-white/60">
-          Annual equivalent: ${annualPrice(priceMonthly)}/seat (-
-          {BILLING.annualDiscountPct}%)
-        </div>
-      </div>
+      <div className="mt-4 text-4xl font-black">{priceLabel}</div>
+      <p className="mt-3 text-sm text-white/70">{audience}</p>
 
-      <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-4">
-        <div className="text-xs text-white/60">AI allowance</div>
-        <div className="mt-1 text-sm font-semibold">
-          {aiIncluded.toLocaleString()} actions included
-        </div>
-        <div className="mt-1 text-xs text-white/70">
-          Overage: ${aiOverage.toFixed(3)}/action • Alert: 80% • Hard cap: 200%
-        </div>
-      </div>
+      <h4 className="mt-6 text-sm font-semibold uppercase tracking-wide text-white/80">Includes</h4>
+      <ul className="mt-3 space-y-2 text-sm text-white/80">
+        {includes.map((line) => (
+          <li key={line} className="flex gap-2">
+            <span className="text-white/60">•</span> {line}
+          </li>
+        ))}
+      </ul>
 
-      <ul className="mt-6 space-y-2 text-sm text-white/80">
-        {bullets.map((bullet) => (
-          <li key={bullet} className="flex gap-2">
-            <span className="text-white/60">•</span> {bullet}
+      <h4 className="mt-6 text-sm font-semibold uppercase tracking-wide text-white/80">Add-ons</h4>
+      <ul className="mt-3 space-y-2 text-sm text-white/80">
+        {addOns.map((line) => (
+          <li key={line} className="flex gap-2">
+            <span className="text-white/60">•</span> {line}
           </li>
         ))}
       </ul>
@@ -207,64 +145,39 @@ function TierCard(props: {
 }
 
 function EnterpriseCard() {
-  const tier = BILLING.tiers.enterprise;
-
   return (
     <div className="rounded-3xl border border-white/10 bg-white/5 p-8">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-black">{tier.name}</h3>
-        <Badge>Invoice-First</Badge>
+        <h3 className="text-lg font-black">Enterprise</h3>
+        <Badge>Contact Sales</Badge>
       </div>
 
-      <div className="mt-4">
-        <div className="text-4xl font-black">
-          ${tier.priceMonthly}
-          <span className="text-base font-semibold text-white/60">+/seat</span>
-        </div>
-        <div className="mt-1 text-xs text-white/60">
-          Minimum monthly spend: $2,500 • Contract required
-        </div>
+      <div className="mt-4 text-4xl font-black">Custom</div>
+      <p className="mt-3 text-sm text-white/70">
+        For large fleets, brokerages, and logistics networks.
+      </p>
+
+      <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-white/80">
+        <p>$499 / month platform fee</p>
+        <p>$2,500 minimum monthly spend</p>
+        <p>Usage-based AI automation</p>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-4">
-        <div className="text-xs text-white/60">AI allowance</div>
-        <div className="mt-1 text-sm font-semibold">
-          {tier.aiIncluded.toLocaleString()} actions included
-        </div>
-        <div className="mt-1 text-xs text-white/70">
-          Overage: ${tier.aiOverage.toFixed(3)}/action • Alert: 80% • Hard cap: 200%
-        </div>
-      </div>
-
-      <ul className="mt-6 space-y-2 text-sm text-white/80">
-        {tier.bullets.map((bullet) => (
-          <li key={bullet} className="flex gap-2">
-            <span className="text-white/60">•</span> {bullet}
+      <h4 className="mt-6 text-sm font-semibold uppercase tracking-wide text-white/80">Includes</h4>
+      <ul className="mt-3 space-y-2 text-sm text-white/80">
+        {enterpriseFeatures.map((line) => (
+          <li key={line} className="flex gap-2">
+            <span className="text-white/60">•</span> {line}
           </li>
         ))}
       </ul>
 
       <div className="mt-8 grid gap-3">
-        <PricingButton href="/contact-sales">Contact Sales</PricingButton>
+        <PricingButton href="/book-demo">Book a Demo</PricingButton>
+        <PricingButton href="/contact-sales" variant="secondary">
+          Contact Sales
+        </PricingButton>
       </div>
-    </div>
-  );
-}
-
-function ComparisonBox({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-      <div className="text-xs text-white/60">{label}</div>
-      <div className="mt-1 text-lg font-black">{value}</div>
-    </div>
-  );
-}
-
-function FAQ({ q, a }: { q: string; a: string }) {
-  return (
-    <div>
-      <div className="font-bold">{q}</div>
-      <div className="mt-2 text-white/70">{a}</div>
     </div>
   );
 }
