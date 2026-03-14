@@ -1,9 +1,13 @@
 import { Badge } from "@/components/pricing/Badge";
 import { PricingButton } from "@/components/pricing/PricingButton";
 
-const starterCheckoutLink = "https://buy.stripe.com/28EdRa5yA2Fs6kuanZcV210";
-const professionalCheckoutLink = "https://buy.stripe.com/9B66oIe56eoaeR0gMncV211";
+const CHECKOUT_LINKS = {
+  starter: "https://buy.stripe.com/28EdRa5yA2Fs6kuanZcV210",
+  professional: "https://buy.stripe.com/9B66oIe56eoaeR0gMncV211",
+} as const;
 
+const starterCheckoutLink = CHECKOUT_LINKS.starter;
+const professionalCheckoutLink = CHECKOUT_LINKS.professional;
 const starterFeatures = [
   "Dispatch board",
   "Load tracking",
