@@ -90,17 +90,20 @@ export default function Home(): React.ReactElement {
               </p>
               <div className="hero-actions">
                 <Link
-                  href="/signup"
+                  href="https://buy.stripe.com/28EdRa5yA2Fs6kuanZcV210"
                   className="btn btn-primary"
-                  onClick={() => trackEvent("home_start_free")}
+                  onClick={() => trackEvent("home_start_starter")}
                 >
-                  Activate Network
+                  Start with Starter
                 </Link>
-                <Link href="/login" className="btn btn-secondary">
-                  Request Command Demo
+                <Link
+                  href="https://buy.stripe.com/9B66oIe56eoaeR0gMncV211"
+                  className="btn btn-secondary"
+                >
+                  Upgrade to Professional
                 </Link>
-                <Link href="/product" className="btn btn-tertiary">
-                  View Protocol
+                <Link href="/book-demo" className="btn btn-tertiary">
+                  Book a Demo
                 </Link>
               </div>
               <div className="hero-status">
