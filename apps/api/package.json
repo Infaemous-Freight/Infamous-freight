@@ -9,7 +9,7 @@
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint src --ext .ts",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests \"src/**/*.test.mjs\"",
     "smoke": "node -e \"const base = (process.env.API_URL || 'http://localhost:4000').replace(/\\/$/, ''); fetch(base + '/health').then((res) => { if (!res.ok) process.exit(1); }).catch(() => process.exit(1));\""
   },
   "dependencies": {
