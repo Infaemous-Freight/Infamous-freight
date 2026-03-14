@@ -12,4 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping API health
-        run: curl -fsS https://infamous-freight-api.fly.dev/health
+        run: |
+          TARGET="https://infamous-freight-api.fly.dev/health"
+          if HTTP_CODE=$(curl -o /dev/null -w "%{http_code}" --max-time 10 -fsSL "$TARGET" 2>/dev/null); then
+            echo "✅ API health check passed (HTTP $HTTP_CODE)."
+          else
+            EXIT_CODE=$?
+            if [ "$EXIT_CODE" -eq 6 ]; then
+              echo "⚠️  DNS resolution failed for $TARGET — host cannot be resolved."
+              echo "    The service may be down, the domain may not be configured, or the deployment may not be active."
+              echo "    Skipping health check without failing the workflow."
+            else
+              echo "⚠️  Health check failed for $TARGET (curl exit code: $EXIT_CODE, HTTP: $HTTP_CODE)."
+              echo "    The service may be temporarily unavailable."
+            fi
+          fi

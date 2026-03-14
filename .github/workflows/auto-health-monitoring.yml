@@ -128,7 +128,7 @@ jobs:
             if [ -f "$doc" ]; then
               SIZE=$(wc -l < "$doc")
               echo "  ✓ $doc ($SIZE lines)"
-              ((FOUND++))
+              FOUND=$((FOUND + 1))
             else
               echo "  ✗ $doc (MISSING)"
             fi
