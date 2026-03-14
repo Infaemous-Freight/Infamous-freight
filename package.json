@@ -19,7 +19,9 @@
     "test:ci": "pnpm run build:shared && pnpm -r --if-present test -- --runInBand",
     "format:check": "prettier --check . --ignore-unknown",
     "format": "prettier --write . --ignore-unknown",
-    "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test"
+    "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test",
+    "smoke:release": "bash scripts/release-smoke-check.sh",
+    "deploy:check": "pnpm validate && pnpm smoke:release"
   },
   "devDependencies": {
     "prettier": "^3.5.0"
