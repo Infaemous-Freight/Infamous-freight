@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   add-preview-note:
+    if: ${{ github.event.pull_request.head.repo.fork != true }}
     runs-on: ubuntu-latest
     steps:
       - name: Add preview guidance comment
