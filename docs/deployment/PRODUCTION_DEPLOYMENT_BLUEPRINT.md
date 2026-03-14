@@ -58,13 +58,13 @@ APP_NAME=infamous-freight
 ### API / Worker
 
 ```bash
-PORT=3001
+API_PORT=3001
 DATABASE_URL=postgresql://...
 REDIS_URL=redis://...
 JWT_SECRET=replace-me
-JWT_EXPIRES_IN=15m
-JWT_REFRESH_EXPIRES_IN=7d
-CORS_ORIGIN=https://infamousfreight.com
+JWT_EXPIRY=15m
+JWT_REFRESH_SECRET=replace-me-refresh
+CORS_ORIGINS=https://infamousfreight.com
 API_BASE_URL=https://api.infamousfreight.com
 WEB_BASE_URL=https://infamousfreight.com
 SENTRY_DSN=
