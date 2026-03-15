@@ -1,4 +1,3 @@
-import js from "@eslint/js";
 import tsParser from "@typescript-eslint/parser";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import prettier from "eslint-config-prettier";
@@ -30,7 +29,6 @@ export default [
             },
         },
         rules: {
-            ...js.configs.recommended.rules,
             "no-console": "off",
             "no-undef": "off",
             "no-unused-vars": "warn",

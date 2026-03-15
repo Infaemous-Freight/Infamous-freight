@@ -1,5 +1,5 @@
 export function startAIApp() {
-  console.log("Infamous Freight AI app started");
+  process.stdout.write("Infamous Freight AI app started\n");
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

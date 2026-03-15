@@ -1,5 +1,5 @@
 export async function startWorker() {
-  console.log("Infamous Freight worker started");
+  process.stdout.write("Infamous Freight worker started\n");
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

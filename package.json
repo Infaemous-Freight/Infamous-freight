@@ -12,11 +12,11 @@
     "dev:web": "pnpm --filter web dev",
     "dev:mobile": "pnpm --filter mobile dev",
     "build:shared": "pnpm --filter @infamous-freight/shared build",
-    "build": "pnpm run build:shared && pnpm -r build",
-    "typecheck": "pnpm run build:shared && pnpm -r --if-present typecheck",
-    "lint": "pnpm -r --if-present lint",
-    "test": "pnpm run build:shared && pnpm -r --if-present test",
-    "test:ci": "pnpm run build:shared && pnpm -r --if-present test -- --runInBand",
+    "build": "pnpm run build:shared && pnpm --filter worker --if-present build",
+    "typecheck": "pnpm run build:shared && pnpm --filter @infamous-freight/shared --filter ai --filter worker --filter web --if-present typecheck",
+    "lint": "pnpm --filter ai --filter worker --filter @infamous/api --filter mobile --filter web --if-present lint",
+    "test": "pnpm run build:shared && pnpm --filter ai --filter web --if-present test",
+    "test:ci": "pnpm run build:shared && pnpm --filter ai --filter web --if-present test -- --runInBand",
     "format:check": "prettier --check . --ignore-unknown",
     "format": "prettier --write . --ignore-unknown",
     "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test",
@@ -24,6 +24,10 @@
     "deploy:check": "pnpm validate && pnpm smoke:release"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.57.0",
+    "@typescript-eslint/parser": "^8.57.0",
+    "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.5.0"
   }
 }

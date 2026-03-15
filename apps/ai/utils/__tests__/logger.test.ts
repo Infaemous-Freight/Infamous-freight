@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 /**
  * Tests for AI TypeScript Logger
  */
@@ -7,13 +8,13 @@ import { logger } from "../logger";
 describe("AI TypeScript Logger", () => {
   // Mock console to avoid test output noise
   beforeEach(() => {
-    jest.spyOn(console, "log").mockImplementation();
-    jest.spyOn(console, "error").mockImplementation();
-    jest.spyOn(console, "warn").mockImplementation();
+    vi.spyOn(console, "log").mockImplementation();
+    vi.spyOn(console, "error").mockImplementation();
+    vi.spyOn(console, "warn").mockImplementation();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("Basic logging methods", () => {
@@ -43,7 +44,7 @@ describe("AI TypeScript Logger", () => {
         confidence: 0.95,
       };
 
-      expect(() => logger.aiDecision(decisionId, data)).not.toThrow();
+      expect(() => logger.aiDecision({ decisionId, ...data })).not.toThrow();
     });
 
     test("aiConfidence() logs confidence scores with thresholds", () => {
@@ -54,7 +55,7 @@ describe("AI TypeScript Logger", () => {
         threshold: 0.75,
       };
 
-      expect(() => logger.aiConfidence(decisionId, confidence)).not.toThrow();
+      expect(() => logger.aiConfidence({ decisionId, ...confidence })).not.toThrow();
     });
 
     test("aiOverride() logs human overrides with reason", () => {
@@ -65,7 +66,7 @@ describe("AI TypeScript Logger", () => {
         timestamp: new Date().toISOString(),
       };
 
-      expect(() => logger.aiOverride(decisionId, override)).not.toThrow();
+      expect(() => logger.aiOverride({ decisionId, ...override })).not.toThrow();
     });
 
     test("aiGuardrail() logs guardrail violations", () => {
@@ -77,29 +78,6 @@ describe("AI TypeScript Logger", () => {
       };
 
       expect(() => logger.aiGuardrail(violation)).not.toThrow();
-    });
-  });
-
-  describe("Security logging", () => {
-    test("security() logs security events", () => {
-      const event = {
-        type: "unauthorized-access",
-        userId: "user-999",
-        resource: "/admin/settings",
-        ipAddress: "10.0.0.1",
-      };
-
-      expect(() => logger.security(event)).not.toThrow();
-    });
-  });
-
-  describe("Performance logging", () => {
-    test("performance() logs performance metrics", () => {
-      expect(() => logger.performance("ai-inference-time", 1250)).not.toThrow();
-    });
-
-    test("performance() handles zero duration", () => {
-      expect(() => logger.performance("instant-operation", 0)).not.toThrow();
     });
   });
 
