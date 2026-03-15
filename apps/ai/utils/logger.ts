@@ -118,10 +118,10 @@ class AILogger {
 
   security(data: Record<string, any>): void {
     this.log({
+      ...data,
       timestamp: new Date().toISOString(),
       level: "warn",
       type: "security-event",
-      ...data,
     });
   }
 
