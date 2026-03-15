@@ -24,6 +24,7 @@
     "deploy:check": "pnpm validate && pnpm smoke:release"
   },
   "devDependencies": {
+    "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.5.0"
   }
 }

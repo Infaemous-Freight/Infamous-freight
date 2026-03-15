@@ -165,7 +165,7 @@ export const customerOpsRole: RoleContract = {
     };
   },
 
-  async checkGuardrails(input: DecisionInput, context: RoleContext): Promise<GuardrailViolation[]> {
+  async checkGuardrails(input: DecisionInput, _context: RoleContext): Promise<GuardrailViolation[]> {
     const violations: GuardrailViolation[] = [];
 
     // Cannot make pricing decisions
@@ -212,7 +212,7 @@ export const customerOpsRole: RoleContract = {
     return violations;
   },
 
-  async calculateConfidence(input: DecisionInput, context: RoleContext): Promise<ConfidenceScore> {
+  async calculateConfidence(input: DecisionInput, _context: RoleContext): Promise<ConfidenceScore> {
     // Calculate confidence based on query complexity and historical resolution rates
     const parameters = (input.parameters || {}) as Record<string, unknown>;
     const inquiryType = (parameters.inquiryType as string) || "general-inquiry";
@@ -225,7 +225,7 @@ export const customerOpsRole: RoleContract = {
       "general-inquiry": 0.88, // Knowledge base responses
     };
 
-    let baseConfidence = baseScores[inquiryType] || 0.87;
+    const baseConfidence = baseScores[inquiryType] || 0.87;
 
     // Data quality assessment
     let dataQuality = 0.9;

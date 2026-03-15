@@ -1,5 +1,5 @@
-export function startAIApp() {
-  console.log("Infamous Freight AI app started");
+export function startAIApp(): void {
+  // AI runtime bootstrap placeholder.
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

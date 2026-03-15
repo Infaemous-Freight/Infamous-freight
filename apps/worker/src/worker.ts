@@ -11,7 +11,7 @@ const connection = new IORedis(process.env.REDIS_URL);
 
 new Worker(
   "invoiceQueue",
-  async (job) => {
+  async (job: { data: { invoiceId: string } }) => {
     const { invoiceId } = job.data;
 
     const { rows } = await pool.query("SELECT * FROM invoices WHERE id = $1", [invoiceId]);
@@ -27,7 +27,7 @@ new Worker(
     await new Promise<void>((resolve, reject) => {
       doc.on("data", buffers.push.bind(buffers));
 
-      doc.on("error", (err) => {
+      doc.on("error", (err: unknown) => {
         reject(err);
       });
 
@@ -45,7 +45,7 @@ new Worker(
             })
             .promise();
           resolve();
-        } catch (err) {
+        } catch (err: unknown) {
           reject(err);
         }
       });

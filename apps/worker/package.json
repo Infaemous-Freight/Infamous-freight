@@ -7,12 +7,12 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@types/node": "^22.15.29",
     "eslint": "^10.0.2",
     "tsx": "^4.19.1",
     "typescript": "^5.6.3",

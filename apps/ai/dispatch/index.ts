@@ -18,7 +18,6 @@ function logAudit(action, details) {
         timestamp: new Date().toISOString(),
     };
     auditLog.push(auditEntry);
-    console.log(`Logged Action: ${action}`, details);
 }
 
 class DispatchOperatorAI {

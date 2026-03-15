@@ -22,7 +22,7 @@ async function generateCoachingRecommendation(
   input: DecisionInput,
 ): Promise<Record<string, unknown>> {
   // Implement actual coaching recommendation logic based on driving data
-  const { action, parameters } = input;
+  const { parameters } = input;
   const drivingData = parameters?.drivingData || {};
   const coachingType = parameters?.coachingType || "general";
 
@@ -200,7 +200,7 @@ export const driverCoachRole: RoleContract = {
     };
   },
 
-  async checkGuardrails(input: DecisionInput, context: RoleContext): Promise<GuardrailViolation[]> {
+  async checkGuardrails(input: DecisionInput, _context: RoleContext): Promise<GuardrailViolation[]> {
     const violations: GuardrailViolation[] = [];
 
     // Cannot initiate disciplinary actions
@@ -227,7 +227,7 @@ export const driverCoachRole: RoleContract = {
     return violations;
   },
 
-  async calculateConfidence(input: DecisionInput, context: RoleContext): Promise<ConfidenceScore> {
+  async calculateConfidence(input: DecisionInput, _context: RoleContext): Promise<ConfidenceScore> {
     // Calculate confidence based on driving data quality and coaching history
     const { parameters } = input;
     const drivingData = parameters?.drivingData || {};
@@ -241,7 +241,7 @@ export const driverCoachRole: RoleContract = {
       general: 0.78,
     };
 
-    let baseConfidence = baseScores[coachingType] || 0.8;
+    const baseConfidence = baseScores[coachingType] || 0.8;
 
     // Data quality assessment
     let dataQuality = 0.75;
@@ -263,7 +263,7 @@ export const driverCoachRole: RoleContract = {
 
     // Coaching history impact
     const previousCoachingSessions = parameters?.coachingSessionsCompleted || 0;
-    let coachingHistoryFactor = Math.min(0.98, 0.7 + previousCoachingSessions * 0.05);
+    const coachingHistoryFactor = Math.min(0.98, 0.7 + previousCoachingSessions * 0.05);
 
     // Driving history completeness
     let drivingHistoryCompleteness = 0.75;

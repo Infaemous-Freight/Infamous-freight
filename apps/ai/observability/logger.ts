@@ -151,7 +151,7 @@ export async function logConfidence(
 export async function flagOverride(
   decisionId: string,
   role: string,
-  override: HumanOverride,
+  _override: HumanOverride,
 ): Promise<void> {
   const logEntry = {
     timestamp: override.timestamp.toISOString(),
@@ -224,7 +224,7 @@ export async function logGuardrailViolations(
 async function queueForTraining(
   decisionId: string,
   role: string,
-  override: HumanOverride,
+  _override: HumanOverride,
 ): Promise<void> {
   // Add decision to training queue for data scientists
   logger.info("Training queue", {

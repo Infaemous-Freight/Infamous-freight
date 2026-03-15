@@ -23,8 +23,7 @@ async function generateFleetRecommendation(input: DecisionInput): Promise<Record
   const { action, parameters } = input;
   const vehicleData = parameters?.vehicleData || {};
   const telemetry = parameters?.telemetry || {};
-  const maintenanceHistory = parameters?.maintenanceHistory || [];
-
+  
   switch (action) {
     case "predictive-maintenance": {
       const engineHours = telemetry.engineHours || 0;
@@ -223,7 +222,7 @@ export const fleetIntelRole: RoleContract = {
     };
   },
 
-  async checkGuardrails(input: DecisionInput, context: RoleContext): Promise<GuardrailViolation[]> {
+  async checkGuardrails(input: DecisionInput, _context: RoleContext): Promise<GuardrailViolation[]> {
     const violations: GuardrailViolation[] = [];
 
     // Cannot approve expenditures
@@ -249,12 +248,11 @@ export const fleetIntelRole: RoleContract = {
     return violations;
   },
 
-  async calculateConfidence(input: DecisionInput, context: RoleContext): Promise<ConfidenceScore> {
+  async calculateConfidence(input: DecisionInput, _context: RoleContext): Promise<ConfidenceScore> {
     // Calculate confidence based on vehicle telemetry and maintenance history
     const { action, parameters } = input;
     const telemetry = parameters?.telemetry || {};
-    const maintenanceHistory = parameters?.maintenanceHistory || [];
-    const vehicleData = parameters?.vehicleData || {};
+        const vehicleData = parameters?.vehicleData || {};
 
     // Base confidence by action type
     const baseScores: Record<string, number> = {
@@ -263,7 +261,7 @@ export const fleetIntelRole: RoleContract = {
       "asset-utilization": 0.85, // Depends on record accuracy
     };
 
-    let baseConfidence = baseScores[action] || 0.85;
+    const baseConfidence = baseScores[action] || 0.85;
 
     // Telemetry data quality
     let telemetryQuality = 0.7;
@@ -274,21 +272,21 @@ export const fleetIntelRole: RoleContract = {
     telemetryQuality = Math.min(0.99, telemetryQuality);
 
     // Maintenance record completeness
-    let maintenanceRecordQuality = Math.min(
+    const maintenanceRecordQuality = Math.min(
       0.95,
       0.6 + (maintenanceHistory.length / 20) * 0.35, // Assume 20 is comprehensive history
     );
 
     // Vehicle model reliability (some models more predictable than others)
     const vehicleAge = vehicleData.ageYears || 3;
-    let vehicleReliabilityFactor = Math.max(
+    const vehicleReliabilityFactor = Math.max(
       0.7,
       1.0 - Math.abs(vehicleAge - 5) * 0.05, // Most reliable at 5 years
     );
 
     // Prediction confidence based on similar historical cases
     const similarCases = parameters?.similarHistoricalCases || 0;
-    let historyMatchConfidence = Math.min(
+    const historyMatchConfidence = Math.min(
       0.98,
       0.6 + (similarCases / 50) * 0.38, // Assume 50 similar cases is excellent
     );

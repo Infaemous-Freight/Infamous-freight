@@ -3,17 +3,18 @@
  */
 
 import { logger } from "../logger";
+import { vi } from "vitest";
 
 describe("AI TypeScript Logger", () => {
   // Mock console to avoid test output noise
   beforeEach(() => {
-    jest.spyOn(console, "log").mockImplementation();
-    jest.spyOn(console, "error").mockImplementation();
-    jest.spyOn(console, "warn").mockImplementation();
+    vi.spyOn(console, "log").mockImplementation();
+    vi.spyOn(console, "error").mockImplementation();
+    vi.spyOn(console, "warn").mockImplementation();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("Basic logging methods", () => {

@@ -56,7 +56,6 @@ router.post(
   validateString("currency"),
   handleValidationErrors,
   asyncHandler(async (req, res) => {
-    try {
       if (!requirePrisma(res)) return;
       const { amount, currency = "usd", description, metadata = {} } = req.body;
       const amountInCents = Math.round(parseFloat(amount) * 100);
@@ -99,9 +98,6 @@ router.post(
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
       });
-    } catch (err) {
-      throw err;
-    }
   }),
 );
 
@@ -120,7 +116,6 @@ router.post(
   auditLog,
   handleValidationErrors,
   asyncHandler(async (req, res) => {
-    try {
       if (!requirePrisma(res)) return;
       const { email = req.user.email, name } = req.body;
       if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -168,9 +163,6 @@ router.post(
         success: true,
         customerId,
       });
-    } catch (err) {
-      throw err;
-    }
   }),
 );
 
@@ -190,7 +182,6 @@ router.post(
   validateString("priceId"),
   handleValidationErrors,
   asyncHandler(async (req, res) => {
-    try {
       if (!requirePrisma(res)) return;
       const { priceId, email = req.user.email, metadata = {} } = req.body;
 
@@ -281,9 +272,6 @@ router.post(
         clientSecret,
         nextBillingDate: new Date(subscription.current_period_end * 1000).toISOString(),
       });
-    } catch (err) {
-      throw err;
-    }
   }),
 );
 
@@ -300,7 +288,6 @@ router.get(
   requireScope("billing:read"),
   auditLog,
   asyncHandler(async (req, res) => {
-    try {
       if (!requirePrisma(res)) return;
       const subscriptions = await prisma.subscription.findMany({
         where: { userId: req.user.sub },
@@ -320,9 +307,6 @@ router.get(
         subscriptions,
         count: subscriptions.length,
       });
-    } catch (err) {
-      throw err;
-    }
   }),
 );
 
@@ -340,7 +324,6 @@ router.post(
   requireStripe,
   auditLog,
   asyncHandler(async (req, res) => {
-    try {
       if (!requirePrisma(res)) return;
       const { id } = req.params;
 
@@ -376,9 +359,6 @@ router.post(
         message: "Subscription cancelled successfully",
         subscriptionId: id,
       });
-    } catch (err) {
-      throw err;
-    }
   }),
 );
 
@@ -392,7 +372,6 @@ router.post(
   requireStripe,
   express.raw({ type: "application/json" }),
   asyncHandler(async (req, res) => {
-    try {
       if (!requirePrisma(res)) return;
       const sig = req.headers["stripe-signature"];
       const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -403,7 +382,7 @@ router.post(
 
       let event;
       try {
-        event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+          event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
       } catch (err) {
         return res.status(400).json({ error: `Webhook Error: ${err.message}` });
       }
@@ -488,7 +467,6 @@ router.post(
         case "charge.refunded": {
           const refundedCharge = event.data.object;
           // Log refund - flows back to customer, revenue to you remains
-          console.log(`Refund processed: ${refundedCharge.id}, Amount: ${refundedCharge.refunded}`);
           break;
         }
 
@@ -498,9 +476,6 @@ router.post(
       }
 
       res.json({ received: true });
-    } catch (err) {
-      throw err;
-    }
   }),
 );
 
@@ -516,7 +491,6 @@ router.get(
   requireScope("billing:read"),
   auditLog,
   asyncHandler(async (req, res) => {
-    try {
       if (!requirePrisma(res)) return;
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
@@ -548,9 +522,6 @@ router.get(
           note: "100% of revenue goes to your Stripe account",
         },
       });
-    } catch (err) {
-      throw err;
-    }
   }),
 );
 

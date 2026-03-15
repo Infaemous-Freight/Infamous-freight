@@ -115,6 +115,27 @@ class AILogger {
       ...data,
     });
   }
+
+  security(data: Record<string, any>): void {
+    this.log({
+      timestamp: new Date().toISOString(),
+      level: "warn",
+      type: "security-event",
+      ...data,
+    });
+  }
+
+  performance(metric: string, durationMs: number, data?: Record<string, any>): void {
+    this.log({
+      timestamp: new Date().toISOString(),
+      level: "info",
+      type: "performance",
+      metric,
+      durationMs,
+      ...data,
+    });
+  }
+
 }
 
 export const logger = new AILogger();

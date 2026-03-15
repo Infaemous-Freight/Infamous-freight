@@ -1,5 +1,5 @@
-export async function startWorker() {
-  console.log("Infamous Freight worker started");
+export async function startWorker(): Promise<void> {
+  // Worker bootstrap placeholder.
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
