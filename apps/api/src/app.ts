@@ -1,40 +1,25 @@
-import cors from "cors";
-import dotenv from "dotenv";
-import express from "express";
-import helmet from "helmet";
-import { requestIdMiddleware, httpLoggerMiddleware } from "./lib/logger.js";
-import { errorHandler, notFound } from "./middleware/error-handler.js";
-import aiRoutes from "./routes/ai.js";
-import carrierRoutes from "./routes/carriers.js";
-import rateRoutes from "./routes/rates.js";
-import shipmentRoutes from "./routes/shipments.js";
+import express, { type Application, type Request, type Response, type NextFunction } from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import { logger } from './lib/logger.js';
 
-dotenv.config();
-
-export function createApp() {
+export function createApp(): Application {
   const app = express();
 
   app.use(helmet());
-  app.use(cors());
-  app.use(express.json({ limit: "1mb" }));
-  app.use(requestIdMiddleware);
-  app.use(httpLoggerMiddleware);
+  app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') ?? '*' }));
+  app.use(express.json({ limit: '1mb' }));
+  app.use(express.urlencoded({ extended: false }));
 
-  app.get("/health", (_req, res) => {
-    res.json({
-      ok: true,
-      service: "infamous-freight-api",
-      uptime: process.uptime()
-    });
+  app.get('/health', (_req: Request, res: Response) => {
+    res.json({ status: 'ok', ts: new Date().toISOString() });
   });
 
-  app.use("/api/ai", aiRoutes);
-  app.use("/api/carriers", carrierRoutes);
-  app.use("/api/rates", rateRoutes);
-  app.use("/api/shipments", shipmentRoutes);
-
-  app.use(notFound);
-  app.use(errorHandler);
+  // Global error handler
+  app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+    logger.error({ err }, 'Unhandled error');
+    res.status(500).json({ error: 'Internal Server Error' });
+  });
 
   return app;
 }

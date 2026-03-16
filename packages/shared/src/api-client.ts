@@ -12,7 +12,7 @@
  * ```
  */
 
-import type { ApiResponse, Shipment, ShipmentStatus } from "./types";
+import type { ApiResponse, Shipment, ShipmentStatus } from "./types.js";
 
 export interface CreateShipmentPayload {
   origin: string;

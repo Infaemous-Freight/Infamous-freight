@@ -1,15 +1,20 @@
-import dotenv from "dotenv";
-dotenv.config();
+import { z } from 'zod';
 
-function req(name: string): string {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing env: ${name}`);
-  return v;
+const EnvSchema = z.object({
+  NODE_ENV:     z.enum(['development', 'test', 'production']).default('development'),
+  PORT:         z.coerce.number().min(1).max(65535).default(4000),
+  DATABASE_URL: z.string().url(),
+  REDIS_URL:    z.string().url().default('redis://localhost:6379'),
+  JWT_SECRET:   z.string().min(32),
+  CORS_ORIGIN:  z.string().optional(),
+  LOG_LEVEL:    z.enum(['trace','debug','info','warn','error','fatal']).default('info'),
+});
+
+const _parsed = EnvSchema.safeParse(process.env);
+
+if (!_parsed.success) {
+  console.error('❌ Invalid environment variables:', _parsed.error.flatten().fieldErrors);
+  process.exit(1);
 }
 
-export const ENV = {
-  DATABASE_URL: req("DATABASE_URL"),
-  JWT_SECRET: req("JWT_SECRET"),
-  API_PORT: Number(process.env.API_PORT ?? 4000),
-  CORS_ORIGIN: process.env.CORS_ORIGIN ?? "http://localhost:3000"
-};
+export const env = _parsed.data;

@@ -2,126 +2,151 @@
 
 ## Purpose
 
-This document defines the canonical structure of the Infamous Freight monorepo.
+This document defines the canonical structure of the Infæmous Freight monorepo.
 
 The goal is to keep a large platform repository legible, enforceable, and safe to evolve.
 
-## System layers
+---
 
-### 1. Product runtime layer
-Primary home:
-- `apps/`
+## Technology Stack
 
-This layer contains user-facing and runtime entrypoints.
+| Layer | Technology | Notes |
+|-------|-----------|-------|
+| Runtime | Node.js 22.x | `engines.node: "22.x"` |
+| Package manager | pnpm 9.x | `pnpm-workspace.yaml`, `shamefully-hoist=true` |
+| API framework | Express 5 | TypeScript ESM (`"type":"module"`) |
+| Frontend | Next.js 14 + React 18 | App Router + Pages Router |
+| Mobile | React Native + Expo | TypeScript |
+| ORM | Prisma 6 | PostgreSQL 16 |
+| Cache / Queue | Redis 7 | BullMQ for background jobs |
+| Auth | JWT (HMAC/RS256) | `jsonwebtoken`, optional JWKS middleware |
+| Logging | Pino 10 | JSON in production, pino-pretty in dev |
+| Validation | Zod 4 | All env vars and request bodies |
+| Testing | Vitest 4 (API/shared), Playwright (E2E) | |
+| CI/CD | GitHub Actions | `ci.yml`, `cd.yml`, `fly-deploy.yml` |
+| Deployment | Fly.io | `fly.toml` per workspace |
 
-Examples:
-- API
-- Web
-- Mobile
-- Worker
-- TypeScript app-layer AI runtime
+---
 
-### 2. Shared library layer
-Primary home:
-- `packages/`
+## Monorepo Directory Tree
 
-This layer contains reusable internal packages:
-- shared contracts
-- shared UI
-- shared schemas
-- shared utilities
-- Genesis assistant/avatar package
+```
+.
+├── apps/
+│   ├── api/            – Node.js/TypeScript Express backend
+│   │   ├── src/
+│   │   │   ├── index.ts        – ESM entry point (graceful shutdown)
+│   │   │   ├── app.ts          – Express app factory
+│   │   │   ├── env.ts          – Zod-validated environment config
+│   │   │   ├── lib/
+│   │   │   │   ├── logger.ts   – Pino structured logger
+│   │   │   │   └── errors.ts   – AppError hierarchy
+│   │   │   ├── middleware/
+│   │   │   │   ├── errorHandler.ts
+│   │   │   │   └── requestId.ts
+│   │   │   ├── routes/         – Express route handlers
+│   │   │   ├── services/       – Business logic
+│   │   │   └── middleware/     – Auth, rate-limit, audit, validation
+│   │   ├── prisma/             – Prisma schema + migrations
+│   │   ├── tsconfig.json
+│   │   └── tsconfig.build.json
+│   ├── web/            – Next.js 14 frontend
+│   ├── mobile/         – React Native / Expo
+│   ├── worker/         – Background job workers (BullMQ)
+│   └── ai/             – AI orchestration runtime (TypeScript)
+├── packages/
+│   ├── shared/         – @infamous-freight/shared (types, utils, zod schemas)
+│   │   └── src/
+│   │       ├── index.ts
+│   │       ├── types/
+│   │       │   ├── dispatch.ts – Shipment, ShipmentStatus, DispatchAssignment
+│   │       │   ├── fleet.ts    – Vehicle, VehicleStatus, FleetTelemetry
+│   │       │   ├── driver.ts   – Driver, DriverStatus, DriverCoachingEvent
+│   │       │   └── ops.ts      – Organization, OrgPlan, AuditEvent
+│   │       ├── constants.ts
+│   │       ├── utils.ts
+│   │       ├── rbac.ts
+│   │       └── scopes.ts
+│   └── genesis/        – Seed/factory helpers
+├── e2e/                – Playwright E2E tests
+├── .github/
+│   └── workflows/      – CI/CD pipelines
+├── tsconfig.base.json  – Root TypeScript base config (NodeNext)
+├── eslint.config.js    – ESLint flat config
+├── commitlint.config.cjs
+└── playwright.config.ts
+```
 
-### 3. Standalone service layer
-Primary homes:
-- `services/`
-- `ai/`
-- `payments/`
+---
 
-Use:
-- `services/` for standalone service domains
-- `ai/` for Python/ML-serving systems and non-app AI runtimes
-- `payments/` for payment-specific service logic when separation is required
+## Domain Boundaries
 
-Rule:
-- do not create both `apps/<domain>` and a top-level `<domain>` without documenting the boundary
+| Domain | Package / Module | Responsible for |
+|--------|-----------------|-----------------|
+| Dispatch | `packages/shared/src/types/dispatch.ts` | Shipment lifecycle, status transitions |
+| Fleet | `packages/shared/src/types/fleet.ts` | Vehicle inventory, telematics |
+| Driver | `packages/shared/src/types/driver.ts` | CDL management, coaching events |
+| Operations | `packages/shared/src/types/ops.ts` | Organizations, plans, audit trail |
+| API runtime | `apps/api/src/` | HTTP surface, auth, rate-limiting |
+| Web UI | `apps/web/src/` | Next.js pages and components |
+| Mobile | `apps/mobile/` | React Native screens |
+| Background jobs | `apps/worker/` | Async processing via BullMQ |
 
-### 4. Compliance and security layer
-Primary homes:
-- `@compliance/`
-- `.security/`
+---
 
-Rules:
-- `@compliance/` owns compliance code, APIs, schemas, and validation logic
-- `.security/` owns policy, reporting, and incident-response documentation
-- `compliance/` is transitional unless explicitly justified
+## API Design Principles
 
-### 5. Infrastructure layer
-Primary homes:
-- `docker/`
-- `deploy/`
-- `infrastructure/`
-- `k8s/`
-- `terraform/`
-- `nginx/`
-- `supabase/`
+1. **All routes** must use the standard middleware chain:
+   `limiters → authenticate → requireOrganization → requireScope → auditLog → validators → handleValidationErrors`
+2. **Errors** are always delegated via `next(err)` to the global `errorHandler` — never `res.status()` inline.
+3. **Tenant isolation** — every database query must be scoped to `organizationId`; cross-tenant queries are prohibited.
+4. **Validation** — all user-supplied input is validated with Zod schemas before use.
+5. **No raw SQL** — Prisma is used exclusively for all database access.
+6. **Structured logging** — use `logger` from `lib/logger.ts`, never `console.log`.
 
-Rule:
-- infra may remain tool-split
-- every infra root must document purpose, ownership, and when it should be used
-- avoid creating additional infra roots without strong tooling justification
+---
 
-### 6. Testing and verification layer
-Primary homes:
-- `tests/`
-- `e2e/`
-- `k6/`
+## Environment Variable Contract
 
-Rules:
-- `k6/` is the canonical home for performance scenarios
-- `load-tests/` and `tools/load-tests/` should converge toward one documented model
-- `validation-data/` stores fixtures and datasets, not executable scenarios
+All environment variables are validated at startup via Zod in `apps/api/src/env.ts`.
 
-### 7. Observability and operations layer
-Primary homes:
-- `monitoring/`
-- `observability/`
-- `ops/`
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `NODE_ENV` | No | `development` | `development` \| `test` \| `production` |
+| `PORT` | No | `4000` | API server port |
+| `DATABASE_URL` | **Yes** | — | PostgreSQL connection URL |
+| `REDIS_URL` | No | `redis://localhost:6379` | Redis connection URL |
+| `JWT_SECRET` | **Yes** | — | JWT signing secret (min 32 chars) |
+| `CORS_ORIGIN` | No | — | Comma-separated allowed origins |
+| `LOG_LEVEL` | No | `info` | `trace`\|`debug`\|`info`\|`warn`\|`error`\|`fatal` |
 
-Rules:
-- `monitoring/` focuses on dashboards, alerts, probes, and checks
-- `observability/` focuses on instrumentation, traces, logs, and metrics pipelines
-- `ops/` focuses on human procedures and runbooks
+See `.env.example` for a template. **Never commit `.env` to git.**
 
-### 8. Project satellite layer
-Dedicated roots:
-- `Infamous-Freight-Firebase-Studio/`
-- `infamous-freight-copilot-orchestrator/`
-- `infamous-freight-gh-app/`
-- `my-neon-app/`
+---
 
-Rule:
-- satellite roots must have a README explaining why they are not under `apps/`, `services/`, or `tools/`
+## Module System Rules
 
-## Canonical decisions
+- **All workspaces use ESM** (`"type": "module"` in each `package.json`).
+- **TypeScript** targets `NodeNext` module resolution.
+- **No `require()` or `module.exports`** in new code — CJS files must use `.cjs` extension.
+- **Shared types** must be imported from `@infamous-freight/shared` (built dist), not from `@infamous-freight/shared/src` directly.
+- **Build shared before API**: `pnpm --filter @infamous-freight/shared build` whenever shared types change.
 
-### AI split
-- `apps/ai` = TypeScript app/runtime AI surface
-- `ai/` = standalone ML/Python inference systems
+---
 
-### Compliance split
-- `@compliance/` = canonical compliance code domain
-- `compliance/` = transitional/legacy until merged or intentionally retained
+## Security Baseline
 
-### Performance split
-- `k6/` = canonical performance scenario home
-- `load-tests/` = transitional
-- `tools/load-tests/` = tooling/wrappers only
+- No secrets, API keys, or credentials committed to source code.
+- All authentication and authorization checks are enforced via middleware — never bypassed.
+- Rate limiting is applied to all public endpoints.
+- Audit logs are written for all state-changing operations.
+- Dependencies are scanned automatically on every CI run (`pnpm audit`).
+- CodeQL analysis runs on the default branch and on pull requests.
+- Cross-tenant data access is impossible by construction (all queries are tenant-scoped).
 
-### Infra split
-Infra can remain multi-root, but every root must be discoverable through `REPO_MAP.md` and owned through `OWNERSHIP.md`.
+---
 
-## Architectural guardrails
+## Architectural Guardrails
 
 1. Avoid duplicate top-level concepts.
 2. Prefer moving code into an existing canonical root over creating a new one.

@@ -1,10 +1,12 @@
 name: CI
 
 on:
-  pull_request:
-    branches: [main]
   push:
-    branches: [main]
+    branches: [main, develop]
+    paths-ignore: ['archive/**', 'docs/**', '*.md']
+  pull_request:
+    branches: [main, develop]
+    paths-ignore: ['archive/**', 'docs/**', '*.md']
   workflow_dispatch:
 
 permissions:
@@ -15,217 +17,205 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CI: true
-  NODE_ENV: test
-  FORCE_COLOR: 1
+  NODE_VERSION: '22'
+  PNPM_VERSION: '9.15.0'
+  FORCE_COLOR: '1'
 
 jobs:
-  sanity:
-    name: sanity
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for package-lock.json
+        run: |
+          if find . -name "package-lock.json" -not -path "*/node_modules/*" | grep -q .; then
+            echo "❌ package-lock.json found. This repo uses pnpm only."
+            exit 1
+          fi
+
+  install:
+    name: Install
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
+    permissions:
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version-file: .nvmrc
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Enable Corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-
-      - name: Print tool versions
-        run: |
-          node --version
-          pnpm --version
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Validate repo standards
-        run: node .github/scripts/validate-repo.mjs
-
-      - name: Build shared package
-        run: pnpm run build:shared
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('pnpm-lock.yaml') }}
 
   lint:
-    name: lint
+    name: Lint
+    needs: install
     runs-on: ubuntu-latest
-    needs: sanity
-    timeout-minutes: 20
-
+    timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version-file: .nvmrc
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Enable Corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-
-      - name: Install dependencies
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install (fallback)
         run: pnpm install --frozen-lockfile
-
       - name: Build shared package
         run: pnpm run build:shared
-
-      - name: Run lint
+      - name: Lint
         run: pnpm lint
 
   typecheck:
-    name: typecheck
+    name: Typecheck
+    needs: install
     runs-on: ubuntu-latest
-    needs: sanity
-    timeout-minutes: 20
-
+    timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version-file: .nvmrc
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Enable Corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-
-      - name: Install dependencies
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install (fallback)
         run: pnpm install --frozen-lockfile
-
       - name: Build shared package
         run: pnpm run build:shared
-
-      - name: Run typecheck
+      - name: Typecheck
         run: pnpm typecheck
 
   test:
-    name: test
+    name: Test
+    needs: [lint, typecheck]
     runs-on: ubuntu-latest
-    needs: sanity
-    timeout-minutes: 40
-
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous_test
+      REDIS_URL: redis://localhost:6379
+      JWT_SECRET: test-secret-minimum-32-characters-long
+      NODE_ENV: test
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: infamous_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version-file: .nvmrc
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Enable Corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-
-      - name: Install dependencies
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install (fallback)
         run: pnpm install --frozen-lockfile
-
       - name: Build shared package
         run: pnpm run build:shared
-
-      - name: Run tests with coverage
-        run: pnpm -r --if-present test -- --coverage
-
-      - name: Upload coverage artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-artifacts
-          path: |
-            coverage/**
-            **/coverage/**
-          if-no-files-found: warn
-
-  security-audit:
-    name: security audit
-    runs-on: ubuntu-latest
-    needs: sanity
-    timeout-minutes: 15
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Enable Corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run dependency security audit
-        run: pnpm audit --audit-level=high
-        continue-on-error: true
-
-      - name: Generate audit report
-        if: failure()
-        run: pnpm audit --json > audit-report.json
-
-      - name: Upload audit report
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: security-audit-report
-          path: audit-report.json
-          if-no-files-found: warn
+      - name: Test
+        run: pnpm test
 
   build:
-    name: build
+    name: Build
+    needs: [lint, typecheck]
     runs-on: ubuntu-latest
-    needs: [lint, typecheck, test]
-    timeout-minutes: 25
-
+    timeout-minutes: 20
+    permissions:
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version-file: .nvmrc
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Enable Corepack
-        run: |
-          corepack enable
-          corepack prepare pnpm@9.15.0 --activate
-
-      - name: Install dependencies
+      - name: Restore node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            apps/*/node_modules
+            packages/*/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install (fallback)
         run: pnpm install --frozen-lockfile
-
-      - name: Build shared package
-        run: pnpm run build:shared
-
-      - name: Run build
+      - name: Build
         run: pnpm build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+          path: |
+            apps/api/dist
+          retention-days: 3

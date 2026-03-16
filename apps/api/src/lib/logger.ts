@@ -10,17 +10,16 @@
  */
 
 import pino, { type Logger } from "pino";
-
-const isDev = process.env.NODE_ENV === "development";
+import { env } from "../env.js";
 
 export const logger: Logger = pino({
-  level: process.env.LOG_LEVEL ?? (isDev ? "debug" : "info"),
+  level: env.LOG_LEVEL,
 
   // Always include these fields on every log line
   base: {
     service: process.env.SERVICE_NAME ?? "infamous-freight-api",
     version: process.env.npm_package_version ?? "unknown",
-    env: process.env.NODE_ENV ?? "development",
+    env: env.NODE_ENV,
   },
 
   // Rename "msg" → "message" for compatibility with log aggregators
@@ -38,16 +37,16 @@ export const logger: Logger = pino({
   },
 
   // Pretty print in development only
-  transport: isDev
-    ? {
-        target: "pino-pretty",
-        options: {
-          colorize: true,
-          translateTime: "HH:MM:ss",
-          ignore: "pid,hostname,service,version,env",
-        },
-      }
-    : undefined,
+  ...(env.NODE_ENV !== "production" && {
+    transport: {
+      target: "pino-pretty",
+      options: {
+        colorize: true,
+        translateTime: "HH:MM:ss",
+        ignore: "pid,hostname,service,version,env",
+      },
+    },
+  }),
 });
 
 // ── Child logger factory ───────────────────────────────────────────────────────

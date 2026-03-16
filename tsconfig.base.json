@@ -1,46 +1,21 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    // Language and Environment
-    "target": "ES2022",
     "lib": ["ES2022"],
-    "jsx": "preserve",
-
-    // Modules
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "resolveJsonModule": true,
-
-    // Emit
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true,
-    "incremental": true,
-    "noEmit": false,
-
-    // Type Checking
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "forceConsistentCasingInFileNames": true,
-
-    // Interop
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "isolatedModules": true,
-
-    // Advanced
-    "skipLibCheck": true,
-
-    // Path Aliases for Shared Packages
-    "paths": {
-      "@infamous-freight/shared": ["./packages/shared/src"],
-      "@infamous-freight/shared/*": ["./packages/shared/src/*"]
-    },
-    "baseUrl": "."
-  },
-  "exclude": ["node_modules", "dist", "build", "coverage", ".next", "out"]
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  }
 }
