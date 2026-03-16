@@ -182,7 +182,7 @@ jobs:
       - name: Build shared package
         run: pnpm run build:shared
       - name: Test
-        run: pnpm test
+        run: pnpm -r --if-present test -- --coverage
 
   build:
     name: Build
