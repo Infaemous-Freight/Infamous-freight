@@ -15,7 +15,7 @@ The goal is to keep a large platform repository legible, enforceable, and safe t
 | Runtime | Node.js 22.x | `engines.node: "22.x"` |
 | Package manager | pnpm 9.x | `pnpm-workspace.yaml`, `shamefully-hoist=true` |
 | API framework | Express 5 | TypeScript ESM (`"type":"module"`) |
-| Frontend | Next.js 14 + React 18 | App Router + Pages Router |
+| Frontend | Next.js 15 + React 19 | App Router + Pages Router |
 | Mobile | React Native + Expo | TypeScript |
 | ORM | Prisma 6 | PostgreSQL 16 |
 | Cache / Queue | Redis 7 | BullMQ for background jobs |
