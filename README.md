@@ -352,6 +352,36 @@ Data Layer (PostgreSQL + Redis)
 
 ---
 
+## New Platform Expansion Areas
+
+To support the next major build phase with zero overlap to existing workstreams, a dedicated documentation package has been added under:
+
+`docs/platform-expansion/`
+
+Included areas:
+
+1. **Observability & Monitoring**
+2. **OpenAPI Documentation**
+3. **Testing Strategy**
+4. **Mobile App Scaffolding**
+5. **Multi-region & Data Residency**
+6. **Developer Portal & Webhook Debugger**
+
+Start here:
+
+- `docs/platform-expansion/README.md`
+
+Then review each area document in sequence:
+
+- `docs/platform-expansion/01-observability-monitoring.md`
+- `docs/platform-expansion/02-openapi-documentation.md`
+- `docs/platform-expansion/03-testing-strategy.md`
+- `docs/platform-expansion/04-mobile-app-scaffolding.md`
+- `docs/platform-expansion/05-multi-region-data-residency.md`
+- `docs/platform-expansion/06-developer-portal-webhook-debugger.md`
+
+---
+
 ## Deployment
 
 Deployment guidance is documented in:
