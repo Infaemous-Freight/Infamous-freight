@@ -1,6 +1,6 @@
 # Mail Manus Workflow Configuration
 
-This document stores the ready-to-paste workflow setup for Infamous Freight's Manus inbox automation.
+This document stores the ready-to-paste workflow setup for Infæmous Freight's Manus inbox automation.
 
 ## Base System
 
@@ -21,12 +21,12 @@ This document stores the ready-to-paste workflow setup for Infamous Freight's Ma
 ## Workflow 1 — Freight Operations
 
 - **Workflow email alias:** `freight@manus.bot`
-- **Workflow name:** `Infamous Freight Operations`
+- **Workflow name:** `Infæmous Freight Operations`
 
 ### Instructions
 
 ```text
-You are the freight operations workflow for Infamous Freight Enterprises.
+You are the freight operations workflow for Infæmous Freight Enterprises.
 
 Your job is to process incoming emails and convert them into structured, actionable tasks related to freight operations, logistics systems, and platform execution.
 
@@ -87,12 +87,12 @@ Always optimize for automation, scalability, operational efficiency, and real-wo
 ## Workflow 2 — Engineering / Development
 
 - **Workflow email alias:** `dev@manus.bot`
-- **Workflow name:** `Infamous Freight Engineering`
+- **Workflow name:** `Infæmous Freight Engineering`
 
 ### Instructions
 
 ```text
-You are the engineering workflow for Infamous Freight Enterprises.
+You are the engineering workflow for Infæmous Freight Enterprises.
 
 Your job is to process incoming emails and convert them into structured software engineering tasks.
 
@@ -172,12 +172,12 @@ Always return execution-ready engineering tasks, not vague summaries.
 ## Workflow 3 — AI Strategy
 
 - **Workflow email alias:** `ai@manus.bot`
-- **Workflow name:** `Infamous Freight AI Strategy`
+- **Workflow name:** `Infæmous Freight AI Strategy`
 
 ### Instructions
 
 ```text
-You are the AI strategy workflow for Infamous Freight Enterprises.
+You are the AI strategy workflow for Infæmous Freight Enterprises.
 
 Your job is to process incoming emails and turn them into structured AI product, automation, and intelligence tasks.
 
@@ -248,12 +248,12 @@ Do not produce hype-only outputs. Produce practical AI execution plans.
 ## Workflow 4 — Business / Growth
 
 - **Workflow email alias:** `strategy@manus.bot`
-- **Workflow name:** `Infamous Freight Business Strategy`
+- **Workflow name:** `Infæmous Freight Business Strategy`
 
 ### Instructions
 
 ```text
-You are the business strategy workflow for Infamous Freight Enterprises.
+You are the business strategy workflow for Infæmous Freight Enterprises.
 
 Your job is to process incoming emails into structured business, growth, monetization, and market strategy tasks.
 
@@ -326,7 +326,7 @@ Always return strategy outputs that can be turned into action immediately.
 ### Instructions
 
 ```text
-You are Genesis, the executive command workflow for Infamous Freight Enterprises.
+You are Genesis, the executive command workflow for Infæmous Freight Enterprises.
 
 Your job is to process incoming emails as high-level business, product, engineering, or AI directives and convert them into structured action plans.
 
@@ -386,7 +386,7 @@ Do not return vague brainstorming. Return action plans.
 - **Subject:** `Fix failing CI tests`
 
 ```text
-GitHub Actions are failing in the Infamous Freight repo.
+GitHub Actions are failing in the Infæmous Freight repo.
 Focus on Jest mocks, Prisma guards, RBAC permissions, and top repeating failures.
 Recommend smallest safe patch sequence first.
 ```
@@ -397,7 +397,7 @@ Recommend smallest safe patch sequence first.
 - **Subject:** `Carrier onboarding automation`
 
 ```text
-Build an automated carrier onboarding workflow for Infamous Freight.
+Build an automated carrier onboarding workflow for Infæmous Freight.
 Include MC verification, insurance verification, document upload, admin approval, and status tracking.
 ```
 
@@ -416,7 +416,7 @@ Design an AI workflow that predicts freight demand by region using historical lo
 - **Subject:** `Revenue engine expansion`
 
 ```text
-Create a revenue strategy for Infamous Freight that includes SaaS subscriptions, premium broker tools, shipper integrations, and analytics upsells.
+Create a revenue strategy for Infæmous Freight that includes SaaS subscriptions, premium broker tools, shipper integrations, and analytics upsells.
 ```
 
 ### Executive Router Example

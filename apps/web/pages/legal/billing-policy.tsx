@@ -4,10 +4,10 @@ export default function BillingPolicyPage() {
   return (
     <>
       <Head>
-        <title>Billing Policy | Infamous Freight</title>
+        <title>Billing Policy | Infæmous Freight</title>
         <meta
           name="description"
-          content="Billing and subscription terms for Infamous Freight, including invoicing, payment failures, and subscription cancellations."
+          content="Billing and subscription terms for Infæmous Freight, including invoicing, payment failures, and subscription cancellations."
         />
       </Head>
       <main className="min-h-screen bg-black px-6 py-16 text-white">

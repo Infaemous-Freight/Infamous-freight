@@ -13,7 +13,7 @@ export default function LoginPage(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Sign In - Infamous Freight</title>
+        <title>Sign In - Infæmous Freight</title>
       </Head>
       <div
         style={{

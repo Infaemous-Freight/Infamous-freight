@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Successfully deployed production infrastructure for Infamous Freight Enterprises
+Successfully deployed production infrastructure for Infæmous Freight Enterprises
 with full API functionality, database connectivity, and comprehensive
 documentation. E2E tests passing against live API.
 

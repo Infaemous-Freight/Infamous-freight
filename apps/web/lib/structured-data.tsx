@@ -50,7 +50,7 @@ export function getOrganizationData(): Organization {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Infamous Freight Enterprises",
+    name: "Infæmous Freight Enterprises",
     url: baseUrl,
     logo: `${baseUrl}/logo.png`,
     description:
@@ -73,7 +73,7 @@ export function getWebSiteData(): WebSite {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Infamous Freight Enterprises",
+    name: "Infæmous Freight Enterprises",
     url: baseUrl,
     potentialAction: {
       "@type": "SearchAction",
@@ -87,7 +87,7 @@ export function getSoftwareApplicationData(): SoftwareApplication {
   return {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Infamous Freight Platform",
+    name: "Infæmous Freight Platform",
     applicationCategory: "BusinessApplication",
     offers: {
       "@type": "Offer",

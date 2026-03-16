@@ -1,6 +1,6 @@
 # 📚 Documentation Index
 
-> **Centralized hub for all Infamous Freight Enterprises documentation**
+> **Centralized hub for all Infæmous Freight Enterprises documentation**
 >
 > Last Updated: February 19, 2026
 

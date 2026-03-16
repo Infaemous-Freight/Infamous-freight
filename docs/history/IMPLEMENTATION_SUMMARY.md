@@ -2,7 +2,7 @@
 
 ## ✅ All Recommendations Implemented Successfully
 
-This document summarizes all the improvements made to the Infamous Freight
+This document summarizes all the improvements made to the Infæmous Freight
 Enterprises project.
 
 ---

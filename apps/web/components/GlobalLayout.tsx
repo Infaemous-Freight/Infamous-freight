@@ -22,7 +22,7 @@ export default function GlobalLayout({ children }: { children: React.ReactNode }
         <meta property="og:title" content={t(locale, "appName")} />
         <meta
           property="og:description"
-          content="Infamous Freight Enterprises — AI Dispatch Operator + Avatars + Ops Intelligence."
+          content="Infæmous Freight Enterprises — AI Dispatch Operator + Avatars + Ops Intelligence."
         />
       </Head>
 

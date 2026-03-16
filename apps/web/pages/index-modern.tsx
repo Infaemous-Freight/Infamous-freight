@@ -18,7 +18,7 @@ export default function Home(): React.ReactElement {
   return (
     <>
       <SEOHead
-        title="Infamous Freight Enterprises - AI-Powered Logistics & Fleet Management"
+        title="Infæmous Freight Enterprises - AI-Powered Logistics & Fleet Management"
         description="Transform your logistics operations with AI-powered fleet management, real-time tracking, autonomous dispatch, and enterprise-grade revenue optimization. Trusted by industry leaders."
         keywords={[
           "AI logistics platform",
@@ -272,7 +272,7 @@ export default function Home(): React.ReactElement {
                   ))}
                 </div>
                 <p>
-                  "Infamous Freight transformed our logistics operation. The AI dispatch system
+                  "Infæmous Freight transformed our logistics operation. The AI dispatch system
                   increased our efficiency by 40% and revenue by 31%. Best investment we've made."
                 </p>
                 <div className="testimonial-author">

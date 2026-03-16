@@ -428,7 +428,7 @@ XYZ Distribution Center
 456 Oak Avenue
 Los Angeles, CA 90001
 
-CARRIER: Infamous Freight Enterprises
+CARRIER: Infæmous Freight Enterprises
 
 DESCRIPTION OF GOODS:
 Electronics - Laptops

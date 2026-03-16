@@ -2,7 +2,7 @@
 
 ## Overview
 
-Successfully transformed Infamous Freight Enterprises into a modern,
+Successfully transformed Infæmous Freight Enterprises into a modern,
 production-ready monorepo with improved architecture, tooling, and developer
 experience.
 
@@ -368,7 +368,7 @@ pnpm store status
 
 ## 🎉 Success
 
-Your Infamous Freight Enterprises project is now:
+Your Infæmous Freight Enterprises project is now:
 
 - ✨ **Modern** - Using latest tooling and best practices
 - 🚀 **Fast** - Optimized for development and CI

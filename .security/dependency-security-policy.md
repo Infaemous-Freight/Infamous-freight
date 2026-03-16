@@ -1,6 +1,6 @@
 # Dependency Security Policy
 
-Infamous Freight relies on open source packages.
+Infæmous Freight relies on open source packages.
 
 All dependencies must be monitored for vulnerabilities.
 

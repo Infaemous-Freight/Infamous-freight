@@ -66,7 +66,7 @@ router.post(
         {
           amount: amountInCents,
           currency: currency.toLowerCase(),
-          description: description || "Payment from Infamous Freight Enterprises",
+          description: description || "Payment from Infæmous Freight Enterprises",
           metadata: {
             userId: req.user.sub,
             userEmail: req.user.email,

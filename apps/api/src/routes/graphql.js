@@ -1,5 +1,5 @@
 /**
- * GraphQL API Implementation for Infamous Freight Enterprises
+ * GraphQL API Implementation for Infæmous Freight Enterprises
  * Provides flexible querying and mutations for shipments, users, and analytics
  * 
  * @module routes/graphql

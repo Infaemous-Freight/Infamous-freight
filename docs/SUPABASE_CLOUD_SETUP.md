@@ -38,7 +38,7 @@ If you prefer manual setup or encounter issues:
 1. Go to [https://supabase.com/dashboard](https://supabase.com/dashboard)
 2. Click **+ New Project**
 3. Fill in details:
-   - **Name**: `Infamous Freight Enterprises`
+   - **Name**: `Infæmous Freight Enterprises`
    - **Database Password**: (generate strong password)
    - **Region**: Choose closest to your users
    - **Pricing Plan**: Free (upgrade later if needed)

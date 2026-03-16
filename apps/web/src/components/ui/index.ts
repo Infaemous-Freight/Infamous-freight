@@ -1,5 +1,5 @@
 /**
- * UI Component Library - Infamous Freight Enterprises
+ * UI Component Library - Infæmous Freight Enterprises
  * Centralized exports for all UI components
  */
 

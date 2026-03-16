@@ -39,7 +39,7 @@ export default function Dashboard() {
 
   return (
     <main style={{fontFamily: 'Arial, sans-serif', padding: '24px', maxWidth: '1080px', margin: '0 auto'}}>
-      <h1>Infamous Freight Dashboard</h1>
+      <h1>Infæmous Freight Dashboard</h1>
       <p>Realtime shipment tracking with Firebase + Google Maps.</p>
 
       <section style={{marginBottom: '24px'}}>

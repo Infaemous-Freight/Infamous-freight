@@ -1,6 +1,6 @@
-# Contributing to Infamous Freight
+# Contributing to Infæmous Freight
 
-Thank you for your interest in contributing to Infamous Freight.
+Thank you for your interest in contributing to Infæmous Freight.
 
 We welcome contributions that improve the platform, documentation, workflows, developer experience, and long-term architecture.
 
@@ -122,4 +122,4 @@ By contributing to this repository, you agree that your contributions will be li
 
 For questions, use GitHub Discussions or open an issue if the topic is actionable and specific.
 
-Thanks for helping build Infamous Freight.
+Thanks for helping build Infæmous Freight.

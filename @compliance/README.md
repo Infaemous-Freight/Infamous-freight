@@ -1,6 +1,6 @@
 # @compliance
 
-Internal compliance domain for Infamous Freight.
+Internal compliance domain for Infæmous Freight.
 
 This module centralizes compliance-related logic, schemas, types, and API
 wiring.

@@ -1,5 +1,5 @@
 /**
- * Type-Safe API Client for Infamous Freight Enterprises
+ * Type-Safe API Client for Infæmous Freight Enterprises
  * Provides consistent, type-safe access to backend APIs
  *
  * @example

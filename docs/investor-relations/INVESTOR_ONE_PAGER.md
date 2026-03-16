@@ -1,6 +1,6 @@
 # Investor One-Pager (Draft)
 
-Infamous Freight is an AI-native freight operations platform that unifies
+Infæmous Freight is an AI-native freight operations platform that unifies
 dispatch, billing, and compliance for carriers and fleet operators.
 
 ## Problem

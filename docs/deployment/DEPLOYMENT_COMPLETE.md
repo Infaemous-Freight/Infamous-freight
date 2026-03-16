@@ -1,4 +1,4 @@
-# 🚀 Deployment Complete - Infamous Freight Enterprises
+# 🚀 Deployment Complete - Infæmous Freight Enterprises
 
 **Date:** December 18, 2025  
 **Status:** Live (SSO-Protected)

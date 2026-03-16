@@ -145,8 +145,8 @@ export default function SignUpPage(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Sign Up - Infamous Freight</title>
-        <meta name="description" content="Create your Infamous Freight account" />
+        <title>Sign Up - Infæmous Freight</title>
+        <meta name="description" content="Create your Infæmous Freight account" />
       </Head>
 
       <div className="auth-page">

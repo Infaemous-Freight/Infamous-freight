@@ -3,7 +3,7 @@
 ## Overview
 
 The AI Decision Tracking API provides endpoints for recording, managing, and
-gathering feedback on AI-driven decisions within the Infamous Freight platform.
+gathering feedback on AI-driven decisions within the Infæmous Freight platform.
 This system enables tracking of AI agent decisions (such as billing audits and
 compliance checks) and collecting human feedback to improve model accuracy.
 

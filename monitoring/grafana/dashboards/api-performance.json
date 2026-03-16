@@ -1,7 +1,7 @@
 # Grafana Dashboard - API Performance Metrics
 {
   "dashboard": {
-    "title": "Infamous Freight API - Performance Dashboard",
+    "title": "Infæmous Freight API - Performance Dashboard",
     "tags": ["api", "performance", "production"],
     "timezone": "browser",
     "schemaVersion": 16,

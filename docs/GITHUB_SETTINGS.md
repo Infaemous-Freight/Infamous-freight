@@ -1,6 +1,6 @@
 # GitHub Repository Settings Guide
 
-This guide helps you configure recommended settings for the Infamous Freight
+This guide helps you configure recommended settings for the Infæmous Freight
 Enterprises repository.
 
 ## 🔒 Branch Protection Rules
@@ -192,7 +192,7 @@ Use this when configuring GitHub OAuth for Supabase Auth.
 **Application name**
 
 Infæmous Freight Enterprises  
-(If GitHub rejects “Æ”, use **Infamous Freight Enterprises**.)
+(If GitHub rejects “Æ”, use **Infæmous Freight Enterprises**.)
 
 **Homepage URL (Website URL)**
 

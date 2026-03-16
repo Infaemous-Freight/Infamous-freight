@@ -1,7 +1,7 @@
 # Render Environment Variables
 
 NEXT_PUBLIC_API_BASE=<https://infamous-api.onrender.com/api>
-NEXT_PUBLIC_APP_NAME=Infamous Freight NEXT_PUBLIC_ENV=production
+NEXT_PUBLIC_APP_NAME=Infæmous Freight NEXT_PUBLIC_ENV=production
 
 # API Environment
 

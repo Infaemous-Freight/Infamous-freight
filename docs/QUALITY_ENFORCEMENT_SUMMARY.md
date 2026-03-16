@@ -8,7 +8,7 @@ strategies
 ## Overview
 
 This document summarizes the code quality enforcement infrastructure now in
-place to maintain high standards across the Infamous Freight Enterprise
+place to maintain high standards across the Infæmous Freight Enterprise
 codebase.
 
 ---

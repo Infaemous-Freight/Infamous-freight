@@ -4,8 +4,8 @@ export default function PrivacyPolicy(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Privacy Policy - Infamous Freight</title>
-        <meta name="description" content="Privacy Policy for Infamous Freight Enterprises" />
+        <title>Privacy Policy - Infæmous Freight</title>
+        <meta name="description" content="Privacy Policy for Infæmous Freight Enterprises" />
       </Head>
       <div style={{ maxWidth: "900px", margin: "0 auto", padding: "40px 20px", lineHeight: 1.6 }}>
         <h1>Privacy Policy</h1>
@@ -15,7 +15,7 @@ export default function PrivacyPolicy(): React.ReactElement {
 
         <h2>1. Introduction</h2>
         <p>
-          Infamous Freight Enterprises ("we", "us", "our") is committed to protecting your privacy.
+          Infæmous Freight Enterprises ("we", "us", "our") is committed to protecting your privacy.
           This Privacy Policy explains how we collect, use, disclose, and safeguard your information
           when you visit our website and use our services.
         </p>

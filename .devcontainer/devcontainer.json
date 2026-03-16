@@ -1,5 +1,5 @@
 {
-  "name": "Infamous Freight Dev Container",
+  "name": "Infæmous Freight Dev Container",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",

@@ -137,7 +137,7 @@ const ShipperPortal: React.FC<ShipperPortalProps> = ({ stats, recentLoads: _rece
   return (
     <>
       <Head>
-        <title>Shipper Portal - Infamous Freight</title>
+        <title>Shipper Portal - Infæmous Freight</title>
         <meta name="description" content="Post loads, track drivers, manage billing" />
       </Head>
 

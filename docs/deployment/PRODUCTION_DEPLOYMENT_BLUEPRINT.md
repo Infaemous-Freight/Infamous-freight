@@ -1,4 +1,4 @@
-# Infamous Freight — Production Deployment Blueprint
+# Infæmous Freight — Production Deployment Blueprint
 
 ## Recommended stack
 
@@ -331,4 +331,4 @@ Create at least these:
 
 Start with **Vercel + Railway**.
 
-This combination gets Infamous Freight into production with reliable scaling, preview deployments, monitoring, and rollback discipline while keeping operational complexity low.
+This combination gets Infæmous Freight into production with reliable scaling, preview deployments, monitoring, and rollback discipline while keeping operational complexity low.

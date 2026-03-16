@@ -3,7 +3,7 @@
 ## Overview
 
 This landing page provides quick access to all deployment documentation and
-runbooks for Infamous Freight Enterprise. The system is deployed across multiple
+runbooks for Infæmous Freight Enterprise. The system is deployed across multiple
 environments and platforms, with comprehensive documentation for each.
 
 ## Quick Links

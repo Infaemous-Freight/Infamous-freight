@@ -252,7 +252,7 @@ impact application correctness.
 ---
 
 _Generated: December 16, 2025_  
-_Project: Infamous Freight Enterprises_  
+_Project: Infæmous Freight Enterprises_  
 _Test Framework: Jest 30.2.0_
 
 ---

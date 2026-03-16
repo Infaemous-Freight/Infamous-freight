@@ -1,5 +1,5 @@
 /**
- * ESLint Plugin: Infamous Freight Error Handling
+ * ESLint Plugin: Infæmous Freight Error Handling
  * 
  * Custom rules to enforce error handling patterns in Express routes.
  */

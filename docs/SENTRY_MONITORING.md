@@ -3,7 +3,7 @@
 ## Overview
 
 This guide documents the Sentry error tracking and monitoring integration for
-Infamous Freight Enterprises API. Sentry provides real-time error tracking,
+Infæmous Freight Enterprises API. Sentry provides real-time error tracking,
 performance monitoring, and alerting capabilities.
 
 ## Configuration

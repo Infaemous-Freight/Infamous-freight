@@ -1,6 +1,6 @@
-# Contributing to Infamous Freight
+# Contributing to Infæmous Freight
 
-Thank you for contributing to Infamous Freight.
+Thank you for contributing to Infæmous Freight.
 
 ## Development Setup
 

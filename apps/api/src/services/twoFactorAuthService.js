@@ -17,8 +17,8 @@ class TwoFactorAuthService {
   async generateTOTPSecret(userId, email) {
     try {
       const secret = speakeasy.generateSecret({
-        name: `Infamous Freight (${email})`,
-        issuer: "Infamous Freight",
+        name: `Infæmous Freight (${email})`,
+        issuer: "Infæmous Freight",
         length: 32,
       });
 

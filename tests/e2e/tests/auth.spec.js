@@ -19,7 +19,7 @@ test.describe("Authentication Flow", () => {
 
   test("should load landing page", async ({ page }) => {
     // Check page title
-    await expect(page).toHaveTitle(/Infamous Freight/i);
+    await expect(page).toHaveTitle(/Infæmous Freight/i);
 
     // Check for key elements
     await expect(page.locator("h1")).toBeVisible();

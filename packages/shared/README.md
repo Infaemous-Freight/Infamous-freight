@@ -1,7 +1,7 @@
 # @infamous-freight/shared
 
 Shared TypeScript package containing domain types, constants, and utilities used
-across the Infamous Freight monorepo.
+across the Infæmous Freight monorepo.
 
 ## 📦 Installation
 

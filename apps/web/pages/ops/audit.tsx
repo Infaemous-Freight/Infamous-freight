@@ -106,7 +106,7 @@ export default function OpsAuditPage(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Ops Audit Log | Infamous Freight</title>
+        <title>Ops Audit Log | Infæmous Freight</title>
       </Head>
 
       <main

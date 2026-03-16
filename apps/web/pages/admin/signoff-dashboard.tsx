@@ -170,7 +170,7 @@ export default function SignOffDashboard(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Sign-Off Workflow | Infamous Freight</title>
+        <title>Sign-Off Workflow | Infæmous Freight</title>
       </Head>
 
       <div className="min-h-screen bg-gray-50 p-8">

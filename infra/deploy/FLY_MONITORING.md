@@ -163,7 +163,7 @@ import 'newrelic';
 
 # Set secrets
 flyctl secrets set NEW_RELIC_LICENSE_KEY="<key>" -a infamous-freight-api
-flyctl secrets set NEW_RELIC_APP_NAME="Infamous Freight API" -a infamous-freight-api
+flyctl secrets set NEW_RELIC_APP_NAME="Infæmous Freight API" -a infamous-freight-api
 ```
 
 ## Cost Monitoring

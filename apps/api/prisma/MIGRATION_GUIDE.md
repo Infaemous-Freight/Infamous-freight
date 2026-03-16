@@ -1,7 +1,7 @@
 /\*
 
 - Prisma Database Migration Guide
-- For Infamous Freight Enterprises \*/
+- For Infæmous Freight Enterprises \*/
 
 # Prerequisites
 

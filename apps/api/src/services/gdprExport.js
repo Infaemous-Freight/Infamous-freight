@@ -100,7 +100,7 @@ class GDPRDataExportService {
       return {
         exportDate: new Date().toISOString(),
         exportInfo: {
-          dataController: "Infamous Freight Enterprises",
+          dataController: "Infæmous Freight Enterprises",
           contactEmail: "privacy@infamousfreight.com",
           retrievalMethod: "GDPR Article 15 Export",
         },

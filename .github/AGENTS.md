@@ -2,7 +2,7 @@
 description: GitHub Copilot - Full Project Configuration
 ---
 
-# Infamous Freight Enterprises - GitHub Copilot Configuration
+# Infæmous Freight Enterprises - GitHub Copilot Configuration
 
 ## 🚀 Agent Skills (100% Enabled)
 

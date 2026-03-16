@@ -453,7 +453,7 @@ P.S. Here's the demo recording: [link]
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PROPOSAL FOR [COMPANY NAME]
-Infamous Freight Enterprises
+Infæmous Freight Enterprises
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 OVERVIEW:
@@ -500,7 +500,7 @@ Looking forward to partnering with [Company]!
 
 [Sales Rep Name]
 [Title]
-Infamous Freight Enterprises
+Infæmous Freight Enterprises
 ```
 
 ---

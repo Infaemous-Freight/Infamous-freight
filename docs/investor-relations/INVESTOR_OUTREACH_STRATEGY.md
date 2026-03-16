@@ -73,11 +73,11 @@
 
 ## Sample Outreach Email (Warm)
 
-Subject: Intro - Infamous Freight (AI freight OS, $1.8M ARR)
+Subject: Intro - Infæmous Freight (AI freight OS, $1.8M ARR)
 
 Hi [Name],
 
-I was introduced by [Mutual]. We are building Infamous Freight, an AI-native
+I was introduced by [Mutual]. We are building Infæmous Freight, an AI-native
 freight operations platform. We are at $1.8M ARR with 1,000 customers and 75%
 gross margins, and are raising a Series A.
 
@@ -92,7 +92,7 @@ Subject: AI freight OS - $1.8M ARR, raising Series A
 
 Hi [Name],
 
-I lead Infamous Freight. We help fleets and operators unify dispatch, billing,
+I lead Infæmous Freight. We help fleets and operators unify dispatch, billing,
 and compliance with an AI-native platform. We are at $1.8M ARR, 75% gross
 margins, and are raising a Series A.
 

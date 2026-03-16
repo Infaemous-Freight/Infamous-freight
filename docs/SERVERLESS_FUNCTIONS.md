@@ -295,7 +295,7 @@ export const handler: ScheduledHandler = async (event, context) => {
 
     doc
       .fontSize(20)
-      .text("Infamous Freight Daily Report", { align: "center" })
+      .text("Infæmous Freight Daily Report", { align: "center" })
       .moveDown()
       .fontSize(14)
       .text(`Date: ${yesterday.toDateString()}`)

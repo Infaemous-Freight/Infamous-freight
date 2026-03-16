@@ -1,6 +1,6 @@
 # Repository Structure
 
-This document describes the organization of the Infamous Freight Enterprise
+This document describes the organization of the Infæmous Freight Enterprise
 repository.
 
 ## Overview

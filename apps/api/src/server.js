@@ -223,7 +223,7 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
     customCss: ".swagger-ui .topbar { display: none }",
-    customSiteTitle: "Infamous Freight API Docs",
+    customSiteTitle: "Infæmous Freight API Docs",
   }),
 );
 
@@ -401,7 +401,7 @@ let httpServer;
 
 if (require.main === module) {
   httpServer = app.listen(port, host, async () => {
-    logger.info(`Infamous Freight API listening on ${host}:${port}`);
+    logger.info(`Infæmous Freight API listening on ${host}:${port}`);
 
     // Initialize Prisma audit logging
     try {

@@ -29,7 +29,7 @@ const HELP_ARTICLES: HelpArticle[] = [
   {
     id: "getting-started",
     title: "Getting Started",
-    content: `Welcome to Infamous Freight! 
+    content: `Welcome to Infæmous Freight! 
     
 1. Create your account and verify your email
 2. Set up your organization profile

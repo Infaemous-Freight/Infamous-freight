@@ -9,11 +9,11 @@
 #### App Name (30 characters max)
 
 ```
-Infamous Freight - Track Shipments
+Infæmous Freight - Track Shipments
 ```
 
 **Keywords**: Freight, Track, Shipments **Character count**: 38 → Optimize to:
-"Infamous Freight Tracking"
+"Infæmous Freight Tracking"
 
 #### Subtitle (30 characters max)
 
@@ -39,7 +39,7 @@ freight,cargo,shipment,tracking,logistics,delivery,package,transport,driver,real
 #### Description (4000 characters max)
 
 ```
-Track your shipments in real-time with Infamous Freight, the #1 freight management app.
+Track your shipments in real-time with Infæmous Freight, the #1 freight management app.
 
 ✅ FEATURES
 • Real-time GPS tracking
@@ -172,7 +172,7 @@ async function generateScreenshots() {
 #### Video Script (30 seconds)
 
 ```
-[0-5s]  App icon animation + "Infamous Freight"
+[0-5s]  App icon animation + "Infæmous Freight"
 [5-10s] Dashboard showing multiple shipments
 [10-15s] Map with real-time tracking
 [15-20s] Push notification animation
@@ -216,7 +216,7 @@ export async function requestRating() {
 #### Review Response Template
 
 ```
-Thank you for your feedback! We're constantly improving Infamous Freight.
+Thank you for your feedback! We're constantly improving Infæmous Freight.
 [If positive]: We're thrilled you love our app! 🚚
 [If negative]: We'd love to make this right. Please contact support@infamousfreight.com
 ```
@@ -328,7 +328,7 @@ Branch.subscribe(({ error, params }) => {
 // 1024 x 500 px
 const featureGraphic = {
   background: "#1a73e8", // Brand blue
-  title: "Infamous Freight",
+  title: "Infæmous Freight",
   subtitle: "Real-time Shipment Tracking",
   screenshot: "map-tracking.png",
   devices: ["phone", "tablet"],
@@ -357,7 +357,7 @@ const featureGraphic = {
 • Better battery optimization
 • Enhanced security
 
-Thank you for using Infamous Freight! 🚚
+Thank you for using Infæmous Freight! 🚚
 ```
 
 ## 📊 ASO Checklist

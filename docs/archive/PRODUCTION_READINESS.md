@@ -1,7 +1,7 @@
 # Production Readiness Documentation
 
 ## Overview
-This document outlines the complete production hardening implementation for the Infamous Freight application.
+This document outlines the complete production hardening implementation for the Infæmous Freight application.
 
 ## CI/CD Parallelization
 - **Implementation Steps:**  

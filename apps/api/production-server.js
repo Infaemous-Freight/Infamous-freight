@@ -115,7 +115,7 @@ async function handleRequest(req, res) {
           timestamp: Date.now(),
           database: "connected",
           mode: process.env.NODE_ENV || "development",
-          message: "Infamous Freight API - Production Ready",
+          message: "Infæmous Freight API - Production Ready",
         };
         cache.set(cacheKey, data);
         trackCache(false);
@@ -178,7 +178,7 @@ async function handleRequest(req, res) {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(
         JSON.stringify({
-          name: "Infamous Freight Enterprises API",
+          name: "Infæmous Freight Enterprises API",
           version: "3.0.0",
           mode: "production",
           status: "running",
@@ -378,7 +378,7 @@ async function handleRequest(req, res) {
 const server = http.createServer(handleRequest);
 
 server.listen(PORT, HOST, () => {
-  logger.info("🚀 Infamous Freight API (Production) running", {
+  logger.info("🚀 Infæmous Freight API (Production) running", {
     host: HOST,
     port: PORT,
     features: ["JWT Auth", "Rate Limiting", "Caching", "Validation", "Logging"],

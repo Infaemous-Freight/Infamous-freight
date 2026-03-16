@@ -2,7 +2,7 @@
 
 ## Overview
 
-Infamous Freight Enterprise employs AI agents as specialized workforce roles
+Infæmous Freight Enterprise employs AI agents as specialized workforce roles
 with clearly defined boundaries, permissions, and oversight mechanisms. This
 document outlines the governance framework for AI operations, including allowed
 actions, forbidden operations, escalation procedures, and audit requirements.

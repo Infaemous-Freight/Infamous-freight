@@ -1,6 +1,6 @@
-# Infamous Freight Copilot Instructions
+# Infæmous Freight Copilot Instructions
 
-Infamous Freight is an AI-powered logistics SaaS platform.
+Infæmous Freight is an AI-powered logistics SaaS platform.
 
 ## Architecture
 

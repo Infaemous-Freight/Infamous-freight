@@ -107,7 +107,7 @@ const ssoConfig = {
     defaultTenant: "default",
     tenants: {
       default: {
-        name: "Infamous Freight",
+        name: "Infæmous Freight",
         samlEnabled: true,
         oauthProviders: ["google", "microsoft"],
       },

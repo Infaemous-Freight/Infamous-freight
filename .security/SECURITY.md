@@ -1,6 +1,6 @@
-# Infamous Freight Security Policy
+# Infæmous Freight Security Policy
 
-Infamous Freight is an AI-powered freight and logistics automation platform.
+Infæmous Freight is an AI-powered freight and logistics automation platform.
 Security is critical because the platform processes shipment data, carrier records,
 and multi-tenant business information.
 

@@ -158,7 +158,7 @@ SLIDE 1: HOOK (Problem)
   Visual: Chart showing hidden freight costs
   Narrative: Market opportunity ($100B+ underserved)
 
-SLIDE 2: SOLUTION (Infamous Freight)
+SLIDE 2: SOLUTION (Infæmous Freight)
   Headline: "AI-powered platform that finds hidden freight savings"
   Visual: Product interface screenshot
   Narrative: How we solve the problem (3 key features)
@@ -284,10 +284,10 @@ TOTAL LENGTH: 12 slides, 20-minute pitch
 ### Template
 
 ```
-FROM: [CEO Name], Infamous Freight
+FROM: [CEO Name], Infæmous Freight
 TO: Investors & Board
 DATE: [Month] 2026
-SUBJECT: Infamous Freight Monthly Update - [Month]
+SUBJECT: Infæmous Freight Monthly Update - [Month]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

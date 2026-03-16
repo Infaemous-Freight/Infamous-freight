@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines the canonical structure of the Infamous Freight monorepo.
+This document defines the canonical structure of the Infæmous Freight monorepo.
 
 The goal is to keep a large platform repository legible, enforceable, and safe to evolve.
 

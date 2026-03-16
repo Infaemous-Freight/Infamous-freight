@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the comprehensive testing strategy for Infamous Freight
+This document outlines the comprehensive testing strategy for Infæmous Freight
 Enterprises, ensuring high code quality, security, and reliability across all
 services.
 

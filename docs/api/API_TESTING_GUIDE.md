@@ -1,4 +1,4 @@
-# API Testing Guide - Infamous Freight Enterprises
+# API Testing Guide - Infæmous Freight Enterprises
 
 **Live Production API**: `https://infamous-freight-api.fly.dev`
 

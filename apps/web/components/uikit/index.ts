@@ -138,7 +138,7 @@ export { EmptyState, type EmptyStateProps } from "./EmptyState";
 //   steps={[
 //     {
 //       id: 'welcome',
-//       title: 'Welcome to Infamous Freight',
+//       title: 'Welcome to Infæmous Freight',
 //       description: 'Let\'s get you set up with your first shipment.',
 //       image: '/onboarding/welcome.png'
 //     },

@@ -1,4 +1,4 @@
-# Infamous Freight GitHub App Webhook Service
+# Infæmous Freight GitHub App Webhook Service
 
 This service receives GitHub App webhook events and orchestrates Copilot assignment for issues in `MrMiless44/Infamous-freight`.
 

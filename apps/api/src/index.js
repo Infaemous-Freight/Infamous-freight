@@ -8,7 +8,7 @@
 const config = require("./config/loadenv");
 
 // Log startup info
-console.log(`🚀 [${config.NODE_ENV}] Infamous Freight API starting...`);
+console.log(`🚀 [${config.NODE_ENV}] Infæmous Freight API starting...`);
 console.log(`📍 Port: ${config.API_PORT}`);
 console.log(`🗄️  Database: ${config.DATABASE_URL ? "configured" : "MISSING"}`);
 

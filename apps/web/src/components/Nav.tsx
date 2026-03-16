@@ -9,7 +9,7 @@ export default function Nav(): React.ReactElement {
     <header className="marketplace-header">
       <div className="container marketplace-nav">
         <Link href="/" className="marketplace-brand">
-          Infamous Freight
+          Infæmous Freight
         </Link>
         <nav className="marketplace-links" aria-label="Marketplace">
           <Link href="/dashboard" className="nav-link">

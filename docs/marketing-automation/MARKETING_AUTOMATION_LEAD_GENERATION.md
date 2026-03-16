@@ -444,7 +444,7 @@ CONVERSION TO PAID:
 
 ```
 DAY 1: Welcome Email
-  Subject: "Welcome to Infamous Freight! Here's how to get started"
+  Subject: "Welcome to Infæmous Freight! Here's how to get started"
   Content:
     • Thank you for signing up
     • Quick start guide (3 steps)
@@ -468,7 +468,7 @@ DAY 4: Feature Highlight (AI Route Optimization)
   Goal: Feature adoption
 
 DAY 7: Case Study
-  Subject: "How [Customer] saved 40% with Infamous Freight"
+  Subject: "How [Customer] saved 40% with Infæmous Freight"
   Content:
     • Customer story
     • Results achieved

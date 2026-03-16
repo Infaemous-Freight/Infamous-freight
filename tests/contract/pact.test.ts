@@ -13,7 +13,7 @@ const { like, eachLike, term } = Matchers;
 /**
  * Pact provider setup (API side)
  */
-describe('Infamous Freight API Provider', () => {
+describe('Infæmous Freight API Provider', () => {
   const provider = new Pact({
     consumer: 'WebApp',
     provider: 'API',

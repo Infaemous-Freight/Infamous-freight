@@ -1,6 +1,6 @@
 # AI Services
 
-This directory contains AI and ML services for Infamous Freight.
+This directory contains AI and ML services for Infæmous Freight.
 
 ## Current service
 - `rate-prediction-service` — predicts freight rates from shipment and lane features

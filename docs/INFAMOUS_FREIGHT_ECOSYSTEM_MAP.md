@@ -1,11 +1,11 @@
-# Infamous Freight Ecosystem Map
+# Infæmous Freight Ecosystem Map
 
 ## System Vision
 
-Infamous Freight is positioned as a logistics operating system that connects shippers, brokers, carriers, drivers, and operations teams through a shared data and workflow layer.
+Infæmous Freight is positioned as a logistics operating system that connects shippers, brokers, carriers, drivers, and operations teams through a shared data and workflow layer.
 
 ```text
-Infamous Freight Platform
+Infæmous Freight Platform
         ↓
 National Carrier Network
         ↓

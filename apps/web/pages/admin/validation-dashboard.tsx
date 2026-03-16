@@ -126,7 +126,7 @@ export default function ValidationDashboard(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>72-Hour Validation Dashboard | Infamous Freight</title>
+        <title>72-Hour Validation Dashboard | Infæmous Freight</title>
       </Head>
 
       <div className="min-h-screen bg-gray-50 p-8">

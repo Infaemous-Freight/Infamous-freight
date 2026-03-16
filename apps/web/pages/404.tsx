@@ -21,7 +21,7 @@ export default function Custom404(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>404 - Page Not Found | Infamous Freight Enterprises</title>
+        <title>404 - Page Not Found | Infæmous Freight Enterprises</title>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 px-4">

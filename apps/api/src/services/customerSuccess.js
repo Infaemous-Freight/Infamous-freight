@@ -271,7 +271,7 @@ class CustomerSuccessAutomation {
   async sendOnboardingEmail(customer, day = 1) {
     const templates = {
       1: {
-        subject: "Welcome to Infamous Freight! 🚀",
+        subject: "Welcome to Infæmous Freight! 🚀",
         body: `
           Hi ${customer.name},
           
@@ -286,7 +286,7 @@ class CustomerSuccessAutomation {
           https://docs.infamous-freight.com/getting-started
           
           Best,
-          The Infamous Freight Team
+          The Infæmous Freight Team
         `,
       },
       3: {
@@ -304,7 +304,7 @@ class CustomerSuccessAutomation {
           Questions? We're here to help!
           
           Best,
-          The Infamous Freight Team
+          The Infæmous Freight Team
         `,
       },
       7: {
@@ -324,7 +324,7 @@ class CustomerSuccessAutomation {
           https://calendly.com/infamous-freight
           
           Best,
-          The Infamous Freight Team
+          The Infæmous Freight Team
         `,
       },
     };
@@ -358,7 +358,7 @@ class CustomerSuccessAutomation {
         What can we improve? Hit reply and let us know.
         
         Best,
-        The Infamous Freight Team
+        The Infæmous Freight Team
       `,
     });
 
@@ -392,7 +392,7 @@ class CustomerSuccessAutomation {
         We value your feedback and want to make things right.
         
         Best,
-        The Infamous Freight Team
+        The Infæmous Freight Team
       `,
     });
 
@@ -418,7 +418,7 @@ class CustomerSuccessAutomation {
         support@infamous-freight.com
         
         Best,
-        The Infamous Freight Team
+        The Infæmous Freight Team
       `,
     });
 

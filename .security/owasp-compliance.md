@@ -1,6 +1,6 @@
 # OWASP Top 10 2024 - Security Compliance Checklist
 
-**Project**: Infamous Freight Enterprises
+**Project**: Infæmous Freight Enterprises
 **Last Audit**: February 19, 2026
 **Compliance Score**: In Progress
 

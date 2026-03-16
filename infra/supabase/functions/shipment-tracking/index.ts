@@ -1,4 +1,4 @@
-// Infamous Freight Enterprises - Shipment Tracking API
+// Infæmous Freight Enterprises - Shipment Tracking API
 // Supabase Edge Function for real-time shipment location updates
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";

@@ -1,4 +1,4 @@
-# Consolidation Strategy for Infamous Freight Enterprises
+# Consolidation Strategy for Infæmous Freight Enterprises
 
 ## Overview
 

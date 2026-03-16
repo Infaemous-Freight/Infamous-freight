@@ -1,4 +1,4 @@
-# Infamous Freight Enterprises - Documentation Index
+# Infæmous Freight Enterprises - Documentation Index
 
 ## Getting Started
 

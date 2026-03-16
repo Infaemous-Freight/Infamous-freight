@@ -62,7 +62,7 @@ flyctl secrets set \
 ### Vercel (Web)
 
 - `NEXT_PUBLIC_API_BASE` = <https://infamous-freight-api.fly.dev>
-- `NEXT_PUBLIC_APP_NAME` = Infamous Freight Enterprises
+- `NEXT_PUBLIC_APP_NAME` = Infæmous Freight Enterprises
 - `NEXT_PUBLIC_ENV` = production
 - `CODECOV_TOKEN` = 783fc031-97bd-407e-9f95-130193429347
 

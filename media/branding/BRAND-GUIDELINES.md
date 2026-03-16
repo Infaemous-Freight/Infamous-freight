@@ -1,4 +1,4 @@
-# Infamous Freight Enterprises - Brand Guidelines
+# Infæmous Freight Enterprises - Brand Guidelines
 
 **Version 1.0 | January 2025**
 
@@ -23,7 +23,7 @@
 
 ### Mission Statement
 
-Infamous Freight Enterprises delivers modern, intelligent logistics solutions that empower businesses to ship smarter, faster, and more reliably. We combine cutting-edge technology with exceptional service to transform the freight industry.
+Infæmous Freight Enterprises delivers modern, intelligent logistics solutions that empower businesses to ship smarter, faster, and more reliably. We combine cutting-edge technology with exceptional service to transform the freight industry.
 
 ### Brand Attributes
 
@@ -603,7 +603,7 @@ All internal uses of brand assets are automatically approved when following thes
 
 ### External Use
 
-For partner marketing, co-branding, or any external use of Infamous Freight branding:
+For partner marketing, co-branding, or any external use of Infæmous Freight branding:
 
 1. **Request Approval:** Email marketing@infamousfreight.com
 2. **Submit Materials:** Provide mockups or draft materials
@@ -645,4 +645,4 @@ For brand guideline questions, contact:
 
 ---
 
-**© 2025 Infamous Freight Enterprises. All rights reserved.**
+**© 2025 Infæmous Freight Enterprises. All rights reserved.**

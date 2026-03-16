@@ -2,7 +2,7 @@
 
 ## Our Commitment
 
-We want the Infamous Freight community to be respectful, constructive, and welcoming.
+We want the Infæmous Freight community to be respectful, constructive, and welcoming.
 
 Participants in this project are expected to help create an environment that supports collaboration, technical curiosity, and professional conduct.
 

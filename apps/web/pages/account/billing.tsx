@@ -68,7 +68,7 @@ export default function Billing() {
     <main style={{ maxWidth: 900, margin: "0 auto", padding: 24 }}>
       <h1 style={{ margin: 0, color: "rgb(180,0,0)" }}>Billing & Account</h1>
       <p style={{ opacity: 0.85 }}>
-        View your subscription and manage your Infamous Freight account.
+        View your subscription and manage your Infæmous Freight account.
       </p>
 
       {err ? (

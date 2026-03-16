@@ -1,4 +1,4 @@
-# 🎨 Media Assets Library for Infamous Freight Enterprises
+# 🎨 Media Assets Library for Infæmous Freight Enterprises
 
 > **Complete visual identity, branding assets, technical diagrams, and promotional materials**
 >
@@ -144,7 +144,7 @@ This playbook standardizes brand tone and visual grammar for trailer clips, prod
 ### 3. Promotional Videos
 - **Product Teaser** (30 sec) - Quick feature showcase
 - **Customer Testimonials** (2 min) - Success stories
-- **Company Story** (3 min) - About Infamous Freight
+- **Company Story** (3 min) - About Infæmous Freight
 
 ---
 
@@ -339,4 +339,4 @@ For media asset requests or questions:
 
 **Version:** 1.0.0  
 **Last Updated:** February 19, 2026  
-**Maintained by:** Infamous Freight Design Team
+**Maintained by:** Infæmous Freight Design Team

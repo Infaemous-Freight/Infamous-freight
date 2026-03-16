@@ -5,7 +5,7 @@
 
 ## Slide 1 - Title
 
-Infamous Freight
+Infæmous Freight
 AI-native freight operations platform
 
 A brief, confident opener that frames the company as the operating layer for modern freight. Emphasize the AI-native focus, the end-to-end scope across dispatch, billing, and compliance, and the measurable outcomes fleets can expect.
@@ -96,7 +96,7 @@ Describe a multi-channel GTM that blends inbound credibility with targeted outbo
 - Load boards (listings only, no automation)
 - Point solutions (billing, tracking, compliance)
 
-Infamous Freight combines these into a unified AI-first platform.
+Infæmous Freight combines these into a unified AI-first platform.
 
 Clarify differentiation: unified workflows, real-time economic intelligence, and automation across the full freight lifecycle rather than a single function, delivering faster decisions and higher margins.
 
@@ -227,7 +227,7 @@ Slide 9 - Go-To-Market
 
 Slide 10 - Competitive Landscape
 - 2x2 matrix: breadth vs automation
-- Plot Infamous Freight in top-right with bold highlight
+- Plot Infæmous Freight in top-right with bold highlight
 - Competitors shown as muted dots with labels
 
 Slide 11 - Moat

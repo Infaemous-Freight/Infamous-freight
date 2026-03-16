@@ -26,7 +26,7 @@ interface APIDocsResponse {
 async function handler(_req: NextApiRequest, res: NextApiResponse<APIDocsResponse>) {
   const docs: APIDocsResponse = {
     version: "2.2.0",
-    name: "Infamous Freight API",
+    name: "Infæmous Freight API",
     description:
       "Enterprise logistics and fleet management API with real-time tracking, AI-powered routing, and comprehensive analytics.",
     endpoints: [

@@ -1,4 +1,4 @@
-// Infamous Freight Enterprises - Analytics API
+// Infæmous Freight Enterprises - Analytics API
 // Supabase Edge Function for dashboard analytics
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";

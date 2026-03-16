@@ -66,7 +66,7 @@ fetch("https://infamous-freight-api.fly.dev/api/health")
 | Variable               | Value                                  | Location                    |
 | ---------------------- | -------------------------------------- | --------------------------- |
 | `NEXT_PUBLIC_API_BASE` | `https://infamous-freight-api.fly.dev` | Vercel Dashboard            |
-| `NEXT_PUBLIC_APP_NAME` | `Infamous Freight`                     | Vercel Dashboard (optional) |
+| `NEXT_PUBLIC_APP_NAME` | `Infæmous Freight`                     | Vercel Dashboard (optional) |
 | `NEXT_PUBLIC_ENV`      | `production`                           | Vercel Dashboard (optional) |
 
 ---

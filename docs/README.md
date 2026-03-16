@@ -1,6 +1,6 @@
 # Documentation Index
 
-Welcome to the Infamous Freight Enterprise documentation! This index will help
+Welcome to the Infæmous Freight Enterprise documentation! This index will help
 you find the information you need.
 
 ## 🌍 Platform Overview (NEW!)

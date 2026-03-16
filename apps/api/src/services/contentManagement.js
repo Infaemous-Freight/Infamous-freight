@@ -262,7 +262,7 @@ class ContentManagementService {
   async getPageBySlug(slug) {
     const pages = {
       "about-us": {
-        title: "About Infamous Freight",
+        title: "About Infæmous Freight",
         slug: "about-us",
         content: "We are a leading logistics company...",
         layout: "default",

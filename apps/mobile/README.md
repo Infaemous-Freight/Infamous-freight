@@ -1,6 +1,6 @@
-# Infamous Freight Mobile
+# Infæmous Freight Mobile
 
-React Native mobile application for the Infamous Freight platform using Expo.
+React Native mobile application for the Infæmous Freight platform using Expo.
 
 ## 🚀 Quick Start
 

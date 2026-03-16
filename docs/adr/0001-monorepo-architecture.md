@@ -6,7 +6,7 @@ Accepted
 
 ## Context
 
-The Infamous Freight Enterprises platform consists of multiple related
+The Infæmous Freight Enterprises platform consists of multiple related
 applications:
 
 - Backend REST API (Node.js/Express)

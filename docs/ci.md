@@ -1,6 +1,6 @@
 # CI Contract
 
-This document defines the runtime contract, required checks, and merge rules for the Infamous Freight repository.
+This document defines the runtime contract, required checks, and merge rules for the Infæmous Freight repository.
 
 ## Runtime Contract
 

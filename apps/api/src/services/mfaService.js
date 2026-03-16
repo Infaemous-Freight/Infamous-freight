@@ -18,8 +18,8 @@ class MFAService {
   async generateTOTPSecret(email) {
     try {
       const secret = speakeasy.generateSecret({
-        name: `Infamous Freight (${email})`,
-        issuer: "Infamous Freight Enterprises",
+        name: `Infæmous Freight (${email})`,
+        issuer: "Infæmous Freight Enterprises",
         length: 32,
       });
 

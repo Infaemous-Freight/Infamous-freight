@@ -1,10 +1,10 @@
-# 🎬 Video Storyboards - Infamous Freight Enterprises
+# 🎬 Video Storyboards - Infæmous Freight Enterprises
 
 > **Professional video content plans for product demonstrations, tutorials, and marketing**
 
 ---
 
-## 🎥 Video 1: Product Demo - "Introduction to Infamous Freight" (2 minutes)
+## 🎥 Video 1: Product Demo - "Introduction to Infæmous Freight" (2 minutes)
 
 ### **Target Audience:** New users, potential customers
 ### **Tone:** Professional, engaging, modern
@@ -14,16 +14,16 @@
 
 | Time | Scene | Visual | Audio/Narration | Notes |
 |------|-------|--------|----------------|-------|
-| 0:00-0:10 | **Opening** | Animated logo reveal with truck driving animation | "Welcome to Infamous Freight Enterprises" | Brand colors, smooth animation |
+| 0:00-0:10 | **Opening** | Animated logo reveal with truck driving animation | "Welcome to Infæmous Freight Enterprises" | Brand colors, smooth animation |
 | 0:10-0:20 | **Problem Statement** | Split screen: frustrated business owner, delayed shipments | "Managing freight and logistics doesn't have to be complicated" | Relatable pain points |
-| 0:20-0:35 | **Solution Overview** | Dashboard overview, smooth transitions | "Introducing Infamous Freight - your complete shipping management platform" | Show dashboard, tracking map |
+| 0:20-0:35 | **Solution Overview** | Dashboard overview, smooth transitions | "Introducing Infæmous Freight - your complete shipping management platform" | Show dashboard, tracking map |
 | 0:35-0:50 | **Feature 1: Easy Shipment Creation** | Screen recording: Create shipment form | "Create shipments in seconds with our intuitive interface" | Highlight form fields filling |
 | 0:50-1:05 | **Feature 2: Real-time Tracking** | Animated map with moving truck icon | "Track every shipment in real-time with GPS accuracy" | Show live updates, ETA |
 | 1:05-1:20 | **Feature 3: Analytics** | Analytics dashboard with graphs animating | "Powerful analytics to optimize your logistics operations" | Charts, metrics, insights |
 | 1:20-1:35 | **Feature 4: Mobile App** | Mobile device with app screenshots | "Manage everything on the go with our mobile app" | iOS/Android showcase |
 | 1:35-1:45 | **API Integration** | Code editor with API example | "Seamlessly integrate with your existing systems via our REST API" | Show code snippets |
 | 1:45-1:55 | **Call to Action** | Website homepage, "Get Started" button | "Start your free trial today at infamousfreight.com" | Clear CTA |
-| 1:55-2:00 | **Closing** | Logo + tagline | "Infamous Freight - Logistics Made Simple" | End card |
+| 1:55-2:00 | **Closing** | Logo + tagline | "Infæmous Freight - Logistics Made Simple" | End card |
 
 ### Technical Requirements
 - **Resolution:** 1920x1080 (Full HD)
@@ -52,7 +52,7 @@
 
 | Time | Scene | Visual | Audio/Narration | Notes |
 |------|-------|--------|----------------|-------|
-| 0:00-0:15 | **Introduction** | Instructor speaking to camera | "Hi! In this tutorial, we'll create your first shipment on Infamous Freight" | Personal, welcoming |
+| 0:00-0:15 | **Introduction** | Instructor speaking to camera | "Hi! In this tutorial, we'll create your first shipment on Infæmous Freight" | Personal, welcoming |
 | 0:15-0:30 | **Login** | Screen: Login page | "First, log in to your account or sign up if you haven't already" | Show login process |
 | 0:30-1:00 | **Dashboard Tour** | Dashboard navigation | "This is your dashboard. Here you can see all your shipments and quick actions" | Point out key areas |
 | 1:00-2:30 | **Create Shipment Form** | Form filling step-by-step | "Click 'Create Shipment' and let's fill in the details..." | Highlight each field |
@@ -94,7 +94,7 @@
 | Time | Scene | Visual | Audio/Narration | Notes |
 |------|-------|--------|----------------|-------|
 | 0:00-0:05 | **Hook** | Fast cuts of shipping chaos | "Tired of shipping headaches?" | Grab attention |
-| 0:05-0:10 | **Brand Intro** | Logo animation | "Introducing Infamous Freight" | Quick reveal |
+| 0:05-0:10 | **Brand Intro** | Logo animation | "Introducing Infæmous Freight" | Quick reveal |
 | 0:10-0:15 | **Feature Montage** | Rapid feature highlights | "Create. Track. Analyze." | 3 quick scenes |
 | 0:15-0:20 | **Social Proof** | Customer testimonials (text) | "Join 10,000+ happy shippers" | Build trust |
 | 0:20-0:25 | **Mobile Demo** | Phone with app animation | "Shipping made simple" | Show app in hand |
@@ -128,7 +128,7 @@
 
 | Time | Scene | Visual | Audio/Narration | Notes |
 |------|-------|--------|----------------|-------|
-| 0:00-0:30 | **Introduction** | Title card + code editor | "In this guide, we'll integrate Infamous Freight API into your application" | Technical setup |
+| 0:00-0:30 | **Introduction** | Title card + code editor | "In this guide, we'll integrate Infæmous Freight API into your application" | Technical setup |
 | 0:30-1:30 | **Authentication** | Code: JWT token generation | "First, let's set up authentication with JWT tokens" | Show full code |
 | 1:30-3:00 | **Create Shipment Endpoint** | Code: POST /api/shipments | "Here's how to create a shipment programmatically" | Request/response |
 | 3:00-4:00 | **Get Shipment Status** | Code: GET /api/shipments/:id | "Retrieve shipment details with a simple GET request" | Show JSON response |
@@ -164,10 +164,10 @@
 | Time | Scene | Visual | Audio/Narration | Notes |
 |------|-------|--------|----------------|-------|
 | 0:00-0:15 | **Introduction** | Customer at office/warehouse | "I'm Sarah, logistics manager at TechCorp" | Real customer |
-| 0:15-0:45 | **The Problem** | B-roll of old system, frustration | "Before Infamous Freight, we struggled with fragmented systems..." | Show pain points |
-| 0:45-1:15 | **The Solution** | Using Infamous Freight platform | "Since switching, we've reduced shipping errors by 75%" | Show platform in use |
+| 0:15-0:45 | **The Problem** | B-roll of old system, frustration | "Before Infæmous Freight, we struggled with fragmented systems..." | Show pain points |
+| 0:45-1:15 | **The Solution** | Using Infæmous Freight platform | "Since switching, we've reduced shipping errors by 75%" | Show platform in use |
 | 1:15-1:45 | **The Results** | Graphs, happy team, warehouse activity | "We save 10 hours per week and our customers are happier" | Quantifiable results |
-| 1:45-2:00 | **Recommendation** | Customer speaking to camera | "I highly recommend Infamous Freight to any business shipping products" | Strong endorsement |
+| 1:45-2:00 | **Recommendation** | Customer speaking to camera | "I highly recommend Infæmous Freight to any business shipping products" | Strong endorsement |
 
 ### Technical Requirements
 - **Resolution:** 1920x1080 (Full HD)
@@ -274,4 +274,4 @@
 
 **Created:** February 19, 2026  
 **Version:** 1.0.0  
-**Maintained by:** Infamous Freight Marketing Team
+**Maintained by:** Infæmous Freight Marketing Team

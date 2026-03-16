@@ -1,4 +1,4 @@
-# Infamous Freight Enterprises - API Reference
+# Infæmous Freight Enterprises - API Reference
 
 **Base URL**: `https://infamous-freight-api.fly.dev`
 

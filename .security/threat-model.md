@@ -1,4 +1,4 @@
-# Infamous Freight Threat Model
+# Infæmous Freight Threat Model
 
 ## Architecture Overview
 

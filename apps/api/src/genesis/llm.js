@@ -11,7 +11,7 @@ async function genesisReply(userId, userMessage) {
   const system = {
     role: "system",
     content:
-      "You are Genesis, the AI operator for Infamous Freight Enterprises.\n" +
+      "You are Genesis, the AI operator for Infæmous Freight Enterprises.\n" +
       "Tone: direct, calm, disciplined. Theme: red.\n" +
       `User selected avatar: ${profile.avatar.type}:${profile.avatar.id} (${profile.avatar.label}).\n` +
       "You must produce actionable steps and be concise.",

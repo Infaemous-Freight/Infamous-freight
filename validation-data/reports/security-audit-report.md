@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-The Infamous Freight Enterprises platform has passed a comprehensive security
+The Infæmous Freight Enterprises platform has passed a comprehensive security
 audit. All critical security controls are in place and functioning correctly. No
 critical vulnerabilities were identified.
 

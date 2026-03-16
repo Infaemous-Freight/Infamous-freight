@@ -1,7 +1,7 @@
 # Ongoing Monitoring & Maintenance Guide
 
 This guide documents the continuous monitoring and maintenance procedures for
-the Infamous Freight Enterprises platform. Success requires consistent attention
+the Infæmous Freight Enterprises platform. Success requires consistent attention
 to code quality, security, and performance metrics.
 
 ## Overview
@@ -20,7 +20,7 @@ Use the following fixed cadence for market and business monitoring:
 | Check platform reliability and incidents | Daily | 9:00 AM |
 | Watch competitor funding and launches | Daily | 12:00 PM |
 | Monitor trucking and brokerage regulations | Weekly (Monday) | 7:30 AM |
-| Review Infamous Freight revenue engine | Weekly (Friday) | 4:00 PM |
+| Review Infæmous Freight revenue engine | Weekly (Friday) | 4:00 PM |
 
 ## Minimum Ops Stack (Locked)
 
@@ -58,7 +58,7 @@ curl https://api.infamous-freight.com/health
 
 ```bash
 # Check Sentry for new errors (5-10 new errors per day is normal)
-# https://sentry.io → Infamous Freight Project
+# https://sentry.io → Infæmous Freight Project
 
 # Look for:
 # - Critical or Fatal errors (address immediately)
@@ -432,7 +432,7 @@ SELECT COUNT(*) FROM orders;
 **Weekly Standup Agenda:**
 
 ```markdown
-## Infamous Freight - Weekly Review
+## Infæmous Freight - Weekly Review
 
 📊 **Metrics**
 
@@ -522,7 +522,7 @@ SELECT COUNT(*) FROM orders;
 
 ```
 1. Go to https://sentry.io
-2. Sign in → Infamous Freight project
+2. Sign in → Infæmous Freight project
 3. Set alerts:
    - All critical errors → Slack #alerts
    - Error rate > 1% → Slack #alerts
@@ -546,7 +546,7 @@ SELECT COUNT(*) FROM orders;
 
 ```
 1. Go to https://codecov.io
-2. Sign in → Infamous Freight project
+2. Sign in → Infæmous Freight project
 3. Set pull request settings:
    - Require 70% project coverage
    - Require 80% patch coverage

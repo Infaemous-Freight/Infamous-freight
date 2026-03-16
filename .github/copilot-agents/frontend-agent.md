@@ -1,4 +1,4 @@
-# Agent Name: Infamous Freight Frontend Engineer
+# Agent Name: Infæmous Freight Frontend Engineer
 
 ## Frameworks
 

@@ -13,7 +13,7 @@ export default function SignupPage(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Sign Up - Infamous Freight</title>
+        <title>Sign Up - Infæmous Freight</title>
       </Head>
       <div
         style={{

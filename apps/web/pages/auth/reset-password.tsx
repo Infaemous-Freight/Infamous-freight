@@ -113,8 +113,8 @@ export default function ResetPasswordPage(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Reset Password - Infamous Freight</title>
-        <meta name="description" content="Reset your Infamous Freight password" />
+        <title>Reset Password - Infæmous Freight</title>
+        <meta name="description" content="Reset your Infæmous Freight password" />
       </Head>
 
       <div className="auth-page">

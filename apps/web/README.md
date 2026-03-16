@@ -1,6 +1,6 @@
-# Infamous Freight Web
+# Infæmous Freight Web
 
-Next.js 14 frontend application for the Infamous Freight platform.
+Next.js 14 frontend application for the Infæmous Freight platform.
 
 ## 🚀 Quick Start
 

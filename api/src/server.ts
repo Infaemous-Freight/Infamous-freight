@@ -1,5 +1,5 @@
 /**
- * server.ts — Infamous Freight API Entry Point
+ * server.ts — Infæmous Freight API Entry Point
  *
  * Boot order is critical:
  *   1. Tracing (must patch before any other imports)

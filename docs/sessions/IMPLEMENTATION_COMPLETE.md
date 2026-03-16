@@ -2,7 +2,7 @@
 
 ## Summary
 
-All suggested improvements have been fully implemented for the Infamous Freight
+All suggested improvements have been fully implemented for the Infæmous Freight
 Enterprises project. The codebase has been transformed into a modern,
 maintainable monorepo with enhanced tooling and developer experience.
 
@@ -385,7 +385,7 @@ lsof -ti:3001 | xargs kill -9
 
 **All improvements have been successfully implemented!**
 
-The Infamous Freight Enterprises project is now:
+The Infæmous Freight Enterprises project is now:
 
 - 🚀 **Faster** to develop with
 - 🧹 **Cleaner** and better organized

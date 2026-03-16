@@ -31,13 +31,13 @@ function DashboardContent() {
   return (
     <>
       <Head>
-        <title>Dashboard - Infamous Freight</title>
+        <title>Dashboard - Infæmous Freight</title>
       </Head>
 
       <div className="dashboard-page">
         <aside className="dashboard-sidebar">
           <div className="sidebar-brand">
-            <h2>Infamous Freight</h2>
+            <h2>Infæmous Freight</h2>
           </div>
           <nav className="sidebar-nav">
             {getTrucknEnabled ? (
@@ -74,7 +74,7 @@ function DashboardContent() {
             <section className="hero">
               <div className="container hero-inner">
                 <div>
-                  <p className="section-subtitle">Welcome to Infamous Freight</p>
+                  <p className="section-subtitle">Welcome to Infæmous Freight</p>
                   <h1 className="hero-title">Your Dashboard</h1>
                   <p className="hero-copy">
                     Manage your freight operations, view loads, and track billing all in one place.

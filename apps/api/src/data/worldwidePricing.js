@@ -17,7 +17,7 @@ const WORLDWIDE_PRICING = {
       currency: "USD",
       interval: null,
       billing: "free",
-      description: "Perfect for getting started with Infamous Freight",
+      description: "Perfect for getting started with Infæmous Freight",
       features: {
         shipments: 10,
         activeShipments: 2,

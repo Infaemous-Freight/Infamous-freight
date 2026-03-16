@@ -62,7 +62,7 @@ export class BiometricAuthService {
 
       const result = await LocalAuthentication.authenticateAsync({
         disableDeviceFallback: false,
-        reason: "Authenticate to unlock Infamous Freight",
+        reason: "Authenticate to unlock Infæmous Freight",
       });
 
       if (result.success) {

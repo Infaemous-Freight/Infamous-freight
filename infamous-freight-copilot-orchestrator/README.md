@@ -1,4 +1,4 @@
-# Infamous Freight Copilot Orchestrator (GitHub App + Webhook)
+# Infæmous Freight Copilot Orchestrator (GitHub App + Webhook)
 
 This service listens to GitHub webhooks for `MrMiless44/Infamous-freight` and:
 - Assigns issues to Copilot coding agent when:

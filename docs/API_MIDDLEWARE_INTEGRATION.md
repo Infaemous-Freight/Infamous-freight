@@ -1,6 +1,6 @@
 # API Middleware Integration Guide
 
-**Infamous Freight Enterprises - Complete Middleware Stack Documentation**
+**Infæmous Freight Enterprises - Complete Middleware Stack Documentation**
 
 ## Overview
 

@@ -1,4 +1,4 @@
-# Agent Name: Infamous Freight QA Engineer
+# Agent Name: Infæmous Freight QA Engineer
 
 ## Responsibilities
 

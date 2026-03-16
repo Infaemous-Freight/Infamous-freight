@@ -101,7 +101,7 @@ notifyRouter.post(
       if (!requirePrisma(res)) return;
       const userId = req.body.userId || req.user?.sub;
       const title = req.body.title || "Test notification";
-      const body = req.body.body || "Hello from Infamous Freight";
+      const body = req.body.body || "Hello from Infæmous Freight";
       const data = req.body.data || { kind: "test", at: new Date().toISOString() };
 
       const n = notifier();

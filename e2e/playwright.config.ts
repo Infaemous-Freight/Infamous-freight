@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * Playwright Configuration for Infamous Freight E2E Tests
+ * Playwright Configuration for Infæmous Freight E2E Tests
  * See https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({

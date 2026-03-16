@@ -51,7 +51,7 @@ export default function Home(): React.ReactElement {
   return (
     <>
       <SEOHead
-        title="Infamous Freight Enterprises - AI-Powered Logistics & Fleet Management"
+        title="Infæmous Freight Enterprises - AI-Powered Logistics & Fleet Management"
         description="Transform your logistics operations with AI-powered fleet management, real-time tracking, autonomous dispatch, and enterprise-grade revenue optimization. Trusted by industry leaders."
         keywords={[
           "AI logistics platform",

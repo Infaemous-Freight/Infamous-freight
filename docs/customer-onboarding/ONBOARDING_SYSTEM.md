@@ -51,7 +51,7 @@ FAILURE: Inactive customer (no aha moment) churns at 70%
 
 ```
 TOUCHPOINT 1: Welcome Email (Within 1 hour of signup)
-  • Subject: "Welcome to Infamous Freight! 👋"
+  • Subject: "Welcome to Infæmous Freight! 👋"
   • Content:
     - Celebrate signup
     - What to expect (5-day onboarding journey)
@@ -121,7 +121,7 @@ TOUCHPOINT 5: Slack/In-App Message (Day 3 - Wednesday)
 
 ```
 TOUCHPOINT 6: ROI Calculator Email (Day 4 - Thursday)
-  • Subject: "How much could you save with Infamous Freight? 💰"
+  • Subject: "How much could you save with Infæmous Freight? 💰"
   • Content:
     - Embedded ROI calculator
     - Questions:
@@ -144,7 +144,7 @@ TOUCHPOINT 7: Success Manager Check-In Call (Day 5 - Friday)
   • Note: Only if customer has been active (logged in 3+ days)
 
 TOUCHPOINT 8: Expansion Offer Email (Day 7 - Monday, if active)
-  • Subject: "You're using Infamous Freight great! Here's what's next"
+  • Subject: "You're using Infæmous Freight great! Here's what's next"
   • Content:
     - Highlight 2-3 unused features
     - "Customers using [Feature] save 25% more"

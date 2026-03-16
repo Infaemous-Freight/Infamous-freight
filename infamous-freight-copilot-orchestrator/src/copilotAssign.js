@@ -71,7 +71,7 @@ export async function assignIssueToCopilot({ owner, repo, issueNumber }) {
   `;
 
   const customInstructions =
-    "Follow .github/copilot-instructions.md and Infamous Freight PR Rules. " +
+    "Follow .github/copilot-instructions.md and Infæmous Freight PR Rules. " +
     "Keep changes minimal, run tests, and do not add dependencies.";
 
   await request("POST /graphql", {

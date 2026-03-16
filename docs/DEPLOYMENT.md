@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This document covers environment setup, secrets management, and platform-specific deployment for Infamous Freight.
+This document covers environment setup, secrets management, and platform-specific deployment for Infæmous Freight.
 
 ## Prerequisites
 

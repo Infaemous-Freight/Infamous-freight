@@ -1,6 +1,6 @@
 {
   "dashboard": {
-    "title": "Infamous Freight - API Performance",
+    "title": "Infæmous Freight - API Performance",
     "tags": ["api", "performance"],
     "timezone": "browser",
     "panels": [

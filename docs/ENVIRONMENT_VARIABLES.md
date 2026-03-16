@@ -1,6 +1,6 @@
 # Environment Variables Documentation
 
-This document describes all environment variables used in the Infamous Freight
+This document describes all environment variables used in the Infæmous Freight
 Enterprises project.
 
 ## Required Variables

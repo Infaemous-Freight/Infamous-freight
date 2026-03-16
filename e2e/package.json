@@ -2,7 +2,7 @@
   "name": "@infamous-freight/e2e",
   "version": "1.0.0",
   "private": true,
-  "description": "End-to-end tests for Infamous Freight Enterprises",
+  "description": "End-to-end tests for Infæmous Freight Enterprises",
   "scripts": {
     "test": "playwright test",
     "test:headed": "playwright test --headed",

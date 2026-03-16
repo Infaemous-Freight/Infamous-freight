@@ -1,7 +1,7 @@
 # CI/CD Documentation
 
 Comprehensive guide to the Continuous Integration and Continuous Deployment
-workflows for Infamous Freight.
+workflows for Infæmous Freight.
 
 ## 📋 Overview
 

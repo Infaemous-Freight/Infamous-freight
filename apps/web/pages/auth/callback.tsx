@@ -44,7 +44,7 @@ export default function AuthCallbackPage(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Processing Sign In - Infamous Freight</title>
+        <title>Processing Sign In - Infæmous Freight</title>
       </Head>
 
       <div className="callback-page">

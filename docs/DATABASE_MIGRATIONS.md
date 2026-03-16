@@ -1,7 +1,7 @@
 # Database Migration Strategy
 
 This guide documents safe, reliable database migration procedures for the
-Infamous Freight Enterprises platform. All migrations use Prisma ORM with
+Infæmous Freight Enterprises platform. All migrations use Prisma ORM with
 PostgreSQL.
 
 ## Overview

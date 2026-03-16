@@ -1,5 +1,5 @@
 /**
- * Pricing tiers for Infamous Freight services
+ * Pricing tiers for Infæmous Freight services
  * Used in pricing pages and onboarding flow
  */
 

@@ -1,6 +1,6 @@
 # 🔌 PLATFORM ECOSYSTEM DEVELOPMENT SYSTEM
 
-**Purpose**: Turn Infamous Freight into a platform (not just software)  
+**Purpose**: Turn Infæmous Freight into a platform (not just software)  
 **Goal**: 30% of customers use at least 1 integration, +$500K ARR from
 ecosystem  
 **Timeline**: Q2-Q4 2026
@@ -18,7 +18,7 @@ ecosystem
 ### Why Ecosystem?
 
 ```
-PROBLEM: "Infamous Freight is great for tracking, but we need accounting integration"
+PROBLEM: "Infæmous Freight is great for tracking, but we need accounting integration"
   • Customer wants to use Infamous + QuickBooks
   • Currently: Manual CSV exports → Manual data entry
   • Outcome: Customer churns (problem unsolved)
@@ -159,7 +159,7 @@ Example Listing: "QuickBooks Integration"
   • 4.8 ⭐ (45 reviews)
   • 2,500+ installations
   • Pricing: Free (basic) + $50/month (pro)
-  • By: Infamous Freight (official)
+  • By: Infæmous Freight (official)
 ```
 
 ### 4. App Directory (Public)
@@ -191,7 +191,7 @@ FEATURED APPS (Q1 2026):
 USE CASE: "Auto-sync freight costs to accounting"
 
 WORKFLOW:
-  1. Shipment delivered → Infamous Freight webhook triggered
+  1. Shipment delivered → Infæmous Freight webhook triggered
   2. Webhook includes cost data
   3. Integration pulls data → Creates GL entry in QB
   4. QB invoice shows: "Freight costs: $X"
@@ -216,7 +216,7 @@ LAUNCH PLAN:
 ### Partner 2: Shopify Integration
 
 ```
-USE CASE: "Auto-track Shopify orders in Infamous Freight"
+USE CASE: "Auto-track Shopify orders in Infæmous Freight"
 
 WORKFLOW:
   1. Customer places order on Shopify
@@ -244,10 +244,10 @@ LAUNCH PLAN:
 ### Partner 3: Zapier
 
 ```
-USE CASE: "Connect Infamous Freight to 5,000+ apps via Zapier"
+USE CASE: "Connect Infæmous Freight to 5,000+ apps via Zapier"
 
 WORKFLOW:
-  • Zapier action: "Create Infamous Freight shipment"
+  • Zapier action: "Create Infæmous Freight shipment"
   • Zapier trigger: "When shipment delivered in Infamous → Do X"
   • Examples:
     - Create Google Sheets row
@@ -382,6 +382,6 @@ revenue from ecosystem ✅ 50+ active developers building on platform ✅ 10+
 
 **Status**: ✅ PLATFORM ECOSYSTEM READY
 
-API, webhooks, marketplace, and developer program to transform Infamous Freight
+API, webhooks, marketplace, and developer program to transform Infæmous Freight
 from product into platform, unlocking $500K+ ecosystem revenue and high-value
 partnerships.

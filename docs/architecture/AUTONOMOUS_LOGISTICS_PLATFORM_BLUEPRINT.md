@@ -1,4 +1,4 @@
-# Infamous Freight Autonomous Logistics Platform Blueprint
+# Infæmous Freight Autonomous Logistics Platform Blueprint
 
 This document translates the autonomous freight vision into an implementable
 system architecture with concrete services, data contracts, and execution

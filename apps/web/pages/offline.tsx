@@ -29,7 +29,7 @@ export default function OfflinePage(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Offline | Infamous Freight Enterprises</title>
+        <title>Offline | Infæmous Freight Enterprises</title>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4">

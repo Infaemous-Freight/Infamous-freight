@@ -1,4 +1,4 @@
-# System Architecture Diagram - Infamous Freight Enterprises
+# System Architecture Diagram - Infæmous Freight Enterprises
 
 ```mermaid
 graph TB

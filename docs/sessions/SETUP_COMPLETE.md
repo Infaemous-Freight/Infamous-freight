@@ -1,4 +1,4 @@
-# ✅ Setup Complete! - Infamous Freight Enterprises
+# ✅ Setup Complete! - Infæmous Freight Enterprises
 
 ## 🎉 Successfully Completed Tasks
 

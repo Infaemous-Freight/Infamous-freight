@@ -1,4 +1,4 @@
-# Technical Debt Roadmap - Infamous Freight Enterprises
+# Technical Debt Roadmap - Infæmous Freight Enterprises
 
 **Created**: February 22, 2026  
 **Status**: Phase 5 - Post-Production Readiness Analysis  

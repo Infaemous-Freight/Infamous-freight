@@ -1,6 +1,6 @@
-# Playwright E2E Testing for Infamous Freight
+# Playwright E2E Testing for Infæmous Freight
 
-Complete end-to-end testing suite using Playwright for the Infamous Freight
+Complete end-to-end testing suite using Playwright for the Infæmous Freight
 platform.
 
 ## 🚀 Quick Start

@@ -1,6 +1,6 @@
 # Copilot Coding Agent Autonomous Pipeline
 
-This document defines the production workflow for autonomous issue-to-PR delivery in Infamous Freight.
+This document defines the production workflow for autonomous issue-to-PR delivery in Infæmous Freight.
 
 ## Pipeline Overview
 

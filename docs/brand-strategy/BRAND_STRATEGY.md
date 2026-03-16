@@ -20,7 +20,7 @@
 
 ```
 POSITIONING STATEMENT:
-"Infamous Freight is the AI-powered logistics platform for ambitious companies
+"Infæmous Freight is the AI-powered logistics platform for ambitious companies
  that refuse to accept 'good enough' freight management."
 
 BRAND PROMISE:
@@ -211,7 +211,7 @@ Hero section:
   "Stop Accepting Freight Chaos.
 
    80% of companies overpay on freight and have no idea why.
-   Infamous Freight finds the hidden money, automates the chaos,
+   Infæmous Freight finds the hidden money, automates the chaos,
    and gives you back 10 hours per week."
 
 Value propositions:
@@ -302,5 +302,5 @@ REVENUE IMPACT:
 **Status**: ✅ BRAND & THOUGHT LEADERSHIP STRATEGY READY
 
 CEO visibility, content authority, analyst relations, and press to establish
-Infamous Freight as industry thought leader and trusted expert in
+Infæmous Freight as industry thought leader and trusted expert in
 freight/logistics.

@@ -1,8 +1,8 @@
 # 🚀 Complete Production Deployment Guide
 
-# Infamous Freight Enterprises - 100% Production Ready
+# Infæmous Freight Enterprises - 100% Production Ready
 
-This guide provides everything needed to deploy and operate Infamous Freight
+This guide provides everything needed to deploy and operate Infæmous Freight
 Enterprises in production.
 
 ## 📋 Table of Contents

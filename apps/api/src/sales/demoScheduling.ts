@@ -333,7 +333,7 @@ async function sendDemoConfirmation(
   demoBooking: any,
   calendarEvent: CalendarEventResult,
 ): Promise<void> {
-  const subject = "Your Infamous Freight demo is scheduled";
+  const subject = "Your Infæmous Freight demo is scheduled";
   const text = `Hi ${lead.name || "there"},\n\nYour demo is scheduled for ${new Date(
     demoBooking.scheduledFor,
   ).toLocaleString()}.\n\nCalendar link: ${calendarEvent.calendarLink}\nZoom link: ${calendarEvent.zoomLink}\n\nSee you soon!`;

@@ -2,7 +2,7 @@
 
 **Date**: January 15, 2026  
 **Status**: ✅ **CURRICULUM READY**  
-**Training Provider**: Infamous Freight Operations Team
+**Training Provider**: Infæmous Freight Operations Team
 
 ---
 

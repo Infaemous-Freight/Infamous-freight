@@ -1,4 +1,4 @@
-# Deployment Runbook - Infamous Freight Enterprises
+# Deployment Runbook - Infæmous Freight Enterprises
 
 **API**: `https://infamous-freight-api.fly.dev`  
 **Status**: Production (Fly.io iad region)  
@@ -431,4 +431,4 @@ curl -X POST \
 ---
 
 **Last Updated**: December 16, 2025  
-**Maintained By**: Infamous Freight DevOps Team
+**Maintained By**: Infæmous Freight DevOps Team

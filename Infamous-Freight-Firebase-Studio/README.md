@@ -1,4 +1,4 @@
-# Infamous Freight Firebase Studio Starter
+# Infæmous Freight Firebase Studio Starter
 
 This repository is a Firebase Studio-ready starter for realtime freight tracking
 with a Next.js dashboard, Firestore templates, and Cloud Functions.

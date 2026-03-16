@@ -320,7 +320,7 @@ function loadConfig() {
  */
 function generateEnvExample() {
     const lines = [
-        '# Infamous Freight Enterprises - Configuration Example',
+        '# Infæmous Freight Enterprises - Configuration Example',
         '# Copy this to .env and fill in the values',
         '# Generated: ' + new Date().toISOString(),
         '',

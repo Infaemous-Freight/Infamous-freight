@@ -1,4 +1,4 @@
-# Quick Reference - Infamous Freight Enterprises
+# Quick Reference - Infæmous Freight Enterprises
 
 **Last Updated:** February 22, 2026  
 **Version:** 2.0 (Post-Cleanup)

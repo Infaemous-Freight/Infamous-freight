@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes all GitHub Actions workflows in the Infamous Freight
+This document describes all GitHub Actions workflows in the Infæmous Freight
 Enterprises repository, their purposes, triggers, and troubleshooting steps.
 
 ---

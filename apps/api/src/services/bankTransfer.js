@@ -60,7 +60,7 @@ async function createLinkToken(userId) {
             user: {
                 client_user_id: userId,
             },
-            client_name: "Infamous Freight",
+            client_name: "Infæmous Freight",
             products: ["auth", "transactions"],
             country_codes: ["US"],
             language: "en",

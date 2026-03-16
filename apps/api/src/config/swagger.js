@@ -4,9 +4,9 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Infamous Freight Enterprises API",
+      title: "Infæmous Freight Enterprises API",
       version: "1.0.0",
-      description: "Complete API documentation for Infamous Freight Enterprises logistics platform",
+      description: "Complete API documentation for Infæmous Freight Enterprises logistics platform",
       contact: {
         name: "API Support",
         email: "support@infamous-freight.com",

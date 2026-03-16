@@ -49,7 +49,7 @@ const server = http.createServer((req, res) => {
         timestamp: Date.now(),
         database: "mock",
         mode: "development",
-        message: "Infamous Freight API - Mock Mode",
+        message: "Infæmous Freight API - Mock Mode",
       }),
     );
     return;
@@ -73,7 +73,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
-        name: "Infamous Freight Enterprises API",
+        name: "Infæmous Freight Enterprises API",
         version: "2.1.0",
         mode: "mock",
         status: "running",
@@ -92,7 +92,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log("🚀 Infamous Freight API (Mock Mode) running on http://%s:%d", HOST, PORT);
+  console.log("🚀 Infæmous Freight API (Mock Mode) running on http://%s:%d", HOST, PORT);
   console.log("✅ Health check: http://localhost:%d/api/health", PORT);
   console.log("✅ Shipments: http://localhost:%d/api/shipments", PORT);
   console.log("📝 Mode: Development (No database required)");

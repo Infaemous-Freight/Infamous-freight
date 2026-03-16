@@ -3,7 +3,7 @@
     "enabled": true,
     "version": "1.0.0",
     "updated": "2026-02-03",
-    "description": "Production monitoring configuration for Infamous Freight on Railway"
+    "description": "Production monitoring configuration for Infæmous Freight on Railway"
   },
   "health_checks": {
     "api": {

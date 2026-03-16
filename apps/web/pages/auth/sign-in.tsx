@@ -107,15 +107,15 @@ export default function SignInPage(): React.ReactElement {
   return (
     <>
       <Head>
-        <title>Sign In - Infamous Freight</title>
-        <meta name="description" content="Sign in to your Infamous Freight account" />
+        <title>Sign In - Infæmous Freight</title>
+        <meta name="description" content="Sign in to your Infæmous Freight account" />
       </Head>
 
       <div className="auth-page">
         <div className="auth-container">
           <div className="auth-card">
             <h1>Sign In</h1>
-            <p>Welcome back to Infamous Freight</p>
+            <p>Welcome back to Infæmous Freight</p>
 
             {error && <div className="alert alert-error">{error}</div>}
             {message && <div className="alert alert-success">{message}</div>}

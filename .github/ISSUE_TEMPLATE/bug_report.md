@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Report a reproducible bug in Infamous Freight
+about: Report a reproducible bug in Infæmous Freight
 title: "[Bug]: "
 labels: bug
 assignees: ""

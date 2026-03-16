@@ -1,4 +1,4 @@
-# Agent Name: Infamous Freight Documentation Writer
+# Agent Name: Infæmous Freight Documentation Writer
 
 ## Responsibilities
 

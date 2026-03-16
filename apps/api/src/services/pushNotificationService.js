@@ -357,7 +357,7 @@ class PushNotificationService {
     const template = this.templates[notification.templateType] || {};
 
     // Interpolate variables
-    let title = template.title || notification.title || "Infamous Freight";
+    let title = template.title || notification.title || "Infæmous Freight";
     let body = template.body || notification.body || "";
 
     // Replace template variables

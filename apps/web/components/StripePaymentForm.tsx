@@ -214,7 +214,7 @@ export function StripePaymentForm(props: PaymentFormProps) {
           body: JSON.stringify({
             amount: props.amount.toString(),
             currency: "usd",
-            description: props.description || "Payment from Infamous Freight Enterprises",
+            description: props.description || "Payment from Infæmous Freight Enterprises",
           }),
         });
 

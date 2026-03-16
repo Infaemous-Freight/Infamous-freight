@@ -89,7 +89,7 @@ Slide 9 - Go-To-Market
 
 Slide 10 - Competitive Landscape
 - 2x2 matrix (8 columns) centered
-- Highlight Infamous Freight with ring or glow
+- Highlight Infæmous Freight with ring or glow
 - Competitor labels outside plot area
 
 Slide 11 - Moat

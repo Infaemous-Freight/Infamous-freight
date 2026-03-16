@@ -76,7 +76,7 @@ async function createPaymentIntent(
       {
         amount: amountInCents,
         currency: currency.toLowerCase(),
-        description: description || "Payment from Infamous Freight Enterprises",
+        description: description || "Payment from Infæmous Freight Enterprises",
         metadata: {
           userId,
           userEmail,

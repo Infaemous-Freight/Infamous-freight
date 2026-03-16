@@ -1,4 +1,4 @@
-# Infamous Freight API
+# Infæmous Freight API
 
 Enterprise-grade REST API for freight management platform with authentication,
 billing, AI integration, and real-time features.

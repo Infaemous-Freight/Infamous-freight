@@ -108,7 +108,7 @@ router.post("/test", authenticate, async (req, res, next) => {
       type: "test",
       templateType: "urgentAlert",
       data: {
-        message: "This is a test notification from Infamous Freight",
+        message: "This is a test notification from Infæmous Freight",
       },
       clickTarget: "/shipments",
     };

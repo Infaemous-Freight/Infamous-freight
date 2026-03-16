@@ -280,7 +280,7 @@ class BiometricAuthenticationService {
       userId,
       challenge,
       rp: {
-        name: "Infamous Freight",
+        name: "Infæmous Freight",
         id: "infamous-freight.com",
       },
       user: {

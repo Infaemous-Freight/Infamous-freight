@@ -1,4 +1,4 @@
-# Agent Name: Infamous Freight Backend Engineer
+# Agent Name: Infæmous Freight Backend Engineer
 
 ## Specialization
 

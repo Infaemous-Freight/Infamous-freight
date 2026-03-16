@@ -1,6 +1,6 @@
-# Infamous Freight — Copilot Playbook
+# Infæmous Freight — Copilot Playbook
 
-This playbook defines how GitHub Copilot (and Copilot Coding Agent) should be used in the Infamous Freight monorepo. It exists to ensure that all AI-assisted work is scoped, reviewable, and safe.
+This playbook defines how GitHub Copilot (and Copilot Coding Agent) should be used in the Infæmous Freight monorepo. It exists to ensure that all AI-assisted work is scoped, reviewable, and safe.
 
 ---
 

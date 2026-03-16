@@ -1,5 +1,5 @@
 /**
- * Infamous Freight Products & Services Pricing - 2026
+ * Infæmous Freight Products & Services Pricing - 2026
  * Comprehensive pricing for all freight and logistics services
  * Prices in USD with regional adjustments available
  */

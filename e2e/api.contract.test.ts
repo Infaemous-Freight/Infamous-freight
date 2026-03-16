@@ -15,7 +15,7 @@ const pact = new PactV3({
   logLevel: "warn",
 });
 
-describe("Infamous Freight API Contract Tests", () => {
+describe("Infæmous Freight API Contract Tests", () => {
   // Shipments API
   describe("GET /api/v1/shipments/:id", () => {
     it("should return shipment details", () => {

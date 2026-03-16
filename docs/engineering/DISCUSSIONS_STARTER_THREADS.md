@@ -4,13 +4,13 @@ Use the following five starter discussions to bootstrap community conversation.
 
 ## 1) Announcements
 
-**Title:** Welcome to the Infamous Freight Platform
+**Title:** Welcome to the Infæmous Freight Platform
 
 **Body:**
 
-Welcome to the Infamous Freight repository.
+Welcome to the Infæmous Freight repository.
 
-Infamous Freight is an AI-powered freight and logistics automation platform designed to connect carriers, brokers, and shippers through a unified intelligent marketplace.
+Infæmous Freight is an AI-powered freight and logistics automation platform designed to connect carriers, brokers, and shippers through a unified intelligent marketplace.
 
 Core platform areas include:
 
@@ -25,15 +25,15 @@ Core platform areas include:
 
 Use Discussions to propose ideas, ask technical questions, discuss architecture, and share improvements.
 
-— Infamous Freight Engineering
+— Infæmous Freight Engineering
 
 ## 2) General
 
-**Title:** Infamous Freight Platform Architecture Discussion
+**Title:** Infæmous Freight Platform Architecture Discussion
 
 **Body:**
 
-This discussion is for open conversation about the architecture and infrastructure of the Infamous Freight platform.
+This discussion is for open conversation about the architecture and infrastructure of the Infæmous Freight platform.
 
 Topics may include:
 
@@ -48,11 +48,11 @@ Topics may include:
 
 ## 3) Ideas
 
-**Title:** Feature Ideas for the Infamous Freight Ecosystem
+**Title:** Feature Ideas for the Infæmous Freight Ecosystem
 
 **Body:**
 
-Use this discussion to propose new feature ideas for the Infamous Freight platform.
+Use this discussion to propose new feature ideas for the Infæmous Freight platform.
 
 Potential areas include:
 
@@ -67,11 +67,11 @@ Potential areas include:
 
 ## 4) Q&A
 
-**Title:** Technical Questions About the Infamous Freight Platform
+**Title:** Technical Questions About the Infæmous Freight Platform
 
 **Body:**
 
-Use this thread to ask technical questions about the Infamous Freight platform.
+Use this thread to ask technical questions about the Infæmous Freight platform.
 
 Example questions:
 
@@ -83,11 +83,11 @@ Example questions:
 
 ## 5) Show and Tell
 
-**Title:** Projects Built with Infamous Freight
+**Title:** Projects Built with Infæmous Freight
 
 **Body:**
 
-This discussion is for sharing projects, integrations, and tools built with the Infamous Freight platform.
+This discussion is for sharing projects, integrations, and tools built with the Infæmous Freight platform.
 
 Examples include:
 

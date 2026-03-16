@@ -103,11 +103,11 @@ class EmailTemplatingService {
         `,
       },
       welcome_email: {
-        subject: "Welcome to Infamous Freight!",
+        subject: "Welcome to Infæmous Freight!",
         preview: "Get started with your account",
         body: `
           <h1>Welcome {{userName}}!</h1>
-          <p>Thank you for joining Infamous Freight.</p>
+          <p>Thank you for joining Infæmous Freight.</p>
           <p>Get started:</p>
           <ul>
             <li><a href="{{setupLink}}">Complete Your Profile</a></li>
@@ -180,7 +180,7 @@ class EmailTemplatingService {
         <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
           ${content}
           <div class="footer">
-            <p>© 2026 Infamous Freight Enterprises. All rights reserved.</p>
+            <p>© 2026 Infæmous Freight Enterprises. All rights reserved.</p>
             <p><a href="{{unsubscribeLink}}">Unsubscribe</a></p>
           </div>
         </div>

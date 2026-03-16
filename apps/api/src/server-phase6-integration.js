@@ -112,7 +112,7 @@ function setupSwagger() {
     swaggerUi.serve,
     swaggerUi.setup(swaggerSpec, {
       customCss: ".swagger-ui { background: #f9f9f9; }",
-      customSiteTitle: "Infamous Freight API",
+      customSiteTitle: "Infæmous Freight API",
       swaggerOptions: {
         persistAuthorization: true,
       },
@@ -222,7 +222,7 @@ function setupErrorHandling() {
  */
 async function startServer() {
   try {
-    logger.info("🚀 Starting Infamous Freight API Server...");
+    logger.info("🚀 Starting Infæmous Freight API Server...");
 
     // 1. Initialize database with connection pooling
     await initializeDatabase();
