@@ -9,8 +9,12 @@ import { Router, type Request, type Response, type NextFunction } from "express"
 import { z } from "zod";
 import { pool } from "../lib/db.js";
 import { ApiResponse, HTTP_STATUS } from "@infamous-freight/shared";
+import { generalLimiter } from "../middleware/rateLimit.js";
 
 export const loadRoutes = Router();
+
+// Apply rate limiting to all loads routes
+loadRoutes.use(generalLimiter);
 
 // ── Schemas ────────────────────────────────────────────────────────────────
 
