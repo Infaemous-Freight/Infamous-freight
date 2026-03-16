@@ -1,15 +1,37 @@
-import dotenv from "dotenv";
-dotenv.config();
+/**
+ * env.ts — Validated environment configuration
+ *
+ * Single source of truth for all runtime env vars.
+ * Import this instead of reading process.env directly.
+ *
+ * Fails fast at startup if required vars are missing in production.
+ */
+import { z } from "zod";
 
-function req(name: string): string {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing env: ${name}`);
-  return v;
+const envSchema = z.object({
+  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  PORT: z.coerce.number().int().min(1).max(65535).default(4000),
+  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  JWT_SECRET: z
+    .string()
+    .min(32, "JWT_SECRET must be at least 32 characters"),
+  CORS_ORIGIN: z.string().optional(),
+  LOG_LEVEL: z
+    .enum(["trace", "debug", "info", "warn", "error", "fatal"])
+    .default("info"),
+  STRIPE_SECRET_KEY: z.string().optional(),
+  OPENAI_API_KEY: z.string().optional(),
+  ANTHROPIC_API_KEY: z.string().optional(),
+  SENTRY_DSN: z.string().url().optional(),
+});
+
+const result = envSchema.safeParse(process.env);
+
+if (!result.success) {
+  const formatted = result.error.format();
+  console.error("❌ Invalid environment configuration:\n", JSON.stringify(formatted, null, 2));
+  process.exit(1);
 }
 
-export const ENV = {
-  DATABASE_URL: req("DATABASE_URL"),
-  JWT_SECRET: req("JWT_SECRET"),
-  API_PORT: Number(process.env.API_PORT ?? 4000),
-  CORS_ORIGIN: process.env.CORS_ORIGIN ?? "http://localhost:3000"
-};
+export const env = result.data;
+export type Env = typeof env;
