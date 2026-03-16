@@ -52,7 +52,10 @@ export default [
       '**/*.config.cjs',
     ],
   },
-  js.configs.recommended,
+  {
+    ...js.configs.recommended,
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+  },
   {
     files: ['**/*.ts', '**/*.tsx'],
     plugins: { '@typescript-eslint': tseslint },
