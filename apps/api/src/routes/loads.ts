@@ -13,7 +13,7 @@ const createLoadSchema = z.object({
   distanceMi: z.number().int().positive(),
   weightLb: z.number().int().positive(),
   rateCents: z.number().int().positive(),
-  status: z.string().default("OPEN"),
+  status: z.literal("OPEN").default("OPEN"),
 });
 
 router.get("/", requireAuth, async (req, res, next) => {
