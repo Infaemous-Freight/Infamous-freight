@@ -13,7 +13,7 @@ The goal is to keep a large platform repository legible, enforceable, and safe t
 | Layer | Technology | Notes |
 |-------|-----------|-------|
 | Runtime | Node.js 22.x | `engines.node: "22.x"` |
-| Package manager | pnpm 9.x | `pnpm-workspace.yaml`, `shamefully-hoist=true` |
+| Package manager | pnpm 9.x | `pnpm-workspace.yaml`, `.npmrc` (`engine-strict`, `auto-install-peers`) |
 | API framework | Express 5 | TypeScript ESM (`"type":"module"`) |
 | Frontend | Next.js 15 + React 19 | App Router + Pages Router |
 | Mobile | React Native + Expo | TypeScript |
