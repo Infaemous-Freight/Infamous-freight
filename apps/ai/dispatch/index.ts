@@ -2,6 +2,8 @@
 
 // Dispatch Operator AI Role Implementation
 
+import logger from '../utils/logger';
+
 // Guardrails to ensure safe operations
 const guardrails = {
     maxRequests: 100,
@@ -19,8 +21,14 @@ function logAudit(action, details) {
     };
     auditLog.push(auditEntry);
     // Audit logs are output to structured logging system in production
-    // eslint-disable-next-line no-console
-    console.log(`Logged Action: ${action}`, details);
+    logger.info(
+        {
+            action,
+            details,
+            timestamp: auditEntry.timestamp,
+        },
+        `Logged Action: ${action}`,
+    );
 }
 
 class DispatchOperatorAI {
