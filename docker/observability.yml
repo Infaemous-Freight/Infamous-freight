@@ -1,0 +1,81 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Local Observability Stack
+# Runs alongside the main docker-compose.dev.yml
+#
+# Usage:
+#   docker compose -f docker-compose.base.yml \
+#                  -f docker-compose.dev.yml \
+#                  -f docker/observability.yml up
+#
+# Services:
+#   Prometheus  → http://localhost:9090
+#   Grafana     → http://localhost:3001  (admin/admin)
+#   Jaeger      → http://localhost:16686 (traces UI)
+#   OTEL        → localhost:4317 (gRPC) / 4318 (HTTP)
+# ─────────────────────────────────────────────────────────────────────────────
+
+version: "3.9"
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --web.enable-lifecycle
+    ports:
+      - "9090:9090"
+    networks:
+      - freight-internal
+
+  grafana:
+    image: grafana/grafana:10.2.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: grafana-piechart-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observability/grafana-dashboard.json:/var/lib/grafana/dashboards/infamous-freight.json:ro
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - freight-internal
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.51
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "4317:4317"    # OTLP gRPC
+      - "4318:4318"    # OTLP HTTP
+    networks:
+      - freight-internal
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.90.0
+    volumes:
+      - ./docker/otel/otel-collector.yml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+      - "8888:8888"   # Prometheus metrics of collector itself
+    depends_on:
+      - jaeger
+      - prometheus
+    networks:
+      - freight-internal
+
+volumes:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  freight-internal:
+    external: true
