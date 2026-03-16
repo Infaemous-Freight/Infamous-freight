@@ -15,7 +15,7 @@ const logger = require("../utils/logger");
 // Initialize AWS SES
 const SES_REGION = process.env.AWS_SES_REGION || "us-east-1";
 const SES_FROM_EMAIL = process.env.AWS_SES_FROM_EMAIL || process.env.SENDGRID_FROM_EMAIL || "noreply@infamousfreight.com";
-const SES_FROM_NAME = process.env.AWS_SES_FROM_NAME || process.env.SENDGRID_FROM_NAME || "Infæmous Freight";
+const SES_FROM_NAME = process.env.AWS_SES_FROM_NAME || process.env.SENDGRID_FROM_NAME || "Infamous Freight";
 
 let sesClient;
 
