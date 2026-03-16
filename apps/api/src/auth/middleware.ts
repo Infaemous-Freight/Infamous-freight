@@ -7,7 +7,7 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction) {
   const token = header.startsWith("Bearer ") ? header.slice(7) : "";
   if (!token) return next(new HttpError(401, "Missing Bearer token"));
   try {
-    (req as any).auth = verifyToken(token);
+    req.auth = verifyToken(token);
     next();
   } catch {
     next(new HttpError(401, "Invalid token"));

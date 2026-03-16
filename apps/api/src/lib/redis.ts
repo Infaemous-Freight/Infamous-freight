@@ -5,8 +5,10 @@
  */
 
 import Redis from "ioredis";
+import { logger } from "./logger.js";
+import { env } from "../config/env.js";
 
-const redis = new Redis(process.env.REDIS_URL || "redis://localhost:6379");
+const redis = new Redis(env.redisUrl);
 
 export interface CacheOptions {
   ttl?: number; // seconds
@@ -54,7 +56,7 @@ export async function getCached<T>(
       return JSON.parse(cached);
     }
   } catch (err) {
-    console.warn(`Cache get failed for ${cacheKey}:`, err);
+    logger.warn({ cacheKey, err }, "Cache get failed");
   }
 
   // Compute value
@@ -64,7 +66,7 @@ export async function getCached<T>(
   try {
     await redis.setex(cacheKey, ttl, JSON.stringify(value));
   } catch (err) {
-    console.warn(`Cache set failed for ${cacheKey}:`, err);
+    logger.warn({ cacheKey, err }, "Cache set failed");
   }
 
   return value;
@@ -84,7 +86,7 @@ export async function setCached<T>(
   try {
     await redis.setex(cacheKey, ttl, JSON.stringify(value));
   } catch (err) {
-    console.error(`Cache set failed for ${cacheKey}:`, err);
+    logger.error({ cacheKey, err }, "Cache set failed");
   }
 }
 
@@ -98,7 +100,7 @@ export async function getCache<T>(key: string, prefix = ""): Promise<T | null> {
     const cached = await redis.get(cacheKey);
     return cached ? JSON.parse(cached) : null;
   } catch (err) {
-    console.warn(`Cache get failed for ${cacheKey}:`, err);
+    logger.warn({ cacheKey, err }, "Cache get failed");
     return null;
   }
 }
@@ -112,7 +114,7 @@ export async function invalidateCache(...keys: string[]): Promise<void> {
   try {
     await redis.del(...keys);
   } catch (err) {
-    console.error(`Cache invalidation failed:`, err);
+    logger.error({ keys, err }, "Cache invalidation failed");
   }
 }
 
@@ -126,7 +128,7 @@ export async function invalidateCachePattern(pattern: string): Promise<void> {
       await redis.del(...keys);
     }
   } catch (err) {
-    console.error(`Cache pattern invalidation failed for ${pattern}:`, err);
+    logger.error({ pattern, err }, "Cache pattern invalidation failed");
   }
 }
 
@@ -137,7 +139,7 @@ export async function clearAllCache(): Promise<void> {
   try {
     await redis.flushdb();
   } catch (err) {
-    console.error("Clear all cache failed:", err);
+    logger.error({ err }, "Clear all cache failed");
   }
 }
 
@@ -159,7 +161,7 @@ export async function getCacheStats(): Promise<{
       memory,
     };
   } catch (err) {
-    console.warn("Cache stats retrieval failed:", err);
+    logger.warn({ err }, "Cache stats retrieval failed");
     return { keys: 0, memory: 0 };
   }
 }

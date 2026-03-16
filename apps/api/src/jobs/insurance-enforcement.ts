@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { logger } from "../lib/logger.js";
 
 const { evaluateOrgCompliance } = require("../modules/insurance/service");
 const { createEventLog } = require("../modules/insurance/storage");
@@ -53,9 +54,9 @@ export async function runInsuranceEnforcementSweep() {
             evaluated: evaluations.length,
           });
         } catch (error) {
-          console.error(
-            `[InsuranceEnforcement] Failed for ${org.name}:`,
-            error instanceof Error ? error.message : String(error),
+          logger.error(
+            { orgId: org.id, orgName: org.name, err: error },
+            "[InsuranceEnforcement] Failed for organization",
           );
         }
       }),
@@ -68,11 +69,11 @@ export async function runInsuranceEnforcementSweep() {
 if (require.main === module) {
   runInsuranceEnforcementSweep()
     .then((results) => {
-      console.log("[InsuranceEnforcement] Completed sweep", results);
+      logger.info({ results }, "[InsuranceEnforcement] Completed sweep");
       process.exit(0);
     })
     .catch((error) => {
-      console.error("[InsuranceEnforcement] Fatal error", error);
+      logger.error({ err: error }, "[InsuranceEnforcement] Fatal error");
       process.exit(1);
     });
 }
