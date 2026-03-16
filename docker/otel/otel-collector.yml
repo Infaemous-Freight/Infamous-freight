@@ -1,0 +1,57 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# OpenTelemetry Collector Configuration
+# Receives traces and metrics from the API, forwards to Jaeger + Prometheus.
+# ─────────────────────────────────────────────────────────────────────────────
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 256
+    spike_limit_mib: 64
+
+  resourcedetection:
+    detectors: [env, system]
+    timeout: 5s
+
+exporters:
+  # Traces → Jaeger
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+
+  # Metrics → Prometheus (pull)
+  prometheus:
+    endpoint: "0.0.0.0:8888"
+    namespace: infamous
+    send_timestamps: true
+    resource_to_telemetry_conversion:
+      enabled: true
+
+  # Debug logging (disable in prod)
+  debug:
+    verbosity: basic
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [otlp/jaeger, debug]
+
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [prometheus]
