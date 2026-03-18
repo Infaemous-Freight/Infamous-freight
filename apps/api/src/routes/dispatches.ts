@@ -5,25 +5,20 @@ import { prisma } from "../db/prisma.js";
 
 const router = Router();
 
-const createLoadSchema = z.object({
-  originCity: z.string().min(1),
-  originState: z.string().length(2),
-  destCity: z.string().min(1),
-  destState: z.string().length(2),
-  distanceMi: z.number().int().positive(),
-  weightLb: z.number().int().positive(),
-  rateCents: z.number().int().positive(),
-  status: z.literal("OPEN").default("OPEN"),
+const createDispatchSchema = z.object({
+  loadId: z.string().min(1),
+  driverId: z.string().min(1),
+  notes: z.string().optional(),
 });
 
 router.get("/", requireAuth, async (req, res, next) => {
   try {
     const { tenantId } = (req as AuthenticatedRequest).user;
-    const loads = await prisma.load.findMany({
+    const dispatches = await prisma.dispatch.findMany({
       where: { tenantId },
       orderBy: { createdAt: "desc" },
     });
-    res.json({ ok: true, data: loads });
+    res.json({ ok: true, data: dispatches });
   } catch (err) {
     next(err);
   }
@@ -32,25 +27,29 @@ router.get("/", requireAuth, async (req, res, next) => {
 router.post("/", requireAuth, async (req, res, next) => {
   try {
     const { tenantId } = (req as AuthenticatedRequest).user;
-    const body = createLoadSchema.parse(req.body);
-    const load = await prisma.load.create({ data: { tenantId, ...body } });
-    res.status(201).json({ ok: true, data: load });
+    const body = createDispatchSchema.parse(req.body);
+    const dispatch = await prisma.dispatch.create({
+      data: { tenantId, ...body },
+    });
+    res.status(201).json({ ok: true, data: dispatch });
   } catch (err) {
     next(err);
   }
 });
 
-router.patch("/:id/status", requireAuth, async (req, res, next) => {
+router.patch("/:id", requireAuth, async (req, res, next) => {
   try {
     const { tenantId } = (req as AuthenticatedRequest).user;
     const { status } = z.object({ status: z.string() }).parse(req.body);
     const id = req.params.id as string;
-    const load = await prisma.load.findFirst({ where: { id, tenantId } });
-    if (!load) {
-      res.status(404).json({ error: "Load not found" });
+    const existing = await prisma.dispatch.findFirst({
+      where: { id, tenantId },
+    });
+    if (!existing) {
+      res.status(404).json({ error: "Dispatch not found" });
       return;
     }
-    const updated = await prisma.load.update({
+    const updated = await prisma.dispatch.update({
       where: { id },
       data: { status },
     });

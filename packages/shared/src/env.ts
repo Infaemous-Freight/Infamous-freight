@@ -43,7 +43,16 @@ export const env = {
   DATABASE_URL: process.env.DATABASE_URL ?? "",
 
   // Security
-  JWT_SECRET: process.env.JWT_SECRET ?? "dev-secret-change-in-production",
+  get JWT_SECRET() {
+    const v = process.env.JWT_SECRET;
+    if (!v && process.env.NODE_ENV === "production") {
+      throw new Error("JWT_SECRET must be set in production");
+    }
+    if (v === "dev-secret-NOT-FOR-PRODUCTION" && process.env.NODE_ENV === "production") {
+      throw new Error("Insecure default JWT_SECRET used in production");
+    }
+    return v ?? "dev-secret-NOT-FOR-PRODUCTION";
+  },
   CORS_ORIGIN: process.env.CORS_ORIGIN ?? "http://localhost:3000",
   CORS_ORIGINS: process.env.CORS_ORIGINS?.split(",") ?? ["http://localhost:3000"],
 
@@ -110,9 +119,7 @@ export function validateEnv(): void {
     if (!env.DATABASE_URL) {
       errors.push("DATABASE_URL is required in production");
     }
-    if (env.JWT_SECRET === "dev-secret-change-in-production") {
-      errors.push("JWT_SECRET must be changed in production");
-    }
+    void env.JWT_SECRET;
   }
 
   if (errors.length > 0) {
