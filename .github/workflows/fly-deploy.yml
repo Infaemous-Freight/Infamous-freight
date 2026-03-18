@@ -23,7 +23,7 @@ jobs:
       app_url: ${{ steps.get-url.outputs.app_url }}
       health_url: ${{ steps.get-url.outputs.health_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Validate Fly.io secrets
         run: |
