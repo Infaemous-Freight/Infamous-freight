@@ -1,13 +1,21 @@
 repository:
   description: "AI-powered freight and logistics automation platform with real-time tracking, carrier networks, and intelligent load orchestration."
   topics:
-    - logistics
-    - freight
-    - supply-chain
-    - saas
-    - ai
-    - nextjs
     - typescript
-    - kubernetes
+    - nodejs
+    - react
+    - freight
+    - logistics
+    - ai
+    - dispatch
+    - monorepo
+    - pnpm
+    - turborepo
+    - firebase
+    - docker
+    - nextjs
+    - react-native
+    - fleet-management
+    - real-time
+    - saas
     - automation
-    - transportation

@@ -6,7 +6,7 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog";
+import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
 
 const prisma = new PrismaClient();
 

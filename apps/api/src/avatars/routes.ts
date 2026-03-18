@@ -17,8 +17,8 @@ import * as path from "path";
 import * as fs from "fs";
 import * as crypto from "crypto";
 import { z } from "zod";
-import { authenticate, requireScope, limiters } from "../middleware/security";
-import { getUserId } from "../auth/userId";
+import { authenticate, requireScope, limiters } from "../middleware/security.js";
+import { getUserId } from "../auth/userId.js";
 import {
   getUserAvatars,
   getSelectedAvatar,
@@ -27,9 +27,9 @@ import {
   deleteAvatar,
   getStoreStats,
   initializeStore,
-} from "./store";
-import { env } from "../config/env";
-import { handlePresign } from "./presign";
+} from "./store.js";
+import { env } from "../config/env.js";
+import { handlePresign } from "./presign.js";
 
 const router = express.Router();
 const storageMode = env.avatarStorage || "local";

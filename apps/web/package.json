@@ -12,14 +12,18 @@
   "dependencies": {
     "@infamous-freight/shared": "workspace:*",
     "next": "^15.5.10",
-    "react": "^18.3.1",
+    "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "@sentry/nextjs": "^10.42.0"
+    "@sentry/nextjs": "^10.43.0"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
-    "vitest": "^4.0.18",
+    "@tailwindcss/forms": "^0.5.10",
+    "autoprefixer": "^10.4.21",
     "eslint": "^8.57.0",
-    "eslint-config-next": "^15.2.9"
+    "eslint-config-next": "^16.1.6",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.6.3",
+    "vitest": "^4.1.0"
   }
 }

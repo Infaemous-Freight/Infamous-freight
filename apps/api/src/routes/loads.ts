@@ -1,37 +1,63 @@
-import type { FastifyInstance } from "fastify";
-import { pool } from "../lib/db";
-import { ApiResponse, HTTP_STATUS } from "@infamous-freight/shared";
+import { Router } from "express";
+import { z } from "zod";
+import { requireAuth, type AuthenticatedRequest } from "../middleware/auth.js";
+import { prisma } from "../db/prisma.js";
 
-export default async function loadRoutes(app: FastifyInstance) {
-  app.get(
-    "/",
-    { preHandler: [app.authenticate] },
-    async (req: any, reply) => {
-      const { rows } = await pool.query(
-        "SELECT * FROM loads WHERE tenant_id = $1 ORDER BY created_at DESC",
-        [req.user.tenant_id],
-      );
+const router = Router();
 
-      return reply
-        .code(HTTP_STATUS.OK)
-        .send(new ApiResponse({ success: true, data: rows }));
-    },
-  );
+const createLoadSchema = z.object({
+  originCity: z.string().min(1),
+  originState: z.string().length(2),
+  destCity: z.string().min(1),
+  destState: z.string().length(2),
+  distanceMi: z.number().int().positive(),
+  weightLb: z.number().int().positive(),
+  rateCents: z.number().int().positive(),
+  status: z.literal("OPEN").default("OPEN"),
+});
 
-  app.post(
-    "/",
-    { preHandler: [app.authenticate] },
-    async (req: any, reply) => {
-      const { brokerId, rate, mileage, status = "Draft" } = req.body;
+router.get("/", requireAuth, async (req, res, next) => {
+  try {
+    const { tenantId } = (req as AuthenticatedRequest).user;
+    const loads = await prisma.load.findMany({
+      where: { tenantId },
+      orderBy: { createdAt: "desc" },
+    });
+    res.json({ ok: true, data: loads });
+  } catch (err) {
+    next(err);
+  }
+});
 
-      const { rows } = await pool.query(
-        "INSERT INTO loads (tenant_id, broker_id, rate, mileage, status) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-        [req.user.tenant_id, brokerId, rate, mileage, status],
-      );
+router.post("/", requireAuth, async (req, res, next) => {
+  try {
+    const { tenantId } = (req as AuthenticatedRequest).user;
+    const body = createLoadSchema.parse(req.body);
+    const load = await prisma.load.create({ data: { tenantId, ...body } });
+    res.status(201).json({ ok: true, data: load });
+  } catch (err) {
+    next(err);
+  }
+});
 
-      return reply
-        .code(HTTP_STATUS.CREATED)
-        .send(new ApiResponse({ success: true, data: rows[0] }));
-    },
-  );
-}
+router.patch("/:id/status", requireAuth, async (req, res, next) => {
+  try {
+    const { tenantId } = (req as AuthenticatedRequest).user;
+    const { status } = z.object({ status: z.string() }).parse(req.body);
+    const id = req.params.id as string;
+    const load = await prisma.load.findFirst({ where: { id, tenantId } });
+    if (!load) {
+      res.status(404).json({ error: "Load not found" });
+      return;
+    }
+    const updated = await prisma.load.update({
+      where: { id },
+      data: { status },
+    });
+    res.json({ ok: true, data: updated });
+  } catch (err) {
+    next(err);
+  }
+});
+
+export default router;

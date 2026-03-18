@@ -8,8 +8,9 @@
 import { Queue, Worker, QueueEvents } from "bullmq";
 import Redis from "redis";
 import { PrismaClient } from "@prisma/client";
-import { generateMonthlyInvoices } from "./invoicing";
-import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog";
+import { generateMonthlyInvoices } from "./invoicing.js";
+import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
+import { logger } from "../lib/logger.js";
 
 const prisma = new PrismaClient();
 
@@ -48,7 +49,7 @@ const queueEvents = new QueueEvents("monthly-invoicing", {
 export const monthlyInvoicingWorker = new Worker(
   "monthly-invoicing",
   async (job) => {
-    console.log(`[MonthlyInvoicing] Starting job ${job.id}...`);
+    logger.info({ jobId: job.id }, "[MonthlyInvoicing] Starting job");
 
     const startTime = Date.now();
     const stats = {
@@ -76,14 +77,14 @@ export const monthlyInvoicingWorker = new Worker(
       });
 
       stats.totalOrgs = orgs.length;
-      console.log(`[MonthlyInvoicing] Found ${stats.totalOrgs} active organizations`);
+      logger.info({ totalOrgs: stats.totalOrgs }, "[MonthlyInvoicing] Found active organizations");
 
       // Generate invoices for each org
       for (const org of orgs) {
         try {
           // Skip if no billing plan
           if (!org.billing) {
-            console.log(`[MonthlyInvoicing] Skipping ${org.name} - no billing setup`);
+            logger.info({ orgId: org.id, orgName: org.name }, "[MonthlyInvoicing] Skipping - no billing setup");
             continue;
           }
 
@@ -93,7 +94,7 @@ export const monthlyInvoicingWorker = new Worker(
           stats.invoicesGenerated += 1;
           stats.totalRevenue += invoice?.totalAmount || 0;
 
-          console.log(`[MonthlyInvoicing] Generated invoice for ${org.name} - ${org.id}`);
+          logger.info({ orgId: org.id, orgName: org.name, invoiceId: invoice?.id }, "[MonthlyInvoicing] Generated invoice");
 
           // Log audit event
           try {
@@ -109,7 +110,7 @@ export const monthlyInvoicingWorker = new Worker(
               },
             });
           } catch (auditErr) {
-            console.warn(`[MonthlyInvoicing] Failed to log audit for ${org.id}:`, auditErr);
+            logger.warn({ orgId: org.id, err: auditErr }, "[MonthlyInvoicing] Failed to log audit");
           }
         } catch (err) {
           stats.invoicesFailed += 1;
@@ -117,21 +118,24 @@ export const monthlyInvoicingWorker = new Worker(
             err instanceof Error ? err.message : String(err)
           }`;
           stats.errors.push(errorMsg);
-          console.error(`[MonthlyInvoicing] ${errorMsg}`);
+          logger.error({ orgId: org.id, orgName: org.name, err }, "[MonthlyInvoicing] Invoice generation failed");
         }
       }
 
       const duration = Date.now() - startTime;
-      console.log(
-        `[MonthlyInvoicing] Completed in ${duration}ms - Generated: ${stats.invoicesGenerated}, Failed: ${stats.invoicesFailed}, Revenue: $${stats.totalRevenue.toFixed(2)}`,
+      logger.info(
+        {
+          durationMs: duration,
+          invoicesGenerated: stats.invoicesGenerated,
+          invoicesFailed: stats.invoicesFailed,
+          totalRevenue: stats.totalRevenue
+        },
+        "[MonthlyInvoicing] Completed",
       );
 
       return stats;
     } catch (err) {
-      console.error(
-        "[MonthlyInvoicing] Fatal error:",
-        err instanceof Error ? err.message : String(err),
-      );
+      logger.error({ err }, "[MonthlyInvoicing] Fatal error");
       throw err;
     }
   },
@@ -146,25 +150,25 @@ export const monthlyInvoicingWorker = new Worker(
 // ============================================
 
 queueEvents.on("completed", async ({ jobId, returnvalue }) => {
-  console.log(`[MonthlyInvoicing] Job ${jobId} completed:`, returnvalue);
+  logger.info({ jobId, stats: returnvalue }, "[MonthlyInvoicing] Job completed");
 
   // Send notification (e.g., to Slack or email)
   try {
     const stats = returnvalue as typeof stats;
     await notifyCompletion(stats);
   } catch (err) {
-    console.error("[MonthlyInvoicing] Failed to notify:", err);
+    logger.error({ jobId, err }, "[MonthlyInvoicing] Failed to notify");
   }
 });
 
 queueEvents.on("failed", async ({ jobId, failedReason }) => {
-  console.error(`[MonthlyInvoicing] Job ${jobId} failed:`, failedReason);
+  logger.error({ jobId, failedReason }, "[MonthlyInvoicing] Job failed");
 
   // Send error notification
   try {
     await notifyError(jobId, failedReason);
   } catch (err) {
-    console.error("[MonthlyInvoicing] Failed to notify error:", err);
+    logger.error({ jobId, err }, "[MonthlyInvoicing] Failed to notify error");
   }
 });
 
@@ -204,7 +208,7 @@ async function notifyCompletion(stats: {
         }),
       });
     } catch (err) {
-      console.error("[MonthlyInvoicing] Slack notification failed:", err);
+      logger.error({ err }, "[MonthlyInvoicing] Slack notification failed");
     }
   }
 }
@@ -233,7 +237,7 @@ async function notifyError(jobId: string, reason: string) {
         }),
       });
     } catch (err) {
-      console.error("[MonthlyInvoicing] Error notification failed:", err);
+      logger.error({ err }, "[MonthlyInvoicing] Error notification failed");
     }
   }
 }
@@ -249,7 +253,7 @@ export async function scheduleMonthlyInvoicing() {
     const alreadyScheduled = existing.some((job) => job.name === "monthly-invoicing");
 
     if (alreadyScheduled) {
-      console.log("[MonthlyInvoicing] Job already scheduled, skipping...");
+      logger.info("[MonthlyInvoicing] Job already scheduled, skipping");
       return;
     }
 
@@ -265,9 +269,9 @@ export async function scheduleMonthlyInvoicing() {
       },
     );
 
-    console.log("[MonthlyInvoicing] Scheduled job for 1st of each month");
+    logger.info({ cronPattern: "0 0 1 * *" }, "[MonthlyInvoicing] Scheduled job for 1st of each month");
   } catch (err) {
-    console.error("[MonthlyInvoicing] Failed to schedule:", err);
+    logger.error({ err }, "[MonthlyInvoicing] Failed to schedule");
     throw err;
   }
 }
@@ -279,10 +283,10 @@ export async function scheduleMonthlyInvoicing() {
 export async function triggerMonthlyInvoicing() {
   try {
     const job = await monthlyInvoicingQueue.add("monthly-invoicing", {});
-    console.log(`[MonthlyInvoicing] Triggered manual job: ${job.id}`);
+    logger.info({ jobId: job.id }, "[MonthlyInvoicing] Triggered manual job");
     return job.id;
   } catch (err) {
-    console.error("[MonthlyInvoicing] Failed to trigger:", err);
+    logger.error({ err }, "[MonthlyInvoicing] Failed to trigger");
     throw err;
   }
 }
@@ -296,9 +300,9 @@ export async function cleanupMonthlyInvoicing() {
     await monthlyInvoicingWorker.close();
     await monthlyInvoicingQueue.close();
     await queueEvents.close();
-    console.log("[MonthlyInvoicing] Cleanup complete");
+    logger.info("[MonthlyInvoicing] Cleanup complete");
   } catch (err) {
-    console.error("[MonthlyInvoicing] Cleanup failed:", err);
+    logger.error({ err }, "[MonthlyInvoicing] Cleanup failed");
   }
 }
 

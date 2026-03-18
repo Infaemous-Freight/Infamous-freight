@@ -1,32 +1,37 @@
-import type { FastifyInstance } from "fastify";
-import { Queue } from "bullmq";
-import IORedis from "ioredis";
-import { pool } from "../lib/db";
+import { Router } from "express";
+import { pool } from "../lib/db.js";
+import { requireAuth, type AuthenticatedRequest } from "../middleware/auth.js";
+import { generalLimiter } from "../middleware/rateLimit.js";
 
-const connection = new IORedis(process.env.REDIS_URL);
-const invoiceQueue = new Queue("invoiceQueue", { connection });
+const router = Router();
 
-export default async function invoiceRoutes(app: FastifyInstance) {
-  app.post("/generate/:loadId", { preHandler: [app.authenticate] }, async (req: any, reply) => {
+router.use(generalLimiter);
+
+router.post("/generate/:loadId", requireAuth, async (req, res, next) => {
+  try {
+    const user = (req as AuthenticatedRequest).user;
     const { loadId } = req.params;
 
-    const loadResult = await pool.query("SELECT rate FROM loads WHERE id = $1 AND tenant_id = $2", [
-      loadId,
-      req.user.tenant_id,
-    ]);
+    const loadResult = await pool.query(
+      "SELECT rate FROM loads WHERE id = $1 AND tenant_id = $2",
+      [loadId, user.tenantId],
+    );
 
     const load = loadResult.rows[0];
     if (!load) {
-      return reply.code(404).send({ error: "Load not found" });
+      res.status(404).json({ error: "Load not found" });
+      return;
     }
 
     const invoice = await pool.query(
       "INSERT INTO invoices (tenant_id, load_id, amount) VALUES ($1, $2, $3) RETURNING id",
-      [req.user.tenant_id, loadId, load.rate],
+      [user.tenantId, loadId, load.rate],
     );
 
-    await invoiceQueue.add("generate", { invoiceId: invoice.rows[0].id });
+    res.json({ ok: true, invoiceId: invoice.rows[0].id });
+  } catch (err) {
+    next(err);
+  }
+});
 
-    return { success: true, invoiceId: invoice.rows[0].id };
-  });
-}
+export default router;

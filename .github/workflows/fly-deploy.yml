@@ -23,7 +23,7 @@ jobs:
       app_url: ${{ steps.get-url.outputs.app_url }}
       health_url: ${{ steps.get-url.outputs.health_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Validate Fly.io secrets
         run: |
@@ -33,12 +33,12 @@ jobs:
           fi
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v5
         with:
           version: 9
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "24"
           cache: pnpm

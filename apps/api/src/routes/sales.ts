@@ -11,10 +11,10 @@
 
 import { Router } from "express";
 import { body, query } from "express-validator";
-import { authenticate, requireScope, limiters } from "../middleware/security";
-import { handleValidationErrors } from "../middleware/validation";
+import { authenticate, requireScope, limiters } from "../middleware/security.js";
+import { handleValidationErrors } from "../middleware/validation.js";
 
-import { createLead, getLead, updateLeadStatus, convertLead, getLeads } from "../sales/leadCapture";
+import { createLead, getLead, updateLeadStatus, convertLead, getLeads } from "../sales/leadCapture.js";
 
 import {
   scheduleDemo,
@@ -23,14 +23,14 @@ import {
   getUpcomingDemos,
   getDemoStats,
   sendDemoReminders,
-} from "../sales/demoScheduling";
+} from "../sales/demoScheduling.js";
 
 import {
   calculateRoi,
   compareScenarios,
   INDUSTRY_DEFAULTS,
   LOAD_PRICE_RANGES,
-} from "../sales/roiCalculator";
+} from "../sales/roiCalculator.js";
 
 import {
   generateReferralCode,
@@ -40,7 +40,7 @@ import {
   checkReferralMilestone,
   getReferralStats,
   getTopReferrers,
-} from "../sales/referrals";
+} from "../sales/referrals.js";
 
 import {
   getMetricsSnapshot,
@@ -48,7 +48,7 @@ import {
   getMetricsTrend,
   getGrowthRates,
   getInvestorKpis,
-} from "../sales/metrics";
+} from "../sales/metrics.js";
 
 const router = Router();
 

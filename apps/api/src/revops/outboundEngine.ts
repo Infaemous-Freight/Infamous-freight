@@ -5,8 +5,8 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { aiSyntheticClient } from "../services/aiSyntheticClient";
-import { sendEmail as sendTransactionalEmail } from "../services/emailService";
+import { aiSyntheticClient } from "../services/aiSyntheticClient.js";
+import { sendEmail as sendTransactionalEmail } from "../services/emailService.js";
 
 const prisma = new PrismaClient();
 

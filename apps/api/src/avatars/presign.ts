@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import { z } from "zod";
-import { env } from "../config/env";
-import { presignPutObject } from "../storage/s3";
+import { env } from "../config/env.js";
+import { presignPutObject } from "../storage/s3.js";
 
 function extFor(contentType: string) {
   if (contentType === "image/png") return "png";

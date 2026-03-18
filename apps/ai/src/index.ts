@@ -1,5 +1,7 @@
+import { logger } from "../utils/logger.js";
+
 export function startAIApp() {
-  console.log("Infamous Freight AI app started");
+  logger.info("Infamous Freight AI app started");
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

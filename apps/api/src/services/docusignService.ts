@@ -3,7 +3,7 @@
  * Handles contract signing workflows and signature tracking
  */
 
-import logger from "../utils/logger";
+import logger from "../utils/logger.js";
 
 interface DocuSignConfig {
   clientId: string;

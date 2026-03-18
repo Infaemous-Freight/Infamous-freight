@@ -7,7 +7,7 @@
  */
 
 import { Request } from "express";
-import { verifyToken } from "./jwt";
+import { verifyToken } from "./jwt.js";
 
 /**
  * Extract user ID from JWT payload in request

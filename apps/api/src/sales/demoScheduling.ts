@@ -8,8 +8,8 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { createLead, convertLead } from "./leadCapture";
-import { sendEmail } from "../services/emailService";
+import { createLead, convertLead } from "./leadCapture.js";
+import { sendEmail } from "../services/emailService.js";
 
 const prisma = new PrismaClient();
 

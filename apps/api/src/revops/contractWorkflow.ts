@@ -5,8 +5,8 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { docusignService } from "../services/docusignService";
-import { aiSyntheticClient } from "../services/aiSyntheticClient";
+import { docusignService } from "../services/docusignService.js";
+import { aiSyntheticClient } from "../services/aiSyntheticClient.js";
 
 const prisma = new PrismaClient();
 

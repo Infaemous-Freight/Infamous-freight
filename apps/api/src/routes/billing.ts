@@ -10,10 +10,10 @@
 
 import { Router } from "express";
 import Stripe from "stripe";
-import { authenticate, requireOrganization, requireScope, limiters } from "../middleware/security";
-import { handleValidationErrors, validateString } from "../middleware/validation";
-import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog";
-import { tenantPrisma } from "../db/tenant";
+import { authenticate, requireOrganization, requireScope, limiters } from "../middleware/security.js";
+import { handleValidationErrors, validateString } from "../middleware/validation.js";
+import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
+import { tenantPrisma } from "../db/tenant.js";
 import { body, query } from "express-validator";
 
 import {
@@ -21,19 +21,19 @@ import {
   updateSubscriptionPlan,
   cancelSubscription,
   getSubscriptionDetails,
-} from "../billing/stripeSync";
+} from "../billing/stripeSync.js";
 import {
   recordJobCompletion,
   getMonthlyUsage,
   getUsageSummary,
   calculatePlatformFee,
-} from "../billing/usage";
+} from "../billing/usage.js";
 import {
   generateOrgInvoice,
   getInvoice,
   sendInvoiceReminder,
   markInvoicePaid,
-} from "../billing/invoicing";
+} from "../billing/invoicing.js";
 
 const router = Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");

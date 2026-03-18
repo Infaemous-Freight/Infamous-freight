@@ -1,6 +1,7 @@
 {
   "name": "infamous-freight",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "22.x",
     "pnpm": "9.x"
@@ -24,6 +25,10 @@
     "deploy:check": "pnpm validate && pnpm smoke:release"
   },
   "devDependencies": {
-    "prettier": "^3.5.0"
+    "prettier": "^3.5.0",
+    "eslint-config-prettier": "^10.0.1",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@eslint/js": "^10.0.0"
   }
 }

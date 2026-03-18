@@ -1,23 +1,37 @@
-import type { FastifyInstance } from "fastify";
-import { pool } from "../lib/db";
+import { Router } from "express";
+import { pool } from "../lib/db.js";
+import { requireAuth, type AuthenticatedRequest } from "../middleware/auth.js";
+import { generalLimiter } from "../middleware/rateLimit.js";
 
-export default async function brokerRoutes(app: FastifyInstance) {
-  app.get("/", { preHandler: [app.authenticate] }, async (req: any) => {
+const router = Router();
+
+router.use(generalLimiter);
+
+router.get("/", requireAuth, async (req, res, next) => {
+  try {
+    const user = (req as AuthenticatedRequest).user;
     const { rows } = await pool.query(
       "SELECT * FROM brokers WHERE tenant_id = $1 ORDER BY company_name ASC",
-      [req.user.tenant_id],
+      [user.tenantId],
     );
-    return rows;
-  });
+    res.json({ ok: true, data: rows });
+  } catch (err) {
+    next(err);
+  }
+});
 
-  app.post("/", { preHandler: [app.authenticate] }, async (req: any, reply) => {
+router.post("/", requireAuth, async (req, res, next) => {
+  try {
+    const user = (req as AuthenticatedRequest).user;
     const { companyName, mcNumber, creditScore = 70 } = req.body;
-
     const { rows } = await pool.query(
       "INSERT INTO brokers (tenant_id, company_name, mc_number, credit_score) VALUES ($1, $2, $3, $4) RETURNING *",
-      [req.user.tenant_id, companyName, mcNumber, creditScore],
+      [user.tenantId, companyName, mcNumber, creditScore],
     );
+    res.status(201).json({ ok: true, data: rows[0] });
+  } catch (err) {
+    next(err);
+  }
+});
 
-    reply.code(201).send(rows[0]);
-  });
-}
+export default router;

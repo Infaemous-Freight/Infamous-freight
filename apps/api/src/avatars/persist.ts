@@ -1,7 +1,7 @@
 import crypto from "crypto";
-import { getPrisma } from "../db/prisma";
-import type { Avatar as StoredAvatar, AvatarSelection } from "./store";
-import * as json from "./store";
+import { getPrisma } from "../db/prisma.js";
+import type { Avatar as StoredAvatar, AvatarSelection } from "./store.js";
+import * as json from "./store.js";
 
 export async function ensureUser(userId: string) {
   const p = getPrisma();

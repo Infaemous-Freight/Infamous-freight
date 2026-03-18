@@ -5,7 +5,7 @@
  */
 
 import { PrismaClient, JobStatus, JobEventType, UserRole } from "@prisma/client";
-import { JobTransitionError, JOB_TRANSITION_CODES } from "./errors";
+import { JobTransitionError, JOB_TRANSITION_CODES } from "./errors.js";
 
 const prisma = new PrismaClient();
 

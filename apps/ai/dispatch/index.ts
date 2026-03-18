@@ -2,6 +2,8 @@
 
 // Dispatch Operator AI Role Implementation
 
+import logger from '../utils/logger';
+
 // Guardrails to ensure safe operations
 const guardrails = {
     maxRequests: 100,
@@ -18,7 +20,15 @@ function logAudit(action, details) {
         timestamp: new Date().toISOString(),
     };
     auditLog.push(auditEntry);
-    console.log(`Logged Action: ${action}`, details);
+    // Audit logs are output to structured logging system in production
+    logger.info(
+        {
+            action,
+            details,
+            timestamp: auditEntry.timestamp,
+        },
+        `Logged Action: ${action}`,
+    );
 }
 
 class DispatchOperatorAI {

@@ -5,7 +5,7 @@
  */
 
 import { PrismaClient } from "@prisma/client";
-import { aiSyntheticClient } from "../services/aiSyntheticClient";
+import { aiSyntheticClient } from "../services/aiSyntheticClient.js";
 
 const prisma = new PrismaClient();
 

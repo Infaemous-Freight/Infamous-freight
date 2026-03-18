@@ -7,7 +7,12 @@ import { Pool } from "pg";
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
-const connection = new IORedis(process.env.REDIS_URL);
+
+const redisUrl = process.env.REDIS_URL;
+if (!redisUrl) {
+  throw new Error("REDIS_URL environment variable is required");
+}
+const connection = new IORedis(redisUrl);
 
 new Worker(
   "invoiceQueue",
@@ -27,7 +32,7 @@ new Worker(
     await new Promise<void>((resolve, reject) => {
       doc.on("data", buffers.push.bind(buffers));
 
-      doc.on("error", (err) => {
+      doc.on("error", (err: Error) => {
         reject(err);
       });
 

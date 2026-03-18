@@ -1,77 +1,96 @@
 import bcrypt from "bcryptjs";
-import type { FastifyInstance } from "fastify";
-import { pool } from "../lib/db";
+import { Router } from "express";
+import jwt from "jsonwebtoken";
+import { z } from "zod";
+import { ENV } from "../env.js";
+import { prisma } from "../db/prisma.js";
 
-export default async function authRoutes(app: FastifyInstance) {
-  app.post("/register", async (req: any, reply) => {
-    const { email, password, role = "dispatcher", tenantName } = req.body;
+const router = Router();
 
-    // Basic input validation
-    if (typeof email !== "string" || !email.includes("@")) {
-      return reply.code(400).send({ error: "Invalid email" });
-    }
+const registerSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  role: z.enum(["dispatcher", "driver", "admin"]).default("dispatcher"),
+  tenantName: z.string().min(1),
+});
 
-    if (typeof password !== "string" || password.length < 8) {
-      return reply.code(400).send({ error: "Password must be at least 8 characters long" });
-    }
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
 
-    const allowedRoles = ["dispatcher", "driver", "admin"];
-    if (typeof role !== "string" || !allowedRoles.includes(role)) {
-      return reply.code(400).send({ error: "Invalid role" });
-    }
+router.post("/register", async (req, res, next) => {
+  try {
+    const body = registerSchema.parse(req.body);
+    const passwordHash = await bcrypt.hash(body.password, 10);
 
-    if (typeof tenantName !== "string" || tenantName.trim().length === 0) {
-      return reply.code(400).send({ error: "Invalid tenant name" });
-    }
-
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    const client = await pool.connect();
-    try {
-      await client.query("BEGIN");
-
-      // Create a new tenant for self-signup instead of trusting a caller-supplied tenantId
-      const tenantResult = await client.query(
-        "INSERT INTO tenants (name) VALUES ($1) RETURNING id",
-        [tenantName.trim()],
-      );
-      const tenantId = tenantResult.rows[0].id;
-
-      const { rows } = await client.query(
-        "INSERT INTO users (tenant_id, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, tenant_id, email, role",
-        [tenantId, email, passwordHash, role],
-      );
-
-      await client.query("COMMIT");
-      reply.code(201).send(rows[0]);
-    } catch (err) {
-      await client.query("ROLLBACK");
-      throw err;
-    } finally {
-      client.release();
-    }
-  });
-
-  app.post("/login", async (req: any, reply) => {
-    const { email, password } = req.body;
-
-    const { rows } = await pool.query(
-      "SELECT id, tenant_id, email, role, password_hash FROM users WHERE email = $1",
-      [email],
-    );
-
-    const user = rows[0];
-    if (!user || !(await bcrypt.compare(password, user.password_hash))) {
-      return reply.code(401).send({ error: "Invalid credentials" });
-    }
-
-    const token = app.jwt.sign({
-      id: user.id,
-      tenant_id: user.tenant_id,
-      role: user.role,
-      email: user.email,
+    const result = await prisma.$transaction(async (tx) => {
+      const tenant = await tx.tenant.create({ data: { name: body.tenantName.trim() } });
+      const user = await tx.user.create({
+        data: {
+          tenantId: tenant.id,
+          email: body.email,
+          passwordHash,
+          role: body.role,
+        },
+        select: { id: true, tenantId: true, email: true, role: true },
+      });
+      return user;
     });
 
-    return { token };
-  });
-}
+    res.status(201).json({ ok: true, data: result });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/login", async (req, res, next) => {
+  try {
+    const body = loginSchema.parse(req.body);
+
+    const user = await prisma.user.findUnique({
+      where: { email: body.email },
+      select: { id: true, tenantId: true, email: true, role: true, passwordHash: true },
+    });
+
+    if (!user || !(await bcrypt.compare(body.password, user.passwordHash))) {
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
+    }
+
+    const token = jwt.sign(
+      { id: user.id, tenant_id: user.tenantId, role: user.role, email: user.email },
+      ENV.JWT_SECRET,
+      { expiresIn: "8h" },
+    );
+
+    res.json({ ok: true, token });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/refresh", async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith("Bearer ")) {
+      res.status(401).json({ error: "Missing or invalid authorization header" });
+      return;
+    }
+
+    const oldToken = authHeader.slice(7);
+    const payload = jwt.verify(oldToken, ENV.JWT_SECRET) as jwt.JwtPayload;
+
+    const token = jwt.sign(
+      { id: payload.id, tenant_id: payload.tenant_id, role: payload.role, email: payload.email },
+      ENV.JWT_SECRET,
+      { expiresIn: "8h" },
+    );
+
+    res.json({ ok: true, token });
+  } catch (err) {
+    next(err);
+  }
+});
+
+export default router;

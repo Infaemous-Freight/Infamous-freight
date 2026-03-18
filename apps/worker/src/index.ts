@@ -1,5 +1,7 @@
+import { logger } from "./lib/logger.js";
+
 export async function startWorker() {
-  console.log("Infamous Freight worker started");
+  logger.info("Infamous Freight worker started");
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

@@ -11,7 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { env } from "../config/env";
+import { env } from "../config/env.js";
 
 export interface UserAvatar {
   userId: string;
