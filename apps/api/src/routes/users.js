@@ -58,8 +58,11 @@ router.get(
   requireScope("users:read"),
   auditLog,
   asyncHandler(async (req, res) => {
-    const user = await prisma.user.findUnique({
-      where: { id: req.user.sub },
+    const user = await prisma.user.findFirst({
+      where: {
+        id: req.user.sub,
+        tenantId: req.user.tenant_id,
+      },
       select: { id: true, email: true, role: true, tenantId: true, createdAt: true },
     });
 
