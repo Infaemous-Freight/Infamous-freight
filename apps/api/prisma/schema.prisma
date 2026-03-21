@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Tenant {
@@ -27,6 +26,7 @@ model User {
   role         String   @default("dispatcher")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  authSessions AuthSession[]
 
   @@index([tenantId])
   @@index([email])
@@ -100,4 +100,18 @@ model Load {
   updatedAt       DateTime  @updatedAt
 
   @@index([tenantId])
+}
+
+
+model AuthSession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
 }

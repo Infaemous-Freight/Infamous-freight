@@ -1,14 +1,24 @@
-// Reuse centralized rate limiters from security middleware to avoid
-// duplicating rate-limiting implementations and configuration.
-// `security.js` exports `limiters` (general, auth, billing, ai).
-// We alias those here for convenience.
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { limiters } = require('./security');
+import rateLimit from "express-rate-limit";
 
-export const authLimiter = limiters.auth;
+function buildLimiter(windowMs: number, max: number, message: string) {
+  return rateLimit({
+    windowMs,
+    max,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { ok: false, error: message },
+    skip: (req) => req.method === "OPTIONS",
+  });
+}
 
-// For tracking endpoints (e.g., frequent pings), reuse the general limiter
-// from the centralized configuration to keep behavior consistent.
-export const trackingLimiter = limiters.general;
-
-export const generalLimiter = limiters.general;
+export const authLimiter = buildLimiter(
+  15 * 60 * 1000,
+  (() => { const value = Number.parseInt(process.env.RATE_LIMIT_AUTH_MAX ?? "5", 10); return Number.isFinite(value) && value > 0 ? value : 5; })(),
+  "Too many authentication attempts. Try again later.",
+);
+export const trackingLimiter = buildLimiter(
+  15 * 60 * 1000,
+  Number(process.env.RATE_LIMIT_GENERAL_MAX ?? 100),
+  "Too many requests. Please try again later.",
+);
+export const generalLimiter = trackingLimiter;

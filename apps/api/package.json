@@ -13,10 +13,12 @@
     "smoke": "node -e \"const base = (process.env.API_URL || 'http://localhost:4000').replace(/\\/$/, ''); fetch(base + '/health').then((res) => { if (!res.ok) process.exit(1); }).catch(() => process.exit(1));\""
   },
   "dependencies": {
-    "@infamous-freight/shared": "workspace:*",
-    "@prisma/client": "^7.5.0",
     "@aws-sdk/client-s3": "^3.778.0",
     "@aws-sdk/s3-request-presigner": "^3.778.0",
+    "@infamous-freight/shared": "workspace:*",
+    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/client": "^7.5.0",
+    "@types/pg": "^8.11.10",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^17.3.1",
@@ -26,6 +28,7 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.1.1",
     "pdfkit": "^0.18.0",
+    "pg": "^8.13.1",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",
     "pino-pretty": "^13.0.0",
@@ -40,8 +43,10 @@
     "@types/jsonwebtoken": "^9.0.7",
     "@types/multer": "^2.1.0",
     "@types/node": "^25.5.0",
+    "@types/supertest": "^7.2.0",
     "eslint": "^9.21.0",
     "prisma": "^7.5.0",
+    "supertest": "^7.2.2",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2",
     "vitest": "^4.1.0"
