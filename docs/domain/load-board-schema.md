@@ -366,7 +366,7 @@ Additional stop-level fields are often needed for specialized moves:
 | `document_status` | enum | Yes | `pending`, `uploaded`, `verified`, `rejected`, `expired`, `superseded` |
 | `storage_uri` | string | Yes | Canonical object location |
 | `file_name` | string | Yes | Original name or display name |
-| `mime_type` | string | No | e.g. PDF, JPG, PNG |
+| `mime_type` | string | No | e.g. application/pdf, image/jpeg, image/png |
 | `file_size_bytes` | integer | No | Useful for validation |
 | `uploaded_by_user_id` | UUID | No | Uploader |
 | `source` | enum/string | No | Driver app, broker ops, EDI, API, email ingest |
