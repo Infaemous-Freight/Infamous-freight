@@ -549,7 +549,7 @@ The canonical equipment list must support the required freight types while remai
 - `straight_truck`
 - `parcel_route_vehicle`
 - `courier_car`
-| `other` |
+- `other`
 
 ### 9.2 Equipment rule guidance
 
