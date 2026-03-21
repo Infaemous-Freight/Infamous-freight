@@ -190,7 +190,7 @@ router.post("/refresh", express.json(), async (req, res) => {
       refreshExpiresIn: env.jwtRefreshExpiry,
     });
   } catch (err) {
-    const statusCode = err.statusCode || (err.name === "ZodError" ? 400 : 401);
+    const statusCode = err.statusCode || (err.name === "ZodError" ? 400 : 500);
     return res.status(statusCode).json({ ok: false, error: err.message || "Unable to refresh token" });
   }
 });
