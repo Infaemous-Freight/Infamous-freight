@@ -49,7 +49,11 @@ router.post(
         return res.status(401).json({ error: "Invalid credentials" });
       }
 
-      const accessToken = issueAccessToken(user, env.JWT_SECRET);
+      const jwtSecret = env.jwtSecret || process.env.JWT_SECRET;
+      if (!jwtSecret) {
+        return res.status(500).json({ error: "JWT secret not configured" });
+      }
+      const accessToken = issueAccessToken(user, jwtSecret);
 
       // Generate opaque refresh token, store its hash
       const rawRefresh = generateRefreshToken();
