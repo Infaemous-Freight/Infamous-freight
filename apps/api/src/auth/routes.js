@@ -167,20 +167,24 @@ router.post("/refresh", express.json(), async (req, res) => {
     const schema = z.object({ refreshToken: z.string().min(1) });
     const { refreshToken } = schema.parse(req.body);
     const prisma = getPrisma();
-    const decoded = await rotateRefreshToken(prisma, refreshToken);
 
-    const payload = {
-      sub: decoded.sub,
-      email: decoded.email,
-      role: normalizeRole(decoded.role),
-      org_id: decoded.org_id,
-      scopes: Array.isArray(decoded.scopes) ? decoded.scopes : getScopesForRole(decoded.role),
-    };
+    const { accessToken, nextRefreshToken } = await prisma.$transaction(async (tx) => {
+      const decoded = await rotateRefreshToken(tx, refreshToken);
 
-    const accessToken = signAccessToken(payload);
-    const nextRefreshToken = signRefreshToken(payload);
-    await persistRefreshToken(prisma, payload, nextRefreshToken);
+      const payload = {
+        sub: decoded.sub,
+        email: decoded.email,
+        role: normalizeRole(decoded.role),
+        org_id: decoded.org_id,
+        scopes: Array.isArray(decoded.scopes) ? decoded.scopes : getScopesForRole(decoded.role),
+      };
 
+      const accessToken = signAccessToken(payload);
+      const nextRefreshToken = signRefreshToken(payload);
+      await persistRefreshToken(tx, payload, nextRefreshToken);
+
+      return { accessToken, nextRefreshToken };
+    });
     return res.json({
       ok: true,
       accessToken,
