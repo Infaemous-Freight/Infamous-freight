@@ -3,7 +3,6 @@
  * Protected with strict rate limiting
  */
 
-const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const express = require("express");
 const { limiters, authenticate, auditLog } = require("../middleware/security");
