@@ -33,13 +33,14 @@ export function generateRefreshToken(): string {
 export function issueAccessToken(
   user: { id: string; email: string; role: string; tenantId: string },
   secret: string,
+  scopes: string[] = [],
 ): string {
   const payload: AccessTokenPayload = {
     sub: user.id,
     email: user.email,
     role: user.role,
     tenant_id: user.tenantId,
-    scopes: [],
+    scopes,
   };
   return jwt.sign(payload, secret, { expiresIn: "15m" });
 }
