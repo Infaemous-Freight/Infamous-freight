@@ -13,7 +13,7 @@ function buildLimiter(windowMs: number, max: number, message: string) {
 
 export const authLimiter = buildLimiter(
   15 * 60 * 1000,
-  Number(process.env.RATE_LIMIT_AUTH_MAX ?? 5),
+  (() => { const value = Number.parseInt(process.env.RATE_LIMIT_AUTH_MAX ?? "5", 10); return Number.isFinite(value) && value > 0 ? value : 5; })(),
   "Too many authentication attempts. Try again later.",
 );
 export const trackingLimiter = buildLimiter(
