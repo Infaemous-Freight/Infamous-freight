@@ -15,7 +15,15 @@ function signAccessToken(payload) {
 }
 
 function signRefreshToken(payload) {
-  return jwt.sign(payload, getRefreshSecret(), { expiresIn: env.jwtRefreshExpiry || "30d" });
+  const jwtId =
+    typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : crypto.randomBytes(16).toString("hex");
+
+  return jwt.sign(payload, getRefreshSecret(), {
+    expiresIn: env.jwtRefreshExpiry || "30d",
+    jwtid: jwtId,
+  });
 }
 
 function signUserToken(userId) {
