@@ -1,8 +1,10 @@
 /*
- * Password Reset & Account Recovery Routes
+ * Authentication Routes: Login, Refresh, Logout & Password Recovery
  * Protected with strict rate limiting
  */
 
+const crypto = require("crypto");
+const bcrypt = require("bcryptjs");
 const express = require("express");
 const { limiters, authenticate, auditLog } = require("../middleware/security");
 const {
@@ -12,9 +14,128 @@ const {
 } = require("../middleware/validation");
 const { hashPassword, decrypt } = require("../services/encryption");
 const { sendEmail } = require("../services/emailService");
-const { prisma } = require("../db/prisma");
+const { prisma, getPrisma } = require("../db/prisma");
+const { env } = require("../config/env");
+const { hashRefreshToken, generateRefreshToken, issueAccessToken } = require("../auth/tokenUtils");
 
 const router = express.Router();
+
+/**
+ * POST /api/auth/login
+ * Authenticate with email + password; receive access + refresh tokens.
+ */
+router.post(
+  "/login",
+  limiters.auth,
+  validateEmail("email"),
+  validateString("password", { maxLength: 200 }),
+  handleValidationErrors,
+  auditLog,
+  async (req, res, next) => {
+    try {
+      const db = prisma || getPrisma();
+      if (!db) {
+        return res.status(503).json({ error: "Database unavailable" });
+      }
+
+      const { email, password } = req.body;
+
+      const user = await db.user.findUnique({
+        where: { email },
+        select: { id: true, tenantId: true, email: true, role: true, passwordHash: true },
+      });
+
+      if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+
+      const accessToken = issueAccessToken(user, env.JWT_SECRET);
+
+      // Generate opaque refresh token, store its hash
+      const rawRefresh = generateRefreshToken();
+      const tokenHash = hashRefreshToken(rawRefresh);
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+      await db.refreshToken.create({
+        data: { userId: user.id, tokenHash, expiresAt },
+      });
+
+      res.json({ ok: true, accessToken, refreshToken: rawRefresh });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+/**
+ * POST /api/auth/refresh
+ * Exchange a valid refresh token for a new access token.
+ * Body: { refreshToken: string }
+ */
+router.post(
+  "/refresh",
+  limiters.auth,
+  validateString("refreshToken", { maxLength: 500 }),
+  handleValidationErrors,
+  async (req, res, next) => {
+    try {
+      const db = prisma || getPrisma();
+      if (!db) {
+        return res.status(503).json({ error: "Database unavailable" });
+      }
+
+      const tokenHash = hashRefreshToken(req.body.refreshToken);
+
+      const stored = await db.refreshToken.findUnique({
+        where: { tokenHash },
+        include: {
+          user: { select: { id: true, tenantId: true, email: true, role: true } },
+        },
+      });
+
+      if (!stored || stored.revoked || stored.expiresAt < new Date()) {
+        return res.status(401).json({ error: "Invalid or expired refresh token" });
+      }
+
+      const accessToken = issueAccessToken(stored.user, env.JWT_SECRET);
+
+      res.json({ ok: true, accessToken });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+/**
+ * POST /api/auth/logout
+ * Revoke a refresh token.
+ * Body: { refreshToken: string }
+ */
+router.post(
+  "/logout",
+  limiters.general,
+  validateString("refreshToken", { maxLength: 500 }),
+  handleValidationErrors,
+  async (req, res, next) => {
+    try {
+      const db = prisma || getPrisma();
+      if (!db) {
+        return res.status(503).json({ error: "Database unavailable" });
+      }
+
+      const tokenHash = hashRefreshToken(req.body.refreshToken);
+
+      await db.refreshToken.updateMany({
+        where: { tokenHash, revoked: false },
+        data: { revoked: true },
+      });
+
+      res.json({ ok: true, message: "Logged out successfully" });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 /**
  * POST /api/auth/request-password-reset

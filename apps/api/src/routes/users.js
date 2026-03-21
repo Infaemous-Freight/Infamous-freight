@@ -46,6 +46,31 @@ router.get(
   }),
 );
 
+/**
+ * GET /api/user
+ * Example protected endpoint returning current user profile.
+ * Scope: users:read
+ */
+router.get(
+  "/user",
+  limiters.general,
+  authenticate,
+  requireScope("users:read"),
+  auditLog,
+  asyncHandler(async (req, res) => {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.sub },
+      select: { id: true, email: true, role: true, tenantId: true, createdAt: true },
+    });
+
+    if (!user) {
+      return res.status(404).json({ ok: false, error: "User not found" });
+    }
+
+    res.json({ ok: true, user });
+  }),
+);
+
 module.exports = router;
 
 /**

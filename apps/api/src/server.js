@@ -267,6 +267,7 @@ app.use("/api", adminAuditLogsRoutes);
 app.use("/api", insuranceRoutes);
 app.use("/api/stripe", stripeRouter);
 app.use("/v1/auth", authRouter);
+app.use("/api/auth", require("./routes/auth"));
 
 // Serve static avatar files (Phase 1 & Phase 2)
 app.use("/uploads", express.static(path.join(__dirname, "../public/uploads")));
