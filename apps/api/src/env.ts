@@ -1,15 +1,26 @@
-import dotenv from "dotenv";
-dotenv.config();
-
-function req(name: string): string {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing env: ${name}`);
-  return v;
-}
+import { env } from "./config/env.js";
 
 export const ENV = {
-  DATABASE_URL: req("DATABASE_URL"),
-  JWT_SECRET: req("JWT_SECRET"),
-  API_PORT: Number(process.env.API_PORT ?? 4000),
-  CORS_ORIGIN: process.env.CORS_ORIGIN ?? "http://localhost:3000"
+  DATABASE_URL: env.databaseUrl,
+  JWT_SECRET: env.jwtSecret,
+  JWT_ALGORITHM: env.jwtAlgorithm,
+  JWT_PRIVATE_KEY: env.jwtPrivateKey,
+  JWT_PUBLIC_KEY: env.jwtPublicKey,
+  JWT_ACCESS_EXPIRES_IN: env.jwtAccessExpiresIn,
+  JWT_REFRESH_EXPIRES_IN: env.jwtRefreshExpiresIn,
+  JWT_ISSUER: env.jwtIssuer,
+  JWT_AUDIENCE: env.jwtAudience,
+  APP_PORT: env.appPort,
+  API_PORT: env.appPort,
+  PORT: env.appPort,
+  CORS_ORIGIN: env.corsOrigin,
+  AUTH_COOKIE_ENABLED: env.authCookieEnabled,
+  AUTH_COOKIE_NAME: env.authCookieName,
+  AUTH_COOKIE_DOMAIN: env.authCookieDomain,
+  AUTH_COOKIE_SECURE: env.authCookieSecure,
+  AUTH_COOKIE_SAME_SITE: env.authCookieSameSite,
+  AUTH_COOKIE_PATH: env.authCookiePath,
+  ARGON2_MEMORY_COST: env.argon2.memoryCost,
+  ARGON2_TIME_COST: env.argon2.timeCost,
+  ARGON2_PARALLELISM: env.argon2.parallelism,
 };

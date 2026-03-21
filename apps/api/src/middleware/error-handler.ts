@@ -1,34 +1,52 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
-import { HttpError } from "../utils/errors.js";
+import { ApiError } from "../utils/errors.js";
 
-export function notFound(_req: Request, res: Response) {
+export function notFound(_req: Request, res: Response): void {
   res.status(404).json({
-    ok: false,
-    error: "Route not found",
+    success: false,
+    error: {
+      code: "NOT_FOUND",
+      message: "Route not found",
+    },
   });
 }
 
-export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction) {
+export function errorHandler(
+  err: unknown,
+  _req: Request,
+  res: Response,
+  _next: NextFunction,
+): void {
   if (err instanceof ZodError) {
-    return res.status(400).json({
-      ok: false,
-      error: "Validation error",
-      details: err.flatten(),
+    res.status(400).json({
+      success: false,
+      error: {
+        code: "VALIDATION_ERROR",
+        message: "Request validation failed",
+        details: err.flatten(),
+      },
     });
+    return;
   }
 
-  if (err instanceof HttpError) {
-    return res.status(err.status).json({
-      ok: false,
-      error: err.message,
+  if (err instanceof ApiError) {
+    res.status(err.statusCode).json({
+      success: false,
+      error: {
+        code: err.code,
+        message: err.message,
+        ...(err.details ? { details: err.details } : {}),
+      },
     });
+    return;
   }
 
-  const message = err instanceof Error ? err.message : "Internal server error";
-
-  return res.status(500).json({
-    ok: false,
-    error: message,
+  res.status(500).json({
+    success: false,
+    error: {
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Internal server error",
+    },
   });
 }

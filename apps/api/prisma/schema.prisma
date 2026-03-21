@@ -7,29 +7,56 @@ datasource db {
 }
 
 model Tenant {
-  id        String     @id @default(cuid())
-  name      String
-  createdAt DateTime   @default(now())
-  shipments Shipment[]
-  loads     Load[]
-  users     User[]
-  drivers   Driver[]
+  id         String      @id @default(cuid())
+  name       String
+  createdAt  DateTime    @default(now())
+  shipments  Shipment[]
+  loads      Load[]
+  users      User[]
+  drivers    Driver[]
   dispatches Dispatch[]
 }
 
 model User {
-  id           String   @id @default(cuid())
-  tenantId     String
-  tenant       Tenant   @relation(fields: [tenantId], references: [id])
-  email        String   @unique
-  passwordHash String
-  role         String   @default("dispatcher")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  authSessions AuthSession[]
+  id               String         @id @default(cuid())
+  tenantId         String?
+  tenant           Tenant?        @relation(fields: [tenantId], references: [id])
+  email            String         @unique
+  firstName        String
+  lastName         String
+  passwordHash     String
+  role             String         @default("user")
+  isActive         Boolean        @default(true)
+  emailVerifiedAt  DateTime?
+  lastLoginAt      DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  refreshTokens    RefreshToken[]
 
   @@index([tenantId])
   @@index([email])
+}
+
+model RefreshToken {
+  id                 String         @id @default(cuid())
+  userId             String
+  user               User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash          String         @unique
+  jti                String         @unique
+  expiresAt          DateTime
+  revokedAt          DateTime?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  createdByIp        String?
+  revokedByIp        String?
+  userAgent          String?
+  replacedByTokenId  String?
+  replacedByToken    RefreshToken?  @relation("RefreshTokenReplacement", fields: [replacedByTokenId], references: [id])
+  previousToken      RefreshToken[] @relation("RefreshTokenReplacement")
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([revokedAt])
 }
 
 model Driver {
@@ -100,18 +127,4 @@ model Load {
   updatedAt       DateTime  @updatedAt
 
   @@index([tenantId])
-}
-
-
-model AuthSession {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tokenHash String   @unique
-  expiresAt DateTime
-  revokedAt DateTime?
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-  @@index([expiresAt])
 }
