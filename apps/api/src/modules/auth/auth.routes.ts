@@ -15,7 +15,8 @@ const router = Router();
 router.post("/register", authLimiter, registerController);
 router.post("/login", authLimiter, loginController);
 router.post("/refresh", authLimiter, refreshController);
-router.post("/logout", authLimiter, logoutController);
+router.post("/refresh-token", authLimiter, refreshController);
+router.post("/logout", authLimiter, requireAuth, logoutController);
 router.post("/logout-all", requireAuth, logoutAllController);
 router.get("/me", requireAuth, meController);
 

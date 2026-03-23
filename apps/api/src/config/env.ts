@@ -27,6 +27,8 @@ const envSchema = z
     AUTH_COOKIE_SECURE: z.string().default("false").pipe(booleanStringSchema),
     AUTH_COOKIE_SAME_SITE: z.enum(["strict", "lax", "none"]).default("lax"),
     AUTH_COOKIE_PATH: z.string().trim().min(1).default("/"),
+    COOKIE_SECRET: z.string().trim().optional(),
+    PASSWORD_PEPPER: z.string().default(""),
     CORS_ORIGIN: z.string().trim().min(1).default("http://localhost:3000"),
     RATE_LIMIT_AUTH_MAX: z.coerce.number().int().positive().default(10),
     ARGON2_MEMORY_COST: z.coerce.number().int().positive().default(19456),
@@ -120,6 +122,8 @@ export const env = {
   authCookieSecure: parsed.AUTH_COOKIE_SECURE,
   authCookieSameSite: parsed.AUTH_COOKIE_SAME_SITE,
   authCookiePath: parsed.AUTH_COOKIE_PATH,
+  cookieSecret: parsed.COOKIE_SECRET,
+  passwordPepper: parsed.PASSWORD_PEPPER,
   rateLimitAuthMax: parsed.RATE_LIMIT_AUTH_MAX,
   argon2: {
     memoryCost: parsed.ARGON2_MEMORY_COST,

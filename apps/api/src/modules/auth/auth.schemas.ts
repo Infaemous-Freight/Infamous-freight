@@ -4,7 +4,7 @@ import { REFRESH_TOKEN_COOKIE_BODY_FIELD } from "./auth.constants.js";
 const emailSchema = z.string().trim().email().transform((value) => value.toLowerCase());
 const passwordSchema = z
   .string()
-  .min(8, "Password must be at least 8 characters long")
+  .min(12, "Password must be at least 12 characters long")
   .max(128, "Password must be 128 characters or fewer")
   .regex(/[A-Z]/, "Password must include at least one uppercase letter")
   .regex(/[a-z]/, "Password must include at least one lowercase letter")
@@ -20,7 +20,7 @@ export const registerSchema = z.object({
 
 export const loginSchema = z.object({
   email: emailSchema,
-  password: z.string().min(1).max(128),
+  password: z.string().min(12, "Password must be at least 12 characters long").max(128),
 });
 
 export const refreshSchema = z.object({
