@@ -1,4 +1,9 @@
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+// Production backend: https://app.infamousfreight.com
+// Set NEXT_PUBLIC_API_URL=https://app.infamousfreight.com in Netlify env vars.
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:8080";
 
 export async function api(path: string, opts: RequestInit = {}, token?: string) {
   const res = await fetch(`${API_URL}${path}`, {

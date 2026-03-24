@@ -8,9 +8,11 @@
 import { ApiResponse } from "@infamous-freight/shared";
 
 // API configuration
+// Production: NEXT_PUBLIC_API_BASE_URL=https://app.infamousfreight.com
+// NEXT_PUBLIC_API_URL is kept as a legacy alias for backward compatibility.
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
   process.env.NEXT_PUBLIC_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
   "http://localhost:4000/api";
 
 const AI_API_BASE_URL =

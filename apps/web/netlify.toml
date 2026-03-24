@@ -1,54 +1,62 @@
-# Netlify Configuration for Infamous Freight Enterprises Web App
-# https://docs.netlify.com/configure-builds/file-based-configuration/
+# ─────────────────────────────────────────────────────────────────────────────
+# Infæmous Freight – Netlify Configuration (apps/web)
+# Frontend:  https://www.infamousfreight.com  (Netlify)
+# Backend:   https://app.infamousfreight.com  (Express/API – NOT on Netlify)
+# ─────────────────────────────────────────────────────────────────────────────
 
 [build]
-  base = "apps/web"
-  command = "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter web build"
+  # Base is the repo root so pnpm workspace installs all packages correctly.
+  base    = "."
+  command = "pnpm install --frozen-lockfile && pnpm --filter web build"
   publish = "apps/web/.next"
   functions = "apps/web/.netlify/functions"
 
 [build.environment]
-  NODE_VERSION = "20.19.0"
-  PNPM_VERSION = "9.15.0"
-  NPM_FLAGS = "--version"
+  NODE_VERSION           = "20.19.0"
+  PNPM_VERSION           = "9.15.0"
   NEXT_TELEMETRY_DISABLED = "1"
+  # Netlify-specific build target (not firebase, not vercel)
+  BUILD_TARGET           = "netlify"
 
+# ─── Next.js plugin (required for SSR / ISR / API routes on Netlify) ─────────
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+# ─── Apex domain → www redirect (301 permanent) ───────────────────────────────
+# Netlify also enforces this via Domain Settings → Primary domain = www.*
+[[redirects]]
+  from   = "https://infamousfreight.com/*"
+  to     = "https://www.infamousfreight.com/:splat"
+  status = 301
+  force  = true
+
+# ─── Security headers ─────────────────────────────────────────────────────────
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Frame-Options           = "DENY"
+    X-Content-Type-Options    = "nosniff"
+    X-XSS-Protection          = "1; mode=block"
+    Referrer-Policy           = "strict-origin-when-cross-origin"
+    Permissions-Policy        = "camera=(), microphone=(), geolocation=(self)"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Content-Security-Policy   = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://maps.googleapis.com https://js.stripe.com https://cdn.segment.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://app.infamousfreight.com wss://app.infamousfreight.com https://sentry.io https://o*.ingest.sentry.io; frame-src 'self' https://js.stripe.com https://checkout.stripe.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com"
 
+# ─── Static asset caching ─────────────────────────────────────────────────────
 [[headers]]
   for = "/_next/static/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# ─── API routes – no caching ──────────────────────────────────────────────────
 [[headers]]
   for = "/api/*"
   [headers.values]
     Cache-Control = "no-store, max-age=0"
 
-[[redirects]]
-  from = "/api/supabase/*"
-  to = "https://supabase.com/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
+# ─── Local dev settings ───────────────────────────────────────────────────────
 [dev]
-  command = "pnpm dev"
-  port = 3000
-  targetPort = 3000
-  autoLaunch = false
+  command     = "pnpm dev"
+  port        = 3000
+  targetPort  = 3000
+  autoLaunch  = false

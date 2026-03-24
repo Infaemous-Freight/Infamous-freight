@@ -8,8 +8,10 @@ export const metadata: Metadata = {
   },
   description:
     "AI-powered freight operations platform for dispatch, fleet intelligence, and shipment visibility.",
+  // Primary frontend domain is www.infamousfreight.com (Netlify).
+  // Set NEXT_PUBLIC_SITE_URL=https://www.infamousfreight.com in Netlify env vars.
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://infamousfreight.com",
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.infamousfreight.com",
   ),
   openGraph: {
     type: "website",

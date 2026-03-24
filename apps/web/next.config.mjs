@@ -8,7 +8,7 @@ const nextConfig = {
         ignoreBuildErrors: process.env.ALLOW_WEB_TS_ERRORS === 'true',
     },
     reactStrictMode: true,
-    // Firebase Hosting requires static export
+    // Firebase Hosting requires static export; Netlify uses standalone (default)
     output: process.env.BUILD_TARGET === 'firebase' ? 'export' : 'standalone',
     compress: true,
     poweredByHeader: false,
@@ -40,6 +40,12 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'infamous-freight-api.fly.dev',
+                pathname: '/api/uploads/**',
+            },
+            // Production backend on app.infamousfreight.com
+            {
+                protocol: 'https',
+                hostname: 'app.infamousfreight.com',
                 pathname: '/api/uploads/**',
             },
         ],
