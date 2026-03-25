@@ -10,11 +10,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@datadog/browser-rum": "^6.31.0",
     "@infamous-freight/shared": "workspace:*",
+    "@sentry/nextjs": "^10.43.0",
     "next": "^16.1.7",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "@sentry/nextjs": "^10.43.0"
+    "styled-jsx": "^5.1.7"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",
