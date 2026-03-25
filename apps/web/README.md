@@ -115,15 +115,19 @@ describe('Button', () => {
 
 ## 🔧 Environment Variables
 
-See `.env.example` for required environment variables:
+See `.env.example` for the full variable catalog and `docs/NETLIFY_ENV_AUDIT.md` for the Netlify-specific production checklist. The most important web variables are:
 
-- `NEXT_PUBLIC_API_URL`: Backend API URL
-- `NEXT_PUBLIC_STRIPE_PUBLIC_KEY`: Stripe publishable key
-- `DATADOG_CLIENT_TOKEN`: Datadog RUM token
-- `DATADOG_APPLICATION_ID`: Datadog application ID
+- `NEXT_PUBLIC_API_URL`: Browser-facing API base URL used across the frontend
+- `NEXT_PUBLIC_APP_URL`: Canonical public URL for the web app
+- `NEXTAUTH_URL`: Public auth callback/base URL when NextAuth is enabled
+- `NEXTAUTH_SECRET`: NextAuth signing secret
+- `JWT_SECRET`: Required by the web Stripe checkout route
+- `STRIPE_SECRET_KEY`: Server-side Stripe secret for checkout/webhooks
+- `STRIPE_WEBHOOK_SECRET`: Stripe webhook signing secret
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Stripe publishable key
 
 **Important**: Variables prefixed with `NEXT_PUBLIC_` are exposed to the
-browser.
+browser. Variables such as `JWT_SECRET`, `NEXTAUTH_SECRET`, `STRIPE_SECRET_KEY`, and `STRIPE_WEBHOOK_SECRET` must remain server-only.
 
 ## 📊 Performance
 
