@@ -20,5 +20,14 @@ export async function hashPassword(password: string): Promise<string> {
 }
 
 export async function verifyPassword(passwordHash: string, password: string): Promise<boolean> {
-  return argon2.verify(passwordHash, withPepper(password), hashingOptions);
+  // First, try verification using the peppered password (current scheme).
+  const isValidWithPepper = await argon2.verify(passwordHash, withPepper(password), hashingOptions);
+
+  // If verification succeeded, or no pepper is configured, return the result immediately.
+  if (isValidWithPepper || !env.passwordPepper) {
+    return isValidWithPepper;
+  }
+
+  // Legacy fallback: try verifying without the pepper for hashes created before peppering was enabled.
+  return argon2.verify(passwordHash, password, hashingOptions);
 }
