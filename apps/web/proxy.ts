@@ -149,8 +149,6 @@ export function proxy(request: NextRequest) {
   return response;
 }
 
-// Backwards-compatible alias if middleware is still referenced internally.
-export const middleware = proxy;
 
 // Configure which routes use the proxy
 export const config = {
