@@ -23,7 +23,8 @@ If production is broken even though the Netlify deploy succeeds, the issue may b
 - `DATABASE_URL`
 - `JWT_PRIVATE_KEY` and `JWT_PUBLIC_KEY` when `JWT_ALGORITHM=RS256` (the current API default)
 - `JWT_SECRET` only when `JWT_ALGORITHM=HS256`
-- `CORS_ORIGIN`
+- `CORS_ORIGINS` (primary/legacy API CORS configuration; comma-separated list of allowed origins, e.g. `https://app.example.com,https://admin.example.com`)
+- `CORS_ORIGIN` (optional single-origin CORS configuration used by specific entrypoints/components; if both are set, refer to the API service docs to decide which should be authoritative for your deployment)
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
 - Optional feature integrations such as `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER`, `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY`
