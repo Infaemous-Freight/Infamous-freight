@@ -27,7 +27,10 @@ const envSchema = z
     AUTH_COOKIE_SECURE: z.string().default("false").pipe(booleanStringSchema),
     AUTH_COOKIE_SAME_SITE: z.enum(["strict", "lax", "none"]).default("lax"),
     AUTH_COOKIE_PATH: z.string().trim().min(1).default("/"),
-    COOKIE_SECRET: z.string().trim().optional(),
+    COOKIE_SECRET: z.preprocess(
+      (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+      z.string().trim().min(32).optional(),
+    ),
     PASSWORD_PEPPER: z.string().default(""),
     CORS_ORIGIN: z.string().trim().min(1).default("http://localhost:3000"),
     RATE_LIMIT_AUTH_MAX: z.coerce.number().int().positive().default(10),
