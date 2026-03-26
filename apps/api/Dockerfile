@@ -10,6 +10,8 @@ RUN pnpm install --filter @infamous/api... --no-frozen-lockfile
 
 COPY . .
 
+RUN npx prisma generate
+
 RUN pnpm --filter @infamous/api build
 
 FROM node:22-alpine AS runtime
