@@ -7,14 +7,19 @@ datasource db {
 }
 
 model Tenant {
-  id         String      @id @default(cuid())
-  name       String
-  createdAt  DateTime    @default(now())
-  shipments  Shipment[]
-  loads      Load[]
-  users      User[]
-  drivers    Driver[]
-  dispatches Dispatch[]
+  id              String              @id @default(cuid())
+  name            String
+  createdAt       DateTime            @default(now())
+  shipments       Shipment[]
+  loads           Load[]
+  users           User[]
+  drivers         Driver[]
+  dispatches      Dispatch[]
+  metrics         PlatformMetric[]
+  aiDecisionLogs  AiDecisionLog[]
+  carrierScores   CarrierScore[]
+  predictions     PredictionEvent[]
+  pricingSnapshots PricingSnapshot[]
 }
 
 model User {
@@ -127,4 +132,81 @@ model Load {
   updatedAt       DateTime  @updatedAt
 
   @@index([tenantId])
+}
+
+// Phase 2: AI Operations Models
+
+model PlatformMetric {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  key       String
+  value     Float
+  createdAt DateTime @default(now())
+
+  @@index([tenantId, key, createdAt])
+}
+
+model AiDecisionLog {
+  id             String   @id @default(cuid())
+  tenantId       String
+  tenant         Tenant   @relation(fields: [tenantId], references: [id])
+  entityType     String
+  entityId       String
+  module         String
+  decision       String
+  confidence     Float?
+  reasonCodes    Json?
+  inputSnapshot  Json?
+  outputSnapshot Json?
+  createdBy      String?
+  createdAt      DateTime @default(now())
+
+  @@index([tenantId, module, createdAt])
+}
+
+model CarrierScore {
+  id                String   @id @default(cuid())
+  tenantId          String
+  tenant            Tenant   @relation(fields: [tenantId], references: [id])
+  driverId          String
+  score             Int
+  riskLevel         String
+  onTimeRate        Float?
+  cancelRate        Float?
+  anomalyFlags      Json?
+  explanation       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([tenantId, driverId])
+}
+
+model PredictionEvent {
+  id              String   @id @default(cuid())
+  tenantId        String
+  tenant          Tenant   @relation(fields: [tenantId], references: [id])
+  entityType      String
+  entityId        String
+  predictionType  String
+  probability     Float
+  severity        String
+  recommendation  String?
+  createdAt       DateTime @default(now())
+
+  @@index([tenantId, predictionType, createdAt])
+}
+
+model PricingSnapshot {
+  id                    String   @id @default(cuid())
+  tenantId              String
+  tenant                Tenant   @relation(fields: [tenantId], references: [id])
+  loadId                String
+  recommendedRateCents  Int
+  acceptanceProbability Float?
+  confidence            Float?
+  factors               Json?
+  createdAt             DateTime @default(now())
+
+  @@index([tenantId, loadId, createdAt])
 }
