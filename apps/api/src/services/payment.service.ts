@@ -162,7 +162,7 @@ export async function markPaymentSucceeded(input: {
     });
 
     await prisma.loadPayment.updateMany({
-      where: { paymentId: payment.id, loadId: payment.loadId },
+      where: { paymentId: payment.id, loadId: payment.loadId, tenantId: payment.tenantId },
       data: { status: "PAID" },
     });
   }
