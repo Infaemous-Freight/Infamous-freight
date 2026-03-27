@@ -56,7 +56,7 @@ assert_contains() {
   fi
 }
 
-ROOT_DIR="$(cd ""$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 FILENAME="tests/ci/fly-config.test.sh"
 ROOT_FLY_TOML="$ROOT_DIR/fly.toml"
 API_FLY_TOML="$ROOT_DIR/apps/api/fly.toml"
@@ -128,7 +128,7 @@ assert_not_empty "fly-deploy.yml has dedicated fly-config step" "$DEPLOY_SCRIPT_
 
 DEPLOY_COMMAND=$(extract_literal 'flyctl deploy' "$FLY_DEPLOY_YML")
 assert_contains "fly-deploy.yml deploy command uses config path" "$DEPLOY_COMMAND" '-c apps/api/fly.toml'
-assert_contains "fly-deploy.yml deploy command passes app flag" "$DEPLOY_COMMAND" '-a "${{ steps.fly-config.outputs.app_name }}"'
+assert_contains "fly-deploy.yml deploy command passes app flag" "$DEPLOY_COMMAND" '-a "{ steps.fly-config.outputs.app_name }"'
 assert_contains "fly-deploy.yml deploy command uses remote-only" "$DEPLOY_COMMAND" '--remote-only'
 assert_contains "fly-deploy.yml deploy command uses depot=false" "$DEPLOY_COMMAND" '--depot=false'
 
