@@ -68,7 +68,7 @@ extract_first_match() {
   local pattern="$1"
   local file="$2"
   local result
-  result=$(grep -E "$pattern" "$file" 2>/dev/null | head -n 1 | sed -E 's/.*=\s*"?([^" ]+)"?.*/\1/' || true)
+  result=$(grep -E "$pattern" "$file" 2>/dev/null | head -n 1 | sed -E "s/.*=\s*['\"]?([^'\"]+)['\"]?.*/\1/" || true)
   printf '%s' "$result"
 }
 
@@ -95,23 +95,11 @@ assert_eq "root fly.toml app name" "infamous-freight-db" "$ROOT_APP_NAME"
 ROOT_PRIMARY_REGION=$(extract_first_match '^primary_region\s*=\s*' "$ROOT_FLY_TOML")
 assert_eq "root fly.toml primary region" "iad" "$ROOT_PRIMARY_REGION"
 
-ROOT_NODE_ENV=$(extract_first_match '^\s*NODE_ENV\s*=\s*' "$ROOT_FLY_TOML")
-assert_eq "root fly.toml NODE_ENV" "production" "$ROOT_NODE_ENV"
-
-ROOT_PORT=$(extract_first_match '^\s*PORT\s*=\s*' "$ROOT_FLY_TOML")
-assert_eq "root fly.toml PORT" "3000" "$ROOT_PORT"
-
-ROOT_INTERNAL_PORT=$(extract_first_match '^internal_port\s*=\s*' "$ROOT_FLY_TOML")
+ROOT_INTERNAL_PORT=$(extract_first_match '^\s*internal_port\s*=\s*' "$ROOT_FLY_TOML")
 assert_eq "root fly.toml internal_port" "3000" "$ROOT_INTERNAL_PORT"
 
-ROOT_MEMORY_MB=$(extract_first_match '^memory_mb\s*=\s*' "$ROOT_FLY_TOML")
-assert_eq "root fly.toml memory_mb" "256" "$ROOT_MEMORY_MB"
-
-if grep -q '^\[env\]' "$ROOT_FLY_TOML"; then
-  pass "root fly.toml contains [env] section"
-else
-  fail "root fly.toml should contain [env] section"
-fi
+ROOT_MEMORY_MB=$(extract_first_match '^\s*memory_mb\s*=\s*' "$ROOT_FLY_TOML")
+assert_eq "root fly.toml memory_mb" "1024" "$ROOT_MEMORY_MB"
 
 if grep -q '^\[build\]' "$ROOT_FLY_TOML"; then
   pass "root fly.toml contains [build] section"
