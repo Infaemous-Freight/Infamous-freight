@@ -239,11 +239,7 @@ else
   fail "fly-deploy-main.yml still exists but should have been deleted"
 fi
 
-# Verify the inline grep/sed command appears in fly-deploy.yml (now used in 2 steps)
-GREP_COUNT=$(grep -c "grep -E '\^app\\\\s\*=\\\\s\*'" "$FLY_DEPLOY_YML" 2>/dev/null || \
-             grep -c "grep -E '\^app" "$FLY_DEPLOY_YML" 2>/dev/null || \
-             grep -c "grep -E" "$FLY_DEPLOY_YML" 2>/dev/null || echo "0")
-# Just verify the grep pattern is present at least once in the workflow
+# Verify the inline grep/sed command pattern is present at least once in fly-deploy.yml
 if grep -q "grep -E" "$FLY_DEPLOY_YML"; then
   pass "fly-deploy.yml contains inline grep for app name extraction"
 else
