@@ -1,0 +1,41 @@
+name: Fly Deploy Main
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fly-deploy-main
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify FLY_API_TOKEN exists
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.FLY_API_TOKEN }}" ]; then
+            echo "FLY_API_TOKEN is missing or empty. Add it in GitHub -> Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+
+      - name: Set up Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        shell: bash
+        run: flyctl deploy --remote-only --depot=false
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
