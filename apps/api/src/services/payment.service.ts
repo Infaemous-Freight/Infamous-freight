@@ -122,17 +122,23 @@ export async function markPaymentSucceeded(input: {
   stripePaymentIntentId: string;
   rawEvent: unknown;
 }) {
-  const payment = await prisma.payment.findFirst({
+  const payments = await prisma.payment.findMany({
     where: {
       provider: "stripe",
       externalId: input.stripePaymentIntentId,
     },
   });
 
-  if (!payment) {
+  if (payments.length === 0) {
     return null;
   }
 
+  if (payments.length > 1) {
+    // Ambiguous webhook reconciliation; do not arbitrarily pick one payment.
+    return null;
+  }
+
+  const payment = payments[0];
   const updatedPayment = await prisma.payment.update({
     where: { id: payment.id },
     data: {
