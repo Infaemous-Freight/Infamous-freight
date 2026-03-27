@@ -9,6 +9,8 @@ COPY packages ./packages
 RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
+ARG REBUILD_TIMESTAMP=unknown
+RUN echo "rebuild-timestamp=${REBUILD_TIMESTAMP}" > /tmp/rebuild-timestamp
 COPY . .
 RUN pnpm --dir apps/api exec prisma generate --schema=prisma/schema.prisma
 RUN pnpm --dir apps/api build
