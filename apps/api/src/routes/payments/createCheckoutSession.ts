@@ -5,10 +5,16 @@ const paymentService = new PaymentService();
 
 export async function createCheckoutSession(req: Request, res: Response) {
   try {
-    // Replace with your real auth / org context
-    const orgId = req.headers["x-org-id"] as string;
-    const userId = req.headers["x-user-id"] as string | undefined;
+    // Derive auth / org context from authenticated user on the request
+    const authUser = (req as any).user;
 
+    if (!authUser) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const orgId: string | undefined =
+      authUser.orgId ?? authUser.organizationId ?? authUser.tenantId;
+    const userId: string | undefined = authUser.id;
     if (!orgId) {
       return res.status(400).json({ error: "Missing org context" });
     }
