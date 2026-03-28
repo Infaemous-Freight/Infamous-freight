@@ -45,6 +45,8 @@ export function createApp(): Express {
 
   app.post(
     "/api/webhooks/stripe",
+    requestIdMiddleware,
+    httpLoggerMiddleware,
     express.raw({ type: "application/json" }),
     stripeWebhook,
   );
