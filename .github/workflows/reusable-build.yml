@@ -41,10 +41,10 @@ jobs:
     name: Build ${{ inputs.package-name }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
 
@@ -57,7 +57,7 @@ jobs:
           run_install: false
 
       - name: Setup Node cache
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           cache: pnpm
@@ -76,7 +76,7 @@ jobs:
         run: pnpm --filter ${{ inputs.package-name }} ${{ inputs.build-command }}
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact-name }}
           path: ${{ inputs.working-directory }}/${{ inputs.artifact-path }}
@@ -88,7 +88,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| **Package** | \`${{ inputs.package-name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Package** | \\`${{ inputs.package-name }}\
+` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Node Version** | ${{ inputs.node-version }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Status** | ✅ Success |" >> $GITHUB_STEP_SUMMARY
           echo "| **Artifact** | ${{ inputs.artifact-name }} |" >> $GITHUB_STEP_SUMMARY
