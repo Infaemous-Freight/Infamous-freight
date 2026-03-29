@@ -1,7 +1,7 @@
 const { getPrisma } = require("../db/prisma");
 const mem = require("./memory");
 
-async function getHistory(userId, limit = 12) {
+async function getHistory(userId: string, limit = 12) {
   const p = getPrisma();
   if (!p) return mem.getHistory(userId, limit);
 
@@ -11,14 +11,14 @@ async function getHistory(userId, limit = 12) {
     take: limit,
   });
 
-  return rows.reverse().map((r) => ({
+  return rows.reverse().map((r: { role: string; content: string; ts: Date }) => ({
     role: r.role,
     content: r.content,
     ts: r.ts.getTime(),
   }));
 }
 
-async function addMessage(userId, role, content) {
+async function addMessage(userId: string, role: string, content: string) {
   const p = getPrisma();
   if (!p) return mem.addMessage(userId, role, content);
 

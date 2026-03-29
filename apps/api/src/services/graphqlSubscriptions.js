@@ -238,7 +238,7 @@ class GraphQLSubscriptionsService {
       };
     } catch (error) {
       logger.error('WebSocket authentication failed', { error: error.message });
-      throw new Error('Invalid authentication token');
+      throw new Error('Invalid authentication token', { cause: error });
     }
   }
 

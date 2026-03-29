@@ -12,13 +12,15 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 const prisma = new PrismaClient();
 
 // Stripe price IDs from environment (created in Stripe dashboard)
-const STRIPE_PRICES = {
+const STRIPE_PRICES: Partial<Record<BillingPlan, string>> = {
   [BillingPlan.STARTER]: process.env.STRIPE_PRICE_STARTER || "",
   [BillingPlan.GROWTH]: process.env.STRIPE_PRICE_GROWTH || process.env.STRIPE_PRICE_PRO || "",
   [BillingPlan.ENTERPRISE]: process.env.STRIPE_PRICE_ENTERPRISE || "",
 };
 
-const PLAN_DETAILS = {
+const PLAN_DETAILS: Partial<
+  Record<BillingPlan, { monthlyBase: number; monthlyQuota: number; overagePrice: number }>
+> = {
   [BillingPlan.STARTER]: {
     monthlyBase: 79,
     monthlyQuota: 500,
@@ -95,9 +97,9 @@ export async function createStripeSubscription(
         stripeCustomerId: customer.id,
         stripeSubId: subscription.id,
         stripeStatus: subscription.status,
-        monthlyBase: PLAN_DETAILS[plan].monthlyBase,
-        monthlyQuota: PLAN_DETAILS[plan].monthlyQuota,
-        overagePrice: PLAN_DETAILS[plan].overagePrice,
+        monthlyBase: PLAN_DETAILS[plan]!.monthlyBase,
+        monthlyQuota: PLAN_DETAILS[plan]!.monthlyQuota,
+        overagePrice: PLAN_DETAILS[plan]!.overagePrice,
         billingCycleStart: new Date(),
         nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       },
@@ -106,9 +108,9 @@ export async function createStripeSubscription(
         stripeCustomerId: customer.id,
         stripeSubId: subscription.id,
         stripeStatus: subscription.status,
-        monthlyBase: PLAN_DETAILS[plan].monthlyBase,
-        monthlyQuota: PLAN_DETAILS[plan].monthlyQuota,
-        overagePrice: PLAN_DETAILS[plan].overagePrice,
+        monthlyBase: PLAN_DETAILS[plan]!.monthlyBase,
+        monthlyQuota: PLAN_DETAILS[plan]!.monthlyQuota,
+        overagePrice: PLAN_DETAILS[plan]!.overagePrice,
       },
     });
 
@@ -159,6 +161,7 @@ export async function updateSubscriptionPlan(
 
     // Update database
     const planDetails = PLAN_DETAILS[newPlan];
+    if (!planDetails) throw new Error(`No plan details configured for plan: ${newPlan}`);
     await prisma.orgBilling.update({
       where: { organizationId },
       data: {

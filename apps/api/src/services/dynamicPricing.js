@@ -195,13 +195,12 @@ class DynamicPricingService {
    * Bulk quote (multiple shipments)
    */
   async calculateBulkPrice(shipments) {
-    let totalPrice = 0;
     let bulkDiscount = 0;
 
     // Calculate individual prices
     const prices = await Promise.all(shipments.map((s) => this.calculateDynamicPrice(s)));
 
-    totalPrice = prices.reduce((sum, p) => sum + p.finalPrice, 0);
+    let totalPrice = prices.reduce((sum, p) => sum + p.finalPrice, 0);
 
     // Apply bulk discount
     if (shipments.length > 10)

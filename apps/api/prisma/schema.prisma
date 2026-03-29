@@ -388,11 +388,13 @@ model User {
 }
 
 model Driver {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  phone     String
-  status    String   @default("available")
+  id            String   @id @default(uuid())
+  tenantId      String?
+  licenseNumber String?
+  name          String
+  email         String?  @unique
+  phone         String?
+  status        String   @default("available")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -401,6 +403,7 @@ model Driver {
   @@index([email])
   @@index([status])
   @@index([createdAt])
+  @@index([tenantId])
   @@index([status, createdAt]) // Phase 6: Filter available drivers by date
   @@index([phone]) // Phase 6: Contact driver quickly
   @@map("drivers")
@@ -410,6 +413,8 @@ model Shipment {
   id          String         @id @default(uuid())
   trackingId  String         @unique
   userId      String
+  tenantId    String?
+  orgId       String?
   driverId    String?
   origin      String
   destination String
@@ -2014,22 +2019,24 @@ model AnomalyDetection {
 
 model UsageMetric {
   id                String   @id @default(cuid())
-  organizationId    String
-  organization      Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId    String?
+  organization      Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   userId            String?
   user              User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   // Metric Details
-  metricName        String   // api_requests | ai_commands | storage_gb | etc
+  metricName        String?  // api_requests | ai_commands | storage_gb | etc
+  metricType        String?  // api_calls | shipments | etc (alias used by billing service)
+  tier              String?  // free | pro | enterprise
   quantity          Int      @default(1)
   value             Float?   // e.g. bytes, tokens
 
   // Timestamp
   recordedAt        DateTime @default(now())
-  month             String   // YYYY-MM for aggregation
+  month             String?  // YYYY-MM for aggregation
 
   @@index([organizationId, month])
-  @@index([organizationId, metricName])
+  @@index([userId, metricType])
   @@index([recordedAt])
   @@map("usage_metrics")
 }
@@ -2276,4 +2283,239 @@ model RestoreLog {
   @@index([status])
   @@index([initiatedAt])
   @@map("restore_logs")
+}
+
+// ============================================
+// AI & ML Models
+// ============================================
+
+model AiDecisionLog {
+  id            String   @id @default(cuid())
+  tenantId      String
+  entityType    String   // LOAD | DRIVER | SHIPMENT
+  entityId      String
+  module        String   // CARRIER_INTELLIGENCE | SMART_PRICING | PREDICTIVE_OPERATIONS | DISPATCH_RECOMMENDATION
+  decision      String
+  confidence    Float?
+  reasonCodes   Json?
+  inputSnapshot Json?
+  outputSnapshot Json?
+  createdAt     DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([entityId])
+  @@index([module])
+  @@map("ai_decision_logs")
+}
+
+model CarrierScore {
+  id           String   @id @default(cuid())
+  tenantId     String
+  driverId     String
+  score        Float
+  riskLevel    String   // LOW | MEDIUM | HIGH | CRITICAL
+  onTimeRate   Float    @default(0)
+  cancelRate   Float    @default(0)
+  anomalyFlags Json?
+  explanation  String?
+  computedAt   DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([tenantId, driverId])
+  @@index([tenantId])
+  @@index([driverId])
+  @@map("carrier_scores")
+}
+
+model PricingSnapshot {
+  id                     String   @id @default(cuid())
+  tenantId               String
+  loadId                 String
+  recommendedRateCents   Int
+  acceptanceProbability  Float?
+  confidence             Float?
+  factors                Json?
+  createdAt              DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([loadId])
+  @@map("pricing_snapshots")
+}
+
+model PredictionEvent {
+  id             String   @id @default(cuid())
+  tenantId       String
+  entityType     String   // LOAD | SHIPMENT
+  entityId       String
+  predictionType String   // DELAY_RISK | ETA | ANOMALY
+  probability    Float
+  severity       String?  // LOW | MEDIUM | HIGH | CRITICAL
+  recommendation String?
+  createdAt      DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([entityId])
+  @@map("prediction_events")
+}
+
+// ============================================
+// Logistics & Operations Models
+// ============================================
+
+model Load {
+  id             String   @id @default(cuid())
+  tenantId       String
+  shipperId      String?
+  driverId       String?
+  status         String   @default("OPEN") // OPEN | CLAIMED | ASSIGNED | PICKED_UP | DELIVERED | CANCELLED
+  lane           String?
+  originCity     String?
+  originState    String?
+  destCity       String?
+  destState      String?
+  distanceMi     Float?
+  weightLb       Float?
+  rateCents      Int?
+  priceUsd       Decimal? @db.Decimal(10, 2)
+  description    String?
+  claimedByUserId String?
+  claimedAt      DateTime?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([status])
+  @@index([driverId])
+  @@index([claimedByUserId])
+  @@map("loads")
+}
+
+model Dispatch {
+  id        String   @id @default(cuid())
+  tenantId  String
+  loadId    String?
+  driverId  String?
+  status    String   @default("PENDING") // PENDING | ASSIGNED | EN_ROUTE | COMPLETED | CANCELLED
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([loadId])
+  @@index([driverId])
+  @@map("dispatches")
+}
+
+model LocationPing {
+  id         String   @id @default(cuid())
+  orgId      String
+  shipmentId String?
+  driverId   String?
+  lat        Float
+  lng        Float
+  speed      Float?
+  heading    Float?
+  accuracy   Float?
+  timestamp  DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  @@index([orgId])
+  @@index([shipmentId])
+  @@map("location_pings")
+}
+
+model ShipmentEvent {
+  id         String   @id @default(cuid())
+  orgId      String
+  shipmentId String
+  type       String   // STATUS_CHANGE | LOCATION_UPDATE | NOTE | ALERT
+  payload    Json?
+  createdAt  DateTime @default(now())
+
+  @@index([orgId])
+  @@index([shipmentId])
+  @@map("shipment_events")
+}
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tenants")
+}
+
+// ============================================
+// Payments & Billing Models
+// ============================================
+
+model Payment {
+  id           String   @id @default(cuid())
+  tenantId     String
+  userId       String?
+  loadId       String?
+  externalId   String?  // Stripe intent ID or external payment reference
+  amount       Decimal  @db.Decimal(10, 2)
+  currency     String   @default("usd")
+  status       String   @default("PENDING") // PENDING | SUCCEEDED | FAILED | REFUNDED
+  provider     String   // stripe | godaddy_link
+  checkoutUrl  String?
+  stripePaymentIntentId String?
+  stripeClientSecret    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  transactions Transaction[]
+  loadPayments LoadPayment[]
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([status])
+  @@map("freight_payments")
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  paymentId   String
+  externalId  String?  // Stripe charge ID or external transaction reference
+  status      String   // PENDING | COMPLETED | FAILED
+  rawResponse Json?
+  createdAt   DateTime @default(now())
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId])
+  @@map("transactions")
+}
+
+model LoadPayment {
+  id        String   @id @default(cuid())
+  tenantId  String
+  loadId    String
+  paymentId String
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([loadId])
+  @@index([paymentId])
+  @@map("load_payments")
+}
+
+model OverageCharge {
+  id          String   @id @default(cuid())
+  userId      String
+  metricType  String
+  quantity    Int
+  ratePerUnit Decimal  @db.Decimal(10, 4)
+  totalCharge Decimal  @db.Decimal(10, 2)
+  chargedAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([metricType])
+  @@map("overage_charges")
 }

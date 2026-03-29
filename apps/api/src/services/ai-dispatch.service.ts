@@ -1,7 +1,5 @@
 import { prisma } from "../db/prisma.js";
 
-const db = prisma as any;
-
 export interface DispatchRecommendation {
   recommendedDriverId: string;
   score: number;
@@ -38,7 +36,7 @@ export class AiDispatchService {
     userId: string,
   ): Promise<DispatchRecommendation> {
     // Fetch load and available drivers
-    const load = await db.load.findUnique({
+    const load = await prisma.load.findUnique({
       where: { id: loadId },
     });
 
@@ -46,7 +44,7 @@ export class AiDispatchService {
       throw new Error("Load not found or access denied");
     }
 
-    const availableDrivers = await db.driver.findMany({
+    const availableDrivers = await prisma.driver.findMany({
       where: {
         tenantId,
         status: "AVAILABLE",
@@ -109,11 +107,11 @@ export class AiDispatchService {
     userId: string,
   ): Promise<DispatchExecutionResult> {
     // Verify load and driver exist in tenant
-    const load = await db.load.findUnique({
+    const load = await prisma.load.findUnique({
       where: { id: loadId },
     });
 
-    const driver = await db.driver.findUnique({
+    const driver = await prisma.driver.findUnique({
       where: { id: driverId },
     });
 
@@ -126,7 +124,7 @@ export class AiDispatchService {
     }
 
     // Create dispatch record
-    const dispatch = await db.dispatch.create({
+    const dispatch = await prisma.dispatch.create({
       data: {
         tenantId,
         loadId,
@@ -246,12 +244,12 @@ export class AiDispatchService {
    * Trust score from CarrierScore model
    */
   private async calculateTrustScore(tenantId: string, driverId: string): Promise<number> {
-    const carrierScore = await db.carrierScore.findFirst({
+    const carrierScore = await prisma.carrierScore.findFirst({
       where: {
         tenantId,
         driverId,
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { computedAt: "desc" },
     });
 
     if (!carrierScore) {
@@ -311,7 +309,7 @@ export class AiDispatchService {
     inputSnapshot: any,
     outputSnapshot: any,
   ): Promise<any> {
-    return (prisma as any).aiDecisionLog.create({
+    return prisma.aiDecisionLog.create({
       data: {
         tenantId,
         entityType,

@@ -34,7 +34,7 @@ import { handlePresign } from "./presign.js";
 const router: express.Router = express.Router();
 const storageMode = env.avatarStorage || "local";
 
-function toResponseAvatar(avatar) {
+function toResponseAvatar(avatar: import("./store.js").UserAvatar) {
   const baseUrl = avatar.url
     ? avatar.url
     : avatar.fileName.startsWith("http")
@@ -74,7 +74,11 @@ const upload = (multer as any)({
   limits: {
     fileSize: env.avatarMaxFileSizeMB * 1024 * 1024,
   },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (
+    req: unknown,
+    file: { mimetype: string },
+    cb: (err: Error | null, accept?: boolean) => void,
+  ) => {
     // Validate MIME type
     if (!env.avatarAllowedTypes.includes(file.mimetype)) {
       return cb(
@@ -236,11 +240,11 @@ router.post("/me/select/:filename", limiters.general, authenticate, async (req, 
 
     await initializeStore();
 
-    const selected = await selectAvatar(userId, req.params.filename);
+    const selected = await selectAvatar(userId, req.params.filename as string);
     if (!selected) {
       return res.status(404).json({
         error: "Avatar not found",
-        message: `Avatar '${req.params.filename}' not found for this user`,
+        message: `Avatar '${req.params.filename as string}' not found for this user`,
       });
     }
 
@@ -272,19 +276,19 @@ router.delete("/me/:filename", limiters.general, authenticate, async (req, res) 
 
     await initializeStore();
     const avatars = await getUserAvatars(userId);
-    const target = avatars.find((a) => a.fileName === req.params.filename);
+    const target = avatars.find((a) => a.fileName === req.params.filename as string);
     if (!target) {
       return res.status(404).json({
         error: "Avatar not found",
-        message: `Avatar '${req.params.filename}' not found for this user`,
+        message: `Avatar '${req.params.filename as string}' not found for this user`,
       });
     }
 
-    const deleted = await deleteAvatar(userId, req.params.filename);
+    const deleted = await deleteAvatar(userId, req.params.filename as string);
 
     // Delete file from disk for local storage
     if ((target.storage || "local") === "local") {
-      const filePath = path.join(env.avatarUploadDir, userId, req.params.filename);
+      const filePath = path.join(env.avatarUploadDir, userId, req.params.filename as string);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }

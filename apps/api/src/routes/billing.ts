@@ -8,7 +8,7 @@
  * - Usage tracking
  */
 
-import { Router } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
 import Stripe from "stripe";
 import {
   authenticate,
@@ -59,7 +59,7 @@ router.get(
   authenticate,
   requireOrganization,
   requireScope("billing:read"),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orgId = req.auth?.organizationId ?? "";
       const billing = await prisma.orgBilling.findUnique({
@@ -102,7 +102,7 @@ router.post(
   requireScope("billing:write"),
   [body("plan").isIn(["STARTER", "GROWTH", "ENTERPRISE"]).withMessage("Invalid plan")],
   handleValidationErrors,
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orgId = req.auth?.organizationId ?? "";
       const userId = req.auth?.userId;
@@ -118,7 +118,7 @@ router.post(
       }
 
       // Create Stripe subscription
-      const result = await createStripeSubscription(orgId, org.name, plan, req.auth?.email);
+      const result = await createStripeSubscription(orgId, org.name, plan, req.user?.email);
 
       // Log audit event
       await logAuditEvent(prisma, {
@@ -152,7 +152,7 @@ router.post(
   requireScope("billing:write"),
   [body("plan").isIn(["STARTER", "GROWTH", "ENTERPRISE"]).withMessage("Invalid plan")],
   handleValidationErrors,
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orgId = req.auth?.organizationId ?? "";
       const userId = req.auth?.userId;
@@ -195,7 +195,7 @@ router.post(
   requireScope("billing:write"),
   [body("immediately").optional().isBoolean().withMessage("immediately must be boolean")],
   handleValidationErrors,
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orgId = req.auth?.organizationId ?? "";
       const userId = req.auth?.userId;
@@ -234,7 +234,7 @@ router.get(
   authenticate,
   requireOrganization,
   requireScope("billing:read"),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orgId = req.auth?.organizationId ?? "";
 
@@ -270,7 +270,7 @@ router.get(
   authenticate,
   requireOrganization,
   requireScope("billing:read"),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orgId = req.auth?.organizationId ?? "";
       const { month } = req.query;
@@ -320,7 +320,7 @@ router.get(
       .withMessage("to must be YYYY-MM"),
   ],
   handleValidationErrors,
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orgId = req.auth?.organizationId ?? "";
       const { from, to } = req.query;
@@ -351,10 +351,10 @@ router.get(
   authenticate,
   requireOrganization,
   requireScope("billing:read"),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orgId = req.auth?.organizationId ?? "";
-      const { month } = req.params;
+      const month = req.params.month as string;
 
       const invoice = await getInvoice(orgId, month);
 
@@ -384,10 +384,10 @@ router.post(
   authenticate,
   requireOrganization,
   requireScope("billing:write"),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orgId = req.auth?.organizationId ?? "";
-      const { month } = req.params;
+      const month = req.params.month as string;
 
       // Check admin role
       if ((req.auth?.role as string) !== "ADMIN") {

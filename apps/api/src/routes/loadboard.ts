@@ -5,7 +5,6 @@ import { prisma } from "../db/prisma.js";
 import { claimLoad, listLoads } from "../services/loadboard.service.js";
 import { parseOrThrow } from "../utils/validate.js";
 
-const db = prisma as any;
 export const loadboard: Router = Router();
 
 /**
@@ -35,7 +34,7 @@ loadboard.post("/", requireAuth, async (req, res, next) => {
   try {
     const body = parseOrThrow(zCreateLoad, req.body);
     const tenantId = zTenantId.parse((req as any).auth.tenantId);
-    const row = await db.load.create({
+    const row = await prisma.load.create({
       data: {
         tenantId,
         originCity: body.originCity,

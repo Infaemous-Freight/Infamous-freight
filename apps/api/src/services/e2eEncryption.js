@@ -82,7 +82,7 @@ class E2EEncryptionService {
 
       return decrypted;
     } catch (error) {
-      throw new Error("Decryption failed - authentication tag mismatch or corrupted data");
+      throw new Error("Decryption failed - authentication tag mismatch or corrupted data", { cause: error });
     }
   }
 

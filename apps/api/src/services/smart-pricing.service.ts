@@ -1,6 +1,5 @@
 import { prisma } from '../db/prisma.js';
 
-const db = prisma as any;
 
 export interface PricingRecommendation {
   loadId: string;
@@ -26,7 +25,7 @@ export class SmartPricingService {
     loadId: string
   ): Promise<PricingRecommendation> {
     // Fetch load
-    const load = await db.load.findUnique({
+    const load = await prisma.load.findUnique({
       where: { id: loadId },
     });
 
@@ -68,7 +67,7 @@ export class SmartPricingService {
     );
 
     // Save pricing snapshot
-    await db.pricingSnapshot.create({
+    await prisma.pricingSnapshot.create({
       data: {
         tenantId,
         loadId,
@@ -106,7 +105,7 @@ export class SmartPricingService {
     tenantId: string,
     loadId: string
   ): Promise<PricingRecommendation[]> {
-    const snapshots = await db.pricingSnapshot.findMany({
+    const snapshots = await prisma.pricingSnapshot.findMany({
       where: {
         tenantId,
         loadId,
@@ -225,7 +224,7 @@ export class SmartPricingService {
   private async calculateCarrierAvailabilityMultiplier(
     tenantId: string
   ): Promise<number> {
-    const availableCount = await db.driver.count({
+    const availableCount = await prisma.driver.count({
       where: {
         tenantId,
         status: 'AVAILABLE',
@@ -331,7 +330,7 @@ export class SmartPricingService {
     reasonCodes: string[],
     factors: Record<string, number>
   ): Promise<void> {
-    await db.aiDecisionLog.create({
+    await prisma.aiDecisionLog.create({
       data: {
         tenantId,
         entityType: 'LOAD',

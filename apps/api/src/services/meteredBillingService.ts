@@ -1,6 +1,5 @@
 import { prisma } from "../db/prisma.js";
 
-const db = prisma as any;
 import { Prisma } from "@prisma/client";
 
 /**
@@ -16,7 +15,7 @@ export class MeteredBillingService {
     tier: "free" | "pro" | "enterprise",
   ) {
     // Log usage to database
-    await db.usageMetric.create({
+    await prisma.usageMetric.create({
       data: {
         userId,
         metricType,
@@ -31,7 +30,7 @@ export class MeteredBillingService {
       const overage = this.calculateOverage(tier, metricType, quantity);
 
       // Log for billing
-      await db.overageCharge.create({
+      await prisma.overageCharge.create({
         data: {
           userId,
           metricType,
@@ -45,7 +44,7 @@ export class MeteredBillingService {
   }
 
   private static hasOverage(tier: string, metricType: string, quantity: number): boolean {
-    const limits = {
+    const limits: Record<string, Record<string, number>> = {
       free: { api_calls: 100, shipments: 10 },
       pro: { api_calls: 1000, shipments: 1000 },
       enterprise: { api_calls: -1, shipments: -1 }, // -1 = unlimited
@@ -57,12 +56,12 @@ export class MeteredBillingService {
   }
 
   private static calculateOverage(tier: string, metricType: string, quantity: number) {
-    const limits = {
+    const limits: Record<string, Record<string, number>> = {
       free: { api_calls: 100, shipments: 10 },
       pro: { api_calls: 1000, shipments: 1000 },
     };
 
-    const rates = {
+    const rates: Record<string, Record<string, number>> = {
       api_calls: { tier_pro: 0.0001, tier_enterprise: 0.00001 },
       shipments: { tier_pro: 0.01, tier_enterprise: 0 },
     };
@@ -83,7 +82,7 @@ export class MeteredBillingService {
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
 
-    const usage = await db.usageMetric.groupBy({
+    const usage = await prisma.usageMetric.groupBy({
       by: ["metricType"],
       where: {
         userId,
@@ -94,7 +93,7 @@ export class MeteredBillingService {
       },
     });
 
-    const overages = await db.overageCharge.aggregate({
+    const overages = await prisma.overageCharge.aggregate({
       where: {
         userId,
         chargedAt: { gte: startOfMonth },
@@ -105,7 +104,10 @@ export class MeteredBillingService {
     });
 
     return {
-      usage: usage.reduce((acc, u) => ({ ...acc, [u.metricType]: u._sum.quantity }), {}),
+      usage: usage.reduce(
+        (acc, u) => ({ ...acc, [u.metricType ?? "unknown"]: u._sum?.quantity }),
+        {},
+      ),
       overage_charges: overages._sum.totalCharge || 0,
     };
   }

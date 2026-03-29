@@ -19,7 +19,7 @@ stripeRoutes.post(
       if (!orgId) {
         throw new Error('Missing organization context');
       }
-      const out = await createPaymentIntentForInvoice(orgId, req.params.invoiceId);
+      const out = await createPaymentIntentForInvoice(orgId, req.params.invoiceId as string);
       res.json(out);
     } catch (e: any) {
       res.status(400).json({ error: e.message ?? 'Failed' });

@@ -19,7 +19,7 @@
     // Suppress lint-style checks better handled by ESLint
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitReturns": false
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"],

@@ -1,13 +1,11 @@
 import type { Load } from "@infamous-freight/shared";
 import { prisma } from "../db/prisma.js";
 
-const db = prisma as any;
-
 /**
  * Lists loads scoped to a single tenant in reverse chronological order.
  */
 export async function listLoads(tenantId: string): Promise<Load[]> {
-  const rows = await db.load.findMany({
+  const rows = await prisma.load.findMany({
     where: { tenantId },
     orderBy: { createdAt: "desc" },
   });
@@ -15,14 +13,16 @@ export async function listLoads(tenantId: string): Promise<Load[]> {
   return rows.map((r) => ({
     id: r.id,
     tenantId: r.tenantId,
-    lane: `${r.originCity}, ${r.originState} → ${r.destCity}, ${r.destState}`,
-    originCity: r.originCity,
-    originState: r.originState,
-    destCity: r.destCity,
-    destState: r.destState,
-    distanceMi: r.distanceMi,
-    weightLb: r.weightLb,
-    rateCents: r.rateCents,
+    lane:
+      r.lane ??
+      `${r.originCity ?? ""}, ${r.originState ?? ""} → ${r.destCity ?? ""}, ${r.destState ?? ""}`,
+    originCity: r.originCity ?? "",
+    originState: r.originState ?? "",
+    destCity: r.destCity ?? "",
+    destState: r.destState ?? "",
+    distanceMi: r.distanceMi ?? 0,
+    weightLb: r.weightLb ?? 0,
+    rateCents: r.rateCents ?? 0,
     status: r.status as any,
     claimedByUserId: r.claimedByUserId ?? undefined,
     claimedAt: r.claimedAt ? r.claimedAt.toISOString() : undefined,
@@ -37,7 +37,7 @@ export async function listLoads(tenantId: string): Promise<Load[]> {
  * Returns true if the claim succeeds and false if another claimant already won.
  */
 export async function claimLoad(tenantId: string, loadId: string, userId?: string) {
-  const updated = await db.load.updateMany({
+  const updated = await prisma.load.updateMany({
     where: {
       id: loadId,
       tenantId,

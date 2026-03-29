@@ -168,7 +168,7 @@ function verifyJWTWithRotation(token) {
     }
 
     // All verification attempts failed
-    throw new Error(`JWT verification failed. Current error: ${err.message}`);
+    throw new Error(`JWT verification failed. Current error: ${err.message}`, { cause: err });
   }
 }
 

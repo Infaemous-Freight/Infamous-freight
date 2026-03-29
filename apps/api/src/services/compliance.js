@@ -117,7 +117,7 @@ class ComplianceService {
         deletedAt: new Date().toISOString(),
       };
     } catch (err) {
-      throw new Error(`Data deletion failed: ${err.message}`);
+      throw new Error(`Data deletion failed: ${err.message}`, { cause: err });
     }
   }
 

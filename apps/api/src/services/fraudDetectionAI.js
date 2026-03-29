@@ -78,7 +78,7 @@ class FraudDetectionModel {
             return mlScore;
         } catch (error) {
             logger.error("ML model prediction failed", { error: error.message });
-            throw new Error("Model inference failed");
+            throw new Error("Model inference failed", { cause: error });
         }
     }
 

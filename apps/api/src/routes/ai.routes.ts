@@ -7,7 +7,6 @@ import { smartPricingService } from "../services/smart-pricing.service.js";
 import { predictiveOperationsService } from "../services/predictive-operations.service.js";
 import { prisma } from "../db/prisma.js";
 
-const db = prisma as any;
 
 const router: Router = Router();
 
@@ -205,7 +204,7 @@ router.get("/dashboard/ai-overview", requireAuth, async (req: Request, res: Resp
     const tenantId = req.user!.tenantId!;
 
     // Get recent AI decisions
-    const recentDecisions = await db.aiDecisionLog.findMany({
+    const recentDecisions = await prisma.aiDecisionLog.findMany({
       where: { tenantId },
       orderBy: { createdAt: "desc" },
       take: 20,
@@ -243,7 +242,7 @@ router.get("/dashboard/reliability", requireAuth, async (req: Request, res: Resp
     const tenantId = req.user!.tenantId!;
 
     // Get high-risk carriers
-    const highRiskCarriers = await db.carrierScore.findMany({
+    const highRiskCarriers = await prisma.carrierScore.findMany({
       where: {
         tenantId,
         riskLevel: "HIGH",
@@ -253,7 +252,7 @@ router.get("/dashboard/reliability", requireAuth, async (req: Request, res: Resp
     });
 
     // Get high-risk predictions
-    const highRiskPredictions = await db.predictionEvent.findMany({
+    const highRiskPredictions = await prisma.predictionEvent.findMany({
       where: {
         tenantId,
         severity: "HIGH",
@@ -284,7 +283,7 @@ router.get("/dashboard/revenue", requireAuth, async (req: Request, res: Response
     const tenantId = req.user!.tenantId!;
 
     // Get recent pricing recommendations
-    const recentPricing = await db.pricingSnapshot.findMany({
+    const recentPricing = await prisma.pricingSnapshot.findMany({
       where: { tenantId },
       orderBy: { createdAt: "desc" },
       take: 20,
@@ -325,7 +324,7 @@ router.get("/dashboard/alerts", requireAuth, async (req: Request, res: Response)
     const tenantId = req.user!.tenantId!;
 
     // Get high-severity predictions (alerts)
-    const alerts = await db.predictionEvent.findMany({
+    const alerts = await prisma.predictionEvent.findMany({
       where: {
         tenantId,
         severity: { in: ["HIGH", "MEDIUM"] },

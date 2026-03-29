@@ -11,7 +11,7 @@ const router: Router = Router();
 router.get("/link", (req, res, next) => {
   try {
     const user = req.user;
-    const referralCode = (user as any)?.referral_code || generateReferralCode();
+    const referralCode = user?.referral_code || generateReferralCode();
 
     res.json({
       success: true,

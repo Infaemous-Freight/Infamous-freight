@@ -87,7 +87,7 @@ function verifyToken(token, requiredScopes = []) {
 
     return decoded;
   } catch (err) {
-    throw new Error(`Token validation failed: ${err.message}`);
+    throw new Error(`Token validation failed: ${err.message}`, { cause: err });
   }
 }
 

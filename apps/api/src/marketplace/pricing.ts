@@ -20,7 +20,7 @@
  *
  * Minimum charge: base rate for vehicle type
  */
-function computePriceUsd(input) {
+function computePriceUsd(input: Record<string, unknown>) {
   const {
     requiredVehicle,
     estimatedMiles = 0,
@@ -29,8 +29,8 @@ function computePriceUsd(input) {
     volumeCuFt = 0,
   } = input;
 
-  const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-  const toFiniteNumber = (value, fallback = 0) => {
+  const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+  const toFiniteNumber = (value: unknown, fallback = 0) => {
     const n = Number(value);
     return Number.isFinite(n) ? n : fallback;
   };
@@ -51,7 +51,7 @@ function computePriceUsd(input) {
     SEMI: 120,
   };
 
-  const base = baseByVehicle[requiredVehicle] ?? 25;
+  const base = (baseByVehicle as Record<string, number>)[requiredVehicle as string] ?? 25;
 
   // Distance-based fee: $1.50 per mile
   const distanceFee = safeEstimatedMiles * 1.5;
@@ -71,7 +71,7 @@ function computePriceUsd(input) {
     ENTERPRISE: 0.2, // 20% off
   };
 
-  const discount = discountsByPlan[shipperPlanTier] || 0;
+  const discount = (discountsByPlan as Record<string, number>)[shipperPlanTier as string] || 0;
   const finalPrice = Math.min(subtotal * (1 - discount), 50000);
 
   // Enforce minimum (base rate) and round to nearest cent

@@ -268,7 +268,7 @@ class PaymentService {
       };
     } catch (error) {
       console.error("Stripe payout error:", error);
-      throw new Error(`Stripe payout failed: ${error.message}`);
+      throw new Error(`Stripe payout failed: ${error.message}`, { cause: error });
     }
   }
 
@@ -298,7 +298,7 @@ class PaymentService {
       };
     } catch (error) {
       console.error("PayPal payout error:", error);
-      throw new Error(`PayPal payout failed: ${error.message}`);
+      throw new Error(`PayPal payout failed: ${error.message}`, { cause: error });
     }
   }
 
@@ -327,7 +327,7 @@ class PaymentService {
       };
     } catch (error) {
       console.error("Bank transfer error:", error);
-      throw new Error(`Bank transfer failed: ${error.message}`);
+      throw new Error(`Bank transfer failed: ${error.message}`, { cause: error });
     }
   }
 
@@ -357,7 +357,7 @@ class PaymentService {
       };
     } catch (error) {
       console.error("Debit card payout error:", error);
-      throw new Error(`Debit card payout failed: ${error.message}`);
+      throw new Error(`Debit card payout failed: ${error.message}`, { cause: error });
     }
   }
 

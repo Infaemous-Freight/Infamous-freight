@@ -35,6 +35,7 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction): v
     };
     req.user = {
       id: claims.sub,
+      sub: claims.sub,
       email: claims.email ?? "",
       role: claims.role,
       tenantId: claimTenantId,

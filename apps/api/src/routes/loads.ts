@@ -3,7 +3,6 @@ import { z } from "zod";
 import { requireAuth, type AuthenticatedRequest } from "../middleware/auth.js";
 import { prisma } from "../db/prisma.js";
 
-const db = prisma as any;
 const router: Router = Router();
 
 const createLoadSchema = z.object({
@@ -20,7 +19,7 @@ const createLoadSchema = z.object({
 router.get("/", requireAuth, async (req, res, next) => {
   try {
     const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
-    const loads = await db.load.findMany({
+    const loads = await prisma.load.findMany({
       where: { tenantId },
       orderBy: { createdAt: "desc" },
     });
@@ -34,7 +33,7 @@ router.post("/", requireAuth, async (req, res, next) => {
   try {
     const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
     const body = createLoadSchema.parse(req.body);
-    const load = await db.load.create({ data: { tenantId, ...body } });
+    const load = await prisma.load.create({ data: { tenantId, ...body } });
     res.status(201).json({ ok: true, data: load });
   } catch (err) {
     next(err);
@@ -46,12 +45,12 @@ router.patch("/:id/status", requireAuth, async (req, res, next) => {
     const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
     const { status } = z.object({ status: z.string() }).parse(req.body);
     const id = req.params.id as string;
-    const load = await db.load.findFirst({ where: { id, tenantId } });
+    const load = await prisma.load.findFirst({ where: { id, tenantId } });
     if (!load) {
       res.status(404).json({ error: "Load not found" });
       return;
     }
-    const updated = await db.load.update({
+    const updated = await prisma.load.update({
       where: { id },
       data: { status },
     });

@@ -37,7 +37,7 @@ async function resolveAddresses(hostname) {
     const records = await dns.lookup(hostname, { all: true });
     return records.map((record) => record.address).filter(Boolean);
   } catch (error) {
-    throw new Error(`DNS resolution failed for ${hostname}: ${error.message}`);
+    throw new Error(`DNS resolution failed for ${hostname}: ${error.message}`, { cause: error });
   }
 }
 

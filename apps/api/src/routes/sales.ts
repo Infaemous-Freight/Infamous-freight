@@ -9,12 +9,18 @@
  * - Metrics (21.8)
  */
 
-import { Router } from "express";
+import { Router, type Request, type Response, type NextFunction } from "express";
 import { body, query } from "express-validator";
 import { authenticate, requireScope, limiters } from "../middleware/security.js";
 import { handleValidationErrors } from "../middleware/validation.js";
 
-import { createLead, getLead, updateLeadStatus, convertLead, getLeads } from "../sales/leadCapture.js";
+import {
+  createLead,
+  getLead,
+  updateLeadStatus,
+  convertLead,
+  getLeads,
+} from "../sales/leadCapture.js";
 
 import {
   scheduleDemo,
@@ -141,7 +147,7 @@ router.post(
     body("estimatedMonthlyBudget").isFloat().optional(),
   ],
   handleValidationErrors,
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const lead = await createLead({
         name: req.body.name,
@@ -171,19 +177,24 @@ router.post(
  * GET /api/sales/leads/:email
  * Get lead by email
  */
-router.get("/leads/:email", limiters.general, authenticate, async (req, res, next) => {
-  try {
-    const lead = await getLead(req.params.email);
+router.get(
+  "/leads/:email",
+  limiters.general,
+  authenticate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const lead = await getLead(req.params.email as string);
 
-    if (!lead) {
-      return res.status(404).json({ error: "Lead not found" });
+      if (!lead) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+
+      res.json({ success: true, data: lead });
+    } catch (err) {
+      next(err);
     }
-
-    res.json({ success: true, data: lead });
-  } catch (err) {
-    next(err);
-  }
-});
+  },
+);
 
 /**
  * PATCH /api/sales/leads/:id
@@ -196,9 +207,9 @@ router.patch(
   requireScope("admin:sales"),
   [body("status").isString().optional(), body("notes").isString().optional()],
   handleValidationErrors,
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const lead = await updateLeadStatus(req.params.id, req.body.status, req.body.notes);
+      const lead = await updateLeadStatus(req.params.id as string, req.body.status, req.body.notes);
 
       res.json({ success: true, data: lead });
     } catch (err) {
@@ -216,7 +227,7 @@ router.get(
   limiters.general,
   authenticate,
   requireScope("admin:sales"),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const leads = await getLeads({
         type: req.query.type as string,
@@ -251,7 +262,7 @@ router.post(
     body("timezone").isString().optional(),
   ],
   handleValidationErrors,
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const demoBooking = await scheduleDemo({
         leadId: req.body.leadId,
@@ -279,19 +290,23 @@ router.post(
  * GET /api/sales/demo/:id
  * Get demo details
  */
-router.get("/demo/:id", limiters.general, async (req, res, next) => {
-  try {
-    const demo = await getDemo(req.params.id);
+router.get(
+  "/demo/:id",
+  limiters.general,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const demo = await getDemo(req.params.id as string);
 
-    if (!demo) {
-      return res.status(404).json({ error: "Demo not found" });
+      if (!demo) {
+        return res.status(404).json({ error: "Demo not found" });
+      }
+
+      res.json({ success: true, data: demo });
+    } catch (err) {
+      next(err);
     }
-
-    res.json({ success: true, data: demo });
-  } catch (err) {
-    next(err);
-  }
-});
+  },
+);
 
 /**
  * PATCH /api/sales/demo/:id
@@ -302,10 +317,10 @@ router.patch(
   limiters.general,
   authenticate,
   requireScope("admin:sales"),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const demo = await updateDemoStatus(
-        req.params.id,
+        req.params.id as string,
         req.body.status,
         req.body.recordingUrl,
         req.body.notes,
@@ -327,7 +342,7 @@ router.get(
   limiters.general,
   authenticate,
   requireScope("admin:sales"),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const stats = await getDemoStats();
 
@@ -357,7 +372,7 @@ router.post(
     body("currentDispatchCostPerLoad").isFloat().optional(),
   ],
   handleValidationErrors,
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const roi = calculateRoi({
         estimatedLoadsPerMonth: req.body.estimatedLoadsPerMonth,
@@ -402,9 +417,9 @@ router.post(
   authenticate,
   [body("refereeEmail").isEmail().withMessage("Valid email required")],
   handleValidationErrors,
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const referrerEmail = req.user.email || req.user.sub;
+      const referrerEmail = req.user?.email || req.user?.sub || "";
       const referralCode = generateReferralCode(referrerEmail);
       const referralLink = getReferralLink(referralCode);
 
@@ -434,31 +449,40 @@ router.post(
  * GET /api/sales/referral/stats
  * Get referral stats for logged-in user
  */
-router.get("/referral/stats", limiters.general, authenticate, async (req, res, next) => {
-  try {
-    const email = req.user!.email;
-    const stats = await getReferralStats(email);
+router.get(
+  "/referral/stats",
+  limiters.general,
+  authenticate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const email = req.user!.email;
+      const stats = await getReferralStats(email);
 
-    res.json({ success: true, data: stats });
-  } catch (err) {
-    next(err);
-  }
-});
+      res.json({ success: true, data: stats });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 /**
  * GET /api/sales/referral/leaderboard
  * Get top referrers
  */
-router.get("/referral/leaderboard", limiters.general, async (req, res, next) => {
-  try {
-    const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
-    const topReferrers = await getTopReferrers(limit);
+router.get(
+  "/referral/leaderboard",
+  limiters.general,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 10;
+      const topReferrers = await getTopReferrers(limit);
 
-    res.json({ success: true, data: topReferrers });
-  } catch (err) {
-    next(err);
-  }
-});
+      res.json({ success: true, data: topReferrers });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 // ============================================
 // Metrics (21.8)
@@ -468,58 +492,70 @@ router.get("/referral/leaderboard", limiters.general, async (req, res, next) => 
  * GET /api/sales/metrics
  * Get current metrics snapshot (for dashboard)
  */
-router.get("/metrics", limiters.general, async (req, res, next) => {
-  try {
-    const metrics = await getMetricsSnapshot();
+router.get(
+  "/metrics",
+  limiters.general,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const metrics = await getMetricsSnapshot();
 
-    // Store snapshot if requested
-    if (req.query.store === "true") {
-      await storeMetricsSnapshot(metrics);
+      // Store snapshot if requested
+      if (req.query.store === "true") {
+        await storeMetricsSnapshot(metrics);
+      }
+
+      res.json({
+        success: true,
+        data: metrics,
+      });
+    } catch (err) {
+      next(err);
     }
-
-    res.json({
-      success: true,
-      data: metrics,
-    });
-  } catch (err) {
-    next(err);
-  }
-});
+  },
+);
 
 /**
  * GET /api/sales/metrics/trend
  * Get metrics trend (historical)
  */
-router.get("/metrics/trend", limiters.general, async (req, res, next) => {
-  try {
-    const days = req.query.days ? parseInt(req.query.days as string) : 30;
-    const trend = await getMetricsTrend(days);
+router.get(
+  "/metrics/trend",
+  limiters.general,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const days = req.query.days ? parseInt(req.query.days as string) : 30;
+      const trend = await getMetricsTrend(days);
 
-    res.json({
-      success: true,
-      data: trend,
-    });
-  } catch (err) {
-    next(err);
-  }
-});
+      res.json({
+        success: true,
+        data: trend,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 /**
  * GET /api/sales/metrics/growth
  * Get growth rates
  */
-router.get("/metrics/growth", limiters.general, async (req, res, next) => {
-  try {
-    const growth = await getGrowthRates();
+router.get(
+  "/metrics/growth",
+  limiters.general,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const growth = await getGrowthRates();
 
-    res.json({
-      success: true,
-      data: growth,
-    });
-  } catch (err) {
-    next(err);
-  }
-});
+      res.json({
+        success: true,
+        data: growth,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 /**
  * GET /api/sales/metrics/investor
@@ -530,7 +566,7 @@ router.get(
   limiters.general,
   authenticate,
   requireScope("admin:analytics"),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const kpis = await getInvestorKpis();
 
@@ -553,7 +589,7 @@ router.post(
   limiters.general,
   authenticate,
   requireScope("admin:analytics"),
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const metrics = await getMetricsSnapshot();
       await storeMetricsSnapshot(metrics);

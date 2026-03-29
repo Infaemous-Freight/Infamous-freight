@@ -8,9 +8,7 @@
 import { Queue, Worker, QueueEvents } from "bullmq";
 import { Redis } from "ioredis";
 import { PrismaClient } from "@prisma/client";
-// import { generateMonthlyInvoices } from "./invoicing.js"; // File pending
-// Stub function until invoicing.js is implemented
-const generateMonthlyInvoices = async (..._args: any[]): Promise<any> => null;
+import { generateOrgInvoice } from "../billing/invoicing.js";
 import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
 import { logger } from "../lib/logger.js";
 
@@ -86,29 +84,35 @@ export const monthlyInvoicingWorker = new Worker(
         try {
           // Skip if no billing plan
           if (!org.billing) {
-            logger.info({ orgId: org.id, orgName: org.name }, "[MonthlyInvoicing] Skipping - no billing setup");
+            logger.info(
+              { orgId: org.id, orgName: org.name },
+              "[MonthlyInvoicing] Skipping - no billing setup",
+            );
             continue;
           }
 
           // Generate invoice for previous month
-          const invoice = await generateMonthlyInvoices();
+          const invoice = await generateOrgInvoice(org.id);
 
           stats.invoicesGenerated += 1;
-          stats.totalRevenue += invoice?.totalAmount || 0;
+          stats.totalRevenue += invoice?.amount || 0;
 
-          logger.info({ orgId: org.id, orgName: org.name, invoiceId: invoice?.id }, "[MonthlyInvoicing] Generated invoice");
+          logger.info(
+            { orgId: org.id, orgName: org.name, invoiceId: invoice?.invoiceId },
+            "[MonthlyInvoicing] Generated invoice",
+          );
 
           // Log audit event
           try {
             await logAuditEvent(prisma, {
               organizationId: org.id,
               userId: "system",
-              action: (AUDIT_ACTIONS as any).BILLING_INVOICE_GENERATED,
+              action: AUDIT_ACTIONS.BILLING_INVOICE_GENERATED,
               entity: "invoice",
-              entityId: invoice?.id || "unknown",
+              entityId: invoice?.invoiceId || "unknown",
               metadata: {
                 month: new Date().toISOString().slice(0, 7),
-                amount: invoice?.totalAmount,
+                amount: invoice?.amount,
               },
             });
           } catch (auditErr) {
@@ -120,7 +124,10 @@ export const monthlyInvoicingWorker = new Worker(
             err instanceof Error ? err.message : String(err)
           }`;
           stats.errors.push(errorMsg);
-          logger.error({ orgId: org.id, orgName: org.name, err }, "[MonthlyInvoicing] Invoice generation failed");
+          logger.error(
+            { orgId: org.id, orgName: org.name, err },
+            "[MonthlyInvoicing] Invoice generation failed",
+          );
         }
       }
 
@@ -130,7 +137,7 @@ export const monthlyInvoicingWorker = new Worker(
           durationMs: duration,
           invoicesGenerated: stats.invoicesGenerated,
           invoicesFailed: stats.invoicesFailed,
-          totalRevenue: stats.totalRevenue
+          totalRevenue: stats.totalRevenue,
         },
         "[MonthlyInvoicing] Completed",
       );
@@ -156,7 +163,7 @@ queueEvents.on("completed", async ({ jobId, returnvalue }) => {
 
   // Send notification (e.g., to Slack or email)
   try {
-    const stats = returnvalue as typeof stats;
+    const stats = returnvalue as unknown as Parameters<typeof notifyCompletion>[0];
     await notifyCompletion(stats);
   } catch (err) {
     logger.error({ jobId, err }, "[MonthlyInvoicing] Failed to notify");
@@ -271,7 +278,10 @@ export async function scheduleMonthlyInvoicing() {
       },
     );
 
-    logger.info({ cronPattern: "0 0 1 * *" }, "[MonthlyInvoicing] Scheduled job for 1st of each month");
+    logger.info(
+      { cronPattern: "0 0 1 * *" },
+      "[MonthlyInvoicing] Scheduled job for 1st of each month",
+    );
   } catch (err) {
     logger.error({ err }, "[MonthlyInvoicing] Failed to schedule");
     throw err;

@@ -3,7 +3,6 @@ import { z } from "zod";
 import { requireAuth, type AuthenticatedRequest } from "../middleware/auth.js";
 import { prisma } from "../db/prisma.js";
 
-const db = prisma as any;
 const router: Router = Router();
 
 const createDriverSchema = z.object({
@@ -16,7 +15,7 @@ const createDriverSchema = z.object({
 router.get("/", requireAuth, async (req, res, next) => {
   try {
     const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
-    const drivers = await db.driver.findMany({
+    const drivers = await prisma.driver.findMany({
       where: { tenantId },
       orderBy: { name: "asc" },
     });
@@ -30,7 +29,7 @@ router.post("/", requireAuth, async (req, res, next) => {
   try {
     const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
     const body = createDriverSchema.parse(req.body);
-    const driver = await db.driver.create({
+    const driver = await prisma.driver.create({
       data: { tenantId, ...body },
     });
     res.status(201).json({ ok: true, data: driver });
@@ -48,7 +47,7 @@ router.patch("/:id/status", requireAuth, async (req, res, next) => {
       })
       .parse(req.body);
     const id = req.params.id as string;
-    const existing = await db.driver.findFirst({
+    const existing = await prisma.driver.findFirst({
       where: { id, tenantId },
     });
     if (!existing) {

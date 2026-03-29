@@ -81,7 +81,7 @@ class AIVoiceService {
       };
     } catch (error) {
       logger.error({ error }, "Speech-to-text error");
-      throw new Error("Failed to transcribe audio");
+      throw new Error("Failed to transcribe audio", { cause: error });
     }
   }
 
@@ -112,7 +112,7 @@ class AIVoiceService {
       return command;
     } catch (error) {
       logger.error({ error }, "Command analysis error");
-      throw new Error("Failed to analyze command");
+      throw new Error("Failed to analyze command", { cause: error });
     }
   }
 
