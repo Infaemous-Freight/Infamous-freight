@@ -27,10 +27,35 @@
     "deploy:check": "pnpm validate && pnpm smoke:release"
   },
   "devDependencies": {
-    "prettier": "^3.5.0",
-    "eslint-config-prettier": "^10.0.1",
-    "@typescript-eslint/parser": "^8.0.0",
+    "@eslint/js": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@eslint/js": "^10.0.0"
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint-config-prettier": "^10.0.1",
+    "prettier": "^3.5.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild@<=0.24.2": ">=0.25.0",
+      "lodash@>=4.0.0 <=4.17.22": ">=4.17.23",
+      "hono@<4.11.7": ">=4.11.7",
+      "hono@<4.11.10": ">=4.11.10",
+      "hono@<4.12.4": ">=4.12.4",
+      "@hono/node-server@<1.19.10": ">=1.19.10",
+      "hono@<4.12.7": ">=4.12.7",
+      "fast-xml-parser@>=4.0.0-beta.3 <4.5.5": ">=4.5.5",
+      "fast-xml-parser@>=5.0.0 <5.5.6": ">=5.5.6",
+      "effect@<3.20.0": ">=3.20.0",
+      "flatted@<=3.4.1": ">=3.4.2",
+      "fast-xml-parser@>=4.0.0-beta.3 <=5.5.6": ">=5.5.7",
+      "brace-expansion@<1.1.13": "1.1.13",
+      "node-forge@<=1.3.3": ">=1.4.0",
+      "node-forge@<1.4.0": ">=1.4.0",
+      "picomatch@<2.3.2": "2.3.2",
+      "picomatch@>=4.0.0 <4.0.4": "4.0.4",
+      "picomatch@4.0.3": "4.0.4",
+      "yaml@>=2.0.0 <2.8.3": ">=2.8.3",
+      "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0",
+      "brace-expansion@5.0.4": "5.0.5"
+    }
   }
 }

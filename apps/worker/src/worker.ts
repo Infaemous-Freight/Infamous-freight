@@ -1,4 +1,4 @@
-import AWS from "aws-sdk";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { Worker } from "bullmq";
 import IORedis from "ioredis";
 import PDFDocument from "pdfkit";
@@ -13,6 +13,7 @@ if (!redisUrl) {
   throw new Error("REDIS_URL environment variable is required");
 }
 const connection = new IORedis(redisUrl);
+const s3 = new S3Client({});
 
 new Worker(
   "invoiceQueue",
@@ -39,16 +40,15 @@ new Worker(
       doc.on("end", async () => {
         const pdf = Buffer.concat(buffers);
 
-        const s3 = new AWS.S3();
         try {
-          await s3
-            .putObject({
+          await s3.send(
+            new PutObjectCommand({
               Bucket: process.env.S3_BUCKET!,
               Key: `invoices/${invoiceId}.pdf`,
               Body: pdf,
               ContentType: "application/pdf",
-            })
-            .promise();
+            }),
+          );
           resolve();
         } catch (err) {
           reject(err);
