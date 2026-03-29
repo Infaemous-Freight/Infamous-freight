@@ -13,8 +13,9 @@
     "dev:web": "pnpm --filter web dev",
     "dev:mobile": "pnpm --filter mobile dev",
     "build:shared": "pnpm --filter @infamous-freight/shared build",
-    "build:api:nocheck": "pnpm --filter @infamous/api run build:nocheck",
     "build": "pnpm run build:shared && pnpm -r build",
+    "build:nocheck": "pnpm run build:shared && pnpm -r --if-present run build:nocheck",
+    "deploy:nocheck": "pnpm run build:nocheck && pnpm run audit:prod && pnpm run smoke:release",
     "typecheck": "pnpm run build:shared && pnpm -r --if-present typecheck",
     "lint": "pnpm -r --if-present run lint",
     "test": "pnpm run build:shared && pnpm -r --if-present test",
@@ -26,7 +27,6 @@
     "format": "prettier --write . --ignore-unknown",
     "fly:preflight": "bash scripts/fly-preflight.sh",
     "fly:deploy:api": "bash scripts/fly-deploy-api.sh",
-    "fly:deploy:api:nocheck": "bash scripts/fly-deploy-api-nocheck.sh",
     "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test",
     "smoke:release": "bash scripts/release-smoke-check.sh",
     "deploy:check": "pnpm validate && pnpm audit:prod && pnpm smoke:release"

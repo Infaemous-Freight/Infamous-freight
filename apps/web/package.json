@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
+    "build:nocheck": "ALLOW_WEB_TS_ERRORS=true next build",
     "start": "next start -p 3000",
     "test": "vitest run",
     "lint": "eslint ."
