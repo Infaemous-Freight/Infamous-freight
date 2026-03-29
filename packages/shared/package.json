@@ -5,9 +5,18 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./payments/config": "./dist/payments/config.js",
-    "./payments/types": "./dist/payments/types.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./payments/config": {
+      "types": "./dist/payments/config.d.ts",
+      "default": "./dist/payments/config.js"
+    },
+    "./payments/types": {
+      "types": "./dist/payments/types.d.ts",
+      "default": "./dist/payments/types.js"
+    }
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
