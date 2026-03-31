@@ -238,7 +238,7 @@ router.post("/carriers/:driverId/recompute", async (req: Request, res: Response)
     const tenantId = req.user!.tenantId!;
 
     const score = await carrierIntelligenceService.computeCarrierScore(tenantId, driverId);
-    if (score.riskLevel === "HIGH" || score.riskLevel === "CRITICAL") {
+    if (score.riskLevel === "HIGH") {
       await prisma.predictionEvent.create({
         data: {
           tenantId,

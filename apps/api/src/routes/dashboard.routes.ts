@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { prisma } from "../db/prisma.js";
 
-export const dashboardRoutes = Router();
+export const dashboardRoutes: Router = Router();
 
 const requireAuth = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user || !req.user.tenantId) {
