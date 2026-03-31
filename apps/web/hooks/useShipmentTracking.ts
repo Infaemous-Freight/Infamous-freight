@@ -97,9 +97,14 @@ export function useShipmentTracking(shipmentId: string, userId?: string) {
       setShipmentData((prev) => {
         if (!prev) return prev;
 
+        const patch =
+          update && typeof update === "object"
+            ? (update as Record<string, unknown>)
+            : {};
+
         return {
           ...prev,
-          ...update,
+          ...patch,
           lastUpdate: new Date().toISOString(),
         };
       });

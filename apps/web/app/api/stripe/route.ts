@@ -5,6 +5,10 @@ import { stripe } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 export async function POST(req: Request) {
+  if (!stripe) {
+    return new NextResponse("Stripe is not configured", { status: 503 });
+  }
+
   // Authenticate request using Bearer JWT
   const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {

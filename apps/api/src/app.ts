@@ -65,15 +65,21 @@ export function createApp(): Express {
   app.use(httpLoggerMiddleware);
   app.use(generalLimiter);
 
+  const healthPayload = () => ({
+    success: true,
+    data: {
+      service: "infamous-freight-api",
+      uptime: process.uptime(),
+      timestamp: new Date().toISOString(),
+    },
+  });
+
   app.get("/health", (_req, res) => {
-    res.json({
-      success: true,
-      data: {
-        service: "infamous-freight-api",
-        uptime: process.uptime(),
-        timestamp: new Date().toISOString(),
-      },
-    });
+    res.json(healthPayload());
+  });
+
+  app.get("/api/health", (_req, res) => {
+    res.json(healthPayload());
   });
 
   app.get("/readyz", (_req, res) => {

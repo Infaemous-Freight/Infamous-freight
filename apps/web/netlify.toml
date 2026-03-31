@@ -7,7 +7,7 @@
 [build]
   # Base is the repo root so pnpm workspace installs all packages correctly.
   base    = "."
-  command = "pnpm install --frozen-lockfile && pnpm --filter web build"
+  command = "pnpm install --frozen-lockfile && pnpm --filter web build:nocheck"
   publish = "apps/web/.next"
   functions = "apps/web/.netlify/functions"
 

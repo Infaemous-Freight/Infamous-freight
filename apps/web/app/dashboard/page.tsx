@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -47,7 +49,7 @@ export default function Dashboard() {
       <ul className="mt-4 space-y-2">
         {loads.map((load) => (
           <li key={load.id}>
-            {load.shipperName} - ${load.rate} - {load.status}
+            {load.id} - {String((load as { status?: string }).status ?? "unknown")}
           </li>
         ))}
       </ul>

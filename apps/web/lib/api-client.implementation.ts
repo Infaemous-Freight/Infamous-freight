@@ -4,7 +4,6 @@
  * Usage in React components with hooks
  */
 
-// @ts-expect-error - Shared package type definition mismatch with source
 import { ApiResponse } from "@infamous-freight/shared";
 
 // API configuration

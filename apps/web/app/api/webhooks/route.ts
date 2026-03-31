@@ -5,6 +5,10 @@ import { stripe } from "@/lib/stripe";
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
+  if (!stripe) {
+    return new NextResponse("Stripe is not configured", { status: 503 });
+  }
+
   const body = await req.text();
   const sig = req.headers.get("stripe-signature");
 

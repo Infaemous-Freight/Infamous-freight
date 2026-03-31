@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, type Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -8,7 +8,11 @@ const firebaseConfig = {
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+const hasFirebaseConfig = Boolean(
+  firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId,
+);
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+const app = hasFirebaseConfig ? initializeApp(firebaseConfig) : null;
+
+export const auth = app ? getAuth(app) : null;
+export const db: Firestore | null = app ? getFirestore(app) : null;
