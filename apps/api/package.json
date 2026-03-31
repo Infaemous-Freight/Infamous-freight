@@ -39,7 +39,7 @@
     "zod": "^4.3.6",
     "ioredis": "^5.10.1",
     "bullmq": "^5.71.1",
-    "@sentry/node": "^10.45.0",
+    "@sentry/node": "^10.46.0",
     "@sentry/profiling-node": "^10.45.0",
     "express-validator": "^7.2.1"
   },
