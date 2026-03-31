@@ -56,7 +56,7 @@ To keep PRs and commits traceable, this repository now enforces:
 - PR title or body must contain a Linear issue key (`INF-123`).
 - At least one commit in the PR must contain a Linear issue key (`INF-123`).
 
-See `.github/workflows/linear-linking.yml` and `.github/pull_request_template.md`.
+See `.github/workflows/linear-linking.yml`, `.github/scripts/validate-linear-linking.mjs`, and `.github/pull_request_template.md`.
 
 ## Definition of Done Checklist (INF-3)
 

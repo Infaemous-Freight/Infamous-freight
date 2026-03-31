@@ -17,32 +17,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate PR references Linear issue key
+      - name: Validate PR and commit Linear issue references
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_BODY: ${{ github.event.pull_request.body }}
-        run: |
-          set -euo pipefail
-          text="$PR_TITLE\n$PR_BODY"
-
-          if echo "$text" | grep -Eiq 'INF-[0-9]+'; then
-            echo "✅ PR references a Linear issue key."
-          else
-            echo "❌ PR must include a Linear issue key (e.g. INF-3) in title or body."
-            exit 1
-          fi
-
-      - name: Validate commits reference Linear issue key
-        env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           set -euo pipefail
-          messages="$(git log --format=%B "${BASE_SHA}..${HEAD_SHA}")"
 
-          if echo "$messages" | grep -Eiq 'INF-[0-9]+'; then
-            echo "✅ At least one commit references a Linear issue key."
-          else
-            echo "❌ At least one commit in this PR must reference a Linear issue key (e.g. INF-3)."
-            exit 1
-          fi
+          COMMIT_MESSAGES="$(git log --format=%B "${BASE_SHA}..${HEAD_SHA}")"
+          export COMMIT_MESSAGES
+
+          node .github/scripts/validate-linear-linking.mjs
