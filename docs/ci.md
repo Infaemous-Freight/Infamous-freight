@@ -6,12 +6,12 @@ This document defines the runtime contract, required checks, and merge rules for
 
 | Constraint      | Value       |
 | --------------- | ----------- |
-| Node.js version | `20.x`      |
+| Node.js version | `24.x`      |
 | pnpm version    | `9`         |
 | Package manager | pnpm only   |
 
-- `.nvmrc` pins Node to `20`.
-- `package.json` `engines.node` enforces `20.x`.
+- `.nvmrc` pins Node to `24`.
+- `package.json` `engines.node` enforces `24.x`.
 - `package.json` `packageManager` enforces `pnpm@9`.
 - No `package-lock.json` or `yarn.lock` files are permitted.
 
@@ -32,7 +32,7 @@ This document defines the runtime contract, required checks, and merge rules for
 Lightweight pipeline that validates the dependency install succeeds with the frozen lockfile. Runs on push to `main`/`master` and on pull requests.
 
 **Jobs:**
-1. `sanity` — Checks out code, sets up pnpm and Node 20, runs `pnpm install --frozen-lockfile`.
+1. `sanity` — Checks out code, sets up pnpm and Node 24, runs `pnpm install --frozen-lockfile`.
 
 ### `ci.yml` — CI
 
@@ -76,9 +76,9 @@ Reproduce the CI sanity check locally:
 pnpm run ci:sanity
 ```
 
-Ensure you are running Node 20 (use `nvm use` with `.nvmrc`):
+Ensure you are running Node 24 (use `nvm use` with `.nvmrc`):
 
 ```bash
 nvm use
-node --version  # should print v20.x.x
+node --version  # should print v24.x.x
 ```
