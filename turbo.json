@@ -1,6 +1,50 @@
 {
   "tasks": {
-    "build": { "dependsOn": ["^build"], "outputs": ["dist/**", ".next/**"] },
-    "dev": { "cache": false, "persistent": true }
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "sanity": {
+      "outputs": []
+    },
+    "lint": {
+      "dependsOn": [
+        "^lint"
+      ],
+      "outputs": []
+    },
+    "typecheck": {
+      "dependsOn": [
+        "^typecheck"
+      ],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": [
+        "build",
+        "^test"
+      ],
+      "outputs": [
+        "coverage/**"
+      ]
+    },
+    "audit": {
+      "outputs": [
+        "audit-*.json"
+      ]
+    },
+    "codeql": {
+      "cache": false,
+      "outputs": []
+    }
   }
 }

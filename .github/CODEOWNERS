@@ -17,3 +17,10 @@
 # Documentation and infrastructure
 /docs/ @MrMiless44
 /infrastructure/ @MrMiless44
+
+# Validation area aliases
+/api/ @MrMiless44
+/web/ @MrMiless44
+/shared/ @MrMiless44
+/ci/ @MrMiless44
+/security/ @MrMiless44
