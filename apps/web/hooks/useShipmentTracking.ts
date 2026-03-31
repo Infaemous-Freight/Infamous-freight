@@ -93,13 +93,15 @@ export function useShipmentTracking(shipmentId: string, userId?: string) {
 
     const unsubscribe = subscribeToShipment(shipmentId, (update) => {
       console.log("[ShipmentTracking] Received update:", update);
+      const safeUpdate =
+        update && typeof update === "object" ? (update as Partial<ShipmentData>) : {};
 
       setShipmentData((prev) => {
         if (!prev) return prev;
 
         return {
           ...prev,
-          ...update,
+          ...safeUpdate,
           lastUpdate: new Date().toISOString(),
         };
       });

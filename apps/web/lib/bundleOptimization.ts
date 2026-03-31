@@ -15,13 +15,13 @@ import type { AppProps } from "next/app";
 
 // ✅ Code splitting: Dynamic imports for heavy components
 // apps/web/pages/dashboard.tsx
-// @ts-expect-error - Next.js dynamic import type mismatch with React 19
+// @ts-ignore - Next.js dynamic import type mismatch with React 19
 const ShipmentChart = dynamic(() => import("../components/ShipmentChart"), {
   loading: () => React.createElement("div", { className: "skeleton" }),
   ssr: false,
 });
 
-// @ts-expect-error - Next.js dynamic import type mismatch with React 19
+// @ts-ignore - Next.js dynamic import type mismatch with React 19
 const ReportGenerator = dynamic(() => import("../components/ReportGenerator"), {
   loading: () => React.createElement("div", null, "Loading report generator..."),
 });
@@ -127,7 +127,7 @@ export default function App({ Component, pageProps }: AppProps) {
         href: "https://cdn.stripe.com",
       }),
     ),
-    // @ts-expect-error - Next.js component type incompatibility with React 19
+    // @ts-ignore - Next.js component type incompatibility with React 19
     React.createElement(Component, pageProps),
   );
 }

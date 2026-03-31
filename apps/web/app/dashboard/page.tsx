@@ -47,7 +47,7 @@ export default function Dashboard() {
       <ul className="mt-4 space-y-2">
         {loads.map((load) => (
           <li key={load.id}>
-            {load.shipperName} - ${load.rate} - {load.status}
+            {load.lane} - ${(load.rateCents / 100).toFixed(2)} - {load.status}
           </li>
         ))}
       </ul>

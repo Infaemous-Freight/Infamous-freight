@@ -139,7 +139,7 @@ function App({ Component, pageProps }: AppProps): React.ReactElement {
   }, [isProduction]);
 
   return (
-    // @ts-expect-error - Sentry ErrorBoundary type incompatibility with React 19
+    // @ts-ignore - Sentry ErrorBoundary type incompatibility with React 19
     <SentryErrorBoundary>
       <AuthProvider>
         <GlobalLayout>

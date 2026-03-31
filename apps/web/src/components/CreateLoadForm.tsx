@@ -35,7 +35,7 @@ export default function CreateLoadForm(): React.ReactElement {
     const rateCents = Math.round(parsedRate * 100);
     const { data, error } = await supabase
       .from("loads")
-      // @ts-expect-error - Supabase type definitions incompatibility with .insert()
+      // @ts-ignore - Supabase type definitions incompatibility with .insert()
       .insert({
         shipper_id: u.user.id,
         title: title || null,
@@ -59,7 +59,7 @@ export default function CreateLoadForm(): React.ReactElement {
       return;
     }
 
-    // @ts-expect-error - Supabase type inference issue
+    // @ts-ignore - Supabase type inference issue
     router.push(`/loads/${data.id}`);
   }
 

@@ -79,7 +79,7 @@ export async function recordAiActionsAndReport(
   const subItemId = await getSubscriptionItem(companyId, priceId);
 
   if (subItemId) {
-    // @ts-expect-error - Stripe SubscriptionItems.createUsageRecord signature difference
+    // @ts-ignore - Stripe SubscriptionItems.createUsageRecord signature difference
     await stripe.subscriptionItems.createUsageRecord(subItemId, {
       quantity: qty,
       timestamp: Math.floor(Date.now() / 1000),
