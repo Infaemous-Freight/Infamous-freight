@@ -1,15 +1,8 @@
+# Netlify configuration file
+
 [build]
-  command = "pnpm install --frozen-lockfile && pnpm --filter @infamous-freight/shared build && pnpm --filter web build"
-  publish = "apps/web/.next"
+  publish = "./out"
+  command = "npm run build"
 
-[build.environment]
-  NODE_VERSION = "22"
-  PNPM_VERSION = "9.15.0"
-  # Public API endpoint configuration for the web app.
-  # Update these to point at the correct production API base URL for this environment.
-  NEXT_PUBLIC_API_URL = "https://api.infamousfreight.com"
-  NEXT_PUBLIC_API_BASE = "https://api.infamousfreight.com"
-  NEXT_PUBLIC_API_BASE_URL = "https://api.infamousfreight.com"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+[functions]
+  node_version = "24"
