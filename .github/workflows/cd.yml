@@ -23,17 +23,18 @@ jobs:
     steps:
       - name: Validate deployed endpoints
         env:
-          DEPLOYED_API_URL: ${{ secrets.STAGING_API_URL }}
-          DEPLOYED_WEB_URL: ${{ secrets.STAGING_WEB_URL }}
+          DEPLOYED_API_URL: ${{ secrets.PRODUCTION_API_URL }}
+          DEPLOYED_WEB_URL: ${{ secrets.PRODUCTION_WEB_URL }}
         run: |
-          if [ -n "$DEPLOYED_API_URL" ]; then
-            curl -f "$DEPLOYED_API_URL"
-          else
-            echo "DEPLOYED_API_URL not set; skipping API validation"
+          if [ -z "$DEPLOYED_API_URL" ]; then
+            echo "::error::PRODUCTION_API_URL secret is not set. Add it in GitHub → Settings → Secrets and variables → Actions."
+            exit 1
           fi
-
-          if [ -n "$DEPLOYED_WEB_URL" ]; then
-            curl -f "$DEPLOYED_WEB_URL"
-          else
-            echo "DEPLOYED_WEB_URL not set; skipping web validation"
+          if [ -z "$DEPLOYED_WEB_URL" ]; then
+            echo "::error::PRODUCTION_WEB_URL secret is not set. Add it in GitHub → Settings → Secrets and variables → Actions."
+            exit 1
           fi
+          echo "Checking API: $DEPLOYED_API_URL"
+          curl -f --fail-with-body "$DEPLOYED_API_URL" || { echo "::error::API health check failed for $DEPLOYED_API_URL"; exit 1; }
+          echo "Checking Web: $DEPLOYED_WEB_URL"
+          curl -f --fail-with-body "$DEPLOYED_WEB_URL" || { echo "::error::Web health check failed for $DEPLOYED_WEB_URL"; exit 1; }
