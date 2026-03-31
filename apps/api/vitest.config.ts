@@ -7,7 +7,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   resolve: {
     alias: {
-      '@infamous-freight/shared': path.resolve(dirname, '../../packages/shared/src/index.ts'),
+      '@infamous-freight/shared': path.resolve(dirname, '../../packages/shared/dist/index.js'),
     },
   },
   test: {
