@@ -12,7 +12,6 @@ const router: Router = Router();
 const PLAN_LIMITS: Record<string, number> = {
   STARTER: 100,
   GROWTH: 1000,
-  PRO: 1000,
   ENTERPRISE: Number.POSITIVE_INFINITY,
   CUSTOM: Number.POSITIVE_INFINITY,
 };
@@ -98,12 +97,16 @@ const trackAiUsage = async (req: Request) => {
     return;
   }
 
-  const month = new Date().toISOString().slice(0, 7);
-  await prisma.orgUsage.upsert({
-    where: { organizationId_month: { organizationId, month } },
-    update: { jobs: { increment: 1 } },
-    create: { organizationId, month, jobs: 1 },
-  });
+  try {
+    const month = new Date().toISOString().slice(0, 7);
+    await prisma.orgUsage.upsert({
+      where: { organizationId_month: { organizationId, month } },
+      update: { jobs: { increment: 1 } },
+      create: { organizationId, month, jobs: 1 },
+    });
+  } catch {
+    // Non-blocking usage tracking to avoid failing successful AI responses.
+  }
 };
 
 router.use(requireAuth);
@@ -165,7 +168,7 @@ router.post("/dispatch/execute", enforceUsageLimit, async (req: Request, res: Re
  * GET /api/ai/carriers/:driverId/score
  * Get current carrier score
  */
-router.get("/carriers/:driverId/score", requireAuth, async (req: Request, res: Response) => {
+router.get("/carriers/:driverId/score", enforceUsageLimit, async (req: Request, res: Response) => {
   try {
     const driverId = req.params.driverId as string;
     const tenantId = req.user!.tenantId!;
@@ -176,6 +179,7 @@ router.get("/carriers/:driverId/score", requireAuth, async (req: Request, res: R
       return res.status(404).json({ error: "Carrier score not found" });
     }
 
+    await trackAiUsage(req);
     res.json(score);
   } catch (error: any) {
     res.status(500).json({ error: "Failed to get carrier score" });
@@ -232,13 +236,14 @@ router.post("/pricing/recommend", enforceUsageLimit, async (req: Request, res: R
  * GET /api/ai/pricing/load/:loadId
  * Get pricing history for a load
  */
-router.get("/pricing/load/:loadId", requireAuth, async (req: Request, res: Response) => {
+router.get("/pricing/load/:loadId", enforceUsageLimit, async (req: Request, res: Response) => {
   try {
     const loadId = req.params.loadId as string;
     const tenantId = req.user!.tenantId!;
 
     const history = await smartPricingService.getPricingHistory(tenantId, loadId);
 
+    await trackAiUsage(req);
     res.json(history);
   } catch (error: any) {
     res.status(500).json({ error: "Failed to get pricing history" });
