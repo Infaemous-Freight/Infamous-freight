@@ -34,6 +34,12 @@ declare global {
       tenantId?: string;
       orgId?: string;
       organizationId?: string;
+      billing?: {
+        plan: string;
+        stripeStatus: string;
+        monthlyQuota: number;
+        organizationId: string;
+      };
     }
   }
 }

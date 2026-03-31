@@ -9,6 +9,13 @@ import { prisma } from "../db/prisma.js";
 
 
 const router: Router = Router();
+const PLAN_LIMITS: Record<string, number> = {
+  STARTER: 100,
+  GROWTH: 1000,
+  PRO: 1000,
+  ENTERPRISE: Number.POSITIVE_INFINITY,
+  CUSTOM: Number.POSITIVE_INFINITY,
+};
 
 /**
  * Middleware: Require authentication and tenant context
@@ -20,11 +27,93 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
+const resolveOrganizationId = (req: Request): string | undefined => {
+  return req.organizationId ?? req.orgId ?? req.auth?.organizationId ?? req.user?.tenantId;
+};
+
+const requireActiveSubscription = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const organizationId = resolveOrganizationId(req);
+    if (!organizationId) {
+      return res.status(401).json({ error: "Organization context missing" });
+    }
+
+    const subscription = await prisma.orgBilling.findUnique({
+      where: { organizationId },
+      select: { stripeStatus: true, plan: true, monthlyQuota: true },
+    });
+
+    const stripeStatus = subscription?.stripeStatus?.toLowerCase() ?? "inactive";
+    const isActive = stripeStatus === "active" || stripeStatus === "trialing";
+    if (!isActive) {
+      return res.status(402).json({ error: "Subscription required" });
+    }
+
+    req.billing = {
+      plan: subscription?.plan ?? "STARTER",
+      stripeStatus,
+      monthlyQuota: subscription?.monthlyQuota ?? PLAN_LIMITS.STARTER,
+      organizationId,
+    };
+    return next();
+  } catch {
+    return res.status(500).json({ error: "Failed to verify subscription" });
+  }
+};
+
+const enforceUsageLimit = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const billing = req.billing;
+    if (!billing?.organizationId) {
+      return res.status(401).json({ error: "Organization context missing" });
+    }
+
+    const month = new Date().toISOString().slice(0, 7);
+    const usage = await prisma.orgUsage.findUnique({
+      where: { organizationId_month: { organizationId: billing.organizationId, month } },
+      select: { jobs: true },
+    });
+
+    const plan = String(billing.plan ?? "STARTER").toUpperCase();
+    const planLimit = PLAN_LIMITS[plan] ?? PLAN_LIMITS.STARTER;
+    const configuredLimit =
+      Number.isFinite(billing.monthlyQuota) && billing.monthlyQuota > 0
+        ? billing.monthlyQuota
+        : planLimit;
+    const currentUsage = usage?.jobs ?? 0;
+
+    if (currentUsage >= configuredLimit) {
+      return res.status(403).json({ error: "Usage limit exceeded" });
+    }
+
+    return next();
+  } catch {
+    return res.status(500).json({ error: "Failed to verify usage limits" });
+  }
+};
+
+const trackAiUsage = async (req: Request) => {
+  const organizationId = req.billing?.organizationId;
+  if (!organizationId) {
+    return;
+  }
+
+  const month = new Date().toISOString().slice(0, 7);
+  await prisma.orgUsage.upsert({
+    where: { organizationId_month: { organizationId, month } },
+    update: { jobs: { increment: 1 } },
+    create: { organizationId, month, jobs: 1 },
+  });
+};
+
+router.use(requireAuth);
+router.use(requireActiveSubscription);
+
 /**
  * POST /api/ai/dispatch/recommend
  * Get dispatch recommendation for a load
  */
-router.post("/dispatch/recommend", requireAuth, async (req: Request, res: Response) => {
+router.post("/dispatch/recommend", enforceUsageLimit, async (req: Request, res: Response) => {
   try {
     const { loadId } = req.body;
     const tenantId = req.user!.tenantId!;
@@ -35,6 +124,7 @@ router.post("/dispatch/recommend", requireAuth, async (req: Request, res: Respon
     }
 
     const recommendation = await aiDispatchService.recommendDispatch(tenantId, loadId, userId);
+    await trackAiUsage(req);
 
     res.json(recommendation);
   } catch (error: any) {
@@ -49,7 +139,7 @@ router.post("/dispatch/recommend", requireAuth, async (req: Request, res: Respon
  * POST /api/ai/dispatch/execute
  * Execute dispatch for a load and driver
  */
-router.post("/dispatch/execute", requireAuth, async (req: Request, res: Response) => {
+router.post("/dispatch/execute", enforceUsageLimit, async (req: Request, res: Response) => {
   try {
     const { loadId, driverId } = req.body;
     const tenantId = req.user!.tenantId!;
@@ -60,6 +150,7 @@ router.post("/dispatch/execute", requireAuth, async (req: Request, res: Response
     }
 
     const result = await aiDispatchService.executeDispatch(tenantId, loadId, driverId, userId);
+    await trackAiUsage(req);
 
     res.json(result);
   } catch (error: any) {
@@ -95,12 +186,13 @@ router.get("/carriers/:driverId/score", requireAuth, async (req: Request, res: R
  * POST /api/ai/carriers/:driverId/recompute
  * Recompute carrier score
  */
-router.post("/carriers/:driverId/recompute", requireAuth, async (req: Request, res: Response) => {
+router.post("/carriers/:driverId/recompute", enforceUsageLimit, async (req: Request, res: Response) => {
   try {
     const driverId = req.params.driverId as string;
     const tenantId = req.user!.tenantId!;
 
     const score = await carrierIntelligenceService.computeCarrierScore(tenantId, driverId);
+    await trackAiUsage(req);
 
     res.json(score);
   } catch (error: any) {
@@ -115,7 +207,7 @@ router.post("/carriers/:driverId/recompute", requireAuth, async (req: Request, r
  * POST /api/ai/pricing/recommend
  * Get pricing recommendation for a load
  */
-router.post("/pricing/recommend", requireAuth, async (req: Request, res: Response) => {
+router.post("/pricing/recommend", enforceUsageLimit, async (req: Request, res: Response) => {
   try {
     const { loadId } = req.body;
     const tenantId = req.user!.tenantId!;
@@ -125,6 +217,7 @@ router.post("/pricing/recommend", requireAuth, async (req: Request, res: Respons
     }
 
     const pricing = await smartPricingService.recommendPricing(tenantId, loadId);
+    await trackAiUsage(req);
 
     res.json(pricing);
   } catch (error: any) {
@@ -156,12 +249,13 @@ router.get("/pricing/load/:loadId", requireAuth, async (req: Request, res: Respo
  * GET /api/ai/predict/load/:loadId
  * Get delay prediction for a load
  */
-router.get("/predict/load/:loadId", requireAuth, async (req: Request, res: Response) => {
+router.get("/predict/load/:loadId", enforceUsageLimit, async (req: Request, res: Response) => {
   try {
     const loadId = req.params.loadId as string;
     const tenantId = req.user!.tenantId!;
 
     const prediction = await predictiveOperationsService.predictLoadIssues(tenantId, loadId);
+    await trackAiUsage(req);
 
     res.json(prediction);
   } catch (error: any) {
@@ -176,7 +270,7 @@ router.get("/predict/load/:loadId", requireAuth, async (req: Request, res: Respo
  * GET /api/ai/predict/shipment/:shipmentId
  * Get delay prediction for a shipment
  */
-router.get("/predict/shipment/:shipmentId", requireAuth, async (req: Request, res: Response) => {
+router.get("/predict/shipment/:shipmentId", enforceUsageLimit, async (req: Request, res: Response) => {
   try {
     const shipmentId = req.params.shipmentId as string;
     const tenantId = req.user!.tenantId!;
@@ -185,6 +279,7 @@ router.get("/predict/shipment/:shipmentId", requireAuth, async (req: Request, re
       tenantId,
       shipmentId,
     );
+    await trackAiUsage(req);
 
     res.json(prediction);
   } catch (error: any) {
