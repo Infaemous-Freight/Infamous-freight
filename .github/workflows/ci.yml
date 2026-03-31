@@ -4,9 +4,29 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - '.github/workflows/ci.yml'
+      - '.github/scripts/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+      - 'turbo.json'
+      - 'Makefile'
   pull_request:
     branches:
       - main
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - '.github/workflows/ci.yml'
+      - '.github/scripts/**'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+      - 'turbo.json'
+      - 'Makefile'
   workflow_dispatch:
 
 permissions:

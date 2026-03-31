@@ -1,1 +1,5 @@
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIALpibhsOFbidz0aheBW9m4SCQ7NjPq6Z2GEYL+VwhMb root@df88a621bac5
+# Intentionally left empty.
+#
+# Do not commit real SSH keys to the repository.
+# Provision host access keys through your infrastructure secret manager
+# or configuration management process at deploy time.

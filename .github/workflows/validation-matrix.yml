@@ -1,18 +1,15 @@
 name: Area Validation Matrix
 
 on:
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
   validate:
-    name: "${{ matrix.area }} / ${{ matrix.validation }}"
+    name: "validation / ${{ matrix.validation }}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        area: [api, web, shared, ci, security, docs]
         validation: [sanity, lint, typecheck, test, build, codeql, audit]
 
     steps:
@@ -35,14 +32,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          area='${{ matrix.area }}'
           validation='${{ matrix.validation }}'
 
           run_if_matches() {
             local expected="$1"
             shift
             if [ "$validation" = "$expected" ]; then
-              echo "Running $expected for area=$area"
+              echo "Running $expected"
               "$@"
               exit 0
             fi

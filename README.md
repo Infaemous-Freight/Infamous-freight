@@ -96,6 +96,21 @@ packages/
 ```
 
 > Note: This overview highlights the primary product surfaces. Additional internal workspaces (for example, `apps/ai`, `apps/worker`, and `packages/genesis`) also exist in the pnpm monorepo but are omitted here for brevity.
+
+### Repository Boundaries
+
+To keep onboarding clear in a large repository, use the following ownership model:
+
+- `apps/*` and `packages/*` are the primary pnpm workspace surfaces and default contributors should focus here.
+- `infra/*` contains deployment/infrastructure assets and should be treated as operations-owned.
+- Top-level experiments, prototypes, and incubating initiatives outside `apps/*` / `packages/*` should be considered non-core unless explicitly referenced by active roadmap docs.
+
+When opening PRs, state clearly whether your change targets:
+
+1. Core product workspace (`apps/*`, `packages/*`)
+2. Platform infrastructure (`infra/*`, deployment config)
+3. Experimental or incubating surfaces
+
 ### Surface Responsibilities
 
 | Surface         | Purpose                                  |
@@ -173,6 +188,18 @@ pnpm build
 ---
 
 ## Development
+
+Canonical developer interface is `pnpm` scripts. `make` targets are convenience wrappers around the same flows.
+
+Recommended daily workflow:
+
+```bash
+pnpm install
+pnpm dev:api
+pnpm lint
+pnpm typecheck
+pnpm test
+```
 
 ### API
 
@@ -254,6 +281,16 @@ pnpm typecheck
 pnpm lint
 pnpm test
 ```
+
+CI enforces baseline test coverage thresholds (lines/functions/statements: 70%, branches: 60%) for coverage-enabled test suites.
+
+## Runtime Policy
+
+- Required runtime: Node.js 24.x
+- Required package manager: pnpm 9.x
+- Source of truth: `.nvmrc` + root `package.json` engines
+
+If your local runtime does not match these versions, switch with your version manager before running installs or checks.
 
 ---
 
