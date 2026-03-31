@@ -25,7 +25,10 @@ export APP_URL=http://localhost:3000
 export DATABASE_URL=postgresql://infamous:infamouspass@localhost:5432/infamous_freight
 export TEST_DATABASE_URL=postgresql://infamous:infamouspass@localhost:5432/infamous_freight_test
 export REDIS_URL=redis://localhost:6379
-export JWT_SECRET=dev-secret-key-staging-only-12345678901234567890
+if [ -z "${JWT_SECRET:-}" ]; then
+  echo "❌ JWT_SECRET environment variable is not set. Set it before running this script."
+  exit 1
+fi
 export JWT_EXPIRY=24h
 export AI_PROVIDER=synthetic
 export LOG_LEVEL=info

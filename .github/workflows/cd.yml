@@ -23,17 +23,20 @@ jobs:
     steps:
       - name: Validate deployed endpoints
         env:
-          DEPLOYED_API_URL: ${{ secrets.STAGING_API_URL }}
-          DEPLOYED_WEB_URL: ${{ secrets.STAGING_WEB_URL }}
+          DEPLOYED_API_URL: ${{ needs.deploy-api.outputs.app_url }}
+          DEPLOYED_WEB_URL: ${{ needs.deploy-web.outputs.deploy_url }}
         run: |
-          if [ -n "$DEPLOYED_API_URL" ]; then
-            curl -f "$DEPLOYED_API_URL"
-          else
-            echo "DEPLOYED_API_URL not set; skipping API validation"
+          if [ -z "$DEPLOYED_API_URL" ]; then
+            echo "::error::DEPLOYED_API_URL is empty — Fly.io deploy did not produce an app URL."
+            exit 1
+          fi
+          if [ -z "$DEPLOYED_WEB_URL" ]; then
+            echo "::error::DEPLOYED_WEB_URL is empty — Vercel deploy did not produce a deploy URL."
+            exit 1
           fi
 
-          if [ -n "$DEPLOYED_WEB_URL" ]; then
-            curl -f "$DEPLOYED_WEB_URL"
-          else
-            echo "DEPLOYED_WEB_URL not set; skipping web validation"
-          fi
+          echo "Validating API: $DEPLOYED_API_URL"
+          curl -f "$DEPLOYED_API_URL"
+
+          echo "Validating Web: $DEPLOYED_WEB_URL"
+          curl -If "$DEPLOYED_WEB_URL" > /dev/null
