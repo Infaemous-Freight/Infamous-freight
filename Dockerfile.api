@@ -1,41 +1,24 @@
-FROM node:22-alpine
-
-LABEL maintainer="Santorio Djuan Miles <237955567+MrMiless44@users.noreply.github.com>"
-LABEL description="Infamous Freight Enterprises - API Server"
-
+FROM node:24-alpine AS base
 WORKDIR /app
+RUN corepack enable
 
-# Install pnpm
-RUN npm install -g pnpm@9.15.0
-
-# Copy workspace and package files
+FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/api/package.json ./apps/api/
-COPY packages/shared/package.json ./packages/shared/
+COPY apps ./apps
+COPY packages ./packages
+RUN pnpm install --frozen-lockfile
 
-# Install dependencies
-RUN pnpm install --no-frozen-lockfile
+FROM deps AS build
+RUN pnpm exec prisma generate --schema=apps/api/prisma/schema.prisma
+RUN pnpm --filter ./apps/api build
 
-# Copy application code
-COPY . .
+FROM node:24-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+RUN corepack enable
 
-# Build the shared package and API
-RUN pnpm --filter @infamous-freight/shared build && pnpm --filter api build
+COPY --from=build /app ./
 
-# Generate Prisma client
-RUN cd apps/api && pnpm prisma:generate || true
-
-# Expose API port
 EXPOSE 3001
 
-# Set production environment
-ENV NODE_ENV=production
-ENV PORT=3001
-ENV API_PORT=3001
-
-# Production command - run the API server
-CMD ["sh", "-c", "cd apps/api && node src/server.js"]
-
-# Health check for API
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3001/api/health || exit 1
+CMD ["node", "apps/api/dist/server.js"]

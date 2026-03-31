@@ -130,7 +130,7 @@ describeIfDb("Webhook Integration Tests", () => {
       const signature = generateStripeSignature(timestamp, eventBody);
 
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", signature)
         .send(JSON.parse(eventBody))
         .expect(200);
@@ -157,7 +157,7 @@ describeIfDb("Webhook Integration Tests", () => {
       const signature = generateStripeSignature(timestamp, eventBody);
 
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", signature)
         .send(JSON.parse(eventBody))
         .expect(200);
@@ -184,7 +184,7 @@ describeIfDb("Webhook Integration Tests", () => {
       const signature = generateStripeSignature(timestamp, eventBody);
 
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", signature)
         .send(JSON.parse(eventBody))
         .expect(200);
@@ -210,7 +210,7 @@ describeIfDb("Webhook Integration Tests", () => {
       const signature = generateStripeSignature(timestamp, eventBody);
 
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", signature)
         .send(JSON.parse(eventBody))
         .expect(200);
@@ -240,7 +240,7 @@ describeIfDb("Webhook Integration Tests", () => {
       // First attempt may fail (simulating transient error)
       // Webhook should be queued for retry
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", signature)
         .send(JSON.parse(eventBody));
 
@@ -282,14 +282,14 @@ describeIfDb("Webhook Integration Tests", () => {
 
       // Send newer event first
       await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", sig1)
         .send(JSON.parse(event1Body))
         .expect(200);
 
       // Then older event
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", sig2)
         .send(JSON.parse(event2Body));
 
@@ -301,7 +301,7 @@ describeIfDb("Webhook Integration Tests", () => {
   describe("Webhook Error Handling", () => {
     it("should return 400 for missing webhook signature", async () => {
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .send({ type: "charge.succeeded" })
         .expect(400);
 
@@ -310,7 +310,7 @@ describeIfDb("Webhook Integration Tests", () => {
 
     it("should return 400 for malformed JSON", async () => {
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", "t=123,v1=abc")
         .set("Content-Type", "application/json")
         .send("not valid json")
@@ -331,7 +331,7 @@ describeIfDb("Webhook Integration Tests", () => {
       const signature = generateStripeSignature(timestamp, eventBody);
 
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", signature)
         .send(JSON.parse(eventBody))
         .expect(200);
@@ -355,7 +355,7 @@ describeIfDb("Webhook Integration Tests", () => {
       const signature = generateStripeSignature(timestamp, eventBody);
 
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", signature)
         .set("x-correlation-id", correlationId)
         .send(JSON.parse(eventBody))
@@ -377,7 +377,7 @@ describeIfDb("Webhook Integration Tests", () => {
 
       // This would typically check logs via monitoring system
       const response = await request(app)
-        .post("/webhooks/stripe")
+        .post("/api/webhooks/stripe")
         .set("Stripe-Signature", signature)
         .send(JSON.parse(eventBody))
         .expect(200);
