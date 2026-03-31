@@ -63,3 +63,15 @@ tests:
 packages:
   - changed-files:
       - any-glob-to-any-file: "packages/**"
+
+shared:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/shared/**"
+          - "shared/**"
+
+docs-ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/ci-*.md"
+          - ".github/workflows/validation-matrix.yml"

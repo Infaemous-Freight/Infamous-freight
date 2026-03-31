@@ -1,0 +1,64 @@
+name: Area Validation Matrix
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: "${{ matrix.area }} / ${{ matrix.validation }}"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        area: [api, web, shared, ci, security, docs]
+        validation: [sanity, lint, typecheck, test, build, codeql, audit]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run matrix validation selector
+        shell: bash
+        run: |
+          set -euo pipefail
+          area='${{ matrix.area }}'
+          validation='${{ matrix.validation }}'
+
+          run_if_matches() {
+            local expected="$1"
+            shift
+            if [ "$validation" = "$expected" ]; then
+              echo "Running $expected for area=$area"
+              "$@"
+              exit 0
+            fi
+          }
+
+          run_if_matches sanity pnpm run format:check
+          run_if_matches lint pnpm run lint
+          run_if_matches typecheck pnpm run typecheck
+          run_if_matches test pnpm run test:ci
+          run_if_matches build pnpm run build
+          run_if_matches audit pnpm run audit:ci
+
+          if [ "$validation" = "codeql" ]; then
+            echo "CodeQL is executed in .github/workflows/codeql.yml"
+            exit 0
+          fi
+
+          echo "Unknown validation target: $validation"
+          exit 1
