@@ -76,6 +76,17 @@ export function createApp(): Express {
     });
   });
 
+  app.get("/api/health", (_req, res) => {
+    res.json({
+      success: true,
+      data: {
+        service: "infamous-freight-api",
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+      },
+    });
+  });
+
   app.get("/readyz", (_req, res) => {
     res.json({ success: true, data: { ok: true } });
   });
