@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-import { stripe } from "@/lib/stripe";
+import { getStripeClient } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 export async function POST(req: Request) {
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const session = await getStripeClient().checkout.sessions.create({
     mode: "subscription",
     payment_method_types: ["card"],
     line_items: [{ price: priceId, quantity: 1 }],

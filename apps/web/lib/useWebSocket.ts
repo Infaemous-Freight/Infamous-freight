@@ -7,7 +7,20 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 
-type Socket = unknown; // Will be socket.io Socket when package is installed
+interface Socket {
+  id?: string;
+  io: {
+    engine: {
+      transport: { name: string };
+      on: (event: string, callback: (payload: { name: string }) => void) => void;
+    };
+  };
+  on: (event: string, callback: (payload: any) => void) => void;
+  once: (event: string, callback: (payload?: any) => void) => void;
+  off: (event: string, callback?: (payload: any) => void) => void;
+  emit: (event: string, payload?: any) => void;
+  disconnect: () => void;
+}
 
 // Placeholder for socket.io when not installed
 const io = (_url: string, _options?: unknown): Socket => {

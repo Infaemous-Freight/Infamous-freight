@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase";
-import { stripe } from "@/lib/stripe";
+import { getStripeClient } from "@/lib/stripe";
 
 export async function ensureStripeCustomer(companyId: string, companyName: string) {
   const { data: billing } = await supabaseAdmin
@@ -12,7 +12,7 @@ export async function ensureStripeCustomer(companyId: string, companyName: strin
 
   if (billing.stripe_customer_id) return billing.stripe_customer_id as string;
 
-  const customer = await stripe.customers.create({
+  const customer = await getStripeClient().customers.create({
     name: companyName,
     metadata: { company_id: companyId },
   });

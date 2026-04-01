@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { stripe } from "@/lib/stripe";
+import { getStripeClient } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+    const event = getStripeClient().webhooks.constructEvent(body, sig, webhookSecret);
 
     await handleStripeEvent(event);
 

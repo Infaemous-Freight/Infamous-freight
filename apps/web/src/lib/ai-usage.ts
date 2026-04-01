@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase";
-import { stripe } from "@/lib/stripe";
+import { getStripeClient } from "@/lib/stripe";
 import { getSubscriptionItem } from "@/lib/billing";
 
 function utcMonthKey(d = new Date()) {
@@ -80,7 +80,7 @@ export async function recordAiActionsAndReport(
 
   if (subItemId) {
     // @ts-ignore - Stripe SubscriptionItems.createUsageRecord signature difference
-    await stripe.subscriptionItems.createUsageRecord(subItemId, {
+    await getStripeClient().subscriptionItems.createUsageRecord(subItemId, {
       quantity: qty,
       timestamp: Math.floor(Date.now() / 1000),
       action: "increment",
