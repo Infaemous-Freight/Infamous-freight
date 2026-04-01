@@ -8,7 +8,7 @@
   functions = "apps/web/.netlify/functions"
 
 [build.environment]
-  NODE_VERSION = "22"
+  NODE_VERSION = "24"
   PNPM_VERSION = "9.15.0"
   NEXT_TELEMETRY_DISABLED = "1"
   BUILD_TARGET = "netlify"

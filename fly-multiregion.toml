@@ -45,7 +45,7 @@ builtin = "dockerfile"
 
 # Docker image to use
 [build.args]
-NODE_VERSION = "20"
+NODE_VERSION = "24"
 REGISTRY = "node"
 
 # Performance settings for multi-region
