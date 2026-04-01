@@ -29,7 +29,8 @@
     "fly:deploy:api": "bash scripts/fly-deploy-api.sh",
     "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test",
     "smoke:release": "bash scripts/release-smoke-check.sh",
-    "deploy:check": "pnpm validate && pnpm audit:prod && pnpm smoke:release"
+    "deploy:check": "pnpm validate && pnpm audit:prod && pnpm smoke:release",
+    "deploy:work": "bash scripts/deploy-work-branch.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",
