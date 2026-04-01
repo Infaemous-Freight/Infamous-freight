@@ -1,4 +1,5 @@
-FROM node:24-alpine AS base
+ARG NODE_VERSION=24
+FROM node:${NODE_VERSION}-alpine AS base
 WORKDIR /app
 RUN corepack enable
 
@@ -15,7 +16,7 @@ COPY . .
 RUN pnpm exec prisma generate --schema=apps/api/prisma/schema.prisma
 RUN pnpm --filter ./apps/api build
 
-FROM node:24-alpine AS runner
+FROM node:${NODE_VERSION}-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 RUN corepack enable
