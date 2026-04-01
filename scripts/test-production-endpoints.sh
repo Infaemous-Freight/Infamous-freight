@@ -12,8 +12,6 @@ if [[ -z "$AUTH_TOKEN" ]]; then
   exit 1
 fi
 
-readonly ENDPOINT_GROUPS=("billing" "ai" "acquisition")
-
 declare -a BILLING_ENDPOINTS=(
   "/api/billing/subscription"
   "/api/billing/usage"
