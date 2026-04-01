@@ -389,3 +389,20 @@ ls -la docs/metrics/workflow-data.json
 
 Need help? Check the [QUICK_REFERENCE.md](../QUICK_REFERENCE.md) or create an
 issue using our [issue templates](../.github/ISSUE_TEMPLATE/).
+
+---
+
+### 13. **test-production-endpoints.sh**
+
+Verifies expected HTTP responses for the 24 production API routes (billing, AI execution, and user acquisition).
+
+**Usage:**
+
+```bash
+ENDPOINT_BASE_URL=https://api.example.com ENDPOINT_AUTH_TOKEN=<bearer-token> ./scripts/test-production-endpoints.sh
+```
+
+**Accepted responses:** 2xx and 401/403 (auth boundary). Any other status is treated as a failure.
+
+---
+
