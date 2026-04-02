@@ -213,7 +213,8 @@ If you are developing from Android (for example, a Samsung Galaxy device), use t
 5. Install pnpm and verify:
 
    ```bash
-   npm install -g pnpm
+   corepack enable
+   corepack prepare pnpm@9.15.0 --activate
    pnpm -v
    ```
 
