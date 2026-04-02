@@ -17,10 +17,10 @@
         "src/*"
       ],
       "@infamous-freight/shared": [
-        "../../packages/shared/src/index.ts"
+        "../../packages/shared/dist/index.d.ts"
       ],
       "@infamous-freight/shared/*": [
-        "../../packages/shared/src/*"
+        "../../packages/shared/dist/*"
       ]
     },
     "lib": [
