@@ -35,7 +35,7 @@ base = "/opt/build/repo/apps/web"
 functions = "/opt/build/repo/apps/web/apps/web/.netlify/functions"
 
 [build.environment]
-NODE_VERSION = "22"
+NODE_VERSION = "24"
 PNPM_VERSION = "9.15.0"
 NPM_FLAGS = "--version"
 NEXT_TELEMETRY_DISABLED = "1"
