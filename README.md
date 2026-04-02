@@ -205,16 +205,8 @@ If you are developing from Android (for example, a Samsung Galaxy device), use t
 
    ```bash
    pkg install nodejs -y
-   node -v
+   node -v    # expect v24.x.x (or the major version specified in Runtime Policy / .nvmrc)
    npm -v
-   ```
-
-4. If `nodejs` does not provide the expected major version, switch to LTS package:
-
-   ```bash
-   pkg uninstall nodejs -y
-   pkg install nodejs-lts -y
-   node -v
    npm -v
    ```
 
