@@ -7,7 +7,7 @@ billing, AI integration, and real-time features.
 
 ### Prerequisites
 
-- Node.js >= 20.0.0
+- Node.js 24.x
 - pnpm >= 10.15.0
 - PostgreSQL database
 - Redis (for caching and rate limiting)
