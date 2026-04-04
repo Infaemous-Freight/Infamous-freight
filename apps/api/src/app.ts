@@ -94,6 +94,11 @@ export function createApp(): Express {
       return;
     }
 
+    if (!env.sentryDsn) {
+      res.status(503).json({ success: false, error: { code: "SENTRY_DISABLED", message: "SENTRY_DSN not configured" } });
+      return;
+    }
+
     verifySentryCapture();
     res.status(202).json({ success: true, data: { captured: true } });
   });
