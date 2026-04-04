@@ -18,11 +18,11 @@ FROM base AS deps
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY web/package.json ./web/package.json
+COPY apps/web/package.json ./apps/web/package.json
 COPY packages/shared/package.json ./packages/shared/package.json
 
 ENV HUSKY=0
-RUN pnpm install --filter web... --frozen-lockfile
+RUN pnpm install --filter ./apps/web... --frozen-lockfile
 
 # Stage 2: Build shared packages
 FROM base AS shared-builder
@@ -42,7 +42,7 @@ WORKDIR /app
 
 # Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/web/node_modules ./web/node_modules
+COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
 
 # Copy built shared package
 COPY --from=shared-builder /app/packages/shared/dist ./packages/shared/dist
@@ -50,10 +50,10 @@ COPY --from=shared-builder /app/packages/shared/package.json ./packages/shared/p
 
 # Copy source
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY web ./web
+COPY apps/web ./apps/web
 
 # Build Next.js app
-WORKDIR /app/web
+WORKDIR /app/apps/web
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm run build
 
@@ -75,9 +75,9 @@ RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001
 
 # Copy built application
-COPY --from=builder --chown=nextjs:nodejs /app/web/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/web/.next/static ./web/.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/web/public ./web/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 USER nextjs
 
@@ -87,4 +87,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["node", "web/server.js"]
+CMD ["node", "apps/web/server.js"]
