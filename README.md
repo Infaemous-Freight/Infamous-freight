@@ -179,7 +179,7 @@ Install dependencies.
 pnpm install
 ```
 
-> **Runtime requirement:** this repo enforces Node.js **24.x** (see `.node-version`). If you are on Node 22 or earlier, `pnpm` will fail with `ERR_PNPM_UNSUPPORTED_ENGINE`.
+> **Runtime requirement:** this repo enforces Node.js **24.x** (see `.node-version`). If you are not on Node 24.x, `pnpm` will fail with `ERR_PNPM_UNSUPPORTED_ENGINE`.
 
 Initialize database tooling for local development.
 
