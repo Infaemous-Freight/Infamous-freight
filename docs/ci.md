@@ -12,7 +12,7 @@ This document defines the runtime contract, required checks, and merge rules for
 
 - `.nvmrc` pins Node to `24`.
 - `package.json` `engines.node` enforces `24.x`.
-- `package.json` `packageManager` enforces `pnpm@10`.
+- `package.json` `packageManager` enforces `pnpm@10.15.0`.
 - No `package-lock.json` or `yarn.lock` files are permitted.
 
 ## Required Scripts
