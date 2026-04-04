@@ -6,7 +6,7 @@ React Native mobile application for the Infamous Freight platform using Expo.
 
 ### Prerequisites
 
-- Node.js >= 20.0.0
+- Node.js 24.x (required by the workspace root `package.json` engines; `pnpm install` will fail on other major versions when `engine-strict=true`)
 - pnpm >= 10.15.0
 - Expo CLI
 - iOS Simulator (Mac) or Android Emulator
