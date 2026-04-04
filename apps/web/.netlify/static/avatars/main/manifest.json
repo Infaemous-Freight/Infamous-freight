@@ -1,0 +1,28 @@
+{
+  "featured": [
+    {
+      "id": "main-01",
+      "name": "Infinity Operator",
+      "imageUrl": "/avatars/main/main-01.png",
+      "description": "Premium operator avatar"
+    },
+    {
+      "id": "main-02",
+      "name": "Crimson Neural",
+      "imageUrl": "/avatars/main/main-02.png",
+      "description": "Elite neural network avatar"
+    },
+    {
+      "id": "main-03",
+      "name": "Golden Sphinx Core",
+      "imageUrl": "/avatars/main/main-03.png",
+      "description": "Legendary sphinx avatar"
+    },
+    {
+      "id": "main-04",
+      "name": "Pharaoh Circuit",
+      "imageUrl": "/avatars/main/main-04.png",
+      "description": "Royal circuit avatar"
+    }
+  ]
+}
