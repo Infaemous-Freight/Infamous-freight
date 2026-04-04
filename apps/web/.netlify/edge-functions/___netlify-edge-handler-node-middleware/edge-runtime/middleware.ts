@@ -66,8 +66,10 @@ export async function handleMiddleware(
 
     return response
   } catch (error) {
-    console.error(error)
+    const message = error instanceof Error ? error.message : String(error)
 
-    return new Response(error.message, { status: 500 })
+    reqLogger.error('Middleware execution failed', { error: message })
+
+    return new Response(message, { status: 500 })
   }
 }
