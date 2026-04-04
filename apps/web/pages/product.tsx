@@ -1195,14 +1195,60 @@ function SettingsPage() {
 function AppWorkspace({ onNavigate }: { onNavigate: (target: "home" | "signin" | "register" | "app") => void }) {
   const [page, setPage] = useState<NavItem["key"]>("overview");
   const [selectedLoad, setSelectedLoad] = useState<Load>(loads[0]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const title = nav.find((item) => item.key === page)?.label ?? "Overview";
 
   return (
     <div className="relative">
-      <SiteHeader onNavigate={onNavigate} inApp />
+      <SiteHeader onNavigate={onNavigate} inApp onOpenMenu={() => setMobileMenuOpen(true)} />
+
+      <AnimatePresence>
+        {mobileMenuOpen ? (
+          <>
+            <motion.button
+              type="button"
+              aria-label="Close menu"
+              className="fixed inset-0 z-40 bg-black/70 lg:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              className="fixed inset-y-0 left-0 z-50 w-[min(86vw,22rem)] overflow-y-auto border-r border-red-500/20 bg-zinc-950/95 p-4 backdrop-blur lg:hidden"
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "tween", duration: 0.25 }}
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-[11px] uppercase tracking-[0.36em] text-red-300/70">Navigation</p>
+                <button
+                  type="button"
+                  aria-label="Close menu"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-red-500/20 bg-black/50 text-red-100 transition hover:bg-red-500/10"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Menu className="h-4 w-4" />
+                </button>
+              </div>
+              <AppSidebar
+                page={page}
+                setPage={(nextPage) => {
+                  setPage(nextPage);
+                  setMobileMenuOpen(false);
+                }}
+              />
+            </motion.div>
+          </>
+        ) : null}
+      </AnimatePresence>
 
       <div className="mx-auto flex max-w-[1600px] gap-6 px-4 py-6 sm:px-6 lg:px-8">
-        <AppSidebar page={page} setPage={setPage} />
+        <div className="hidden lg:block">
+          <AppSidebar page={page} setPage={setPage} />
+        </div>
 
         <main className="min-w-0 flex-1">
           <motion.div
