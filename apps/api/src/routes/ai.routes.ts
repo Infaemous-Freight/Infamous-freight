@@ -151,7 +151,6 @@ router.post("/dispatch/recommend", requireAuth, async (req: Request, res: Respon
       return res.status(400).json({ error: "loadId required" });
     }
 
-    await meterAiUsage(organizationId, userId, "dispatch", res.locals.usageLimit);
     const recommendation = await aiDispatchService.recommendDispatch(tenantId, loadId, userId);
 
     if (recommendation.confidence > 0.85) {
@@ -180,6 +179,7 @@ router.post("/dispatch/recommend", requireAuth, async (req: Request, res: Respon
           recommendation.recommendedDriverId,
           userId,
         );
+        await meterAiUsage(organizationId, userId, "dispatch", res.locals.usageLimit);
         return res.json({
           ...recommendation,
           autoDispatched: true,
@@ -188,6 +188,7 @@ router.post("/dispatch/recommend", requireAuth, async (req: Request, res: Respon
       }
     }
 
+    await meterAiUsage(organizationId, userId, "dispatch", res.locals.usageLimit);
     res.json(recommendation);
   } catch (error: any) {
     if (error instanceof UsageLimitExceededError) {
@@ -215,9 +216,9 @@ router.post("/dispatch/execute", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "loadId and driverId required" });
     }
 
-    await meterAiUsage(organizationId, userId, "execution", res.locals.usageLimit);
     const result = await aiDispatchService.executeDispatch(tenantId, loadId, driverId, userId);
 
+    await meterAiUsage(organizationId, userId, "execution", res.locals.usageLimit);
     res.json(result);
   } catch (error: any) {
     if (error instanceof UsageLimitExceededError) {
@@ -312,9 +313,9 @@ router.post("/pricing/recommend", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "loadId required" });
     }
 
-    await meterAiUsage(organizationId, userId, "pricing", res.locals.usageLimit);
     const pricing = await smartPricingService.recommendPricing(tenantId, loadId);
 
+    await meterAiUsage(organizationId, userId, "pricing", res.locals.usageLimit);
     res.json(pricing);
   } catch (error: any) {
     if (error instanceof UsageLimitExceededError) {
@@ -355,9 +356,9 @@ router.get("/predict/load/:loadId", async (req: Request, res: Response) => {
     const organizationId = req.auth?.organizationId || req.user?.organizationId || tenantId;
     const userId = req.user!.id;
 
-    await meterAiUsage(organizationId, userId, "prediction", res.locals.usageLimit);
     const prediction = await predictiveOperationsService.predictLoadIssues(tenantId, loadId);
 
+    await meterAiUsage(organizationId, userId, "prediction", res.locals.usageLimit);
     res.json(prediction);
   } catch (error: any) {
     if (error instanceof UsageLimitExceededError) {
@@ -381,12 +382,12 @@ router.get("/predict/shipment/:shipmentId", async (req: Request, res: Response) 
     const organizationId = req.auth?.organizationId || req.user?.organizationId || tenantId;
     const userId = req.user!.id;
 
-    await meterAiUsage(organizationId, userId, "prediction", res.locals.usageLimit);
     const prediction = await predictiveOperationsService.predictShipmentIssues(
       tenantId,
       shipmentId,
     );
 
+    await meterAiUsage(organizationId, userId, "prediction", res.locals.usageLimit);
     res.json(prediction);
   } catch (error: any) {
     if (error instanceof UsageLimitExceededError) {
