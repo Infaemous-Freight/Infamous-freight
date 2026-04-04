@@ -180,8 +180,8 @@ else
   exit 1
 fi
 
-nvm install
-nvm use
+nvm install 24
+nvm use 24
 
 corepack enable
 corepack prepare pnpm@10.15.0 --activate
