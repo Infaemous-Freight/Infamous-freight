@@ -88,19 +88,29 @@ export function createApp(): Express {
     });
   });
 
-  app.post("/api/health/sentry-check", (req, res) => {
+  app.post("/api/health/sentry-check", (_req, res) => {
     if (env.nodeEnv === "production") {
       res.status(404).json({ success: false, error: { code: "NOT_FOUND", message: "Route not found" } });
       return;
     }
 
     if (!env.sentryDsn) {
-      res.status(503).json({ success: false, error: { code: "SENTRY_DISABLED", message: "SENTRY_DSN not configured" } });
+      res.status(503).json({
+        success: false,
+        error: { code: "SENTRY_DISABLED", message: "SENTRY_DSN not configured" },
+        data: { sentryEnabled: false, captureAttempted: false },
+      });
       return;
     }
 
     verifySentryCapture();
-    res.status(202).json({ success: true, data: { captured: true } });
+    res.status(202).json({
+      success: true,
+      data: {
+        sentryEnabled: true,
+        captureAttempted: true,
+      },
+    });
   });
 
   app.get("/readyz", (_req, res) => {
