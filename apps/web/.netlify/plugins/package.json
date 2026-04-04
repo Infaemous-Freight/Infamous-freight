@@ -8,6 +8,7 @@
   "dependencies": {
     "@netlify/plugin-lighthouse": "6.0.1",
     "@netlify/plugin-nextjs": "5.15.7",
-    "neon-buildhooks": "https://37fb2d91-fc5f-402b-b52c-84240e7335fa.netlify.app/packages/buildhooks.tgz"
+    "neon-buildhooks": "https://37fb2d91-fc5f-402b-b52c-84240e7335fa.netlify.app/packages/buildhooks.tgz",
+    "prisma-postgres-buildhooks": "1.0.0"
   }
 }

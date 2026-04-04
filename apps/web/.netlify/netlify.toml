@@ -1,12 +1,24 @@
-headersOrigin = "config"
-redirectsOrigin = "config"
-functionsDirectory = "/opt/build/repo/apps/web/apps/web/.netlify/functions"
+functionsDirectory = "/opt/build/repo/apps/web/.netlify/functions"
 functionsDirectoryOrigin = "config-v1"
 
+[[headers]]
+for = "/*"
+
+[headers.values]
+Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+for = "/_next/static/*"
+
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
 [dev]
-command = "pnpm dev"
-port = 3000.0
-targetPort = 3000.0
+command = "pnpm --filter web dev"
+port = 8888
+targetPort = 3000
 autoLaunch = false
 
 [functions]
@@ -22,23 +34,22 @@ package = "@netlify/plugin-nextjs"
 [[plugins]]
 origin = "ui"
 package = "@netlify/plugin-lighthouse"
-pinned_version = "6.0.1"
 
 [plugins.inputs]
 
 [build]
-publish = "/opt/build/repo/apps/web/apps/web/.next"
+publish = "/opt/build/repo/apps/web/.next"
 publishOrigin = "config"
 commandOrigin = "config"
-command = "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter web build"
-base = "/opt/build/repo/apps/web"
-functions = "/opt/build/repo/apps/web/apps/web/.netlify/functions"
+command = "pnpm install --frozen-lockfile && pnpm --filter web build"
+base = "/opt/build/repo"
+functions = "/opt/build/repo/apps/web/.netlify/functions"
 
 [build.environment]
 NODE_VERSION = "24"
 PNPM_VERSION = "10.15.0"
-NPM_FLAGS = "--version"
 NEXT_TELEMETRY_DISABLED = "1"
+BUILD_TARGET = "netlify"
 
 [build.processing]
 
@@ -51,38 +62,3 @@ NEXT_TELEMETRY_DISABLED = "1"
 [build.processing.js]
 
 [build.services]
-
-[[headers]]
-for = "/*"
-
-[headers.values]
-X-Frame-Options = "DENY"
-X-Content-Type-Options = "nosniff"
-X-XSS-Protection = "1; mode=block"
-Referrer-Policy = "strict-origin-when-cross-origin"
-Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-Strict-Transport-Security = "max-age=31536000; includeSubDomains"
-
-[[headers]]
-for = "/_next/static/*"
-
-[headers.values]
-Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-for = "/api/*"
-
-[headers.values]
-Cache-Control = "no-store, max-age=0"
-
-[[redirects]]
-from = "/api/supabase/*"
-to = "https://supabase.com/:splat"
-status = 200.0
-force = false
-
-[redirects.query]
-
-[redirects.conditions]
-
-[redirects.headers]
