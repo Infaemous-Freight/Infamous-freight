@@ -173,7 +173,12 @@ To match CI and Codex automation, use the repository-configured Node version thr
 
 ```bash
 export NVM_DIR="$HOME/.nvm"
-. "$NVM_DIR/nvm.sh"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  . "$NVM_DIR/nvm.sh"
+else
+  echo "NVM is required for this setup. Install it first: https://github.com/nvm-sh/nvm#installing-and-updating" >&2
+  exit 1
+fi
 
 nvm install
 nvm use
