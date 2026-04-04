@@ -2,6 +2,8 @@ import "dotenv/config";
 
 import { z } from "zod";
 
+import { isValidDatabaseUrl } from "./database-url.js";
+
 const durationSchema = z.string().trim().min(2);
 const pemSchema = z.string().trim().min(1).transform((value) => value.replace(/\\n/g, "\n"));
 const booleanStringSchema = z.enum(["true", "false"]).transform((value) => value === "true");
@@ -12,7 +14,11 @@ const envSchema = z
     APP_PORT: z.coerce.number().int().positive().default(4000),
     PORT: z.coerce.number().int().positive().optional(),
     API_PORT: z.coerce.number().int().positive().optional(),
-    DATABASE_URL: z.string().trim().min(1),
+    DATABASE_URL: z
+      .string()
+      .trim()
+      .min(1)
+      .refine(isValidDatabaseUrl, "DATABASE_URL must be a valid postgres URL with a hostname and database name"),
     JWT_ALGORITHM: z.enum(["RS256", "HS256"]).default("RS256"),
     JWT_PRIVATE_KEY: pemSchema.optional(),
     JWT_PUBLIC_KEY: pemSchema.optional(),
