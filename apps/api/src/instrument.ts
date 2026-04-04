@@ -1,18 +1,33 @@
+import "dotenv/config";
 import * as Sentry from "@sentry/node";
 import type { ErrorRequestHandler } from "express";
 
-const sentryDsn = process.env.SENTRY_DSN;
+let sentryInitialized = false;
 
-if (sentryDsn) {
+function initializeSentry(): boolean {
+  if (sentryInitialized) {
+    return true;
+  }
+
+  const sentryDsn = process.env.SENTRY_DSN;
+  if (!sentryDsn) {
+    return false;
+  }
+
   Sentry.init({
     dsn: sentryDsn,
     environment: process.env.NODE_ENV ?? "development",
     tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE ?? 0),
   });
+
+  sentryInitialized = true;
+  return true;
 }
 
+initializeSentry();
+
 export function captureException(error: unknown, extras?: Record<string, unknown>): void {
-  if (!sentryDsn) {
+  if (!initializeSentry()) {
     return;
   }
 
