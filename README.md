@@ -179,6 +179,17 @@ Install dependencies.
 pnpm install
 ```
 
+> **Runtime requirement:** this repo enforces Node.js **24.x** (see `.node-version`). If you are on Node 22 or earlier, `pnpm` will fail with `ERR_PNPM_UNSUPPORTED_ENGINE`.
+
+Initialize database tooling for local development.
+
+```bash
+# PostgreSQL CLI required for createdb
+createdb infamous_freight
+pnpm prisma:generate
+pnpm db:migrate
+```
+
 Build the workspace.
 
 ```bash
