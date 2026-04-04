@@ -105,10 +105,13 @@ you find the information you need.
   configuration
 - **[Workspace Improvements](development/WORKSPACE_IMPROVEMENTS.md)** - IDE and
   workspace setup
+- **[Codex Phased Prompting Guide](development/CODEX_PHASED_PROMPTS.md)** -
+  Prompt templates for phase-driven, repo-first Codex execution
 
 ## Automation Workflows
 
-- **[Genesis Executive Command System](automation/GENESIS_EXECUTIVE_COMMAND_SYSTEM.md)** - Master prompt and routing structure for `genesis@manus.bot`
+- **[Genesis Executive Command System](automation/GENESIS_EXECUTIVE_COMMAND_SYSTEM.md)** -
+  Master prompt and routing structure for `genesis@manus.bot`
 
 ### Planning & Roadmap
 
