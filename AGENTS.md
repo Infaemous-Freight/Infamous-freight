@@ -6,8 +6,8 @@ For this repository, always initialize the runtime in each new shell session bef
 ```bash
 export NVM_DIR="$HOME/.nvm"
 . "$NVM_DIR/nvm.sh"
-nvm install 24
-nvm use 24
+nvm install
+nvm use
 corepack enable
 corepack prepare pnpm@10.15.0 --activate
 node -v
