@@ -169,7 +169,7 @@
 ## Reference System Blueprint (for a Node.js/TypeScript stack)
 - **API:** Express intake, quoting, dispatch, tracking, billing endpoints.
   - For all non-public routes, use the standard middleware chain in this order: rate limiting → authenticate → requireOrganization/requireScope → auditLog → validators → handleValidationErrors. See `docs/auth_rate_limit_runbook.md` and `docs/ROUTE_SCOPE_REGISTRY.md` to keep new endpoints aligned with the repo’s security and tenancy model.
-- **DB:** PostgreSQL + Prisma models (`Shipment`, `Quote`, `Load`, `Stop`, `Carrier`, `DispatchEvent`, `Invoice`).
+- **DB:** PostgreSQL + Prisma, with repo models such as `Shipment`, `Load`, `ShipmentEvent`, `OrgInvoice`, and `CarrierScore`; quote, stop, carrier, and invoice are domain concepts here, not necessarily 1:1 Prisma model names in this repo.
 - **Workers:** background jobs for OCR, notifications, ETA refresh, invoicing.
 - **Web app:** Next.js operations dashboard and customer portal.
 - **Auditability:** immutable timeline of dispatch and AI decisions for each load.
