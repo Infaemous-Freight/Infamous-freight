@@ -229,7 +229,7 @@ jobs:
       
       - uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '24'
       
       - uses: pnpm/action-setup@v2
         with:

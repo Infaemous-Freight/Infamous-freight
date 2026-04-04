@@ -10,7 +10,7 @@ RUN apk update && \
     apk add --no-cache dumb-init ca-certificates && \
     rm -rf /var/cache/apk/*
 
-# Install pnpm (Corepack unavailable in node:20-alpine)
+# Install a pinned pnpm version directly instead of relying on Corepack
 RUN npm install -g pnpm@9.15.0
 
 # Stage 1: Install dependencies
