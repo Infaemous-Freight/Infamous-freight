@@ -169,14 +169,14 @@ corepack prepare pnpm@10.15.0 --activate
 
 ### Reproducible local setup (NVM + pnpm)
 
-To match CI and Codex automation, use Node 24 through NVM before running installs or builds:
+To match CI and Codex automation, use the repository-configured Node version through NVM before running installs or builds:
 
 ```bash
 export NVM_DIR="$HOME/.nvm"
 . "$NVM_DIR/nvm.sh"
 
-nvm install 24
-nvm use 24
+nvm install
+nvm use
 
 corepack enable
 corepack prepare pnpm@10.15.0 --activate
