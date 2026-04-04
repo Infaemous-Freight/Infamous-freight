@@ -167,6 +167,29 @@ corepack enable
 corepack prepare pnpm@10.15.0 --activate
 ```
 
+### Reproducible local setup (NVM + pnpm)
+
+To match CI and Codex automation, use the repository-configured Node version through NVM before running installs or builds:
+
+```bash
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  . "$NVM_DIR/nvm.sh"
+else
+  echo "NVM is required for this setup. Install it first: https://github.com/nvm-sh/nvm#installing-and-updating" >&2
+  exit 1
+fi
+
+nvm install 24
+nvm use 24
+
+corepack enable
+corepack prepare pnpm@10.15.0 --activate
+
+node -v
+pnpm -v
+```
+
 Copy environment variables.
 
 ```bash
