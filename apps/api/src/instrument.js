@@ -1,6 +1,8 @@
 // Lightweight instrumentation bootstrap to ensure server startup
+let Sentry = null;
+
 try {
-  const Sentry = require("@sentry/node");
+  Sentry = require("@sentry/node");
   const dsn = process.env.SENTRY_DSN;
   if (dsn) {
     Sentry.init({
@@ -11,22 +13,25 @@ try {
   }
 } catch (err) {
   // If Sentry isn't available, fail open
+  Sentry = null;
+}
+
+function captureException(error) {
+  if (!Sentry) return;
+
+  try {
+    const normalizedError =
+      error instanceof Error ? error : new Error(String(error));
+    Sentry.captureException(normalizedError);
+  } catch (_) {
+    /* Fail gracefully if Sentry unavailable */
+  }
 }
 
 process.on("unhandledRejection", (reason) => {
-  try {
-    const Sentry = require("@sentry/node");
-    Sentry.captureException(reason);
-  } catch (_) {
-    /* Fail gracefully if Sentry unavailable */
-  }
+  captureException(reason);
 });
 
 process.on("uncaughtException", (err) => {
-  try {
-    const Sentry = require("@sentry/node");
-    Sentry.captureException(err);
-  } catch (_) {
-    /* Fail gracefully if Sentry unavailable */
-  }
+  captureException(err);
 });
