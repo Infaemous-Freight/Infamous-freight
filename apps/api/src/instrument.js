@@ -13,7 +13,7 @@ try {
       "development",
     tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE || 0),
     release: process.env.SENTRY_RELEASE || process.env.RELEASE,
-    sendDefaultPii: true,
+    sendDefaultPii: process.env.SENTRY_SEND_PII === "true",
   });
 } catch (err) {
   // If Sentry isn't available, fail open
