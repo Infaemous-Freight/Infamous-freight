@@ -1,5 +1,7 @@
 // apps/api/production-server.js - Production-Ready API with Database Persistence
 /* global URLSearchParams */
+require("./src/instrument.js");
+
 const http = require("http");
 const { generateToken, authenticate } = require("./auth");
 const { validateShipment, sanitize, validateEmail } = require("./validation");
