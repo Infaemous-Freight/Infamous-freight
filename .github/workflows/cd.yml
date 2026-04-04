@@ -36,14 +36,14 @@ jobs:
   # deploy-api runs only when FLY_API_TOKEN is configured; safely skipped otherwise.
   deploy-api:
     needs: check-secrets
-    if: ${{ needs.check-secrets.outputs.has-fly == 'true' }}
+    if: ${{ needs['check-secrets'].outputs['has-fly'] == 'true' }}
     uses: ./.github/workflows/fly-deploy.yml
     secrets: inherit
 
   # deploy-web runs only when all three Vercel secrets are configured; safely skipped otherwise.
   deploy-web:
     needs: check-secrets
-    if: ${{ needs.check-secrets.outputs.has-vercel == 'true' }}
+    if: ${{ needs['check-secrets'].outputs['has-vercel'] == 'true' }}
     uses: ./.github/workflows/vercel-deploy.yml
     secrets: inherit
 
