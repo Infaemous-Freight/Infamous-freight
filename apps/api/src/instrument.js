@@ -20,9 +20,22 @@ function captureException(error) {
   if (!Sentry) return;
 
   try {
-    const normalizedError =
-      error instanceof Error ? error : new Error(String(error));
-    Sentry.captureException(normalizedError);
+    if (error instanceof Error) {
+      Sentry.captureException(error);
+      return;
+    }
+
+    if (error !== null && typeof error === "object") {
+      Sentry.captureException(error);
+      return;
+    }
+
+    const normalizedError = new Error(String(error));
+    Sentry.captureException(normalizedError, {
+      extra: {
+        originalThrowable: error,
+      },
+    });
   } catch (_) {
     /* Fail gracefully if Sentry unavailable */
   }
