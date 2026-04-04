@@ -39,10 +39,10 @@ You are the primary engineering agent for Infamous Freight, an AI-powered autono
 
 ## Testing Requirements
 
-- Ensure Jest tests pass before merging.
+- Ensure `pnpm test` passes before merging.
 - Fix failing tests automatically.
 - Mock Prisma and auth where necessary.
-- Use `runInBand` for stability.
+- Use workspace-supported Vitest options only when needed for debugging or stability.
 
 ## Build Rules
 
