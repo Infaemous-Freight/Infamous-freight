@@ -176,7 +176,7 @@ function main() {
   checkFileContains("apps/web/vercel.json", "buildCommand", "Build command configured");
 
   checkFile("apps/api/Dockerfile", "Docker image configured");
-  checkFileContains("apps/api/Dockerfile", "node:20", "Node 20 runtime used");
+  checkFileContains("apps/api/Dockerfile", "node:24", "Node 24 runtime used");
   checkFileContains("apps/api/Dockerfile", "openssl", "OpenSSL dependencies included");
   checkFileContains("apps/api/Dockerfile", "pnpm install", "pnpm dependency installation");
 

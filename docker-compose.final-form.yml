@@ -22,13 +22,13 @@ services:
       - "127.0.0.1:6379:6379"
 
   dispatch-realtime-service:
-    image: node:20-alpine
+    image: node:24-alpine
     command: ["sh", "-c", "echo 'Scaffold: wire Fastify websocket runtime here' && sleep infinity"]
     depends_on:
       - redis
 
   ingestion-service:
-    image: node:20-alpine
+    image: node:24-alpine
     command: ["sh", "-c", "echo 'Scaffold: wire ELD and broker ingestion workers here' && sleep infinity"]
     depends_on:
       - kafka
