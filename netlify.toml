@@ -9,7 +9,7 @@
 
 [build.environment]
   NODE_VERSION = "24"
-  PNPM_VERSION = "9.15.0"
+  PNPM_VERSION = "10.15.0"
   NEXT_TELEMETRY_DISABLED = "1"
   BUILD_TARGET = "netlify"
 
