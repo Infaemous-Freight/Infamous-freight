@@ -170,16 +170,17 @@ Inspect the current repository and then do the following:
 7. add a README section called "Architecture"
 8. add a Prisma schema with the core models and enums
 
-Use this target:
+Use the existing repository layout as the default target:
 - apps/api
 - apps/web
 - apps/mobile
-- packages/types
-- packages/config
-- packages/ui
+- packages/shared
+- packages/genesis
 - prisma
 - docs
 
+Only create new packages when the current workspace structure cannot support
+the requirement cleanly.
 Do not build marketing pages yet.
 Do not generate filler content.
 Make real file changes.
