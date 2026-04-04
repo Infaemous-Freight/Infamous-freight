@@ -195,22 +195,31 @@ Then show me:
 ```text
 Continue by building the backend in apps/api.
 
+First, inspect the repository and confirm the API stack already implemented in
+apps/api before making changes. Do not introduce a second backend framework.
+Extend the existing backend architecture in place.
+
 Requirements:
-- NestJS + Prisma
-- auth module
-- users module
-- organizations module
-- shipments module
-- dispatch module
-- tracking module
-- drivers module
-- support module
+- use the current apps/api stack found in-repo (Express + Prisma if already implemented)
+- extend existing routes, controllers/handlers, services, middleware, and Prisma usage patterns
+- auth endpoints/features
+- users endpoints/features
+- organizations endpoints/features
+- shipments endpoints/features
+- dispatch endpoints/features
+- tracking endpoints/features
+- drivers endpoints/features
+- support endpoints/features
 
 Implement:
-- DTO validation
-- role guards
+- input validation using the existing validator pattern and shared Zod schemas where applicable
 - JWT auth
 - refresh token handling
+- authorization and scope checks using the existing middleware pattern
+- tenant-scoped Prisma queries only
+- non-public endpoints using the standard middleware stack:
+  limiters -> authenticate -> requireOrganization -> requireScope -> auditLog -> validators -> handleValidationErrors
+- new endpoints and middleware within the existing Express route structure, not NestJS modules/guards/DTOs
 - shipment create endpoint
 - shipment status update endpoint
 - driver assignment endpoint
