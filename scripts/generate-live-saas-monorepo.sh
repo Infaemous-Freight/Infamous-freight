@@ -9,7 +9,7 @@ cat > package.json <<JSON
 {
   "name": "$REPO_NAME",
   "private": true,
-  "packageManager": "pnpm@9.15.4",
+  "packageManager": "pnpm@10.15.0",
   "scripts": {
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",

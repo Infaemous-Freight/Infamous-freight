@@ -7,12 +7,12 @@ This document defines the runtime contract, required checks, and merge rules for
 | Constraint      | Value       |
 | --------------- | ----------- |
 | Node.js version | `24.x`      |
-| pnpm version    | `9`         |
+| pnpm version    | `10`        |
 | Package manager | pnpm only   |
 
 - `.nvmrc` pins Node to `24`.
 - `package.json` `engines.node` enforces `24.x`.
-- `package.json` `packageManager` enforces `pnpm@9`.
+- `package.json` `packageManager` enforces `pnpm@10`.
 - No `package-lock.json` or `yarn.lock` files are permitted.
 
 ## Required Scripts
