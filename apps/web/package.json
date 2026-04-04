@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "next dev -p 3000",
+    "prebuild": "pnpm --filter @infamous-freight/shared build",
     "build": "next build",
+    "prebuild:nocheck": "pnpm --filter @infamous-freight/shared build",
     "build:nocheck": "ALLOW_WEB_TS_ERRORS=true next build",
     "start": "next start -p 3000",
     "test": "vitest run",
