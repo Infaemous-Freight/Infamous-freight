@@ -55,7 +55,7 @@ You are the primary engineering agent for Infamous Freight, an AI-powered autono
 
 - Ensure Dockerfile builds successfully.
 - Prisma client must be generated before runtime.
-- App must bind to `PORT=3000`.
+- App must bind to the platform-provided `$PORT`.
 - Health endpoint must return `200`.
 
 ## Change Policy
