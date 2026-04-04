@@ -3,7 +3,7 @@ set -euo pipefail
 
 echo "==> Enabling pnpm via Corepack"
 corepack enable
-corepack prepare pnpm@9.15.0 --activate
+corepack prepare pnpm@10.15.0 --activate
 
 if [ -f ".env.example" ] && [ ! -f ".env" ]; then
   echo "==> Creating .env from .env.example"
