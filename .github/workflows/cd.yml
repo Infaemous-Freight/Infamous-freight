@@ -10,30 +10,29 @@ permissions:
 
 jobs:
   deploy-api:
+    # Skip deploy cleanly when secrets are not available (e.g., PRs from forks or fresh environments).
+    if: ${{ secrets.FLY_API_TOKEN != '' }}
     uses: ./.github/workflows/fly-deploy.yml
     secrets: inherit
 
   deploy-web:
+    # Skip deploy cleanly when secrets are not available.
+    if: ${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' }}
     uses: ./.github/workflows/vercel-deploy.yml
     secrets: inherit
 
   production-validation:
     runs-on: ubuntu-latest
     needs: [deploy-api, deploy-web]
+    # Only validate when endpoints are configured; otherwise skip (do not fail the pipeline).
+    if: ${{ secrets.PRODUCTION_API_URL != '' && secrets.PRODUCTION_WEB_URL != '' }}
     steps:
       - name: Validate deployed endpoints
         env:
           DEPLOYED_API_URL: ${{ secrets.PRODUCTION_API_URL }}
           DEPLOYED_WEB_URL: ${{ secrets.PRODUCTION_WEB_URL }}
         run: |
-          if [ -z "$DEPLOYED_API_URL" ]; then
-            echo "::error::PRODUCTION_API_URL secret is not set. Add it in GitHub → Settings → Secrets and variables → Actions."
-            exit 1
-          fi
-          if [ -z "$DEPLOYED_WEB_URL" ]; then
-            echo "::error::PRODUCTION_WEB_URL secret is not set. Add it in GitHub → Settings → Secrets and variables → Actions."
-            exit 1
-          fi
+          set -euo pipefail
           echo "Checking API: $DEPLOYED_API_URL"
           curl -f --fail-with-body "$DEPLOYED_API_URL" || { echo "::error::API health check failed for $DEPLOYED_API_URL"; exit 1; }
           echo "Checking Web: $DEPLOYED_WEB_URL"
