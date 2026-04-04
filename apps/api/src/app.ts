@@ -118,11 +118,21 @@ export function createApp(): Express {
 
   if (env.nodeEnv !== "production") {
     app.get("/debug/sentry", (_req, res) => {
+      if (!env.sentryDsn) {
+        res.status(503).json({
+          success: false,
+          error: "Sentry is disabled: SENTRY_DSN is not configured",
+          captured: false,
+        });
+        return;
+      }
+
       const error = new Error("Sentry verification route triggered");
       const eventId = Sentry.captureException(error);
       res.status(500).json({
         success: false,
         error: "Sentry test event sent",
+        captured: true,
         eventId,
       });
     });
