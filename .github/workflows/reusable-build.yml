@@ -88,8 +88,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| **Package** | \\`${{ inputs.package-name }}\
-` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Package** | \`${{ inputs.package-name }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| **Node Version** | ${{ inputs.node-version }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Status** | ✅ Success |" >> $GITHUB_STEP_SUMMARY
           echo "| **Artifact** | ${{ inputs.artifact-name }} |" >> $GITHUB_STEP_SUMMARY
