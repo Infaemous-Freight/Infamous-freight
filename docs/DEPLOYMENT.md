@@ -5,7 +5,7 @@ This document covers environment setup, secrets management, and platform-specifi
 ## Prerequisites
 
 - Node.js 24.x (`nvm use` or `nvm install 24`)
-- pnpm 9.x (`corepack enable && corepack prepare pnpm@9.15.0 --activate`)
+- pnpm 10.x (`corepack enable && corepack prepare pnpm@10.15.0 --activate`)
 - PostgreSQL database (local or managed)
 - Required environment variables (see [Environment Variables](#environment-variables))
 

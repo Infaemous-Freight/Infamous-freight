@@ -164,7 +164,7 @@ Enable pnpm via Corepack.
 
 ```bash
 corepack enable
-corepack prepare pnpm@9.15.0 --activate
+corepack prepare pnpm@10.15.0 --activate
 ```
 
 Copy environment variables.
@@ -225,7 +225,7 @@ If you are developing from Android (for example, a Samsung Galaxy device), use t
 
    ```bash
    corepack enable
-   corepack prepare pnpm@9.15.0 --activate
+   corepack prepare pnpm@10.15.0 --activate
    pnpm -v
    ```
 
@@ -338,7 +338,7 @@ CI enforces baseline test coverage thresholds (lines/functions/statements: 70%, 
 ## Runtime Policy
 
 - Required runtime: Node.js 24.x
-- Required package manager: pnpm 9.x
+- Required package manager: pnpm 10.x
 - Source of truth: `.nvmrc` + root `package.json` engines
 
 If your local runtime does not match these versions, switch with your version manager before running installs or checks.

@@ -35,7 +35,7 @@ const pkg = readJson("package.json");
 const expectedNodeMajor = majorFromVersion(nvmrc);
 
 if (!pkg.packageManager) {
-  fail('Root package.json must define "packageManager", for example "pnpm@9.15.0".');
+  fail('Root package.json must define "packageManager", for example "pnpm@10.15.0".');
 }
 
 if (!String(pkg.packageManager).startsWith("pnpm@")) {

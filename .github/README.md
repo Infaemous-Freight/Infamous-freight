@@ -134,7 +134,7 @@ cd Infamous-freight
 Enable pnpm via Corepack.
 
 corepack enable
-corepack prepare pnpm@9.15.0 --activate
+corepack prepare pnpm@10.15.0 --activate
 
 Copy environment variables.
 

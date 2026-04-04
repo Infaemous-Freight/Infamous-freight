@@ -4,7 +4,7 @@
 set -euo pipefail
 
 command -v pnpm >/dev/null 2>&1 || {
-  echo "pnpm not found. Run 'corepack enable && corepack prepare pnpm@9.15.0 --activate' first."
+  echo "pnpm not found. Run 'corepack enable && corepack prepare pnpm@10.15.0 --activate' first."
   exit 1
 }
 

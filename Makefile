@@ -7,7 +7,7 @@ help: ## Show available commands
 
 install: ## Install all dependencies
 	corepack enable
-	corepack prepare pnpm@9.15.0 --activate
+	corepack prepare pnpm@10.15.0 --activate
 	pnpm install
 
 build: ## Build all packages and apps

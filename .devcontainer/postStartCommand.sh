@@ -7,7 +7,7 @@ cd "/workspaces/${LOCAL_WORKSPACE_FOLDER_BASENAME:-$(basename "$(pwd)")}" 2>/dev
 
 if ! command -v pnpm >/dev/null 2>&1; then
   corepack enable
-  corepack prepare pnpm@9.15.0 --activate
+  corepack prepare pnpm@10.15.0 --activate
 fi
 
 if command -v psql >/dev/null 2>&1; then

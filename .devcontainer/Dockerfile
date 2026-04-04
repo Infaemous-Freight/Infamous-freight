@@ -16,7 +16,7 @@ RUN apt-get update \
 USER vscode
 
 RUN corepack enable \
-  && corepack prepare pnpm@9.0.0 --activate \
+  && corepack prepare pnpm@10.15.0 --activate \
   && pnpm --version \
   && node --version \
   && npm --version

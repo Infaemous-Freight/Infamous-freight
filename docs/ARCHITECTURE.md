@@ -41,7 +41,7 @@ Client (Web / Mobile)
 | Concern | Technology |
 |---|---|
 | Runtime | Node.js 22.x |
-| Package manager | pnpm 9.x (workspace monorepo) |
+| Package manager | pnpm 10.x (workspace monorepo) |
 | API framework | Express + TypeScript |
 | ORM | Prisma |
 | Database | PostgreSQL |
