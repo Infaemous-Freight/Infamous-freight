@@ -4,7 +4,7 @@
 For this repository, always initialize the runtime in each new shell session before running `pnpm install` or any `pnpm ... build` command:
 
 ```bash
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 . "$NVM_DIR/nvm.sh"
 nvm install
 nvm use
