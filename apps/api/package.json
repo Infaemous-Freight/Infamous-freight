@@ -17,7 +17,7 @@
     "db:migrate:dev": "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 prisma migrate dev --schema=prisma/schema.prisma"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1009.0",
+    "@aws-sdk/client-s3": "^3.1024.0",
     "@aws-sdk/s3-request-presigner": "^3.1020.0",
     "@infamous-freight/shared": "workspace:*",
     "@prisma/adapter-pg": "^7.6.0",
