@@ -12,7 +12,7 @@
     "lint": "eslint src --ext .ts",
     "test": "node scripts/run-vitest.mjs",
     "smoke": "node -e \"const base = (process.env.API_URL || 'http://localhost:4000').replace(/\\/$/, ''); fetch(base + '/health').then((res) => { if (!res.ok) process.exit(1); }).catch(() => process.exit(1));\"",
-    "prisma:generate": "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 prisma generate --no-engine --schema=prisma/schema.prisma",
+    "prisma:generate": "node scripts/prisma-generate-safe.mjs",
     "db:migrate": "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 prisma migrate deploy --schema=prisma/schema.prisma",
     "db:migrate:dev": "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 prisma migrate dev --schema=prisma/schema.prisma"
   },
