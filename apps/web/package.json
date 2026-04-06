@@ -19,7 +19,7 @@
     "@stripe/react-stripe-js": "^5.4.0",
     "@stripe/stripe-js": "^8.4.0",
     "@supabase/ssr": "^0.7.0",
-    "@supabase/supabase-js": "^2.101.1",
+    "@supabase/supabase-js": "2.101.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/edge-config": "^1.4.0",
     "@vercel/kv": "^3.0.0",
