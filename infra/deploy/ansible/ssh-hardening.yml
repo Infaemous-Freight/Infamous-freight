@@ -1,0 +1,44 @@
+---
+- name: Harden SSH daemon configuration
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    sshd_config_path: /etc/ssh/sshd_config
+    ssh_service_name: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
+
+  handlers:
+    - name: Restart SSH service
+      ansible.builtin.service:
+        name: "{{ ssh_service_name }}"
+        state: restarted
+
+  tasks:
+    - name: Enforce secure SSH daemon settings
+      ansible.builtin.lineinfile:
+        path: "{{ sshd_config_path }}"
+        regexp: "^{{ item.key }}\\s+"
+        line: "{{ item.key }} {{ item.value }}"
+        state: present
+        create: false
+        backup: true
+        validate: "/usr/sbin/sshd -t -f %s"
+      loop:
+        - { key: PermitRootLogin, value: 'no' }
+        - { key: PasswordAuthentication, value: 'no' }
+        - { key: PubkeyAuthentication, value: 'yes' }
+        - { key: ChallengeResponseAuthentication, value: 'no' }
+        - { key: KbdInteractiveAuthentication, value: 'no' }
+        - { key: UsePAM, value: 'yes' }
+        - { key: MaxAuthTries, value: '3' }
+        - { key: LoginGraceTime, value: '30' }
+        - { key: X11Forwarding, value: 'no' }
+        - { key: AllowTcpForwarding, value: 'no' }
+      notify: Restart SSH service
+
+    - name: Ensure SSH daemon is enabled and running
+      ansible.builtin.service:
+        name: "{{ ssh_service_name }}"
+        enabled: true
+        state: started
