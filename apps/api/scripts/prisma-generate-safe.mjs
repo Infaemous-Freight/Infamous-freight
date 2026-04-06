@@ -11,6 +11,7 @@ const result = spawnSync('prisma', args, {
   stdio: 'pipe',
   encoding: 'utf8',
   env,
+  shell: true,
 });
 
 if (result.stdout) {
