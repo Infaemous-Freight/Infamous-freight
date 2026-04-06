@@ -15,7 +15,7 @@
     "build:shared": "pnpm --filter @infamous-freight/shared build",
     "setup:offline": "bash -c 'pnpm --config.engine-strict=false run prisma:generate:offline; pnpm --config.engine-strict=false --filter @infamous-freight/shared build'",
     "prisma:generate:offline": "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 pnpm --config.engine-strict=false -r --if-present prisma:generate || echo \"[prisma:generate:offline] prisma generate skipped (engine fetch unavailable)\"",
-    "prisma:generate": "pnpm run prisma:generate:offline",
+    "prisma:generate": "pnpm -r --if-present prisma:generate",
     "prisma:generate:relaxed": "pnpm --config.engine-strict=false -r --if-present prisma:generate",
     "db:migrate": "pnpm --filter @infamous/api db:migrate",
     "db:migrate:relaxed": "pnpm --config.engine-strict=false --filter @infamous/api db:migrate",
