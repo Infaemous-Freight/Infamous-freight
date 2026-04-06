@@ -165,7 +165,7 @@ make infra-logs             # tail infra logs
 make smoke                  # /health smoke test
 ```
 
-CI enforces coverage thresholds (lines/functions/statements: 70%, branches: 60%) for suites that report coverage.
+CI enforces the coverage settings defined in the repository and workspace test configuration for suites that report coverage.
 
 ---
 
