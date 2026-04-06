@@ -15,12 +15,12 @@ if [[ ! -f "${PLAYBOOK_PATH}" ]]; then
   exit 1
 fi
 
-INVENTORY="${INVENTORY:-${ROOT_DIR}/infra/deploy/ansible/hosts.ini}"
+INVENTORY="${INVENTORY:?INVENTORY must be set to the path of an Ansible inventory file.}"
 
 if [[ ! -f "${INVENTORY}" ]]; then
   cat >&2 <<EOF
 Inventory file not found at ${INVENTORY}.
-Set INVENTORY=/path/to/hosts.ini and retry.
+Set INVENTORY=/path/to/inventory and retry.
 EOF
   exit 1
 fi
