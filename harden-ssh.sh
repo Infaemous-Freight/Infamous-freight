@@ -119,7 +119,7 @@ set_kv "LoginGraceTime" "30"
 set_kv "AllowUsers" "${ALLOW_USERS}"
 
 if ! sshd -t -f "${tmp}"; then
-  echo "ERROR: generated config failed validation. Restoring original."
+  echo "ERROR: generated config failed validation. Original config was left untouched; backup remains available at ${backup}."
   rm -f "${tmp}"
   exit 1
 fi
