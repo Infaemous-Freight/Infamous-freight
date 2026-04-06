@@ -16,7 +16,7 @@ CodeQL analyses from advanced configurations cannot be processed when the defaul
 
 ## Root Cause
 
-When GitHub's default CodeQL setup is enabled, it reserves the `/language:` category prefix and blocks any SARIF uploads from advanced configurations, regardless of the category used. This is a platform-level restriction to prevent duplicate analyses.
+When GitHub's default CodeQL setup is enabled, GitHub will not process SARIF uploads produced by an advanced CodeQL workflow. Default Setup and Advanced Configuration are mutually exclusive, so enabling both causes the advanced workflow upload to fail. As a secondary detail, GitHub also reserves the `/language:` category prefix under Default Setup, but that is separate from the primary failure shown in the error above.
 
 ## Resolution Steps
 
