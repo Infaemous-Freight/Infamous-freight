@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Harden OpenSSH server config in a safe, idempotent way.
+# Usage:
+#   ALLOW_USERS="deployer youradmin" ./harden-ssh.sh
+#
+# Optional:
+#   SSHD_CONFIG=/path/to/sshd_config ALLOW_USERS="deployer youradmin" ./harden-ssh.sh
+
+SSHD_CONFIG="${SSHD_CONFIG:-/etc/ssh/sshd_config}"
+ALLOW_USERS="${ALLOW_USERS:-}"
+
+if [[ -z "${ALLOW_USERS}" ]]; then
+  echo "ERROR: ALLOW_USERS is required."
+  echo 'Example: ALLOW_USERS="deployer youradmin" ./harden-ssh.sh'
+  exit 1
+fi
+
+if [[ "${EUID}" -ne 0 ]]; then
+  echo "ERROR: must be run as root (or with sudo)."
+  exit 1
+fi
+
+if [[ ! -f "${SSHD_CONFIG}" ]]; then
+  echo "ERROR: sshd config not found at ${SSHD_CONFIG}"
+  exit 1
+fi
+
+if ! command -v sshd >/dev/null 2>&1; then
+  echo "ERROR: sshd binary not found in PATH."
+  exit 1
+fi
+
+backup="${SSHD_CONFIG}.bak.$(date +%Y%m%d%H%M%S)"
+cp "${SSHD_CONFIG}" "${backup}"
+echo "Backed up existing config to: ${backup}"
+
+tmp="$(mktemp)"
+cp "${SSHD_CONFIG}" "${tmp}"
+
+set_kv() {
+  local key="$1"
+  local value="$2"
+  if grep -Eq "^[#[:space:]]*${key}[[:space:]]+" "${tmp}"; then
+    sed -E -i "s|^[#[:space:]]*${key}[[:space:]]+.*|${key} ${value}|g" "${tmp}"
+  else
+    printf "%s %s\n" "${key}" "${value}" >>"${tmp}"
+  fi
+}
+
+# Core hardening defaults for passwordless admin access.
+set_kv "PermitRootLogin" "no"
+set_kv "PasswordAuthentication" "no"
+set_kv "ChallengeResponseAuthentication" "no"
+set_kv "KbdInteractiveAuthentication" "no"
+set_kv "UsePAM" "yes"
+set_kv "PubkeyAuthentication" "yes"
+set_kv "X11Forwarding" "no"
+set_kv "AllowAgentForwarding" "no"
+set_kv "AllowTcpForwarding" "no"
+set_kv "MaxAuthTries" "3"
+set_kv "ClientAliveInterval" "300"
+set_kv "ClientAliveCountMax" "2"
+set_kv "LoginGraceTime" "30"
+set_kv "Protocol" "2"
+set_kv "AllowUsers" "${ALLOW_USERS}"
+
+if ! sshd -t -f "${tmp}"; then
+  echo "ERROR: generated config failed validation. Restoring original."
+  rm -f "${tmp}"
+  exit 1
+fi
+
+cp "${tmp}" "${SSHD_CONFIG}"
+rm -f "${tmp}"
+
+echo "Validated and wrote hardened SSH config."
+
+if command -v systemctl >/dev/null 2>&1; then
+  systemctl restart sshd 2>/dev/null || systemctl restart ssh 2>/dev/null || true
+else
+  service sshd restart 2>/dev/null || service ssh restart 2>/dev/null || true
+fi
+
+echo "Done. Current key settings:"
+for k in PermitRootLogin PasswordAuthentication AllowUsers; do
+  awk -v key="$k" 'tolower($1)==tolower(key){line=$0} END{if(line) print line}' "${SSHD_CONFIG}"
+done
