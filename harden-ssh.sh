@@ -42,11 +42,45 @@ cp "${SSHD_CONFIG}" "${tmp}"
 set_kv() {
   local key="$1"
   local value="$2"
-  if grep -Eq "^[#[:space:]]*${key}[[:space:]]+" "${tmp}"; then
-    sed -E -i "s|^[#[:space:]]*${key}[[:space:]]+.*|${key} ${value}|g" "${tmp}"
-  else
-    printf "%s %s\n" "${key}" "${value}" >>"${tmp}"
-  fi
+  local rendered_line
+  local new_tmp
+
+  rendered_line="${key} ${value}"
+  new_tmp="$(mktemp)"
+
+  awk -v key="${key}" -v line="${rendered_line}" '
+    BEGIN {
+      in_match = 0
+      updated = 0
+      inserted = 0
+    }
+    /^[[:space:]]*Match([[:space:]]|$)/ {
+      if (!updated && !inserted) {
+        print line
+        inserted = 1
+      }
+      in_match = 1
+      print
+      next
+    }
+    !in_match && $0 ~ ("^[#[:space:]]*" key "[[:space:]]+") {
+      if (!updated) {
+        print line
+        updated = 1
+      }
+      next
+    }
+    {
+      print
+    }
+    END {
+      if (!updated && !inserted) {
+        print line
+      }
+    }
+  ' "${tmp}" >"${new_tmp}"
+
+  mv "${new_tmp}" "${tmp}"
 }
 
 # Core hardening defaults for passwordless admin access.
