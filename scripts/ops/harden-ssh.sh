@@ -129,7 +129,7 @@ ensure_include_directive() {
     {
       printf '%s\n' "$include_line"
       cat /etc/ssh/sshd_config
-    } | sudo tee /etc/ssh/sshd_config.new >/dev/null
+    } | run_root tee /etc/ssh/sshd_config.new >/dev/null
     run_root mv /etc/ssh/sshd_config.new /etc/ssh/sshd_config
   fi
 }
