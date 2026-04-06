@@ -36,6 +36,8 @@ export default [
       "dist/**",
       ".next/**",
       "**/.next/**",
+      ".netlify/**",
+      "**/.netlify/**",
       "build/**",
       "coverage/**",
       "**/coverage/**",
