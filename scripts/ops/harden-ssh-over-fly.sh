@@ -37,7 +37,7 @@ flyctl machine list --app "${FLY_APP}" --json \
       process.stdout.write("[ssh_hosts]\\n" + ips.join("\\n") + "\\n");
     ' > "${TMP_INVENTORY}"
 
-if ! rg -q '^\d+\.\d+\.\d+\.\d+$' "${TMP_INVENTORY}"; then
+if ! grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' "${TMP_INVENTORY}"; then
   echo "No running Fly machines with private IPv4 addresses found for app ${FLY_APP}." >&2
   exit 1
 fi
