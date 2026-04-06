@@ -44,7 +44,7 @@
     "bullmq": "^5.71.1",
     "@sentry/node": "^10.46.0",
     "@sentry/profiling-node": "^10.47.0",
-    "express-validator": "^7.2.1"
+    "express-validator": "^7.3.2"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
