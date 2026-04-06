@@ -164,7 +164,7 @@ pnpm typecheck        # strict TypeScript checks
 pnpm test             # run workspace tests serially
 pnpm audit            # full dependency audit
 pnpm audit:prod       # production dependency audit
-pnpm health           # lint + typecheck + test (no build)
+pnpm health           # lint + typecheck + test (no full workspace build)
 pnpm validate         # full build + typecheck + lint + test
 ```
 
