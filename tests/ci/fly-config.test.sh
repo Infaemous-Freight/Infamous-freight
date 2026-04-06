@@ -116,7 +116,7 @@ assert_not_empty "fly-deploy.yml has dedicated fly-config step" "$DEPLOY_SCRIPT_
 
 DEPLOY_COMMAND=$(extract_literal 'flyctl deploy' "$FLY_DEPLOY_YML")
 assert_contains "fly-deploy.yml deploy command uses config path" "$DEPLOY_COMMAND" '-c apps/api/fly.toml'
-assert_contains "fly-deploy.yml deploy command passes app flag" "$DEPLOY_COMMAND" '-a "{ steps.fly-config.outputs.app_name }"'
+assert_contains "fly-deploy.yml deploy command passes app flag" "$DEPLOY_COMMAND" '-a "${{ steps.fly-config.outputs.app_name }}"'
 assert_contains "fly-deploy.yml deploy command uses remote-only" "$DEPLOY_COMMAND" '--remote-only'
 assert_contains "fly-deploy.yml deploy command uses depot=false" "$DEPLOY_COMMAND" '--depot=false'
 
@@ -125,7 +125,7 @@ API_PG_TYPES_VERSION=$(node -e "const p=require(process.argv[1]); console.log(p.
 assert_eq "@types/pg version" "^8.20.0" "$API_PG_TYPES_VERSION"
 
 EXPRESS_RATE_LIMIT_VERSION=$(node -e "const p=require(process.argv[1]); console.log(p.dependencies['express-rate-limit'] || '')" "$API_PACKAGE_JSON")
-assert_eq "express-rate-limit version" "^8.3.1" "$EXPRESS_RATE_LIMIT_VERSION"
+assert_eq "express-rate-limit version" "^8.3.2" "$EXPRESS_RATE_LIMIT_VERSION"
 
 ARGON2_VERSION=$(node -e "const p=require(process.argv[1]); console.log(p.dependencies['argon2'] || '')" "$API_PACKAGE_JSON")
 assert_eq "argon2 version" "^0.44.0" "$ARGON2_VERSION"
