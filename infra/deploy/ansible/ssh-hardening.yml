@@ -1,0 +1,94 @@
+---
+- name: Harden OpenSSH on Linux hosts
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    ssh_allow_users: ["deployer"]
+    ssh_backup_dir: /etc/ssh/backup
+    ssh_dropin_dir: /etc/ssh/sshd_config.d
+    ssh_hardening_file: "{{ ssh_dropin_dir }}/99-hardening.conf"
+    ssh_allowusers_file: "{{ ssh_dropin_dir }}/99-allowusers.conf"
+    sshd_service_name: "{{ 'ssh' if ansible_os_family == 'Debian' else 'sshd' }}"
+
+  pre_tasks:
+    - name: Validate allow-users variable is set
+      ansible.builtin.assert:
+        that:
+          - ssh_allow_users | length > 0
+        fail_msg: "Set ssh_allow_users (e.g. -e \"ssh_allow_users=['deployer']\")."
+
+  tasks:
+    - name: Ensure backup and drop-in directories exist
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: "{{ item.mode }}"
+      loop:
+        - { path: "{{ ssh_backup_dir }}", mode: "0700" }
+        - { path: "{{ ssh_dropin_dir }}", mode: "0755" }
+
+    - name: Backup sshd_config
+      ansible.builtin.copy:
+        src: /etc/ssh/sshd_config
+        dest: "{{ ssh_backup_dir }}/sshd_config.{{ ansible_date_time.iso8601_basic_short }}.bak"
+        remote_src: true
+        mode: "0600"
+
+    - name: Ensure Include directive exists in base sshd_config
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^\s*Include\s+/etc/ssh/sshd_config\.d/\*\.conf\s*$'
+        line: 'Include /etc/ssh/sshd_config.d/*.conf'
+        insertafter: BOF
+
+    - name: Write SSH hardening drop-in
+      ansible.builtin.copy:
+        dest: "{{ ssh_hardening_file }}"
+        mode: "0644"
+        content: |
+          # Authentication
+          PubkeyAuthentication yes
+          PasswordAuthentication no
+          KbdInteractiveAuthentication no
+          ChallengeResponseAuthentication no
+          PermitEmptyPasswords no
+          MaxAuthTries 3
+          LoginGraceTime 30
+          MaxSessions 10
+
+          # Root/account policy
+          PermitRootLogin no
+          PermitUserEnvironment no
+          StrictModes yes
+
+          # Session/network hardening
+          X11Forwarding no
+          AllowTcpForwarding no
+          AllowAgentForwarding no
+          PermitTunnel no
+          GatewayPorts no
+          ClientAliveInterval 300
+          ClientAliveCountMax 2
+          TCPKeepAlive no
+          Compression no
+
+          # Logging
+          SyslogFacility AUTHPRIV
+          LogLevel VERBOSE
+
+    - name: Write AllowUsers drop-in
+      ansible.builtin.copy:
+        dest: "{{ ssh_allowusers_file }}"
+        mode: "0644"
+        content: "AllowUsers {{ ssh_allow_users | join(' ') }}\n"
+
+    - name: Validate sshd config
+      ansible.builtin.command: sshd -t
+      changed_when: false
+
+    - name: Reload SSH service
+      ansible.builtin.service:
+        name: "{{ sshd_service_name }}"
+        state: reloaded

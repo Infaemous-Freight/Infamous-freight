@@ -406,3 +406,27 @@ ENDPOINT_BASE_URL=https://api.example.com ENDPOINT_AUTH_TOKEN=<bearer-token> ./s
 
 ---
 
+### 14. **ops/harden-ssh.sh**
+
+Hardens OpenSSH using drop-in config with backup + validation + rollback safety.
+
+**Usage:**
+
+```bash
+# dry-run
+ALLOW_USERS="deployer ops" ./scripts/ops/harden-ssh.sh
+
+# apply
+ALLOW_USERS="deployer ops" ./scripts/ops/harden-ssh.sh --apply
+```
+
+### 15. **ops/harden-ssh-over-fly.sh**
+
+Executes SSH hardening remotely on a Fly machine over `fly ssh`.
+
+**Usage:**
+
+```bash
+./scripts/ops/harden-ssh-over-fly.sh --app infra-bastion --machine <machine-id> --allow-users "deployer ops" --apply
+```
+
