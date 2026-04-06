@@ -9,14 +9,14 @@ export NVM_DIR="$HOME/.nvm"
 nvm install
 nvm use
 corepack enable
-corepack prepare pnpm@10.15.0 --activate
+corepack prepare pnpm@10.33.0 --activate
 node -v
 pnpm -v
 ```
 
 Expected versions:
 - `node -v` => `v24.x`
-- `pnpm -v` => `10.x` (currently `10.15.0`)
+- `pnpm -v` => `10.x` (currently `10.33.0`)
 
 ## Sentry integration conventions (Codex persistence)
 - Keep the existing pnpm workspace tooling (`pnpm`, Node 24, pnpm 10) for dependency and script changes; do not switch package managers.
