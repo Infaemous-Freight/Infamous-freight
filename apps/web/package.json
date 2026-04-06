@@ -17,7 +17,7 @@
     "@infamous-freight/shared": "workspace:*",
     "@sentry/nextjs": "^10.46.0",
     "@stripe/react-stripe-js": "^6.1.0",
-    "@stripe/stripe-js": "^8.4.0",
+    "@stripe/stripe-js": "^9.0.1",
     "@supabase/ssr": "^0.10.0",
     "@supabase/supabase-js": "2.101.1",
     "@vercel/analytics": "^2.0.1",
