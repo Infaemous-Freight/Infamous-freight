@@ -20,4 +20,6 @@ node_modules
 
 # Large infrastructure and generated assets
 infra/**/dist
-infra/**/.terraform
+**/.netlify/**
+**/.terraform/**
+**/*.tfstate*
