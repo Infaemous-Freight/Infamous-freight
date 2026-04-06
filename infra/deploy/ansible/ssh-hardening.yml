@@ -21,6 +21,7 @@
         regexp: "^{{ item.key }}\\s+"
         line: "{{ item.key }} {{ item.value }}"
         state: present
+        insertbefore: "^Match\\b"
         create: false
         backup: true
         validate: "/usr/sbin/sshd -t -f %s"
