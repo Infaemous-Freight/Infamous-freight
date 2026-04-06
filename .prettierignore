@@ -1,0 +1,23 @@
+# Dependency and package-manager artifacts
+node_modules
+.pnpm-store
+
+# Build and cache outputs
+**/dist
+**/build
+**/.next
+**/coverage
+**/.turbo
+**/*.tsbuildinfo
+
+# Local environment and deployment state
+.env
+.env.*
+!.env.example
+!.env.*.example
+.vercel
+.firebase
+
+# Large infrastructure and generated assets
+infra/**/dist
+infra/**/.terraform

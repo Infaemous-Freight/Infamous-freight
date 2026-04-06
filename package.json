@@ -36,7 +36,9 @@
     "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test",
     "smoke:release": "bash scripts/release-smoke-check.sh",
     "deploy:check": "pnpm validate && pnpm audit:prod && pnpm smoke:release",
-    "deploy:work": "bash scripts/deploy-work-branch.sh"
+    "deploy:work": "bash scripts/deploy-work-branch.sh",
+    "health": "pnpm run lint && pnpm run typecheck && pnpm run test",
+    "health:quick": "pnpm run lint && pnpm run typecheck"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

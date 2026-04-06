@@ -151,6 +151,25 @@ When opening PRs, state clearly whether your change targets:
 
 ---
 
+## Operator Command Map
+
+Use these root commands for deterministic day-to-day operation:
+
+```bash
+pnpm install          # install all workspace dependencies
+pnpm dev:api          # run API in dev mode
+pnpm build            # generate Prisma client (offline-safe) + build all workspaces
+pnpm lint             # lint all workspaces
+pnpm typecheck        # strict TypeScript checks
+pnpm test             # run workspace tests serially
+pnpm audit            # full dependency audit
+pnpm audit:prod       # production dependency audit
+pnpm health           # lint + typecheck + test (no build)
+pnpm validate         # full build + typecheck + lint + test
+```
+
+---
+
 ## Getting Started
 
 Clone the repository.
