@@ -13,9 +13,15 @@ fi
 nvm install >/dev/null
 nvm use >/dev/null
 
-corepack enable >/dev/null 2>&1
-corepack prepare pnpm@10.15.0 --activate >/dev/null 2>&1
+if ! corepack enable >/dev/null; then
+  echo "Failed to enable Corepack. Ensure 'corepack' is installed and accessible." >&2
+  exit 1
+fi
 
+if ! corepack prepare pnpm@10.15.0 --activate >/dev/null; then
+  echo "Failed to prepare pnpm via Corepack. Check Corepack availability, permissions, and network access." >&2
+  exit 1
+fi
 node_version="$(node -v)"
 pnpm_version="$(pnpm -v)"
 
