@@ -97,7 +97,6 @@ set_kv "MaxAuthTries" "3"
 set_kv "ClientAliveInterval" "300"
 set_kv "ClientAliveCountMax" "2"
 set_kv "LoginGraceTime" "30"
-set_kv "Protocol" "2"
 set_kv "AllowUsers" "${ALLOW_USERS}"
 
 if ! sshd -t -f "${tmp}"; then
