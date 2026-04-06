@@ -185,7 +185,7 @@ cp apps/web/.env.example apps/web/.env.local
 Set your database connection in `apps/api/.env`.
 
 ```bash
-DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.wnaievjffghrztjuvutp.supabase.co:5432/postgres?schema=public
+DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@your-project-ref.supabase.co:5432/postgres?schema=public
 ```
 
 Start local infrastructure (optional if you are not using Supabase-hosted services).
