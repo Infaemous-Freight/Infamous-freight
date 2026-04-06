@@ -24,7 +24,7 @@
     "deploy:nocheck": "pnpm run build:nocheck && pnpm run audit:prod && pnpm run smoke:release",
     "typecheck": "pnpm run prisma:generate && pnpm run build:shared && pnpm -r --if-present typecheck",
     "lint": "pnpm -r --if-present run lint",
-    "test": "pnpm run prisma:generate && pnpm run build:shared && pnpm -r --if-present --workspace-concurrency=1 test",
+    "test": "pnpm run prisma:generate:offline && pnpm run build:shared && pnpm -r --if-present --workspace-concurrency=1 test",
     "test:ci": "pnpm run prisma:generate && pnpm run build:shared && pnpm -r --if-present --workspace-concurrency=1 test",
     "audit": "pnpm audit",
     "audit:prod": "pnpm audit --prod",
@@ -73,6 +73,19 @@
       "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0",
       "brace-expansion@5.0.4": "5.0.5",
       "defu@<=6.1.4": ">=6.1.5"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@firebase/util",
+      "@prisma/engines",
+      "@sentry-internal/node-cpu-profiler",
+      "@sentry/cli",
+      "argon2",
+      "esbuild",
+      "msgpackr-extract",
+      "prisma",
+      "protobufjs",
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }
