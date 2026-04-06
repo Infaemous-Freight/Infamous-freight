@@ -9,7 +9,16 @@ export default {
   async fetch(_request: Request, env: Bindings): Promise<Response> {
     const clientSideID = env.LAUNCHDARKLY_CLIENT_SIDE_ID;
     if (!clientSideID) {
-      return new Response("LaunchDarkly is not configured", { status: 500 });
+      return new Response(
+        JSON.stringify({
+          error: "LaunchDarkly is not configured",
+          missingEnvVar: "LAUNCHDARKLY_CLIENT_SIDE_ID",
+        }),
+        {
+          status: 500,
+          headers: { "content-type": "application/json" },
+        },
+      );
     }
 
     const flagKey = env.LAUNCHDARKLY_FLAG_KEY ?? "enableMyNewFeature";
