@@ -11,7 +11,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "next-i18next/pages";
 import styles from "./LanguageSwitcher.module.css";
 
 interface Locale {

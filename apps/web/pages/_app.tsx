@@ -4,7 +4,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import * as Sentry from "@sentry/nextjs";
-import { appWithTranslation } from "next-i18next";
+import { appWithTranslation } from "next-i18next/pages";
 import GlobalLayout from "../components/GlobalLayout";
 import { initDatadogRUM } from "../src/lib/datadog";
 import SentryErrorBoundary from "../components/SentryErrorBoundary";
