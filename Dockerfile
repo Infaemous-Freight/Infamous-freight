@@ -17,7 +17,6 @@ FROM node:${NODE_VERSION}-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV API_PORT=3000
-RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
 COPY --from=build /app ./
 
