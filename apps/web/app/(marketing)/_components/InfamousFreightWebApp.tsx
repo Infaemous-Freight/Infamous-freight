@@ -188,13 +188,15 @@ export default function InfamousFreightWebApp() {
             className="inline-flex rounded-xl border border-slate-300 p-2 md:hidden"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Toggle navigation"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
           >
             <Menu className="h-5 w-5" />
           </button>
         </div>
 
         {menuOpen ? (
-          <div className="border-t border-slate-200 md:hidden">
+          <div id="mobile-navigation" className="border-t border-slate-200 md:hidden">
             <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:px-8">
               <a href="#services" className="text-sm text-slate-600">
                 Services
