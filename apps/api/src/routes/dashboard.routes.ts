@@ -59,7 +59,7 @@ dashboardRoutes.get("/driver-leaderboard", requireAuth, async (req: Request, res
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const tenantId = organizationId;
+    const tenantId = req.user?.tenantId;
 
     const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
 
