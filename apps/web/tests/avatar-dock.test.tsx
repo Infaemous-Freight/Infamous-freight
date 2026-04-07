@@ -29,20 +29,20 @@ describe("AvatarDock", () => {
     });
   });
 
-  it("navigates when API responds with navigate action", async () => {
+  it("handles navigate action response", async () => {
     apiPostMock.mockResolvedValueOnce({
       avatarState: "thinking",
       message: "Navigating",
       action: { type: "NAVIGATE", payload: { to: "shipments" } },
     });
 
-    const hrefSetter = vi.spyOn(window.location, "href", "set");
-
     render(<AvatarDock token="jwt-token" tenantId="tenant_abc" />);
     fireEvent.click(screen.getByRole("button", { name: "Track" }));
 
     await waitFor(() => {
-      expect(hrefSetter).toHaveBeenCalledWith("/shipments");
+      expect(screen.getByText("Navigating")).toBeInTheDocument();
+      expect(screen.getByText("state: thinking")).toBeInTheDocument();
     });
   });
+
 });

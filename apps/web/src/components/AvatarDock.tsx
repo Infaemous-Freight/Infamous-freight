@@ -15,9 +15,9 @@ export function AvatarDock({ token, tenantId }: { token: string; tenantId: strin
 
     if (res.action?.type === "NAVIGATE") {
       const to = res.action.payload?.to;
-      if (to === "loadboard") window.location.href = "/loadboard";
-      if (to === "routes") window.location.href = "/dashboard";
-      if (to === "shipments") window.location.href = "/shipments";
+      if (to === "loadboard") window.location.assign("/loadboard");
+      if (to === "routes") window.location.assign("/dashboard");
+      if (to === "shipments") window.location.assign("/shipments");
     }
   }
 
