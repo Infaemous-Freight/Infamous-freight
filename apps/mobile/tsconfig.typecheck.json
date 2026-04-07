@@ -6,7 +6,7 @@
         "skipLibCheck": true,
         "noImplicitAny": false,
         "moduleResolution": "node",
-        "ignoreDeprecations": "6.0",
+        "ignoreDeprecations": "5.0",
         "lib": ["ES2020"]
     },
     "include": [

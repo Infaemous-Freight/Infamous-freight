@@ -10,20 +10,20 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "expo": "^55.0.5",
-    "expo-router": "^55.0.4",
+    "@expo/metro-runtime": "^55.0.9",
     "@infamous-freight/shared": "workspace:*",
+    "expo": "^55.0.11",
+    "expo-linking": "^55.0.11",
+    "expo-router": "^55.0.10",
     "react": "^19.2.4",
     "react-native": "^0.84.1",
-    "@expo/metro-runtime": "^55.0.6",
-    "expo-linking": "^55.0.7",
-    "react-native-safe-area-context": "^5.4.0",
-    "react-native-screens": "^4.0.0"
+    "react-native-safe-area-context": "^5.7.0",
+    "react-native-screens": "^4.24.0"
   },
   "devDependencies": {
-    "eslint": "^8.57.1",
-    "typescript": "^6.0.2",
-    "vitest": "^4.0.18",
-    "@types/react": "^19.2.2"
+    "@types/react": "^19.2.14",
+    "eslint": "^10.2.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.2"
   }
 }
