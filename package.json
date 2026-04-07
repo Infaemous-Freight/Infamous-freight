@@ -26,6 +26,7 @@
     "lint": "pnpm -r --if-present run lint",
     "test": "pnpm run prisma:generate:offline && pnpm run build:shared && pnpm -r --if-present --workspace-concurrency=1 test",
     "test:ci": "pnpm run prisma:generate:offline && pnpm run build:shared && pnpm -r --if-present --workspace-concurrency=1 test",
+    "vitest": "pnpm --filter @infamous/api exec vitest",
     "audit": "pnpm audit",
     "audit:prod": "pnpm audit --prod",
     "audit:ci": "pnpm run audit && pnpm run audit:prod",
