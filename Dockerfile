@@ -17,7 +17,7 @@ RUN pnpm --filter @infamous/api build
 FROM node:${NODE_VERSION}-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV API_PORT=3000
 
 COPY --from=build /app ./
 
