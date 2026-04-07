@@ -86,14 +86,18 @@ Diff context:
         files = comparison.get('files', [])
         commits = comparison.get('commits', [])
         file_counts = classify_changed_files(files)
-        commit_summaries = [f"- {item.get('sha', '')[:7]} {item.get('commit', {}).get('message', '').splitlines()[0]}" for item in commits[:30]]
+        commit_summaries = []
+        for item in commits[:30]:
+            message = (item.get('commit', {}).get('message') or '').splitlines()
+            first_line = message[0] if message else '<no commit message>'
+            commit_summaries.append(f"- {item.get('sha', '')[:7]} {first_line}")
         user_input = f'''Repository: {settings.github_repository}
 Mode: post_merge_docs_plan
 Base SHA: {before_sha}
 Head SHA: {after_sha}
 Changed file counts: {file_counts}
 Commit summaries:
-{chr(10).join(commit_summaries)}
+{chr(10).join(commit_summaries) if commit_summaries else '- No commits in compare range.'}
 
 Diff context:
 {build_pr_context(files, settings.worker_max_pr_files, settings.worker_max_patch_chars)}

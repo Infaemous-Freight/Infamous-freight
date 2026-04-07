@@ -57,8 +57,22 @@ def main():
     gh = GitHubClient(settings)
     llm = LLMClient(settings)
     event = gh.load_event()
+    pr_number = event.get('pull_request', {}).get('number')
+    if pr_number is None:
+        inputs = event.get('inputs')
+        manual_pr = inputs.get('pr_number') if isinstance(inputs, dict) else None
+        if isinstance(manual_pr, str) and manual_pr.strip().isdigit():
+            pr_number = int(manual_pr.strip())
+        elif isinstance(manual_pr, int):
+            pr_number = manual_pr
+        else:
+            message = (
+                'PR Reviewer skipped: no pull_request payload found. '
+                'For manual workflow_dispatch runs, pass inputs.pr_number.'
+            )
+            append_step_summary(message)
+            return
 
-    pr_number = event['pull_request']['number']
     pr = gh.get_pull_request(pr_number)
     files = gh.list_pull_request_files(pr_number)
     checks = gh.get_check_runs(pr['head']['sha'])

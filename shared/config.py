@@ -54,7 +54,12 @@ class Settings:
     def require_github(self) -> None:
         if not self.github_repository:
             raise RuntimeError("GITHUB_REPOSITORY is required")
-        if not self.github_event_path or not self.github_event_path.exists():
+        if (
+            not self.github_event_path
+            or not self.github_event_path.exists()
+            or not self.github_event_path.is_file()
+            or not os.access(self.github_event_path, os.R_OK)
+        ):
             raise RuntimeError("GITHUB_EVENT_PATH is missing or unreadable")
 
     def require_openai(self) -> None:

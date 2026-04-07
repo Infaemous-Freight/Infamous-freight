@@ -26,3 +26,11 @@ def test_detect_docs_not_needed_when_only_tests_change():
         {'filename': 'tests/test_orders.py'},
     ]
     assert detect_docs_needed(files) is False
+
+
+def test_detect_docs_needed_for_top_level_api_paths():
+    files = [
+        {'filename': 'api/orders.py'},
+        {'filename': 'routes/shipments.py'},
+    ]
+    assert detect_docs_needed(files) is True

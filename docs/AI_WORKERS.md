@@ -37,6 +37,7 @@ This repository includes a narrow-worker AI automation scaffold designed to supp
 /.github/workflows
   ai-issue-triage.yml
   ai-pr-review.yml
+  # includes PR Reviewer, Test Gap, and PR Docs Check jobs
   ai-docs-sync.yml
   ai-release-worker.yml
 /tests/ai_workers
@@ -67,6 +68,13 @@ requirements-ai-workers.txt
 5. Release Worker
 
 Keep label writes and draft release creation disabled until the comment-only outputs prove useful.
+
+## Workflow mapping
+
+1. `ai-issue-triage.yml` → Issue Triage Worker
+2. `ai-pr-review.yml` → PR Reviewer + Test Gap Worker + PR Docs Check
+3. `ai-docs-sync.yml` → Docs Sync Worker (post-merge on `main`)
+4. `ai-release-worker.yml` → Release Worker
 
 ## Notes for this monorepo
 

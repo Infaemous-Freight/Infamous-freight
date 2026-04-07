@@ -27,7 +27,7 @@ def bump_version(last_tag, bump):
         return 'v0.1.0'
     clean = last_tag.lstrip('v')
     parts = clean.split('.')
-    if len(parts) != 3:
+    if len(parts) != 3 or any(not part.isdigit() for part in parts):
         return f'{last_tag}-next'
     major, minor, patch = map(int, parts)
     if bump == 'major':
@@ -76,7 +76,11 @@ def main():
     files = comparison.get('files', [])
     commits = comparison.get('commits', [])
     file_counts = classify_changed_files(files)
-    commit_summaries = [f"- {item.get('sha', '')[:7]} {item.get('commit', {}).get('message', '').splitlines()[0]}" for item in commits[:40]]
+    commit_summaries = []
+    for item in commits[:40]:
+        message = ((item.get('commit') or {}).get('message') or '').splitlines()
+        first_line = message[0] if message else '<no commit message>'
+        commit_summaries.append(f"- {item.get('sha', '')[:7]} {first_line}")
 
     user_input = f'''Repository: {settings.github_repository}
 Last tag: {last_tag or 'none'}

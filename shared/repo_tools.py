@@ -40,7 +40,19 @@ def classify_changed_files(files):
 def detect_docs_needed(files):
     has_code = any(is_code_file(item.get('filename', '')) and not is_test_file(item.get('filename', '')) for item in files)
     has_docs = any(is_doc_file(item.get('filename', '')) for item in files)
-    touches_api = any('/api/' in item.get('filename', '').lower() or '/routes/' in item.get('filename', '').lower() or item.get('filename', '').lower().endswith(('openapi.yaml', 'openapi.yml', 'swagger.json')) for item in files)
+    def _touches_api_surface(filename):
+        lower = filename.lower().replace('\\', '/').lstrip('./')
+        return (
+            lower.startswith(('api/', 'routes/'))
+            or '/api/' in lower
+            or '/routes/' in lower
+            or lower.endswith(('openapi.yaml', 'openapi.yml', 'swagger.json'))
+        )
+
+    touches_api = any(
+        _touches_api_surface(item.get('filename', ''))
+        for item in files
+    )
     return has_code and (not has_docs or touches_api)
 
 
