@@ -73,6 +73,8 @@ const envSchema = z
     STRIPE_PRICE_ENTERPRISE: z.string().optional(),
     STRIPE_SUCCESS_URL: z.string().optional(),
     STRIPE_CANCEL_URL: z.string().optional(),
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
   })
   .superRefine((values, ctx) => {
     if (values.JWT_ALGORITHM === "RS256") {
@@ -168,4 +170,28 @@ export const env = {
   STRIPE_PRICE_ENTERPRISE: parsed.STRIPE_PRICE_ENTERPRISE,
   STRIPE_SUCCESS_URL: parsed.STRIPE_SUCCESS_URL,
   STRIPE_CANCEL_URL: parsed.STRIPE_CANCEL_URL,
+  googleClientId: parsed.GOOGLE_CLIENT_ID,
+  googleClientSecret: parsed.GOOGLE_CLIENT_SECRET,
+} as const;
+
+export const requiredEnv = {
+  databaseUrl: env.databaseUrl,
+} as const;
+
+export const optionalEnv = {
+  sentryDsn: env.sentryDsn,
+  redisUrl: env.redisUrl,
+  stripeSecretKey: env.STRIPE_SECRET_KEY,
+  stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
+  googleClientId: env.googleClientId,
+  googleClientSecret: env.googleClientSecret,
+} as const;
+
+export const productionOnlyEnv = {
+  jwtAlgorithm: env.jwtAlgorithm,
+  jwtSecret: env.jwtSecret,
+  jwtPrivateKey: env.jwtPrivateKey,
+  jwtPublicKey: env.jwtPublicKey,
+  cookieSecret: env.cookieSecret,
+  authCookieEnabled: env.authCookieEnabled,
 } as const;

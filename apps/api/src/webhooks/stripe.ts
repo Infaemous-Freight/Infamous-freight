@@ -1,6 +1,7 @@
 import { Router } from "express";
 import Stripe from "stripe";
 import { env } from "../config/env.js";
+import { prisma } from "../db/prisma.js";
 import { logger } from "../lib/logger.js";
 import { markPaymentSucceeded } from "../services/payment.service.js";
 
@@ -35,6 +36,28 @@ router.post("/", async (req, res) => {
   }
 
   try {
+    const existing = await prisma.webhookEvent.findUnique({ where: { id: event.id } });
+    if (existing?.status === "PROCESSED") {
+      res.status(200).json({ received: true, duplicate: true });
+      return;
+    }
+
+    await prisma.webhookEvent.upsert({
+      where: { id: event.id },
+      update: {
+        type: event.type,
+        payload: JSON.stringify(event),
+        status: "PENDING",
+      },
+      create: {
+        id: event.id,
+        type: event.type,
+        payload: JSON.stringify(event),
+        source: "stripe",
+        status: "PENDING",
+      },
+    });
+
     switch (event.type) {
       case "payment_intent.succeeded": {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
@@ -118,9 +141,24 @@ router.post("/", async (req, res) => {
         logger.info({ eventType: event.type }, "Unhandled Stripe webhook event");
     }
 
+    await prisma.webhookEvent.update({
+      where: { id: event.id },
+      data: { status: "PROCESSED", lastError: null },
+    });
+
     res.status(200).json({ received: true });
   } catch (error) {
     logger.error({ err: error, eventType: event.type }, "Failed to process Stripe webhook");
+    await prisma.webhookEvent
+      .update({
+        where: { id: event.id },
+        data: {
+          status: "FAILED",
+          retryCount: { increment: 1 },
+          lastError: error instanceof Error ? error.message : "Unknown webhook error",
+        },
+      })
+      .catch(() => undefined);
     res.status(500).json({ ok: false, error: "Webhook handler failed" });
   }
 });

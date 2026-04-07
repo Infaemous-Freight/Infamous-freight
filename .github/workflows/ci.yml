@@ -75,11 +75,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Prisma client
+        run: pnpm run prisma:generate
+
       - name: Validate repo standards
         run: node .github/scripts/validate-repo.mjs
 
       - name: Build shared package
         run: pnpm run build:shared
+
+      - name: Check unresolved imports
+        run: pnpm --filter @infamous/api typecheck
+
+      - name: Check Prisma client drift
+        run: |
+          pnpm --filter @infamous/api prisma:generate
+          git diff --exit-code
 
       - name: Security audit
         run: pnpm audit --audit-level=high
@@ -258,6 +269,9 @@ jobs:
 
       - name: Run build
         run: pnpm build
+
+      - name: Docker build validation
+        run: docker build -t infamous-freight-ci .
 
 
   docker-image:

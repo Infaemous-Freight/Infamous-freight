@@ -150,6 +150,7 @@ describe("payment.service", () => {
         userId: "user-1",
         amount: 150.5,
         currency: "usd",
+        idempotencyKey: "idem-1",
       });
 
       expect(mockStripeInstance.paymentIntents.create).toHaveBeenCalledWith(
@@ -157,6 +158,7 @@ describe("payment.service", () => {
           amount: 15050, // 150.5 * 100 rounded
           currency: "usd",
         }),
+        { idempotencyKey: "idem-1" },
       );
       expect(mockPrisma.payment.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -184,10 +186,12 @@ describe("payment.service", () => {
       await createStripePaymentIntent({
         tenantId: "t",
         amount: 50,
+        idempotencyKey: "idem-2",
       });
 
       expect(mockStripeInstance.paymentIntents.create).toHaveBeenCalledWith(
         expect.objectContaining({ currency: "usd" }),
+        { idempotencyKey: "idem-2" },
       );
     });
   });

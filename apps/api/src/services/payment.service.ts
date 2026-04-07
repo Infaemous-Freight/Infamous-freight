@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import { PAYMENT_LINKS, type PaymentLinkType } from "@infamous-freight/shared";
 import { env } from "../config/env.js";
 import { prisma } from "../db/prisma.js";
+import { requireTenantContext, withTenantWhere } from "../db/tenant-scope.js";
 
 const stripe = env.STRIPE_SECRET_KEY ? new Stripe(env.STRIPE_SECRET_KEY) : null;
 
@@ -12,11 +13,12 @@ export async function createGoDaddyRedirectPayment(params: {
   type: PaymentLinkType;
   amount: number;
 }) {
+  const tenantId = requireTenantContext(params.tenantId);
   const checkoutUrl = PAYMENT_LINKS[params.type];
 
   const payment = await prisma.payment.create({
     data: {
-      tenantId: params.tenantId,
+      tenantId,
       userId: params.userId,
       loadId: params.loadId,
       amount: params.amount,
@@ -42,7 +44,7 @@ export async function createGoDaddyRedirectPayment(params: {
   if (params.loadId) {
     await prisma.loadPayment.create({
       data: {
-        tenantId: params.tenantId,
+        tenantId,
         loadId: params.loadId,
         paymentId: payment.id,
         status: "PENDING",
@@ -59,10 +61,15 @@ export async function createStripePaymentIntent(params: {
   loadId?: string;
   amount: number;
   currency?: string;
+  idempotencyKey: string;
 }) {
   if (!stripe) {
     throw new Error("Stripe is not configured. Set STRIPE_SECRET_KEY.");
   }
+  if (!params.idempotencyKey?.trim()) {
+    throw new Error("Idempotency key is required for Stripe mutations.");
+  }
+  const tenantId = requireTenantContext(params.tenantId);
 
   const currency = (params.currency ?? "usd").toLowerCase();
   const amount = Math.round(params.amount * 100);
@@ -71,15 +78,15 @@ export async function createStripePaymentIntent(params: {
     amount,
     currency,
     metadata: {
-      tenantId: params.tenantId,
+      tenantId,
       userId: params.userId ?? "",
       loadId: params.loadId ?? "",
     },
-  });
+  }, { idempotencyKey: params.idempotencyKey });
 
   const payment = await prisma.payment.create({
     data: {
-      tenantId: params.tenantId,
+      tenantId,
       userId: params.userId,
       loadId: params.loadId,
       amount,
@@ -102,7 +109,7 @@ export async function createStripePaymentIntent(params: {
   if (params.loadId) {
     await prisma.loadPayment.create({
       data: {
-        tenantId: params.tenantId,
+        tenantId,
         loadId: params.loadId,
         paymentId: payment.id,
         status: "PENDING",
@@ -157,12 +164,12 @@ export async function markPaymentSucceeded(input: {
 
   if (payment.loadId) {
     await prisma.load.updateMany({
-      where: { id: payment.loadId, tenantId: payment.tenantId },
+      where: withTenantWhere(payment.tenantId, { id: payment.loadId }),
       data: { status: "PAID" },
     });
 
     await prisma.loadPayment.updateMany({
-      where: { paymentId: payment.id, loadId: payment.loadId, tenantId: payment.tenantId },
+      where: withTenantWhere(payment.tenantId, { paymentId: payment.id, loadId: payment.loadId }),
       data: { status: "PAID" },
     });
   }

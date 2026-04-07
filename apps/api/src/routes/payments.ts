@@ -2,6 +2,8 @@ import { Router } from "express";
 import { z } from "zod";
 import { PAYMENT_LINKS } from "@infamous-freight/shared";
 import { requireAuth, type AuthenticatedRequest } from "../middleware/auth.js";
+import { requirePermission } from "../middleware/authorization.js";
+import { ApiError } from "../utils/errors.js";
 import {
   createGoDaddyRedirectPayment,
   createStripePaymentIntent,
@@ -60,14 +62,21 @@ router.post("/godaddy/checkout", requireAuth, async (req, res, next) => {
   }
 });
 
-router.post("/stripe/payment-intent", requireAuth, async (req, res, next) => {
+router.post(
+  "/stripe/payment-intent",
+  requireAuth,
+  requirePermission("billing:update"),
+  async (req, res, next) => {
   try {
     const { tenantId, id: userId } = (req as AuthenticatedRequest).user!;
     const body = createStripeIntentSchema.parse(req.body);
 
     if (!tenantId) {
-      res.status(400).json({ ok: false, error: "Missing tenant context" });
-      return;
+      throw new ApiError(400, "TENANT_CONTEXT_REQUIRED", "Missing tenant context");
+    }
+    const idempotencyKey = req.header("idempotency-key");
+    if (!idempotencyKey) {
+      throw new ApiError(400, "IDEMPOTENCY_KEY_REQUIRED", "idempotency-key header is required");
     }
 
     const result = await createStripePaymentIntent({
@@ -76,12 +85,14 @@ router.post("/stripe/payment-intent", requireAuth, async (req, res, next) => {
       loadId: body.loadId,
       amount: body.amount,
       currency: body.currency,
+      idempotencyKey,
     });
 
     res.status(201).json({ ok: true, data: result });
   } catch (err) {
     next(err);
   }
-});
+  },
+);
 
 export default router;
