@@ -323,7 +323,6 @@ export default function InfamousFreightWebApp() {
                   placeholder="Enter PRO, BOL, or shipment ID"
                 />
               </label>
-              <button className="h-12 rounded-2xl bg-slate-900 px-6 text-white">Track Shipment</button>
             </div>
 
             {trackingStatus ? (
