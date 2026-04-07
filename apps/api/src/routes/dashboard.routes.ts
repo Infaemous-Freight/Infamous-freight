@@ -59,7 +59,9 @@ dashboardRoutes.get("/driver-leaderboard", requireAuth, async (req: Request, res
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
+    const parsedLimit = Number(req.query.limit);
+    const requestedLimit = Number.isNaN(parsedLimit) ? 10 : parsedLimit;
+    const limit = Math.min(50, Math.max(1, requestedLimit));
 
     const leaderboard = await prisma.carrierScore.findMany({
       where: { tenantId: organizationId },
