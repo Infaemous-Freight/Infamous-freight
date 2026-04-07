@@ -1,45 +1,71 @@
-# Build stage
-FROM node:24-alpine AS builder
+# Fly.io Dockerfile for Next.js Web Frontend (monorepo-aware)
 
+ARG NODE_VERSION=24
+FROM node:${NODE_VERSION}-alpine AS base
+
+RUN apk add --no-cache dumb-init ca-certificates wget
+RUN npm install -g pnpm@10.33.0
+
+# Stage 1: install dependencies for web + shared
+FROM base AS deps
 WORKDIR /app
 
-COPY package*.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/web/package.json ./apps/web/package.json
+COPY packages/shared/package.json ./packages/shared/package.json
 
-RUN npm install -g pnpm && \
-    pnpm install --frozen-lockfile
+ENV HUSKY=0
+RUN pnpm install --filter ./apps/web... --frozen-lockfile
 
-COPY . .
-
-# Build Next.js application
-RUN pnpm build
-
-# Production stage
-FROM node:24-alpine
-
+# Stage 2: build shared package
+FROM base AS shared-builder
 WORKDIR /app
 
-RUN apk add --no-cache dumb-init wget
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/shared ./packages/shared
 
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+WORKDIR /app/packages/shared
+RUN pnpm run build
 
-# Copy from builder
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json pnpm-lock.yaml ./
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.js ./next.config.js
+# Stage 3: build web app
+FROM base AS builder
+WORKDIR /app
 
-# Set environment
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
+COPY --from=shared-builder /app/packages/shared/dist ./packages/shared/dist
+COPY --from=shared-builder /app/packages/shared/package.json ./packages/shared/package.json
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/web ./apps/web
+
+WORKDIR /app/apps/web
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN pnpm run build
+
+# Stage 4: runtime
+FROM node:${NODE_VERSION}-alpine AS runner
+WORKDIR /app
+
+RUN apk add --no-cache dumb-init ca-certificates wget
+
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_OPTIONS="--max-old-space-size=256"
+ENV PORT=3000
+
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
+
+USER nextjs
 
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
 
-ENTRYPOINT ["dumb-init", "--"]
-
-CMD ["npm", "start"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["node", "apps/web/server.js"]
