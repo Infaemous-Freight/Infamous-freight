@@ -7,6 +7,7 @@ app = 'infamous-freight-web'
 primary_region = 'iad'
 
 [build]
+  dockerfile = 'apps/web/Dockerfile'
 
 [http_service]
   internal_port = 3000
