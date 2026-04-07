@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "pnpm --filter @infamous-freight/shared build && tsc -p tsconfig.json",
+    "build": "pnpm --filter @infamous-freight/shared build && rm -rf dist && tsc --build tsconfig.json --force && node scripts/copy-js-assets.mjs",
     "build:nocheck": "tsc -p tsconfig.json --noEmitOnError false",
     "start": "node dist/server.js",
     "typecheck": "pnpm --filter @infamous-freight/shared build && tsc --noEmit -p tsconfig.json",
