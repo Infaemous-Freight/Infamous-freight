@@ -12,6 +12,10 @@ fi
 
 if command -v flyctl >/dev/null 2>&1; then
   FLYCTL_BIN="flyctl"
+elif [ -n "${FLYCTL_INSTALL:-}" ] && [ -x "$FLYCTL_INSTALL/bin/flyctl" ]; then
+  FLYCTL_BIN="$FLYCTL_INSTALL/bin/flyctl"
+elif [ -x "${HOME:-}/.fly/bin/flyctl" ]; then
+  FLYCTL_BIN="${HOME:-}/.fly/bin/flyctl"
 elif [ -x "/home/vscode/.fly/bin/flyctl" ]; then
   FLYCTL_BIN="/home/vscode/.fly/bin/flyctl"
 else
