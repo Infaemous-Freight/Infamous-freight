@@ -10,7 +10,8 @@ COPY packages ./packages
 RUN pnpm install --frozen-lockfile
 
 FROM deps AS build
-RUN pnpm --filter @infamous/api exec prisma generate
+# Use Prisma CLI directly so engine download/generation failures fail the image build.
+RUN pnpm --filter @infamous/api exec prisma generate --schema=prisma/schema.prisma
 RUN pnpm --filter @infamous/api build
 
 FROM node:${NODE_VERSION}-alpine AS runner
