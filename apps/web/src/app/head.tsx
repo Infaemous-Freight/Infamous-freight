@@ -13,7 +13,11 @@ export default function Head() {
           __html: `
             if ('serviceWorker' in navigator) {
               window.addEventListener('load', function () {
-                navigator.serviceWorker.register('/sw.js').catch(function () {});
+                navigator.serviceWorker.register('/sw.js').catch(function (error) {
+                  if ('${process.env.NODE_ENV}' !== 'production') {
+                    console.error('Service worker registration failed:', error);
+                  }
+                });
               });
             }
           `,
