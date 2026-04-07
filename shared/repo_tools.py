@@ -1,8 +1,15 @@
 def is_test_file(path):
-    lower = path.lower()
-    return 'test' in lower or 'spec' in lower or '__tests__' in lower
+    lower = path.lower().replace('\\', '/')
+    parts = [part for part in lower.split('/') if part]
+    filename = parts[-1] if parts else lower
+    directories = parts[:-1]
 
-
+    return (
+        any(part in ('tests', '__tests__') for part in directories)
+        or filename.startswith('test_')
+        or '.test.' in filename
+        or '.spec.' in filename
+    )
 def is_doc_file(path):
     lower = path.lower()
     return lower.startswith('docs/') or 'readme' in lower or 'changelog' in lower or lower.endswith('.md')
