@@ -21,11 +21,11 @@ async function copyJsFiles(currentDir) {
     const relativePath = path.relative(srcRoot, fullPath);
     const tsSourcePath = fullPath.slice(0, -3) + ".ts";
     const tsSourceExists = await stat(tsSourcePath).then((file) => file.isFile()).catch(() => false);
-    if (tsSourceExists) {
-      continue;
-    }
+    const destinationRelativePath = tsSourceExists
+      ? relativePath.slice(0, -3) + ".cjs"
+      : relativePath;
 
-    const destination = path.join(distRoot, relativePath);
+    const destination = path.join(distRoot, destinationRelativePath);
     await mkdir(path.dirname(destination), { recursive: true });
     await cp(fullPath, destination);
   }
