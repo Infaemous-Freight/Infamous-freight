@@ -1,3 +1,5 @@
+/* global caches, fetch */
+
 const CACHE_NAME = 'infamous-freight-v1';
 const STATIC_ASSETS = ['/', '/manifest.webmanifest', '/mask-icon.svg', '/apple-icon', '/icon'];
 
