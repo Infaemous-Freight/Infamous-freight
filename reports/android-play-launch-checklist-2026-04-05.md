@@ -15,9 +15,11 @@ No team can guarantee a literal 100% launch outcome because review timing and pr
 
 ## Recommended lean stack
 
-- **Web**: Firebase Hosting or Vercel
-- **Backend/API**: Cloud Run
-- **Database/Auth**: Supabase or Firebase
+This checklist reflects the repository's current production deployment targets. If infrastructure changes, follow the existing deployment documentation as the source of truth.
+
+- **Web**: Vercel
+- **Backend/API**: Render (primary) + Fly.io (backup)
+- **Database/Auth**: Supabase
 - **Android delivery**: AAB + Play App Signing
 - **Monitoring**: Firebase Crashlytics + Performance Monitoring + Analytics
 - **Test distribution**: Firebase App Distribution
