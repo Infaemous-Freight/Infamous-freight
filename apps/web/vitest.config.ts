@@ -9,6 +9,7 @@ export default defineConfig({
     hookTimeout: 30000,
     globals: true,
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+    setupFiles: [path.resolve(__dirname, "./tests/setup.ts")],
     exclude: ["node_modules", "dist", ".next", "tests/unit/**"],
     coverage: {
       provider: "v8",
