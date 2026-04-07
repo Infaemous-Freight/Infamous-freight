@@ -599,3 +599,34 @@ The platform does not need a rewrite. It needs hardening, instrumentation, and o
   "conclusion": "The platform should be hardened and expanded rather than rewritten."
 }
 ```
+
+## Priority Feature Queue (Requested April 7, 2026)
+
+The following features are now queued as the next product-delivery priorities for Infamous Freight:
+
+1. **Geofence alerts**
+   - Promote geofence entry/exit events to proactive alerting across dispatcher and driver workflows.
+   - Ensure alerts remain tenant-scoped and auditable.
+
+2. **Driver leaderboard**
+   - Expand driver performance ranking with reliability, safety, and on-time metrics.
+   - Maintain org-level isolation so each tenant sees only its own drivers.
+
+3. **Customer tracking link**
+   - Provide secure customer-facing tracking links for shipment visibility without exposing internal controls.
+   - Require tokenized access and expiration controls.
+
+4. **Route optimization**
+   - Prioritize AI-assisted route selection and dynamic re-optimization based on live conditions.
+   - Log optimization decisions for review and model governance.
+
+5. **Proof of delivery system**
+   - Harden POD workflow for photo/signature/OTP capture and validation before final delivery completion.
+   - Ensure submission integrity for billing and dispute defense.
+
+### Delivery sequencing (recommended)
+
+1. Geofence alerts + customer tracking link (visibility foundation)
+2. Proof of delivery system (completion integrity)
+3. Driver leaderboard (performance transparency)
+4. Route optimization (efficiency and margin uplift)
