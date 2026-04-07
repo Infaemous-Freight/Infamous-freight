@@ -62,8 +62,8 @@ echo "Pushing branch '$CURRENT_BRANCH' to origin"
 git push origin "$CURRENT_BRANCH"
 
 if ! "$FLYCTL_BIN" auth whoami >/dev/null 2>&1; then
-  echo "ERROR: flyctl is not authenticated."
-  echo "Set FLY_ACCESS_TOKEN (or FLY_API_TOKEN) or run: flyctl auth login"
+  echo "ERROR: flyctl is not authenticated." >&2
+  echo "Set FLY_ACCESS_TOKEN (or FLY_API_TOKEN) or run: flyctl auth login" >&2
   exit 1
 fi
 
