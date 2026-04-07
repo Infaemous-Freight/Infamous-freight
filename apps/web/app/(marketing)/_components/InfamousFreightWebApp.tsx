@@ -319,6 +319,7 @@ export default function InfamousFreightWebApp() {
                 <input
                   value={trackingId}
                   onChange={(e) => setTrackingId(e.target.value)}
+                  aria-label="Track shipment by PRO, BOL, or shipment ID"
                   className="h-12 w-full rounded-2xl border border-slate-300 pl-10"
                   placeholder="Enter PRO, BOL, or shipment ID"
                 />
