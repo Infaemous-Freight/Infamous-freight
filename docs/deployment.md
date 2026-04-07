@@ -139,6 +139,19 @@ Before deploying to production:
 
 ### Manual Deployment (Emergency Only)
 
+**Fly.io CLI setup (required before Fly deploy commands):**
+
+```bash
+# macOS
+brew install flyctl
+
+# Linux
+curl -L https://fly.io/install.sh | sh
+
+# Authenticate
+fly auth login
+```
+
 **API Deployment to Render:**
 
 ```bash
