@@ -134,14 +134,14 @@ dashboardRoutes.get("/customer-tracking-link/:trackingId", requireAuth, async (r
 
 dashboardRoutes.get("/route-optimization", requireAuth, async (req: Request, res: Response) => {
   try {
-    const organizationId = resolveOrganizationId(req);
-    if (!organizationId) {
+    const tenantId = req.user?.tenantId;
+    if (!tenantId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
     const recentDecisions = await prisma.aiDecisionLog.findMany({
       where: {
-        tenantId: organizationId,
+        tenantId,
         module: { contains: "DISPATCH", mode: "insensitive" },
       },
       orderBy: { createdAt: "desc" },
