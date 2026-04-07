@@ -45,6 +45,33 @@ This document provides actionable improvement recommendations for the Infæmous 
 3. Implement webhook delivery infrastructure
 4. Evaluate container scanning solutions
 
+### Operational Roadmap Addendum (April 2026)
+
+The following initiatives were identified as the next highest-value delivery items for product and platform maturity:
+
+1. **Close Web Testing Gap** (**High**)
+
+   Add component and integration coverage for shipment creation, status updates, authentication, and tenant-scoped views to reduce UI regressions.
+2. **Implement PWA Sync** (**High**)
+
+   Add IndexedDB-backed offline queueing with service worker background sync, retries, and conflict handling for unstable field connectivity.
+3. **Complete API Documentation** (**High**)
+
+   Generate and publish an OpenAPI specification with Swagger UI to accelerate onboarding and integrations.
+4. **Build Mobile Feature Parity** (**Medium-High**)
+
+   Expand mobile workflows for shipment lookup, status updates, proof of delivery, and task execution.
+5. **Enhance Observability** (**Medium-High**)
+
+   Introduce custom metrics, distributed tracing, and APM for critical services and key operational flows.
+6. **Add Real-Time Updates** (**Medium**)
+
+   Implement WebSockets or SSE for live shipment status updates and operational alerting.
+7. **Refine Documentation Structure** (**Medium**)
+   Build a centralized developer portal with quick-start paths and architecture guides.
+
+**Recommended execution sequence:** 1 → 3 → 5 → 2 → 6 → 4 → 7. This order prioritizes release safety, integration speed, incident visibility, and then capability expansion.
+
 ---
 
 ## 1. Security Recommendations
