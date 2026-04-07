@@ -30,7 +30,10 @@ resolve_flyctl() {
   return 1
 }
 
-FLYCTL_BIN="$(resolve_flyctl)"
+if ! FLYCTL_BIN="$(resolve_flyctl)"; then
+  echo "ERROR: flyctl not found." >&2
+  exit 1
+fi
 
 TARGET_APP="${FLY_APP:-$(awk -F'=' '/^[[:space:]]*app[[:space:]]*=/{gsub(/[[:space:]\047\042]/, "", $2); print $2; exit}' "$CONFIG_PATH")}"
 
