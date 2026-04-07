@@ -57,7 +57,7 @@ As of 2026-04-05, confirm:
    - Store listing
    - Pricing and distribution
 5. 64-bit architecture support is included.
-6. If account type is a new personal developer account, closed testing prerequisites are met (12 opted-in testers for 14 continuous days before production access request).
+6. If account type is a new personal developer account, confirm current closed testing prerequisites before requesting production access: https://support.google.com/googleplay/android-developer/answer/14151465
 7. Reviewer access instructions and test credentials are valid if login is required.
 
 ## Production backend readiness checklist
