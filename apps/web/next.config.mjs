@@ -1,5 +1,10 @@
 import { withSentryConfig } from '@sentry/nextjs';
 
+const isStaticHosting =
+    process.env.BUILD_TARGET === 'firebase' ||
+    process.env.BUILD_TARGET === 'netlify' ||
+    process.env.STATIC_EXPORT === 'true';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     // turbopack: {},  // Disabled for static export compatibility
@@ -8,8 +13,8 @@ const nextConfig = {
         ignoreBuildErrors: process.env.ALLOW_WEB_TS_ERRORS === 'true',
     },
     reactStrictMode: true,
-    // Firebase Hosting requires static export; Netlify uses standalone (default)
-    output: process.env.BUILD_TARGET === 'firebase' ? 'export' : 'standalone',
+    // Static hosting targets require export output
+    output: isStaticHosting ? 'export' : 'standalone',
     compress: true,
     poweredByHeader: false,
     trailingSlash: false,
@@ -36,8 +41,8 @@ const nextConfig = {
 
     // Image optimization
     images: {
-        // Disable optimization for static export (required for Firebase)
-        unoptimized: process.env.BUILD_TARGET === 'firebase',
+        // Disable optimization for static export targets
+        unoptimized: isStaticHosting,
         formats: ['image/avif', 'image/webp'],
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
