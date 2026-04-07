@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for infamous-freight-dtozka on 2026-04-07T13:02:03Z
+# fly.toml app configuration file generated for infamous-freight-web on 2026-04-07T13:02:03Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'infamous-freight-dtozka'
+app = 'infamous-freight-web'
 primary_region = 'iad'
 
 [build]
