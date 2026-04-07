@@ -78,7 +78,7 @@ def main():
     file_counts = classify_changed_files(files)
     commit_summaries = []
     for item in commits[:40]:
-        message = (item.get('commit', {}).get('message') or '').splitlines()
+        message = ((item.get('commit') or {}).get('message') or '').splitlines()
         first_line = message[0] if message else '<no commit message>'
         commit_summaries.append(f"- {item.get('sha', '')[:7]} {first_line}")
 
