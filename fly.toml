@@ -7,6 +7,7 @@ app = 'infamous-freight'
 primary_region = 'iad'
 
 [build]
+  image = "registry.fly.io/infamous-freight:deployment-67dd98202ad8fd8f97666d2a301dc4e2"
 
 [http_service]
   internal_port = 3000
