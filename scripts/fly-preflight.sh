@@ -10,14 +10,27 @@ if [ ! -f "$CONFIG_PATH" ]; then
   exit 1
 fi
 
-if command -v flyctl >/dev/null 2>&1; then
-  FLYCTL_BIN="flyctl"
-elif [ -x "/home/vscode/.fly/bin/flyctl" ]; then
-  FLYCTL_BIN="/home/vscode/.fly/bin/flyctl"
-else
+resolve_flyctl() {
+  if command -v flyctl >/dev/null 2>&1; then
+    command -v flyctl
+    return 0
+  fi
+
+  if [ -x "$HOME/.fly/bin/flyctl" ]; then
+    echo "$HOME/.fly/bin/flyctl"
+    return 0
+  fi
+
+  if [ -x "/home/vscode/.fly/bin/flyctl" ]; then
+    echo "/home/vscode/.fly/bin/flyctl"
+    return 0
+  fi
+
   echo "ERROR: flyctl not found. Install it first: https://fly.io/docs/hands-on/install-flyctl/"
-  exit 1
-fi
+  return 1
+}
+
+FLYCTL_BIN="$(resolve_flyctl)"
 
 config_app="$(awk -F'=' '/^[[:space:]]*app[[:space:]]*=/{gsub(/[[:space:]\047\042]/, "", $2); print $2; exit}' "$CONFIG_PATH")"
 config_dockerfile="$(awk -F'=' '/^[[:space:]]*dockerfile[[:space:]]*=/{gsub(/[[:space:]\047\042]/, "", $2); print $2; exit}' "$CONFIG_PATH")"
@@ -39,7 +52,10 @@ if [ -z "${FLY_API_TOKEN:-}" ] && [ -z "${FLY_ACCESS_TOKEN:-}" ]; then
 fi
 
 if ! "$FLYCTL_BIN" auth whoami >/dev/null 2>&1; then
-  echo "ERROR: flyctl is not authenticated. Run: flyctl auth login"
+  echo "ERROR: flyctl is not authenticated."
+  echo "Run one of the following before deploying:"
+  echo "  1) flyctl auth login"
+  echo "  2) export FLY_API_TOKEN=<token>"
   exit 1
 fi
 
