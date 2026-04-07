@@ -26,14 +26,15 @@ This checklist reflects the repository's current production deployment targets. 
 
 ## Public web assets required before Play submission
 
-Publish these pages on your own domain:
+Publish these pages on your own domain using the actual web app routes:
 
 - `/` (home/product)
-- `/support`
-- `/privacy`
-- `/terms`
-- `/delete-account` (required if user accounts exist)
+- `/contact` (support)
+- `/legal/privacy-policy`
+- `/legal/terms-of-service`
+- a public account deletion page at its real app URL (required if user accounts exist)
 
+If Play listing text, reviewer notes, or external docs reference alternate aliases such as `/support`, `/privacy`, `/terms`, or `/delete-account`, configure redirects for those paths before submission.
 Deletion page should clearly state:
 
 - how users request deletion
