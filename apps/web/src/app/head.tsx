@@ -1,0 +1,24 @@
+export default function Head() {
+  return (
+    <>
+      <meta name="theme-color" content="#0f172a" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <link rel="manifest" href="/manifest.webmanifest" />
+      <link rel="apple-touch-icon" href="/apple-icon" />
+      <link rel="mask-icon" href="/mask-icon.svg" color="#0f172a" />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/sw.js').catch(function () {});
+              });
+            }
+          `,
+        }}
+      />
+    </>
+  );
+}
