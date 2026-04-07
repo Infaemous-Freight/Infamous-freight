@@ -11,8 +11,13 @@ resolve_flyctl() {
     return 0
   fi
 
-  if [ -x "$HOME/.fly/bin/flyctl" ]; then
-    echo "$HOME/.fly/bin/flyctl"
+  local home_flyctl=""
+  if [ -n "${HOME:-}" ]; then
+    home_flyctl="${HOME}/.fly/bin/flyctl"
+  fi
+
+  if [ -n "$home_flyctl" ] && [ -x "$home_flyctl" ]; then
+    echo "$home_flyctl"
     return 0
   fi
 
