@@ -1,17 +1,14 @@
-import importlib
+import openai
 
 
 class LLMClient:
     def __init__(self, settings):
         settings.require_openai()
         self.settings = settings
-        module_name = ''.join(chr(x) for x in [111, 112, 101, 110, 97, 105])
-        sdk = importlib.import_module(module_name)
-        kwargs = {
-            ''.join(['a', 'p', 'i', '_', 'k', 'e', 'y']): settings.openai_api_key,
-            'base_url': settings.openai_base_url,
-        }
-        self.client = sdk.OpenAI(**kwargs)
+        self.client = openai.OpenAI(
+            api_key=settings.openai_api_key,
+            base_url=settings.openai_base_url,
+        )
 
     def parse(self, model_cls, instructions, user_input):
         response = self.client.responses.parse(
