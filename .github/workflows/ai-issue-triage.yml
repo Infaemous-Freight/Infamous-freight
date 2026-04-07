@@ -1,0 +1,40 @@
+name: AI Issue Triage
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: ai-issue-triage-${{ github.event.issue.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements-ai-workers.txt
+      - name: Run issue triage worker
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL || 'gpt-4o-mini' }}
+          ENABLE_ISSUE_LABELS: ${{ vars.ENABLE_ISSUE_LABELS || 'false' }}
+          DEFAULT_CODEOWNERS_TEAM: ${{ vars.DEFAULT_CODEOWNERS_TEAM || '' }}
+        run: python workers/issue-triage/main.py
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-issue-triage-artifacts
+          path: artifacts/
+          if-no-files-found: ignore
