@@ -194,6 +194,15 @@ export default [
     },
   },
   {
+    files: ["apps/web/public/sw.js"],
+    languageOptions: {
+      globals: {
+        caches: "readonly",
+        fetch: "readonly",
+      },
+    },
+  },
+  {
     files: ["**/__tests__/**/*.{js,jsx,ts,tsx}", "**/*.{spec,test}.{js,jsx,ts,tsx}"],
     languageOptions: {
       globals: {
