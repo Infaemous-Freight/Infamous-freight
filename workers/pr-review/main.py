@@ -59,7 +59,8 @@ def main():
     event = gh.load_event()
     pr_number = event.get('pull_request', {}).get('number')
     if pr_number is None:
-        manual_pr = event.get('inputs', {}).get('pr_number')
+        inputs = event.get('inputs')
+        manual_pr = inputs.get('pr_number') if isinstance(inputs, dict) else None
         if isinstance(manual_pr, str) and manual_pr.strip().isdigit():
             pr_number = int(manual_pr.strip())
         elif isinstance(manual_pr, int):
