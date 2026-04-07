@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const security = require("./security.js");
+const security = require("./security.cjs");
 
 export const limiters = security.limiters;
 export const rateLimit = security.rateLimit;
