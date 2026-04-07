@@ -30,7 +30,9 @@ resolve_flyctl() {
   return 1
 }
 
-FLYCTL_BIN="$(resolve_flyctl)"
+if ! FLYCTL_BIN="$(resolve_flyctl)"; then
+  exit 1
+fi
 
 config_app="$(awk -F'=' '/^[[:space:]]*app[[:space:]]*=/{gsub(/[[:space:]\047\042]/, "", $2); print $2; exit}' "$CONFIG_PATH")"
 config_dockerfile="$(awk -F'=' '/^[[:space:]]*dockerfile[[:space:]]*=/{gsub(/[[:space:]\047\042]/, "", $2); print $2; exit}' "$CONFIG_PATH")"
