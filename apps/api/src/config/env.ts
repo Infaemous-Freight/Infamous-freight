@@ -138,10 +138,17 @@ const shouldFallbackToHs256 =
   Boolean(parsed.JWT_SECRET);
 const effectiveJwtAlgorithm = shouldFallbackToHs256 ? "HS256" : parsed.JWT_ALGORITHM;
 
+if (shouldFallbackToHs256) {
+  console.warn(
+    "[config] JWT_ALGORITHM is configured as RS256, but JWT_PRIVATE_KEY and/or JWT_PUBLIC_KEY are missing while JWT_SECRET is set. Falling back to HS256.",
+  );
+}
+
 export const env = {
   nodeEnv: parsed.NODE_ENV,
   appPort: parsed.PORT ?? parsed.API_PORT ?? parsed.APP_PORT,
   databaseUrl: parsed.DATABASE_URL,
+  configuredJwtAlgorithm: parsed.JWT_ALGORITHM,
   jwtAlgorithm: effectiveJwtAlgorithm,
   jwtPrivateKey: parsed.JWT_PRIVATE_KEY,
   jwtPublicKey: parsed.JWT_PUBLIC_KEY,
