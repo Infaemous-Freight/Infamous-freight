@@ -5,23 +5,8 @@
  * Runs as a scheduled BullMQ job (1st of month)
  */
 
-import Stripe from "stripe";
 import { getPrisma } from "../db/prisma.js";
-
-let stripeClient: Stripe | null = null;
-
-function getStripeClient(): Stripe {
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
-  if (!stripeKey) {
-    throw new Error("Stripe is not configured. Set STRIPE_SECRET_KEY.");
-  }
-
-  if (!stripeClient) {
-    stripeClient = new Stripe(stripeKey);
-  }
-
-  return stripeClient;
-}
+import { getStripeClient } from "./stripeClient.js";
 
 function prismaOrThrow() {
   const prisma = getPrisma();

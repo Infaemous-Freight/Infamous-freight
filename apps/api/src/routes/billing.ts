@@ -9,7 +9,6 @@
  */
 
 import { Router, type Request, type Response, type NextFunction } from "express";
-import Stripe from "stripe";
 import {
   authenticate,
   requireOrganization,
@@ -21,6 +20,7 @@ import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
 import { tenantPrisma } from "../db/tenant.js";
 import { getPrisma } from "../db/prisma.js";
 import { body, query } from "express-validator";
+import { getStripeClient } from "../billing/stripeClient.js";
 
 import {
   createStripeSubscription,
@@ -43,21 +43,6 @@ import {
 
 const router: Router = Router();
 const { handleValidationErrors, validateString } = validation;
-let stripeClient: Stripe | null = null;
-
-function getStripeClient(): Stripe {
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
-  if (!stripeKey) {
-    throw new Error("Stripe is not configured. Set STRIPE_SECRET_KEY.");
-  }
-
-  if (!stripeClient) {
-    stripeClient = new Stripe(stripeKey);
-  }
-
-  return stripeClient;
-}
-
 function prismaOrThrow() {
   const prisma = getPrisma();
   if (!prisma) {
