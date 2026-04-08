@@ -17,6 +17,9 @@ on:
       - 'Dockerfile'
       - 'Dockerfile.*'
       - 'docker/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'docs/**'
   pull_request:
     branches:
       - main
@@ -33,6 +36,9 @@ on:
       - 'Dockerfile'
       - 'Dockerfile.*'
       - 'docker/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'docs/**'
   workflow_dispatch:
 
 permissions:
@@ -98,6 +104,9 @@ jobs:
 
       - name: Run fly config test
         run: bash tests/ci/fly-config.test.sh
+
+      - name: Run bootstrap secrets test
+        run: bash tests/ci/bootstrap-production-secrets.test.sh
 
   lint:
     name: lint

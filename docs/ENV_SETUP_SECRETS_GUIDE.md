@@ -1,5 +1,73 @@
 # Environment Setup & Secrets Guide
 
+## Production Secret Bootstrap (Netlify + Fly.io)
+
+Use this checklist when wiring production credentials for the current deployment targets.
+
+### 1) Required variables before first deploy
+
+| Variable | Used by | Status | Notes |
+|---|---|---|---|
+| `NETLIFY_AUTH_TOKEN` | Netlify CLI/API | required | Personal access token for `netlify env:*` and deploy automation. |
+| `NETLIFY_SITE_ID` | Netlify site targeting | required | UUID for the production web site. |
+| `FLY_API_TOKEN` | Fly.io CLI/API | required | Generate with `flyctl auth token`. |
+| `DATABASE_URL` | API + Prisma | required | Use the managed Postgres connection string with a real password. |
+| `NEXT_PUBLIC_API_URL` | Web frontend | required | Public API origin (for example `https://infamous.fly.dev`). |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe checkout UI | required if billing enabled | Must be the publishable key (`pk_...`), never a secret key. |
+| `JWT_SECRET` | API auth signing (HS256 mode + web stripe route) | required | Generate with `openssl rand -base64 32`. |
+
+### 2) Export locally (do not commit secrets)
+
+```bash
+export NETLIFY_AUTH_TOKEN="<set-in-shell-or-password-manager>"
+export NETLIFY_SITE_ID="<your-netlify-site-id>"
+export FLY_API_TOKEN="$(flyctl auth token)"
+export DATABASE_URL="postgresql://postgres:<password>@<host>:5432/postgres?schema=public"
+export NEXT_PUBLIC_API_URL="https://infamous.fly.dev"
+export NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_live_..."
+export JWT_SECRET="$(openssl rand -base64 32)"
+```
+
+### 3) Apply automatically with one script (recommended)
+
+```bash
+./scripts/bootstrap-production-secrets.sh
+```
+
+Use `DRY_RUN=1` first to preview changes:
+
+```bash
+DRY_RUN=1 ./scripts/bootstrap-production-secrets.sh
+```
+
+### 4) Apply to Netlify environment
+
+```bash
+printf '%s' "$NEXT_PUBLIC_API_URL" | netlify env:set NEXT_PUBLIC_API_URL production
+printf '%s' "$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" | netlify env:set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY production
+printf '%s' "$JWT_SECRET" | netlify env:set JWT_SECRET production
+```
+
+### 5) Apply to Fly.io environment
+
+```bash
+flyctl secrets set \
+  DATABASE_URL="$DATABASE_URL" \
+  JWT_SECRET="$JWT_SECRET" \
+  --app infamous-freight-api
+```
+
+### 6) Post-setup verification
+
+```bash
+netlify env:list --context production
+flyctl secrets list --app infamous-freight-api
+```
+
+> Security note: keep real token/key values in your secret manager and CI provider; commit only placeholders in tracked files.
+
+---
+
 ## Quick Reference
 
 ```bash
