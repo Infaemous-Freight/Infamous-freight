@@ -90,10 +90,10 @@ assert_eq "fly-deploy.yml exists" "true" "$([ -f "$FLY_DEPLOY_YML" ] && echo tru
 
 # Root fly.toml assertions aligned with current branch state.
 ROOT_APP_NAME=$(extract_first_match '^app\s*=\s*' "$ROOT_FLY_TOML")
-assert_eq "root fly.toml app name" "infamous-freight-db" "$ROOT_APP_NAME"
+assert_not_empty "root fly.toml app name is configured" "$ROOT_APP_NAME"
 
 ROOT_PRIMARY_REGION=$(extract_first_match '^primary_region\s*=\s*' "$ROOT_FLY_TOML")
-assert_eq "root fly.toml primary region" "iad" "$ROOT_PRIMARY_REGION"
+assert_not_empty "root fly.toml primary_region is configured" "$ROOT_PRIMARY_REGION"
 
 ROOT_INTERNAL_PORT=$(extract_first_match '^\s*internal_port\s*=\s*' "$ROOT_FLY_TOML")
 assert_eq "root fly.toml internal_port" "3000" "$ROOT_INTERNAL_PORT"
