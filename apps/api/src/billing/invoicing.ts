@@ -95,6 +95,8 @@ export async function generateOrgInvoice(
           month: invoiceMonth,
           type: "base_fee",
         },
+      }, {
+        idempotencyKey: `invoice-item:${organizationId}:${invoiceMonth}:base`,
       });
     }
 
@@ -110,6 +112,8 @@ export async function generateOrgInvoice(
           type: "overage",
           overageJobs: usage.overageJobs.toString(),
         },
+      }, {
+        idempotencyKey: `invoice-item:${organizationId}:${invoiceMonth}:overage`,
       });
     }
 
@@ -123,6 +127,8 @@ export async function generateOrgInvoice(
         organizationId,
         month: invoiceMonth,
       },
+    }, {
+      idempotencyKey: `invoice:${organizationId}:${invoiceMonth}`,
     });
 
     // Finalize invoice
