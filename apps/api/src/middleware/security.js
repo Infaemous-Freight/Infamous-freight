@@ -9,7 +9,7 @@ const { ipKeyGenerator } = require("express-rate-limit");
 const jwt = require("jsonwebtoken");
 const { authenticateWithRotation } = require("./advancedSecurity.cjs");
 const { env } = require("../config/env");
-const rateLimitMetrics = require("../lib/rateLimitMetrics.cjs");
+const rateLimitMetrics = require("../lib/rateLimitMetrics");
 const { logger } = require("./logger");
 const { validateScope, hasScope, hasAllScopes } = require("@infamous-freight/shared");
 
