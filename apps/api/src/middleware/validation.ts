@@ -9,7 +9,7 @@ export function validateString(field: string, opts: { maxLength?: number } = {})
     .notEmpty()
     .withMessage(`${field} must not be empty`)
     .trim()
-    .isLength({ max: opts.maxLength || 1000 })
+    .isLength({ max: opts.maxLength ?? 1000 })
     .withMessage(`${field} too long`);
 }
 
