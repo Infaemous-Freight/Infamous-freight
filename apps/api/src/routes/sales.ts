@@ -208,7 +208,7 @@ router.patch(
   "/leads/:id",
   limiters.general,
   authenticate,
-  requireScope("admin:sales"),
+  requireScope("admin:ops"),
   [body("status").isString().optional(), body("notes").isString().optional()],
   handleValidationErrors,
   async (req: Request, res: Response, next: NextFunction) => {
@@ -230,7 +230,7 @@ router.get(
   "/leads",
   limiters.general,
   authenticate,
-  requireScope("admin:sales"),
+  requireScope("admin:ops"),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const leads = await getLeads({
@@ -320,7 +320,7 @@ router.patch(
   "/demo/:id",
   limiters.general,
   authenticate,
-  requireScope("admin:sales"),
+  requireScope("admin:ops"),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const demo = await updateDemoStatus(
@@ -345,7 +345,7 @@ router.get(
   "/demo/stats",
   limiters.general,
   authenticate,
-  requireScope("admin:sales"),
+  requireScope("admin:ops"),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const stats = await getDemoStats();
@@ -569,7 +569,7 @@ router.get(
   "/metrics/investor",
   limiters.general,
   authenticate,
-  requireScope("admin:analytics"),
+  requireScope("analytics:read"),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const kpis = await getInvestorKpis();
@@ -592,7 +592,7 @@ router.post(
   "/metrics/snapshot",
   limiters.general,
   authenticate,
-  requireScope("admin:analytics"),
+  requireScope("analytics:read"),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const metrics = await getMetricsSnapshot();
