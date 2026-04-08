@@ -15,7 +15,10 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
+    let isMounted = true;
+
     const unsubscribe = observeAuthState(async (user) => {
+      if (!isMounted) return;
       if (!user) {
         router.push("/login");
         setLoading(false);
@@ -39,7 +42,10 @@ export default function Dashboard() {
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, [router]);
 
   if (loading) return <div className="p-6">Loading dashboard...</div>;
