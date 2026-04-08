@@ -8,7 +8,8 @@
   },
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "dev": "pnpm --filter @infamous/api dev",
+    "dev": "pnpm run dev:api",
+    "predev:api": "pnpm run build:shared",
     "dev:api": "pnpm --filter @infamous/api dev",
     "dev:web": "pnpm --filter web dev",
     "dev:mobile": "pnpm --filter mobile dev",
@@ -76,7 +77,9 @@
       "yaml@>=2.0.0 <2.8.3": ">=2.8.3",
       "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0",
       "brace-expansion@5.0.4": "5.0.5",
-      "defu@<=6.1.4": ">=6.1.5"
+      "defu@<=6.1.4": ">=6.1.5",
+      "vite@<7.3.2": "7.3.2",
+      "@hono/node-server@<1.19.13": "1.19.13"
     },
     "onlyBuiltDependencies": [
       "@firebase/util",
