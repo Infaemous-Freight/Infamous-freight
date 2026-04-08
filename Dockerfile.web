@@ -1,19 +1,12 @@
-# Fly.io Dockerfile for Next.js Web Frontend
-# Build from project root with monorepo structure
+# Fly.io Dockerfile for Next.js Web Frontend (monorepo-aware)
 
 ARG NODE_VERSION=24
 FROM node:${NODE_VERSION}-alpine AS base
 
-# Install dependencies
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache dumb-init ca-certificates && \
-    rm -rf /var/cache/apk/*
-
-# Install a pinned pnpm version directly instead of relying on Corepack
+RUN apk add --no-cache dumb-init ca-certificates wget
 RUN npm install -g pnpm@10.33.0
 
-# Stage 1: Install dependencies
+# Stage 1: install dependencies for web + shared
 FROM base AS deps
 WORKDIR /app
 
@@ -24,7 +17,7 @@ COPY packages/shared/package.json ./packages/shared/package.json
 ENV HUSKY=0
 RUN pnpm install --filter ./apps/web... --frozen-lockfile
 
-# Stage 2: Build shared packages
+# Stage 2: build shared package
 FROM base AS shared-builder
 WORKDIR /app
 
@@ -36,45 +29,33 @@ COPY packages/shared ./packages/shared
 WORKDIR /app/packages/shared
 RUN pnpm run build
 
-# Stage 3: Build Next.js application
+# Stage 3: build web app
 FROM base AS builder
 WORKDIR /app
 
-# Copy dependencies
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules
-
-# Copy built shared package
 COPY --from=shared-builder /app/packages/shared/dist ./packages/shared/dist
 COPY --from=shared-builder /app/packages/shared/package.json ./packages/shared/package.json
-
-# Copy source
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web ./apps/web
 
-# Build Next.js app
 WORKDIR /app/apps/web
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm run build
 
-# Stage 4: Production runtime
+# Stage 4: runtime
 FROM node:${NODE_VERSION}-alpine AS runner
 WORKDIR /app
 
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache dumb-init ca-certificates && \
-    rm -rf /var/cache/apk/*
+RUN apk add --no-cache dumb-init ca-certificates wget
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
 
-# Copy built application
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
