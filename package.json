@@ -8,8 +8,9 @@
   },
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "dev": "pnpm run build:shared && pnpm --filter @infamous/api dev",
-    "dev:api": "pnpm run build:shared && pnpm --filter @infamous/api dev",
+    "dev": "pnpm run dev:api",
+    "predev:api": "pnpm run build:shared",
+    "dev:api": "pnpm --filter @infamous/api dev",
     "dev:web": "pnpm --filter web dev",
     "dev:mobile": "pnpm --filter mobile dev",
     "build:shared": "pnpm --filter @infamous-freight/shared build",
