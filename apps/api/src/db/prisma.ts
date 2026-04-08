@@ -1,7 +1,19 @@
-import { PrismaClient } from "@prisma/client";
+import { createRequire } from "node:module";
 
-export const prisma = new PrismaClient();
+const require = createRequire(import.meta.url);
+const prismaModule = require("./prisma.cjs") as {
+  prisma: any;
+  getPrisma: () => any;
+  closePrisma: () => Promise<void>;
+  createPrismaClient: () => any;
+};
+
+export const prisma = prismaModule.prisma;
+export const getPrisma = prismaModule.getPrisma;
+export const createPrismaClient = prismaModule.createPrismaClient;
 
 export async function closePrisma(): Promise<void> {
-  await prisma.$disconnect();
+  await prismaModule.closePrisma();
 }
+
+export default prismaModule;
