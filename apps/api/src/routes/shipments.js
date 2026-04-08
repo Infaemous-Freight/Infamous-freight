@@ -31,6 +31,13 @@ const {
 } = require("../services/shipmentValidator");
 
 const router = express.Router();
+const resolveTenantContext = (req) => {
+  const tenantId = req.auth?.organizationId || req.user?.tenantId || req.user?.organizationId;
+  return {
+    tenantId: tenantId || null,
+    orgId: req.user?.organizationId || req.user?.orgId || tenantId || null,
+  };
+};
 
 // Get all shipments with optional filtering
 router.get(
@@ -49,10 +56,13 @@ router.get(
   asyncHandler(async (req, res) => {
       const { status, driverId } = req.query;
       const where = {};
+      const { tenantId, orgId } = resolveTenantContext(req);
 
       if (req.user?.role !== "admin") {
         where.userId = req.user?.sub;
       }
+      if (tenantId) where.tenantId = tenantId;
+      if (orgId) where.orgId = orgId;
 
       if (status) where.status = status;
       if (driverId) where.driverId = driverId;
@@ -90,8 +100,13 @@ router.get(
   validateUUID("id"),
   handleValidationErrors,
   asyncHandler(async (req, res) => {
-      const shipment = await prisma.shipment.findUnique({
-        where: { id: req.params.id },
+      const { tenantId, orgId } = resolveTenantContext(req);
+      const shipment = await prisma.shipment.findFirst({
+        where: {
+          id: req.params.id,
+          ...(tenantId ? { tenantId } : {}),
+          ...(orgId ? { orgId } : {}),
+        },
         include: {
           driver: {
             select: {
@@ -143,6 +158,7 @@ router.post(
       }
 
       const userId = req.user?.sub;
+      const { tenantId, orgId } = resolveTenantContext(req);
       const newTrackingId =
         trackingId || reference || `TRK-${randomUUID().replace(/-/g, "").slice(0, 12)}`;
 
@@ -161,6 +177,8 @@ router.post(
               trackingId: newTrackingId,
               reference: reference || newTrackingId,
               userId,
+              tenantId,
+              orgId,
               origin,
               destination,
               driverId: driverId || null,
@@ -208,8 +226,8 @@ router.post(
         shipment: result,
       });
   } catch (err) {
-      Sentry.captureException(err);
       if (err.code === "P2002") throw new ConflictError("Reference already exists");
+      Sentry.captureException(err);
       throw err;
     }
   }),
@@ -233,10 +251,15 @@ router.patch(
     try {
       const { status, driverId } = req.body;
       const updates = {};
+      const { tenantId, orgId } = resolveTenantContext(req);
 
       // Fetch full shipment for validation
-      const existing = await prisma.shipment.findUnique({
-        where: { id: req.params.id },
+      const existing = await prisma.shipment.findFirst({
+        where: {
+          id: req.params.id,
+          ...(tenantId ? { tenantId } : {}),
+          ...(orgId ? { orgId } : {}),
+        },
         select: {
           id: true,
           userId: true,
@@ -348,8 +371,8 @@ router.patch(
         changes: updates,
       });
   } catch (err) {
-      Sentry.captureException(err);
       if (err.code === "P2025") throw new NotFoundError("Shipment not found");
+      Sentry.captureException(err);
       throw err;
     }
   }),
@@ -366,8 +389,13 @@ router.delete(
   [validateUUID("id"), handleValidationErrors],
   asyncHandler(async (req, res) => {
     try {
-      const existing = await prisma.shipment.findUnique({
-        where: { id: req.params.id },
+      const { tenantId, orgId } = resolveTenantContext(req);
+      const existing = await prisma.shipment.findFirst({
+        where: {
+          id: req.params.id,
+          ...(tenantId ? { tenantId } : {}),
+          ...(orgId ? { orgId } : {}),
+        },
         select: { id: true, userId: true },
       });
 
@@ -387,8 +415,8 @@ router.delete(
 
       await invalidateCache("*shipments*");
   } catch (err) {
-      Sentry.captureException(err);
       if (err.code === "P2025") throw new NotFoundError("Shipment not found");
+      Sentry.captureException(err);
       throw err;
     }
   }),
@@ -406,9 +434,12 @@ router.get(
   asyncHandler(async (req, res) => {
       const { format } = req.params;
       const { status, driverId } = req.query;
+      const { tenantId, orgId } = resolveTenantContext(req);
 
       // Build query
       const where = {};
+      if (tenantId) where.tenantId = tenantId;
+      if (orgId) where.orgId = orgId;
       if (status) where.status = status;
       if (driverId) where.driverId = driverId;
 
