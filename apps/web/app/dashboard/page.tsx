@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { observeAuthState } from "@/lib/auth";
 import { listLoads } from "@/lib/firestoreCrud";
-import { logError } from "@/lib/sentry";
+import { reportSentryError } from "@/lib/sentry";
 import type { Load } from "@/types";
 
 export default function Dashboard() {
@@ -27,9 +27,11 @@ export default function Dashboard() {
         setLoads(loadDocs);
         setError(null);
       } catch (err) {
-        logError(err, {
-          component: "dashboard",
-          action: "listLoads",
+        reportSentryError(err instanceof Error ? err : new Error("Failed to load dashboard data"), {
+          contexts: {
+            component: "dashboard",
+            action: "listLoads",
+          },
         });
         setError("Failed to load dashboard data. Please try again.");
       } finally {
