@@ -16,8 +16,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     let isMounted = true;
+    let authEventSeq = 0;
 
     const unsubscribe = observeAuthState(async (user) => {
+      const seq = ++authEventSeq;
       if (!isMounted) return;
       if (!user) {
         setLoads([]);
@@ -28,9 +30,13 @@ export default function Dashboard() {
 
       try {
         const loadDocs = await listLoads();
+        if (!isMounted || seq !== authEventSeq) return;
+
         setLoads(loadDocs);
         setError(null);
       } catch (err) {
+        if (!isMounted || seq !== authEventSeq) return;
+
         setLoads([]);
         reportSentryError(err instanceof Error ? err : new Error("Failed to load dashboard data"), {
           contexts: {
@@ -40,6 +46,8 @@ export default function Dashboard() {
         });
         setError("Failed to load dashboard data. Please try again.");
       } finally {
+        if (!isMounted || seq !== authEventSeq) return;
+
         setLoading(false);
       }
     });

@@ -67,4 +67,26 @@ describe("dashboard page", () => {
       expect(pushMock).toHaveBeenCalledWith("/login");
     });
   });
+
+  it("clears previously loaded loads when auth becomes unauthenticated", async () => {
+    observeAuthStateMock.mockImplementation((callback: (user: { uid: string } | null) => void) => {
+      void callback({ uid: "user_1" });
+      void callback(null);
+      return () => undefined;
+    });
+    listLoadsMock.mockResolvedValue([{
+      id: "load_1",
+      lane: "DAL-HOU",
+      rateCents: 250000,
+      status: "ACTIVE",
+    }]);
+
+    render(<Dashboard />);
+
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith("/login");
+    });
+
+    expect(screen.queryByText(/DAL-HOU/)).not.toBeInTheDocument();
+  });
 });
