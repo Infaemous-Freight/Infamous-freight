@@ -50,16 +50,17 @@ describe("dashboard page", () => {
 
     await waitFor(() => {
       expect(reportSentryErrorMock).toHaveBeenCalledTimes(1);
-
-      const [reportedError, reportedContext] = reportSentryErrorMock.mock.calls[0];
-      expect(reportedError).toBeInstanceOf(Error);
-      expect((reportedError as Error).message).toBe("firestore unavailable");
-      expect(reportedContext).toEqual(expect.objectContaining({
-        contexts: expect.objectContaining({
-          component: "dashboard",
-          action: "listLoads",
+      expect(reportSentryErrorMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: "firestore unavailable",
         }),
-      }));
+        expect.objectContaining({
+          contexts: expect.objectContaining({
+            component: "dashboard",
+            action: "listLoads",
+          }),
+        }),
+      );
     });
 
     const errorMessage = await screen.findByText("Failed to load dashboard data. Please try again.");
