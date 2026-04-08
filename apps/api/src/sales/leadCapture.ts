@@ -5,10 +5,16 @@
  * (HubSpot, Salesforce, Notion, Slack)
  */
 
-import { PrismaClient } from "@prisma/client";
 import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
+import { getPrisma } from "../db/prisma.js";
 
-const prisma = new PrismaClient();
+function prismaOrThrow() {
+  const prisma = getPrisma();
+  if (!prisma) {
+    throw new Error("Database is not configured");
+  }
+  return prisma;
+}
 
 async function parseResponseBody(response: any): Promise<unknown> {
   const rawBody = await response.text();
@@ -80,7 +86,7 @@ export async function createLead(input: CreateLeadInput): Promise<any> {
     const normalizedMetadata = normalizeLeadMetadata(input.metadata, serverCreatedAtIso);
 
     // Check if lead already exists
-    const existingLead = await prisma.lead.findUnique({
+    const existingLead = await prismaOrThrow().lead.findUnique({
       where: { email: input.email },
     });
 
@@ -90,7 +96,7 @@ export async function createLead(input: CreateLeadInput): Promise<any> {
     }
 
     // Create lead
-    const lead = await prisma.lead.create({
+    const lead = await prismaOrThrow().lead.create({
       data: {
         name: input.name,
         email: input.email,
@@ -139,7 +145,7 @@ export async function createLead(input: CreateLeadInput): Promise<any> {
  * Get lead by email
  */
 export async function getLead(email: string): Promise<any> {
-  return prisma.lead.findUnique({
+  return prismaOrThrow().lead.findUnique({
     where: { email },
     include: {
       demoBooking: true,
@@ -155,7 +161,7 @@ export async function updateLeadStatus(
   status: string,
   notes?: string,
 ): Promise<any> {
-  return prisma.lead.update({
+  return prismaOrThrow().lead.update({
     where: { id: leadId },
     data: {
       status,
@@ -169,7 +175,7 @@ export async function updateLeadStatus(
  * Mark lead as converted (signed up)
  */
 export async function convertLead(leadId: string, organizationId: string): Promise<any> {
-  const lead = await prisma.lead.update({
+  const lead = await prismaOrThrow().lead.update({
     where: { id: leadId },
     data: {
       status: "won",
@@ -203,7 +209,7 @@ export async function getLeads(filters?: {
   source?: string;
   limit?: number;
 }): Promise<any[]> {
-  return prisma.lead.findMany({
+  return prismaOrThrow().lead.findMany({
     where: {
       type: filters?.type ? { equals: filters.type } as any : undefined,
       status: filters?.status ? { equals: filters.status } : undefined,
@@ -251,7 +257,7 @@ export async function syncLeadToCrm(lead: any): Promise<void> {
       }
 
       // Record successful sync
-      await prisma.crmSync.upsert({
+      await prismaOrThrow().crmSync.upsert({
         where: {
           // Using composite key workaround
           id: `${lead.id}_${provider}`,
@@ -273,7 +279,7 @@ export async function syncLeadToCrm(lead: any): Promise<void> {
     } catch (err) {
       console.error(`[CrmSync] Failed to sync to ${provider}:`, err);
 
-      await prisma.crmSync.upsert({
+      await prismaOrThrow().crmSync.upsert({
         where: {
           id: `${lead.id}_${provider}`,
         },

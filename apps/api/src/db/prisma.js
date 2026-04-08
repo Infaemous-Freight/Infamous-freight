@@ -2,8 +2,8 @@ const { PrismaClient } = require("@prisma/client");
 const { PrismaPg } = require("@prisma/adapter-pg");
 const { Pool } = require("pg");
 const { env } = require("../config/env");
-const { recordQuery, DEFAULT_THRESHOLD } = require("../lib/queryMetrics");
-const { attachSlowQueryLogger } = require("../lib/slowQueryLogger");
+const { recordQuery, DEFAULT_THRESHOLD } = require("../lib/queryMetrics.cjs");
+const { attachSlowQueryLogger } = require("../lib/slowQueryLogger.cjs");
 
 let prisma = null;
 let pool = null;

@@ -7,11 +7,17 @@
  * - Track attendance
  */
 
-import { PrismaClient } from "@prisma/client";
 import { createLead, convertLead } from "./leadCapture.js";
 import { sendEmail } from "../services/emailService.js";
+import { getPrisma } from "../db/prisma.js";
 
-const prisma = new PrismaClient();
+function prismaOrThrow() {
+  const prisma = getPrisma();
+  if (!prisma) {
+    throw new Error("Database is not configured");
+  }
+  return prisma;
+}
 
 // ============================================
 // Demo Booking
@@ -39,11 +45,11 @@ export async function scheduleDemo(input: ScheduleDemoInput): Promise<any> {
 
     // Find or create lead
     if (input.leadId) {
-      lead = await prisma.lead.findUnique({
+      lead = await prismaOrThrow().lead.findUnique({
         where: { id: input.leadId },
       });
     } else if (input.email) {
-      lead = await prisma.lead.findUnique({
+      lead = await prismaOrThrow().lead.findUnique({
         where: { email: input.email },
       });
 
@@ -63,7 +69,7 @@ export async function scheduleDemo(input: ScheduleDemoInput): Promise<any> {
     }
 
     // Check if demo already exists
-    const existing = await prisma.demoBooking.findUnique({
+    const existing = await prismaOrThrow().demoBooking.findUnique({
       where: { leadId: lead.id },
     });
 
@@ -82,7 +88,7 @@ export async function scheduleDemo(input: ScheduleDemoInput): Promise<any> {
     });
 
     // Create demo booking
-    const demoBooking = await prisma.demoBooking.create({
+    const demoBooking = await prismaOrThrow().demoBooking.create({
       data: {
         leadId: lead.id,
         scheduledFor: input.scheduledFor,
@@ -104,7 +110,7 @@ export async function scheduleDemo(input: ScheduleDemoInput): Promise<any> {
 
     // Update lead status
     try {
-      await prisma.lead.update({
+      await prismaOrThrow().lead.update({
         where: { id: lead.id },
         data: {
           status: "demo_scheduled",
@@ -126,7 +132,7 @@ export async function scheduleDemo(input: ScheduleDemoInput): Promise<any> {
  * Get demo by ID
  */
 export async function getDemo(demoId: string): Promise<any> {
-  return prisma.demoBooking.findUnique({
+  return prismaOrThrow().demoBooking.findUnique({
     where: { id: demoId },
     include: { lead: true },
   });
@@ -141,7 +147,7 @@ export async function updateDemoStatus(
   recordingUrl?: string,
   notes?: string,
 ): Promise<any> {
-  return prisma.demoBooking.update({
+  return prismaOrThrow().demoBooking.update({
     where: { id: demoId },
     data: {
       status,
@@ -159,7 +165,7 @@ export async function getUpcomingDemos(days: number = 7): Promise<any[]> {
   const now = new Date();
   const futureDate = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
 
-  return prisma.demoBooking.findMany({
+  return prismaOrThrow().demoBooking.findMany({
     where: {
       scheduledFor: {
         gte: now,
@@ -176,7 +182,7 @@ export async function getUpcomingDemos(days: number = 7): Promise<any[]> {
  * Get demo stats
  */
 export async function getDemoStats(): Promise<any> {
-  const demos = await prisma.demoBooking.findMany({
+  const demos = await prismaOrThrow().demoBooking.findMany({
     include: { lead: true },
   });
 
@@ -354,7 +360,7 @@ export async function sendDemoReminders(): Promise<number> {
     const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     const tomorrowEnd = new Date(tomorrow.getTime() + 60 * 60 * 1000);
 
-    const demos = await prisma.demoBooking.findMany({
+    const demos = await prismaOrThrow().demoBooking.findMany({
       where: {
         scheduledFor: {
           gte: tomorrow,

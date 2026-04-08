@@ -3,7 +3,7 @@
  * Logs queries exceeding SLOW_QUERY_THRESHOLD_MS to console and Sentry.
  */
 
-const { logger } = require("../middleware/logger");
+const { logger } = require("../middleware/logger.cjs");
 const Sentry = require("@sentry/node");
 
 const SLOW_QUERY_THRESHOLD_MS = parseInt(process.env.SLOW_QUERY_THRESHOLD_MS || "1000", 10);

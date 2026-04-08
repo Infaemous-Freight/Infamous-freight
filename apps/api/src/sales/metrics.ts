@@ -8,9 +8,15 @@
  * - Retention & Churn
  */
 
-import { PrismaClient } from "@prisma/client";
+import { getPrisma } from "../db/prisma.js";
 
-const prisma = new PrismaClient();
+function prismaOrThrow() {
+  const prisma = getPrisma();
+  if (!prisma) {
+    throw new Error("Database is not configured");
+  }
+  return prisma;
+}
 
 // ============================================
 // Metrics Collection
@@ -62,13 +68,13 @@ export async function getMetricsSnapshot(): Promise<MetricsSnapshot> {
     // ============================================
 
     // Monthly Recurring Revenue (from subscriptions)
-    const billings = await prisma.orgBilling.findMany({
+    const billings = await prismaOrThrow().orgBilling.findMany({
       select: { monthlyBase: true },
     });
     const mrr = billings.reduce((sum, b) => sum + b.monthlyBase, 0);
 
     // Gross Merchandise Value (GMV) - job volumes
-    const jobs30 = await prisma.job.findMany({
+    const jobs30 = await prismaOrThrow().job.findMany({
       where: {
         createdAt: { gte: last30Days },
         status: "COMPLETED",
@@ -91,7 +97,7 @@ export async function getMetricsSnapshot(): Promise<MetricsSnapshot> {
     // Active drivers (completed at least 1 job last 30 days)
     const activeDriverIds = new Set(
       (
-        await prisma.job.findMany({
+        await prismaOrThrow().job.findMany({
           where: {
             driverId: { not: null },
             createdAt: { gte: last30Days },
@@ -106,7 +112,7 @@ export async function getMetricsSnapshot(): Promise<MetricsSnapshot> {
     // Active shippers (created at least 1 job last 30 days)
     const activeShipperIds = new Set(
       (
-        await prisma.job.findMany({
+        await prismaOrThrow().job.findMany({
           where: {
             shipperId: { not: null as any },
             createdAt: { gte: last30Days },
@@ -119,7 +125,7 @@ export async function getMetricsSnapshot(): Promise<MetricsSnapshot> {
     const activeShippers = activeShipperIds.size;
 
     // Total organizations
-    const totalOrgs = await prisma.organization.count({
+    const totalOrgs = await prismaOrThrow().organization.count({
       where: { isActive: true },
     });
 
@@ -130,7 +136,7 @@ export async function getMetricsSnapshot(): Promise<MetricsSnapshot> {
     const jobsLast30 = jobs30.length;
 
     const jobsLast7 = (
-      await prisma.job.findMany({
+      await prismaOrThrow().job.findMany({
         where: {
           createdAt: { gte: last7Days },
           status: "COMPLETED",
@@ -139,7 +145,7 @@ export async function getMetricsSnapshot(): Promise<MetricsSnapshot> {
     ).length;
 
     const jobsToday = (
-      await prisma.job.findMany({
+      await prismaOrThrow().job.findMany({
         where: {
           createdAt: { gte: yesterday },
           status: "COMPLETED",
@@ -151,14 +157,14 @@ export async function getMetricsSnapshot(): Promise<MetricsSnapshot> {
     // GROWTH METRICS
     // ============================================
 
-    const newOrgsLast30 = await prisma.organization.count({
+    const newOrgsLast30 = await prismaOrThrow().organization.count({
       where: {
         createdAt: { gte: last30Days },
       },
     });
 
     // Churn: subscriptions canceled last 30 days
-    const churnedLast30 = await prisma.subscription.count({
+    const churnedLast30 = await prismaOrThrow().subscription.count({
       where: {
         status: { in: ["canceled", "cancelled"] },
         updatedAt: { gte: last30Days },
@@ -170,7 +176,7 @@ export async function getMetricsSnapshot(): Promise<MetricsSnapshot> {
     // ============================================
 
     // Average jobs per driver
-    const driverJobCounts = await prisma.job.groupBy({
+    const driverJobCounts = await prismaOrThrow().job.groupBy({
       by: ["driverId"],
       _count: { id: true },
       where: {
@@ -232,7 +238,7 @@ export async function getMetricsSnapshot(): Promise<MetricsSnapshot> {
  * Store metrics snapshot in database
  */
 export async function storeMetricsSnapshot(metrics: MetricsSnapshot): Promise<any> {
-  return prisma.metricsSnapshot.create({
+  return prismaOrThrow().metricsSnapshot.create({
     data: {
       mrr: metrics.mrr,
       gmv: metrics.gmv,
@@ -260,7 +266,7 @@ export async function storeMetricsSnapshot(metrics: MetricsSnapshot): Promise<an
 export async function getMetricsTrend(days: number = 30): Promise<any[]> {
   const sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 
-  return prisma.metricsSnapshot.findMany({
+  return prismaOrThrow().metricsSnapshot.findMany({
     where: {
       snapshotDate: { gte: sinceDate },
     },

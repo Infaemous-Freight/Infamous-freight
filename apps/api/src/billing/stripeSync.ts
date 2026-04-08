@@ -6,10 +6,23 @@
  */
 
 import Stripe from "stripe";
-import { PrismaClient, BillingPlan } from "@prisma/client";
+import { getPrisma } from "../db/prisma.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
-const prisma = new PrismaClient();
+const BillingPlan = {
+  STARTER: "STARTER",
+  GROWTH: "GROWTH",
+  ENTERPRISE: "ENTERPRISE",
+} as const;
+type BillingPlan = (typeof BillingPlan)[keyof typeof BillingPlan];
+
+function prismaOrThrow() {
+  const prisma = getPrisma();
+  if (!prisma) {
+    throw new Error("Database is not configured");
+  }
+  return prisma;
+}
 
 // Stripe price IDs from environment (created in Stripe dashboard)
 const STRIPE_PRICES: Partial<Record<BillingPlan, string>> = {
@@ -89,7 +102,7 @@ export async function createStripeSubscription(
     );
 
     // 3. Update OrgBilling record
-    await prisma.orgBilling.upsert({
+    await prismaOrThrow().orgBilling.upsert({
       where: { organizationId },
       create: {
         organizationId,
@@ -137,7 +150,7 @@ export async function updateSubscriptionPlan(
   newPlan: BillingPlan,
 ): Promise<void> {
   try {
-    const billing = await prisma.orgBilling.findUnique({
+    const billing = await prismaOrThrow().orgBilling.findUnique({
       where: { organizationId },
     });
 
@@ -162,7 +175,7 @@ export async function updateSubscriptionPlan(
     // Update database
     const planDetails = PLAN_DETAILS[newPlan];
     if (!planDetails) throw new Error(`No plan details configured for plan: ${newPlan}`);
-    await prisma.orgBilling.update({
+    await prismaOrThrow().orgBilling.update({
       where: { organizationId },
       data: {
         plan: newPlan,
@@ -191,7 +204,7 @@ export async function cancelSubscription(
   immediately: boolean = false,
 ): Promise<void> {
   try {
-    const billing = await prisma.orgBilling.findUnique({
+    const billing = await prismaOrThrow().orgBilling.findUnique({
       where: { organizationId },
     });
 
@@ -210,7 +223,7 @@ export async function cancelSubscription(
     });
 
     // Update database
-    await prisma.orgBilling.update({
+    await prismaOrThrow().orgBilling.update({
       where: { organizationId },
       data: {
         stripeStatus: immediately ? "canceled" : "active", // Will transition after cancel_at
@@ -233,7 +246,7 @@ export async function cancelSubscription(
  */
 export async function syncSubscriptionStatus(organizationId: string): Promise<void> {
   try {
-    const billing = await prisma.orgBilling.findUnique({
+    const billing = await prismaOrThrow().orgBilling.findUnique({
       where: { organizationId },
     });
 
@@ -244,7 +257,7 @@ export async function syncSubscriptionStatus(organizationId: string): Promise<vo
     const subscription = await stripe.subscriptions.retrieve(billing.stripeSubId);
 
     // Update status
-    await prisma.orgBilling.update({
+    await prismaOrThrow().orgBilling.update({
       where: { organizationId },
       data: {
         stripeStatus: subscription.status,
@@ -267,7 +280,7 @@ export async function syncSubscriptionStatus(organizationId: string): Promise<vo
  */
 export async function getSubscriptionDetails(organizationId: string) {
   try {
-    const billing = await prisma.orgBilling.findUnique({
+    const billing = await prismaOrThrow().orgBilling.findUnique({
       where: { organizationId },
       include: {
         organization: {

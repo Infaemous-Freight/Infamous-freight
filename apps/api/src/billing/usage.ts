@@ -6,11 +6,18 @@
  * Updates Stripe subscription items with usage
  */
 
-import { PrismaClient } from "@prisma/client";
 import Stripe from "stripe";
+import { getPrisma } from "../db/prisma.js";
 
-const prisma = new PrismaClient();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+
+function prismaOrThrow() {
+  const prisma = getPrisma();
+  if (!prisma) {
+    throw new Error("Database is not configured");
+  }
+  return prisma;
+}
 
 /**
  * Get current month in YYYY-MM format
@@ -69,7 +76,7 @@ export async function recordJobCompletion(
     const platformFee = calculatePlatformFee(vehicleType, jobPrice);
 
     // Get billing plan to check quota
-    const billing = await prisma.orgBilling.findUnique({
+    const billing = await prismaOrThrow().orgBilling.findUnique({
       where: { organizationId },
       select: {
         monthlyQuota: true,
@@ -83,7 +90,7 @@ export async function recordJobCompletion(
     }
 
     // Update or create usage record
-    const usage = await prisma.orgUsage.upsert({
+    const usage = await prismaOrThrow().orgUsage.upsert({
       where: { organizationId_month: { organizationId, month } },
       update: {
         jobs: { increment: 1 },
@@ -103,7 +110,7 @@ export async function recordJobCompletion(
 
     // Update overage information
     if (overageJobs > 0) {
-      await prisma.orgUsage.update({
+      await prismaOrThrow().orgUsage.update({
         where: { organizationId_month: { organizationId, month } },
         data: {
           overageJobs,
@@ -148,7 +155,7 @@ export async function recordJobCompletion(
  */
 async function updateStripeUsage(organizationId: string): Promise<void> {
   try {
-    const billing = await prisma.orgBilling.findUnique({
+    const billing = await prismaOrThrow().orgBilling.findUnique({
       where: { organizationId },
       select: {
         stripeSubId: true,
@@ -161,7 +168,7 @@ async function updateStripeUsage(organizationId: string): Promise<void> {
     }
 
     const month = getCurrentMonth();
-    const usage = await prisma.orgUsage.findUnique({
+    const usage = await prismaOrThrow().orgUsage.findUnique({
       where: { organizationId_month: { organizationId, month } },
     });
 
@@ -208,7 +215,7 @@ export async function getMonthlyUsage(organizationId: string, month?: string) {
   try {
     const queryMonth = month || getCurrentMonth();
 
-    const usage = await prisma.orgUsage.findUnique({
+    const usage = await prismaOrThrow().orgUsage.findUnique({
       where: { organizationId_month: { organizationId, month: queryMonth } },
       include: {
         organization: {
@@ -242,7 +249,7 @@ export async function getMonthlyUsage(organizationId: string, month?: string) {
  */
 export async function getUsageSummary(organizationId: string, fromMonth: string, toMonth: string) {
   try {
-    const usageRecords = await prisma.orgUsage.findMany({
+    const usageRecords = await prismaOrThrow().orgUsage.findMany({
       where: {
         organizationId,
         month: {
@@ -281,7 +288,7 @@ export async function resetMonthlyUsage(organizationId: string): Promise<void> {
   try {
     const month = getCurrentMonth();
 
-    await prisma.orgUsage.deleteMany({
+    await prismaOrThrow().orgUsage.deleteMany({
       where: { organizationId, month },
     });
 

@@ -8,10 +8,16 @@
  * - Pay/credit referrer
  */
 
-import { PrismaClient } from "@prisma/client";
 import crypto from "crypto";
+import { getPrisma } from "../db/prisma.js";
 
-const prisma = new PrismaClient();
+function prismaOrThrow() {
+  const prisma = getPrisma();
+  if (!prisma) {
+    throw new Error("Database is not configured");
+  }
+  return prisma;
+}
 
 // ============================================
 // Referral Code Generation
@@ -54,7 +60,7 @@ export async function createReferral(
   rewardType: string = "credit",
 ): Promise<any> {
   try {
-    const referral = await prisma.referral.create({
+    const referral = await prismaOrThrow().referral.create({
       data: {
         referrerUserId: referrerEmail,
         refereeEmail,
@@ -81,7 +87,7 @@ export async function trackReferralSignup(
 ): Promise<any> {
   try {
     // Find referral record
-    const referral = await prisma.referral.findFirst({
+    const referral = await prismaOrThrow().referral.findFirst({
       where: {
         refereeEmail,
         status: "PENDING",
@@ -94,7 +100,7 @@ export async function trackReferralSignup(
     }
 
     // Update referral
-    const updated = await prisma.referral.update({
+    const updated = await prismaOrThrow().referral.update({
       where: { id: referral.id },
       data: {
         refereeOrgId: organizationId,
@@ -129,7 +135,7 @@ export async function checkReferralMilestone(
 ): Promise<any> {
   try {
     // Find referral where referee org matches
-    const referral = await prisma.referral.findFirst({
+    const referral = await prismaOrThrow().referral.findFirst({
       where: {
         refereeOrgId: organizationId,
         status: "COMPLETED",
@@ -138,7 +144,7 @@ export async function checkReferralMilestone(
 
     if (!referral) {
       // Count jobs for this org
-      const jobCount = await prisma.job.count({
+      const jobCount = await prismaOrThrow().job.count({
         where: {
           organizationId,
           status: "COMPLETED",
@@ -147,7 +153,7 @@ export async function checkReferralMilestone(
 
       if (jobCount >= milestone) {
         // Milestone met! Mark as completed
-        const updated = await prisma.referral.update({
+        const updated = await prismaOrThrow().referral.update({
           where: { id: (referral as any)?.id || organizationId },
           data: {
             status: "COMPLETED",
@@ -210,7 +216,7 @@ export async function processReferralPayout(referral: any): Promise<any> {
     }
 
     // Mark as paid
-    const updated = await prisma.referral.update({
+    const updated = await prismaOrThrow().referral.update({
       where: { id: referral.id },
       data: {
         status: "PAID",
@@ -233,7 +239,7 @@ export async function processReferralPayout(referral: any): Promise<any> {
     console.error(`[Referral] Payout failed:`, err);
 
     // Mark as failed
-    await prisma.referral.update({
+    await prismaOrThrow().referral.update({
       where: { id: referral.id },
       data: {
         status: "FAILED",
@@ -249,7 +255,7 @@ export async function processReferralPayout(referral: any): Promise<any> {
  * Add account credit to referrer's account
  */
 async function processAccountCredit(referrerUserId: string, amount: number): Promise<void> {
-  const existing = await prisma.entitlement.findUnique({
+  const existing = await prismaOrThrow().entitlement.findUnique({
     where: {
       userId_key: {
         userId: referrerUserId,
@@ -261,7 +267,7 @@ async function processAccountCredit(referrerUserId: string, amount: number): Pro
   const current = existing ? Number(existing.value) || 0 : 0;
   const updated = current + amount;
 
-  await prisma.entitlement.upsert({
+  await prismaOrThrow().entitlement.upsert({
     where: {
       userId_key: {
         userId: referrerUserId,
@@ -295,7 +301,7 @@ async function processStripePayout(referrerUserId: string, amount: number): Prom
  */
 export async function getReferralStats(referrerEmail: string): Promise<any> {
   try {
-    const referrals = await prisma.referral.findMany({
+    const referrals = await prismaOrThrow().referral.findMany({
       where: { referrerUserId: referrerEmail },
     });
 
@@ -323,7 +329,7 @@ export async function getReferralStats(referrerEmail: string): Promise<any> {
  */
 export async function getTopReferrers(limit: number = 10): Promise<any[]> {
   try {
-    const topReferrers = await prisma.referral.groupBy({
+    const topReferrers = await prismaOrThrow().referral.groupBy({
       by: ["referrerUserId"],
       _count: { id: true },
       _sum: { rewardAmount: true },

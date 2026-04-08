@@ -5,11 +5,18 @@
  * Runs as a scheduled BullMQ job (1st of month)
  */
 
-import { PrismaClient } from "@prisma/client";
 import Stripe from "stripe";
+import { getPrisma } from "../db/prisma.js";
 
-const prisma = new PrismaClient();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+
+function prismaOrThrow() {
+  const prisma = getPrisma();
+  if (!prisma) {
+    throw new Error("Database is not configured");
+  }
+  return prisma;
+}
 
 /**
  * Get previous month in YYYY-MM format
@@ -46,7 +53,7 @@ export async function generateOrgInvoice(
     const invoiceMonth = month || getPreviousMonth();
 
     // Get usage for the month
-    const usage = await prisma.orgUsage.findUnique({
+    const usage = await prismaOrThrow().orgUsage.findUnique({
       where: { organizationId_month: { organizationId, month: invoiceMonth } },
       include: {
         organization: {
@@ -123,7 +130,7 @@ export async function generateOrgInvoice(
     const finalizedInvoice = await stripe.invoices.finalizeInvoice(invoice.id);
 
     // Save to database
-    const dbInvoice = await prisma.orgInvoice.upsert({
+    const dbInvoice = await prismaOrThrow().orgInvoice.upsert({
       where: { organizationId_month: { organizationId, month: invoiceMonth } },
       create: {
         organizationId,
@@ -197,7 +204,7 @@ export async function generateMonthlyInvoices(): Promise<{
 
   try {
     // Get all orgs with active billing
-    const orgs = await prisma.orgBilling.findMany({
+    const orgs = await prismaOrThrow().orgBilling.findMany({
       where: {
         stripeStatus: "active",
       },
@@ -242,7 +249,7 @@ export async function generateMonthlyInvoices(): Promise<{
  */
 export async function getInvoice(organizationId: string, month: string) {
   try {
-    const invoice = await (prisma.orgInvoice as any).findUnique({
+    const invoice = await (prismaOrThrow().orgInvoice as any).findUnique({
       where: { organizationId_month: { organizationId, month } },
       include: {
         organization: {
@@ -280,7 +287,7 @@ export async function getInvoice(organizationId: string, month: string) {
  */
 export async function markInvoicePaid(organizationId: string, month: string): Promise<void> {
   try {
-    await prisma.orgInvoice.update({
+    await prismaOrThrow().orgInvoice.update({
       where: { organizationId_month: { organizationId, month } },
       data: {
         paidAt: new Date(),
@@ -304,7 +311,7 @@ export async function markInvoicePaid(organizationId: string, month: string): Pr
  */
 export async function sendInvoiceReminder(organizationId: string, month: string): Promise<void> {
   try {
-    const invoice = await prisma.orgInvoice.findUnique({
+    const invoice = await prismaOrThrow().orgInvoice.findUnique({
       where: { organizationId_month: { organizationId, month } },
     });
 

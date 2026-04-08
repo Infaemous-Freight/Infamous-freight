@@ -4,7 +4,7 @@
  */
 
 const sgMail = require("@sendgrid/mail");
-const logger = require("../utils/logger");
+const logger = require("../utils/logger.cjs");
 
 // Initialize SendGrid with API key
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
