@@ -1,65 +1,47 @@
-# Dependencies
+# Dependencies (never ship local installs)
 node_modules/
-!apps/*/node_modules/
-!packages/*/node_modules/
-.pnpm-store
+**/node_modules/
+.pnpm-store/
 
-# Testing
-coverage
-**/__tests__
-**/*.test.js
-**/*.test.ts
-**/*.spec.js
-**/*.spec.ts
-tests/e2e
+# Turborepo / task caches
+.turbo/
+.cache/
 
-# Next.js build artifacts (keep source)
+# Test outputs
+coverage/
+**/coverage/
+
+# Build outputs (keep source, drop artifacts)
+dist/
+**/dist/
+build/
+**/build/
+
+# Next.js build artifacts (don’t send to builder)
 apps/web/.next/
-!apps/web/.next/standalone/
-!apps/web/.next/static/
 apps/web/out/
 
-# Build artifacts
-dist/
-build/
+# Logs
 *.log
-
-# Git
-.git/
-.gitignore
-.gitattributes
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Environment files
-.env.local
-.env.*.local
-.env.development
-.env.test
-
-# Documentation (keep README)
-docs/
-*.md
-!README.md
-!apps/*/README.md
-!packages/*/README.md
-
-# Archives
-archive/
-
-# CI/CD
-.github/
-.husky/
-
-# Misc
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# OS cruft
 .DS_Store
 
+# Local env files (keep examples)
+.env
+.env.*
+!.env.example
+!.env.production.example
+!apps/web/.env.example
+!apps/*/.env.example
+!packages/*/.env.example
+
+# Do NOT ignore markdown globally — monorepo builds and Dockerfile COPY statements rely on repository files.
+# (If you want to reduce context size, prefer a tighter fly build.context or a per-app Dockerfile.)
+
+# Keep Git metadata out of image contexts
+.git/
