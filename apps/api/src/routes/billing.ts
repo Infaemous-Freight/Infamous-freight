@@ -16,10 +16,13 @@ import {
   requireScope,
   limiters,
 } from "../middleware/security.js";
-import * as validation from "../middleware/validation.js";
+import { createRequire } from "node:module";
 import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
 import { tenantPrisma } from "../db/tenant.js";
 import { body, query } from "express-validator";
+
+const require = createRequire(import.meta.url);
+const validation = require("../middleware/validation.js");
 
 import {
   createStripeSubscription,

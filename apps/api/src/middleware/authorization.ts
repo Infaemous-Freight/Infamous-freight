@@ -42,3 +42,23 @@ export function requirePermission(permission: string) {
     next();
   };
 }
+
+export function requireRole(requiredRoles: string[]) {
+  const normalizedRequired = requiredRoles.map((role) => role.toUpperCase());
+
+  return (req: Request, _res: Response, next: NextFunction): void => {
+    const role = normalizeRole(req.auth?.role ?? (req.user as any)?.role);
+
+    if (!role) {
+      next(new ApiError(403, "ROLE_REQUIRED", "Role is required for this operation"));
+      return;
+    }
+
+    if (!normalizedRequired.includes(role)) {
+      next(new ApiError(403, "PERMISSION_DENIED", "You do not have permission for this operation"));
+      return;
+    }
+
+    next();
+  };
+}

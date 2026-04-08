@@ -9,7 +9,10 @@
 
 import { PrismaClient } from "@prisma/client";
 import { createLead, convertLead } from "./leadCapture.js";
-import { sendEmail } from "../services/emailService.js";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const { sendEmail } = require("../services/emailService.js");
 
 const prisma = new PrismaClient();
 

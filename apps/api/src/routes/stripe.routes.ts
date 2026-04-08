@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { authenticate as requireAuth } from '../middleware/security.js';
-import { requireRole } from '../middleware/rbac.js';
+import { createRequire } from 'node:module';
 import { createPaymentIntentForInvoice, handleStripeWebhookEvent } from '../integrations/stripe/stripe.billing.js';
 import { env } from '@infamous-freight/shared';
 import { stripe } from '../integrations/stripe/stripe.client.js';
+
+const require = createRequire(import.meta.url);
+const { requireRole } = require('../middleware/rbac.js');
 
 export const stripeRoutes: Router = Router();
 
