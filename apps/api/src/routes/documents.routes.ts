@@ -3,10 +3,10 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { createRequire } from 'module';
+import { requireAuth } from '../middleware/auth.js';
+import { requireTenant } from '../middleware/tenant.js';
 
 const require = createRequire(import.meta.url);
-const { requireAuth } = require('../middleware/auth.js');
-const { requireTenant } = require('../middleware/tenant.js');
 const { requireRole } = require('../middleware/rbac.cjs');
 const prisma = require('../lib/prisma.cjs');
 
