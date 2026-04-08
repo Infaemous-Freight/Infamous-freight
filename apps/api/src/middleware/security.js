@@ -7,10 +7,8 @@
 const rateLimit = require("express-rate-limit");
 const { ipKeyGenerator } = require("express-rate-limit");
 const jwt = require("jsonwebtoken");
-const { authenticateWithRotation } = require("./advancedSecurity");
-const { env } = require("../config/env");
-const rateLimitMetrics = require("../lib/rateLimitMetrics");
-const { logger } = require("./logger");
+const rateLimitMetrics = require("../lib/rateLimitMetrics.cjs");
+const { logger } = require("./logger.cjs");
 const { validateScope, hasScope, hasAllScopes } = require("@infamous-freight/shared");
 
 /**
@@ -166,7 +164,7 @@ function authenticate(req, res, next) {
       return res.status(401).json({ error: "Missing bearer token" });
     }
     const token = header.replace("Bearer ", "");
-    const secret = process.env.JWT_SECRET || env?.jwtSecret;
+    const secret = process.env.JWT_SECRET;
     if (!secret) {
       return res.status(500).json({ error: "Server auth misconfiguration" });
     }
@@ -203,6 +201,7 @@ function requireOrganization(req, res, next) {
 // Optional rotation-aware authentication controlled via env
 function authenticateFlexible(req, res, next) {
   if (process.env.ENABLE_TOKEN_ROTATION === "true") {
+    const { authenticateWithRotation } = require("./advancedSecurity.cjs");
     return authenticateWithRotation(req, res, next);
   }
   return authenticate(req, res, next);

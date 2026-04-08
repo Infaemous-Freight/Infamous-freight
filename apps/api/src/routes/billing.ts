@@ -19,6 +19,7 @@ import {
 import validation from "../middleware/validation.js";
 import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
 import { tenantPrisma } from "../db/tenant.js";
+import { getPrisma } from "../db/prisma.js";
 import { body, query } from "express-validator";
 
 import {
@@ -43,8 +44,14 @@ import {
 const router: Router = Router();
 const { handleValidationErrors, validateString } = validation;
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+
+function prismaOrThrow() {
+  const prisma = getPrisma();
+  if (!prisma) {
+    throw new Error("Database is not configured");
+  }
+  return prisma;
+}
 
 // ============================================
 // Billing Portal (Stripe)
@@ -63,7 +70,7 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const orgId = req.auth?.organizationId ?? "";
-      const billing = await prisma.orgBilling.findUnique({
+      const billing = await prismaOrThrow().orgBilling.findUnique({
         where: { organizationId: orgId },
         select: { stripeCustomerId: true },
       });
@@ -109,7 +116,7 @@ router.post(
       const userId = req.auth?.userId;
       const { plan } = req.body;
 
-      const org = await prisma.organization.findUnique({
+      const org = await prismaOrThrow().organization.findUnique({
         where: { id: orgId },
         select: { name: true },
       });
@@ -122,7 +129,7 @@ router.post(
       const result = await createStripeSubscription(orgId, org.name, plan, req.user?.email);
 
       // Log audit event
-      await logAuditEvent(prisma, {
+      await logAuditEvent(prismaOrThrow(), {
         organizationId: orgId,
         userId,
         action: AUDIT_ACTIONS.ORG_SETTINGS_UPDATED,
@@ -163,7 +170,7 @@ router.post(
       await updateSubscriptionPlan(orgId, plan);
 
       // Log audit event
-      await logAuditEvent(prisma, {
+      await logAuditEvent(prismaOrThrow(), {
         organizationId: orgId,
         userId,
         action: "PLAN_UPGRADED",
@@ -206,7 +213,7 @@ router.post(
       await cancelSubscription(orgId, immediately || false);
 
       // Log audit event
-      await logAuditEvent(prisma, {
+      await logAuditEvent(prismaOrThrow(), {
         organizationId: orgId,
         userId,
         action: "SUBSCRIPTION_CANCELED",
