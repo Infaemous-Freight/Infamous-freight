@@ -39,7 +39,8 @@
     "deploy:check": "pnpm validate && pnpm audit:prod && pnpm smoke:release",
     "deploy:work": "bash scripts/deploy-work-branch.sh",
     "health": "pnpm run lint && pnpm run typecheck && pnpm run test",
-    "health:quick": "pnpm run lint && pnpm run typecheck"
+    "health:quick": "pnpm run lint && pnpm run typecheck",
+    "fly:deploy:web": "bash scripts/fly-deploy-web.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
