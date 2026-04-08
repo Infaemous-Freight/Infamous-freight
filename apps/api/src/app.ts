@@ -30,6 +30,8 @@ import { stripeRoutes } from "./routes/stripe.routes.js";
 import { tenants } from "./routes/tenants.js";
 import stripeWebhookRoutes from "./webhooks/stripe.js";
 
+const sentryEnabled = Boolean(env.sentryDsn);
+
 export function createApp(): Express {
   const app = express();
 
@@ -118,7 +120,7 @@ export function createApp(): Express {
 
   if (env.nodeEnv !== "production") {
     app.get("/debug/sentry", (_req, res) => {
-      if (!env.sentryDsn) {
+      if (!sentryEnabled) {
         res.status(503).json({
           success: false,
           error: "Sentry is disabled: SENTRY_DSN is not configured",
@@ -147,7 +149,7 @@ export function createApp(): Express {
         ? err.statusCode
         : 500;
 
-    if (statusCode >= 500) {
+    if (sentryEnabled && statusCode >= 500) {
       Sentry.withScope((scope) => {
         scope.setTag("method", req.method);
         scope.setTag("path", req.originalUrl || req.url);

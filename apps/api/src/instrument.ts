@@ -1,9 +1,11 @@
 import * as Sentry from "@sentry/node";
 
-const dsn = process.env.SENTRY_DSN;
+const dsn = process.env.SENTRY_DSN?.trim();
 const sendDefaultPii = process.env.SENTRY_SEND_DEFAULT_PII === "true";
 
-if (dsn && !Sentry.getClient()) {
+const sentryEnabled = Boolean(dsn);
+
+if (sentryEnabled && !Sentry.getClient()) {
   Sentry.init({
     dsn,
     sendDefaultPii,
@@ -11,4 +13,4 @@ if (dsn && !Sentry.getClient()) {
   });
 }
 
-export { Sentry };
+export { Sentry, sentryEnabled };
