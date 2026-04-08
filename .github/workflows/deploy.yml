@@ -2,10 +2,16 @@ name: Unified Deploy (Fly + Netlify)
 
 on:
   push:
+    branches:
+      - "**"
   workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy-api:
@@ -29,7 +35,17 @@ jobs:
         run: |
           set -euo pipefail
           APP_NAME=$(awk -F'=' '/^app\s*=/{gsub(/[ "\t]/, "", $2); print $2; exit}' fly.api.toml)
-          curl -fsS "https://${APP_NAME}.fly.dev/api/health"
+          HEALTH_URL="https://${APP_NAME}.fly.dev/api/health"
+          for attempt in 1 2 3 4 5; do
+            if curl -fsS "$HEALTH_URL" >/dev/null; then
+              echo "Health check passed: $HEALTH_URL"
+              exit 0
+            fi
+            echo "Health check attempt $attempt failed, retrying..."
+            sleep 5
+          done
+          echo "Health check failed after retries: $HEALTH_URL" >&2
+          exit 1
 
   deploy-web:
     name: Deploy Web to Netlify
@@ -42,6 +58,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: pnpm
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -51,19 +68,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build web
-        run: pnpm --filter web build
-
       - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v3.0
-        with:
-          publish-dir: apps/web/out
-          production-branch: main
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "GitHub Actions deploy from ${GITHUB_REF_NAME}"
-          enable-pull-request-comment: false
-          enable-commit-comment: false
-          overwrites-pull-request-comment: false
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then
+            pnpm dlx netlify-cli deploy --build --prod --message "GitHub Actions deploy from ${GITHUB_REF_NAME}" --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN"
+          else
+            pnpm dlx netlify-cli deploy --build --message "GitHub Actions preview deploy from ${GITHUB_REF_NAME}" --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN"
+          fi
