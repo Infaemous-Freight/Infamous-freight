@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const rateLimitMetrics = require("./rateLimitMetrics.cjs");
+const rateLimitMetrics = require("./rateLimitMetrics.js");
 
 export const recordHit = rateLimitMetrics.recordHit;
 export const recordBlocked = rateLimitMetrics.recordBlocked;
