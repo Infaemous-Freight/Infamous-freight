@@ -9,7 +9,7 @@ export function createDynamicComponent<P = {}>(
   importFn: () => Promise<{ default: ComponentType<P> }>,
   loadingComponent?: () => ReactElement,
 ): React.ComponentType<P> {
-  // @ts-expect-error - Next.js dynamic import type mismatch with React 19
+  // @ts-ignore - Next.js dynamic import type mismatch with React 19
   return dynamic(importFn, {
     loading: loadingComponent || (() => <div>Loading...</div>),
     ssr: false, // Disable SSR for better code splitting

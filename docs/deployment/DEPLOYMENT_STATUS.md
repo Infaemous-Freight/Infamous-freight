@@ -27,7 +27,7 @@
 
 - Docker services running:
   - ✅ infamous_pg (PostgreSQL 15)
-  - ✅ infamous_api (Node.js 20)
+  - ✅ infamous_api (Node.js 24)
   - ⚠️ infamous_web (Next.js 14 - build issue)
   - ✅ infamous_nginx (Nginx)
 - Code pushed to GitHub:

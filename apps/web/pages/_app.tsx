@@ -4,7 +4,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import * as Sentry from "@sentry/nextjs";
-import { appWithTranslation } from "next-i18next";
 import GlobalLayout from "../components/GlobalLayout";
 import { initDatadogRUM } from "../src/lib/datadog";
 import SentryErrorBoundary from "../components/SentryErrorBoundary";
@@ -139,7 +138,7 @@ function App({ Component, pageProps }: AppProps): React.ReactElement {
   }, [isProduction]);
 
   return (
-    // @ts-expect-error - Sentry ErrorBoundary type incompatibility with React 19
+    // @ts-ignore - Sentry ErrorBoundary type incompatibility with React 19
     <SentryErrorBoundary>
       <AuthProvider>
         <GlobalLayout>
@@ -152,5 +151,4 @@ function App({ Component, pageProps }: AppProps): React.ReactElement {
   );
 }
 
-// Phase 7 Tier 5: Wrap with i18next translation provider
-export default appWithTranslation(App);
+export default App;

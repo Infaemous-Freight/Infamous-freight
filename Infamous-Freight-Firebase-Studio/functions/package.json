@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "engines": {
-    "node": "20"
+    "node": "24"
   },
   "scripts": {
     "lint": "eslint .",
@@ -17,7 +17,7 @@
     "firebase-functions": "^5.1.1"
   },
   "devDependencies": {
-    "eslint": "^9.16.0",
+    "eslint": "^10.1.0",
     "eslint-config-google": "^0.14.0"
   },
   "eslintConfig": {

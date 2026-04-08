@@ -1,20 +1,13 @@
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-        "noEmit": true,
-        "strict": false,
-        "skipLibCheck": true,
-        "noImplicitAny": false,
-        "moduleResolution": "node",
-        "lib": ["ES2020"]
-    },
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "node_modules",
-        "tests",
-        "build",
-        "dist"
-    ]
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "lib": ["ES2020"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "tests", "build", "dist"]
 }

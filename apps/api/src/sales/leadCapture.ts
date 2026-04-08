@@ -5,10 +5,8 @@
  * (HubSpot, Salesforce, Notion, Slack)
  */
 
-import { PrismaClient } from "@prisma/client";
 import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
-
-const prisma = new PrismaClient();
+import { prisma } from "../db/prisma.js";
 
 async function parseResponseBody(response: any): Promise<unknown> {
   const rawBody = await response.text();
@@ -205,9 +203,9 @@ export async function getLeads(filters?: {
 }): Promise<any[]> {
   return prisma.lead.findMany({
     where: {
-      type: filters?.type ? { equals: filters.type } as any : undefined,
+      type: filters?.type ? ({ equals: filters.type } as any) : undefined,
       status: filters?.status ? { equals: filters.status } : undefined,
-      source: filters?.source ? { equals: filters.source } as any : undefined,
+      source: filters?.source ? ({ equals: filters.source } as any) : undefined,
     },
     orderBy: {
       createdAt: "desc",

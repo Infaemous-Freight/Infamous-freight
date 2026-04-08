@@ -3,7 +3,11 @@ import "dotenv/config";
 import { z } from "zod";
 
 const durationSchema = z.string().trim().min(2);
-const pemSchema = z.string().trim().min(1).transform((value) => value.replace(/\\n/g, "\n"));
+const pemSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .transform((value) => value.replace(/\\n/g, "\n"));
 const booleanStringSchema = z.enum(["true", "false"]).transform((value) => value === "true");
 
 const envSchema = z
@@ -13,7 +17,7 @@ const envSchema = z
     PORT: z.coerce.number().int().positive().optional(),
     API_PORT: z.coerce.number().int().positive().optional(),
     DATABASE_URL: z.string().trim().min(1),
-    JWT_ALGORITHM: z.enum(["RS256", "HS256"]).default("RS256"),
+    JWT_ALGORITHM: z.enum(["RS256", "HS256"]).default("HS256"),
     JWT_PRIVATE_KEY: pemSchema.optional(),
     JWT_PUBLIC_KEY: pemSchema.optional(),
     JWT_SECRET: z.string().trim().min(32).optional(),
@@ -48,7 +52,14 @@ const envSchema = z
     AVATAR_ALLOWED_TYPES: z.string().optional().default("image/jpeg,image/png,image/webp"),
     AVATAR_DATA_STORE: z.string().optional().default("apps/api/data/avatars.json"),
     LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).optional().default("info"),
-    AI_PROVIDER: z.enum(["stub", "openai", "anthropic"]).optional().default("stub"),
+    AI_PROVIDER: z.preprocess(
+      (value) => {
+        if (typeof value !== "string") return undefined;
+        const normalized = value.trim().toLowerCase();
+        return ["stub", "openai", "anthropic"].includes(normalized) ? normalized : undefined;
+      },
+      z.enum(["stub", "openai", "anthropic"]).optional().default("stub"),
+    ),
     OPENAI_API_KEY: z.string().optional(),
     OPENAI_MODEL: z.string().optional().default("gpt-4o-mini"),
     ANTHROPIC_API_KEY: z.string().optional(),

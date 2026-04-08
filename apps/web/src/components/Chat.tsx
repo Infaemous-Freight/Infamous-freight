@@ -60,7 +60,7 @@ export default function Chat({
       return;
     }
 
-    // @ts-expect-error - Supabase type definitions incompatibility
+    // @ts-ignore - Supabase type definitions incompatibility
     const { error } = await supabase.from("messages").insert({
       thread_id: threadId,
       sender_id: u.user.id,

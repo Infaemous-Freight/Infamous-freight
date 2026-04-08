@@ -77,7 +77,7 @@ Current status: Failing (expected - requires configuration)
 ## 📦 Installed Packages
 
 - **botid**: v1.5.10 (Bot detection)
-- **Node.js**: v22.16.0
+- **Node.js**: v24.x
 - **pnpm**: v7.5.1
 - **PostgreSQL**: v17.7 (installed, awaiting configuration)
 

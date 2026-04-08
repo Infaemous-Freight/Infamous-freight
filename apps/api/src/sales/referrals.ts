@@ -8,10 +8,9 @@
  * - Pay/credit referrer
  */
 
-import { PrismaClient } from "@prisma/client";
 import crypto from "crypto";
-
-const prisma = new PrismaClient();
+import { prisma } from "../db/prisma.js";
+import { logger } from "../lib/logger.js";
 
 // ============================================
 // Referral Code Generation
@@ -64,10 +63,10 @@ export async function createReferral(
       },
     });
 
-    console.log(`[Referral] Created referral: ${referrerEmail} → ${refereeEmail}`);
+    logger.info({ referrerEmail, refereeEmail }, "Referral created");
     return referral;
   } catch (err) {
-    console.error(`[Referral] Failed to create referral:`, err);
+    logger.error({ referrerEmail, refereeEmail, err }, "Failed to create referral");
     throw err;
   }
 }
@@ -89,7 +88,7 @@ export async function trackReferralSignup(
     });
 
     if (!referral) {
-      console.log(`[Referral] No pending referral found for ${refereeEmail}`);
+      logger.debug({ refereeEmail }, "No pending referral found");
       return null;
     }
 
@@ -103,18 +102,18 @@ export async function trackReferralSignup(
       },
     });
 
-    console.log(`[Referral] Tracked signup: ${refereeEmail} → org ${organizationId}`);
+    logger.info({ refereeEmail, organizationId }, "Referral signup tracked");
 
     // Notify referrer (optional: send email or Slack)
     try {
       await notifyReferrerSignup(updated);
     } catch (err) {
-      console.error(`[Referral] Failed to notify referrer:`, err);
+      logger.error({ refereeEmail, err }, "Failed to notify referrer");
     }
 
     return updated;
   } catch (err) {
-    console.error(`[Referral] Failed to track signup:`, err);
+    logger.error({ refereeEmail, err }, "Failed to track signup");
     throw err;
   }
 }
@@ -156,13 +155,13 @@ export async function checkReferralMilestone(
           },
         });
 
-        console.log(`[Referral] Milestone reached for ${organizationId} (${jobCount} jobs)`);
+        logger.info({ organizationId, jobCount }, "Referral milestone reached");
 
         // Trigger payout
         try {
           await processReferralPayout(updated);
         } catch (err) {
-          console.error(`[Referral] Payout failed:`, err);
+          logger.error({ organizationId, err }, "Payout failed");
         }
 
         return updated;
@@ -171,7 +170,7 @@ export async function checkReferralMilestone(
 
     return null;
   } catch (err) {
-    console.error(`[Referral] Milestone check failed:`, err);
+    logger.error({ organizationId, err }, "Milestone check failed");
     throw err;
   }
 }
@@ -186,7 +185,7 @@ export async function checkReferralMilestone(
 export async function processReferralPayout(referral: any): Promise<any> {
   try {
     if (referral.status === "PAID") {
-      console.log(`[Referral] Already paid: ${referral.id}`);
+      logger.debug({ referralId: referral.id }, "Referral already paid");
       return referral;
     }
 
@@ -205,7 +204,7 @@ export async function processReferralPayout(referral: any): Promise<any> {
 
       case "percentage":
         // Percentage of their first month revenue (handled differently)
-        console.log(`[Referral] Percentage payouts handled separately`);
+        logger.debug({ referralId: referral.id }, "Percentage payouts handled separately");
         break;
     }
 
@@ -219,18 +218,18 @@ export async function processReferralPayout(referral: any): Promise<any> {
       },
     });
 
-    console.log(`[Referral] Payout processed: ${referrerUserId} - $${rewardAmount} (${rewardType})`);
+    logger.info({ referrerUserId, rewardAmount, rewardType }, "Referral payout processed");
 
     // Notify referrer
     try {
       await notifyReferrerPayout(updated);
     } catch (err) {
-      console.error(`[Referral] Failed to notify referrer of payout:`, err);
+      logger.error({ referrerUserId, err }, "Failed to notify referrer of payout");
     }
 
     return updated;
   } catch (err) {
-    console.error(`[Referral] Payout failed:`, err);
+    logger.error({ referralId: referral.id, err }, "Payout failed");
 
     // Mark as failed
     await prisma.referral.update({
@@ -276,14 +275,14 @@ async function processAccountCredit(referrerUserId: string, amount: number): Pro
     },
   });
 
-  console.log(`[Referral] Credit applied: ${referrerUserId} - $${amount}`);
+  logger.info({ referrerUserId, amount }, "Referral credit applied");
 }
 
 /**
  * Process payout via Stripe Connect
  */
 async function processStripePayout(referrerUserId: string, amount: number): Promise<void> {
-  console.log(`[Referral] Stripe payout queued for manual processing: ${referrerUserId} - $${amount}`);
+  logger.info({ referrerUserId, amount }, "Stripe payout queued for manual processing");
 }
 
 // ============================================
@@ -301,19 +300,19 @@ export async function getReferralStats(referrerEmail: string): Promise<any> {
 
     const stats = {
       totalReferrals: referrals.length,
-      pendingSignups: referrals.filter((r) => r.status === "PENDING").length,
-      signups: referrals.filter((r) => r.refereeSignupAt).length,
-      completed: referrals.filter((r) => r.status === "COMPLETED").length,
-      paid: referrals.filter((r) => r.status === "PAID").length,
+      pendingSignups: referrals.filter((r: any) => r.status === "PENDING").length,
+      signups: referrals.filter((r: any) => r.refereeSignupAt).length,
+      completed: referrals.filter((r: any) => r.status === "COMPLETED").length,
+      paid: referrals.filter((r: any) => r.status === "PAID").length,
       totalEarnings: referrals
-        .filter((r) => r.status === "PAID")
-        .reduce((sum, r) => sum + Number(r.rewardAmount), 0),
+        .filter((r: any) => r.status === "PAID")
+        .reduce((sum: number, r: any) => sum + Number(r.rewardAmount), 0),
       referrals,
     };
 
     return stats;
   } catch (err) {
-    console.error(`[Referral] Failed to get stats:`, err);
+    logger.error({ referrerEmail, err }, "Failed to get referral stats");
     throw err;
   }
 }
@@ -336,13 +335,13 @@ export async function getTopReferrers(limit: number = 10): Promise<any[]> {
       take: limit,
     });
 
-    return topReferrers.map((r) => ({
+    return topReferrers.map((r: any) => ({
       referrerUserId: r.referrerUserId,
-      referralCount: (r._count?.id ?? 0),
-      totalEarnings: (r._sum?.rewardAmount ?? 0),
+      referralCount: r._count?.id ?? 0,
+      totalEarnings: r._sum?.rewardAmount ?? 0,
     }));
   } catch (err) {
-    console.error(`[Referral] Failed to get top referrers:`, err);
+    logger.error({ err }, "Failed to get top referrers");
     throw err;
   }
 }
@@ -377,7 +376,7 @@ async function notifyReferrerSignup(referral: any): Promise<void> {
       }),
     });
   } catch (err) {
-    console.error(`[Referral] Slack notification failed:`, err);
+    logger.error({ err }, "Failed to send referral signup Slack notification");
   }
 }
 
@@ -407,7 +406,7 @@ async function notifyReferrerPayout(referral: any): Promise<void> {
       }),
     });
   } catch (err) {
-    console.error(`[Referral] Slack notification failed:`, err);
+    logger.error({ err }, "Failed to send referral payout Slack notification");
   }
 }
 

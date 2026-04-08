@@ -38,8 +38,7 @@ export default function Dashboard() {
   }, [router]);
 
   if (loading) return <div className="p-6">Loading dashboard...</div>;
-  if (error)
-    return <div className="p-6 text-red-600">{error}</div>;
+  if (error) return <div className="p-6 text-red-600">{error}</div>;
 
   return (
     <div className="p-6">
@@ -47,7 +46,7 @@ export default function Dashboard() {
       <ul className="mt-4 space-y-2">
         {loads.map((load) => (
           <li key={load.id}>
-            {load.shipperName} - ${load.rate} - {load.status}
+            {load.lane} - ${((load.rateCents ?? 0) / 100).toFixed(2)} - {load.status}
           </li>
         ))}
       </ul>

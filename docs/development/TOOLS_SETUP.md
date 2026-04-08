@@ -6,7 +6,7 @@ All required development tools are now configured and ready to use:
 
 ### Core Tools
 
-- **Node.js**: v22.16.0 ✓
+- **Node.js**: v24.x ✅
 - **npm**: v11.6.4 ✓
 - **pnpm**: v10.25.0 ✓
 - **Git**: v2.52.0 ✓

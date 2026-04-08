@@ -10,7 +10,7 @@ export async function listLoads(tenantId: string): Promise<Load[]> {
     orderBy: { createdAt: "desc" },
   });
 
-  return rows.map((r) => ({
+  return rows.map((r: any) => ({
     id: r.id,
     tenantId: r.tenantId,
     lane:

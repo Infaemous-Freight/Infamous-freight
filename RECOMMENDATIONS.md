@@ -1,16 +1,20 @@
 # Infæmous Freight Platform - Improvement Recommendations
 
-**Generated:** March 2026
-**Status:** Actionable Recommendations
-**Coverage:** Security, Code Quality, Infrastructure, Documentation
+**Generated:** March 2026 **Status:** Actionable Recommendations **Coverage:**
+Security, Code Quality, Infrastructure, Documentation
 
 ---
 
 ## Executive Summary
 
-This document provides actionable improvement recommendations for the Infæmous Freight logistics platform based on comprehensive codebase analysis. The platform is **production-ready** with no critical blockers, but several high-impact improvements can enhance security, maintainability, and developer experience.
+This document provides actionable improvement recommendations for the Infæmous
+Freight logistics platform based on comprehensive codebase analysis. The
+platform is **production-ready** with no critical blockers, but several
+high-impact improvements can enhance security, maintainability, and developer
+experience.
 
 **Key Findings:**
+
 - 45+ improvement opportunities identified
 - 8+ quick wins (1-3 hours each) available
 - Current test coverage: 86.2% (exceeds thresholds)
@@ -22,24 +26,28 @@ This document provides actionable improvement recommendations for the Infæmous 
 ## Priority Roadmap
 
 ### Phase 1: Security & Stability (This Week)
+
 1. Add `pnpm audit` to CI pipeline
 2. Centralize environment variables
 3. Fix Docker Node version mismatch
 4. Consolidate error handlers
 
 ### Phase 2: Code Quality (Next Week)
+
 1. Migrate TypeScript `any` to proper types
 2. Consolidate middleware files
 3. Replace console.log with structured logger
 4. Add dependency scanning automation
 
 ### Phase 3: Features & Documentation (Next Sprint)
+
 1. Complete Stripe webhook TODOs
 2. Implement email integration
 3. Complete background job handlers
 4. Create monitoring and rate limiting guides
 
 ### Phase 4: Strategic Planning (Q2 2026)
+
 1. Plan React Native 0.74 upgrade
 2. Monitor AWS SDK updates for XXE fix
 3. Implement webhook delivery infrastructure
@@ -54,6 +62,7 @@ This document provides actionable improvement recommendations for the Infæmous 
 **Critical Priority:**
 
 #### A. fast-xml-parser XXE Injection
+
 - **Severity:** CRITICAL
 - **Location:** Transitive dependency via AWS SDK
 - **Status:** Blocked by upstream
@@ -61,6 +70,7 @@ This document provides actionable improvement recommendations for the Infæmous 
 - **Workaround:** Risk is low (only affects specific XML parsing scenarios)
 
 #### B. React Native Vulnerabilities (13 HIGH)
+
 - **Severity:** HIGH
 - **Location:** `apps/mobile` - React Native 0.73.4
 - **Impact:** 13 high-severity issues documented
@@ -70,6 +80,7 @@ This document provides actionable improvement recommendations for the Infæmous 
 **Moderate Priority:**
 
 #### C. ajv ReDoS Vulnerabilities (4 MODERATE)
+
 - **Severity:** MODERATE
 - **Location:** Build-time dependencies
 - **Impact:** Low (build-time only, not runtime)
@@ -78,6 +89,7 @@ This document provides actionable improvement recommendations for the Infæmous 
 **Low Priority:**
 
 #### D. Transitive Dependencies (4 LOW)
+
 - **Severity:** LOW
 - **Action:** Track via automated dependency updates
 
@@ -85,34 +97,39 @@ This document provides actionable improvement recommendations for the Infæmous 
 
 **HIGH PRIORITY - Quick Win (30 minutes)**
 
-**Issue:** Security audit checklist states "npm audit run in CI/CD - Not automated - PRIORITY"
+**Issue:** Security audit checklist states "npm audit run in CI/CD - Not
+automated - PRIORITY"
 
 **Current State:** No automated dependency vulnerability scanning in CI pipeline
 
 **Recommended Fix:**
 
 Add to `.github/workflows/ci.yml`:
+
 ```yaml
 - name: Dependency Security Audit
   run: pnpm audit --audit-level=high
-  continue-on-error: true  # Don't fail builds initially
+  continue-on-error: true # Don't fail builds initially
 
 - name: Dependency Security Report
   if: failure()
   run: pnpm audit --json > audit-report.json
 ```
 
-**Impact:** Catches vulnerable packages before merge; prevents supply chain attacks
+**Impact:** Catches vulnerable packages before merge; prevents supply chain
+attacks
 
 ### 1.3 Environment Variable Security
 
 **HIGH PRIORITY - Quick Win (1-2 hours)**
 
 **Issues Found:**
+
 - `apps/api/src/lib/redis.ts:9` - Direct `process.env.REDIS_URL` access
 - `apps/api/src/lib/monitoring.ts` - 8 instances of direct `process.env` access
 - `apps/api/src/jobs/monthlyInvoicing.ts` - 5+ instances
-- `apps/web/app/api/webhooks/route.ts:18` - Non-null assertion on `process.env.STRIPE_WEBHOOK_SECRET!`
+- `apps/web/app/api/webhooks/route.ts:18` - Non-null assertion on
+  `process.env.STRIPE_WEBHOOK_SECRET!`
 
 **Recommended Pattern:**
 
@@ -120,13 +137,15 @@ Create centralized environment configuration:
 
 ```typescript
 // apps/api/src/config/env.ts
-import { z } from 'zod';
+import { z } from "zod";
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  PORT: z.string().default('3000'),
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
+  PORT: z.string().default("3000"),
   DATABASE_URL: z.string().min(1),
-  REDIS_URL: z.string().default('redis://localhost:6379'),
+  REDIS_URL: z.string().default("redis://localhost:6379"),
   STRIPE_WEBHOOK_SECRET: z.string().min(1),
   SENTRY_DSN: z.string().optional(),
   // ... add all env vars
@@ -136,6 +155,7 @@ export const ENV = envSchema.parse(process.env);
 ```
 
 **Benefits:**
+
 - Type-safe environment variables
 - Validation at startup (fail fast)
 - Single source of truth
@@ -185,6 +205,7 @@ export const ENV = envSchema.parse(process.env);
 **Issue:** 39 instances of `any` type bypass TypeScript safety
 
 **Key Locations:**
+
 - `apps/api/src/auth/middleware.ts:10` - `(req as any).auth = ...`
 - Multiple middleware files using untyped globals
 - Express Request/Response not properly extended
@@ -215,6 +236,7 @@ export {};
 ```
 
 **Impact:**
+
 - Prevents 3-5 potential runtime bugs
 - Improves IDE autocomplete
 - Better code documentation
@@ -227,18 +249,21 @@ export {};
 **Issue:** Mixed ESM and CommonJS files cause confusion
 
 **Problems:**
+
 - Package.json declares `"type": "module"`
 - Some files still use CommonJS patterns
 - Duplicate `.js` and `.ts` files exist
 - 9 duplicate files detected in `apps/api/src/`
 
 **Files to Remove:**
+
 ```bash
 apps/api/src/app.js              # Duplicate of app.ts
 apps/api/src/lib/*.js            # 8 files with .ts equivalents
 ```
 
 **Action:**
+
 1. Audit which files are actually imported
 2. Remove unused `.js` duplicates
 3. Update imports to use `.ts` versions
@@ -253,13 +278,17 @@ apps/api/src/lib/*.js            # 8 files with .ts equivalents
 **Issue:** 34 middleware files with apparent duplication
 
 **Duplicates Found:**
-- **Error Handlers:** `errorHandler.js`, `error-handler.ts`, `errorTracking.js` (3 files!)
-- **Cache Implementations:** `cache.js`, `advancedCache.js`, `responseCache.js`, `smartCache.js` (4 files!)
+
+- **Error Handlers:** `errorHandler.js`, `error-handler.ts`, `errorTracking.js`
+  (3 files!)
+- **Cache Implementations:** `cache.js`, `advancedCache.js`, `responseCache.js`,
+  `smartCache.js` (4 files!)
 - **RBAC:** `authRBAC.js`, `rbac.js` (2 files!)
 
 **Recommended Action:**
 
 1. **Audit Active Middleware:**
+
    ```bash
    grep -r "require.*middleware" apps/api/src/
    grep -r "import.*middleware" apps/api/src/
@@ -271,13 +300,14 @@ apps/api/src/lib/*.js            # 8 files with .ts equivalents
    - Keep ONE RBAC implementation
    - Archive inactive files to `docs/archived-middleware/`
 
-3. **Document Decisions:**
-   Create `apps/api/src/middleware/README.md` explaining:
+3. **Document Decisions:** Create `apps/api/src/middleware/README.md`
+   explaining:
    - Which middleware to use for what purpose
    - Correct import paths
    - Configuration options
 
 **Impact:**
+
 - Reduces confusion for new developers
 - Faster development (no guessing which file to use)
 - Easier testing
@@ -294,20 +324,23 @@ apps/api/src/lib/*.js            # 8 files with .ts equivalents
 **Issue:** Node version mismatch
 
 **Location:** `apps/api/Dockerfile`
+
 ```dockerfile
-FROM node:20-alpine  # ❌ Wrong version
+FROM node:24-alpine  # ✅ Correct version
 ```
 
 **Package.json requirement:**
+
 ```json
 "engines": {
-  "node": "22.x"
+  "node": "24.x"
 }
 ```
 
 **Recommended Fix:**
+
 ```dockerfile
-FROM node:22-alpine
+FROM node:24-alpine
 
 # Add health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
@@ -321,16 +354,19 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 **LOW PRIORITY - Strategic (2-3 hours)**
 
 **Missing Security Practices:**
+
 - No image scanning in CI
 - No SBOM (Software Bill of Materials) generation
 - No container signing/verification
 
 **Recommended Tools:**
+
 - Trivy for image scanning
 - Cosign for image signing
 - Syft for SBOM generation
 
 **Example CI Addition:**
+
 ```yaml
 - name: Scan Docker Image
   uses: aquasecurity/trivy-action@master
@@ -350,28 +386,32 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 **Issue:** Direct `console.log()` calls instead of structured logger
 
 **Locations:**
+
 - `apps/api/src/jobs/insurance-enforcement.ts:60` - console.log
 - `apps/api/src/jobs/monthlyInvoicing.ts` - 10+ console.log calls
 - `apps/api/src/lib/redis.ts` - console.warn/error
 
-**Current:** Logger exists (`apps/api/src/lib/logger.ts`) but inconsistently used
+**Current:** Logger exists (`apps/api/src/lib/logger.ts`) but inconsistently
+used
 
 **Recommended Fix:**
 
 Replace all console calls:
+
 ```typescript
 // Before
-console.log('[MonthlyInvoicing] Starting job...');
+console.log("[MonthlyInvoicing] Starting job...");
 
 // After
-import { logger } from '../lib/logger.js';
-logger.info('[MonthlyInvoicing] Starting job...', {
+import { logger } from "../lib/logger.js";
+logger.info("[MonthlyInvoicing] Starting job...", {
   jobId: job.id,
   timestamp: new Date().toISOString(),
 });
 ```
 
 **Impact:**
+
 - Structured logging for better parsing
 - Easier error tracking
 - Better Sentry integration
@@ -385,8 +425,7 @@ logger.info('[MonthlyInvoicing] Starting job...', {
 
 **Status:** ✅ Good baseline (86.2% coverage)
 
-**Test Files:** 122 total
-**Coverage:** Exceeds all thresholds
+**Test Files:** 122 total **Coverage:** Exceeds all thresholds
 
 ### 5.2 Recommended Additional Tests
 
@@ -420,44 +459,44 @@ logger.info('[MonthlyInvoicing] Starting job...', {
 **HIGH PRIORITY - Feature Work**
 
 #### A. Stripe Webhook Handling
-**Location:** `apps/web/app/api/webhooks/route.ts:24, 30`
-**TODOs:**
+
+**Location:** `apps/web/app/api/webhooks/route.ts:24, 30` **TODOs:**
+
 - Update Firestore user subscriptionStatus on checkout
 - Restrict access for delinquent accounts
 
-**Effort:** 2-4 hours
-**Impact:** Complete payment lifecycle management
+**Effort:** 2-4 hours **Impact:** Complete payment lifecycle management
 
 #### B. Email Integration
-**Location:** `apps/api/src/services/queue.js:163`
-**TODO:** Integrate with SendGrid or email provider (currently commented out)
 
-**Effort:** 3-5 hours
-**Impact:** Transactional email functionality
+**Location:** `apps/api/src/services/queue.js:163` **TODO:** Integrate with
+SendGrid or email provider (currently commented out)
+
+**Effort:** 3-5 hours **Impact:** Transactional email functionality
 
 #### C. Webhook Delivery
-**Location:** `apps/api/src/services/queue.js:174`
-**TODO:** Implement webhook delivery with signature verification
 
-**Effort:** 4-6 hours
-**Impact:** Event-driven integrations
+**Location:** `apps/api/src/services/queue.js:174` **TODO:** Implement webhook
+delivery with signature verification
+
+**Effort:** 4-6 hours **Impact:** Event-driven integrations
 
 #### D. Database Backup Protection
-**Location:** `apps/api/src/services/backup.js`
-**TODO:** Add checks to prevent accidental restore to production
 
-**Effort:** 1 hour
-**Impact:** Critical data safety improvement
+**Location:** `apps/api/src/services/backup.js` **TODO:** Add checks to prevent
+accidental restore to production
+
+**Effort:** 1 hour **Impact:** Critical data safety improvement
 
 #### E. Background Jobs
-**Location:** `apps/api/src/services/queue.js`
-**TODOs:**
+
+**Location:** `apps/api/src/services/queue.js` **TODOs:**
+
 - Implement daily-analytics aggregation
 - Implement report-generation
 - Implement cleanup tasks
 
-**Effort:** 6-8 hours total
-**Impact:** Operational intelligence and automation
+**Effort:** 6-8 hours total **Impact:** Operational intelligence and automation
 
 ---
 
@@ -465,15 +504,15 @@ logger.info('[MonthlyInvoicing] Starting job...', {
 
 ### 7.1 Missing Documentation
 
-| Document | Status | Priority | Effort |
-|----------|--------|----------|--------|
-| Rate Limiting Guide | Missing | HIGH | 1-2 hrs |
-| Monitoring Setup | Missing | HIGH | 2-3 hrs |
-| Environment Variables | Only .env.example | MEDIUM | 1-2 hrs |
-| Error Handling Patterns | Not documented | MEDIUM | 1-2 hrs |
-| Webhook Integrations | Missing | MEDIUM | 2-3 hrs |
-| RBAC/Scopes | Incomplete | MEDIUM | 2-3 hrs |
-| API Reference | Incomplete examples | LOW | 4-6 hrs |
+| Document                | Status              | Priority | Effort  |
+| ----------------------- | ------------------- | -------- | ------- |
+| Rate Limiting Guide     | Missing             | HIGH     | 1-2 hrs |
+| Monitoring Setup        | Missing             | HIGH     | 2-3 hrs |
+| Environment Variables   | Only .env.example   | MEDIUM   | 1-2 hrs |
+| Error Handling Patterns | Not documented      | MEDIUM   | 1-2 hrs |
+| Webhook Integrations    | Missing             | MEDIUM   | 2-3 hrs |
+| RBAC/Scopes             | Incomplete          | MEDIUM   | 2-3 hrs |
+| API Reference           | Incomplete examples | LOW      | 4-6 hrs |
 
 ### 7.2 Quick Win Documentation
 
@@ -508,32 +547,37 @@ logger.info('[MonthlyInvoicing] Starting job...', {
 **Issue:** Build configuration complexity causes confusion
 
 **Problems:**
+
 - Multiple tsconfig files with path aliases
 - ESM imports require `.js` extensions for Node.js compatibility
 - Mixed `.js` and `.ts` files
 
 **Quick Win:** Document in CONTRIBUTING.md:
 
-```markdown
+````markdown
 ## Module Resolution
 
 This project uses ES Modules with TypeScript.
 
 ### Import Rules:
+
 1. Always use `.js` extension in imports (TypeScript requirement)
 2. Use path aliases from tsconfig for cross-package imports
 3. Import from `@infamous-freight/shared` for shared types
 
 ### Examples:
+
 ```typescript
 // ✅ Correct
-import { logger } from '../lib/logger.js';
-import type { User } from '@infamous-freight/shared';
+import { logger } from "../lib/logger.js";
+import type { User } from "@infamous-freight/shared";
 
 // ❌ Wrong
-import { logger } from '../lib/logger';
-import type { User } from '../../packages/shared/src/types';
+import { logger } from "../lib/logger";
+import type { User } from "../../packages/shared/src/types";
 ```
+````
+
 ```
 
 ---
@@ -614,3 +658,4 @@ The Infæmous Freight platform has a **solid foundation** with good test coverag
 **Document Version:** 1.0
 **Last Updated:** March 16, 2026
 **Next Review:** Q2 2026
+```

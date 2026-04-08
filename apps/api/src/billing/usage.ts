@@ -6,11 +6,21 @@
  * Updates Stripe subscription items with usage
  */
 
-import { PrismaClient } from "@prisma/client";
 import Stripe from "stripe";
+import { prisma } from "../db/prisma.js";
 
-const prisma = new PrismaClient();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+let stripeClient: Stripe | null = null;
+
+function getStripe(): Stripe {
+  const apiKey = (process.env.STRIPE_SECRET_KEY || "").trim();
+  if (!apiKey) {
+    throw new Error("STRIPE_SECRET_KEY is not configured");
+  }
+  if (!stripeClient) {
+    stripeClient = new Stripe(apiKey);
+  }
+  return stripeClient;
+}
 
 /**
  * Get current month in YYYY-MM format
@@ -148,6 +158,7 @@ export async function recordJobCompletion(
  */
 async function updateStripeUsage(organizationId: string): Promise<void> {
   try {
+    const stripe = getStripe();
     const billing = await prisma.orgBilling.findUnique({
       where: { organizationId },
       select: {
@@ -256,10 +267,10 @@ export async function getUsageSummary(organizationId: string, fromMonth: string,
     const summary = {
       organizationId,
       period: { from: fromMonth, to: toMonth },
-      totalJobs: usageRecords.reduce((sum, u) => sum + u.jobs, 0),
-      totalRevenue: usageRecords.reduce((sum, u) => sum + u.revenue, 0),
-      totalOverageJobs: usageRecords.reduce((sum, u) => sum + u.overageJobs, 0),
-      totalOverageCharge: usageRecords.reduce((sum, u) => sum + u.overageCharge, 0),
+      totalJobs: usageRecords.reduce((sum: number, u: any) => sum + u.jobs, 0),
+      totalRevenue: usageRecords.reduce((sum: number, u: any) => sum + u.revenue, 0),
+      totalOverageJobs: usageRecords.reduce((sum: number, u: any) => sum + u.overageJobs, 0),
+      totalOverageCharge: usageRecords.reduce((sum: number, u: any) => sum + u.overageCharge, 0),
       records: usageRecords,
     };
 

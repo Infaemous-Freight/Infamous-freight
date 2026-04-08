@@ -11,9 +11,23 @@ import { logger } from "../lib/logger.js";
 const prisma = new PrismaClient();
 
 /**
- * RevOps Dashboard - Real-time revenue metrics and AI-powered recommendations
- * for pricing, marketing spend, churn prevention, and growth optimization
+ * Types for RevOps data structures
  */
+interface Deal {
+  id: string;
+  amount: number;
+  stage: string;
+  closeProbability: number;
+}
+
+interface Recommendation {
+  priority: "HIGH" | "MEDIUM" | "LOW";
+  category: string;
+  title: string;
+  description: string;
+  impact: string;
+  actions: string[];
+}
 
 interface RevOpsDashboard {
   // Sales metrics
@@ -23,7 +37,7 @@ interface RevOpsDashboard {
     avgDealSize: number;
     conversionRate: number;
     avgSalesCycle: number; // days
-    topDeals: any[];
+    topDeals: Deal[];
   };
 
   // Revenue metrics
@@ -66,7 +80,7 @@ interface RevOpsDashboard {
   };
 
   // AI recommendations
-  recommendations: any[];
+  recommendations: Recommendation[];
 }
 
 /**
@@ -282,8 +296,8 @@ async function getSurgePricingMetrics() {
 /**
  * Generate AI-powered recommendations
  */
-async function generateRecommendations(metrics: any): Promise<any[]> {
-  const recommendations: any[] = [];
+async function generateRecommendations(metrics: RevOpsDashboard): Promise<Recommendation[]> {
+  const recommendations: Recommendation[] = [];
 
   // 1. High churn rate
   if (metrics.customers.churnRate > 5) {
@@ -562,7 +576,7 @@ export async function getRevOpsDashboard(): Promise<RevOpsDashboard> {
 /**
  * Store recommendation for tracking
  */
-export async function storeRecommendation(recommendation: any) {
+export async function storeRecommendation(recommendation: Recommendation) {
   return prisma.revenueOptimization.create({
     data: {
       targetEntity: recommendation.category,

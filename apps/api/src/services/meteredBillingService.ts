@@ -105,7 +105,10 @@ export class MeteredBillingService {
 
     return {
       usage: usage.reduce(
-        (acc, u) => ({ ...acc, [u.metricType ?? "unknown"]: u._sum?.quantity }),
+        (acc: Record<string, number | null | undefined>, u: any) => ({
+          ...acc,
+          [u.metricType ?? "unknown"]: u._sum?.quantity,
+        }),
         {},
       ),
       overage_charges: overages._sum.totalCharge || 0,

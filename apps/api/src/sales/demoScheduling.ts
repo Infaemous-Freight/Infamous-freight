@@ -7,11 +7,9 @@
  * - Track attendance
  */
 
-import { PrismaClient } from "@prisma/client";
 import { createLead, convertLead } from "./leadCapture.js";
 import { sendEmail } from "../services/emailService.js";
-
-const prisma = new PrismaClient();
+import { prisma } from "../db/prisma.js";
 
 // ============================================
 // Demo Booking
@@ -182,13 +180,13 @@ export async function getDemoStats(): Promise<any> {
 
   const stats = {
     total: demos.length,
-    scheduled: demos.filter((d) => d.status === "scheduled").length,
-    completed: demos.filter((d) => d.status === "completed").length,
-    noShow: demos.filter((d) => d.status === "no_show").length,
-    canceled: demos.filter((d) => d.status === "canceled").length,
+    scheduled: demos.filter((d: any) => d.status === "scheduled").length,
+    completed: demos.filter((d: any) => d.status === "completed").length,
+    noShow: demos.filter((d: any) => d.status === "no_show").length,
+    canceled: demos.filter((d: any) => d.status === "canceled").length,
     conversionRate:
       demos.length > 0
-        ? ((demos.filter((d) => d.lead.convertedOrgId).length / demos.length) * 100).toFixed(2)
+        ? ((demos.filter((d: any) => d.lead.convertedOrgId).length / demos.length) * 100).toFixed(2)
         : "0",
   };
 
@@ -242,7 +240,7 @@ async function createCalendlyEvent(input: CalendarEventInput): Promise<CalendarE
     headers: { Authorization: `Bearer ${apiKey}` },
   });
 
-  const { resource } = await meResponse.json() as any;
+  const { resource } = (await meResponse.json()) as any;
   const orgUri = resource.organization;
 
   // Create event
@@ -261,7 +259,7 @@ async function createCalendlyEvent(input: CalendarEventInput): Promise<CalendarE
     }),
   });
 
-  const { resource: event } = await eventResponse.json() as any;
+  const { resource: event } = (await eventResponse.json()) as any;
 
   return {
     eventId: event.uri.split("/").pop(),
@@ -311,7 +309,7 @@ async function createGoogleCalendarEvent(input: CalendarEventInput): Promise<Cal
     },
   );
 
-  const result = await response.json() as any;
+  const result = (await response.json()) as any;
 
   return {
     eventId: result.id,

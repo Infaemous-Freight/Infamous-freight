@@ -1,0 +1,306 @@
+{
+  "updatePlan": {
+    "date": "2026-04-08",
+    "version": "1.0.0",
+    "scope": "Full monorepo dependency update",
+    "node": "24.x",
+    "pnpm": "9.15.0",
+    "status": "finalized-all-non-node-updates-complete",
+
+    "phase1": {
+      "name": "Critical Updates",
+      "priority": "HIGH",
+      "category": "breaking-changes",
+      "items": [
+        {
+          "name": "TypeScript Consistency",
+          "current": "5.8.2+ aligned across core workspaces",
+          "target": "5.8.2",
+          "impact": "Type safety, IDE support",
+          "packages": ["web", "worker", "mobile"],
+          "breaking": false
+        },
+        {
+          "name": "@types/node Alignment",
+          "current": "25.5.0 aligned in core workspaces",
+          "target": "25.5.0",
+          "impact": "Type definitions, Node.js API support",
+          "packages": ["all"],
+          "breaking": false
+        },
+        {
+          "name": "ESLint Standardization",
+          "current": "10.1.x aligned in core workspaces",
+          "target": "10.x",
+          "impact": "Code quality, consistency",
+          "packages": ["root", "api", "web", "worker", "mobile", "ai"],
+          "breaking": true,
+          "notes": "May need config updates, new rules"
+        },
+        {
+          "name": "Vitest Framework",
+          "current": "2.1.3 aligned in core workspaces",
+          "target": "2.1.3",
+          "impact": "Test execution, API compatibility",
+          "packages": ["api", "web", "mobile"],
+          "breaking": false
+        },
+        {
+          "name": "Prisma ORM",
+          "current": "7.5.0",
+          "target": "latest-7.x",
+          "impact": "Database, type generation",
+          "packages": ["api"],
+          "breaking": false
+        }
+      ]
+    },
+
+    "phase2": {
+      "name": "Security & Production Updates",
+      "priority": "HIGH",
+      "category": "security",
+      "items": [
+        {
+          "name": "Payment Processing",
+          "lib": "stripe",
+          "current": "20.4.1",
+          "target": "latest",
+          "risk": "High - payment critical",
+          "packages": ["api", "web"]
+        },
+        {
+          "name": "Error Tracking",
+          "lib": "@sentry/node, @sentry/nextjs",
+          "current": "10.43.0-10.45.0",
+          "target": "latest",
+          "risk": "Medium - monitoring",
+          "packages": ["api", "web"]
+        },
+        {
+          "name": "AWS SDK v3",
+          "lib": "@aws-sdk/client-s3, @aws-sdk/s3-request-presigner",
+          "current": "3.900.0-3.1018.0 (mixed)",
+          "target": "latest",
+          "risk": "Medium - S3 access",
+          "packages": ["api", "worker"]
+        },
+        {
+          "name": "Database Clients",
+          "lib": "pg, ioredis, bullmq",
+          "current": "8.13.1, 5.4.2, 5.71.0",
+          "target": "latest",
+          "risk": "Medium - data access",
+          "packages": ["api", "worker"]
+        },
+        {
+          "name": "Security Headers",
+          "lib": "helmet, cors, express-rate-limit",
+          "current": "8.1.0, 2.8.5, 8.3.1",
+          "target": "latest",
+          "risk": "High - security critical",
+          "packages": ["api"]
+        },
+        {
+          "name": "Validation Pipeline",
+          "lib": "zod, express-validator",
+          "current": "4.3.6, 7.2.1",
+          "target": "latest",
+          "risk": "Medium - input validation",
+          "packages": ["api", "shared"]
+        },
+        {
+          "name": "JWT Handling",
+          "lib": "jsonwebtoken",
+          "current": "9.0.2",
+          "target": "latest",
+          "risk": "High - authentication",
+          "packages": ["api", "web"]
+        },
+        {
+          "name": "Firebase Libraries",
+          "lib": "firebase, firebase-admin, firebase-functions",
+          "current": "12.11.0, 12.7.0, 5.1.1",
+          "target": "latest",
+          "risk": "Medium - backend services",
+          "packages": ["web", "functions"]
+        }
+      ]
+    },
+
+    "phase3": {
+      "name": "Development & Tooling",
+      "priority": "MEDIUM",
+      "category": "development",
+      "items": [
+        {
+          "name": "TypeScript Executor",
+          "lib": "tsx",
+          "current": "4.19.1-4.19.3",
+          "target": "latest",
+          "impact": "Development speed"
+        },
+        {
+          "name": "Code Formatter",
+          "lib": "prettier",
+          "current": "3.5.0",
+          "target": "latest",
+          "impact": "Code formatting"
+        },
+        {
+          "name": "Logging",
+          "lib": "pino, pino-http, pino-pretty",
+          "current": "10.3.1, 11.0.0, 13.0.0",
+          "target": "latest",
+          "impact": "Structured logging"
+        },
+        {
+          "name": "PDF Generation",
+          "lib": "pdfkit",
+          "current": "0.15.2-0.18.0",
+          "target": "latest",
+          "impact": "PDF exports"
+        }
+      ]
+    },
+
+    "phase4": {
+      "name": "Frontend & Feature Libraries",
+      "priority": "LOW",
+      "category": "features",
+      "items": [
+        {
+          "name": "React Native",
+          "lib": "expo, react-native",
+          "current": "55.0.5, 0.84.1",
+          "target": "latest",
+          "impact": "Mobile app"
+        },
+        {
+          "name": "Analytics & Monitoring",
+          "lib": "@datadog/browser-rum, @vercel/analytics",
+          "current": "6.31.0, 2.0.1",
+          "target": "latest",
+          "impact": "Monitoring"
+        },
+        {
+          "name": "UI & Charting",
+          "lib": "recharts, styled-jsx",
+          "current": "3.8.1, 5.1.7",
+          "target": "latest",
+          "impact": "UI rendering"
+        },
+        {
+          "name": "Internationalization",
+          "lib": "next-i18next",
+          "current": "16.0.4",
+          "target": "latest",
+          "impact": "i18n support"
+        }
+      ]
+    },
+
+    "preUpdateChecklist": [
+      "Ensure on main branch",
+      "All local changes committed",
+      "Backup strategy in place",
+      "Node 24.x available",
+      "pnpm 9.15.0 available",
+      "Sufficient disk space (~ 2GB)",
+      "Fast internet connection",
+      "30+ minutes available",
+      "No active deployments"
+    ],
+
+    "executionSteps": [
+      "Create backup branch",
+      "Run: chmod +x update-all-deps.sh",
+      "Run: ./update-all-deps.sh | tee update-log.txt",
+      "Wait 15-30 minutes",
+      "Review log file",
+      "Verify pnpm-lock.yaml updated",
+      "Check package.json changes",
+      "Run: pnpm lint",
+      "Run: pnpm typecheck",
+      "Run: pnpm build",
+      "Run: pnpm test:ci",
+      "Run: pnpm audit:ci",
+      "Review git diff",
+      "Commit changes with message",
+      "Create pull request",
+      "Request code review",
+      "Merge after approval",
+      "Deploy to staging",
+      "Run integration tests",
+      "Deploy to production (optional)"
+    ],
+
+    "postUpdateChecklist": [
+      "Manifest and config updates complete",
+      "No editor/language-server errors",
+      "No stale non-Node version drift in active package manifests",
+      "Node runtime references remain intentionally excluded from additional updates",
+      "Optional full runtime validation can be executed in a provisioned CI/dev environment"
+    ],
+
+    "rollbackPlan": {
+      "if_test_failure": "Run: git checkout main && git reset --hard",
+      "if_build_failure": "cp pnpm-lock.yaml.backup pnpm-lock.yaml && pnpm install",
+      "if_type_errors": "Review error output, fix TypeScript errors, see DEPENDENCY_UPDATE_GUIDE.md",
+      "if_lint_errors": "Run pnpm lint --fix, then review output",
+      "if_test_errors": "Review test failures, update test code if needed",
+      "complete_rollback": "git checkout main && git reset --hard HEAD~1"
+    },
+
+    "estimatedTimeline": {
+      "preparation": "5 minutes",
+      "execution": "15-30 minutes",
+      "verification": "10-15 minutes",
+      "review": "5-10 minutes",
+      "commit": "2 minutes",
+      "total": "~1 hour"
+    },
+
+    "success_metrics": {
+      "all_tests_pass": true,
+      "zero_lint_errors": true,
+      "zero_type_errors": true,
+      "builds_succeed": true,
+      "no_critical_vulnerabilities": true,
+      "performance_stable": true,
+      "monitoring_active": true
+    },
+
+    "known_issues": [
+      {
+        "issue": "ESLint 10.x may show new warnings",
+        "solution": "Run pnpm lint and review output. See eslint.config.js for rule updates.",
+        "severity": "low"
+      },
+      {
+        "issue": "TypeScript 5.8 stricter type checking",
+        "solution": "Review type errors, ensure proper typing. Mostly type-annotation improvements.",
+        "severity": "low"
+      },
+      {
+        "issue": "Vitest 2.x test API changes",
+        "solution": "Test output will indicate any breaking changes. See vitest migration guide.",
+        "severity": "low"
+      },
+      {
+        "issue": "Prisma schema generation",
+        "solution": "Run 'pnpm prisma:generate' after update if needed.",
+        "severity": "low"
+      }
+    ],
+
+    "documentation": {
+      "full_guide": "DEPENDENCY_UPDATE_GUIDE.md",
+      "quick_summary": "UPDATE_SUMMARY.md",
+      "this_file": "update-manifest.json",
+      "script": "update-all-deps.sh",
+      "troubleshooting": "TROUBLESHOOTING_GUIDE.md",
+      "architecture": "ARCHITECTURE.md"
+    }
+  }
+}

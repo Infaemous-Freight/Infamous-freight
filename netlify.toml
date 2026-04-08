@@ -3,7 +3,7 @@
   publish = "apps/web/.next"
 
 [build.environment]
-  NODE_VERSION = "22"
+  NODE_VERSION = "24"
   PNPM_VERSION = "9.15.0"
   # Public API endpoint configuration for the web app.
   # Update these to point at the correct production API base URL for this environment.

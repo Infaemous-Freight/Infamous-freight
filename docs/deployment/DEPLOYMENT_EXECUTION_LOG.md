@@ -1,7 +1,7 @@
 # 🚀 Deployment Execution Log
 
-**Date**: December 18, 2025  
-**Status**: ✅ PARTIALLY COMPLETE - Infrastructure Ready, Deployment in Progress
+**Date**: December 18, 2025 **Status**: ✅ PARTIALLY COMPLETE - Infrastructure
+Ready, Deployment in Progress
 
 ---
 
@@ -19,9 +19,9 @@
    - Docker CLI/daemon installed.
    - Buildx plugin installed for BuildKit support.
 
-2. **Started Docker daemon with restricted options**  
-   Host lacks `CAP_NET_ADMIN` and iptables support, so the daemon was started
-   without NAT/bridge networking and with the VFS storage driver:
+2. **Started Docker daemon with restricted options** Host lacks `CAP_NET_ADMIN`
+   and iptables support, so the daemon was started without NAT/bridge networking
+   and with the VFS storage driver:
 
    ```bash
    dockerd --host=unix:///var/run/docker.sock \
@@ -90,8 +90,8 @@ cd apps/web && pnpm add web-vitals@^4.0.0
 - `compression@1.8.1` installed in API
 - `web-vitals@4.0.0` installed in Web
 - All monorepo dependencies resolved
-- Minor warnings: Unsupported Node engine (v22.16.0 vs ^20.18.1) - acceptable in
-  dev
+- Minor warnings: Unsupported Node engine (older runtime vs required Node
+  24.x) - acceptable in dev
 
 #### ✅ 2. Deployment Verification
 

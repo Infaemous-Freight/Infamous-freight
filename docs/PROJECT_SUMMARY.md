@@ -26,7 +26,7 @@ Directory:** /tmp/vscode-github-mrmiles44-infamous-freight-enterprises/
 
 ## 🏗️ Architecture
 
-### Backend API (Node.js 20)
+### Backend API (Node.js 24)
 
 - **Framework:** Express 4.19
 - **ORM:** Prisma 5.11 + PostgreSQL 15
@@ -104,7 +104,7 @@ AiEvent {
 ├── PROJECT_SUMMARY.md            # This file
 │
 ├── apps/api/
-│   ├── Dockerfile                # Node.js 20 Alpine
+│   ├── Dockerfile                # Node.js 24 Alpine
 │   ├── package.json              # Dependencies
 │   ├── src/
 │   │   ├── server.js             # Express app
@@ -252,7 +252,7 @@ OPENAI_API_KEY=sk-...
    - Ready to push to GitHub
 
 3. **Docker Images**
-   - API: Node.js 20 Alpine multi-stage
+   - API: Node.js 24 Alpine multi-stage
    - Web: Next.js 14 optimized build
    - Nginx: Stable Alpine
 

@@ -11,7 +11,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useTranslation } from "next-i18next";
 import styles from "./LanguageSwitcher.module.css";
 
 interface Locale {
@@ -49,7 +48,14 @@ export default function LanguageSwitcher({
   showNativeName = true,
 }: LanguageSwitcherProps): React.ReactElement {
   const router = useRouter();
-  const { t } = useTranslation("common");
+  const t = (key: string): string => {
+    const fallback: Record<string, string> = {
+      changeLanguage: "Change language",
+      selectLanguage: "Select language",
+      close: "Close",
+    };
+    return fallback[key] ?? key;
+  };
   const [isOpen, setIsOpen] = useState(false);
   const [currentLocale, setCurrentLocale] = useState<Locale | undefined>();
 

@@ -1,7 +1,6 @@
 # 🚀 Deployment Complete - Infamous Freight Enterprises
 
-**Date:** December 18, 2025  
-**Status:** Live (SSO-Protected)
+**Date:** December 18, 2025 **Status:** Live (SSO-Protected)
 
 ## 📍 Live URLs
 
@@ -15,7 +14,7 @@
   - Root Directory: `apps/web/`
 - **API (Fly.io)**: <https://infamous-freight-ai.fly.dev>
   - Status: ⚠️ Needs machine restart (port configuration)
-  - Runtime: Node.js 20.18.1
+  - Runtime: Node.js 24.x
   - Port: 8080 (configured via `API_PORT` secret)
   - Region: DFW (Dallas)
 
@@ -131,9 +130,9 @@ corsOrigins: [
 
 ### Issue: API Returning 502
 
-**Symptom**: `curl https://infamous-freight-ai.fly.dev/api/health` returns 502  
-**Cause**: API listening on port 4000, Fly expects 8080  
-**Fix**: Restart machine to pick up `API_PORT=8080` secret
+**Symptom**: `curl https://infamous-freight-ai.fly.dev/api/health` returns 502
+**Cause**: API listening on port 4000, Fly expects 8080 **Fix**: Restart machine
+to pick up `API_PORT=8080` secret
 
 ```bash
 flyctl machine restart 18577d3a707698 -a infamous-freight-ai
@@ -143,9 +142,9 @@ curl -i https://infamous-freight-ai.fly.dev/api/health  # Should return 200
 
 ### Issue: Vercel 401 on All Routes
 
-**Symptom**: All requests return 401 Authentication Required  
-**Cause**: Vercel SSO/Deployment Protection enabled  
-**Fix**: Disable in settings or authenticate via browser
+**Symptom**: All requests return 401 Authentication Required **Cause**: Vercel
+SSO/Deployment Protection enabled **Fix**: Disable in settings or authenticate
+via browser
 
 ## 🔄 Deployment Workflow
 
@@ -219,6 +218,6 @@ flyctl apps errors -a infamous-freight-ai
 
 ---
 
-**Deployed by:** GitHub Copilot  
-**Repository:** <https://github.com/MrMiless44/Infamous-freight-enterprises>  
-**Commit:** `8313d35` (latest)
+**Deployed by:** GitHub Copilot **Repository:**
+<https://github.com/MrMiless44/Infamous-freight-enterprises> **Commit:**
+`8313d35` (latest)

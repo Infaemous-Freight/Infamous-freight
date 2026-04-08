@@ -53,15 +53,15 @@ jobs:
         id: fly-config
         shell: bash
         run: |
-          APP_NAME=$(grep -E '^app\s*=\s*' apps/api/fly.toml | head -1 | sed -E 's/.*=\s*"?([^" ]+)"?/\1/')
+          APP_NAME=$(grep -E '^app\s*=\s*' fly.toml | head -1 | sed -E 's/.*=\s*["\x27]?([^"\x27 ]+)["\x27]?/\1/')
           if [ -z "$APP_NAME" ]; then
-            echo "Fly app name not found in apps/api/fly.toml"
+            echo "Fly app name not found in fly.toml"
             exit 1
           fi
           echo "app_name=$APP_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Deploy to Fly.io
-        run: flyctl deploy -c apps/api/fly.toml -a "${{ steps.fly-config.outputs.app_name }}" --remote-only --depot=false
+        run: flyctl deploy -c fly.toml -a "${{ steps.fly-config.outputs.app_name }}" --remote-only --depot=false
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
@@ -70,12 +70,16 @@ jobs:
         run: |
           APP_NAME="${{ steps.fly-config.outputs.app_name }}"
           echo "app_url=https://$APP_NAME.fly.dev" >> $GITHUB_OUTPUT
-          echo "health_url=https://$APP_NAME.fly.dev/api/health" >> $GITHUB_OUTPUT
+          echo "health_url=https://$APP_NAME.fly.dev/health" >> $GITHUB_OUTPUT
 
       - name: Health check
+        shell: bash
         run: |
-          echo "Checking ${{ steps.get-url.outputs.health_url }}"
-          curl -sf "${{ steps.get-url.outputs.health_url }}" | jq .
+          bash scripts/fly-postdeploy-check.sh \
+            "${{ steps.fly-config.outputs.app_name }}" \
+            "${{ steps.get-url.outputs.health_url }}"
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Deployment summary
         run: |

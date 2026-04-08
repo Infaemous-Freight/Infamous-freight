@@ -12,7 +12,7 @@ service: infamous-freight-lambda
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs24.x
   region: us-east-1
   environment:
     DATABASE_URL: ${env:DATABASE_URL}

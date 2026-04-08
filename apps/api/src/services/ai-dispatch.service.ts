@@ -57,7 +57,7 @@ export class AiDispatchService {
 
     // Score each driver
     const scoredDrivers = await Promise.all(
-      availableDrivers.map(async (driver) => {
+      availableDrivers.map(async (driver: any) => {
         const factors = await this.calculateScoreFactors(tenantId, driver.id, load);
         const score = this.calculateCompositeScore(factors);
         return {

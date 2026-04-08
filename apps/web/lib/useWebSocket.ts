@@ -7,12 +7,47 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 
-type Socket = unknown; // Will be socket.io Socket when package is installed
+type SocketEventHandler = (data?: any) => void;
+
+interface SocketLike {
+  id?: string;
+  on: (event: string, handler: SocketEventHandler) => void;
+  off: (event: string, handler?: SocketEventHandler) => void;
+  once: (event: string, handler: SocketEventHandler) => void;
+  emit: (event: string, data?: any) => void;
+  disconnect: () => void;
+  io: {
+    engine: {
+      transport: { name: string };
+      on: (event: string, handler: (transport: { name: string }) => void) => void;
+    };
+  };
+}
+
+type Socket = SocketLike;
+
+function createNoopSocket(): SocketLike {
+  const noop = () => {};
+  return {
+    id: "",
+    on: noop,
+    off: noop,
+    once: noop,
+    emit: noop,
+    disconnect: noop,
+    io: {
+      engine: {
+        transport: { name: "websocket" },
+        on: noop,
+      },
+    },
+  };
+}
 
 // Placeholder for socket.io when not installed
 const io = (_url: string, _options?: unknown): Socket => {
   console.warn("socket.io-client not installed");
-  return {} as Socket;
+  return createNoopSocket();
 };
 
 interface UseWebSocketOptions {

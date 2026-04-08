@@ -18,7 +18,10 @@
   }
 
   body {
-    @apply bg-white text-gray-900 antialiased;
+    background-color: #ffffff;
+    color: #111827;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-family: "Inter", system-ui, sans-serif;
   }
 

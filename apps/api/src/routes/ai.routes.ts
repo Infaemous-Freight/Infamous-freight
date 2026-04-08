@@ -7,7 +7,6 @@ import { smartPricingService } from "../services/smart-pricing.service.js";
 import { predictiveOperationsService } from "../services/predictive-operations.service.js";
 import { prisma } from "../db/prisma.js";
 
-
 const router: Router = Router();
 
 /**
@@ -212,11 +211,11 @@ router.get("/dashboard/ai-overview", requireAuth, async (req: Request, res: Resp
 
     // Get metrics
     const dispatchCount = recentDecisions.filter(
-      (d) => d.module === "DISPATCH_RECOMMENDATION",
+      (d: any) => d.module === "DISPATCH_RECOMMENDATION",
     ).length;
-    const pricingCount = recentDecisions.filter((d) => d.module === "SMART_PRICING").length;
+    const pricingCount = recentDecisions.filter((d: any) => d.module === "SMART_PRICING").length;
     const predictionCount = recentDecisions.filter(
-      (d) => d.module === "PREDICTIVE_OPERATIONS",
+      (d: any) => d.module === "PREDICTIVE_OPERATIONS",
     ).length;
 
     res.json({
@@ -292,13 +291,14 @@ router.get("/dashboard/revenue", requireAuth, async (req: Request, res: Response
     // Calculate average recommended rate
     const avgRate =
       recentPricing.length > 0
-        ? recentPricing.reduce((sum, p) => sum + p.recommendedRateCents, 0) / recentPricing.length
+        ? recentPricing.reduce((sum: number, p: any) => sum + p.recommendedRateCents, 0) /
+          recentPricing.length
         : 0;
 
     // Calculate average acceptance probability
     const avgAcceptance =
       recentPricing.length > 0
-        ? recentPricing.reduce((sum, p) => sum + (p.acceptanceProbability || 0), 0) /
+        ? recentPricing.reduce((sum: number, p: any) => sum + (p.acceptanceProbability || 0), 0) /
           recentPricing.length
         : 0;
 
@@ -336,8 +336,8 @@ router.get("/dashboard/alerts", requireAuth, async (req: Request, res: Response)
     res.json({
       alerts,
       summary: {
-        criticalAlerts: alerts.filter((a) => a.severity === "HIGH").length,
-        warningAlerts: alerts.filter((a) => a.severity === "MEDIUM").length,
+        criticalAlerts: alerts.filter((a: any) => a.severity === "HIGH").length,
+        warningAlerts: alerts.filter((a: any) => a.severity === "MEDIUM").length,
         totalAlerts: alerts.length,
       },
     });

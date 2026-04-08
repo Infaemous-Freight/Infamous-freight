@@ -96,6 +96,6 @@ export const authRepository = {
           revokedByIp,
         },
       })
-      .then((result) => result.count);
+      .then((result: { count: number }) => result.count);
   },
 };

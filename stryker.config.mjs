@@ -221,52 +221,52 @@ jobs:
   mutation-testing:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # For incremental mode
-      
+
       - uses: actions/setup-node@v3
         with:
-          node-version: '20'
-      
+          node-version: '24'
+
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      
+
       - name: Install dependencies
         run: pnpm install
-      
+
       - name: Run mutation tests
         run: pnpm test:mutation
         env:
           STRYKER_DASHBOARD_API_KEY: \${{ secrets.STRYKER_API_KEY }}
-      
+
       - name: Upload mutation report
         uses: actions/upload-artifact@v3
         with:
           name: mutation-report
           path: reports/mutation/
-      
+
       - name: Comment PR with results
         uses: actions/github-script@v6
         with:
           script: |
             const fs = require('fs');
             const report = JSON.parse(fs.readFileSync('reports/mutation/mutation.json', 'utf8'));
-            
+
             const comment = \\\`
             ## 🧬 Mutation Testing Results
-            
+
             - **Score**: \${report.mutationScore}%
             - **Killed**: \${report.killed}
             - **Survived**: \${report.survived}
             - **Timeout**: \${report.timeout}
-            
+
             [\📊 Full Report](https://github.com/\${context.repo.owner}/\${context.repo.repo}/actions/runs/\${context.runId})
             \\\`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

@@ -150,7 +150,7 @@ jobs:
     uses: ./.github/workflows/reusable-build.yml
     with:
       package-name: infamous-freight-api
-      node-version: "20"
+      node-version: "24"
       artifact-name: api-dist
 ```
 

@@ -74,7 +74,7 @@ All Prisma-dependent tests should now pass without OpenSSL errors.
 If using Docker with Alpine:
 
 ```dockerfile
-FROM node:20-alpine
+FROM node:24-alpine
 
 # Install OpenSSL 3.x (usually already present in Alpine 3.22+)
 RUN apk add --no-cache openssl
@@ -101,7 +101,7 @@ If you still encounter issues:
 1. **Use Debian-based image instead of Alpine**:
 
    ```dockerfile
-   FROM node:20-slim
+   FROM node:24-slim
    ```
 
 2. **Install OpenSSL 1.1.x compatibility layer** (not recommended):

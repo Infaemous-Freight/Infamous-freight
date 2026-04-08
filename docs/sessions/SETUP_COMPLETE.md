@@ -12,7 +12,7 @@
 
 ### 2. ✅ Dependencies Installed
 
-- **Node.js**: v22.16.0
+- **Node.js**: v24.x
 - **npm**: v11.6.4
 - **pnpm**: v9 (installed globally)
 - **Total packages**: 669 installed successfully

@@ -1,13 +1,15 @@
 # Deployment Guide
 
-This document covers environment setup, secrets management, and platform-specific deployment for Infamous Freight.
+This document covers environment setup, secrets management, and
+platform-specific deployment for Infamous Freight.
 
 ## Prerequisites
 
-- Node.js 22.x (`nvm use` or `nvm install 22`)
+- Node.js 24.x (`nvm use` or `nvm install 24`)
 - pnpm 9.x (`corepack enable && corepack prepare pnpm@9.15.0 --activate`)
 - PostgreSQL database (local or managed)
-- Required environment variables (see [Environment Variables](#environment-variables))
+- Required environment variables (see
+  [Environment Variables](#environment-variables))
 
 ---
 
@@ -23,14 +25,15 @@ cp .env.example .env
 
 Core variables required by the API:
 
-| Variable | Description |
-|---|---|
-| `DATABASE_URL` | PostgreSQL connection string |
-| `JWT_SECRET` | Secret key for signing JWT tokens |
-| `NODE_ENV` | `development`, `test`, or `production` |
-| `PORT` | API server port (default: `3001`) |
+| Variable       | Description                            |
+| -------------- | -------------------------------------- |
+| `DATABASE_URL` | PostgreSQL connection string           |
+| `JWT_SECRET`   | Secret key for signing JWT tokens      |
+| `NODE_ENV`     | `development`, `test`, or `production` |
+| `PORT`         | API server port (default: `3001`)      |
 
-Additional variables are documented in `.env.example` and `docs/ENVIRONMENT_VARIABLES.md` (if present).
+Additional variables are documented in `.env.example` and
+`docs/ENVIRONMENT_VARIABLES.md` (if present).
 
 ---
 
@@ -43,6 +46,7 @@ bash scripts/setup.sh
 ```
 
 This script will:
+
 1. Enable Corepack and activate the pinned pnpm version.
 2. Copy `.env.example` to `.env` if `.env` does not exist.
 3. Install all workspace dependencies.
@@ -68,7 +72,8 @@ pnpm dev:mobile   # Expo mobile app
 
 ## CI / CD
 
-The CI pipeline (`.github/workflows/ci.yml`) runs on every pull request and push to `main`:
+The CI pipeline (`.github/workflows/ci.yml`) runs on every pull request and push
+to `main`:
 
 1. **sanity** — validates repo standards, builds shared package.
 2. **lint** — ESLint across all workspaces.
@@ -82,16 +87,19 @@ Merging to `main` is blocked until all CI checks pass.
 
 ## Secrets Management
 
-All sensitive values are stored as **GitHub repository secrets** and injected as environment variables in CI workflows. They are never hardcoded in source code.
+All sensitive values are stored as **GitHub repository secrets** and injected as
+environment variables in CI workflows. They are never hardcoded in source code.
 
 Required secrets for CI:
 
-| Secret | Used by |
-|---|---|
+| Secret         | Used by                                                 |
+| -------------- | ------------------------------------------------------- |
 | `DATABASE_URL` | Test jobs that run against a real or ephemeral database |
-| `JWT_SECRET` | API test suite |
+| `JWT_SECRET`   | API test suite                                          |
 
-For production deployments, secrets are managed via the target platform's secret store (e.g. Railway environment variables, Vercel environment settings, Fly.io secrets, Kubernetes Secrets).
+For production deployments, secrets are managed via the target platform's secret
+store (e.g. Railway environment variables, Vercel environment settings, Fly.io
+secrets, Kubernetes Secrets).
 
 ---
 
@@ -108,12 +116,16 @@ pnpm --filter @infamous/api start
 ```
 
 Detailed runbooks:
-- [`docs/deployment/DEPLOY_ACTION.md`](deployment/DEPLOY_ACTION.md) — GitHub Actions deploy workflow
-- [`docs/deployment/DEPLOYMENT_RUNBOOK.md`](deployment/DEPLOYMENT_RUNBOOK.md) — step-by-step procedures
+
+- [`docs/deployment/DEPLOY_ACTION.md`](deployment/DEPLOY_ACTION.md) — GitHub
+  Actions deploy workflow
+- [`docs/deployment/DEPLOYMENT_RUNBOOK.md`](deployment/DEPLOYMENT_RUNBOOK.md) —
+  step-by-step procedures
 
 ### Web (Vercel)
 
-The Next.js app deploys automatically via the Vercel integration on push to `main`.
+The Next.js app deploys automatically via the Vercel integration on push to
+`main`.
 
 - [`docs/deployment/WEB_DEPLOYMENT_VERCEL.md`](deployment/WEB_DEPLOYMENT_VERCEL.md)
 
@@ -127,7 +139,8 @@ npm install -g eas-cli
 eas build --platform all
 ```
 
-- [`docs/deployment/MOBILE_DEPLOYMENT.md`](deployment/MOBILE_DEPLOYMENT.md) (if present)
+- [`docs/deployment/MOBILE_DEPLOYMENT.md`](deployment/MOBILE_DEPLOYMENT.md) (if
+  present)
 
 ---
 
@@ -143,9 +156,11 @@ pnpm --filter @infamous/api exec prisma migrate dev
 pnpm --filter @infamous/api exec prisma migrate deploy
 ```
 
-Always test migrations in a staging environment before running them in production.
+Always test migrations in a staging environment before running them in
+production.
 
-Migration files live in `apps/api/prisma/migrations/`. Supabase-specific SQL migrations are in `supabase/migrations/`.
+Migration files live in `apps/api/prisma/migrations/`. Supabase-specific SQL
+migrations are in `supabase/migrations/`.
 
 ---
 
@@ -157,7 +172,8 @@ If a deployment introduces regressions:
 2. The CI pipeline will re-run on the revert commit.
 3. Once CI passes, the previous build will be promoted.
 
-For database rollbacks, see `apps/api/prisma/migrations/` for the Prisma migration history and coordinate a safe rollback with the on-call engineer.
+For database rollbacks, see `apps/api/prisma/migrations/` for the Prisma
+migration history and coordinate a safe rollback with the on-call engineer.
 
 ---
 
@@ -165,4 +181,5 @@ For database rollbacks, see `apps/api/prisma/migrations/` for the Prisma migrati
 
 - [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) — system architecture
 - [`docs/deployment/`](deployment/) — platform-specific runbooks
-- [`docs/ENVIRONMENT_VARIABLES.md`](ENVIRONMENT_VARIABLES.md) — full env var reference (if present)
+- [`docs/ENVIRONMENT_VARIABLES.md`](ENVIRONMENT_VARIABLES.md) — full env var
+  reference (if present)

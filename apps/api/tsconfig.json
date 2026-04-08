@@ -26,7 +26,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    "src/**/*.js",
     // Legacy standalone entry point that conflicts with the canonical server.ts → app.ts path.
     // src/index.ts was a duplicate Express app; keep server.ts as the single entry.
     "src/index.ts"

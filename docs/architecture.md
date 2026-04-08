@@ -93,7 +93,7 @@ for the decision, scope, and allowed changes.
 
 ## Backend API
 
-- **Stack**: Node.js 20, Express/Fastify, Prisma ORM, PostgreSQL, Redis.
+- **Stack**: Node.js 24, Express/Fastify, Prisma ORM, PostgreSQL, Redis.
 - **Services**: Auth, AI execution, avatar state, billing, automation, webhooks,
   ERP/TMS connectors, invoice intelligence.
 - **Security**: JWT + refresh, rate limiting, encrypted secrets, audit logs,

@@ -5,11 +5,21 @@
  * Runs as a scheduled BullMQ job (1st of month)
  */
 
-import { PrismaClient } from "@prisma/client";
 import Stripe from "stripe";
+import { prisma } from "../db/prisma.js";
 
-const prisma = new PrismaClient();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+let stripeClient: Stripe | null = null;
+
+function getStripe(): Stripe {
+  const apiKey = (process.env.STRIPE_SECRET_KEY || "").trim();
+  if (!apiKey) {
+    throw new Error("STRIPE_SECRET_KEY is not configured");
+  }
+  if (!stripeClient) {
+    stripeClient = new Stripe(apiKey);
+  }
+  return stripeClient;
+}
 
 /**
  * Get previous month in YYYY-MM format
@@ -46,6 +56,7 @@ export async function generateOrgInvoice(
     const invoiceMonth = month || getPreviousMonth();
 
     // Get usage for the month
+    const stripe = getStripe();
     const usage = await prisma.orgUsage.findUnique({
       where: { organizationId_month: { organizationId, month: invoiceMonth } },
       include: {
@@ -242,6 +253,7 @@ export async function generateMonthlyInvoices(): Promise<{
  */
 export async function getInvoice(organizationId: string, month: string) {
   try {
+    const stripe = getStripe();
     const invoice = await (prisma.orgInvoice as any).findUnique({
       where: { organizationId_month: { organizationId, month } },
       include: {
@@ -304,6 +316,7 @@ export async function markInvoicePaid(organizationId: string, month: string): Pr
  */
 export async function sendInvoiceReminder(organizationId: string, month: string): Promise<void> {
   try {
+    const stripe = getStripe();
     const invoice = await prisma.orgInvoice.findUnique({
       where: { organizationId_month: { organizationId, month } },
     });

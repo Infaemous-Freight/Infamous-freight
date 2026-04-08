@@ -12,12 +12,22 @@ import PDFDocument from "pdfkit";
 import { createWriteStream } from "fs";
 import { promises as fs } from "fs";
 import { join } from "path";
-import { PrismaClient } from "@prisma/client";
 import Stripe from "stripe";
 import { logger } from "../lib/logger.js";
+import { prisma } from "../db/prisma.js";
 
-const prisma = new PrismaClient();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+let stripeClient: Stripe | null = null;
+
+function getStripe(): Stripe {
+  const apiKey = (process.env.STRIPE_SECRET_KEY || "").trim();
+  if (!apiKey) {
+    throw new Error("STRIPE_SECRET_KEY is not configured");
+  }
+  if (!stripeClient) {
+    stripeClient = new Stripe(apiKey);
+  }
+  return stripeClient;
+}
 
 // ============================================
 // DPA (Data Processing Agreement) PDF
@@ -353,6 +363,7 @@ export async function storeComplianceDocuments(
   stripeCustomerId: string,
 ): Promise<{ dpaPdf: string; soc2Pdf: string }> {
   try {
+    const stripe = getStripe();
     // Generate PDFs
     const dpaResult = await generateDPAPDF(organizationId, organizationName);
     const soc2Result = await generateSOC2PDF(organizationName);

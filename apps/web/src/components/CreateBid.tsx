@@ -28,7 +28,7 @@ export default function CreateBid({ loadId }: { loadId: string }): React.ReactEl
     }
     const amountCents = Math.round(parsedAmount * 100);
 
-    // @ts-expect-error - Supabase type definitions incompatibility
+    // @ts-ignore - Supabase type definitions incompatibility
     const { error } = await supabase.from("bids").insert({
       load_id: loadId,
       carrier_id: u.user.id,

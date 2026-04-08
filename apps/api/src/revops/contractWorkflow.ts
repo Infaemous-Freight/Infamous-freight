@@ -420,7 +420,7 @@ async function executeContractProvisioningPostSignature(contractId: string) {
   // 4. Schedule kickoff call
   // await scheduleKickoffCall(contract.organization.email);
 
-  console.log(`[Contract] Provisioning complete for ${contract.orgId}`);
+  logger.info({ orgId: contract.orgId }, "Contract provisioning complete");
 }
 
 /**

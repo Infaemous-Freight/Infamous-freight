@@ -1,7 +1,6 @@
 # Runbook: Normal Production Deployment
 
-**Duration:** 15-30 minutes  
-**Risk Level:** Low (assuming all checks pass)  
+**Duration:** 15-30 minutes **Risk Level:** Low (assuming all checks pass)
 **Rollback Time:** 5 minutes (if needed)
 
 ---
@@ -107,7 +106,7 @@ sleep 120
 
 # 1. Health endpoint
 curl -s https://your-domain.com/api/health | jq .
-# Expected: {"ok":true,"node":"v20.x.x",...}
+# Expected: {"ok":true,"node":"v24.x.x",...}
 
 # 2. Homepage loads
 curl -s -I https://your-domain.com | grep "200 OK"
@@ -294,9 +293,7 @@ Schedule within 24 hours:
 
 **Deployment Completed!** ✅
 
-Time taken: **\_** minutes  
-Deployed by: **\_**  
-Issues encountered: None / [describe]  
-Follow-up actions: None / [describe]
+Time taken: **\_** minutes Deployed by: **\_** Issues encountered: None /
+[describe] Follow-up actions: None / [describe]
 
 **Celebrate! 🎉 Your code is live!**

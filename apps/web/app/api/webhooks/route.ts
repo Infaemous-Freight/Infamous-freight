@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
+import type Stripe from "stripe";
 
 import { stripe } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 
-type StripeEvent = Parameters<typeof stripe.webhooks.constructEvent>[0];
+type StripeEvent = Stripe.Event;
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
   }
 }
 
-async function handleStripeEvent(event: any) {
+async function handleStripeEvent(event: StripeEvent) {
   switch (event.type) {
     case "checkout.session.completed": {
       const session = event.data.object;

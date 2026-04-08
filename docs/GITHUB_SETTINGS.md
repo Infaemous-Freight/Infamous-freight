@@ -179,7 +179,7 @@ NPM_TOKEN            # If publishing packages (optional)
 ### Required Variables
 
 ```
-NODE_VERSION=20
+NODE_VERSION=24
 PNPM_VERSION=8
 ```
 
@@ -191,8 +191,8 @@ Use this when configuring GitHub OAuth for Supabase Auth.
 
 **Application name**
 
-Infæmous Freight Enterprises  
-(If GitHub rejects “Æ”, use **Infamous Freight Enterprises**.)
+Infæmous Freight Enterprises (If GitHub rejects “Æ”, use **Infamous Freight
+Enterprises**.)
 
 **Homepage URL (Website URL)**
 

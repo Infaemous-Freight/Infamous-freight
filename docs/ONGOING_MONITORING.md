@@ -14,13 +14,13 @@ provides actionable procedures for daily, weekly, and monthly tasks.
 
 Use the following fixed cadence for market and business monitoring:
 
-| Task | Frequency | Time |
-| --- | --- | --- |
-| Monitor freight industry news | Daily | 8:00 AM |
-| Check platform reliability and incidents | Daily | 9:00 AM |
-| Watch competitor funding and launches | Daily | 12:00 PM |
-| Monitor trucking and brokerage regulations | Weekly (Monday) | 7:30 AM |
-| Review Infamous Freight revenue engine | Weekly (Friday) | 4:00 PM |
+| Task                                       | Frequency       | Time     |
+| ------------------------------------------ | --------------- | -------- |
+| Monitor freight industry news              | Daily           | 8:00 AM  |
+| Check platform reliability and incidents   | Daily           | 9:00 AM  |
+| Watch competitor funding and launches      | Daily           | 12:00 PM |
+| Monitor trucking and brokerage regulations | Weekly (Monday) | 7:30 AM  |
+| Review Infamous Freight revenue engine     | Weekly (Friday) | 4:00 PM  |
 
 ## Minimum Ops Stack (Locked)
 
@@ -79,6 +79,41 @@ curl https://api.infamous-freight.com/health
 # - Memory: < 70% average
 # - Disk: < 80% used
 ```
+
+### 4. Fly.io Suspension Runbook
+
+Use this when Fly reports the app as `suspended`, machines are stopped, or
+public health checks fail after deploy.
+
+```bash
+# 1. Use the root Fly config, not apps/api/fly.toml
+flyctl deploy -c fly.toml -a infamous-freight-db --remote-only --depot=false
+
+# 2. Confirm at least one machine is started and passing checks
+flyctl machines list -a infamous-freight-db
+
+# 3. Verify the app's real health path and port
+# Expected: internal_port = 4000, health path = /health
+flyctl config show -a infamous-freight-db
+
+# 4. Run the post-deploy verifier
+bash scripts/fly-postdeploy-check.sh infamous-freight-db https://infamous-freight-db.fly.dev/health
+
+# 5. If public DNS does not resolve from the current environment,
+# the verifier will fall back to an in-machine check via Fly SSH.
+```
+
+Failure pattern to watch for:
+
+- `suspended` app status with all machines stopped usually means Fly has no
+  guaranteed running machine.
+- `0/1` health checks with logs showing `Infamous Freight API started` usually
+  means the Fly service check is probing the wrong port or path.
+- `404` on `/api/health` from inside the machine means the app is serving
+  `/health` instead.
+
+Keep `min_machines_running = 1` in `fly.toml` so the app does not settle back
+into a fully suspended state after deployment.
 
 ---
 
@@ -352,7 +387,7 @@ size-limit
 docker scan infamous-freight-api:latest
 
 # Check base image for updates
-docker pull node:22-alpine
+docker pull node:24-alpine
 # Compare with current base image
 
 # If vulnerabilities found:
@@ -686,7 +721,5 @@ Escalation: Slack #eng-incidents
 
 ---
 
-**Last Updated:** December 13, 2025  
-**Maintained By:** Development Team  
-**Review Frequency:** Monthly  
-**Next Review:** January 13, 2026
+**Last Updated:** December 13, 2025 **Maintained By:** Development Team **Review
+Frequency:** Monthly **Next Review:** January 13, 2026

@@ -18,6 +18,7 @@ import {
 } from "../middleware/security.js";
 import { handleValidationErrors, validateString } from "../middleware/validation.js";
 import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
+import { prisma } from "../db/prisma.js";
 import { tenantPrisma } from "../db/tenant.js";
 import { body, query } from "express-validator";
 
@@ -41,9 +42,8 @@ import {
 } from "../billing/invoicing.js";
 
 const router: Router = Router();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const stripeKey = (process.env.STRIPE_SECRET_KEY || "").trim();
+const stripe = stripeKey ? new Stripe(stripeKey) : null;
 
 // ============================================
 // Billing Portal (Stripe)
@@ -71,6 +71,13 @@ router.get(
         return res.status(404).json({
           error: "No billing found",
           message: "Organization does not have a Stripe customer",
+        });
+      }
+
+      if (!stripe) {
+        return res.status(503).json({
+          error: "Stripe is not configured",
+          message: "Set STRIPE_SECRET_KEY to use the billing portal",
         });
       }
 

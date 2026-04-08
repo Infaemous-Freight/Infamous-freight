@@ -5,10 +5,10 @@ when vulnerabilities are detected.
 
 ## Overview
 
-**What**: Automated scanning of Docker images for known vulnerabilities  
-**How**: Trivy scanner in GitHub Actions  
-**When**: On every Dockerfile change, package.json update, and daily  
-**Why**: Prevent deploying vulnerable dependencies to production
+**What**: Automated scanning of Docker images for known vulnerabilities **How**:
+Trivy scanner in GitHub Actions **When**: On every Dockerfile change,
+package.json update, and daily **Why**: Prevent deploying vulnerable
+dependencies to production
 
 ## How It Works
 
@@ -100,7 +100,7 @@ For system vulnerabilities (OS-level):
 
 ```dockerfile
 # In Dockerfile, update base image
-FROM node:22.11.0-alpine3.22  # Latest LTS + latest Alpine
+FROM node:24-alpine3.22  # Latest stable + latest Alpine
 
 # Rebuild image
 docker build -t myapp:latest .
@@ -228,13 +228,13 @@ exit-code: 0               # Don't fail (warning only)
 
 ```dockerfile
 # Alpine (smallest, fastest to scan)
-FROM node:22.11.0-alpine3.22
+FROM node:24-alpine
 
 # OR Debian-slim (more tested, larger)
-FROM node:22.11.0-slim
+FROM node:24-slim
 
 # ❌ Avoid: outdated/pinned versions
-FROM node:20.0.0-alpine  # Old, may have vulns
+FROM node:24.0.0-alpine  # Overly pinned; prefer tracked `node:24-alpine`
 ```
 
 Schedule base image updates monthly.
@@ -262,17 +262,17 @@ Don't include build tools in production image:
 
 ```dockerfile
 # ✅ Multi-stage build (no build tools in final image)
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /build
 COPY package*.json .
 RUN npm ci --omit=dev
 
-FROM node:22-alpine
+FROM node:24-alpine
 COPY --from=builder /build /app
 CMD ["node", "server.js"]
 
 # ❌ Single stage (includes build tools, larger attack surface)
-FROM node:22-alpine
+FROM node:24-alpine
 RUN npm install
 CMD ["node", "server.js"]
 ```
@@ -405,7 +405,6 @@ Keep record of:
 
 ---
 
-**Last Updated**: December 13, 2025  
-**Status**: Production-ready  
+**Last Updated**: December 13, 2025 **Status**: Production-ready
 **Maintenance**: Monitor daily for new vulnerabilities, update dependencies
 monthly

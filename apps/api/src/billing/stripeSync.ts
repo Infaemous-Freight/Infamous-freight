@@ -6,10 +6,21 @@
  */
 
 import Stripe from "stripe";
-import { PrismaClient, BillingPlan } from "@prisma/client";
+import { BillingPlan } from "@prisma/client";
+import { prisma } from "../db/prisma.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
-const prisma = new PrismaClient();
+let stripeClient: Stripe | null = null;
+
+function getStripe(): Stripe {
+  const apiKey = (process.env.STRIPE_SECRET_KEY || "").trim();
+  if (!apiKey) {
+    throw new Error("STRIPE_SECRET_KEY is not configured");
+  }
+  if (!stripeClient) {
+    stripeClient = new Stripe(apiKey);
+  }
+  return stripeClient;
+}
 
 // Stripe price IDs from environment (created in Stripe dashboard)
 const STRIPE_PRICES: Partial<Record<BillingPlan, string>> = {
@@ -52,6 +63,7 @@ export async function createStripeSubscription(
   status: string;
 }> {
   try {
+    const stripe = getStripe();
     // 1. Create Stripe customer
     const customer = await stripe.customers.create({
       name: orgName,
@@ -137,6 +149,7 @@ export async function updateSubscriptionPlan(
   newPlan: BillingPlan,
 ): Promise<void> {
   try {
+    const stripe = getStripe();
     const billing = await prisma.orgBilling.findUnique({
       where: { organizationId },
     });
@@ -191,6 +204,7 @@ export async function cancelSubscription(
   immediately: boolean = false,
 ): Promise<void> {
   try {
+    const stripe = getStripe();
     const billing = await prisma.orgBilling.findUnique({
       where: { organizationId },
     });
@@ -233,6 +247,7 @@ export async function cancelSubscription(
  */
 export async function syncSubscriptionStatus(organizationId: string): Promise<void> {
   try {
+    const stripe = getStripe();
     const billing = await prisma.orgBilling.findUnique({
       where: { organizationId },
     });
@@ -248,8 +263,8 @@ export async function syncSubscriptionStatus(organizationId: string): Promise<vo
       where: { organizationId },
       data: {
         stripeStatus: subscription.status,
-        billingCycleStart: new Date((subscription as any).current_period_start * 1000),
-        nextBillingDate: new Date((subscription as any).current_period_end * 1000),
+        billingCycleStart: new Date(subscription.current_period_start * 1000),
+        nextBillingDate: new Date(subscription.current_period_end * 1000),
       },
     });
 
@@ -267,6 +282,7 @@ export async function syncSubscriptionStatus(organizationId: string): Promise<vo
  */
 export async function getSubscriptionDetails(organizationId: string) {
   try {
+    const stripe = getStripe();
     const billing = await prisma.orgBilling.findUnique({
       where: { organizationId },
       include: {
@@ -291,7 +307,7 @@ export async function getSubscriptionDetails(organizationId: string) {
       organization: billing.organization,
       plan: billing.plan,
       status: subscription.status,
-      currentPeriodStart: new Date((subscription as any).current_period_start * 1000),
+      currentPeriodStart: new Date(subscription.current_period_start * 1000),
       currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
       cancelAt: subscription.cancel_at ? new Date(subscription.cancel_at * 1000) : null,
       items: subscription.items.data.map((item) => ({

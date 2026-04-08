@@ -16,7 +16,7 @@ Example:
 
 ```bash
 git checkout v1.2.3
-fly deploy -c fly.api.toml
+flyctl deploy -c fly.toml -a infamous-freight-db --remote-only --depot=false
 ```
 
 3. Restore database snapshot if migration caused failure.

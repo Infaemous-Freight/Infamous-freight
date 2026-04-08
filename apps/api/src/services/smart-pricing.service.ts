@@ -1,5 +1,4 @@
-import { prisma } from '../db/prisma.js';
-
+import { prisma } from "../db/prisma.js";
 
 export interface PricingRecommendation {
   loadId: string;
@@ -20,17 +19,14 @@ export class SmartPricingService {
   /**
    * Recommend pricing for a load
    */
-  async recommendPricing(
-    tenantId: string,
-    loadId: string
-  ): Promise<PricingRecommendation> {
+  async recommendPricing(tenantId: string, loadId: string): Promise<PricingRecommendation> {
     // Fetch load
     const load = await prisma.load.findUnique({
       where: { id: loadId },
     });
 
     if (!load || load.tenantId !== tenantId) {
-      throw new Error('Load not found or access denied');
+      throw new Error("Load not found or access denied");
     }
 
     // Calculate pricing factors
@@ -54,17 +50,14 @@ export class SmartPricingService {
     const acceptanceProbability = this.calculateAcceptanceProbability(
       recommendedRateCents,
       baseRate,
-      factors
+      factors,
     );
 
     // Calculate confidence
     const confidence = this.calculateConfidence(factors, acceptanceProbability);
 
     // Generate reason codes
-    const reasonCodes = this.generatePricingReasonCodes(
-      factors,
-      acceptanceProbability
-    );
+    const reasonCodes = this.generatePricingReasonCodes(factors, acceptanceProbability);
 
     // Save pricing snapshot
     await prisma.pricingSnapshot.create({
@@ -85,7 +78,7 @@ export class SmartPricingService {
       recommendedRateCents,
       confidence,
       reasonCodes,
-      factors
+      factors,
     );
 
     return {
@@ -101,20 +94,17 @@ export class SmartPricingService {
   /**
    * Get pricing history for a load
    */
-  async getPricingHistory(
-    tenantId: string,
-    loadId: string
-  ): Promise<PricingRecommendation[]> {
+  async getPricingHistory(tenantId: string, loadId: string): Promise<PricingRecommendation[]> {
     const snapshots = await prisma.pricingSnapshot.findMany({
       where: {
         tenantId,
         loadId,
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: 10,
     });
 
-    return snapshots.map((snap) => ({
+    return snapshots.map((snap: any) => ({
       loadId,
       recommendedRateCents: snap.recommendedRateCents,
       acceptanceProbability: snap.acceptanceProbability || 0,
@@ -129,14 +119,14 @@ export class SmartPricingService {
    */
   private async calculatePricingFactors(
     tenantId: string,
-    load: any
+    load: any,
   ): Promise<Record<string, number>> {
     // Lane history multiplier (0.8-1.2)
     // High supply on lane = lower multiplier, high demand = higher multiplier
     const laneHistoryMultiplier = await this.calculateLaneHistoryMultiplier(
       tenantId,
       load.originState,
-      load.destState
+      load.destState,
     );
 
     // Urgency multiplier (0.9-1.5)
@@ -191,7 +181,7 @@ export class SmartPricingService {
   private async calculateLaneHistoryMultiplier(
     tenantId: string,
     originState: string,
-    destState: string
+    destState: string,
   ): Promise<number> {
     // Placeholder: would query historical lane data
     // For now, return neutral multiplier
@@ -221,13 +211,11 @@ export class SmartPricingService {
   /**
    * Carrier availability multiplier
    */
-  private async calculateCarrierAvailabilityMultiplier(
-    tenantId: string
-  ): Promise<number> {
+  private async calculateCarrierAvailabilityMultiplier(tenantId: string): Promise<number> {
     const availableCount = await prisma.driver.count({
       where: {
         tenantId,
-        status: 'AVAILABLE',
+        status: "AVAILABLE",
       },
     });
 
@@ -270,7 +258,7 @@ export class SmartPricingService {
   private calculateAcceptanceProbability(
     recommendedRate: number,
     baseRate: number,
-    factors: Record<string, number>
+    factors: Record<string, number>,
   ): number {
     // If rate is at or below base rate, high acceptance
     if (recommendedRate <= baseRate) {
@@ -279,10 +267,7 @@ export class SmartPricingService {
 
     // For each 10% above base rate, reduce acceptance by 10%
     const percentAboveBase = (recommendedRate - baseRate) / baseRate;
-    const acceptanceProbability = Math.max(
-      0.3,
-      0.95 - percentAboveBase * 0.5
-    );
+    const acceptanceProbability = Math.max(0.3, 0.95 - percentAboveBase * 0.5);
 
     return Math.round(acceptanceProbability * 100) / 100;
   }
@@ -292,7 +277,7 @@ export class SmartPricingService {
    */
   private calculateConfidence(
     factors: Record<string, number>,
-    acceptanceProbability: number
+    acceptanceProbability: number,
   ): number {
     // Confidence based on acceptance probability
     // High acceptance = high confidence, low acceptance = lower confidence
@@ -305,18 +290,17 @@ export class SmartPricingService {
    */
   private generatePricingReasonCodes(
     factors: Record<string, number>,
-    acceptanceProbability: number
+    acceptanceProbability: number,
   ): string[] {
     const codes: string[] = [];
 
-    if (factors.demandMultiplier > 1.2) codes.push('HIGH_DEMAND_PREMIUM');
-    if (factors.urgencyMultiplier > 1.2) codes.push('URGENT_LOAD_PREMIUM');
-    if (factors.complexityMultiplier > 1.2) codes.push('COMPLEX_LOAD_PREMIUM');
-    if (factors.carrierAvailabilityMultiplier > 1.2)
-      codes.push('LIMITED_AVAILABILITY_PREMIUM');
-    if (acceptanceProbability < 0.5) codes.push('COMPETITIVE_MARKET_WARNING');
+    if (factors.demandMultiplier > 1.2) codes.push("HIGH_DEMAND_PREMIUM");
+    if (factors.urgencyMultiplier > 1.2) codes.push("URGENT_LOAD_PREMIUM");
+    if (factors.complexityMultiplier > 1.2) codes.push("COMPLEX_LOAD_PREMIUM");
+    if (factors.carrierAvailabilityMultiplier > 1.2) codes.push("LIMITED_AVAILABILITY_PREMIUM");
+    if (acceptanceProbability < 0.5) codes.push("COMPETITIVE_MARKET_WARNING");
 
-    return codes.length > 0 ? codes : ['MARKET_RATE'];
+    return codes.length > 0 ? codes : ["MARKET_RATE"];
   }
 
   /**
@@ -328,14 +312,14 @@ export class SmartPricingService {
     recommendedRate: number,
     confidence: number,
     reasonCodes: string[],
-    factors: Record<string, number>
+    factors: Record<string, number>,
   ): Promise<void> {
     await prisma.aiDecisionLog.create({
       data: {
         tenantId,
-        entityType: 'LOAD',
+        entityType: "LOAD",
         entityId: loadId,
-        module: 'SMART_PRICING',
+        module: "SMART_PRICING",
         decision: `Recommended rate: $${(recommendedRate / 100).toFixed(2)}`,
         confidence,
         reasonCodes,

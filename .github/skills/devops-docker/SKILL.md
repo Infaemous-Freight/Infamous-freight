@@ -1,6 +1,8 @@
 ---
 name: DevOps & Docker Deployment
-description: Containerize, orchestrate, and deploy services using Docker Compose, Kubernetes, and cloud platforms
+description:
+  Containerize, orchestrate, and deploy services using Docker Compose,
+  Kubernetes, and cloud platforms
 applyTo:
   - docker-compose*.yml
   - Dockerfile*
@@ -30,7 +32,7 @@ keywords:
 ### Development (`docker-compose.yml`)
 
 ```yaml
-version: '3.9'
+version: "3.9"
 
 services:
   postgres:
@@ -82,7 +84,7 @@ volumes:
 ### Production (`docker-compose.prod.yml`)
 
 ```yaml
-version: '3.9'
+version: "3.9"
 
 services:
   api:
@@ -112,7 +114,7 @@ volumes:
 
 ```dockerfile
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 COPY package*.json pnpm-lock.yaml ./
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
@@ -123,7 +125,7 @@ RUN pnpm --filter @infamous-freight/shared build
 RUN pnpm --filter api build
 
 # Runtime stage
-FROM node:20-alpine
+FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 
@@ -143,7 +145,7 @@ CMD ["node", "dist/index.js"]
 
 ```dockerfile
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 COPY package*.json pnpm-lock.yaml ./
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
@@ -153,7 +155,7 @@ RUN pnpm --filter @infamous-freight/shared build
 RUN pnpm --filter web build
 
 # Runtime stage
-FROM node:20-alpine
+FROM node:24-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -221,6 +223,7 @@ vercel
 ```
 
 **`vercel.json`**:
+
 ```json
 {
   "buildCommand": "pnpm build",
@@ -248,6 +251,7 @@ fly logs -a infamous-freight-api
 ```
 
 **`fly.api.toml`**:
+
 ```toml
 [app]
 kill_signal = "SIGINT"
@@ -353,10 +357,10 @@ services:
   api:
     resources:
       limits:
-        cpus: '1'
+        cpus: "1"
         memory: 512M
       reservations:
-        cpus: '0.5'
+        cpus: "0.5"
         memory: 256M
 ```
 

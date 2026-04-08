@@ -78,7 +78,7 @@ cd apps/web && vercel --prod
 
 ### API
 
-- Node.js 20 + Express
+- Node.js 24 + Express
 - Prisma ORM + PostgreSQL
 - OpenAI / Anthropic / Synthetic AI
 - Stripe + PayPal billing

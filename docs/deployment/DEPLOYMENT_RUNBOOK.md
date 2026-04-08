@@ -1,8 +1,7 @@
 # Deployment Runbook - Infamous Freight Enterprises
 
-**API**: `https://infamous-freight-api.fly.dev`  
-**Status**: Production (Fly.io iad region)  
-**Last Deployed**: December 16, 2025
+**API**: `https://infamous-freight-api.fly.dev` **Status**: Production (Fly.io
+iad region) **Last Deployed**: December 16, 2025
 
 ---
 
@@ -89,7 +88,7 @@ flyctl deploy --remote-only
 **What happens during deploy**:
 
 1. Validates `fly.toml` configuration
-2. Builds Docker image (multi-stage Alpine + Node 22)
+2. Builds Docker image (multi-stage Alpine + Node 24)
 3. Compiles shared package (`@infamous-freight/shared`)
 4. Installs dependencies with pnpm
 5. Copies API and Prisma schema
@@ -430,5 +429,5 @@ curl -X POST \
 
 ---
 
-**Last Updated**: December 16, 2025  
-**Maintained By**: Infamous Freight DevOps Team
+**Last Updated**: December 16, 2025 **Maintained By**: Infamous Freight DevOps
+Team
