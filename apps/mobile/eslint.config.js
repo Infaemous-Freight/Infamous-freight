@@ -31,7 +31,7 @@ export default [
     rules: {
       "no-console": "off",
       "no-undef": "off",
-      "no-unused-vars": "off",
+      "no-unused-vars": "warn",
     },
   },
   {
@@ -58,8 +58,11 @@ export default [
       "no-console": "off",
       "no-undef": "off",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
+      "@typescript-eslint/no-explicit-any": "warn",
     },
   },
   prettier,
