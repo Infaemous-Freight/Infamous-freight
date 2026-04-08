@@ -53,37 +53,20 @@ jobs:
         id: fly-config
         shell: bash
         run: |
-          PRIMARY_APP=$(grep -E '^app\s*=\s*' fly.api.toml | head -1 | sed -E 's/.*=\s*"?([^" ]+)"?/\1/')
-          FALLBACK_APP=$(grep -E '^app\s*=\s*' apps/api/fly.toml | head -1 | sed -E 's/.*=\s*"?([^" ]+)"?/\1/' || true)
-          if [ -z "$PRIMARY_APP" ]; then
-            echo "Primary Fly app name not found in fly.api.toml"
+          APP_NAME=$(grep -E '^app\s*=\s*' apps/api/fly.toml | head -1 | sed -E 's/.*=\s*"?([^" ]+)"?/\1/')
+          if [ -z "$APP_NAME" ]; then
+            echo "Fly app name not found in apps/api/fly.toml"
             exit 1
           fi
-          echo "primary_app=$PRIMARY_APP" >> "$GITHUB_OUTPUT"
-          echo "fallback_app=$FALLBACK_APP" >> "$GITHUB_OUTPUT"
+          echo "app_name=$APP_NAME" >> "$GITHUB_OUTPUT"
 
       - name: Deploy to Fly.io
         id: deploy
         shell: bash
         run: |
           set -euo pipefail
-          PRIMARY_APP="${{ steps.fly-config.outputs.primary_app }}"
-          FALLBACK_APP="${{ steps.fly-config.outputs.fallback_app }}"
-
-          if flyctl deploy -c fly.api.toml -a "$PRIMARY_APP" --remote-only --depot=false; then
-            echo "app_name=$PRIMARY_APP" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          if [ -n "$FALLBACK_APP" ] && [ "$FALLBACK_APP" != "$PRIMARY_APP" ]; then
-            echo "Primary deploy failed, retrying with fallback app config: $FALLBACK_APP"
-            flyctl deploy -c apps/api/fly.toml -a "$FALLBACK_APP" --remote-only --depot=false
-            echo "app_name=$FALLBACK_APP" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          echo "Fly deploy failed for primary app and no valid fallback app available" >&2
-          exit 1
+          flyctl deploy -c apps/api/fly.toml -a "${{ steps.fly-config.outputs.app_name }}" --remote-only --depot=false
+          echo "app_name=${{ steps.fly-config.outputs.app_name }}" >> "$GITHUB_OUTPUT"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
