@@ -100,6 +100,7 @@ assert_not_contains "dry run redacts database url value" "$dry_run_output" "post
 assert_not_contains "dry run redacts database password segment" "$dry_run_output" "postgres:pw@"
 assert_not_contains "dry run redacts jwt secret value" "$dry_run_output" "abcdefghijklmnopqrstuvwxyz123456"
 assert_not_contains "dry run redacts fly token value" "$dry_run_output" "test-fly-token"
+assert_not_contains "dry run redacts netlify token value" "$dry_run_output" "test-netlify-token"
 
 if [ "$FAIL" -gt 0 ]; then
   echo ""
