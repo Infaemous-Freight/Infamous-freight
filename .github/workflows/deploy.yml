@@ -1,0 +1,131 @@
+name: Unified Deploy (Fly + Netlify)
+
+on:
+  push:
+    branches:
+      - main
+    branches:
+      - "**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gate:
+    name: Quality Gate (API tests + Docker build)
+    if: ${{ secrets.FLY_API_TOKEN != '' || (secrets.NETLIFY_AUTH_TOKEN != '' && secrets.NETLIFY_SITE_ID != '') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @infamous/api prisma:generate
+
+      - name: Build API
+        run: pnpm --filter @infamous/api build
+
+      - name: Run API tests (runInBand)
+        run: |
+          set -euo pipefail
+          if pnpm --filter @infamous/api exec -- jest --version >/dev/null 2>&1; then
+            pnpm --filter @infamous/api exec -- jest --runInBand
+          else
+            pnpm --filter @infamous/api test -- --runInBand
+          fi
+
+      - name: Build API Docker image
+        run: docker build -f Dockerfile.api -t infamous-freight-api:ci .
+
+  deploy-api:
+    name: Deploy API to Fly.io
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [quality-gate]
+    if: ${{ github.ref_name == 'main' && secrets.FLY_API_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy API
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          flyctl deploy --config fly.api.toml --remote-only --depot=false
+
+      - name: API health check
+        run: |
+          set -euo pipefail
+          APP_NAME=$(awk -F'=' '/^[[:space:]]*app[[:space:]]*=/{gsub(/[ "\t]/, "", $2); print $2; exit}' fly.api.toml)
+          if [ -z "${APP_NAME}" ]; then
+            echo "Failed to resolve app name from fly.api.toml" >&2
+            exit 1
+          fi
+          HEALTH_URL="https://${APP_NAME}.fly.dev/health"
+          for attempt in 1 2 3 4 5; do
+            if curl -fsS "$HEALTH_URL" >/dev/null; then
+              echo "Health check passed: $HEALTH_URL"
+              exit 0
+            fi
+            echo "Health check attempt $attempt failed, retrying..."
+            sleep 5
+          done
+          echo "Health check failed after retries: $HEALTH_URL" >&2
+          exit 1
+
+  deploy-web:
+    name: Deploy Web to Netlify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [quality-gate]
+    if: ${{ secrets.NETLIFY_AUTH_TOKEN != '' && secrets.NETLIFY_SITE_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then
+            pnpm dlx netlify-cli deploy --build --prod --message "GitHub Actions deploy from ${GITHUB_REF_NAME}" --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN"
+          else
+            pnpm dlx netlify-cli deploy --build --message "GitHub Actions preview deploy from ${GITHUB_REF_NAME}" --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN"
+          fi
