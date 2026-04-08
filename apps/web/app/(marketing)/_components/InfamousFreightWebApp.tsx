@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   ArrowRight,
   BarChart3,
@@ -17,6 +18,7 @@ import {
   Route,
   Search,
   ShieldCheck,
+  Smartphone,
   Truck,
   Warehouse,
 } from "lucide-react";
@@ -75,6 +77,13 @@ const laneCards = [
   { lane: "Atlanta → Miami", eta: "1 day", mode: "LTL / FTL" },
   { lane: "Los Angeles → Phoenix", eta: "Same day", mode: "Expedited" },
   { lane: "Houston → Memphis", eta: "1 day", mode: "Drayage / FTL" },
+];
+
+const platformLinks = [
+  { label: "Operations Dashboard", href: "/dashboard" },
+  { label: "Loadboard", href: "/loads" },
+  { label: "Shipment Tracking", href: "/loads/active" },
+  { label: "Billing & Payments", href: "/account/billing" },
 ];
 
 const testimonials = [
@@ -168,20 +177,18 @@ export default function InfamousFreightWebApp() {
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <button
-              type="button"
-              disabled
-              className="cursor-not-allowed rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium opacity-60 disabled:pointer-events-none"
+            <Link
+              href="/dashboard"
+              className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
             >
               Customer Portal
-            </button>
-            <button
-              type="button"
-              disabled
-              className="cursor-not-allowed rounded-2xl bg-slate-900 px-4 py-2 text-sm font-medium text-white opacity-60 disabled:pointer-events-none"
+            </Link>
+            <Link
+              href="/register"
+              className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
             >
               Book Shipment
-            </button>
+            </Link>
           </div>
 
           <button
@@ -210,6 +217,9 @@ export default function InfamousFreightWebApp() {
               <a href="#quote" className="text-sm text-slate-600">
                 Get Quote
               </a>
+              <Link href="/dashboard" className="text-sm text-slate-600">
+                Portal
+              </Link>
             </div>
           </div>
         ) : null}
@@ -236,9 +246,9 @@ export default function InfamousFreightWebApp() {
                 Get a Freight Quote
                 <ArrowRight className="ml-2 h-4 w-4" />
               </a>
-              <a href="#portal" className="rounded-2xl border border-slate-300 px-6 py-3">
+              <Link href="/dashboard" className="rounded-2xl border border-slate-300 px-6 py-3">
                 View Customer Portal
-              </a>
+              </Link>
             </div>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -303,6 +313,58 @@ export default function InfamousFreightWebApp() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </section>
+
+        <section id="platform" className="border-y border-slate-200 bg-slate-50">
+          <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-2 lg:px-8">
+            <div className="space-y-4">
+              <SectionHeader
+                eyebrow="Platform Access"
+                title="Website and mobile workflows ready for dispatch teams."
+                description="Use the web platform for control tower operations and the mobile app for in-cab execution."
+              />
+              <div className="grid gap-3 sm:grid-cols-2">
+                {platformLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="mb-4 inline-flex rounded-full border border-slate-200 bg-slate-50 p-2">
+                <Smartphone className="h-5 w-5 text-slate-700" />
+              </div>
+              <h3 className="text-xl font-semibold tracking-tight text-slate-900">Infamous Freight Mobile App</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Drivers and field operators can manage loads, update milestones, and sync proof-of-delivery events.
+              </p>
+              <ul className="mt-4 space-y-2 text-sm text-slate-700">
+                <li>• Mobile-first shipment status updates</li>
+                <li>• Offline-safe event queue for low-signal zones</li>
+                <li>• Fast handoff to dispatch through unified load IDs</li>
+              </ul>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/driver"
+                  className="inline-flex items-center rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
+                >
+                  Driver Workflow
+                </Link>
+                <Link
+                  href="/contact-sales"
+                  className="inline-flex items-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+                >
+                  Request Production Setup
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 
