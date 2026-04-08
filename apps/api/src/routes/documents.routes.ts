@@ -7,8 +7,8 @@ import { requireAuth } from '../middleware/auth.js';
 import { requireTenant } from '../middleware/tenant.js';
 
 const require = createRequire(import.meta.url);
-const { requireRole } = require('../middleware/rbac.cjs');
-const prisma = require('../lib/prisma.cjs');
+const { requireRole } = require('../middleware/rbac.js');
+const prisma = require('../lib/prisma.js');
 
 const uploadDir = process.env.UPLOAD_DIR || './uploads';
 fs.mkdirSync(uploadDir, { recursive: true });
