@@ -91,5 +91,8 @@
       "sharp",
       "unrs-resolver"
     ]
+  },
+  "dependencies": {
+    "@sentry/node": "^10.47.0"
   }
 }

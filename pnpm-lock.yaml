@@ -32,6 +32,10 @@ overrides:
 importers:
 
   .:
+    dependencies:
+      '@sentry/node':
+        specifier: ^10.47.0
+        version: 10.47.0
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
