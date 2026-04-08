@@ -14,3 +14,6 @@ if (prisma) {
     },
   };
 }
+
+// Allow ESM default imports from TypeScript route modules.
+module.exports.default = module.exports;

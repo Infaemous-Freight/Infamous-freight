@@ -1,5 +1,8 @@
 import { stripe } from './stripe.client.js';
-import prisma from '../../lib/prisma.js';
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const prisma = require('../../lib/prisma.js');
 
 export async function createPaymentIntentForInvoice(orgId: string, invoiceId: string) {
   if (!stripe) throw new Error('Stripe not configured');

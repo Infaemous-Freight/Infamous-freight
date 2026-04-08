@@ -12,7 +12,7 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import { body, query } from "express-validator";
 import { authenticate, requireScope, limiters } from "../middleware/security.js";
-import validation from "../middleware/validation.js";
+import * as validation from "../middleware/validation.js";
 
 import {
   createLead,

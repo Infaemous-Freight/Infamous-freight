@@ -2,10 +2,13 @@ import { Router } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { requireAuth } from '../middleware/auth.js';
-import { requireTenant } from '../middleware/tenant.js';
-import { requireRole } from '../middleware/rbac.js';
-import prisma from '../lib/prisma.js';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const { requireAuth } = require('../middleware/auth.js');
+const { requireTenant } = require('../middleware/tenant.js');
+const { requireRole } = require('../middleware/rbac.js');
+const prisma = require('../lib/prisma.js');
 
 const uploadDir = process.env.UPLOAD_DIR || './uploads';
 fs.mkdirSync(uploadDir, { recursive: true });

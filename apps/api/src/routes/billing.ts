@@ -16,7 +16,7 @@ import {
   requireScope,
   limiters,
 } from "../middleware/security.js";
-import validation from "../middleware/validation.js";
+import * as validation from "../middleware/validation.js";
 import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
 import { tenantPrisma } from "../db/tenant.js";
 import { body, query } from "express-validator";
