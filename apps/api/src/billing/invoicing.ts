@@ -62,6 +62,7 @@ export async function generateOrgInvoice(
               select: {
                 stripeCustomerId: true,
                 monthlyBase: true,
+                overagePrice: true,
               },
             },
           },
@@ -82,6 +83,7 @@ export async function generateOrgInvoice(
     const baseFee = Math.round(billing.monthlyBase * 100);
     const overageCharge = Math.round(usage.overageCharge * 100);
     const totalAmount = baseFee + overageCharge;
+    const overageRateLabel = billing.overagePrice.toFixed(2);
 
     // Create invoice items in Stripe
     if (baseFee > 0) {
@@ -105,7 +107,7 @@ export async function generateOrgInvoice(
         customer: billing.stripeCustomerId,
         amount: overageCharge,
         currency: "usd",
-        description: `Overage: ${usage.overageJobs} jobs @ $${usage.organization.billing?.monthlyBase ? "$1.50" : "$0"}/job - ${invoiceMonth}`,
+        description: `Overage: ${usage.overageJobs} jobs @ $${overageRateLabel}/job - ${invoiceMonth}`,
         metadata: {
           organizationId,
           month: invoiceMonth,
