@@ -1,5 +1,5 @@
 <h1 align="center">
-  <span style="color:#ff2b2b;">INFÆMOUS FREIGHT</span>
+  INFÆMOUS FREIGHT
 </h1>
 
 <p align="center"><strong>🚛 AI-powered freight operations platform</strong></p>
