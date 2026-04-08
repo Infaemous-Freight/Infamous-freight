@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { observeAuthState } from "@/lib/auth";
 import { listLoads } from "@/lib/firestoreCrud";
+import { reportSentryError } from "@/lib/sentry";
 import type { Load } from "@/types";
 
 export default function Dashboard() {
@@ -14,8 +15,12 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
+    let isMounted = true;
+
     const unsubscribe = observeAuthState(async (user) => {
+      if (!isMounted) return;
       if (!user) {
+        setLoads([]);
         router.push("/login");
         setLoading(false);
         return;
@@ -26,15 +31,23 @@ export default function Dashboard() {
         setLoads(loadDocs);
         setError(null);
       } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error("Failed to load dashboard data", err);
+        setLoads([]);
+        reportSentryError(err instanceof Error ? err : new Error("Failed to load dashboard data"), {
+          contexts: {
+            component: "dashboard",
+            action: "listLoads",
+          },
+        });
         setError("Failed to load dashboard data. Please try again.");
       } finally {
         setLoading(false);
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, [router]);
 
   if (loading) return <div className="p-6">Loading dashboard...</div>;
