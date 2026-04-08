@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const validation = require("./validation.cjs");
+const validation = require("./validation.js");
 
 export const validateString = validation.validateString;
 export const validateEmail = validation.validateEmail;
