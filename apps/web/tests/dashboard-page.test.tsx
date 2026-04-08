@@ -56,6 +56,10 @@ describe("dashboard page", () => {
             component: "dashboard",
             action: "listLoads",
           }),
+        }),
+      );
+    });
+
     const errorMessage = await screen.findByText("Failed to load dashboard data. Please try again.");
 
     expect(errorMessage).toBeInTheDocument();
