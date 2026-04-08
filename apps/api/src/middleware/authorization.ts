@@ -55,6 +55,18 @@ export function requireRole(requiredRoles: string[]) {
     }
 
     if (!normalizedRequired.includes(role)) {
+      logger.warn(
+        {
+          userId: req.auth?.userId,
+          role,
+          requiredRoles: normalizedRequired,
+          requestId: req.headers["x-request-id"],
+          path: req.path,
+          method: req.method,
+          denialReason: "RBAC_ROLE_DENIED",
+        },
+        "Access denied by RBAC role policy",
+      );
       next(new ApiError(403, "PERMISSION_DENIED", "You do not have permission for this operation"));
       return;
     }
