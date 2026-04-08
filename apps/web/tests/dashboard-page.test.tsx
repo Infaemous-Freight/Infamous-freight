@@ -56,11 +56,10 @@ describe("dashboard page", () => {
             component: "dashboard",
             action: "listLoads",
           }),
-        }),
-      );
-    });
+    const errorMessage = await screen.findByText("Failed to load dashboard data. Please try again.");
 
-    expect(screen.getByText("Failed to load dashboard data. Please try again.")).toBeInTheDocument();
+    expect(errorMessage).toBeInTheDocument();
+    expect(reportSentryErrorMock).toHaveBeenCalledTimes(1);
   });
 
   it("redirects unauthenticated users to login", async () => {
