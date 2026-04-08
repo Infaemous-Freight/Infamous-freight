@@ -34,7 +34,6 @@
 
     // Advanced
     "skipLibCheck": true,
-    "ignoreDeprecations": "6.0",
 
     // Path Aliases for Shared Packages
     "paths": {

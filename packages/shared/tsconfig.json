@@ -9,7 +9,6 @@
     "rootDir": "src",
     "strict": true,
     "skipLibCheck": true,
-    "ignoreDeprecations": "6.0",
     "composite": true,
     "types": ["node"]
   },
