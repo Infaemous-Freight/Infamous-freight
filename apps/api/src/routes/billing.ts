@@ -43,7 +43,20 @@ import {
 
 const router: Router = Router();
 const { handleValidationErrors, validateString } = validation;
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+let stripeClient: Stripe | null = null;
+
+function getStripeClient(): Stripe {
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeKey) {
+    throw new Error("Stripe is not configured. Set STRIPE_SECRET_KEY.");
+  }
+
+  if (!stripeClient) {
+    stripeClient = new Stripe(stripeKey);
+  }
+
+  return stripeClient;
+}
 
 function prismaOrThrow() {
   const prisma = getPrisma();
@@ -82,7 +95,7 @@ router.get(
         });
       }
 
-      const session = await stripe.billingPortal.sessions.create({
+      const session = await getStripeClient().billingPortal.sessions.create({
         customer: billing.stripeCustomerId,
         return_url: `${process.env.WEB_BASE_URL || "http://localhost:3000"}/settings/billing`,
       });

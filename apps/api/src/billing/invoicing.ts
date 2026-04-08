@@ -8,7 +8,20 @@
 import Stripe from "stripe";
 import { getPrisma } from "../db/prisma.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+let stripeClient: Stripe | null = null;
+
+function getStripeClient(): Stripe {
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeKey) {
+    throw new Error("Stripe is not configured. Set STRIPE_SECRET_KEY.");
+  }
+
+  if (!stripeClient) {
+    stripeClient = new Stripe(stripeKey);
+  }
+
+  return stripeClient;
+}
 
 function prismaOrThrow() {
   const prisma = getPrisma();
@@ -86,7 +99,7 @@ export async function generateOrgInvoice(
 
     // Create invoice items in Stripe
     if (baseFee > 0) {
-      await stripe.invoiceItems.create({
+      await getStripeClient().invoiceItems.create({
         customer: billing.stripeCustomerId,
         amount: baseFee,
         currency: "usd",
@@ -100,7 +113,7 @@ export async function generateOrgInvoice(
     }
 
     if (overageCharge > 0) {
-      await stripe.invoiceItems.create({
+      await getStripeClient().invoiceItems.create({
         customer: billing.stripeCustomerId,
         amount: overageCharge,
         currency: "usd",
@@ -115,7 +128,7 @@ export async function generateOrgInvoice(
     }
 
     // Create invoice
-    const invoice = await stripe.invoices.create({
+    const invoice = await getStripeClient().invoices.create({
       customer: billing.stripeCustomerId,
       collection_method: "send_invoice",
       days_until_due: 30,
@@ -127,7 +140,7 @@ export async function generateOrgInvoice(
     });
 
     // Finalize invoice
-    const finalizedInvoice = await stripe.invoices.finalizeInvoice(invoice.id);
+    const finalizedInvoice = await getStripeClient().invoices.finalizeInvoice(invoice.id);
 
     // Save to database
     const dbInvoice = await prismaOrThrow().orgInvoice.upsert({
@@ -154,7 +167,7 @@ export async function generateOrgInvoice(
 
     // Send invoice
     if (process.env.SEND_INVOICES === "true") {
-      await stripe.invoices.sendInvoice(finalizedInvoice.id);
+      await getStripeClient().invoices.sendInvoice(finalizedInvoice.id);
     }
 
     console.log("Generated invoice", {
@@ -262,7 +275,7 @@ export async function getInvoice(organizationId: string, month: string) {
     });
 
     if (invoice?.stripeInvoiceId) {
-      const stripeInvoice = await stripe.invoices.retrieve(invoice.stripeInvoiceId);
+      const stripeInvoice = await getStripeClient().invoices.retrieve(invoice.stripeInvoiceId);
       return {
         ...invoice,
         stripeStatus: stripeInvoice.status,
@@ -319,7 +332,7 @@ export async function sendInvoiceReminder(organizationId: string, month: string)
       throw new Error(`No Stripe invoice found for ${organizationId} (${month})`);
     }
 
-    await stripe.invoices.sendInvoice(invoice.stripeInvoiceId);
+    await getStripeClient().invoices.sendInvoice(invoice.stripeInvoiceId);
 
     console.log(`Sent invoice reminder for org ${organizationId} (${month})`);
   } catch (error) {

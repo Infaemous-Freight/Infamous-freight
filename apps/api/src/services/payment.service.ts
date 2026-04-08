@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { PAYMENT_LINKS, type PaymentLinkType } from "@infamous-freight/shared";
+import { getPaymentLink, type PaymentLinkType } from "@infamous-freight/shared";
 import { env } from "../config/env.js";
 import { prisma } from "../db/prisma.js";
 import { requireTenantContext, withTenantWhere } from "../db/tenant-scope.js";
@@ -14,7 +14,7 @@ export async function createGoDaddyRedirectPayment(params: {
   amount: number;
 }) {
   const tenantId = requireTenantContext(params.tenantId);
-  const checkoutUrl = PAYMENT_LINKS[params.type];
+  const checkoutUrl = getPaymentLink(params.type);
 
   const payment = await prisma.payment.create({
     data: {
