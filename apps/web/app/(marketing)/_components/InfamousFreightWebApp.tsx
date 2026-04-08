@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   ArrowRight,
   BarChart3,
@@ -176,18 +177,18 @@ export default function InfamousFreightWebApp() {
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <a
+            <Link
               href="/dashboard"
               className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
             >
               Customer Portal
-            </a>
-            <a
+            </Link>
+            <Link
               href="/register"
               className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
             >
               Book Shipment
-            </a>
+            </Link>
           </div>
 
           <button
@@ -216,9 +217,9 @@ export default function InfamousFreightWebApp() {
               <a href="#quote" className="text-sm text-slate-600">
                 Get Quote
               </a>
-              <a href="/dashboard" className="text-sm text-slate-600">
+              <Link href="/dashboard" className="text-sm text-slate-600">
                 Portal
-              </a>
+              </Link>
             </div>
           </div>
         ) : null}
@@ -245,9 +246,9 @@ export default function InfamousFreightWebApp() {
                 Get a Freight Quote
                 <ArrowRight className="ml-2 h-4 w-4" />
               </a>
-              <a href="/dashboard" className="rounded-2xl border border-slate-300 px-6 py-3">
+              <Link href="/dashboard" className="rounded-2xl border border-slate-300 px-6 py-3">
                 View Customer Portal
-              </a>
+              </Link>
             </div>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -325,13 +326,13 @@ export default function InfamousFreightWebApp() {
               />
               <div className="grid gap-3 sm:grid-cols-2">
                 {platformLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.href}
                     href={link.href}
                     className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:text-slate-900"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -350,18 +351,18 @@ export default function InfamousFreightWebApp() {
                 <li>• Fast handoff to dispatch through unified load IDs</li>
               </ul>
               <div className="mt-6 flex flex-wrap gap-3">
-                <a
+                <Link
                   href="/driver"
                   className="inline-flex items-center rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
                 >
                   Driver Workflow
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/contact-sales"
                   className="inline-flex items-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
                 >
                   Request Production Setup
-                </a>
+                </Link>
               </div>
             </div>
           </div>
