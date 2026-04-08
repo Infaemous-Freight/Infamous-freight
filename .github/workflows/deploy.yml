@@ -16,7 +16,6 @@ concurrency:
 jobs:
   quality-gate:
     name: Quality Gate (API tests + Docker build)
-    if: ${{ secrets.FLY_API_TOKEN != '' || (secrets.NETLIFY_AUTH_TOKEN != '' && secrets.NETLIFY_SITE_ID != '') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -59,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [quality-gate]
-    if: ${{ github.ref_name == 'main' && secrets.FLY_API_TOKEN != '' }}
+    if: ${{ github.ref_name == 'main' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -98,7 +97,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [quality-gate]
-    if: ${{ secrets.NETLIFY_AUTH_TOKEN != '' && secrets.NETLIFY_SITE_ID != '' }}
+    if: ${{ github.ref_name == 'main' && vars.NETLIFY_DEPLOY_ENABLED == 'true' }}
     steps:
       - uses: actions/checkout@v4
 
