@@ -30,10 +30,21 @@ export default function Dashboard() {
         setLoads(loadDocs);
         setError(null);
       } catch (err) {
-        reportSentryError(err instanceof Error ? err : new Error("Failed to load dashboard data"), {
+        const reportedError =
+          err instanceof Error
+            ? err
+            : new Error("Failed to load dashboard data", { cause: err });
+
+        reportSentryError(reportedError, {
           contexts: {
             component: "dashboard",
             action: "listLoads",
+            originalError:
+              err instanceof Error
+                ? undefined
+                : {
+                    value: String(err),
+                  },
           },
         });
         setError("Failed to load dashboard data. Please try again.");
