@@ -467,6 +467,7 @@ router.get(
       Object.assign(where, tenantScope);
       if (status) where.status = status;
       if (driverId) where.driverId = driverId;
+      if (req.user?.role !== "admin" && req.user?.sub) where.userId = req.user.sub;
 
       // Fetch shipments
       const shipments = await prisma.shipment.findMany({
