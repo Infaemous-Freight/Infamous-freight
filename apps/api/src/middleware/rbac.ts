@@ -1,8 +1,4 @@
-import { createRequire } from "node:module";
-
-const require = createRequire(import.meta.url);
-const rbac = require("./rbac.cjs");
-
+import rbac from "./rbac.js";
 export const requirePermission = rbac.requirePermission;
 export const requireRole = rbac.requireRole;
 export const requireMinimumRole = rbac.requireMinimumRole;
