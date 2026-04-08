@@ -142,14 +142,14 @@ OPENAI_API_KEY=
 ### API service settings
 
 - Root directory: `.`
-- Build command: `pnpm install --frozen-lockfile && pnpm --filter @infamous/shared build && pnpm --filter @infamous/api build`
+- Build command: `pnpm install --frozen-lockfile && pnpm --filter @infamous-freight/shared build && pnpm --filter @infamous/api build`
 - Start command: `pnpm --filter @infamous/api start`
 - Health check path: `/health`
 
 ### Worker service settings
 
 - Root directory: `.`
-- Build command: `pnpm install --frozen-lockfile && pnpm --filter @infamous/shared build && pnpm --filter @infamous/worker build`
+- Build command: `pnpm install --frozen-lockfile && pnpm --filter @infamous-freight/shared build && pnpm --filter @infamous/worker build`
 - Start command: `pnpm --filter @infamous/worker start`
 
 ---
