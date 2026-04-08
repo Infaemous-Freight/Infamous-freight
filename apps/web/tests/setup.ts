@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { expect, afterEach, vi, beforeAll } from "vitest";
+import { expect, afterEach, afterAll, vi, beforeAll } from "vitest";
 import { cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
@@ -78,17 +78,56 @@ if (typeof window !== "undefined") {
  * Suppress console errors in tests (optional)
  */
 const originalError = console.error;
+const originalWarn = console.warn;
+const originalStderrWrite = process.stderr.write.bind(process.stderr);
+
+const suppressedMessages = [
+  "Warning: ReactDOM.render",
+  "Not implemented: HTMLFormElement.prototype.submit",
+  "Not implemented: navigation to another Document",
+];
+
 beforeAll(() => {
-  console.error = vi.fn((...args) => {
+  const shouldSuppress = (...args: unknown[]) => {
+    const firstArg = args[0];
+    const firstMessage =
+      typeof firstArg === "string"
+        ? firstArg
+        : firstArg instanceof Error
+          ? firstArg.message
+          : "";
+
     if (
-      typeof args[0] === "string" &&
-      (args[0].includes("Warning: ReactDOM.render") ||
-        args[0].includes("Not implemented: HTMLFormElement.prototype.submit"))
+      firstMessage &&
+      suppressedMessages.some((message) => firstMessage.includes(message))
     ) {
-      return;
+      return true;
     }
+    return false;
+  };
+
+  console.error = vi.fn((...args) => {
+    if (shouldSuppress(...args)) return;
     originalError.call(console, ...args);
   });
+
+  console.warn = vi.fn((...args) => {
+    if (shouldSuppress(...args)) return;
+    originalWarn.call(console, ...args);
+  });
+
+  process.stderr.write = ((chunk: string | Uint8Array, encoding?: BufferEncoding, cb?: (err?: Error) => void) => {
+    const text = typeof chunk === "string" ? chunk : Buffer.from(chunk).toString("utf8");
+    if (suppressedMessages.some((message) => text.includes(message))) {
+      if (typeof cb === "function") cb();
+      return true;
+    }
+    return originalStderrWrite(chunk as never, encoding as never, cb as never);
+  }) as typeof process.stderr.write;
+});
+
+afterAll(() => {
+  process.stderr.write = originalStderrWrite;
 });
 
 /**

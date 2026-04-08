@@ -13,11 +13,10 @@ import { createWriteStream } from "fs";
 import { promises as fs } from "fs";
 import { join } from "path";
 import { PrismaClient } from "@prisma/client";
-import Stripe from "stripe";
 import { logger } from "../lib/logger.js";
+import { getStripeClient } from "../lib/stripeClient.js";
 
 const prisma = new PrismaClient();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
 // ============================================
 // DPA (Data Processing Agreement) PDF
@@ -363,7 +362,7 @@ export async function storeComplianceDocuments(
     const soc2PdfUrl = `https://storage.infamousfreight.ai/compliance/soc2_${organizationId}.pdf`;
 
     // Update Stripe customer metadata with PDF URLs
-    await stripe.customers.update(stripeCustomerId, {
+    await getStripeClient().customers.update(stripeCustomerId, {
       metadata: {
         dpa_pdf_url: dpaPdfUrl,
         soc2_pdf_url: soc2PdfUrl,

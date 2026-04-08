@@ -6,10 +6,9 @@
  * Updates Stripe subscription items with usage
  */
 
-import Stripe from "stripe";
 import { getPrisma } from "../db/prisma.js";
+import { getStripeClient } from "../lib/stripeClient.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
 function prismaOrThrow() {
   const prisma = getPrisma();
@@ -177,7 +176,7 @@ async function updateStripeUsage(organizationId: string): Promise<void> {
     }
 
     // Retrieve subscription to get metered item
-    const subscription = await stripe.subscriptions.retrieve(billing.stripeSubId);
+    const subscription = await getStripeClient().subscriptions.retrieve(billing.stripeSubId);
     const meteredItem = subscription.items.data.find(
       (item) => item.price.billing_scheme === "tiered",
     );
@@ -188,7 +187,7 @@ async function updateStripeUsage(organizationId: string): Promise<void> {
     }
 
     // Report usage to Stripe (cast to any for Stripe API v2 meter events compat)
-    await (stripe.subscriptionItems as any).createUsageRecord(meteredItem.id, {
+    await (getStripeClient().subscriptionItems as any).createUsageRecord(meteredItem.id, {
       quantity: usage.overageJobs,
       timestamp: Math.floor(Date.now() / 1000),
       action: "set", // Set absolute quantity for the period

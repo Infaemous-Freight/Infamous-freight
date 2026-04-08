@@ -9,7 +9,6 @@
  */
 
 import { Router, type Request, type Response, type NextFunction } from "express";
-import Stripe from "stripe";
 import {
   authenticate,
   requireOrganization,
@@ -21,6 +20,7 @@ import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
 import { tenantPrisma } from "../db/tenant.js";
 import { getPrisma } from "../db/prisma.js";
 import { body, query } from "express-validator";
+import { getStripeClient } from "../lib/stripeClient.js";
 
 import {
   createStripeSubscription,
@@ -43,7 +43,6 @@ import {
 
 const router: Router = Router();
 const { handleValidationErrors, validateString } = validation;
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
 function prismaOrThrow() {
   const prisma = getPrisma();
@@ -82,7 +81,7 @@ router.get(
         });
       }
 
-      const session = await stripe.billingPortal.sessions.create({
+      const session = await getStripeClient().billingPortal.sessions.create({
         customer: billing.stripeCustomerId,
         return_url: `${process.env.WEB_BASE_URL || "http://localhost:3000"}/settings/billing`,
       });

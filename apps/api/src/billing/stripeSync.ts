@@ -8,7 +8,19 @@
 import Stripe from "stripe";
 import { getPrisma } from "../db/prisma.js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+let stripeClient: Stripe | null = null;
+
+function stripeOrThrow(): Stripe {
+  if (stripeClient) return stripeClient;
+
+  const apiKey = process.env.STRIPE_SECRET_KEY;
+  if (!apiKey) {
+    throw new Error("STRIPE_SECRET_KEY is required for Stripe billing operations");
+  }
+
+  stripeClient = new Stripe(apiKey);
+  return stripeClient;
+}
 const BillingPlan = {
   STARTER: "STARTER",
   GROWTH: "GROWTH",
@@ -66,7 +78,7 @@ export async function createStripeSubscription(
 }> {
   try {
     // 1. Create Stripe customer
-    const customer = await stripe.customers.create({
+    const customer = await stripeOrThrow().customers.create({
       name: orgName,
       email: email || `billing@${orgName.toLowerCase().replace(/\s+/g, "-")}.local`,
       metadata: {
@@ -86,7 +98,7 @@ export async function createStripeSubscription(
       );
     }
 
-    const subscription = await stripe.subscriptions.create({
+    const subscription = await stripeOrThrow().subscriptions.create({
       customer: customer.id,
       items: [{ price: priceId }],
       payment_behavior: "default_incomplete",
@@ -164,11 +176,11 @@ export async function updateSubscriptionPlan(
     }
 
     // Get current subscription to find item ID
-    const subscription = await stripe.subscriptions.retrieve(billing.stripeSubId);
+    const subscription = await stripeOrThrow().subscriptions.retrieve(billing.stripeSubId);
     const itemId = subscription.items.data[0].id;
 
     // Update subscription item with new price
-    await stripe.subscriptionItems.update(itemId, {
+    await stripeOrThrow().subscriptionItems.update(itemId, {
       price: priceId,
     });
 
@@ -218,7 +230,7 @@ export async function cancelSubscription(
     // Cancel subscription
     const canceledAt = immediately ? undefined : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-    await stripe.subscriptions.update(billing.stripeSubId, {
+    await stripeOrThrow().subscriptions.update(billing.stripeSubId, {
       cancel_at: immediately ? null : Math.floor(canceledAt!.getTime() / 1000),
     });
 
@@ -254,7 +266,7 @@ export async function syncSubscriptionStatus(organizationId: string): Promise<vo
       return;
     }
 
-    const subscription = await stripe.subscriptions.retrieve(billing.stripeSubId);
+    const subscription = await stripeOrThrow().subscriptions.retrieve(billing.stripeSubId);
 
     // Update status
     await prismaOrThrow().orgBilling.update({
@@ -297,8 +309,8 @@ export async function getSubscriptionDetails(organizationId: string) {
       return null;
     }
 
-    const subscription = await stripe.subscriptions.retrieve(billing.stripeSubId);
-    const customer = await stripe.customers.retrieve(billing.stripeCustomerId || "");
+    const subscription = await stripeOrThrow().subscriptions.retrieve(billing.stripeSubId);
+    const customer = await stripeOrThrow().customers.retrieve(billing.stripeCustomerId || "");
 
     return {
       organization: billing.organization,
