@@ -79,6 +79,47 @@ Create a Grafana dashboard to visualize Fly.io metrics:
    [Fly.io Node.js Dashboard](https://grafana.com/grafana/dashboards/)
 3. Configure alerts in Grafana
 
+## Grafana Cloud via Alloy (metrics + logs + traces)
+
+If you want a single-agent setup that ships all three signals to Grafana Cloud,
+use the provided Alloy config:
+
+- `infra/deploy/alloy/config.alloy`
+
+### Quick start
+
+1. Install Alloy on the host where your service runs:
+
+```bash
+curl -fsSL https://apt.grafana.com/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/grafana.gpg
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+sudo apt-get update
+sudo apt-get install alloy
+```
+
+2. Set Grafana Cloud credentials:
+
+```bash
+export GRAFANA_CLOUD_STACK_ID="<your-numeric-stack-id>"
+export GRAFANA_CLOUD_API_KEY="<your-api-key>"
+```
+
+3. Copy `infra/deploy/alloy/config.alloy` to your Alloy config path and replace
+   all `XX` endpoint placeholders with your region-specific Grafana Cloud values.
+
+4. Start Alloy:
+
+```bash
+sudo systemctl start alloy
+```
+
+5. Point your app OTLP exporter to Alloy:
+
+```bash
+export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+export OTEL_SERVICE_NAME=asserts-custom-ui
+```
+
 ## Uptime Monitoring
 
 Use external monitoring services:

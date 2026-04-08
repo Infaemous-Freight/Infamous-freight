@@ -1,0 +1,87 @@
+// ============================================================
+// Grafana Alloy configuration for Infamous Freight "Asserts UI"
+// Three signals: metrics, logs, traces
+// ============================================================
+//
+// Required environment variables:
+// - GRAFANA_CLOUD_STACK_ID
+// - GRAFANA_CLOUD_API_KEY
+//
+// Replace all "XX" values in endpoint URLs with your Grafana Cloud region.
+
+// ============================================================
+// METRICS — Scrape Asserts service -> Grafana Cloud Prometheus
+// ============================================================
+prometheus.scrape "asserts_ui" {
+  targets = [
+    { __address__ = "localhost:8080" }, // adjust to your Asserts service port
+  ]
+  metrics_path    = "/metrics"
+  scrape_interval = "15s"
+  forward_to      = [prometheus.remote_write.grafanacloud.receiver]
+}
+
+prometheus.remote_write "grafanacloud" {
+  endpoint {
+    url = "https://prometheus-prod-XX.grafana.net/api/prom/push"
+    basic_auth {
+      username = sys.env("GRAFANA_CLOUD_STACK_ID")
+      password = sys.env("GRAFANA_CLOUD_API_KEY")
+    }
+  }
+}
+
+// ============================================================
+// LOGS — Tail Asserts log files -> Grafana Cloud Loki
+// ============================================================
+local.file_match "asserts_logs" {
+  path_targets = [{
+    __path__     = "/var/log/asserts/*.log", // adjust to your log path
+    job          = "asserts-ui",
+    service_name = "asserts-custom-ui",
+  }]
+}
+
+loki.source.file "asserts_logs" {
+  targets    = local.file_match.asserts_logs.targets
+  forward_to = [loki.write.grafanacloud.receiver]
+}
+
+loki.write "grafanacloud" {
+  endpoint {
+    url = "https://logs-prod-XX.grafana.net/loki/api/v1/push"
+    basic_auth {
+      username = sys.env("GRAFANA_CLOUD_STACK_ID")
+      password = sys.env("GRAFANA_CLOUD_API_KEY")
+    }
+  }
+}
+
+// ============================================================
+// TRACES — OTLP receiver -> Grafana Cloud Tempo
+// ============================================================
+otelcol.receiver.otlp "asserts_traces" {
+  grpc { endpoint = "127.0.0.1:4317" }
+  http { endpoint = "127.0.0.1:4318" }
+  output {
+    traces = [otelcol.processor.batch.default.input]
+  }
+}
+
+otelcol.processor.batch "default" {
+  output {
+    traces = [otelcol.exporter.otlphttp.grafanacloud.input]
+  }
+}
+
+otelcol.exporter.otlphttp "grafanacloud" {
+  client {
+    endpoint = "https://tempo-prod-XX.grafana.net/tempo"
+    auth     = otelcol.auth.basic.grafanacloud.handler
+  }
+}
+
+otelcol.auth.basic "grafanacloud" {
+  username = sys.env("GRAFANA_CLOUD_STACK_ID")
+  password = sys.env("GRAFANA_CLOUD_API_KEY")
+}
