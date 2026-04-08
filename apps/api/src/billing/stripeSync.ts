@@ -6,10 +6,10 @@
  */
 
 import Stripe from "stripe";
-import { PrismaClient, BillingPlan } from "@prisma/client";
+import { BillingPlan } from "@prisma/client";
+import { prisma } from "../db/prisma.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
-const prisma = new PrismaClient();
 
 // Stripe price IDs from environment (created in Stripe dashboard)
 const STRIPE_PRICES: Partial<Record<BillingPlan, string>> = {

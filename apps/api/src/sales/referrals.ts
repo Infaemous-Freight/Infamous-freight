@@ -8,10 +8,9 @@
  * - Pay/credit referrer
  */
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../db/prisma.js";
 import crypto from "crypto";
 
-const prisma = new PrismaClient();
 
 // ============================================
 // Referral Code Generation

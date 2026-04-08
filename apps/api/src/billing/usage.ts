@@ -6,10 +6,9 @@
  * Updates Stripe subscription items with usage
  */
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../db/prisma.js";
 import Stripe from "stripe";
 
-const prisma = new PrismaClient();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 
 /**

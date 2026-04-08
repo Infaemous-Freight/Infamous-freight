@@ -19,10 +19,11 @@ import {
 import { createRequire } from "node:module";
 import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
 import { tenantPrisma } from "../db/tenant.js";
+import { prisma } from "../db/prisma.js";
 import { body, query } from "express-validator";
 
 const require = createRequire(import.meta.url);
-const validation = require("../middleware/validation.js");
+const validation = require("../middleware/validation.cjs");
 
 import {
   createStripeSubscription,
@@ -47,7 +48,6 @@ const router: Router = Router();
 const { handleValidationErrors, validateString } = validation;
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
 const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 
 // ============================================
 // Billing Portal (Stripe)

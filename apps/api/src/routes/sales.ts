@@ -15,7 +15,7 @@ import { authenticate, requireScope, limiters } from "../middleware/security.js"
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const validation = require("../middleware/validation.js");
+const validation = require("../middleware/validation.cjs");
 
 import {
   createLead,

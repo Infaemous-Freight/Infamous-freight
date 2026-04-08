@@ -8,9 +8,8 @@
  * - Retention & Churn
  */
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../db/prisma.js";
 
-const prisma = new PrismaClient();
 
 // ============================================
 // Metrics Collection

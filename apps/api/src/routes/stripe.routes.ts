@@ -6,7 +6,7 @@ import { env } from '@infamous-freight/shared';
 import { stripe } from '../integrations/stripe/stripe.client.js';
 
 const require = createRequire(import.meta.url);
-const { requireRole } = require('../middleware/rbac.js');
+const { requireRole } = require('../middleware/rbac.cjs');
 
 export const stripeRoutes: Router = Router();
 

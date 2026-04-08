@@ -5,10 +5,9 @@
  * (HubSpot, Salesforce, Notion, Slack)
  */
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../db/prisma.js";
 import { logAuditEvent, AUDIT_ACTIONS } from "../audit/orgAuditLog.js";
 
-const prisma = new PrismaClient();
 
 async function parseResponseBody(response: any): Promise<unknown> {
   const rawBody = await response.text();
