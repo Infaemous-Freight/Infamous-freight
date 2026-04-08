@@ -9,7 +9,7 @@ const express = require("express");
 const { body, param, query, validationResult } = require("express-validator");
 const { prisma } = require("../db/prisma");
 const { authenticate, requireScope } = require("../middleware/security");
-const { requirePermission, auditAction } = require("../middleware/rbac.cjs");
+const { requirePermission, auditAction } = require("../middleware/rbac");
 const { limiters } = require("../middleware/security");
 const { Permission } = require("@infamous-freight/shared");
 
