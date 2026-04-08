@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [quality-gate]
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ always() && github.ref_name == 'main' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -118,7 +118,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [quality-gate]
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ always() && github.ref_name == 'main' }}
     steps:
       - uses: actions/checkout@v4
 
