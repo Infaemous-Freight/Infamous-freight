@@ -23,6 +23,7 @@ export default function Dashboard() {
       if (!isMounted) return;
       if (!user) {
         setLoads([]);
+        setError(null);
         router.push("/login");
         setLoading(false);
         return;
