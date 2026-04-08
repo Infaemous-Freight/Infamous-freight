@@ -16,7 +16,7 @@ const optionalNonEmptyString = (schema: z.ZodType<string>) =>
 const envSchema = z
   .object({
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-    APP_PORT: z.coerce.number().int().positive().default(4000),
+    APP_PORT: z.coerce.number().int().positive().default(3000),
     PORT: z.coerce.number().int().positive().optional(),
     API_PORT: z.coerce.number().int().positive().optional(),
     DATABASE_URL: z
