@@ -1,5 +1,6 @@
 const express = require("express");
 const { randomUUID } = require("crypto");
+const Sentry = require("@sentry/node");
 const { prisma } = require("../db/prisma");
 const { asyncHandler, ConflictError, NotFoundError } = require("../lib/errors");
 const {
@@ -146,7 +147,6 @@ router.post(
         trackingId || reference || `TRK-${randomUUID().replace(/-/g, "").slice(0, 12)}`;
 
       // Use transaction to ensure atomic operation
-      const Sentry = require("@sentry/node");
       Sentry.addBreadcrumb({
         category: "database",
         message: "Creating shipment with transaction",
@@ -208,6 +208,7 @@ router.post(
         shipment: result,
       });
   } catch (err) {
+      Sentry.captureException(err);
       if (err.code === "P2002") throw new ConflictError("Reference already exists");
       throw err;
     }
@@ -260,7 +261,6 @@ router.patch(
       // Validate shipment state machine and business rules
       const validation = validateShipmentUpdate(existing, updates);
       if (!validation.valid) {
-        const Sentry = require("@sentry/node");
         Sentry.addBreadcrumb({
           category: "validation",
           message: "Invalid shipment update",
@@ -281,7 +281,6 @@ router.patch(
         });
       }
 
-      const Sentry = require("@sentry/node");
       Sentry.addBreadcrumb({
         category: "database",
         message: "Updating shipment with transaction",
@@ -349,6 +348,7 @@ router.patch(
         changes: updates,
       });
   } catch (err) {
+      Sentry.captureException(err);
       if (err.code === "P2025") throw new NotFoundError("Shipment not found");
       throw err;
     }
@@ -387,6 +387,7 @@ router.delete(
 
       await invalidateCache("*shipments*");
   } catch (err) {
+      Sentry.captureException(err);
       if (err.code === "P2025") throw new NotFoundError("Shipment not found");
       throw err;
     }
