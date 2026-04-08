@@ -2,7 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type Express, type NextFunction, type Request, type Response } from "express";
 import helmet from "helmet";
-import * as Sentry from "@sentry/node";
+import { Sentry, sentryEnabled } from "./instrument.js";
 import { env } from "./config/env.js";
 import { requestIdMiddleware, httpLoggerMiddleware } from "./lib/logger.js";
 import { errorHandler, notFound } from "./middleware/error-handler.js";
@@ -30,7 +30,6 @@ import { stripeRoutes } from "./routes/stripe.routes.js";
 import { tenants } from "./routes/tenants.js";
 import stripeWebhookRoutes from "./webhooks/stripe.js";
 
-const sentryEnabled = Boolean(env.sentryDsn);
 
 export function createApp(): Express {
   const app = express();
