@@ -105,10 +105,14 @@ else
 fi
 
 echo "[bootstrap-secrets] Applying Fly.io secrets to app '${FLY_APP_NAME}'."
-run_cmd env FLY_API_TOKEN="$FLY_API_TOKEN" flyctl secrets set \
-  DATABASE_URL="$DATABASE_URL" \
-  JWT_SECRET="$JWT_SECRET" \
-  --app "$FLY_APP_NAME"
+if [[ "$DRY_RUN" == "1" ]]; then
+  echo "[dry-run] env FLY_API_TOKEN=*** flyctl secrets set DATABASE_URL=\"\$DATABASE_URL\" JWT_SECRET=\"\$JWT_SECRET\" --app ${FLY_APP_NAME}"
+else
+  env FLY_API_TOKEN="$FLY_API_TOKEN" flyctl secrets set \
+    DATABASE_URL="$DATABASE_URL" \
+    JWT_SECRET="$JWT_SECRET" \
+    --app "$FLY_APP_NAME"
+fi
 
 echo "[bootstrap-secrets] Done. Verify with:"
 echo "  NETLIFY_AUTH_TOKEN=*** NETLIFY_SITE_ID=*** netlify env:list --context ${NETLIFY_CONTEXT}"
