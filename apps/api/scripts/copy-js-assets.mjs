@@ -4,6 +4,14 @@ import path from "node:path";
 const srcRoot = path.resolve("src");
 const distRoot = path.resolve("dist");
 
+const forceCjsCopies = new Set([
+  "middleware/advancedSecurity.js",
+  "middleware/logger.js",
+  "middleware/rbac.js",
+  "middleware/validation.js",
+  "lib/rateLimitMetrics.js",
+]);
+
 async function copyJsFiles(currentDir) {
   const entries = await readdir(currentDir, { withFileTypes: true });
 
@@ -21,7 +29,16 @@ async function copyJsFiles(currentDir) {
     const relativePath = path.relative(srcRoot, fullPath);
     const tsSourcePath = fullPath.slice(0, -3) + ".ts";
     const tsSourceExists = await stat(tsSourcePath).then((file) => file.isFile()).catch(() => false);
-    const destinationRelativePath = tsSourceExists
+    const forceCjs = forceCjsCopies.has(relativePath);
+    const shouldCopyAsCjs = tsSourceExists || forceCjs;
+
+    if (forceCjs) {
+      const jsDestination = path.join(distRoot, relativePath);
+      await mkdir(path.dirname(jsDestination), { recursive: true });
+      await cp(fullPath, jsDestination);
+    }
+
+    const destinationRelativePath = shouldCopyAsCjs
       ? relativePath.slice(0, -3) + ".cjs"
       : relativePath;
 

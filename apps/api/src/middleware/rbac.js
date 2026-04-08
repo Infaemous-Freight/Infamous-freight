@@ -10,7 +10,7 @@ const {
   roleHasPermission,
   canAccessResource,
 } = require("@infamous-freight/shared");
-const { logger } = require("./logger");
+const { logger } = require("./logger.cjs");
 
 /**
  * Require specific permission(s)
