@@ -5,7 +5,7 @@ import fs from 'fs';
 import { requireAuth } from '../middleware/auth.js';
 import { requireTenant } from '../middleware/tenant.js';
 import { requireRole } from '../middleware/rbac.js';
-import prisma from '../lib/prisma.js';
+import { prisma } from '../db/prisma.js';
 
 const uploadDir = process.env.UPLOAD_DIR || './uploads';
 fs.mkdirSync(uploadDir, { recursive: true });

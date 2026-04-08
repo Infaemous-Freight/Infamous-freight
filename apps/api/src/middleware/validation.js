@@ -98,3 +98,5 @@ module.exports.validateEnum = validateEnum;
 module.exports.validateEnumQuery = validateEnumQuery;
 module.exports.validateUUIDBody = validateUUIDBody;
 module.exports.validatePaginationQuery = validatePaginationQuery;
+
+module.exports.default = module.exports;

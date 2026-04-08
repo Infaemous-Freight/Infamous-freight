@@ -14,3 +14,5 @@ if (prisma) {
     },
   };
 }
+
+module.exports.default = module.exports;
