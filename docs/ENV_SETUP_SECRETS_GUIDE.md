@@ -13,7 +13,7 @@ Use this checklist when wiring production credentials for the current deployment
 | `FLY_API_TOKEN` | Fly.io CLI/API | required | Generate with `flyctl auth token`. |
 | `DATABASE_URL` | API + Prisma | required | Use the managed Postgres connection string with a real password. |
 | `NEXT_PUBLIC_API_URL` | Web frontend | required | Public API origin (for example `https://infamous.fly.dev`). |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe checkout UI | required if billing enabled | Must be the publishable key (`pk_...`), never a secret key. |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe checkout UI | required | Must be the publishable key (`pk_...`), never a secret key. |
 | `JWT_SECRET` | API auth signing (HS256 mode + web stripe route) | required | Generate with `openssl rand -base64 32`. |
 
 ### 2) Export locally (do not commit secrets)
