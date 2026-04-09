@@ -32,6 +32,7 @@ function serializePayload(payload: unknown): unknown {
 export type BillingEventState<TResult extends object> =
   | { type: "disabled" }
   | { type: "new" }
+  | { type: "pending" }
   | { type: "completed"; result: TResult };
 
 export async function beginBillingEvent<TResult extends object>(
@@ -76,6 +77,10 @@ export async function beginBillingEvent<TResult extends object>(
 
       if (existing?.status === "COMPLETED" && existing.result) {
         return { type: "completed", result: existing.result as TResult };
+      }
+
+      if (existing?.status === "PENDING") {
+        return { type: "pending" };
       }
 
       return { type: "new" };

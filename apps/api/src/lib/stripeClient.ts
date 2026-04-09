@@ -13,7 +13,15 @@ export function getStripeClient(): Stripe {
     return stripeClient;
   }
 
-  stripeClient = new Stripe(apiKey);
+  stripeClient = new Stripe(apiKey, {
+    apiVersion: "2024-06-20",
+    appInfo: {
+      name: "infamous-freight-api",
+      version: process.env.npm_package_version || "0.0.0",
+    },
+    maxNetworkRetries: 2,
+    timeout: 30_000,
+  });
   stripeClientKey = apiKey;
   return stripeClient;
 }

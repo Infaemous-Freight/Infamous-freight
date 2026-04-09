@@ -85,6 +85,10 @@ export async function createStripeSubscription(
       return event.result;
     }
 
+    if (event.type === "pending") {
+      throw new Error("Billing operation is already in progress");
+    }
+
     // 1. Create Stripe customer
     const customer = await stripeOrThrow().customers.create(
       {
@@ -195,6 +199,10 @@ export async function updateSubscriptionPlan(
       return;
     }
 
+    if (event.type === "pending") {
+      throw new Error("Billing operation is already in progress");
+    }
+
     const billing = await prismaOrThrow().orgBilling.findUnique({
       where: { organizationId },
     });
@@ -268,6 +276,10 @@ export async function cancelSubscription(
 
     if (event.type === "completed") {
       return;
+    }
+
+    if (event.type === "pending") {
+      throw new Error("Billing operation is already in progress");
     }
 
     const billing = await prismaOrThrow().orgBilling.findUnique({

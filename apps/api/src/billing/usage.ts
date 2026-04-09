@@ -92,6 +92,10 @@ export async function recordJobCompletion(
       return event.result;
     }
 
+    if (event.type === "pending") {
+      throw new Error("Billing operation is already in progress");
+    }
+
     const platformFee = calculatePlatformFee(vehicleType, jobPrice);
 
     // Get billing plan to check quota

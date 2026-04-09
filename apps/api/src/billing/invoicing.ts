@@ -65,6 +65,10 @@ export async function generateOrgInvoice(
       return event.result;
     }
 
+    if (event.type === "pending") {
+      throw new Error("Billing operation is already in progress");
+    }
+
     // Get usage for the month
     const usage = await prismaOrThrow().orgUsage.findUnique({
       where: { organizationId_month: { organizationId, month: invoiceMonth } },
@@ -327,6 +331,10 @@ export async function markInvoicePaid(organizationId: string, month: string): Pr
       return;
     }
 
+    if (event.type === "pending") {
+      throw new Error("Billing operation is already in progress");
+    }
+
     await prismaOrThrow().orgInvoice.update({
       where: { organizationId_month: { organizationId, month } },
       data: {
@@ -365,6 +373,10 @@ export async function sendInvoiceReminder(organizationId: string, month: string)
 
     if (event.type === "completed") {
       return;
+    }
+
+    if (event.type === "pending") {
+      throw new Error("Billing operation is already in progress");
     }
 
     const invoice = await prismaOrThrow().orgInvoice.findUnique({
