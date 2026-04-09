@@ -7,6 +7,7 @@
 
 import { getPrisma } from "../db/prisma.js";
 import { getStripeClient } from "../lib/stripeClient.js";
+import { beginBillingEvent, completeBillingEvent, failBillingEvent } from "./billingEventStore.js";
 import type Stripe from "stripe";
 
 function stripeOrThrow() {
@@ -67,16 +68,35 @@ export async function createStripeSubscription(
   subscriptionId: string;
   status: string;
 }> {
+  const idempotencyKey = `billing:subscribe:${organizationId}:${plan}`;
+
   try {
-    // 1. Create Stripe customer
-    const customer = await stripeOrThrow().customers.create({
-      name: orgName,
-      email: email || `billing@${orgName.toLowerCase().replace(/\s+/g, "-")}.local`,
-      metadata: {
-        organizationId,
-        createdAt: new Date().toISOString(),
-      },
+    const event = await beginBillingEvent<{
+      customerId: string;
+      subscriptionId: string;
+      status: string;
+    }>(organizationId, "SUBSCRIPTION_CREATE", idempotencyKey, {
+      orgName,
+      plan,
+      email: email || null,
     });
+
+    if (event.type === "completed") {
+      return event.result;
+    }
+
+    // 1. Create Stripe customer
+    const customer = await stripeOrThrow().customers.create(
+      {
+        name: orgName,
+        email: email || `billing@${orgName.toLowerCase().replace(/\s+/g, "-")}.local`,
+        metadata: {
+          organizationId,
+          createdAt: new Date().toISOString(),
+        },
+      },
+      { idempotencyKey: `${idempotencyKey}:customer` },
+    );
 
     console.log(`Created Stripe customer ${customer.id} for org ${organizationId}`);
 
@@ -89,16 +109,19 @@ export async function createStripeSubscription(
       );
     }
 
-    const subscription = await stripeOrThrow().subscriptions.create({
-      customer: customer.id,
-      items: [{ price: priceId }],
-      payment_behavior: "default_incomplete",
-      expand: ["latest_invoice.payment_intent"],
-      metadata: {
-        organizationId,
-        plan,
+    const subscription = await stripeOrThrow().subscriptions.create(
+      {
+        customer: customer.id,
+        items: [{ price: priceId }],
+        payment_behavior: "default_incomplete",
+        expand: ["latest_invoice.payment_intent"],
+        metadata: {
+          organizationId,
+          plan,
+        },
       },
-    });
+      { idempotencyKey: `${idempotencyKey}:subscription` },
+    );
 
     console.log(
       `Created Stripe subscription ${subscription.id} (${plan}) for org ${organizationId}`,
@@ -130,12 +153,18 @@ export async function createStripeSubscription(
       },
     });
 
-    return {
+    const result = {
       customerId: customer.id,
       subscriptionId: subscription.id,
       status: subscription.status,
     };
+
+    await completeBillingEvent(idempotencyKey, result);
+
+    return result;
   } catch (error) {
+    await failBillingEvent(idempotencyKey, (error as Error).message);
+
     console.error("Failed to create Stripe subscription", {
       organizationId,
       plan,
@@ -152,7 +181,20 @@ export async function updateSubscriptionPlan(
   organizationId: string,
   newPlan: BillingPlan,
 ): Promise<void> {
+  const idempotencyKey = `billing:plan-update:${organizationId}:${newPlan}`;
+
   try {
+    const event = await beginBillingEvent<{ updated: true }>(
+      organizationId,
+      "SUBSCRIPTION_PLAN_UPDATE",
+      idempotencyKey,
+      { newPlan },
+    );
+
+    if (event.type === "completed") {
+      return;
+    }
+
     const billing = await prismaOrThrow().orgBilling.findUnique({
       where: { organizationId },
     });
@@ -171,9 +213,13 @@ export async function updateSubscriptionPlan(
     const itemId = subscription.items.data[0].id;
 
     // Update subscription item with new price
-    await stripeOrThrow().subscriptionItems.update(itemId, {
-      price: priceId,
-    });
+    await stripeOrThrow().subscriptionItems.update(
+      itemId,
+      {
+        price: priceId,
+      },
+      { idempotencyKey },
+    );
 
     // Update database
     const planDetails = PLAN_DETAILS[newPlan];
@@ -188,8 +234,12 @@ export async function updateSubscriptionPlan(
       },
     });
 
+    await completeBillingEvent(idempotencyKey, { updated: true });
+
     console.log(`Updated subscription for org ${organizationId} to ${newPlan}`);
   } catch (error) {
+    await failBillingEvent(idempotencyKey, (error as Error).message);
+
     console.error("Failed to update subscription plan", {
       organizationId,
       newPlan,
@@ -206,7 +256,20 @@ export async function cancelSubscription(
   organizationId: string,
   immediately: boolean = false,
 ): Promise<void> {
+  const idempotencyKey = `billing:cancel:${organizationId}:${immediately ? "now" : "period-end"}`;
+
   try {
+    const event = await beginBillingEvent<{ canceled: true }>(
+      organizationId,
+      "SUBSCRIPTION_CANCEL",
+      idempotencyKey,
+      { immediately },
+    );
+
+    if (event.type === "completed") {
+      return;
+    }
+
     const billing = await prismaOrThrow().orgBilling.findUnique({
       where: { organizationId },
     });
@@ -215,15 +278,20 @@ export async function cancelSubscription(
       console.warn(
         `No Stripe subscription found for org ${organizationId}. Skipping cancellation.`,
       );
+      await completeBillingEvent(idempotencyKey, { canceled: true });
       return;
     }
 
     // Cancel subscription
     const canceledAt = immediately ? undefined : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-    await stripeOrThrow().subscriptions.update(billing.stripeSubId, {
-      cancel_at: immediately ? null : Math.floor(canceledAt!.getTime() / 1000),
-    });
+    await stripeOrThrow().subscriptions.update(
+      billing.stripeSubId,
+      {
+        cancel_at: immediately ? null : Math.floor(canceledAt!.getTime() / 1000),
+      },
+      { idempotencyKey },
+    );
 
     // Update database
     await prismaOrThrow().orgBilling.update({
@@ -233,8 +301,12 @@ export async function cancelSubscription(
       },
     });
 
+    await completeBillingEvent(idempotencyKey, { canceled: true });
+
     console.log(`Canceled subscription for org ${organizationId} (immediately: ${immediately})`);
   } catch (error) {
+    await failBillingEvent(idempotencyKey, (error as Error).message);
+
     console.error("Failed to cancel subscription", {
       organizationId,
       error: (error as Error).message,

@@ -125,6 +125,7 @@ model Organization {
   jobs                Job[]
   auditLogs           OrgAuditLog[]
   billing             OrgBilling?
+  billingEvents       BillingEvent[]
   usage               OrgUsage[]
   contracts           EnterpriseContract[]
   churnPredictions    ChurnPrediction[]
@@ -239,6 +240,32 @@ model OrgInvoice {
   @@index([organizationId])
   @@index([month])
   @@map("org_invoices")
+}
+
+enum BillingEventStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+model BillingEvent {
+  id             String             @id @default(cuid())
+  organizationId String
+  eventType      String
+  idempotencyKey String             @unique
+  status         BillingEventStatus @default(PENDING)
+  payload        Json?
+  result         Json?
+  errorMessage   String?
+  processedAt    DateTime?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, eventType, createdAt])
+  @@index([organizationId, status, createdAt])
+  @@map("billing_events")
 }
 
 model OrgAuditLog {

@@ -8,6 +8,7 @@
 
 import { getPrisma } from "../db/prisma.js";
 import { getStripeClient } from "../lib/stripeClient.js";
+import { beginBillingEvent, completeBillingEvent, failBillingEvent } from "./billingEventStore.js";
 
 
 function prismaOrThrow() {
@@ -70,8 +71,27 @@ export async function recordJobCompletion(
   revenue: number;
   overageCharge: number;
 }> {
+  const month = getCurrentMonth();
+  const idempotencyKey = `billing:usage-record:${organizationId}:${month}:${jobId}`;
+
   try {
-    const month = getCurrentMonth();
+    const event = await beginBillingEvent<{
+      month: string;
+      totalJobs: number;
+      overageJobs: number;
+      revenue: number;
+      overageCharge: number;
+    }>(organizationId, "USAGE_RECORD_JOB_COMPLETION", idempotencyKey, {
+      jobId,
+      vehicleType,
+      jobPrice,
+      month,
+    });
+
+    if (event.type === "completed") {
+      return event.result;
+    }
+
     const platformFee = calculatePlatformFee(vehicleType, jobPrice);
 
     // Get billing plan to check quota
@@ -131,14 +151,20 @@ export async function recordJobCompletion(
       overageCharge,
     });
 
-    return {
+    const result = {
       month,
       totalJobs: usage.jobs,
       overageJobs,
       revenue: usage.revenue,
       overageCharge,
     };
+
+    await completeBillingEvent(idempotencyKey, result);
+
+    return result;
   } catch (error) {
+    await failBillingEvent(idempotencyKey, (error as Error).message);
+
     console.error("Failed to record job completion", {
       organizationId,
       jobId,

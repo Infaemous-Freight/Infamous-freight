@@ -7,6 +7,7 @@
 
 import { getPrisma } from "../db/prisma.js";
 import { getStripeClient } from "../lib/stripeClient.js";
+import { beginBillingEvent, completeBillingEvent, failBillingEvent } from "./billingEventStore.js";
 
 
 function prismaOrThrow() {
@@ -48,8 +49,21 @@ export async function generateOrgInvoice(
   status: string;
   pdfUrl?: string;
 }> {
+  const invoiceMonth = month || getPreviousMonth();
+  const idempotencyKey = `billing:invoice:${organizationId}:${invoiceMonth}`;
+
   try {
-    const invoiceMonth = month || getPreviousMonth();
+    const event = await beginBillingEvent<{
+      invoiceId: string;
+      stripeInvoiceId?: string;
+      amount: number;
+      status: string;
+      pdfUrl?: string;
+    }>(organizationId, "INVOICE_GENERATE", idempotencyKey, { month: invoiceMonth });
+
+    if (event.type === "completed") {
+      return event.result;
+    }
 
     // Get usage for the month
     const usage = await prismaOrThrow().orgUsage.findUnique({
@@ -98,7 +112,7 @@ export async function generateOrgInvoice(
           type: "base_fee",
         },
       }, {
-        idempotencyKey: `invoice-item:${organizationId}:${invoiceMonth}:base`,
+        idempotencyKey: `${idempotencyKey}:item-base`,
       });
     }
 
@@ -115,7 +129,7 @@ export async function generateOrgInvoice(
           overageJobs: usage.overageJobs.toString(),
         },
       }, {
-        idempotencyKey: `invoice-item:${organizationId}:${invoiceMonth}:overage`,
+        idempotencyKey: `${idempotencyKey}:item-overage`,
       });
     }
 
@@ -130,7 +144,7 @@ export async function generateOrgInvoice(
         month: invoiceMonth,
       },
     }, {
-      idempotencyKey: `invoice:${organizationId}:${invoiceMonth}`,
+      idempotencyKey: `${idempotencyKey}:invoice`,
     });
 
     // Finalize invoice
@@ -172,17 +186,23 @@ export async function generateOrgInvoice(
       amount: formatCurrency(totalAmount),
     });
 
-    return {
+    const result = {
       invoiceId: dbInvoice.id,
       stripeInvoiceId: finalizedInvoice.id,
       amount: totalAmount / 100,
       status: finalizedInvoice.status || "draft",
       pdfUrl: finalizedInvoice.invoice_pdf ?? undefined,
     };
+
+    await completeBillingEvent(idempotencyKey, result);
+
+    return result;
   } catch (error) {
+    await failBillingEvent(idempotencyKey, (error as Error).message);
+
     console.error("Failed to generate invoice", {
       organizationId,
-      month,
+      month: invoiceMonth,
       error: (error as Error).message,
     });
     throw error;
@@ -293,7 +313,20 @@ export async function getInvoice(organizationId: string, month: string) {
  * Mark invoice as paid
  */
 export async function markInvoicePaid(organizationId: string, month: string): Promise<void> {
+  const idempotencyKey = `billing:invoice-mark-paid:${organizationId}:${month}`;
+
   try {
+    const event = await beginBillingEvent<{ paid: true }>(
+      organizationId,
+      "INVOICE_MARK_PAID",
+      idempotencyKey,
+      { month },
+    );
+
+    if (event.type === "completed") {
+      return;
+    }
+
     await prismaOrThrow().orgInvoice.update({
       where: { organizationId_month: { organizationId, month } },
       data: {
@@ -302,8 +335,11 @@ export async function markInvoicePaid(organizationId: string, month: string): Pr
       },
     });
 
+    await completeBillingEvent(idempotencyKey, { paid: true });
+
     console.log(`Marked invoice as paid for org ${organizationId} (${month})`);
   } catch (error) {
+    await failBillingEvent(idempotencyKey, (error as Error).message);
     console.error("Failed to mark invoice as paid", {
       organizationId,
       month,
@@ -317,7 +353,20 @@ export async function markInvoicePaid(organizationId: string, month: string): Pr
  * Send invoice reminder (manual trigger)
  */
 export async function sendInvoiceReminder(organizationId: string, month: string): Promise<void> {
+  const idempotencyKey = `billing:invoice-reminder:${organizationId}:${month}`;
+
   try {
+    const event = await beginBillingEvent<{ reminded: true }>(
+      organizationId,
+      "INVOICE_SEND_REMINDER",
+      idempotencyKey,
+      { month },
+    );
+
+    if (event.type === "completed") {
+      return;
+    }
+
     const invoice = await prismaOrThrow().orgInvoice.findUnique({
       where: { organizationId_month: { organizationId, month } },
     });
@@ -328,8 +377,11 @@ export async function sendInvoiceReminder(organizationId: string, month: string)
 
     await getStripeClient().invoices.sendInvoice(invoice.stripeInvoiceId);
 
+    await completeBillingEvent(idempotencyKey, { reminded: true });
+
     console.log(`Sent invoice reminder for org ${organizationId} (${month})`);
   } catch (error) {
+    await failBillingEvent(idempotencyKey, (error as Error).message);
     console.error("Failed to send invoice reminder", {
       organizationId,
       month,
