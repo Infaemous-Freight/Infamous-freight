@@ -54,12 +54,15 @@ env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" \
   netlify env:set NEXT_PUBLIC_API_URL "$NEXT_PUBLIC_API_URL" --context production --site "$NETLIFY_SITE_ID"
 env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" \
   netlify env:set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY "$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" --context production --site "$NETLIFY_SITE_ID"
+
+# For secrets, omit the value argument so Netlify CLI prompts you instead of
+# putting the secret on the command line.
 env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" \
-  netlify env:set STRIPE_SECRET_KEY "$STRIPE_SECRET_KEY" --context production --site "$NETLIFY_SITE_ID"
+  netlify env:set STRIPE_SECRET_KEY --context production --site "$NETLIFY_SITE_ID"
 env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" \
-  netlify env:set STRIPE_WEBHOOK_SECRET "$STRIPE_WEBHOOK_SECRET" --context production --site "$NETLIFY_SITE_ID"
+  netlify env:set STRIPE_WEBHOOK_SECRET --context production --site "$NETLIFY_SITE_ID"
 env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" \
-  netlify env:set JWT_SECRET "$JWT_SECRET" --context production --site "$NETLIFY_SITE_ID"
+  netlify env:set JWT_SECRET --context production --site "$NETLIFY_SITE_ID"
 ```
 
 ### 5) Apply to Fly.io environment
