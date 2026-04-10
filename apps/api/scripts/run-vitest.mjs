@@ -14,7 +14,7 @@ for (const arg of forwardedArgs) {
   sanitizedArgs.push(arg);
 }
 
-const testTarget = process.env.API_VITEST_TARGET || 'src/billing/billingEventStore.test.ts';
+const testTarget = process.env.API_VITEST_TARGET || 'src/**/*.test.{ts,js,mjs}';
 const vitestArgs = ['run', '--passWithNoTests', testTarget];
 
 if (forceSingleWorker && !sanitizedArgs.some((arg) => arg.startsWith('--maxWorkers'))) {
