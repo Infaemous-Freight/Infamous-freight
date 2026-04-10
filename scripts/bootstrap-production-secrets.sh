@@ -12,17 +12,21 @@ Required environment variables:
   DATABASE_URL
   NEXT_PUBLIC_API_URL
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  STRIPE_SECRET_KEY
+  STRIPE_WEBHOOK_SECRET
   JWT_SECRET
 
 Optional environment variables:
   FLY_APP_NAME         (default: infamous-freight-api)
   NETLIFY_CONTEXT      (default: production)
+  ALLOW_TEST_KEYS      (set to 1 to allow Stripe test keys for non-prod drills)
   DRY_RUN              (set to 1 to print actions without applying)
 
 Example:
   NETLIFY_AUTH_TOKEN=... NETLIFY_SITE_ID=... FLY_API_TOKEN=... \
   DATABASE_URL=... NEXT_PUBLIC_API_URL=https://infamous.fly.dev \
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_... JWT_SECRET=$(openssl rand -base64 32) \
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_... STRIPE_SECRET_KEY=sk_live_... \
+  STRIPE_WEBHOOK_SECRET=whsec_... JWT_SECRET=$(openssl rand -base64 32) \
   ./scripts/bootstrap-production-secrets.sh
 USAGE
 }
@@ -31,6 +35,8 @@ if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   usage
   exit 0
 fi
+
+ALLOW_TEST_KEYS="${ALLOW_TEST_KEYS:-0}"
 
 require_var() {
   local name="$1"
@@ -54,12 +60,19 @@ required_vars=(
   DATABASE_URL
   NEXT_PUBLIC_API_URL
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+  STRIPE_SECRET_KEY
+  STRIPE_WEBHOOK_SECRET
   JWT_SECRET
 )
 
 for var_name in "${required_vars[@]}"; do
   require_var "$var_name"
 done
+
+if [[ ! "${NETLIFY_SITE_ID}" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]]; then
+  echo "[bootstrap-secrets] NETLIFY_SITE_ID must be a UUID" >&2
+  exit 1
+fi
 
 if [[ ! "${DATABASE_URL}" =~ ^postgres(ql)?:// ]]; then
   echo "[bootstrap-secrets] DATABASE_URL must start with postgres:// or postgresql://" >&2
@@ -76,6 +89,28 @@ if [[ ! "${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}" =~ ^pk_(live|test)_ ]]; then
   exit 1
 fi
 
+if [[ ! "${STRIPE_SECRET_KEY}" =~ ^sk_(live|test)_ ]]; then
+  echo "[bootstrap-secrets] STRIPE_SECRET_KEY must be a Stripe secret key" >&2
+  exit 1
+fi
+
+if [[ ! "${STRIPE_WEBHOOK_SECRET}" =~ ^whsec_ ]]; then
+  echo "[bootstrap-secrets] STRIPE_WEBHOOK_SECRET must be a Stripe webhook signing secret" >&2
+  exit 1
+fi
+
+if [[ "$ALLOW_TEST_KEYS" != "1" ]]; then
+  if [[ ! "${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}" =~ ^pk_live_ ]]; then
+    echo "[bootstrap-secrets] NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY must be a live key (set ALLOW_TEST_KEYS=1 to bypass)" >&2
+    exit 1
+  fi
+
+  if [[ ! "${STRIPE_SECRET_KEY}" =~ ^sk_live_ ]]; then
+    echo "[bootstrap-secrets] STRIPE_SECRET_KEY must be a live key (set ALLOW_TEST_KEYS=1 to bypass)" >&2
+    exit 1
+  fi
+fi
+
 if [[ ${#JWT_SECRET} -lt 32 ]]; then
   echo "[bootstrap-secrets] JWT_SECRET must be at least 32 characters" >&2
   exit 1
@@ -85,35 +120,38 @@ FLY_APP_NAME="${FLY_APP_NAME:-infamous-freight-api}"
 NETLIFY_CONTEXT="${NETLIFY_CONTEXT:-production}"
 DRY_RUN="${DRY_RUN:-0}"
 
-run_cmd() {
-  if [[ "$DRY_RUN" == "1" ]]; then
-    echo "[dry-run] $*"
-  else
-    "$@"
-  fi
-}
-
-echo "[bootstrap-secrets] Applying Netlify env vars to context '${NETLIFY_CONTEXT}' for site '${NETLIFY_SITE_ID}'."
+echo "[bootstrap-secrets] Applying Netlify env vars to context '${NETLIFY_CONTEXT}' for site '***'."
 if [[ "$DRY_RUN" == "1" ]]; then
-  echo "[dry-run] printf '%s' \"\$NEXT_PUBLIC_API_URL\" | netlify env:set NEXT_PUBLIC_API_URL ${NETLIFY_CONTEXT}"
-  echo "[dry-run] printf '%s' \"\$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\" | netlify env:set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ${NETLIFY_CONTEXT}"
-  echo "[dry-run] printf '%s' \"\$JWT_SECRET\" | netlify env:set JWT_SECRET ${NETLIFY_CONTEXT}"
+  echo "[dry-run] env NETLIFY_AUTH_TOKEN=*** netlify env:set NEXT_PUBLIC_API_URL \"\$NEXT_PUBLIC_API_URL\" --context ${NETLIFY_CONTEXT} --site ***"
+  echo "[dry-run] env NETLIFY_AUTH_TOKEN=*** netlify env:set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY \"\$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY\" --context ${NETLIFY_CONTEXT} --site ***"
+  echo "[dry-run] env NETLIFY_AUTH_TOKEN=*** netlify env:set STRIPE_SECRET_KEY \"\$STRIPE_SECRET_KEY\" --context ${NETLIFY_CONTEXT} --site ***"
+  echo "[dry-run] env NETLIFY_AUTH_TOKEN=*** netlify env:set STRIPE_WEBHOOK_SECRET \"\$STRIPE_WEBHOOK_SECRET\" --context ${NETLIFY_CONTEXT} --site ***"
+  echo "[dry-run] env NETLIFY_AUTH_TOKEN=*** netlify env:set JWT_SECRET \"\$JWT_SECRET\" --context ${NETLIFY_CONTEXT} --site ***"
 else
-  printf '%s' "$NEXT_PUBLIC_API_URL" | env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" NETLIFY_SITE_ID="$NETLIFY_SITE_ID" netlify env:set NEXT_PUBLIC_API_URL "$NETLIFY_CONTEXT"
-  printf '%s' "$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" | env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" NETLIFY_SITE_ID="$NETLIFY_SITE_ID" netlify env:set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY "$NETLIFY_CONTEXT"
-  printf '%s' "$JWT_SECRET" | env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" NETLIFY_SITE_ID="$NETLIFY_SITE_ID" netlify env:set JWT_SECRET "$NETLIFY_CONTEXT"
+  env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" \
+    netlify env:set NEXT_PUBLIC_API_URL "$NEXT_PUBLIC_API_URL" --context "$NETLIFY_CONTEXT" --site "$NETLIFY_SITE_ID"
+  env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" \
+    netlify env:set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY "$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" --context "$NETLIFY_CONTEXT" --site "$NETLIFY_SITE_ID"
+  env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" \
+    netlify env:set STRIPE_SECRET_KEY "$STRIPE_SECRET_KEY" --context "$NETLIFY_CONTEXT" --site "$NETLIFY_SITE_ID"
+  env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" \
+    netlify env:set STRIPE_WEBHOOK_SECRET "$STRIPE_WEBHOOK_SECRET" --context "$NETLIFY_CONTEXT" --site "$NETLIFY_SITE_ID"
+  env NETLIFY_AUTH_TOKEN="$NETLIFY_AUTH_TOKEN" \
+    netlify env:set JWT_SECRET "$JWT_SECRET" --context "$NETLIFY_CONTEXT" --site "$NETLIFY_SITE_ID"
 fi
 
 echo "[bootstrap-secrets] Applying Fly.io secrets to app '${FLY_APP_NAME}'."
 if [[ "$DRY_RUN" == "1" ]]; then
-  echo "[dry-run] env FLY_API_TOKEN=*** flyctl secrets set DATABASE_URL=\"\$DATABASE_URL\" JWT_SECRET=\"\$JWT_SECRET\" --app ${FLY_APP_NAME}"
+  echo "[dry-run] env FLY_API_TOKEN=*** flyctl secrets set DATABASE_URL=\"\$DATABASE_URL\" JWT_SECRET=\"\$JWT_SECRET\" STRIPE_SECRET_KEY=\"\$STRIPE_SECRET_KEY\" STRIPE_WEBHOOK_SECRET=\"\$STRIPE_WEBHOOK_SECRET\" --app ${FLY_APP_NAME}"
 else
   env FLY_API_TOKEN="$FLY_API_TOKEN" flyctl secrets set \
     DATABASE_URL="$DATABASE_URL" \
     JWT_SECRET="$JWT_SECRET" \
+    STRIPE_SECRET_KEY="$STRIPE_SECRET_KEY" \
+    STRIPE_WEBHOOK_SECRET="$STRIPE_WEBHOOK_SECRET" \
     --app "$FLY_APP_NAME"
 fi
 
 echo "[bootstrap-secrets] Done. Verify with:"
-echo "  NETLIFY_AUTH_TOKEN=*** NETLIFY_SITE_ID=*** netlify env:list --context ${NETLIFY_CONTEXT}"
+echo "  NETLIFY_AUTH_TOKEN=*** netlify env:list --context ${NETLIFY_CONTEXT} --site ***"
 echo "  FLY_API_TOKEN=*** flyctl secrets list --app ${FLY_APP_NAME}"
