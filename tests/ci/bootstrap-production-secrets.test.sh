@@ -62,7 +62,7 @@ chmod +x "$TMP_DIR/netlify" "$TMP_DIR/flyctl"
 BASE_ENV=(
   "PATH=$TMP_DIR:$PATH"
   "NETLIFY_AUTH_TOKEN=test-netlify-token"
-  "NETLIFY_SITE_ID=test-site-id"
+  "NETLIFY_SITE_ID=11111111-2222-3333-4444-555555555555"
   "FLY_API_TOKEN=test-fly-token"
   "DATABASE_URL=postgresql://postgres:pw@localhost:5432/postgres?schema=public"
   "NEXT_PUBLIC_API_URL=https://infamous.fly.dev"
@@ -92,6 +92,13 @@ assert_eq "http api url exits non-zero" "1" "$invalid_url_code"
 assert_contains "http api url has explicit message" "$invalid_url_output" "NEXT_PUBLIC_API_URL must be https:// in production"
 
 set +e
+invalid_site_id_output="$(env "${BASE_ENV[@]}" NETLIFY_SITE_ID=not-a-uuid "$SCRIPT" 2>&1)"
+invalid_site_id_code=$?
+set -e
+assert_eq "invalid netlify site id exits non-zero" "1" "$invalid_site_id_code"
+assert_contains "invalid netlify site id has explicit message" "$invalid_site_id_output" "NETLIFY_SITE_ID must be a UUID"
+
+set +e
 invalid_stripe_secret_output="$(env "${BASE_ENV[@]}" STRIPE_SECRET_KEY=pk_live_wrong "$SCRIPT" 2>&1)"
 invalid_stripe_secret_code=$?
 set -e
@@ -119,7 +126,7 @@ assert_not_contains "dry run redacts database password segment" "$dry_run_output
 assert_not_contains "dry run redacts jwt secret value" "$dry_run_output" "abcdefghijklmnopqrstuvwxyz123456"
 assert_not_contains "dry run redacts fly token value" "$dry_run_output" "test-fly-token"
 assert_not_contains "dry run redacts netlify token value" "$dry_run_output" "test-netlify-token"
-assert_not_contains "dry run redacts netlify site id value" "$dry_run_output" "test-site-id"
+assert_not_contains "dry run redacts netlify site id value" "$dry_run_output" "11111111-2222-3333-4444-555555555555"
 assert_not_contains "dry run redacts stripe secret key value" "$dry_run_output" "sk_live_test"
 assert_not_contains "dry run redacts stripe webhook secret value" "$dry_run_output" "whsec_test"
 
@@ -128,7 +135,7 @@ apply_output="$(env "${BASE_ENV[@]}" "$SCRIPT" 2>&1)"
 apply_code=$?
 set -e
 assert_eq "apply mode exits zero" "0" "$apply_code"
-assert_contains "apply mode netlify command includes explicit site flag" "$apply_output" "netlify env:set NEXT_PUBLIC_API_URL https://infamous.fly.dev --context production --site test-site-id"
+assert_contains "apply mode netlify command includes explicit site flag" "$apply_output" "netlify env:set NEXT_PUBLIC_API_URL https://infamous.fly.dev --context production --site 11111111-2222-3333-4444-555555555555"
 assert_contains "apply mode netlify includes stripe webhook secret key name" "$apply_output" "netlify env:set STRIPE_WEBHOOK_SECRET"
 assert_contains "apply mode fly command includes stripe server secret key name" "$apply_output" "flyctl secrets set DATABASE_URL=postgresql://postgres:pw@localhost:5432/postgres?schema=public JWT_SECRET=abcdefghijklmnopqrstuvwxyz123456 STRIPE_SECRET_KEY=sk_live_test STRIPE_WEBHOOK_SECRET=whsec_test --app infamous-freight-api"
 

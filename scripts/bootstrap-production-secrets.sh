@@ -66,6 +66,11 @@ for var_name in "${required_vars[@]}"; do
   require_var "$var_name"
 done
 
+if [[ ! "${NETLIFY_SITE_ID}" =~ ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$ ]]; then
+  echo "[bootstrap-secrets] NETLIFY_SITE_ID must be a UUID" >&2
+  exit 1
+fi
+
 if [[ ! "${DATABASE_URL}" =~ ^postgres(ql)?:// ]]; then
   echo "[bootstrap-secrets] DATABASE_URL must start with postgres:// or postgresql://" >&2
   exit 1
