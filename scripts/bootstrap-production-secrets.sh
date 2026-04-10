@@ -91,7 +91,7 @@ if [[ ! "${STRIPE_SECRET_KEY}" =~ ^sk_(live|test)_[[:alnum:]]+$ ]]; then
   exit 1
 fi
 
-if [[ ! "${STRIPE_WEBHOOK_SECRET}" =~ ^whsec_ ]]; then
+if [[ ! "${STRIPE_WEBHOOK_SECRET}" =~ ^whsec_[^[:space:]]+$ ]]; then
   echo "[bootstrap-secrets] STRIPE_WEBHOOK_SECRET must be a Stripe webhook signing secret" >&2
   exit 1
 fi
