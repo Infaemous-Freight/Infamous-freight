@@ -15,6 +15,10 @@
   NODE_VERSION           = "24"
   PNPM_VERSION           = "10.33.0"
   NEXT_TELEMETRY_DISABLED = "1"
+  # Ensure Netlify UI-managed plugins with stale engine ranges do not fail
+  # dependency installation before the app build starts.
+  NPM_CONFIG_ENGINE_STRICT = "false"
+  npm_config_engine_strict = "false"
   NEXT_PUBLIC_SITE_URL   = "https://www.infamousfreight.com"
   NEXT_PUBLIC_API_URL    = "https://api.infamousfreight.com"
   NEXT_PUBLIC_API_BASE   = "https://api.infamousfreight.com"

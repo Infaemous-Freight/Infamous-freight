@@ -1,16 +1,21 @@
-# Netlify configuration for monorepo web deployment.
-# Deploys apps/web (Next.js) from the workspace root.
-
 [build]
   base = "."
   command = "pnpm install --frozen-lockfile && pnpm --filter web build"
-  publish = "apps/web/out"
+  publish = "apps/web/.next"
+  functions = "apps/web/.netlify/functions"
 
 [build.environment]
   NODE_VERSION = "24"
   PNPM_VERSION = "10.33.0"
   NEXT_TELEMETRY_DISABLED = "1"
   BUILD_TARGET = "netlify"
+  # Allow Netlify-managed plugin installs to proceed even when third-party
+  # plugin engine ranges lag behind current Node/npm runtime versions.
+  NPM_CONFIG_ENGINE_STRICT = "false"
+  npm_config_engine_strict = "false"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [dev]
   command = "pnpm --filter web dev"
