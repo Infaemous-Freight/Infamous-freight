@@ -27,6 +27,7 @@ interface Recommendation {
   description: string;
   impact: string;
   actions: string[];
+  source?: string;
 }
 
 interface RevOpsDashboard {
@@ -396,6 +397,8 @@ Focus on: pricing strategy, sales efficiency, or operational improvements.`;
         category: "ai_insight",
         title: "AI-powered insight",
         description: aiRec,
+        impact: "Exploratory optimization opportunity",
+        actions: ["Review and validate the recommendation against current metrics"],
         source: "genesis-ai",
       });
     }
@@ -418,24 +421,28 @@ export async function getRevOpsDashboard(): Promise<RevOpsDashboard> {
   const conversionRate = await calculateConversionRate();
   const avgSalesCycle = await calculateAvgSalesCycle();
 
-  const topDeals = await prisma.salesOpportunity.findMany({
+  const topDealsRaw = await prisma.salesOpportunity.findMany({
     where: {
       stage: { in: ["QUALIFIED", "DEMO_COMPLETED", "PROPOSAL_SENT", "NEGOTIATING"] },
     },
-    include: {
-      lead: {
-        select: {
-          name: true,
-          company: true,
-          email: true,
-        },
-      },
+    select: {
+      id: true,
+      expectedMrr: true,
+      stage: true,
+      probability: true,
     },
     orderBy: {
       dealScore: "desc",
     },
     take: 5,
   });
+
+  const topDeals: Deal[] = topDealsRaw.map((deal) => ({
+    id: deal.id,
+    amount: deal.expectedMrr?.toNumber() || 0,
+    stage: deal.stage,
+    closeProbability: deal.probability,
+  }));
 
   // Revenue metrics
   const mrr = await calculateMRR();

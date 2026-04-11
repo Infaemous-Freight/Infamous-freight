@@ -11,6 +11,11 @@ import { prisma } from "../db/prisma.js";
 
 let stripeClient: Stripe | null = null;
 
+type SubscriptionWithPeriods = Stripe.Subscription & {
+  current_period_start?: number;
+  current_period_end?: number;
+};
+
 function getStripe(): Stripe {
   const apiKey = (process.env.STRIPE_SECRET_KEY || "").trim();
   if (!apiKey) {
@@ -20,6 +25,21 @@ function getStripe(): Stripe {
     stripeClient = new Stripe(apiKey);
   }
   return stripeClient;
+}
+
+function getSubscriptionPeriodBounds(subscription: Stripe.Subscription): {
+  currentPeriodStart: number;
+  currentPeriodEnd: number;
+} {
+  const sub = subscription as SubscriptionWithPeriods;
+  const fallback = subscription.created;
+
+  return {
+    currentPeriodStart:
+      typeof sub.current_period_start === "number" ? sub.current_period_start : fallback,
+    currentPeriodEnd:
+      typeof sub.current_period_end === "number" ? sub.current_period_end : fallback,
+  };
 }
 
 // Stripe price IDs from environment (created in Stripe dashboard)
@@ -258,13 +278,15 @@ export async function syncSubscriptionStatus(organizationId: string): Promise<vo
 
     const subscription = await stripe.subscriptions.retrieve(billing.stripeSubId);
 
+    const { currentPeriodStart, currentPeriodEnd } = getSubscriptionPeriodBounds(subscription);
+
     // Update status
     await prisma.orgBilling.update({
       where: { organizationId },
       data: {
         stripeStatus: subscription.status,
-        billingCycleStart: new Date(subscription.current_period_start * 1000),
-        nextBillingDate: new Date(subscription.current_period_end * 1000),
+        billingCycleStart: new Date(currentPeriodStart * 1000),
+        nextBillingDate: new Date(currentPeriodEnd * 1000),
       },
     });
 
@@ -303,12 +325,14 @@ export async function getSubscriptionDetails(organizationId: string) {
     const subscription = await stripe.subscriptions.retrieve(billing.stripeSubId);
     const customer = await stripe.customers.retrieve(billing.stripeCustomerId || "");
 
+    const { currentPeriodStart, currentPeriodEnd } = getSubscriptionPeriodBounds(subscription);
+
     return {
       organization: billing.organization,
       plan: billing.plan,
       status: subscription.status,
-      currentPeriodStart: new Date(subscription.current_period_start * 1000),
-      currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+      currentPeriodStart: new Date(currentPeriodStart * 1000),
+      currentPeriodEnd: new Date(currentPeriodEnd * 1000),
       cancelAt: subscription.cancel_at ? new Date(subscription.cancel_at * 1000) : null,
       items: subscription.items.data.map((item) => ({
         priceId: item.price.id,

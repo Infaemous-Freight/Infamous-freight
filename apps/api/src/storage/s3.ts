@@ -39,7 +39,7 @@ export async function presignPutObject(params: {
     CacheControl: "public, max-age=31536000, immutable",
   });
 
-  const uploadUrl = await getSignedUrl(client, command, {
+  const uploadUrl = await getSignedUrl(client as any, command, {
     expiresIn: params.expiresInSeconds ?? 120,
   });
 
