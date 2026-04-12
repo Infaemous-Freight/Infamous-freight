@@ -23,12 +23,14 @@ export async function evaluateLaunchDarklyFlag(
   const client = initLaunchDarkly(clientSideId);
   const timeoutMs = 3000;
 
+  const initPromise = client.waitForInitialization();
   const timeoutPromise = new Promise<never>((_, reject) => {
-    setTimeout(() => reject(new Error("LaunchDarkly initialization timed out")), timeoutMs);
+    const timeout = setTimeout(() => reject(new Error("LaunchDarkly initialization timed out")), timeoutMs);
+    initPromise.finally(() => clearTimeout(timeout));
   });
 
   try {
-    await Promise.race([client.waitForInitialization(), timeoutPromise]);
+    await Promise.race([initPromise, timeoutPromise]);
     return await client.variation(flagKey, context, fallbackValue);
   } catch {
     return fallbackValue;
