@@ -19,11 +19,6 @@
   # dependency installation before the app build starts.
   NPM_CONFIG_ENGINE_STRICT = "false"
   npm_config_engine_strict = "false"
-  # UI-managed plugins install under `.netlify/plugins` with npm. Disable
-  # install scripts there so legacy native deps (like sharp) don't break.
-  NPM_CONFIG_IGNORE_SCRIPTS = "true"
-  npm_config_ignore_scripts = "true"
-  NPM_FLAGS = "--ignore-scripts"
   NEXT_PUBLIC_SITE_URL   = "https://www.infamousfreight.com"
   NEXT_PUBLIC_API_URL    = "https://api.infamousfreight.com"
   NEXT_PUBLIC_API_BASE   = "https://api.infamousfreight.com"
