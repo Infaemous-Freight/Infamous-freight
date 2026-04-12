@@ -13,6 +13,12 @@
   # plugin engine ranges lag behind current Node/npm runtime versions.
   NPM_CONFIG_ENGINE_STRICT = "false"
   npm_config_engine_strict = "false"
+  # UI-installed plugins are installed with npm in `.netlify/plugins`.
+  # Skip lifecycle scripts there to avoid native module builds (e.g. sharp)
+  # from legacy plugins that are incompatible with the runtime used by CLI.
+  NPM_CONFIG_IGNORE_SCRIPTS = "true"
+  npm_config_ignore_scripts = "true"
+  NPM_FLAGS = "--ignore-scripts"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
