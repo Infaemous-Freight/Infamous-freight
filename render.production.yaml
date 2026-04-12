@@ -1,0 +1,48 @@
+# Production Render blueprint skeleton for the current monorepo.
+# Frontend hosting remains on Vercel. This blueprint covers backend services only.
+# Fill sensitive environment variables in the Render dashboard.
+
+services:
+  - type: web
+    name: infamous-freight-api-prod
+    env: node
+    rootDir: .
+    region: ohio
+    plan: starter
+    autoDeploy: true
+    healthCheckPath: /health
+    buildCommand: |
+      corepack enable
+      corepack prepare pnpm@10.33.0 --activate
+      pnpm install --frozen-lockfile
+      pnpm --filter @infamous-freight/shared build
+      pnpm --filter @infamous/api build
+    startCommand: pnpm --filter @infamous/api start
+
+  - type: worker
+    name: infamous-freight-worker-prod
+    env: node
+    rootDir: .
+    region: ohio
+    plan: starter
+    autoDeploy: true
+    buildCommand: |
+      corepack enable
+      corepack prepare pnpm@10.33.0 --activate
+      pnpm install --frozen-lockfile
+      pnpm --filter @infamous-freight/shared build
+      pnpm --filter worker build
+    startCommand: pnpm --filter worker start
+
+  - type: redis
+    name: infamous-freight-redis-prod
+    region: ohio
+    plan: starter
+    maxmemoryPolicy: allkeys-lru
+
+databases:
+  - name: infamous-freight-db-prod
+    region: ohio
+    plan: basic-256mb
+    databaseName: infamous_freight
+    user: infamous_freight
