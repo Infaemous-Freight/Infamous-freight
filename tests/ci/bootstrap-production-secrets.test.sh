@@ -247,6 +247,27 @@ assert_contains "verify-only mode prints skip message" "$verify_only_output" "VE
 assert_contains "verify-only mode lists netlify env" "$verify_only_output" "netlify env:list --context production --site 11111111-2222-3333-4444-555555555555"
 assert_contains "verify-only mode lists fly secrets" "$verify_only_output" "flyctl secrets list --app infamous-freight-api"
 
+VERIFY_ONLY_ENV=()
+for env_var in "${BASE_ENV[@]}"; do
+  case "$env_var" in
+    DATABASE_URL=*|JWT_SECRET=*|STRIPE_SECRET_KEY=*|STRIPE_WEBHOOK_SECRET=*|NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=*)
+      ;;
+    *)
+      VERIFY_ONLY_ENV+=("$env_var")
+      ;;
+  esac
+done
+
+set +e
+verify_only_without_secrets_output="$(env "${VERIFY_ONLY_ENV[@]}" VERIFY_ONLY=1 "$SCRIPT" 2>&1)"
+verify_only_without_secrets_code=$?
+set -e
+assert_eq "verify-only mode without apply-time secrets exits zero" "0" "$verify_only_without_secrets_code"
+assert_contains "verify-only mode without apply-time secrets prints skip message" "$verify_only_without_secrets_output" "VERIFY_ONLY=1: skipping apply steps"
+assert_contains "verify-only mode without apply-time secrets lists netlify env" "$verify_only_without_secrets_output" "netlify env:list --context production --site 11111111-2222-3333-4444-555555555555"
+assert_contains "verify-only mode without apply-time secrets lists fly secrets" "$verify_only_without_secrets_output" "flyctl secrets list --app infamous-freight-api"
+assert_not_contains "verify-only mode without apply-time secrets does not run netlify apply" "$verify_only_without_secrets_output" "netlify env:set"
+assert_not_contains "verify-only mode without apply-time secrets does not run fly apply" "$verify_only_without_secrets_output" "flyctl secrets set"
 set +e
 verify_only_dry_run_output="$(env "${BASE_ENV[@]}" VERIFY_ONLY=1 DRY_RUN=1 "$SCRIPT" 2>&1)"
 verify_only_dry_run_code=$?
