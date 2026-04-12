@@ -51,6 +51,13 @@ If you are running a non-production drill with Stripe test credentials, set `ALL
 You can also run `VERIFY_ONLY=1` to skip writes and only run `netlify env:list` / `flyctl secrets list` checks.
 Stripe publishable/secret keys must use the same mode (`pk_live_` with `sk_live_`, or `pk_test_` with `sk_test_` when `ALLOW_TEST_KEYS=1`).
 
+### 3a) Decision tree
+
+- **Preview changes only**: `DRY_RUN=1 ./scripts/bootstrap-production-secrets.sh`
+- **Verify current provider state only**: `VERIFY_ONLY=1 ./scripts/bootstrap-production-secrets.sh`
+- **Non-production Stripe drill with test keys**: `ALLOW_TEST_KEYS=1 NETLIFY_CONTEXT=deploy-preview ./scripts/bootstrap-production-secrets.sh`
+- **Production apply**: `./scripts/bootstrap-production-secrets.sh` (with live Stripe keys)
+
 ### 4) Apply to Netlify environment
 
 ```bash
@@ -96,6 +103,14 @@ Supported Netlify contexts for this bootstrap script are `production`, `deploy-p
 1. In Netlify, enable the LaunchDarkly integration for your site and redeploy.
 2. In LaunchDarkly, add the Netlify integration and provide your Netlify Site ID and Syncing token from Netlify UI.
 3. Store `LAUNCHDARKLY_CLIENT_SIDE_ID` as an environment variable and bootstrap it with this script.
+
+### Troubleshooting quick map
+
+- `NETLIFY_SITE_ID must be a UUID` → copy Site ID from Netlify site settings and retry.
+- `NETLIFY_CONTEXT must be one of...` → use one of `production`, `deploy-preview`, `branch-deploy`.
+- `...must be a live key` → use `pk_live_...` / `sk_live_...` (or explicitly set `ALLOW_TEST_KEYS=1` for drills).
+- `Stripe key mode mismatch` → ensure publishable and secret keys are both `live` or both `test`.
+- `Required command not found` → install/authenticate `netlify` and `flyctl` CLIs first.
 
 ---
 

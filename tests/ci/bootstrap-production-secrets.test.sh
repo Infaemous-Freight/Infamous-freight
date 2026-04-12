@@ -85,6 +85,42 @@ assert_eq "missing vars exits non-zero" "1" "$missing_code"
 assert_contains "missing vars prints specific var" "$missing_output" "Missing required env var"
 
 set +e
+TMP_DIR_NO_NETLIFY="$(mktemp -d)"
+cp "$TMP_DIR/flyctl" "$TMP_DIR_NO_NETLIFY/flyctl"
+chmod +x "$TMP_DIR_NO_NETLIFY/flyctl"
+missing_netlify_output="$(env \
+  PATH="$TMP_DIR_NO_NETLIFY:/usr/bin:/bin" \
+  NETLIFY_AUTH_TOKEN=test-netlify-token \
+  NETLIFY_SITE_ID=11111111-2222-3333-4444-555555555555 \
+  FLY_API_TOKEN=test-fly-token \
+  DATABASE_URL=postgresql://postgres:pw@localhost:5432/postgres?schema=public \
+  NEXT_PUBLIC_API_URL=https://infamous.fly.dev \
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_test \
+  STRIPE_SECRET_KEY=sk_live_test \
+  STRIPE_WEBHOOK_SECRET=whsec_test \
+  JWT_SECRET=abcdefghijklmnopqrstuvwxyz123456 \
+  "$SCRIPT" 2>&1)"
+missing_netlify_code=$?
+set -e
+assert_eq "missing netlify command exits non-zero" "1" "$missing_netlify_code"
+assert_contains "missing netlify command has explicit message" "$missing_netlify_output" "Required command not found: netlify"
+rm -rf "$TMP_DIR_NO_NETLIFY"
+
+set +e
+context_deploy_preview_output="$(env "${BASE_ENV[@]}" NETLIFY_CONTEXT=deploy-preview DRY_RUN=1 "$SCRIPT" 2>&1)"
+context_deploy_preview_code=$?
+set -e
+assert_eq "deploy-preview context exits zero" "0" "$context_deploy_preview_code"
+assert_contains "deploy-preview context appears in dry-run output" "$context_deploy_preview_output" "--context deploy-preview"
+
+set +e
+context_branch_deploy_output="$(env "${BASE_ENV[@]}" NETLIFY_CONTEXT=branch-deploy DRY_RUN=1 "$SCRIPT" 2>&1)"
+context_branch_deploy_code=$?
+set -e
+assert_eq "branch-deploy context exits zero" "0" "$context_branch_deploy_code"
+assert_contains "branch-deploy context appears in dry-run output" "$context_branch_deploy_output" "--context branch-deploy"
+
+set +e
 invalid_url_output="$(env "${BASE_ENV[@]}" NEXT_PUBLIC_API_URL=http://insecure.example "$SCRIPT" 2>&1)"
 invalid_url_code=$?
 set -e
@@ -210,6 +246,16 @@ assert_eq "verify-only mode exits zero" "0" "$verify_only_code"
 assert_contains "verify-only mode prints skip message" "$verify_only_output" "VERIFY_ONLY=1: skipping apply steps"
 assert_contains "verify-only mode lists netlify env" "$verify_only_output" "netlify env:list --context production --site 11111111-2222-3333-4444-555555555555"
 assert_contains "verify-only mode lists fly secrets" "$verify_only_output" "flyctl secrets list --app infamous-freight-api"
+
+set +e
+verify_only_dry_run_output="$(env "${BASE_ENV[@]}" VERIFY_ONLY=1 DRY_RUN=1 "$SCRIPT" 2>&1)"
+verify_only_dry_run_code=$?
+set -e
+assert_eq "verify-only dry-run exits zero" "0" "$verify_only_dry_run_code"
+assert_contains "verify-only dry-run prints netlify list command" "$verify_only_dry_run_output" "netlify env:list --context production --site ***"
+assert_contains "verify-only dry-run prints fly list command" "$verify_only_dry_run_output" "flyctl secrets list --app infamous-freight-api"
+assert_not_contains "verify-only dry-run does not apply netlify env:set" "$verify_only_dry_run_output" "netlify env:set"
+assert_not_contains "verify-only dry-run does not apply fly secrets set" "$verify_only_dry_run_output" "flyctl secrets set"
 
 set +e
 ld_apply_output="$(env "${BASE_ENV[@]}" LAUNCHDARKLY_CLIENT_SIDE_ID=client-side-id-123 "$SCRIPT" 2>&1)"
