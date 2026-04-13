@@ -1,4 +1,4 @@
 openai==1.40.0
 requests==2.33.0
 pydantic==2.7.0
-pytest==8.0.0
+pytest==9.0.3
