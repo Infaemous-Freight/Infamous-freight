@@ -15,7 +15,7 @@
   "dependencies": {
     "@datadog/browser-rum": "^6.32.0",
     "@infamous-freight/shared": "workspace:*",
-    "@sentry/nextjs": "^10.47.0",
+    "@sentry/nextjs": "^10.48.0",
     "@stripe/react-stripe-js": "^6.1.0",
     "@stripe/stripe-js": "^9.1.0",
     "@supabase/ssr": "^0.10.0",
