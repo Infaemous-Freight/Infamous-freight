@@ -7,6 +7,8 @@ app = 'infamous-freight'
 primary_region = 'dfw'
 
 [build]
+  context = "../.."
+  dockerfile = "apps/web/Dockerfile"
 
 [http_service]
   internal_port = 3000
