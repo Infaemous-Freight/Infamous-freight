@@ -5,8 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, fireEvent } from "@testing-library/react";
 
 /**
  * Example: Test a simple component
@@ -75,9 +74,6 @@ describe("useAuth Hook", () => {
   });
 
   it("should handle login flow", async () => {
-    // Pattern for testing async operations
-    const user = userEvent.setup();
-
     const mockLoginFn = vi.fn().mockResolvedValue({
       token: "jwt-token",
       user: { id: "user-123" },
@@ -130,7 +126,6 @@ describe("Shipment API Hook Integration", () => {
  */
 describe("ShipmentForm Component", () => {
   it("should submit form with valid data", async () => {
-    const user = userEvent.setup();
     const mockSubmit = vi.fn();
 
     const { container } = render(
@@ -144,7 +139,7 @@ describe("ShipmentForm Component", () => {
     const submitBtn = screen.getByText("Create Shipment");
 
     // Fill form and submit
-    await user.click(submitBtn);
+    fireEvent.click(submitBtn);
 
     expect(mockSubmit).toHaveBeenCalled();
   });

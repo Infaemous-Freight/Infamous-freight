@@ -50,10 +50,10 @@ describe("auth-server", () => {
   it("returns 401 when Authorization bearer token is missing", async () => {
     const req = new Request("https://example.com/api/loads");
 
-    await expect(requireUser(req)).rejects.toMatchObject<AuthError>({
+    await expect(requireUser(req)).rejects.toMatchObject({
       status: 401,
       message: "Authentication required",
-    });
+    } satisfies Partial<AuthError>);
   });
 
   it("returns 401 for invalid tokens", async () => {
@@ -66,10 +66,10 @@ describe("auth-server", () => {
       error: { message: "JWT expired" },
     });
 
-    await expect(requireUser(req)).rejects.toMatchObject<AuthError>({
+    await expect(requireUser(req)).rejects.toMatchObject({
       status: 401,
       message: "Invalid or expired token",
-    });
+    } satisfies Partial<AuthError>);
   });
 
   it("returns 403 when the user has no active company", async () => {
@@ -89,9 +89,9 @@ describe("auth-server", () => {
       error: null,
     });
 
-    await expect(requireActiveCompany(req)).rejects.toMatchObject<AuthError>({
+    await expect(requireActiveCompany(req)).rejects.toMatchObject({
       status: 403,
       message: "No active company membership",
-    });
+    } satisfies Partial<AuthError>);
   });
 });
