@@ -13,7 +13,7 @@ test.describe("Authentication", () => {
   };
 
   test("should display login page", async ({ page }) => {
-    await page.goto("/login");
+    await page.goto("/auth/sign-in");
 
     await expect(page).toHaveTitle(/Login|Sign In/i);
     await expect(page.locator('input[type="email"]')).toBeVisible();
@@ -22,7 +22,7 @@ test.describe("Authentication", () => {
   });
 
   test("should validate email format", async ({ page }) => {
-    await page.goto("/login");
+    await page.goto("/auth/sign-in");
 
     // Enter invalid email
     await page.fill('input[type="email"]', "invalid-email");
@@ -46,7 +46,7 @@ test.describe("Authentication", () => {
       });
     });
 
-    await page.goto("/login");
+    await page.goto("/auth/sign-in");
     await page.fill('input[type="email"]', "wrong@example.com");
     await page.fill('input[type="password"]', "wrongpassword");
     await page.click('button[type="submit"]');
@@ -56,7 +56,7 @@ test.describe("Authentication", () => {
   });
 
   test("should complete signup flow", async ({ page }) => {
-    await page.goto("/signup");
+    await page.goto("/auth/sign-up");
 
     // Fill signup form
     await page.fill('input[name="name"]', testUser.name);
@@ -96,7 +96,7 @@ test.describe("Authentication", () => {
       });
     });
 
-    await page.goto("/login");
+    await page.goto("/auth/sign-in");
     await page.fill('input[type="email"]', "test@example.com");
     await page.fill('input[type="password"]', "password123");
     await page.click('button[type="submit"]');
@@ -120,7 +120,7 @@ test.describe("Authentication", () => {
     await logoutButton.click();
 
     // Should redirect to login
-    await expect(page).toHaveURL(/login|home|\/$/, { timeout: 5000 });
+    await expect(page).toHaveURL(/sign-in|auth/, { timeout: 5000 });
   });
 
   test("should redirect to login when accessing protected route", async ({ page }) => {
@@ -146,7 +146,7 @@ test.describe("Authentication", () => {
   });
 
   test("should enforce password strength", async ({ page }) => {
-    await page.goto("/signup");
+    await page.goto("/auth/sign-up");
 
     // Try weak password
     await page.fill('input[name="name"]', "Test User");

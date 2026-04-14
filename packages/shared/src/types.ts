@@ -21,14 +21,13 @@ export interface TenantScoped {
 
 export interface Shipment extends TenantScoped {
   id: ID;
-  ref: string;
-  originCity: string;
-  originState: string;
-  destCity: string;
-  destState: string;
-  weightLb: number;
-  rateCents: number;
+  trackingId: string;
+  userId: ID;
+  driverId?: ID;
+  origin: string;
+  destination: string;
   status: ShipmentStatus;
+  reference?: string;
   createdAt: string;
   updatedAt: string;
 }
