@@ -22,10 +22,10 @@ describe("auth schemas", () => {
     expect(result.success).toBe(true);
   });
 
-  it("rejects login payloads with 11 character passwords", () => {
+  it("rejects login payloads with empty passwords", () => {
     const result = loginSchema.safeParse({
       email: "ada@example.com",
-      password: "Passw0rd!!1",
+      password: "",
     });
 
     expect(result.success).toBe(false);

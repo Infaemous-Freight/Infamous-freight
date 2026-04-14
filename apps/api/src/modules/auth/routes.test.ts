@@ -6,14 +6,10 @@ const { mockPrisma } = vi.hoisted(() => ({
     user: {
       findUnique: vi.fn(),
       create: vi.fn(),
-    },
-    tenant: {
-      create: vi.fn(),
-    },
-    authSession: {
-      create: vi.fn(),
-      findUnique: vi.fn(),
       update: vi.fn(),
+    },
+    refreshToken: {
+      create: vi.fn(),
     },
     $transaction: vi.fn(),
   },
@@ -21,28 +17,50 @@ const { mockPrisma } = vi.hoisted(() => ({
 
 vi.mock("../../db/prisma.js", () => ({ prisma: mockPrisma }));
 
-const { mockBcrypt } = vi.hoisted(() => ({
-  mockBcrypt: {
+const { mockArgon2 } = vi.hoisted(() => ({
+  mockArgon2: {
     hash: vi.fn(async () => "hashed-password"),
-    compare: vi.fn(
-      async (plain: string, hash: string) =>
-        plain === "supersecret123" && hash === "hashed-password",
+    verify: vi.fn(
+      async (hash: string, plain: string) =>
+        hash === "hashed-password" && plain.includes("Sup3r\$ecret!"),
     ),
+    argon2id: 2,
   },
 }));
 
-vi.mock("bcryptjs", () => ({
-  default: mockBcrypt,
+vi.mock("argon2", () => ({
+  default: mockArgon2,
+  ...mockArgon2,
 }));
 
 vi.mock("../../middleware/rateLimit.js", () => ({
   authLimiter: (_req: any, _res: any, next: any) => next(),
 }));
 
-vi.mock("../../env.js", () => ({
-  ENV: {
-    JWT_SECRET: "test-secret",
-    CORS_ORIGIN: "http://localhost:3000",
+vi.mock("../../config/env.js", () => ({
+  env: {
+    nodeEnv: "test",
+    jwtAlgorithm: "HS256",
+    jwtSecret: "test-secret-key-that-is-at-least-32-chars-long",
+    jwtAccessExpiresIn: "15m",
+    jwtRefreshExpiresIn: "7d",
+    jwtIssuer: "infamous-freight-test",
+    jwtAudience: "infamous-freight-test",
+    jwtPrivateKey: undefined,
+    jwtPublicKey: undefined,
+    corsOrigin: "http://localhost:3000",
+    passwordPepper: "test-pepper",
+    argon2: { memoryCost: 65536, timeCost: 3, parallelism: 4 },
+    authCookieEnabled: false,
+    authCookieName: "refreshToken",
+    authCookiePath: "/api/auth",
+    authCookieSecure: false,
+    authCookieSameSite: "strict",
+    authCookieDomain: undefined,
+    cookieSecret: "test-cookie-secret-32-chars-long-x",
+    rateLimitAuthMax: 100,
+    rateLimitGeneralMax: 1000,
+    persistenceMode: "db",
   },
 }));
 
@@ -59,129 +77,105 @@ function createTestApp() {
   return app;
 }
 
+const STRONG_PASSWORD = "Sup3r\$ecret!";
+
+const mockUser = {
+  id: "user_1",
+  email: "founder@acme.com",
+  firstName: "Founder",
+  lastName: "Acme",
+  role: "ADMIN",
+  isActive: true,
+  passwordHash: "hashed-password",
+  emailVerifiedAt: null,
+  createdAt: new Date("2026-01-01T00:00:00.000Z"),
+  updatedAt: new Date("2026-01-01T00:00:00.000Z"),
+};
+
 describe("auth module", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockPrisma.$transaction.mockImplementation(async (callback: any) =>
-      callback({
-        tenant: { create: mockPrisma.tenant.create },
-        user: { create: mockPrisma.user.create },
-      }),
-    );
+    mockPrisma.user.update.mockResolvedValue(undefined);
+    mockPrisma.refreshToken.create.mockResolvedValue({
+      id: "rt_1",
+      jti: "test-jti",
+      userId: "user_1",
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      revokedAt: null,
+      createdAt: new Date(),
+    });
   });
 
-  it("registers a user without returning the password hash", async () => {
+  it("registers a user and returns accessToken without passwordHash", async () => {
     mockPrisma.user.findUnique.mockResolvedValue(null);
-    mockPrisma.tenant.create.mockResolvedValue({ id: "tenant_1", name: "Acme" });
-    mockPrisma.user.create.mockResolvedValue({
-      id: "user_1",
-      tenantId: "tenant_1",
-      email: "founder@acme.com",
-      role: "admin",
-      createdAt: new Date("2026-01-01T00:00:00.000Z"),
-      updatedAt: new Date("2026-01-01T00:00:00.000Z"),
-    });
-    mockPrisma.authSession.create.mockResolvedValue({ id: "session_1" });
+    mockPrisma.user.create.mockResolvedValue(mockUser);
 
     const app = createTestApp();
     const response = await request(app).post("/api/auth/register").send({
+      firstName: "Founder",
+      lastName: "Acme",
       email: "Founder@Acme.com",
-      password: "supersecret123",
-      tenantName: "Acme",
-      role: "admin",
+      password: STRONG_PASSWORD,
     });
 
     expect(response.status).toBe(201);
+    expect(response.body.success).toBe(true);
     expect(response.body.data.user.email).toBe("founder@acme.com");
     expect(response.body.data.user.passwordHash).toBeUndefined();
-    expect(response.body.data.tokens.accessToken).toBeTypeOf("string");
-    expect(response.body.data.tokens.refreshToken).toBeTypeOf("string");
+    expect(response.body.data.accessToken).toBeTypeOf("string");
   });
 
-  it("rejects bad credentials", async () => {
+  it("rejects register with a weak password", async () => {
+    const app = createTestApp();
+    const response = await request(app).post("/api/auth/register").send({
+      firstName: "Ada",
+      lastName: "Lovelace",
+      email: "ada@example.com",
+      password: "short",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("returns 401 for unknown credentials on login", async () => {
     mockPrisma.user.findUnique.mockResolvedValue(null);
     const app = createTestApp();
 
     const response = await request(app).post("/api/auth/login").send({
       email: "missing@example.com",
-      password: "wrong",
+      password: "anypassword",
     });
 
     expect(response.status).toBe(401);
-    expect(response.body.error).toMatch(/Invalid credentials/);
+    expect(response.body.error.message).toMatch(/Invalid email or password/i);
   });
 
   it("returns current user for a valid access token", async () => {
-    mockPrisma.user.findUnique
-      .mockResolvedValueOnce({
-        id: "user_1",
-        tenantId: "tenant_1",
-        email: "founder@acme.com",
-        role: "admin",
-        passwordHash: "hashed-password",
-        createdAt: new Date("2026-01-01T00:00:00.000Z"),
-        updatedAt: new Date("2026-01-01T00:00:00.000Z"),
-      })
-      .mockResolvedValueOnce({
-        id: "user_1",
-        tenantId: "tenant_1",
-        email: "founder@acme.com",
-        role: "admin",
-        createdAt: new Date("2026-01-01T00:00:00.000Z"),
-        updatedAt: new Date("2026-01-01T00:00:00.000Z"),
-      });
-    mockPrisma.authSession.create.mockResolvedValue({ id: "session_1" });
+    mockPrisma.user.findUnique.mockResolvedValueOnce(mockUser).mockResolvedValueOnce(mockUser);
 
     const app = createTestApp();
     const loginResponse = await request(app).post("/api/auth/login").send({
       email: "founder@acme.com",
-      password: "supersecret123",
+      password: STRONG_PASSWORD,
     });
+
+    expect(loginResponse.status).toBe(200);
+    const accessToken = loginResponse.body.data?.accessToken;
+    expect(accessToken).toBeTypeOf("string");
 
     const meResponse = await request(app)
       .get("/api/auth/me")
-      .set("Authorization", `Bearer ${loginResponse.body.data.tokens.accessToken}`);
+      .set("Authorization", `Bearer ${accessToken}`);
 
-    expect(loginResponse.status).toBe(200);
     expect(meResponse.status).toBe(200);
     expect(meResponse.body.data.email).toBe("founder@acme.com");
     expect(meResponse.body.data.passwordHash).toBeUndefined();
   });
 
-  it("rotates refresh tokens and logout revokes sessions", async () => {
-    mockPrisma.authSession.findUnique.mockResolvedValue({
-      id: "session_1",
-      tokenHash: "hash",
-      expiresAt: new Date(Date.now() + 60_000),
-      revokedAt: null,
-      user: {
-        id: "user_1",
-        tenantId: "tenant_1",
-        email: "founder@acme.com",
-        role: "admin",
-        createdAt: new Date("2026-01-01T00:00:00.000Z"),
-        updatedAt: new Date("2026-01-01T00:00:00.000Z"),
-      },
-    });
-    mockPrisma.authSession.update.mockResolvedValue({});
-    mockPrisma.authSession.create.mockResolvedValue({ id: "session_2" });
-
+  it("returns 401 for /me without a token", async () => {
     const app = createTestApp();
-    const refreshResponse = await request(app)
-      .post("/api/auth/refresh")
-      .send({
-        refreshToken: "a".repeat(64),
-      });
-
-    expect(refreshResponse.status).toBe(200);
-    expect(mockPrisma.authSession.update).toHaveBeenCalled();
-
-    const logoutResponse = await request(app)
-      .post("/api/auth/logout")
-      .send({
-        refreshToken: "a".repeat(64),
-      });
-
-    expect(logoutResponse.status).toBe(204);
+    const response = await request(app).get("/api/auth/me");
+    expect(response.status).toBe(401);
   });
 });

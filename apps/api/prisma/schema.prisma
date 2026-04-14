@@ -2519,3 +2519,34 @@ model OverageCharge {
   @@index([metricType])
   @@map("overage_charges")
 }
+
+// ============================================
+// Broker & Carrier Models
+// ============================================
+
+model Broker {
+  id          String   @id @default(cuid())
+  tenantId    String
+  companyName String
+  mcNumber    String
+  creditScore Int      @default(70)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([tenantId])
+  @@map("brokers")
+}
+
+model Carrier {
+  id          String   @id @default(cuid())
+  tenantId    String
+  companyName String
+  mcNumber    String
+  dotNumber   String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([tenantId])
+  @@map("carriers")
+}
