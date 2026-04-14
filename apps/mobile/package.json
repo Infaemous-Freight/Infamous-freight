@@ -14,7 +14,7 @@
     "@infamous-freight/shared": "workspace:*",
     "expo": "^55.0.11",
     "expo-linking": "^55.0.11",
-    "expo-router": "^55.0.10",
+    "expo-router": "^55.0.12",
     "react": "^19.2.4",
     "react-native": "^0.84.1",
     "react-native-safe-area-context": "^5.7.0",
