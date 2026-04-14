@@ -13,7 +13,7 @@
     "@expo/metro-runtime": "^55.0.9",
     "@infamous-freight/shared": "workspace:*",
     "expo": "^55.0.11",
-    "expo-linking": "^55.0.11",
+    "expo-linking": "^55.0.13",
     "expo-router": "^55.0.12",
     "react": "^19.2.4",
     "react-native": "^0.84.1",
