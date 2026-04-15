@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 
+import { getServerEnv } from "@/lib/server-env";
 import { getStripeClient } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -14,10 +15,10 @@ export async function POST(req: Request) {
     return new NextResponse("Missing stripe signature", { status: 400 });
   }
 
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const webhookSecret = getServerEnv("STRIPE_WEBHOOK_SECRET");
   if (!webhookSecret) {
     console.error("[Webhook] STRIPE_WEBHOOK_SECRET not configured");
-    return new NextResponse("Webhook not configured", { status: 500 });
+    return new NextResponse("Webhook not configured", { status: 503 });
   }
 
   try {

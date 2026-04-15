@@ -43,7 +43,7 @@ describe("Stripe webhook route", () => {
 
     const res = await POST(req);
 
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(503);
     expect(await res.text()).toContain("Webhook not configured");
     expect(constructEvent).not.toHaveBeenCalled();
   });
