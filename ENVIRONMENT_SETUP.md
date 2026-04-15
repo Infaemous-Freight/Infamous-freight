@@ -81,7 +81,7 @@ pnpm -r --if-present typecheck
 
 To run full integration tests and migrations:
 
-1. Start PostgreSQL (e.g., via Docker): `docker run -d -p 5432:5432 postgres:15`
+1. Start PostgreSQL (e.g., via Docker): `docker run -d --name infamous-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=infamous -p 5432:5432 postgres:15`
 2. Configure `.env` files with database URL
 3. Run migrations: `pnpm exec prisma migrate deploy` (in apps/api)
 
