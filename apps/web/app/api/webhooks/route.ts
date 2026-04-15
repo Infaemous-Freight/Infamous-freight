@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type Stripe from "stripe";
 
 import { getStripeClient } from "@/lib/stripe";
 
@@ -27,15 +28,29 @@ export async function POST(req: Request) {
     return NextResponse.json({ received: true });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    const errorCode = error instanceof Error && "code" in error ? (error as any).code : "unknown";
+    const directType =
+      typeof error === "object" && error !== null && "type" in error
+        ? (error as { type?: unknown }).type
+        : undefined;
+    const directCode =
+      typeof error === "object" && error !== null && "code" in error
+        ? (error as { code?: unknown }).code
+        : undefined;
+    const causeType =
+      error instanceof Error &&
+      error.cause &&
+      typeof error.cause === "object" &&
+      "type" in error.cause
+        ? (error.cause as { type?: unknown }).type
+        : undefined;
+    const errorType = String(directType ?? directCode ?? causeType ?? "unknown");
 
     console.error("[Webhook] Validation failed", {
       error: errorMessage,
-      code: errorCode,
-      signature: sig.substring(0, 20) + "...",
+      type: errorType,
     });
 
-    if (errorCode === "StripeSignatureVerificationError") {
+    if (errorType === "StripeSignatureVerificationError") {
       return new NextResponse("Invalid signature", { status: 401 });
     }
 
@@ -43,10 +58,10 @@ export async function POST(req: Request) {
   }
 }
 
-async function handleStripeEvent(event: any) {
+async function handleStripeEvent(event: Stripe.Event) {
   switch (event.type) {
     case "checkout.session.completed": {
-      const session = event.data.object;
+      const session = event.data.object as Stripe.Checkout.Session;
       console.info("[Webhook] Subscription activated", {
         sessionId: session.id,
         customerId: session.customer,
@@ -59,7 +74,7 @@ async function handleStripeEvent(event: any) {
     }
 
     case "invoice.payment_failed": {
-      const invoice = event.data.object;
+      const invoice = event.data.object as Stripe.Invoice;
       console.warn("[Webhook] Invoice payment failed", {
         invoiceId: invoice.id,
         customerId: invoice.customer,
@@ -72,7 +87,7 @@ async function handleStripeEvent(event: any) {
     }
 
     case "invoice.payment_succeeded": {
-      const invoice = event.data.object;
+      const invoice = event.data.object as Stripe.Invoice;
       console.info("[Webhook] Invoice payment succeeded", {
         invoiceId: invoice.id,
         amount: invoice.amount_paid,
@@ -81,7 +96,7 @@ async function handleStripeEvent(event: any) {
     }
 
     case "customer.subscription.updated": {
-      const subscription = event.data.object;
+      const subscription = event.data.object as Stripe.Subscription;
       console.info("[Webhook] Subscription updated", {
         subscriptionId: subscription.id,
         status: subscription.status,
@@ -90,7 +105,7 @@ async function handleStripeEvent(event: any) {
     }
 
     case "customer.subscription.deleted": {
-      const subscription = event.data.object;
+      const subscription = event.data.object as Stripe.Subscription;
       console.warn("[Webhook] Subscription canceled", { subscriptionId: subscription.id });
       // TODO: Disable user access
       // TODO: Archive organization data
