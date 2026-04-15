@@ -140,7 +140,7 @@ describe("PATCH /loads/:id/status", () => {
     expect(res.body.error?.code).toBe("LOAD_NOT_FOUND");
   });
 
-  it("updates statuserror?. when load belongs to tenant", async () => {
+  it("updates status when load belongs to tenant", async () => {
     vi.mocked(prisma.load.findFirst).mockResolvedValue(mockLoad as any);
     vi.mocked(prisma.load.update).mockResolvedValue({ ...mockLoad, status: "CLAIMED" } as any);
     const res = await request(app).patch("/loads/load-1/status").send({ status: "CLAIMED" });
