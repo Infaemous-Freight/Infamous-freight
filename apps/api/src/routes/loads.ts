@@ -34,8 +34,12 @@ router.get("/", requireAuth, async (req, res, next) => {
       res.status(401).json({ error: "Tenant context required" });
       return;
     }
-    const page = Math.max(1, Number(req.query.page ?? 1));
-    const limit = Math.min(100, Math.max(1, Number(req.query.limit ?? 20)));
+    const pageRaw = Number.parseInt(String(req.query.page ?? "1"), 10);
+    const page = Number.isFinite(pageRaw) ? Math.max(1, pageRaw) : 1;
+    const limitRaw = Number.parseInt(String(req.query.limit ?? "20"), 10);
+    const limit = Number.isFinite(limitRaw)
+      ? Math.min(100, Math.max(1, limitRaw))
+      : 20;
     const loads = await prisma.load.findMany({
       where: { tenantId },
       orderBy: { createdAt: "desc" },
