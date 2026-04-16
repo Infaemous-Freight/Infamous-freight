@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      - staging
+      - develop
+      - "release/**"
   workflow_dispatch:
 
 permissions:
@@ -118,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [quality-gate]
-    if: ${{ always() && github.ref_name == 'main' }}
+    if: ${{ always() && (github.ref_name == 'main' || github.ref_name == 'staging' || github.ref_name == 'develop' || startsWith(github.ref_name, 'release/')) }}
     steps:
       - uses: actions/checkout@v6
 
@@ -142,7 +145,30 @@ jobs:
         run: |
           set -euo pipefail
           if [ "${GITHUB_REF_NAME}" = "main" ]; then
-            pnpm --package=netlify-cli dlx netlify deploy --build --prod --message "GitHub Actions deploy from ${GITHUB_REF_NAME}" --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN"
+            pnpm --package=netlify-cli dlx netlify deploy --build --prod --context production --message "GitHub Actions production deploy from ${GITHUB_REF_NAME}" --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN"
+          elif [ "${GITHUB_REF_NAME}" = "staging" ] || [ "${GITHUB_REF_NAME}" = "develop" ] || [[ "${GITHUB_REF_NAME}" == release/* ]]; then
+            alias_name=$(echo "${GITHUB_REF_NAME}" | tr '/' '-')
+            pnpm --package=netlify-cli dlx netlify deploy --build --context branch-deploy --alias "${alias_name}" --message "GitHub Actions branch deploy from ${GITHUB_REF_NAME}" --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN"
           else
-            pnpm --package=netlify-cli dlx netlify deploy --build --message "GitHub Actions preview deploy from ${GITHUB_REF_NAME}" --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN"
+            pnpm --package=netlify-cli dlx netlify deploy --build --context deploy-preview --message "GitHub Actions preview deploy from ${GITHUB_REF_NAME}" --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN"
+          fi
+
+
+  notify-deploy:
+    name: Notify deploy status
+    runs-on: ubuntu-latest
+    needs: [deploy-api, deploy-web]
+    if: always()
+    steps:
+      - name: Post deployment notification (Slack webhook optional)
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+          status="${{ needs.deploy-api.result }} / ${{ needs.deploy-web.result }}"
+          summary="Unified Deploy status - API/Web: ${status} for ${GITHUB_REF_NAME}"
+          echo "$summary"
+          if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+            payload=$(printf '{"text":"%s"}' "$summary")
+            curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" >/dev/null
           fi

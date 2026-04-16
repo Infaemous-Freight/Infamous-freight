@@ -162,6 +162,9 @@ you find the information you need.
   troubleshooting
 - **[Secrets Configuration](deployment/SECRETS_CONFIGURED.md)** - Managing
   secrets
+- **[Netlify Operations](NETLIFY_OPERATIONS.md)** - Preview deploy gating, env scoping, caching, security headers, and incident cadence
+- **[Netlify Rollback Runbook](runbooks/NETLIFY_ROLLBACK_RUNBOOK.md)** - Emergency rollback steps and ownership
+- **[Incident Postmortem Template](templates/INCIDENT_POSTMORTEM_TEMPLATE.md)** - Standard template for incident reviews
 
 ### Deployment Status & History
 
