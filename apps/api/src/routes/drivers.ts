@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { requireAuth, type AuthenticatedRequest } from "../middleware/auth.js";
+import { requireAuth, requireTenantContext, type AuthenticatedRequest } from "../middleware/auth.js";
 import { prisma } from "../db/prisma.js";
 
 const router: Router = Router();
@@ -12,9 +12,9 @@ const createDriverSchema = z.object({
   status: z.enum(["AVAILABLE", "ON_DUTY", "OFF_DUTY"]).default("AVAILABLE"),
 });
 
-router.get("/", requireAuth, async (req, res, next) => {
+router.get("/", requireAuth, requireTenantContext, async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = (req as AuthenticatedRequest).user!.tenantId!;
     const drivers = await prisma.driver.findMany({
       where: { tenantId },
       orderBy: { name: "asc" },
@@ -25,9 +25,9 @@ router.get("/", requireAuth, async (req, res, next) => {
   }
 });
 
-router.post("/", requireAuth, async (req, res, next) => {
+router.post("/", requireAuth, requireTenantContext, async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = (req as AuthenticatedRequest).user!.tenantId!;
     const body = createDriverSchema.parse(req.body);
     const driver = await prisma.driver.create({
       data: { tenantId, ...body },
@@ -38,9 +38,9 @@ router.post("/", requireAuth, async (req, res, next) => {
   }
 });
 
-router.patch("/:id/status", requireAuth, async (req, res, next) => {
+router.patch("/:id/status", requireAuth, requireTenantContext, async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = (req as AuthenticatedRequest).user!.tenantId!;
     const { status } = z
       .object({
         status: z.enum(["AVAILABLE", "ON_DUTY", "OFF_DUTY"]),
