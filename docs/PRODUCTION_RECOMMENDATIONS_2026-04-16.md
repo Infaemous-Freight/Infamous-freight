@@ -35,7 +35,7 @@ These recommendations are prioritized to keep Infamous Freight stable, secure, a
 ## 7) Error handling and resilience
 - Standardize error envelopes (`code`, `message`, `requestId`, optional `details`).
 - Keep Sentry capture middleware after routes and before custom error middleware.
-- Add non-production `GET /debug/sentry` verification only when Sentry is configured.
+- Add non-production `GET /debug/sentry` verification only when Sentry is configured, and protect it with admin auth and/or an allowlist plus extra rate limiting.
 
 ## 8) Billing idempotency safety
 - Use the existing idempotency mechanisms for all Stripe webhook and mutation handlers (`Idempotency-Key` + `withIdempotency` where supported, and Stripe request `idempotencyKey` usage where applicable).
