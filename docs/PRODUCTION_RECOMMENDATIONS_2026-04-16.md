@@ -8,9 +8,9 @@ These recommendations are prioritized to keep Infamous Freight stable, secure, a
 - Standardize token verification errors to avoid leaking internals.
 
 ## 2) Tenant isolation guarantees
-- Introduce a Prisma query helper that requires `tenantId` for all tenant-scoped models.
+- Introduce a Prisma query helper that enforces the model's canonical tenant-scoping field, using the existing `tenantId` or `organizationId` convention already defined by that model (do not introduce a third scoping identifier).
 - Add integration tests that assert cross-tenant access always returns 403/404.
-- Add static checks (eslint/custom rule) for unsafe tenant queries in `apps/api`.
+- Add static checks (eslint/custom rule) in `apps/api` for unsafe tenant queries, validating use of the existing model scoping field (`tenantId` or `organizationId`) and forbidding new competing scope-field conventions.
 
 ## 3) RBAC consistency
 - Centralize permission checks in one reusable service or middleware layer.
