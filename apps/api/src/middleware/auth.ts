@@ -49,3 +49,22 @@ export function requireAuth(req: Request, _res: Response, next: NextFunction): v
     next(new ApiError(401, "INVALID_ACCESS_TOKEN", "Invalid or expired access token"));
   }
 }
+
+export function requireTenantContext(req: Request, _res: Response, next: NextFunction): void {
+  const tenantId = req.user?.tenantId ?? req.auth?.organizationId ?? req.tenantId;
+  if (!tenantId || !req.auth) {
+    next(new ApiError(403, "TENANT_CONTEXT_REQUIRED", "Tenant context is required"));
+    return;
+  }
+
+  req.user = {
+    ...req.user,
+    id: req.user?.id ?? req.auth?.userId ?? "",
+    sub: req.user?.sub ?? req.auth?.userId ?? "",
+    email: req.user?.email ?? "",
+    role: req.user?.role ?? req.auth.role,
+    tenantId,
+  };
+  req.tenantId = tenantId;
+  next();
+}

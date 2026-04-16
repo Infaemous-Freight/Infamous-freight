@@ -34,6 +34,7 @@ declare global {
       tenantId?: string;
       orgId?: string;
       organizationId?: string;
+      requestId?: string;
     }
   }
 }
