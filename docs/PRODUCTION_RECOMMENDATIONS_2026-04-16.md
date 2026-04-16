@@ -44,7 +44,7 @@ These recommendations are prioritized to keep Infamous Freight stable, secure, a
 
 ## 9) Build/test/deploy reliability
 - In CI: run `prisma generate` before build/tests for every app relying on Prisma.
-- Enforce `pnpm -r test -- --runInBand` for stability-sensitive suites.
+- Keep recursive test runs on the existing `--workspace-concurrency=1` pattern, and scope `--runInBand` to `@infamous/api` or other Jest-based workspaces for stability-sensitive suites.
 - Verify Docker startup path binds to `PORT=3000` and `/health` returns 200.
 
 ## Suggested execution order (next 2 sprints)
