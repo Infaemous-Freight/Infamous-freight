@@ -116,9 +116,13 @@ jobs:
           PREVIEW_URL: ${{ needs.preview-deploy.outputs.preview_url }}
         run: |
           set -euo pipefail
-          enc=$(curl -sSI -H 'Accept-Encoding: br,gzip' "$PREVIEW_URL" | awk -F': ' 'tolower($1)=="content-encoding" {print tolower($2)}' | tr -d '\r')
+          headers_file=$(mktemp)
+          body_file=$(mktemp)
+          trap 'rm -f "$headers_file" "$body_file"' EXIT
+          curl -fsS -D "$headers_file" -o "$body_file" -H 'Accept-Encoding: br,gzip' "$PREVIEW_URL/"
+          enc=$(awk -F': ' 'tolower($1)=="content-encoding" {print tolower($2)}' "$headers_file" | tr -d '\r')
           if [[ "$enc" != *"br"* && "$enc" != *"gzip"* ]]; then
-            echo "Expected Brotli or gzip content-encoding; got '${enc:-none}'" >&2
+            echo "Expected Brotli or gzip content-encoding on GET response; got '${enc:-none}'" >&2
             exit 1
           fi
 
