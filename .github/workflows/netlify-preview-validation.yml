@@ -105,7 +105,11 @@ jobs:
         run: |
           set -euo pipefail
           curl -fsSL "$PREVIEW_URL/" >/dev/null
-          curl -fsSL "$PREVIEW_URL/404" >/dev/null
+          status=$(curl -sS -o /dev/null -w '%{http_code}' "$PREVIEW_URL/404")
+          if [ "$status" != "404" ]; then
+            echo "Expected $PREVIEW_URL/404 to return HTTP 404, got $status" >&2
+            exit 1
+          fi
 
       - name: Verify compression headers
         env:
