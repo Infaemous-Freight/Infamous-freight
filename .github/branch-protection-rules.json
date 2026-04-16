@@ -19,7 +19,9 @@
         "CI Sanity / sanity",
         "CI / Lint, Typecheck, Test, Build",
         "CodeQL / Analyze",
-        "Dependency Review / dependency-review"
+        "Dependency Review / dependency-review",
+        "Netlify Preview Validation / netlify preview deploy",
+        "Netlify Preview Validation / preview quality checks"
       ]
     }
   ]

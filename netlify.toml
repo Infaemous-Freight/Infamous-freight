@@ -1,3 +1,13 @@
+# =============================================================================
+# Netlify configuration for Infamous Freight web deployment.
+#
+# Notes:
+# - Deploy previews are enabled for pull requests in Netlify site settings.
+# - Long-lived branch deploys (for staging-style QA) are enabled in Netlify site settings.
+# - Secrets must be stored in Netlify environment variables only (never committed).
+# - Keep NODE_VERSION / PNPM_VERSION aligned with .nvmrc and packageManager.
+# =============================================================================
+
 [build]
   base = "."
   command = "pnpm install --frozen-lockfile && pnpm --filter web build"
@@ -9,13 +19,111 @@
   PNPM_VERSION = "10.33.0"
   NEXT_TELEMETRY_DISABLED = "1"
   BUILD_TARGET = "netlify"
-  # Allow Netlify-managed plugin installs to proceed even when third-party
-  # plugin engine ranges lag behind current Node/npm runtime versions.
+  # Allow Netlify-managed plugin installs even when third-party engine ranges lag.
   NPM_CONFIG_ENGINE_STRICT = "false"
   npm_config_engine_strict = "false"
 
+# Explicit build contexts to enforce environment scoping and deterministic behavior.
+[context.production]
+  command = "pnpm install --frozen-lockfile && pnpm --filter web build"
+
+[context.production.environment]
+  NODE_ENV = "production"
+  NEXT_RUNTIME_ENV = "production"
+
+[context.deploy-preview]
+  command = "pnpm install --frozen-lockfile && pnpm --filter web build"
+
+[context.deploy-preview.environment]
+  NODE_ENV = "production"
+  NEXT_RUNTIME_ENV = "deploy-preview"
+
+[context.branch-deploy]
+  command = "pnpm install --frozen-lockfile && pnpm --filter web build"
+
+[context.branch-deploy.environment]
+  NODE_ENV = "production"
+  NEXT_RUNTIME_ENV = "branch-deploy"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Centralized redirects / rewrites.
+[[redirects]]
+  from = "https://infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+# Canonicalization for duplicate-content prevention.
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+# Standardized error experiences.
+[[redirects]]
+  from = "/500"
+  to = "/500.html"
+  status = 500
+
+# Security headers and cache policy.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(self)"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://maps.googleapis.com https://js.stripe.com https://cdn.segment.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.infamousfreight.com wss://api.infamousfreight.com https://sentry.io https://o*.ingest.sentry.io; frame-src 'self' https://js.stripe.com https://checkout.stripe.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://checkout.stripe.com"
+
+# Immutable cache for fingerprinted static assets.
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Short TTL for HTML entry points to speed rollback propagation.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# API routes should never be cached.
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0"
+
+# Netlify Image CDN endpoint cache policy.
+[[headers]]
+  for = "/.netlify/images*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = []
 
 [dev]
   command = "pnpm --filter web dev"
