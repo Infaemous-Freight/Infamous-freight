@@ -169,6 +169,6 @@ jobs:
           summary="Unified Deploy status - API/Web: ${status} for ${GITHUB_REF_NAME}"
           echo "$summary"
           if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
-            payload=$(printf '{"text":"%s"}' "$summary")
+            payload=$(SUMMARY="$summary" python3 -c 'import json, os; print(json.dumps({"text": os.environ["SUMMARY"]}))')
             curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" >/dev/null
           fi
