@@ -1,6 +1,6 @@
 # Documentation Index
 
-<a href="https://app.netlify.com/projects/infamousfreight/deploys"><img src="https://api.netlify.com/api/v1/badges/d03682ba-fcb4-4dc6-984e-f7eae7fff59c/deploy-status" alt="Netlify deploy status for infamousfreight"></a>
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d03682ba-fcb4-4dc6-984e-f7eae7fff59c/deploy-status)](https://app.netlify.com/projects/infamousfreight/deploys)
 
 _Deploy status only; a green badge does not guarantee the frontend is rendering correctly._
 
