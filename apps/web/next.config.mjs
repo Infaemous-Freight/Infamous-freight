@@ -1,8 +1,10 @@
 import { withSentryConfig } from '@sentry/nextjs';
 
+// Netlify deploys go through @netlify/plugin-nextjs, which requires a
+// standard Next.js server build (not `output: 'export'`). Only force a
+// static export for explicit static-hosting targets.
 const isStaticHosting =
     process.env.BUILD_TARGET === 'firebase' ||
-    process.env.BUILD_TARGET === 'netlify' ||
     process.env.STATIC_EXPORT === 'true';
 
 /** @type {import('next').NextConfig} */
