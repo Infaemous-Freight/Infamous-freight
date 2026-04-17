@@ -251,6 +251,14 @@ You can also run:
 pnpm run mcp:github
 ```
 
+To query the structure of the main branch from Git:
+
+```bash
+pnpm run repo:structure:main
+# full tree:
+TREE_FULL=true pnpm run repo:structure:main
+```
+
 > **Runtime requirement:** this repo enforces Node.js **24.x** (see `.node-version` / `.nvmrc`). If you are not on the pinned Node version, `pnpm` will fail with `ERR_PNPM_UNSUPPORTED_ENGINE`.
 >
 > If you hit that error, switch to the version defined by the repo and retry install:

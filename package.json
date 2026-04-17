@@ -11,6 +11,7 @@
     "dev": "pnpm run dev:api",
     "quickstart:api": "bash scripts/quickstart-api.sh",
     "mcp:github": "bash scripts/run-github-mcp.sh",
+    "repo:structure:main": "bash scripts/main-branch-structure.sh origin main",
     "predev:api": "pnpm run build:shared",
     "dev:api": "pnpm --filter @infamous/api dev",
     "dev:web": "pnpm --filter web dev",
