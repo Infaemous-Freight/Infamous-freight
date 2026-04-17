@@ -5,7 +5,7 @@ import { prisma } from "../db/prisma.js";
 
 const router: Router = Router();
 
-const tenantRouteRoles = ["owner", "admin", "dispatcher", "shipper", "user"];
+export const tenantRouteRoles = ["owner", "admin", "dispatcher", "shipper", "user"] as const;
 
 const createDispatchSchema = z.object({
   loadId: z.string().min(1),
