@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-IMAGE="${IMAGE:-dhi.io/github-mcp:0}"
-REGISTRY="${REGISTRY:-dhi.io}"
+IMAGE="${IMAGE:-ifamousfreight/dhi-github-mcp:latest}"
+REGISTRY="${REGISTRY:-docker.io}"
 VEX_FILE="${VEX_FILE:-vex.json}"
 
 echo "==> Target image: ${IMAGE}"

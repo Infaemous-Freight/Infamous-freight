@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-IMAGE="${1:-dhi.io/github-mcp}"
+IMAGE="${1:-ifamousfreight/dhi-github-mcp:latest}"
 EXPECTED_DIGEST="${2:-sha256:50b2c4f88e0dda38d3a163ad8ef1460fde82a70e2b28da73e6035f93c6f545d9}"
 
 if ! command -v docker >/dev/null 2>&1; then

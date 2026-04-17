@@ -243,7 +243,7 @@ export GITHUB_API_URL=https://github.example.com/api/v3 # optional (GitHub Enter
 docker run --rm -i \
   -e GITHUB_PERSONAL_ACCESS_TOKEN=your-personal-access-token \
   -e GITHUB_API_URL=https://github.example.com/api/v3 \
-  dhi.io/github-mcp
+  ifamousfreight/dhi-github-mcp:latest
 ```
 
 The local `.mcp.json` file is gitignored to avoid committing personal tokens.
@@ -297,7 +297,7 @@ pnpm run repo:find-deprecated-api -- "<deprecated_function_name>"
 To verify a pulled image matches an expected SHA256 digest:
 
 ```bash
-pnpm run docker:verify-digest -- dhi.io/github-mcp sha256:50b2c4f88e0dda38d3a163ad8ef1460fde82a70e2b28da73e6035f93c6f545d9
+pnpm run docker:verify-digest -- ifamousfreight/dhi-github-mcp:latest sha256:50b2c4f88e0dda38d3a163ad8ef1460fde82a70e2b28da73e6035f93c6f545d9
 ```
 
 > **Runtime requirement:** this repo enforces Node.js **24.x** (see `.node-version` / `.nvmrc`). If you are not on the pinned Node version, `pnpm` will fail with `ERR_PNPM_UNSUPPORTED_ENGINE`.
