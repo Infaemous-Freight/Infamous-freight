@@ -24,6 +24,7 @@ function loadRum(): Promise<DatadogRum | null> {
       .catch((error) => {
         console.error("[Datadog RUM] Failed to load SDK:", error);
         rumPromise = null;
+        rumPromise = null;
         return null;
       });
   }
