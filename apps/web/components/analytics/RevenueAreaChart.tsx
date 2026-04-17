@@ -8,12 +8,16 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-interface MetricData {
+export type MetricData = {
   timestamp: string;
   value: number;
-}
+};
 
-export default function RevenueAreaChart({ data }: { data: MetricData[] }) {
+export type RevenueAreaChartProps = {
+  data: MetricData[];
+};
+
+export default function RevenueAreaChart({ data }: RevenueAreaChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <AreaChart data={data}>
