@@ -259,6 +259,9 @@ importers:
       '@infamous-freight/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@netlify/launchdarkly-server-sdk':
+        specifier: ^0.1.5
+        version: 0.1.5
       '@sentry/nextjs':
         specifier: ^10.48.0
         version: 10.48.0(@opentelemetry/context-async-hooks@2.6.1(@opentelemetry/api@1.9.1))(@opentelemetry/core@2.6.1(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.6.1(@opentelemetry/api@1.9.1))(next@16.2.3(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.58.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)(webpack@5.105.4)
@@ -2088,8 +2091,17 @@ packages:
   '@launchdarkly/js-sdk-common@2.24.0':
     resolution: {integrity: sha512-f/xRD8gl/bSOVljat79nAzX0V0QjJ76R54aAbB6PJDWL+7BWBSFMxduaeokzbX53cs3oOVajL8ej/ps7+ojMeQ==}
 
+  '@launchdarkly/js-sdk-common@2.8.0':
+    resolution: {integrity: sha512-XLYhB0A0vec1gwbnVNU+rzMd1JxdtMJXSA76y3ASJ6X0cG0qTRKQdFba4n4RwIs0y1bX3rncFHJMhBjrXtyPhA==}
+
+  '@launchdarkly/js-server-sdk-common-edge@2.3.9':
+    resolution: {integrity: sha512-pgQatwvb3WKBdaSpZPDdv1whmTUuuYmJlVu/XdgEFFLd5r90Ixf4LZXmNyGW6+x1VEDgxj9kOkbUfSGJf0EO0g==}
+
   '@launchdarkly/js-server-sdk-common@2.18.3':
     resolution: {integrity: sha512-9lf1IRLJSghtDZlUT04KmmJOwRnAUuqXUcn7C2S9jNPDvrsmFJeD9Dpn7PoCUOR5rZgqAEveWdlBw9qjWeY6jw==}
+
+  '@launchdarkly/js-server-sdk-common@2.6.1':
+    resolution: {integrity: sha512-PcyglkUi/P1fBT3GqwZ/K9MvLj2e5Rw5XLP/gC2qIIHJxIbni8oy8Zon+6bP890DYgZtqqeX6tKhAw/gwOYkhQ==}
 
   '@launchdarkly/node-server-sdk@9.10.10':
     resolution: {integrity: sha512-qJNVrHbX+FKUhVUl7FWK9ICsL4lJmHBE7vOCkvERFFODRxYrrf8HdiyYDf79aI8JMSOLCKZgcJJKNXAvRJXThg==}
@@ -2126,6 +2138,13 @@ packages:
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
+
+  '@netlify/blobs@8.2.0':
+    resolution: {integrity: sha512-9djLZHBKsoKk8XCgwWSEPK9QnT8qqxEQGuYh48gFIcNLvpBKkLnHbDZuyUxmNemCfDz7h0HnMXgSPnnUVgARhg==}
+    engines: {node: ^14.16.0 || >=16.0.0}
+
+  '@netlify/launchdarkly-server-sdk@0.1.5':
+    resolution: {integrity: sha512-/IHNwM1cz3s01OQYbOgiUNeXFVkGnZv+4Rj/7rtyGKb+b/jBXHsqySHbzDZ1M67DyUT8086yhsGua2ru/7q4vA==}
 
   '@next/env@16.2.3':
     resolution: {integrity: sha512-ZWXyj4uNu4GCWQw9cjRxWlbD+33mcDszIo9iQxFnBX3Wmgq9ulaSJcl6VhuWx5pCWqqD+9W6Wfz7N0lM5lYPMA==}
@@ -4923,6 +4942,9 @@ packages:
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
+
+  crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
 
   css-tree@3.2.1:
     resolution: {integrity: sha512-X7sjQzceUhu1u7Y/ylrRZFU2FS6LRiFVp6rKLPg23y3x3c3DOKAwuXGDp+PAGjh6CSnCjYeAul8pcT8bAl+lSA==}
@@ -10968,9 +10990,21 @@ snapshots:
 
   '@launchdarkly/js-sdk-common@2.24.0': {}
 
+  '@launchdarkly/js-sdk-common@2.8.0': {}
+
+  '@launchdarkly/js-server-sdk-common-edge@2.3.9':
+    dependencies:
+      '@launchdarkly/js-server-sdk-common': 2.6.1
+      crypto-js: 4.2.0
+
   '@launchdarkly/js-server-sdk-common@2.18.3':
     dependencies:
       '@launchdarkly/js-sdk-common': 2.24.0
+      semver: 7.5.4
+
+  '@launchdarkly/js-server-sdk-common@2.6.1':
+    dependencies:
+      '@launchdarkly/js-sdk-common': 2.8.0
       semver: 7.5.4
 
   '@launchdarkly/node-server-sdk@9.10.10':
@@ -11005,6 +11039,14 @@ snapshots:
       '@emnapi/runtime': 1.9.2
       '@tybys/wasm-util': 0.10.1
     optional: true
+
+  '@netlify/blobs@8.2.0': {}
+
+  '@netlify/launchdarkly-server-sdk@0.1.5':
+    dependencies:
+      '@launchdarkly/js-server-sdk-common-edge': 2.3.9
+      '@netlify/blobs': 8.2.0
+      crypto-js: 4.2.0
 
   '@next/env@16.2.3': {}
 
@@ -14370,6 +14412,8 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  crypto-js@4.2.0: {}
 
   css-tree@3.2.1:
     dependencies:

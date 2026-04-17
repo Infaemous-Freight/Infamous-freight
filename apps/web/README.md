@@ -125,9 +125,23 @@ See `.env.example` for the full variable catalog and `../../docs/NETLIFY_ENV_AUD
 - `STRIPE_SECRET_KEY`: Server-side Stripe secret for checkout/webhooks
 - `STRIPE_WEBHOOK_SECRET`: Stripe webhook signing secret
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: Stripe publishable key
+- `LAUNCHDARKLY_CLIENT_SIDE_ID`: LaunchDarkly client-side ID used by the Netlify LaunchDarkly server SDK
+- `LAUNCHDARKLY_FLAG_KEY`: Optional default LaunchDarkly flag key for the integration endpoint
 
 **Important**: Variables prefixed with `NEXT_PUBLIC_` are exposed to the
 browser. Variables such as `JWT_SECRET`, `NEXTAUTH_SECRET`, `STRIPE_SECRET_KEY`, and `STRIPE_WEBHOOK_SECRET` must remain server-only.
+
+### LaunchDarkly with Netlify
+
+After adding the Netlify integration in LaunchDarkly, the app exposes a server route at `/api/launchdarkly` that evaluates a flag using the Netlify LaunchDarkly SDK.
+
+Example:
+
+```bash
+curl "http://localhost:3000/api/launchdarkly?flagKey=enableMyNewFeature&userKey=driver-42"
+```
+
+If `LAUNCHDARKLY_CLIENT_SIDE_ID` is missing, the route returns `503` with a configuration error.
 
 ## 📊 Performance
 
