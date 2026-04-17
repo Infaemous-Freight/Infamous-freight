@@ -31,6 +31,11 @@ export async function GET(request: Request) {
     );
   }
 
+  // Note: the site-level `/api/*` rule in netlify.toml currently forces
+  // `Cache-Control: no-store`, which will override anything set here. If
+  // you want shared-cache relief for flag evaluations, narrow that rule or
+  // add a more specific one for `/api/launchdarkly` and then set a real
+  // Cache-Control header on this response.
   return NextResponse.json({
     flagKey,
     value: evaluation.value,

@@ -100,6 +100,20 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# On-demand optimized images from the Next.js image loader. The URL is
+# content-dependent but not fingerprinted, so prefer a medium TTL with SWR
+# to avoid re-requesting unchanged renditions on repeat views.
+[[headers]]
+  for = "/_next/image*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+# Cacheable static public assets (favicons, logos, OG images, fonts).
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
 # Short TTL for HTML entry points to speed rollback propagation.
 [[headers]]
   for = "/*.html"

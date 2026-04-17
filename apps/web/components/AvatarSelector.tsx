@@ -49,37 +49,36 @@ export function AvatarSelector({
         setLoading(true);
         setError("");
 
-        // Fetch system avatars
-        const sysRes = await fetch(`${apiBase}/api/avatars/system`);
+        const authHeaders = token ? { Authorization: `Bearer ${token}` } : undefined;
+
+        // Run all three reads concurrently; user-scoped ones only when authenticated.
+        const [sysRes, userRes, selRes] = await Promise.all([
+          fetch(`${apiBase}/api/avatars/system`),
+          token
+            ? fetch(`${apiBase}/api/avatars/user`, { headers: authHeaders })
+            : Promise.resolve(null),
+          token
+            ? fetch(`${apiBase}/api/avatars/selection`, { headers: authHeaders })
+            : Promise.resolve(null),
+        ]);
+
         if (sysRes.ok) {
           const sysData = await sysRes.json();
           setSystemAvatars(sysData.data?.featured || []);
         }
 
-        // Fetch user avatars (if authenticated)
-        if (token) {
-          const userRes = await fetch(`${apiBase}/api/avatars/user`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (userRes.ok) {
-            const userData = await userRes.json();
-            setUserAvatars(userData.data?.avatars || []);
-          }
+        if (userRes && userRes.ok) {
+          const userData = await userRes.json();
+          setUserAvatars(userData.data?.avatars || []);
         }
 
-        // Fetch current selection (if authenticated)
-        if (token) {
-          const selRes = await fetch(`${apiBase}/api/avatars/selection`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (selRes.ok) {
-            const selData = await selRes.json();
-            setCurrentSelection(selData.data?.selection || null);
-          }
+        if (selRes && selRes.ok) {
+          const selData = await selRes.json();
+          setCurrentSelection(selData.data?.selection || null);
         }
       } catch (err) {
         setError(`Failed to load avatars: ${(err as Error).message}`);
-         
+
         console.error(err);
       } finally {
         setLoading(false);

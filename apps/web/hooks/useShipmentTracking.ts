@@ -45,6 +45,8 @@ export function useShipmentTracking(shipmentId: string, userId?: string) {
       return;
     }
 
+    let cancelled = false;
+
     const fetchShipment = async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
@@ -55,30 +57,39 @@ export function useShipmentTracking(shipmentId: string, userId?: string) {
         }
 
         const data = await response.json();
+        if (cancelled) return;
 
         if (data.success && data.data) {
           setShipmentData(data.data);
-          setTrackingStatus({
+          setTrackingStatus((prev) => ({
             loading: false,
             error: null,
-            connected: status.connected,
-          });
+            connected: prev.connected,
+          }));
         } else {
           throw new Error(data.message || "Invalid response");
         }
       } catch (error) {
+        if (cancelled) return;
         console.error("[ShipmentTracking] Failed to fetch shipment:", error);
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
-        setTrackingStatus({
+        setTrackingStatus((prev) => ({
           loading: false,
           error: errorMessage,
-          connected: status.connected,
-        });
+          connected: prev.connected,
+        }));
       }
     };
 
     fetchShipment();
-  }, [shipmentId, status.connected]);
+
+    return () => {
+      cancelled = true;
+    };
+    // Intentionally only depends on shipmentId. Socket connect/disconnect
+    // cycles should not trigger a refetch — real-time updates flow through
+    // the subscription effect below.
+  }, [shipmentId]);
 
   // Subscribe to real-time updates
   useEffect(() => {

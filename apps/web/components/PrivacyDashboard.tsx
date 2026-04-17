@@ -45,25 +45,20 @@ export const PrivacyDashboard: React.FC = () => {
   const loadPrivacyData = async () => {
     try {
       const token = localStorage.getItem("token");
+      const headers = { Authorization: `Bearer ${token}` };
 
-      // Load compliance status
-      const statusRes = await fetch("/api/gdpr/status", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const statusData = await statusRes.json();
+      const [statusRes, consentsRes] = await Promise.all([
+        fetch("/api/gdpr/status", { headers }),
+        fetch("/api/gdpr/consent", { headers }),
+      ]);
+
+      const [statusData, consentsData] = await Promise.all([
+        statusRes.json(),
+        consentsRes.json(),
+      ]);
+
       setStatus(statusData.data);
-
-      // Load consents
-      const consentsRes = await fetch("/api/gdpr/consent", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const consentsData = await consentsRes.json();
       setConsents(consentsData.data);
-
       setLoading(false);
     } catch (error) {
       console.error("Failed to load privacy data:", error);
