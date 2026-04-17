@@ -14,5 +14,5 @@ fi
 
 docker run --rm -i \
   -e GITHUB_PERSONAL_ACCESS_TOKEN="${GITHUB_PERSONAL_ACCESS_TOKEN}" \
-  -e GITHUB_API_URL="${GITHUB_API_URL:-}" \
+  ${GITHUB_API_URL:+-e GITHUB_API_URL="${GITHUB_API_URL}"} \
   dhi.io/github-mcp
