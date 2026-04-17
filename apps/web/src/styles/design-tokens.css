@@ -1,9 +1,12 @@
 /**
  * Design Tokens - Infamous Freight Enterprises
  * Modern, scalable design system with premium aesthetics
+ *
+ * NOTE: Google Fonts are loaded via <link> tags in `pages/_document.tsx`
+ * (with preconnect hints to fonts.googleapis.com / fonts.gstatic.com) to
+ * avoid the render-blocking CSS @import request chain. System fallbacks
+ * below keep the UI readable until webfonts swap in (font-display: swap).
  */
-
-@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 
 :root {
   /* ===== COLOR SYSTEM ===== */
