@@ -36,12 +36,14 @@
     "fly:preflight": "bash scripts/fly-preflight.sh",
     "fly:deploy:api": "bash scripts/fly-deploy-api.sh",
     "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test",
+    "infamous:100": "bash scripts/setup.sh && pnpm -r --if-present --workspace-concurrency=1 test -- --runInBand && pnpm run typecheck && pnpm run lint",
     "smoke:release": "bash scripts/release-smoke-check.sh",
     "deploy:check": "pnpm validate && pnpm audit:prod && pnpm smoke:release",
     "deploy:work": "bash scripts/deploy-work-branch.sh",
     "health": "pnpm run lint && pnpm run typecheck && pnpm run test",
     "health:quick": "pnpm run lint && pnpm run typecheck",
-    "fly:deploy:web": "bash scripts/fly-deploy-web.sh"
+    "fly:deploy:web": "bash scripts/fly-deploy-web.sh",
+    "security:scan:image": "bash scripts/security-scan-image.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
