@@ -25,7 +25,7 @@ docker info
 docker build -t <image_name> .
 
 # Build without cache
-docker build -t <image_name> . --no-cache
+docker build --no-cache -t <image_name> .
 
 # List local images
 docker images
