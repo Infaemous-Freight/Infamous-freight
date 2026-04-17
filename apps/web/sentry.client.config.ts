@@ -18,8 +18,11 @@ if (dsn) {
     tracesSampleRate: isDevelopment ? 1.0 : 0.1,
 
     // Session Replay
-    replaysSessionSampleRate: isDevelopment ? 1.0 : 0.1,
-    replaysOnErrorSampleRate: isDevelopment ? 1.0 : 1.0, // Always capture on error
+    // Do not record full sessions in production by default; the replay
+    // recorder bundle is non-trivial and the event volume is expensive.
+    // Errors still produce a replay via replaysOnErrorSampleRate.
+    replaysSessionSampleRate: isDevelopment ? 1.0 : 0,
+    replaysOnErrorSampleRate: 1.0, // Always capture on error
 
     // Release
     release: process.env.NEXT_PUBLIC_SENTRY_RELEASE || "unknown",

@@ -1,6 +1,4 @@
 import type { AppProps } from "next/app";
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import * as Sentry from "@sentry/nextjs";
@@ -49,7 +47,8 @@ function App({ Component, pageProps }: AppProps): React.ReactElement {
 
   // Initialize monitoring on app mount
   useEffect(() => {
-    // Track route changes
+    // Track route changes as breadcrumbs only; sending a Sentry event per
+    // navigation created avoidable network + CPU work on mobile.
     const handleRouteChange = (url: string) => {
       Sentry.addBreadcrumb({
         message: `Navigated to ${url}`,
@@ -60,16 +59,8 @@ function App({ Component, pageProps }: AppProps): React.ReactElement {
 
     router.events.on("routeChangeStart", handleRouteChange);
 
-    // Track page views
-    const handleRouteComplete = (url: string) => {
-      Sentry.captureMessage(`Page View: ${url}`, "info");
-    };
-
-    router.events.on("routeChangeComplete", handleRouteComplete);
-
     return () => {
       router.events.off("routeChangeStart", handleRouteChange);
-      router.events.off("routeChangeComplete", handleRouteComplete);
     };
   }, [router]);
 
@@ -144,8 +135,6 @@ function App({ Component, pageProps }: AppProps): React.ReactElement {
       <AuthProvider>
         <GlobalLayout>
           <Component {...pageProps} />
-          <Analytics />
-          {isProduction ? <SpeedInsights /> : null}
         </GlobalLayout>
       </AuthProvider>
     </SentryErrorBoundary>

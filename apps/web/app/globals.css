@@ -30,3 +30,17 @@
     text-decoration: none;
   }
 }
+
+/* Lightweight entrance used by the marketing hero card.
+   Replaces framer-motion for the landing page so the initial
+   JS bundle stays small on mobile networks. */
+@keyframes if-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

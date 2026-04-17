@@ -31,7 +31,17 @@ const nextConfig = {
     experimental: {
         serverActions: {
             bodySizeLimit: '2mb'
-        }
+        },
+        // Strip named-import barrels down to the single icon / module actually
+        // used at call sites. Drops tens-of-KB off pages that touch these libs.
+        optimizePackageImports: [
+            'lucide-react',
+            'framer-motion',
+            'recharts',
+            '@stripe/react-stripe-js',
+            '@sentry/nextjs',
+            '@datadog/browser-rum',
+        ],
     },
 
     // Performance Optimizations

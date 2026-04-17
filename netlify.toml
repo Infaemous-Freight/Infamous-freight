@@ -100,6 +100,13 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Next.js build-time static media (images, fonts emitted under /_next/) are
+# fingerprinted and safe to treat as immutable.
+[[headers]]
+  for = "/_next/image*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
 # Short TTL for HTML entry points to speed rollback propagation.
 [[headers]]
   for = "/*.html"
@@ -116,12 +123,115 @@
   for = "/api/*"
   [headers.values]
     Cache-Control = "no-store, max-age=0"
+    Vary = "Authorization, Cookie, Accept-Encoding"
 
 # Netlify Image CDN endpoint cache policy.
 [[headers]]
   for = "/.netlify/images*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Favicons and brand marks — not fingerprinted, so keep browser TTL modest
+# while letting Netlify's deploy-triggered CDN invalidation handle rollouts.
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
+
+[[headers]]
+  for = "/favicon-16x16.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/favicon-32x32.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/apple-touch-icon.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/icon-192x192.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/icon-512x512.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/logo-source.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/mask-icon.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+# PWA icon bundle — updated only on deploys, safe for a long browser TTL.
+[[headers]]
+  for = "/icons/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, stale-while-revalidate=86400"
+
+# User avatar fallbacks shipped with the build.
+[[headers]]
+  for = "/avatars/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, stale-while-revalidate=86400"
+
+# i18n message bundles — reload within the hour; SWR keeps mobile fast.
+[[headers]]
+  for = "/locales/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+# PWA manifest — short TTL so icon/theme changes propagate on redeploy.
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json; charset=utf-8"
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# Service workers must never be cached — browsers rely on freshness to
+# detect updates. Also scope the worker to the whole site explicitly.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+[[headers]]
+  for = "/service-worker.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+[[headers]]
+  for = "/register-sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# SEO artifacts — refresh within the hour while letting CDN serve stale.
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/openai-domain-verification.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
 
 [functions]
   node_bundler = "esbuild"
