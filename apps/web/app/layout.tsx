@@ -61,7 +61,7 @@ export default function RootLayout({
         <Script id="register-sw" strategy="afterInteractive">
           {`if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
-              navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).catch(function () {});
+              navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
             });
           }`}
         </Script>
