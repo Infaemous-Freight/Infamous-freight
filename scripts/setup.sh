@@ -15,7 +15,28 @@ sanitize_npm_proxy_env() {
   unset NPM_CONFIG_HTTP_PROXY || true
 }
 
+seed_env_file() {
+  local source_file=$1
+  local target_file=$2
+  if [ -f "$source_file" ] && [ ! -f "$target_file" ]; then
+    echo "==> Creating ${target_file} from ${source_file}"
+    cp "$source_file" "$target_file"
+  fi
+}
+
+bootstrap_node_runtime() {
+  export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+  if [ -s "$NVM_DIR/nvm.sh" ]; then
+    # shellcheck disable=SC1090
+    . "$NVM_DIR/nvm.sh"
+    nvm install
+    nvm use
+  fi
+}
+
 sanitize_npm_proxy_env
+echo "==> Initializing Node runtime"
+bootstrap_node_runtime
 
 echo "==> Enabling pnpm via Corepack"
 corepack enable
@@ -25,9 +46,14 @@ if [ -f ".env.example" ] && [ ! -f ".env" ]; then
   echo "==> Creating .env from .env.example"
   cp .env.example .env
 fi
+seed_env_file "apps/api/.env.example" "apps/api/.env"
+seed_env_file "apps/web/.env.example" "apps/web/.env.local"
 
 echo "==> Installing dependencies"
-pnpm install
+pnpm install --frozen-lockfile
+
+echo "==> Generating Prisma client"
+pnpm prisma:generate
 
 echo "==> Building shared package and workspaces"
 pnpm build

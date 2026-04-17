@@ -1,9 +1,11 @@
 import { Router } from "express";
 import { z } from "zod";
-import { requireAuth, type AuthenticatedRequest } from "../middleware/auth.js";
+import { getRequiredTenantId, requireAnyRole, requireAuth, requireTenantContext } from "../middleware/auth.js";
 import { prisma } from "../db/prisma.js";
 
 const router: Router = Router();
+
+const tenantRouteRoles = ["owner", "admin", "dispatcher", "shipper", "user"];
 
 const createLoadSchema = z.object({
   originCity: z.string().min(1),
@@ -16,9 +18,9 @@ const createLoadSchema = z.object({
   status: z.literal("OPEN").default("OPEN"),
 });
 
-router.get("/", requireAuth, async (req, res, next) => {
+router.get("/", requireAuth, requireTenantContext, requireAnyRole(tenantRouteRoles), async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = getRequiredTenantId(req);
     const loads = await prisma.load.findMany({
       where: { tenantId },
       orderBy: { createdAt: "desc" },
@@ -29,9 +31,9 @@ router.get("/", requireAuth, async (req, res, next) => {
   }
 });
 
-router.post("/", requireAuth, async (req, res, next) => {
+router.post("/", requireAuth, requireTenantContext, requireAnyRole(tenantRouteRoles), async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = getRequiredTenantId(req);
     const body = createLoadSchema.parse(req.body);
     const load = await prisma.load.create({ data: { tenantId, ...body } });
     res.status(201).json({ ok: true, data: load });
@@ -40,9 +42,9 @@ router.post("/", requireAuth, async (req, res, next) => {
   }
 });
 
-router.patch("/:id/status", requireAuth, async (req, res, next) => {
+router.patch("/:id/status", requireAuth, requireTenantContext, requireAnyRole(tenantRouteRoles), async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = getRequiredTenantId(req);
     const { status } = z.object({ status: z.string() }).parse(req.body);
     const id = req.params.id as string;
     const load = await prisma.load.findFirst({ where: { id, tenantId } });

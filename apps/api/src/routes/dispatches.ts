@@ -1,9 +1,11 @@
 import { Router } from "express";
 import { z } from "zod";
-import { requireAuth, type AuthenticatedRequest } from "../middleware/auth.js";
+import { getRequiredTenantId, requireAnyRole, requireAuth, requireTenantContext } from "../middleware/auth.js";
 import { prisma } from "../db/prisma.js";
 
 const router: Router = Router();
+
+const tenantRouteRoles = ["owner", "admin", "dispatcher", "shipper", "user"];
 
 const createDispatchSchema = z.object({
   loadId: z.string().min(1),
@@ -11,9 +13,9 @@ const createDispatchSchema = z.object({
   notes: z.string().optional(),
 });
 
-router.get("/", requireAuth, async (req, res, next) => {
+router.get("/", requireAuth, requireTenantContext, requireAnyRole(tenantRouteRoles), async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = getRequiredTenantId(req);
     const dispatches = await prisma.dispatch.findMany({
       where: { tenantId },
       orderBy: { createdAt: "desc" },
@@ -24,9 +26,9 @@ router.get("/", requireAuth, async (req, res, next) => {
   }
 });
 
-router.post("/", requireAuth, async (req, res, next) => {
+router.post("/", requireAuth, requireTenantContext, requireAnyRole(tenantRouteRoles), async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = getRequiredTenantId(req);
     const body = createDispatchSchema.parse(req.body);
     const dispatch = await prisma.dispatch.create({
       data: { tenantId, ...body },
@@ -37,9 +39,9 @@ router.post("/", requireAuth, async (req, res, next) => {
   }
 });
 
-router.patch("/:id", requireAuth, async (req, res, next) => {
+router.patch("/:id", requireAuth, requireTenantContext, requireAnyRole(tenantRouteRoles), async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = getRequiredTenantId(req);
     const { status } = z.object({ status: z.string() }).parse(req.body);
     const id = req.params.id as string;
     const existing = await prisma.dispatch.findFirst({

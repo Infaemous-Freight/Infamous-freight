@@ -1,9 +1,11 @@
 import { Router } from "express";
 import { z } from "zod";
-import { requireAuth, type AuthenticatedRequest } from "../middleware/auth.js";
+import { getRequiredTenantId, requireAnyRole, requireAuth, requireTenantContext } from "../middleware/auth.js";
 import { prisma } from "../db/prisma.js";
 
 const router: Router = Router();
+
+const tenantRouteRoles = ["owner", "admin", "dispatcher", "shipper", "user"];
 
 const createDriverSchema = z.object({
   name: z.string().min(1),
@@ -12,9 +14,9 @@ const createDriverSchema = z.object({
   status: z.enum(["AVAILABLE", "ON_DUTY", "OFF_DUTY"]).default("AVAILABLE"),
 });
 
-router.get("/", requireAuth, async (req, res, next) => {
+router.get("/", requireAuth, requireTenantContext, requireAnyRole(tenantRouteRoles), async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = getRequiredTenantId(req);
     const drivers = await prisma.driver.findMany({
       where: { tenantId },
       orderBy: { name: "asc" },
@@ -25,9 +27,9 @@ router.get("/", requireAuth, async (req, res, next) => {
   }
 });
 
-router.post("/", requireAuth, async (req, res, next) => {
+router.post("/", requireAuth, requireTenantContext, requireAnyRole(tenantRouteRoles), async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = getRequiredTenantId(req);
     const body = createDriverSchema.parse(req.body);
     const driver = await prisma.driver.create({
       data: { tenantId, ...body },
@@ -38,9 +40,9 @@ router.post("/", requireAuth, async (req, res, next) => {
   }
 });
 
-router.patch("/:id/status", requireAuth, async (req, res, next) => {
+router.patch("/:id/status", requireAuth, requireTenantContext, requireAnyRole(tenantRouteRoles), async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user?.tenantId ?? "";
+    const tenantId = getRequiredTenantId(req);
     const { status } = z
       .object({
         status: z.enum(["AVAILABLE", "ON_DUTY", "OFF_DUTY"]),

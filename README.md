@@ -225,6 +225,81 @@ Install dependencies.
 pnpm install
 ```
 
+Or run the one-command API quickstart (installs deps, builds, and starts API):
+
+```bash
+pnpm run quickstart:api
+```
+
+This quickstart seeds missing env files from templates:
+`./.env`, `apps/api/.env`, and `apps/web/.env.local`.
+
+### Optional: GitHub MCP server (Docker)
+
+```bash
+cp .mcp.json.example .mcp.json
+export GITHUB_PERSONAL_ACCESS_TOKEN=your-personal-access-token
+export GITHUB_API_URL=https://github.example.com/api/v3 # optional (GitHub Enterprise)
+docker run --rm -i \
+  -e GITHUB_PERSONAL_ACCESS_TOKEN=your-personal-access-token \
+  -e GITHUB_API_URL=https://github.example.com/api/v3 \
+  dhi.io/github-mcp
+```
+
+The local `.mcp.json` file is gitignored to avoid committing personal tokens.
+You can also run:
+
+```bash
+pnpm run mcp:github
+```
+
+To query the structure of the main branch from Git:
+
+```bash
+pnpm run repo:structure:main
+# full tree:
+TREE_FULL=true pnpm run repo:structure:main
+```
+
+To create a GitHub issue from CLI (title + description + optional labels):
+
+```bash
+bash scripts/create-github-issue.sh project/repo "Bug title" "Bug description" "bug,priority:high"
+```
+
+To create a PR from your current feature branch to `main`:
+
+```bash
+bash scripts/create-github-pr.sh main "PR title" "PR description" "reviewer1,reviewer2"
+```
+
+To check the latest CI run status for a PR:
+
+```bash
+# current PR inferred by gh:
+pnpm run github:pr:ci-status
+# or provide PR number:
+bash scripts/check-latest-pr-ci-status.sh 123
+```
+
+To check your current GitHub API rate limit:
+
+```bash
+pnpm run github:rate-limit
+```
+
+To find all files using a deprecated API function:
+
+```bash
+pnpm run repo:find-deprecated-api -- "<deprecated_function_name>"
+```
+
+To verify a pulled image matches an expected SHA256 digest:
+
+```bash
+pnpm run docker:verify-digest -- dhi.io/github-mcp sha256:50b2c4f88e0dda38d3a163ad8ef1460fde82a70e2b28da73e6035f93c6f545d9
+```
+
 > **Runtime requirement:** this repo enforces Node.js **24.x** (see `.node-version` / `.nvmrc`). If you are not on the pinned Node version, `pnpm` will fail with `ERR_PNPM_UNSUPPORTED_ENGINE`.
 >
 > If you hit that error, switch to the version defined by the repo and retry install:
