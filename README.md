@@ -239,9 +239,17 @@ This quickstart seeds missing env files from templates:
 ```bash
 cp .mcp.json.example .mcp.json
 export GITHUB_PERSONAL_ACCESS_TOKEN=your-personal-access-token
+docker run --rm -i \
+  -e GITHUB_PERSONAL_ACCESS_TOKEN=your-personal-access-token \
+  dhi.io/github-mcp
 ```
 
 The local `.mcp.json` file is gitignored to avoid committing personal tokens.
+You can also run:
+
+```bash
+pnpm run mcp:github
+```
 
 > **Runtime requirement:** this repo enforces Node.js **24.x** (see `.node-version` / `.nvmrc`). If you are not on the pinned Node version, `pnpm` will fail with `ERR_PNPM_UNSUPPORTED_ENGINE`.
 >
