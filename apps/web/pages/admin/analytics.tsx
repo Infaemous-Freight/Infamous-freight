@@ -15,33 +15,37 @@ const ChartSkeleton = ({ height }: { height: number }) => (
   />
 );
 
-// @ts-ignore - Next.js dynamic import type mismatch with React 19
-const RevenueAreaChart = dynamic(() => import("../../components/analytics/RevenueAreaChart"), {
-  ssr: false,
-  loading: () => <ChartSkeleton height={300} />,
-});
+const RevenueAreaChart = dynamic<Record<string, never>>(
+  () => import("../../components/analytics/RevenueAreaChart").then((mod) => mod.default),
+  {
+    ssr: false,
+    loading: () => <ChartSkeleton height={300} />,
+  },
+);
 
-// @ts-ignore - Next.js dynamic import type mismatch with React 19
-const ShipmentsBarChart = dynamic(() => import("../../components/analytics/ShipmentsBarChart"), {
-  ssr: false,
-  loading: () => <ChartSkeleton height={250} />,
-});
+const ShipmentsBarChart = dynamic<Record<string, never>>(
+  () => import("../../components/analytics/ShipmentsBarChart").then((mod) => mod.default),
+  {
+    ssr: false,
+    loading: () => <ChartSkeleton height={250} />,
+  },
+);
 
-// @ts-ignore - Next.js dynamic import type mismatch with React 19
-const ActiveUsersLineChart = dynamic(
-  () => import("../../components/analytics/ActiveUsersLineChart"),
+const ActiveUsersLineChart = dynamic<Record<string, never>>(
+  () => import("../../components/analytics/ActiveUsersLineChart").then((mod) => mod.default),
   { ssr: false, loading: () => <ChartSkeleton height={250} /> },
 );
 
-// @ts-ignore - Next.js dynamic import type mismatch with React 19
-const ErrorRateLineChart = dynamic(() => import("../../components/analytics/ErrorRateLineChart"), {
-  ssr: false,
-  loading: () => <ChartSkeleton height={250} />,
-});
+const ErrorRateLineChart = dynamic<Record<string, never>>(
+  () => import("../../components/analytics/ErrorRateLineChart").then((mod) => mod.default),
+  {
+    ssr: false,
+    loading: () => <ChartSkeleton height={250} />,
+  },
+);
 
-// @ts-ignore - Next.js dynamic import type mismatch with React 19
-const ApiLatencyAreaChart = dynamic(
-  () => import("../../components/analytics/ApiLatencyAreaChart"),
+const ApiLatencyAreaChart = dynamic<Record<string, never>>(
+  () => import("../../components/analytics/ApiLatencyAreaChart").then((mod) => mod.default),
   { ssr: false, loading: () => <ChartSkeleton height={250} /> },
 );
 
