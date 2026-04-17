@@ -23,6 +23,7 @@ function loadRum(): Promise<DatadogRum | null> {
       .then((mod) => mod.datadogRum)
       .catch((error) => {
         console.error("[Datadog RUM] Failed to load SDK:", error);
+        rumPromise = null;
         return null;
       });
   }
