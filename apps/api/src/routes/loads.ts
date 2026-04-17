@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { requireAuth, requireTenantContext, type AuthenticatedRequest } from "../middleware/auth.js";
+import { getRequiredTenantId, requireAuth, requireTenantContext } from "../middleware/auth.js";
 import { prisma } from "../db/prisma.js";
 
 const router: Router = Router();
@@ -18,7 +18,7 @@ const createLoadSchema = z.object({
 
 router.get("/", requireAuth, requireTenantContext, async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user!.tenantId!;
+    const tenantId = getRequiredTenantId(req);
     const loads = await prisma.load.findMany({
       where: { tenantId },
       orderBy: { createdAt: "desc" },
@@ -31,7 +31,7 @@ router.get("/", requireAuth, requireTenantContext, async (req, res, next) => {
 
 router.post("/", requireAuth, requireTenantContext, async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user!.tenantId!;
+    const tenantId = getRequiredTenantId(req);
     const body = createLoadSchema.parse(req.body);
     const load = await prisma.load.create({ data: { tenantId, ...body } });
     res.status(201).json({ ok: true, data: load });
@@ -42,7 +42,7 @@ router.post("/", requireAuth, requireTenantContext, async (req, res, next) => {
 
 router.patch("/:id/status", requireAuth, requireTenantContext, async (req, res, next) => {
   try {
-    const tenantId = (req as AuthenticatedRequest).user!.tenantId!;
+    const tenantId = getRequiredTenantId(req);
     const { status } = z.object({ status: z.string() }).parse(req.body);
     const id = req.params.id as string;
     const load = await prisma.load.findFirst({ where: { id, tenantId } });

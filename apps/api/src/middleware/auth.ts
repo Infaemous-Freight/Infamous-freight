@@ -68,3 +68,11 @@ export function requireTenantContext(req: Request, _res: Response, next: NextFun
   req.tenantId = tenantId;
   next();
 }
+
+export function getRequiredTenantId(req: Request): string {
+  const tenantId = req.user?.tenantId ?? req.tenantId;
+  if (!tenantId) {
+    throw new ApiError(403, "TENANT_CONTEXT_REQUIRED", "Tenant context is required");
+  }
+  return tenantId;
+}

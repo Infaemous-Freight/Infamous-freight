@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type { NextFunction, Request, Response } from "express";
 import { ApiError } from "../utils/errors.js";
-import { requireTenantContext } from "./auth.js";
+import { getRequiredTenantId, requireTenantContext } from "./auth.js";
 
 describe("requireTenantContext", () => {
   it("returns TENANT_CONTEXT_REQUIRED when auth or tenant context is missing", () => {
@@ -40,5 +40,16 @@ describe("requireTenantContext", () => {
     expect(next).toHaveBeenCalledWith();
     expect(req.user?.tenantId).toBe("tenant_from_auth");
     expect(req.tenantId).toBe("tenant_from_auth");
+  });
+
+  it("getRequiredTenantId returns tenantId when present", () => {
+    const req = { tenantId: "tenant_123", headers: {} } as Request;
+    expect(getRequiredTenantId(req)).toBe("tenant_123");
+  });
+
+  it("getRequiredTenantId throws ApiError when tenantId is missing", () => {
+    const req = { headers: {} } as Request;
+    expect(() => getRequiredTenantId(req)).toThrowError(ApiError);
+    expect(() => getRequiredTenantId(req)).toThrowError("Tenant context is required");
   });
 });
