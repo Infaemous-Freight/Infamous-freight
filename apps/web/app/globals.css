@@ -30,3 +30,37 @@
     text-decoration: none;
   }
 }
+
+@layer utilities {
+  @keyframes if-fade-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .if-fade-up {
+    animation: if-fade-up 450ms ease-out both;
+    will-change: transform, opacity;
+  }
+
+  .if-hover-lift {
+    transition: transform 200ms ease-out;
+  }
+
+  .if-hover-lift:hover {
+    transform: translate3d(0, -4px, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .if-fade-up,
+    .if-hover-lift {
+      animation: none;
+      transition: none;
+    }
+  }
+}

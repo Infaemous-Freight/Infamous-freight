@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-const stripePromise = publishableKey ? loadStripe(publishableKey) : null;
 
 export default function BillingReturnPage() {
   const [message, setMessage] = useState("Checking payment status...");
 
   useEffect(() => {
-    if (!publishableKey || !stripePromise) {
+    if (!publishableKey) {
       setMessage("Stripe is not configured for this environment.");
       return;
     }
@@ -22,9 +20,17 @@ export default function BillingReturnPage() {
       return;
     }
 
-    stripePromise
-      .then((stripe) => stripe?.retrievePaymentIntent(clientSecret))
-      .then((result) => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const { loadStripe } = await import("@stripe/stripe-js");
+        const stripe = await loadStripe(publishableKey);
+        if (cancelled) return;
+
+        const result = await stripe?.retrievePaymentIntent(clientSecret);
+        if (cancelled) return;
+
         const status = result?.paymentIntent?.status;
         if (status === "succeeded") {
           setMessage("Subscription activated successfully.");
@@ -39,8 +45,14 @@ export default function BillingReturnPage() {
           return;
         }
         setMessage("Unable to determine payment status.");
-      })
-      .catch(() => setMessage("Unable to determine payment status."));
+      } catch {
+        if (!cancelled) setMessage("Unable to determine payment status.");
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (

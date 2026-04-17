@@ -1,7 +1,6 @@
 "use client";
 
 import React, { type FormEvent, useMemo, useState } from "react";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -283,12 +282,7 @@ export default function InfamousFreightWebApp() {
             </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
-            className="flex items-center"
-          >
+          <div className="if-fade-up flex items-center">
             <div className="w-full rounded-[28px] border border-slate-200 p-6 shadow-lg">
               <div className="mb-4 flex items-center justify-between">
                 <div>
@@ -314,7 +308,7 @@ export default function InfamousFreightWebApp() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
         </section>
 
         <section id="services" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
@@ -325,7 +319,7 @@ export default function InfamousFreightWebApp() {
           />
           <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {services.map((service) => (
-              <motion.div key={service.title} whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
+              <div key={service.title} className="if-hover-lift">
                 <div className="h-full rounded-2xl border border-slate-200 p-6 shadow-sm">
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100">
                     <service.icon className="h-6 w-6" />
@@ -333,7 +327,7 @@ export default function InfamousFreightWebApp() {
                   <div className="text-xl font-semibold">{service.title}</div>
                   <p className="mt-3 text-sm leading-6 text-slate-600">{service.description}</p>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>

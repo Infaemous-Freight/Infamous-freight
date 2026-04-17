@@ -1,20 +1,49 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import dynamic from "next/dynamic";
+
+const ChartSkeleton = ({ height }: { height: number }) => (
+  <div
+    style={{
+      height,
+      width: "100%",
+      background: "linear-gradient(90deg, #f0f0f0 0%, #e5e5e5 50%, #f0f0f0 100%)",
+      borderRadius: 4,
+    }}
+    aria-label="Loading chart"
+  />
+);
+
+// @ts-ignore - Next.js dynamic import type mismatch with React 19
+const RevenueAreaChart = dynamic(() => import("../../components/analytics/RevenueAreaChart"), {
+  ssr: false,
+  loading: () => <ChartSkeleton height={300} />,
+});
+
+// @ts-ignore - Next.js dynamic import type mismatch with React 19
+const ShipmentsBarChart = dynamic(() => import("../../components/analytics/ShipmentsBarChart"), {
+  ssr: false,
+  loading: () => <ChartSkeleton height={250} />,
+});
+
+// @ts-ignore - Next.js dynamic import type mismatch with React 19
+const ActiveUsersLineChart = dynamic(
+  () => import("../../components/analytics/ActiveUsersLineChart"),
+  { ssr: false, loading: () => <ChartSkeleton height={250} /> },
+);
+
+// @ts-ignore - Next.js dynamic import type mismatch with React 19
+const ErrorRateLineChart = dynamic(() => import("../../components/analytics/ErrorRateLineChart"), {
+  ssr: false,
+  loading: () => <ChartSkeleton height={250} />,
+});
+
+// @ts-ignore - Next.js dynamic import type mismatch with React 19
+const ApiLatencyAreaChart = dynamic(
+  () => import("../../components/analytics/ApiLatencyAreaChart"),
+  { ssr: false, loading: () => <ChartSkeleton height={250} /> },
+);
 
 interface MetricData {
   timestamp: string;
@@ -59,7 +88,6 @@ export default function AnalyticsDashboard(): React.ReactElement {
     <div style={{ padding: "20px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
       <h1>Analytics Dashboard</h1>
 
-      {/* Date Range Selector */}
       <div style={{ marginBottom: "20px" }}>
         <label>Date Range: </label>
         <select value={dateRange} onChange={(e) => setDateRange(e.target.value)}>
@@ -69,7 +97,6 @@ export default function AnalyticsDashboard(): React.ReactElement {
         </select>
       </div>
 
-      {/* Revenue Chart */}
       <div
         style={{
           backgroundColor: "white",
@@ -79,18 +106,9 @@ export default function AnalyticsDashboard(): React.ReactElement {
         }}
       >
         <h2>Revenue Trend</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={dashboardData.revenue}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="timestamp" />
-            <YAxis />
-            <Tooltip />
-            <Area type="monotone" dataKey="value" stroke="#8884d8" fill="#8884d8" />
-          </AreaChart>
-        </ResponsiveContainer>
+        <RevenueAreaChart data={dashboardData.revenue} />
       </div>
 
-      {/* Shipments & Active Users */}
       <div
         style={{
           display: "grid",
@@ -101,58 +119,24 @@ export default function AnalyticsDashboard(): React.ReactElement {
       >
         <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "8px" }}>
           <h2>Shipments Processed</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={dashboardData.shipments}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="timestamp" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#82ca9d" />
-            </BarChart>
-          </ResponsiveContainer>
+          <ShipmentsBarChart data={dashboardData.shipments} />
         </div>
 
         <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "8px" }}>
           <h2>Active Users</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={dashboardData.activeUsers}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="timestamp" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="value" stroke="#ffc658" />
-            </LineChart>
-          </ResponsiveContainer>
+          <ActiveUsersLineChart data={dashboardData.activeUsers} />
         </div>
       </div>
 
-      {/* Error Rate & API Latency */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
         <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "8px" }}>
           <h2>Error Rate (%)</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={dashboardData.errorRate}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="timestamp" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="value" stroke="#ff7c7c" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
+          <ErrorRateLineChart data={dashboardData.errorRate} />
         </div>
 
         <div style={{ backgroundColor: "white", padding: "20px", borderRadius: "8px" }}>
           <h2>API Latency (ms)</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={dashboardData.apiLatency}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="timestamp" />
-              <YAxis />
-              <Tooltip />
-              <Area type="monotone" dataKey="value" stroke="#8dd1e1" fill="#8dd1e1" opacity={0.5} />
-            </AreaChart>
-          </ResponsiveContainer>
+          <ApiLatencyAreaChart data={dashboardData.apiLatency} />
         </div>
       </div>
     </div>
