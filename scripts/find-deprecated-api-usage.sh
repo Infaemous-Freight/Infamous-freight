@@ -10,7 +10,7 @@ if ! command -v rg >/dev/null 2>&1; then
   exit 1
 fi
 
-matches="$(rg -n --glob '!node_modules/**' --glob '!.next/**' --glob '!dist/**' "${PATTERN}" . || true)"
+matches="$(rg -n --glob '!node_modules/**' --glob '!.next/**' --glob '!dist/**' -- "${PATTERN}" . || true)"
 
 if [ -z "${matches}" ]; then
   echo "No matches found for pattern: ${PATTERN}"
