@@ -282,6 +282,12 @@ pnpm run github:pr:ci-status
 bash scripts/check-latest-pr-ci-status.sh 123
 ```
 
+To check your current GitHub API rate limit:
+
+```bash
+pnpm run github:rate-limit
+```
+
 To find all files using a deprecated API function:
 
 ```bash
