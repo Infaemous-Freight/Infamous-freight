@@ -1,7 +1,4 @@
-"use client";
-
-import React, { type FormEvent, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import React from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -11,17 +8,19 @@ import {
   Clock3,
   Mail,
   MapPinned,
-  Menu,
-  Navigation,
   Package,
   Phone,
   Route,
-  Search,
   ShieldCheck,
   Smartphone,
   Truck,
   Warehouse,
 } from "lucide-react";
+
+import SiteHeaderNav from "./SiteHeaderNav";
+import TrackingLookup from "./TrackingLookup";
+import CoverageTabs from "./CoverageTabs";
+import QuoteForm from "./QuoteForm";
 
 type Service = {
   title: string;
@@ -72,13 +71,6 @@ const advantages = [
   "Operational dashboards designed for execution, not fluff",
 ];
 
-const laneCards = [
-  { lane: "Dallas → Chicago", eta: "1.5 days", mode: "FTL" },
-  { lane: "Atlanta → Miami", eta: "1 day", mode: "LTL / FTL" },
-  { lane: "Los Angeles → Phoenix", eta: "Same day", mode: "Expedited" },
-  { lane: "Houston → Memphis", eta: "1 day", mode: "Drayage / FTL" },
-];
-
 const platformLinks = [
   { label: "Operations Dashboard", href: "/dashboard" },
   { label: "Loadboard", href: "/loadboard" },
@@ -122,130 +114,9 @@ function SectionHeader({
 }
 
 export default function InfamousFreightWebApp() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [trackingId, setTrackingId] = useState("IF-482193");
-  const [activeTab, setActiveTab] = useState<"regional" | "national" | "specialized">("regional");
-  const [quoteForm, setQuoteForm] = useState({
-    company: "",
-    contact: "",
-    email: "",
-    origin: "",
-    destination: "",
-    details: "",
-  });
-
-  const trackingStatus = useMemo(() => {
-    const normalized = trackingId.trim().toUpperCase();
-    if (!normalized) return null;
-
-    return {
-      id: normalized,
-      stage: "In Transit",
-      currentLocation: "Springfield, MO",
-      nextCheckpoint: "St. Louis, MO",
-      eta: "Tomorrow by 10:30 AM",
-    };
-  }, [trackingId]);
-
-  const handleQuoteSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const body = [
-      `Company: ${quoteForm.company || "N/A"}`,
-      `Contact: ${quoteForm.contact || "N/A"}`,
-      `Email: ${quoteForm.email || "N/A"}`,
-      `Origin: ${quoteForm.origin || "N/A"}`,
-      `Destination: ${quoteForm.destination || "N/A"}`,
-      "",
-      "Freight details:",
-      quoteForm.details || "N/A",
-    ].join("\n");
-
-    const query = new URLSearchParams({
-      subject: `Freight quote request from ${quoteForm.company || "Website lead"}`,
-      body,
-    });
-
-    window.location.href = `mailto:quotes@infamousfreight.com?${query.toString()}`;
-  };
-
   return (
     <div className="min-h-screen bg-white text-slate-900">
-      <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50">
-              <Truck className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-lg font-semibold tracking-tight">Infamous Freight</div>
-              <div className="text-xs uppercase tracking-[0.24em] text-slate-500">Move Faster. Know More.</div>
-            </div>
-          </div>
-
-          <nav className="hidden items-center gap-8 md:flex">
-            <a href="#services" className="text-sm text-slate-600 transition hover:text-slate-900">
-              Services
-            </a>
-            <a href="#tracking" className="text-sm text-slate-600 transition hover:text-slate-900">
-              Tracking
-            </a>
-            <a href="#coverage" className="text-sm text-slate-600 transition hover:text-slate-900">
-              Coverage
-            </a>
-            <a href="#quote" className="text-sm text-slate-600 transition hover:text-slate-900">
-              Get Quote
-            </a>
-          </nav>
-
-          <div className="hidden items-center gap-3 md:flex">
-            <Link
-              href="/dashboard"
-              className="rounded-2xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
-            >
-              Customer Portal
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-2xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
-            >
-              Book Shipment
-            </Link>
-          </div>
-
-          <button
-            className="inline-flex rounded-xl border border-slate-300 p-2 md:hidden"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Toggle navigation"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-navigation"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-        </div>
-
-        {menuOpen ? (
-          <div id="mobile-navigation" className="border-t border-slate-200 md:hidden">
-            <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-4 sm:px-6 lg:px-8">
-              <a href="#services" className="text-sm text-slate-600">
-                Services
-              </a>
-              <a href="#tracking" className="text-sm text-slate-600">
-                Tracking
-              </a>
-              <a href="#coverage" className="text-sm text-slate-600">
-                Coverage
-              </a>
-              <a href="#quote" className="text-sm text-slate-600">
-                Get Quote
-              </a>
-              <Link href="/dashboard" className="text-sm text-slate-600">
-                Portal
-              </Link>
-            </div>
-          </div>
-        ) : null}
-      </header>
+      <SiteHeaderNav />
 
       <main>
         <section className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:py-24">
@@ -283,12 +154,7 @@ export default function InfamousFreightWebApp() {
             </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45 }}
-            className="flex items-center"
-          >
+          <div className="flex items-center">
             <div className="w-full rounded-[28px] border border-slate-200 p-6 shadow-lg">
               <div className="mb-4 flex items-center justify-between">
                 <div>
@@ -314,7 +180,7 @@ export default function InfamousFreightWebApp() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
         </section>
 
         <section id="services" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
@@ -325,15 +191,16 @@ export default function InfamousFreightWebApp() {
           />
           <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {services.map((service) => (
-              <motion.div key={service.title} whileHover={{ y: -4 }} transition={{ duration: 0.2 }}>
-                <div className="h-full rounded-2xl border border-slate-200 p-6 shadow-sm">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100">
-                    <service.icon className="h-6 w-6" />
-                  </div>
-                  <div className="text-xl font-semibold">{service.title}</div>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{service.description}</p>
+              <div
+                key={service.title}
+                className="h-full rounded-2xl border border-slate-200 p-6 shadow-sm transition-transform duration-200 hover:-translate-y-1"
+              >
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100">
+                  <service.icon className="h-6 w-6" />
                 </div>
-              </motion.div>
+                <div className="text-xl font-semibold">{service.title}</div>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{service.description}</p>
+              </div>
             ))}
           </div>
         </section>
@@ -396,46 +263,7 @@ export default function InfamousFreightWebApp() {
             title="Shipment lookup that customers will actually use"
             description="Simple load visibility reduces inbound calls and update-chasing."
           />
-          <div className="mt-8 rounded-3xl border border-slate-200 p-6 shadow-sm sm:p-8">
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <label className="relative flex-1">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-                <input
-                  value={trackingId}
-                  onChange={(e) => setTrackingId(e.target.value)}
-                  aria-label="Track shipment by PRO, BOL, or shipment ID"
-                  className="h-12 w-full rounded-2xl border border-slate-300 pl-10"
-                  placeholder="Enter PRO, BOL, or shipment ID"
-                />
-              </label>
-            </div>
-
-            {trackingStatus ? (
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
-                <div className="rounded-2xl border border-slate-200 p-5">
-                  <div className="text-sm text-slate-600">Shipment ID</div>
-                  <div className="mt-1 text-xl font-semibold">{trackingStatus.id}</div>
-                  <span className="mt-4 inline-flex rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">
-                    {trackingStatus.stage}
-                  </span>
-                </div>
-                <div className="rounded-2xl border border-slate-200 p-5">
-                  <div className="flex items-center gap-2 text-sm text-slate-600">
-                    <Navigation className="h-4 w-4" /> Current Position
-                  </div>
-                  <div className="mt-2 text-xl font-semibold">{trackingStatus.currentLocation}</div>
-                </div>
-                <div className="rounded-2xl border border-slate-200 p-5">
-                  <div className="text-sm text-slate-600">Next Checkpoint</div>
-                  <div className="mt-2 text-xl font-semibold">{trackingStatus.nextCheckpoint}</div>
-                </div>
-                <div className="rounded-2xl border border-slate-200 p-5">
-                  <div className="text-sm text-slate-600">Estimated Delivery</div>
-                  <div className="mt-2 text-xl font-semibold">{trackingStatus.eta}</div>
-                </div>
-              </div>
-            ) : null}
-          </div>
+          <TrackingLookup />
         </section>
 
         <section id="coverage" className="border-y border-slate-200 bg-slate-50/60">
@@ -445,38 +273,7 @@ export default function InfamousFreightWebApp() {
               title="Lane examples and service reach"
               description="Position lane depth clearly to qualify better freight and reduce low-fit requests."
             />
-            <div className="mt-8 flex gap-3">
-              {(["regional", "national", "specialized"] as const).map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`rounded-2xl px-4 py-2 text-sm capitalize ${
-                    activeTab === tab ? "bg-slate-900 text-white" : "border border-slate-300 text-slate-700"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-            <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6">
-              {activeTab === "regional" ? (
-                <div className="grid gap-4 md:grid-cols-2">
-                  {laneCards.map((lane) => (
-                    <div key={lane.lane} className="rounded-2xl border border-slate-200 p-5">
-                      <div className="text-sm text-slate-600">{lane.mode}</div>
-                      <div className="mt-2 text-lg font-semibold">{lane.lane}</div>
-                      <div className="mt-3 text-sm text-slate-600">Typical transit: {lane.eta}</div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm leading-6 text-slate-600">
-                  {activeTab === "national"
-                    ? "National FTL, relay support, and brokered overflow capacity across major freight corridors with centralized dispatch communication."
-                    : "Expedited freight, cross-dock transitions, surge response, and capacity recovery support for high-priority loads."}
-                </p>
-              )}
-            </div>
+            <CoverageTabs />
           </div>
         </section>
 
@@ -495,75 +292,11 @@ export default function InfamousFreightWebApp() {
                 <Mail className="h-4 w-4" /> quotes@infamousfreight.com
               </div>
             </div>
-            <div className="rounded-3xl border border-slate-200 p-6 shadow-sm sm:p-8">
-              <form onSubmit={handleQuoteSubmit}>
-                <div className="grid gap-4 md:grid-cols-2">
-                {[
-                  ["company", "Company name"],
-                  ["contact", "Contact name"],
-                  ["email", "Email"],
-                  ["origin", "Origin city / state"],
-                ].map(([field, placeholder]) => {
-                  const type = field === "email" ? "email" : "text";
-                  const autoComplete =
-                    field === "company"
-                      ? "organization"
-                      : field === "contact"
-                        ? "name"
-                        : field === "email"
-                          ? "email"
-                          : field === "origin"
-                            ? "address-level2"
-                            : "off";
-
-                  return (
-                    <input
-                      key={field}
-                      name={field}
-                      type={type}
-                      required
-                      autoComplete={autoComplete}
-                      aria-label={placeholder}
-                      placeholder={placeholder}
-                      className="h-12 rounded-2xl border border-slate-300 px-4"
-                      value={quoteForm[field as keyof typeof quoteForm]}
-                      onChange={(e) => setQuoteForm((prev) => ({ ...prev, [field]: e.target.value }))}
-                    />
-                  );
-                })}
-                <input
-                  name="destination"
-                  type="text"
-                  required
-                  autoComplete="address-level2"
-                  aria-label="Destination city / state"
-                  placeholder="Destination city / state"
-                  className="h-12 rounded-2xl border border-slate-300 px-4 md:col-span-2"
-                  value={quoteForm.destination}
-                  onChange={(e) => setQuoteForm((prev) => ({ ...prev, destination: e.target.value }))}
-                />
-                <textarea
-                  name="details"
-                  required
-                  aria-label="Freight details, weight, equipment type, pickup date, or any special handling notes"
-                  placeholder="Freight details, weight, equipment type, pickup date, or any special handling notes"
-                  className="min-h-[140px] rounded-2xl border border-slate-300 p-4 md:col-span-2"
-                  value={quoteForm.details}
-                  onChange={(e) => setQuoteForm((prev) => ({ ...prev, details: e.target.value }))}
-                />
-                </div>
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-sm text-slate-600">Typical quote response target: under 15 minutes for core lanes.</p>
-                  <button type="submit" className="rounded-2xl bg-slate-900 px-6 py-3 text-white">
-                    Request Quote
-                  </button>
-                </div>
-              </form>
-            </div>
+            <QuoteForm />
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8 [content-visibility:auto] [contain-intrinsic-size:0_700px]">
           <SectionHeader
             eyebrow="Proof"
             title="Messaging that builds trust with buyers"
