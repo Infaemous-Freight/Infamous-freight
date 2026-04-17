@@ -37,7 +37,9 @@ async function cachedRead<T>(key: string, loader: () => Promise<T>): Promise<T> 
 
   const promise = loader()
     .then((data) => {
-      cacheEntries.set(key, { data, expiresAt: Date.now() + LIST_TTL_MS });
+      if (inflight.get(key) === promise) {
+        cacheEntries.set(key, { data, expiresAt: Date.now() + LIST_TTL_MS });
+      }
       return data;
     })
     .finally(() => {
