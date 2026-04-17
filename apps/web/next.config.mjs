@@ -1,20 +1,22 @@
+import { createHash } from 'node:crypto';
 import { withSentryConfig } from '@sentry/nextjs';
 
+// Netlify deploys this Next.js app via @netlify/plugin-nextjs, which serves
+// SSR, ISR, and route handlers from the default Next.js build output (.next).
+// `output: 'export'` would produce a static-only `out/` directory and break
+// the Route Handlers under app/api/*, so it is reserved for build targets
+// that genuinely require a fully-static bundle.
 const isStaticHosting =
     process.env.BUILD_TARGET === 'firebase' ||
-    process.env.BUILD_TARGET === 'netlify' ||
     process.env.STATIC_EXPORT === 'true';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // turbopack: {},  // Disabled for static export compatibility
     typescript: {
-        // Allow temporary TypeScript error bypass via env flag
         ignoreBuildErrors: process.env.ALLOW_WEB_TS_ERRORS === 'true',
     },
     reactStrictMode: true,
-    // Static hosting targets require export output
-    output: isStaticHosting ? 'export' : 'standalone',
+    ...(isStaticHosting ? { output: 'export' } : {}),
     compress: true,
     poweredByHeader: false,
     trailingSlash: false,
@@ -26,9 +28,7 @@ const nextConfig = {
         localeDetection: true,
     },
 
-    // Enable instrumentation hook for Sentry
     experimental: {
-        instrumentationHook: true,
         serverActions: {
             bodySizeLimit: '2mb'
         }
@@ -110,8 +110,7 @@ const nextConfig = {
                             priority: 3,
                             reuseExistingChunk: true,
                             name(module, chunks) {
-                                const hash = require('crypto')
-                                    .createHash('sha1')
+                                const hash = createHash('sha1')
                                     .update(chunks.map((c) => c.name).join('_'))
                                     .digest('hex');
                                 return `shared-${hash.substring(0, 8)}`;
@@ -126,7 +125,6 @@ const nextConfig = {
 };
 
 export default withSentryConfig(nextConfig, {
-    // For an instrumentation hook to work, you must enable the `instrumentationHook` setting
     org: 'infamous-freight-enterprise',
     project: 'javascript-nextjs',
 

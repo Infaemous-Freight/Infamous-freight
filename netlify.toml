@@ -12,7 +12,9 @@
   base = "."
   command = "pnpm install --frozen-lockfile && pnpm --filter web build"
   publish = "apps/web/.next"
-  functions = "apps/web/.netlify/functions"
+  # @netlify/plugin-nextjs generates the SSR/edge handlers from the Next.js
+  # build output; no custom functions directory is required. Add one here
+  # only if / when the repo starts hosting hand-written Netlify Functions.
 
 [build.environment]
   NODE_VERSION = "24"

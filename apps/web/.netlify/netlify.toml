@@ -1,5 +1,5 @@
 functionsDirectory = "/opt/build/repo/apps/web/.netlify/functions"
-functionsDirectoryOrigin = "config-v1"
+functionsDirectoryOrigin = "ui"
 headersOrigin = "config"
 redirectsOrigin = "config"
 
