@@ -14,6 +14,7 @@
     "repo:structure:main": "bash scripts/main-branch-structure.sh origin main",
     "github:issue:create": "bash scripts/create-github-issue.sh",
     "github:pr:create": "bash scripts/create-github-pr.sh",
+    "github:pr:ci-status": "bash scripts/check-latest-pr-ci-status.sh",
     "repo:find-deprecated-api": "bash scripts/find-deprecated-api-usage.sh",
     "predev:api": "pnpm run build:shared",
     "dev:api": "pnpm --filter @infamous/api dev",

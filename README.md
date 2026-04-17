@@ -271,6 +271,15 @@ To create a PR from your current feature branch to `main`:
 bash scripts/create-github-pr.sh main "PR title" "PR description" "reviewer1,reviewer2"
 ```
 
+To check the latest CI run status for a PR:
+
+```bash
+# current PR inferred by gh:
+pnpm run github:pr:ci-status
+# or provide PR number:
+bash scripts/check-latest-pr-ci-status.sh 123
+```
+
 To find all files using a deprecated API function:
 
 ```bash
