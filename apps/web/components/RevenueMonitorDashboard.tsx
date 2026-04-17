@@ -1,29 +1,8 @@
 // Real-Time Revenue Dashboard Component
 // Displays MRR, ARR, churn, LTV, and customer metrics with live updates
-// ROI: 20-30% revenue increase through data-driven decisions
 
-import React, { useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-
-// Lazy-load heavy recharts components with fallback
-const LineChart = dynamic(() => import("recharts").then((mod) => mod.LineChart), {
-  loading: () => <div className="h-[300px] bg-gray-100 animate-pulse rounded" />,
-});
-const BarChart = dynamic(() => import("recharts").then((mod) => mod.BarChart), {
-  loading: () => <div className="h-[300px] bg-gray-100 animate-pulse rounded" />,
-});
-
-// Import only required recharts components once dynamically
-const {
-  Line,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} = require("recharts");
 
 interface RevenueMetrics {
   mrr: number;
@@ -38,8 +17,8 @@ interface RevenueMetrics {
   revenueThisWeek: number;
   revenueThisMonth: number;
   avgRevenuePerCustomer: number;
-  cac: number; // Customer Acquisition Cost
-  nrr: number; // Net Revenue Retention
+  cac: number;
+  nrr: number;
 }
 
 interface MRRHistoryPoint {
@@ -63,6 +42,31 @@ interface RevenueAlert {
   timestamp: string;
 }
 
+// Ship all recharts code in a single client-only chunk that loads after first paint.
+const RevenueCharts = dynamic(
+  () => import("./RevenueMonitorCharts").then((mod) => mod.RevenueMonitorCharts),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="h-[360px] bg-white rounded-lg shadow-md animate-pulse" />
+        <div className="h-[360px] bg-white rounded-lg shadow-md animate-pulse" />
+      </div>
+    ),
+  },
+);
+
+const currencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+});
+
+const formatCurrency = (value: number) => currencyFormatter.format(value);
+const formatPercent = (value: number) => `${(value * 100).toFixed(1)}%`;
+
+const POLL_INTERVAL_MS = 30_000;
+
 export const RevenueMonitorDashboard: React.FC = () => {
   const [metrics, setMetrics] = useState<RevenueMetrics | null>(null);
   const [mrrHistory, setMrrHistory] = useState<MRRHistoryPoint[]>([]);
@@ -71,11 +75,22 @@ export const RevenueMonitorDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
-  // Fetch metrics from API
-  const fetchMetrics = async () => {
+  const abortRef = useRef<AbortController | null>(null);
+  const isMountedRef = useRef(true);
+
+  const fetchMetrics = useCallback(async () => {
+    // Cancel any in-flight fetch to avoid race conditions on stale responses.
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     try {
-      const response = await fetch("/api/metrics/revenue/live");
+      const response = await fetch("/api/metrics/revenue/live", {
+        signal: controller.signal,
+      });
+      if (!response.ok) throw new Error(`Failed with status ${response.status}`);
       const data = await response.json();
+      if (!isMountedRef.current || controller.signal.aborted) return;
 
       setMetrics(data.current);
       setMrrHistory(data.mrrHistory || []);
@@ -84,20 +99,82 @@ export const RevenueMonitorDashboard: React.FC = () => {
       setLastUpdated(new Date());
       setLoading(false);
     } catch (error) {
-       
+      if ((error as Error).name === "AbortError") return;
+      // eslint-disable-next-line no-console
       console.error("Failed to fetch metrics:", error);
-      setLoading(false);
+      if (isMountedRef.current) setLoading(false);
     }
-  };
-
-  // Real-time updates every 30 seconds
-  useEffect(() => {
-    fetchMetrics();
-    const interval = setInterval(fetchMetrics, 30000);
-    return () => clearInterval(interval);
   }, []);
 
-  if (loading || !metrics) {
+  useEffect(() => {
+    isMountedRef.current = true;
+    void fetchMetrics();
+
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+
+    const startPolling = () => {
+      if (intervalId !== null) return;
+      intervalId = setInterval(() => {
+        void fetchMetrics();
+      }, POLL_INTERVAL_MS);
+    };
+
+    const stopPolling = () => {
+      if (intervalId === null) return;
+      clearInterval(intervalId);
+      intervalId = null;
+    };
+
+    const handleVisibilityChange = () => {
+      if (typeof document === "undefined") return;
+      if (document.visibilityState === "visible") {
+        // Refresh immediately and resume polling when the tab regains focus.
+        void fetchMetrics();
+        startPolling();
+      } else {
+        stopPolling();
+      }
+    };
+
+    startPolling();
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+    }
+
+    return () => {
+      isMountedRef.current = false;
+      stopPolling();
+      abortRef.current?.abort();
+      if (typeof document !== "undefined") {
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+      }
+    };
+  }, [fetchMetrics]);
+
+  const formattedValues = useMemo(() => {
+    if (!metrics) return null;
+    return {
+      mrr: formatCurrency(metrics.mrr),
+      arr: formatCurrency(metrics.arr),
+      churn: formatPercent(metrics.churn),
+      ltv: formatCurrency(metrics.ltv),
+      customerCount: metrics.customerCount.toLocaleString(),
+      revenueToday: formatCurrency(metrics.revenueToday),
+      revenueThisWeek: formatCurrency(metrics.revenueThisWeek),
+      revenueThisMonth: formatCurrency(metrics.revenueThisMonth),
+      avgRevenuePerCustomer: formatCurrency(metrics.avgRevenuePerCustomer),
+      cac: formatCurrency(metrics.cac),
+      nrr: formatPercent(metrics.nrr),
+      newCustomersToday: metrics.newCustomersToday.toString(),
+      newCustomersThisWeek: metrics.newCustomersThisWeek.toString(),
+      newCustomersThisMonth: metrics.newCustomersThisMonth.toString(),
+      avgDealSize: formatCurrency(
+        metrics.revenueThisWeek / Math.max(metrics.newCustomersThisWeek, 1),
+      ),
+    };
+  }, [metrics]);
+
+  if (loading || !metrics || !formattedValues) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
@@ -108,18 +185,6 @@ export const RevenueMonitorDashboard: React.FC = () => {
     );
   }
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-    }).format(value);
-  };
-
-  const formatPercent = (value: number) => {
-    return `${(value * 100).toFixed(1)}%`;
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
@@ -127,7 +192,11 @@ export const RevenueMonitorDashboard: React.FC = () => {
         <h1 className="text-3xl font-bold text-gray-900 mb-2">Revenue Dashboard</h1>
         <p className="text-gray-600">
           Last updated: {lastUpdated.toLocaleTimeString()}
-          <button onClick={fetchMetrics} className="ml-4 text-blue-600 hover:text-blue-800">
+          <button
+            onClick={fetchMetrics}
+            className="ml-4 text-blue-600 hover:text-blue-800"
+            type="button"
+          >
             Refresh
           </button>
         </p>
@@ -149,7 +218,7 @@ export const RevenueMonitorDashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title="MRR"
-          value={formatCurrency(metrics.mrr)}
+          value={formattedValues.mrr}
           subtitle="Monthly Recurring Revenue"
           trend="+12.3%"
           trendDirection="up"
@@ -157,7 +226,7 @@ export const RevenueMonitorDashboard: React.FC = () => {
         />
         <MetricCard
           title="ARR"
-          value={formatCurrency(metrics.arr)}
+          value={formattedValues.arr}
           subtitle="Annual Recurring Revenue"
           trend="+15.7%"
           trendDirection="up"
@@ -165,7 +234,7 @@ export const RevenueMonitorDashboard: React.FC = () => {
         />
         <MetricCard
           title="Churn Rate"
-          value={formatPercent(metrics.churn)}
+          value={formattedValues.churn}
           subtitle="Monthly customer churn"
           trend="-1.2%"
           trendDirection="down"
@@ -174,7 +243,7 @@ export const RevenueMonitorDashboard: React.FC = () => {
         />
         <MetricCard
           title="LTV"
-          value={formatCurrency(metrics.ltv)}
+          value={formattedValues.ltv}
           subtitle="Customer Lifetime Value"
           trend="+8.4%"
           trendDirection="up"
@@ -186,114 +255,62 @@ export const RevenueMonitorDashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard
           title="Total Customers"
-          value={metrics.customerCount.toLocaleString()}
+          value={formattedValues.customerCount}
           subtitle="Active subscriptions"
           icon="👥"
         />
         <MetricCard
           title="Today's Revenue"
-          value={formatCurrency(metrics.revenueToday)}
+          value={formattedValues.revenueToday}
           subtitle="Revenue generated today"
           icon="💵"
         />
         <MetricCard
           title="ARPU"
-          value={formatCurrency(metrics.avgRevenuePerCustomer)}
+          value={formattedValues.avgRevenuePerCustomer}
           subtitle="Average revenue per user"
           icon="📊"
         />
         <MetricCard
           title="CAC"
-          value={formatCurrency(metrics.cac)}
+          value={formattedValues.cac}
           subtitle="Customer acquisition cost"
           icon="💸"
         />
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* MRR Growth Chart */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold mb-4">MRR Growth (Last 12 Months)</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={mrrHistory}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip formatter={(value: number) => formatCurrency(Number(value))} />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="mrr"
-                stroke="#4CAF50"
-                strokeWidth={2}
-                name="Total MRR"
-              />
-              <Line
-                type="monotone"
-                dataKey="newMRR"
-                stroke="#2196F3"
-                strokeWidth={2}
-                name="New MRR"
-              />
-              <Line
-                type="monotone"
-                dataKey="churnedMRR"
-                stroke="#f44336"
-                strokeWidth={2}
-                name="Churned MRR"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Tier Distribution Chart */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold mb-4">Revenue by Tier</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={tierDistribution}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="tier" />
-              <YAxis />
-              <Tooltip formatter={(value: number) => formatCurrency(Number(value))} />
-              <Legend />
-              <Bar dataKey="revenue" fill="#4CAF50" name="Revenue" />
-              <Bar dataKey="count" fill="#2196F3" name="Customers" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      {/* Charts Section (client-only lazy chunk) */}
+      <RevenueCharts
+        mrrHistory={mrrHistory}
+        tierDistribution={tierDistribution}
+        formatCurrency={formatCurrency}
+      />
 
       {/* Growth Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-semibold mb-4">Today's Performance</h3>
           <div className="space-y-3">
-            <StatRow label="Revenue" value={formatCurrency(metrics.revenueToday)} />
-            <StatRow label="New Customers" value={metrics.newCustomersToday.toString()} />
-            <StatRow label="Net Revenue Retention" value={formatPercent(metrics.nrr)} />
+            <StatRow label="Revenue" value={formattedValues.revenueToday} />
+            <StatRow label="New Customers" value={formattedValues.newCustomersToday} />
+            <StatRow label="Net Revenue Retention" value={formattedValues.nrr} />
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-semibold mb-4">This Week</h3>
           <div className="space-y-3">
-            <StatRow label="Revenue" value={formatCurrency(metrics.revenueThisWeek)} />
-            <StatRow label="New Customers" value={metrics.newCustomersThisWeek.toString()} />
-            <StatRow
-              label="Avg Deal Size"
-              value={formatCurrency(
-                metrics.revenueThisWeek / Math.max(metrics.newCustomersThisWeek, 1),
-              )}
-            />
+            <StatRow label="Revenue" value={formattedValues.revenueThisWeek} />
+            <StatRow label="New Customers" value={formattedValues.newCustomersThisWeek} />
+            <StatRow label="Avg Deal Size" value={formattedValues.avgDealSize} />
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <h3 className="text-lg font-semibold mb-4">This Month</h3>
           <div className="space-y-3">
-            <StatRow label="Revenue" value={formatCurrency(metrics.revenueThisMonth)} />
-            <StatRow label="New Customers" value={metrics.newCustomersThisMonth.toString()} />
+            <StatRow label="Revenue" value={formattedValues.revenueThisMonth} />
+            <StatRow label="New Customers" value={formattedValues.newCustomersThisMonth} />
             <StatRow label="MRR Growth" value="+$12,450" />
           </div>
         </div>
@@ -313,7 +330,7 @@ interface MetricCardProps {
   invertTrend?: boolean;
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({
+const MetricCard = memo(function MetricCard({
   title,
   value,
   subtitle,
@@ -321,7 +338,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
   trendDirection,
   icon,
   invertTrend = false,
-}) => {
+}: MetricCardProps) {
   const trendColor = invertTrend
     ? trendDirection === "down"
       ? "text-green-600"
@@ -345,7 +362,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
       )}
     </div>
   );
-};
+});
 
 // Stat Row Component
 interface StatRowProps {
@@ -353,33 +370,35 @@ interface StatRowProps {
   value: string;
 }
 
-const StatRow: React.FC<StatRowProps> = ({ label, value }) => (
-  <div className="flex justify-between items-center">
-    <span className="text-gray-600">{label}</span>
-    <span className="font-semibold text-gray-900">{value}</span>
-  </div>
-);
+const StatRow = memo(function StatRow({ label, value }: StatRowProps) {
+  return (
+    <div className="flex justify-between items-center">
+      <span className="text-gray-600">{label}</span>
+      <span className="font-semibold text-gray-900">{value}</span>
+    </div>
+  );
+});
 
 // Alert Component
-const Alert: React.FC<RevenueAlert> = ({ severity, title, message }) => {
-  const colors = {
-    critical: "bg-red-50 border-red-200 text-red-800",
-    warning: "bg-yellow-50 border-yellow-200 text-yellow-800",
-    info: "bg-blue-50 border-blue-200 text-blue-800",
-    success: "bg-green-50 border-green-200 text-green-800",
-  };
+const alertColors = {
+  critical: "bg-red-50 border-red-200 text-red-800",
+  warning: "bg-yellow-50 border-yellow-200 text-yellow-800",
+  info: "bg-blue-50 border-blue-200 text-blue-800",
+  success: "bg-green-50 border-green-200 text-green-800",
+} as const;
 
-  const icons = {
-    critical: "🚨",
-    warning: "⚠️",
-    info: "ℹ️",
-    success: "✅",
-  };
+const alertIcons = {
+  critical: "🚨",
+  warning: "⚠️",
+  info: "ℹ️",
+  success: "✅",
+} as const;
 
+const Alert = memo(function Alert({ severity, title, message }: RevenueAlert) {
   return (
-    <div className={`border-l-4 p-4 rounded ${colors[severity]}`}>
+    <div className={`border-l-4 p-4 rounded ${alertColors[severity]}`}>
       <div className="flex items-start">
-        <span className="text-xl mr-3">{icons[severity]}</span>
+        <span className="text-xl mr-3">{alertIcons[severity]}</span>
         <div>
           <h4 className="font-semibold mb-1">{title}</h4>
           <p className="text-sm">{message}</p>
@@ -387,6 +406,6 @@ const Alert: React.FC<RevenueAlert> = ({ severity, title, message }) => {
       </div>
     </div>
   );
-};
+});
 
 export default RevenueMonitorDashboard;

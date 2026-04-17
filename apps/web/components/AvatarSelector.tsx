@@ -42,51 +42,65 @@ export function AvatarSelector({
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-  // Fetch system and user avatars
+  // Fetch system and user avatars in parallel (single network round-trip window).
   useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const fetchAvatars = async () => {
       try {
         setLoading(true);
         setError("");
 
-        // Fetch system avatars
-        const sysRes = await fetch(`${apiBase}/api/avatars/system`);
-        if (sysRes.ok) {
+        const authHeaders: HeadersInit | undefined = token
+          ? { Authorization: `Bearer ${token}` }
+          : undefined;
+
+        const systemRequest = fetch(`${apiBase}/api/avatars/system`, { signal });
+        const userRequest = token
+          ? fetch(`${apiBase}/api/avatars/user`, { headers: authHeaders, signal })
+          : Promise.resolve(null);
+        const selectionRequest = token
+          ? fetch(`${apiBase}/api/avatars/selection`, { headers: authHeaders, signal })
+          : Promise.resolve(null);
+
+        const [sysRes, userRes, selRes] = await Promise.all([
+          systemRequest,
+          userRequest,
+          selectionRequest,
+        ]);
+
+        if (signal.aborted) return;
+
+        if (sysRes && sysRes.ok) {
           const sysData = await sysRes.json();
-          setSystemAvatars(sysData.data?.featured || []);
+          if (!signal.aborted) setSystemAvatars(sysData.data?.featured || []);
         }
 
-        // Fetch user avatars (if authenticated)
-        if (token) {
-          const userRes = await fetch(`${apiBase}/api/avatars/user`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (userRes.ok) {
-            const userData = await userRes.json();
-            setUserAvatars(userData.data?.avatars || []);
-          }
+        if (userRes && userRes.ok) {
+          const userData = await userRes.json();
+          if (!signal.aborted) setUserAvatars(userData.data?.avatars || []);
         }
 
-        // Fetch current selection (if authenticated)
-        if (token) {
-          const selRes = await fetch(`${apiBase}/api/avatars/selection`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (selRes.ok) {
-            const selData = await selRes.json();
-            setCurrentSelection(selData.data?.selection || null);
-          }
+        if (selRes && selRes.ok) {
+          const selData = await selRes.json();
+          if (!signal.aborted) setCurrentSelection(selData.data?.selection || null);
         }
       } catch (err) {
+        if ((err as Error).name === "AbortError") return;
         setError(`Failed to load avatars: ${(err as Error).message}`);
-         
+
         console.error(err);
       } finally {
-        setLoading(false);
+        if (!signal.aborted) setLoading(false);
       }
     };
 
     fetchAvatars();
+
+    return () => {
+      controller.abort();
+    };
   }, [token, apiBase]);
 
   // Handle avatar selection
