@@ -19,7 +19,11 @@ echo "==> Pulling image"
 docker pull "${IMAGE}"
 
 echo "==> Docker Scout scan"
-docker scout cves "${IMAGE}"
+if docker scout version >/dev/null 2>&1; then
+  docker scout cves "${IMAGE}"
+else
+  echo "Docker Scout not installed, skipping"
+fi
 
 echo "==> Trivy scan"
 if command -v trivy >/dev/null 2>&1; then
