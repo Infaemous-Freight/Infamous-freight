@@ -70,6 +70,15 @@ Contributions should aim for:
 - maintainable abstractions
 - safe handling of configuration and secrets
 
+## ESM Imports in TypeScript (apps/api)
+
+`apps/api` runs as native ESM (`"type": "module"`). When authoring TypeScript there, follow these rules so the build output resolves correctly at runtime:
+
+- Use explicit `.js` extensions on relative imports even when the source file is `.ts`. Example: `import { logger } from "./lib/logger.js";`
+- Prefer the workspace alias `@infamous-freight/shared` for cross-package imports rather than relative paths into `../../packages/*`.
+- Avoid accidental or stale `.js` shadows next to `.ts` sources for the same module. However, intentional legacy CommonJS `.js` assets that are paired with `.ts` facades and copied into `dist/` as `.cjs` by the build script are allowed; do not delete those without also updating the facade and build-copy logic.
+- Keep `type`-only imports explicit with `import type { ... }` to avoid accidental runtime imports of types.
+
 ## Security Requirements
 
 Do not commit:
