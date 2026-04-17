@@ -312,6 +312,12 @@ To log into a private registry first, pass the registry and image explicitly:
 bash scripts/docker-scout-github-mcp.sh dhi.io dhi.io/github-mcp:0
 ```
 
+To scan a different public image without registry login:
+
+```bash
+bash scripts/docker-scout-github-mcp.sh ifamousfreight/dhi-github-mcp:0
+```
+
 If Docker is not installed yet on Ubuntu, install and validate it first:
 
 ```bash

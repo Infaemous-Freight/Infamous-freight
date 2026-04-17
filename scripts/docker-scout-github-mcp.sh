@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-REGISTRY="${1:-}"
-IMAGE="${2:-ifamousfreight/dhi-github-mcp:0}"
+DEFAULT_IMAGE="ifamousfreight/dhi-github-mcp:0"
+REGISTRY=""
+IMAGE="${DEFAULT_IMAGE}"
+
+if [[ $# -ge 1 ]]; then
+  if [[ "$1" == *"/"* || "$1" == *":"* ]]; then
+    IMAGE="$1"
+    REGISTRY="${2:-}"
+  else
+    REGISTRY="$1"
+    IMAGE="${2:-$DEFAULT_IMAGE}"
+  fi
+fi
 
 if ! command -v docker >/dev/null 2>&1; then
   echo "Docker is required for registry login, pull, and scout CVE scan." >&2
