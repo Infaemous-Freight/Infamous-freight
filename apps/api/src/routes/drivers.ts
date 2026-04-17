@@ -5,7 +5,7 @@ import { prisma } from "../db/prisma.js";
 
 const router: Router = Router();
 
-const tenantRouteRoles = ["owner", "admin", "dispatcher", "shipper", "user"];
+const tenantRouteRoles = ["admin", "dispatcher", "driver"] as const;
 
 const createDriverSchema = z.object({
   name: z.string().min(1),
