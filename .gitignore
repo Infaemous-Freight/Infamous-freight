@@ -39,6 +39,7 @@ pnpm-error.log*
 
 # Codex CLI personal config
 .codex/config.toml
+.mcp.json
 
 # Temporary files
 *.yaml~

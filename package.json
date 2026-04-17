@@ -9,6 +9,17 @@
   "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "pnpm run dev:api",
+    "quickstart:api": "bash scripts/quickstart-api.sh",
+    "mcp:github": "bash scripts/run-github-mcp.sh",
+    "repo:structure:main": "bash scripts/main-branch-structure.sh origin main",
+    "github:issue:create": "bash scripts/create-github-issue.sh",
+    "github:pr:create": "bash scripts/create-github-pr.sh",
+    "github:pr:ci-status": "bash scripts/check-latest-pr-ci-status.sh",
+    "github:rate-limit": "bash scripts/github-rate-limit.sh",
+    "repo:find-deprecated-api": "bash scripts/find-deprecated-api-usage.sh",
+    "docker:verify-digest": "bash scripts/verify-image-digest.sh",
+    "docker:scout:github-mcp": "bash scripts/docker-scout-github-mcp.sh",
+    "docker:install:ubuntu": "bash scripts/install-docker-ubuntu.sh",
     "predev:api": "pnpm run build:shared",
     "dev:api": "pnpm --filter @infamous/api dev",
     "dev:web": "pnpm --filter web dev",
@@ -36,12 +47,14 @@
     "fly:preflight": "bash scripts/fly-preflight.sh",
     "fly:deploy:api": "bash scripts/fly-deploy-api.sh",
     "validate": "pnpm run build && pnpm run typecheck && pnpm run lint && pnpm run test",
+    "infamous:100": "bash scripts/setup.sh && pnpm -r --if-present --workspace-concurrency=1 test -- --runInBand && pnpm run typecheck && pnpm run lint",
     "smoke:release": "bash scripts/release-smoke-check.sh",
     "deploy:check": "pnpm validate && pnpm audit:prod && pnpm smoke:release",
     "deploy:work": "bash scripts/deploy-work-branch.sh",
     "health": "pnpm run lint && pnpm run typecheck && pnpm run test",
     "health:quick": "pnpm run lint && pnpm run typecheck",
-    "fly:deploy:web": "bash scripts/fly-deploy-web.sh"
+    "fly:deploy:web": "bash scripts/fly-deploy-web.sh",
+    "security:scan:image": "bash scripts/security-scan-image.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

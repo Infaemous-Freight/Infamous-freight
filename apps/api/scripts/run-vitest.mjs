@@ -14,7 +14,10 @@ for (const arg of forwardedArgs) {
   sanitizedArgs.push(arg);
 }
 
-const vitestArgs = ['run', '--passWithNoTests', 'src/**/*.test.{ts,js,mjs}'];
+const vitestArgs = [
+  'run',
+  'src/**/*.test.ts',
+];
 
 if (forceSingleWorker && !sanitizedArgs.some((arg) => arg.startsWith('--maxWorkers'))) {
   vitestArgs.push('--maxWorkers=1');
