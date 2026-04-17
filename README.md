@@ -300,6 +300,8 @@ To verify a pulled image matches an expected SHA256 digest:
 pnpm run docker:verify-digest -- ifamousfreight/dhi-github-mcp:latest sha256:50b2c4f88e0dda38d3a163ad8ef1460fde82a70e2b28da73e6035f93c6f545d9
 ```
 
+For a quick Docker command reference, see [`docs/DOCKER_CLI_CHEATSHEET.md`](docs/DOCKER_CLI_CHEATSHEET.md).
+
 To pull and scan `ifamousfreight/dhi-github-mcp:0` with Docker Scout:
 
 ```bash
