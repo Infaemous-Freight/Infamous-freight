@@ -12,9 +12,11 @@ const express = require('express');
 const router = express.Router();
 const { getPrisma } = require('../../db/prisma');
 const { ApiResponse } = require('@infamous-freight/shared');
+const { SHIPMENT_STATUSES } = require('@infamous-freight/shared');
 const { authenticate, requireScope } = require('../../middleware/security');
 const { validateString, handleValidationErrors } = require('../../middleware/validation');
 const { HTTP_STATUS } = require('@infamous-freight/shared');
+const { validateShipmentUpdate } = require('../../services/shipmentValidator');
 
 const prisma = getPrisma();
 
@@ -295,6 +297,15 @@ router.post('/',
  */
 router.patch('/:id', authenticate, requireScope('shipments:update'), async (req, res, next) => {
     try {
+        const requestedStatus = req.body?.status;
+        if (typeof requestedStatus !== "string" || !SHIPMENT_STATUSES.includes(requestedStatus)) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json(new ApiResponse({
+                success: false,
+                error: "Invalid status value",
+                error_code: "INVALID_STATUS",
+            }));
+        }
+
         const existing = await prisma.shipment.findUnique({
             where: { id: req.params.id },
         });
@@ -315,10 +326,19 @@ router.patch('/:id', authenticate, requireScope('shipments:update'), async (req,
             }));
         }
 
+        const transition = validateShipmentUpdate(existing, { status: requestedStatus });
+        if (!transition.valid) {
+            return res.status(HTTP_STATUS.BAD_REQUEST).json(new ApiResponse({
+                success: false,
+                error: transition.errors.join("; "),
+                error_code: "INVALID_STATUS_TRANSITION",
+            }));
+        }
+
         await prisma.shipment.update({
             where: { id: req.params.id },
             data: {
-                status: req.body.status,
+                status: requestedStatus,
                 updatedAt: new Date(),
             },
         });

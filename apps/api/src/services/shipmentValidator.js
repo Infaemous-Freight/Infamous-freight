@@ -3,51 +3,45 @@
  * Enforces shipment status state machine and business rules
  *
  * Valid transitions:
- * - PENDING → ASSIGNED
- * - ASSIGNED → IN_TRANSIT
+ * - CREATED → IN_TRANSIT
  * - IN_TRANSIT → DELIVERED
- * - Any → CANCELLED (if not yet delivered)
+ * - CREATED|IN_TRANSIT → CANCELLED
  *
  * @module services/shipmentValidator
  */
 
-const { SHIPMENT_STATUSES } = require("@infamous-freight/shared");
+const {
+    SHIPMENT_STATUS: SHARED_SHIPMENT_STATUS,
+    SHIPMENT_TRANSITIONS: SHARED_SHIPMENT_TRANSITIONS,
+    SHIPMENT_TERMINAL_STATUSES: SHARED_SHIPMENT_TERMINAL_STATUSES,
+} = require("@infamous-freight/shared");
 const { logger } = require("../middleware/logger");
+
+const SHIPMENT_STATUS = SHARED_SHIPMENT_STATUS || {
+    CREATED: "CREATED",
+    IN_TRANSIT: "IN_TRANSIT",
+    DELIVERED: "DELIVERED",
+    CANCELLED: "CANCELLED",
+};
 
 /**
  * Valid state transitions for shipments
  * Key: current status, Value: array of allowed next statuses
  */
-const VALID_TRANSITIONS = {
-    [SHIPMENT_STATUSES.PENDING]: [
-        SHIPMENT_STATUSES.ASSIGNED,
-        SHIPMENT_STATUSES.CANCELLED,
-    ],
-    [SHIPMENT_STATUSES.ASSIGNED]: [
-        SHIPMENT_STATUSES.IN_TRANSIT,
-        SHIPMENT_STATUSES.CANCELLED,
-        SHIPMENT_STATUSES.PENDING, // Allow reassignment
-    ],
-    [SHIPMENT_STATUSES.IN_TRANSIT]: [
-        SHIPMENT_STATUSES.DELIVERED,
-        SHIPMENT_STATUSES.CANCELLED,
-    ],
-    [SHIPMENT_STATUSES.DELIVERED]: [
-        SHIPMENT_STATUSES.CANCELLED, // Allow refunds/disputes
-    ],
-    [SHIPMENT_STATUSES.CANCELLED]: [
-        SHIPMENT_STATUSES.PENDING, // Allow reactivation after cancel
-    ],
+const VALID_TRANSITIONS = SHARED_SHIPMENT_TRANSITIONS || {
+    [SHIPMENT_STATUS.CREATED]: [SHIPMENT_STATUS.IN_TRANSIT, SHIPMENT_STATUS.CANCELLED],
+    [SHIPMENT_STATUS.IN_TRANSIT]: [SHIPMENT_STATUS.DELIVERED, SHIPMENT_STATUS.CANCELLED],
+    [SHIPMENT_STATUS.DELIVERED]: [],
+    [SHIPMENT_STATUS.CANCELLED]: [],
 };
 
 /**
  * Terminal statuses - cannot transition FROM these
  * @type {Set<string>}
  */
-const TERMINAL_STATUSES = new Set([
-    SHIPMENT_STATUSES.DELIVERED,
-    SHIPMENT_STATUSES.CANCELLED,
-]);
+const TERMINAL_STATUSES = new Set(
+    SHARED_SHIPMENT_TERMINAL_STATUSES || [SHIPMENT_STATUS.DELIVERED, SHIPMENT_STATUS.CANCELLED],
+);
 
 /**
  * Check if a status transition is valid
@@ -57,7 +51,7 @@ const TERMINAL_STATUSES = new Set([
  * @returns {Object} { valid: boolean, error?: string }
  *
  * @example
- * validateStatusTransition('PENDING', 'ASSIGNED')
+ * validateStatusTransition('CREATED', 'IN_TRANSIT')
  * // Returns: { valid: true }
  *
  * validateStatusTransition('DELIVERED', 'IN_TRANSIT')
@@ -103,6 +97,7 @@ function validateStatusTransition(currentStatus, newStatus) {
  * @returns {Object} { valid: boolean, errors: string[] }
  */
 function validateShipmentUpdate(shipment, updates, options = {}) {
+    void options;
     const errors = [];
 
     // Check status transition if status is being updated
@@ -124,7 +119,7 @@ function validateShipmentUpdate(shipment, updates, options = {}) {
     if (
         updates.driverId &&
         updates.driverId !== shipment.driverId &&
-        shipment.status === SHIPMENT_STATUSES.IN_TRANSIT
+        shipment.status === SHIPMENT_STATUS.IN_TRANSIT
     ) {
         // Cannot reassign driver during transit
         errors.push(
@@ -193,13 +188,15 @@ function getShipmentStateInfo(shipment) {
         isTerminal: isTerminalStatus(shipment.status),
         actions: {
             canAssign:
-                shipment.status === SHIPMENT_STATUSES.PENDING &&
+                shipment.status === SHIPMENT_STATUS.CREATED &&
                 !shipment.driverId,
-            canStartTransit: shipment.status === SHIPMENT_STATUSES.ASSIGNED,
-            canDeliver: shipment.status === SHIPMENT_STATUSES.IN_TRANSIT,
-            canCancel: validNextStatuses.includes(SHIPMENT_STATUSES.CANCELLED),
+            canStartTransit:
+                shipment.status === SHIPMENT_STATUS.CREATED &&
+                !!shipment.driverId,
+            canDeliver: shipment.status === SHIPMENT_STATUS.IN_TRANSIT,
+            canCancel: validNextStatuses.includes(SHIPMENT_STATUS.CANCELLED),
             canReassign:
-                [SHIPMENT_STATUSES.PENDING, SHIPMENT_STATUSES.ASSIGNED].includes(
+                [SHIPMENT_STATUS.CREATED].includes(
                     shipment.status
                 ),
         },

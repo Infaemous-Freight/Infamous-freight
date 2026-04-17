@@ -4,6 +4,11 @@
  */
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  SHIPMENT_STATUSES,
+  SHIPMENT_TRANSITIONS,
+  type ShipmentStatus,
+} from "@infamous-freight/shared";
 
 interface QueuedAction {
   id: string;
@@ -15,6 +20,7 @@ interface QueuedAction {
 
 const QUEUE_KEY = "@offline_queue";
 const MAX_RETRIES = 3;
+const SHIPMENT_STATUS_SET = new Set<string>(SHIPMENT_STATUSES);
 
 export class OfflineQueueService {
   private queue: QueuedAction[] = [];
@@ -81,8 +87,34 @@ export class OfflineQueueService {
         await apiClient.createShipment(action.payload);
         break;
       case "status_change":
+        this.assertValidStatusChange(action.payload);
         await apiClient.updateShipmentStatus(action.payload.id, action.payload.status);
         break;
+    }
+  }
+
+  private assertValidStatusChange(payload: {
+    id?: string;
+    status?: string;
+    currentStatus?: string;
+  }): void {
+    if (!payload?.status || !SHIPMENT_STATUS_SET.has(payload.status)) {
+      throw new Error(`Invalid queued shipment status: ${payload?.status ?? "unknown"}`);
+    }
+
+    if (!payload.currentStatus || payload.currentStatus === payload.status) {
+      return;
+    }
+
+    if (!SHIPMENT_STATUS_SET.has(payload.currentStatus)) {
+      throw new Error(`Invalid queued shipment currentStatus: ${payload.currentStatus}`);
+    }
+
+    const allowedNext = SHIPMENT_TRANSITIONS[payload.currentStatus as ShipmentStatus] || [];
+    if (!allowedNext.includes(payload.status as ShipmentStatus)) {
+      throw new Error(
+        `Invalid queued transition from ${payload.currentStatus} to ${payload.status}`,
+      );
     }
   }
 

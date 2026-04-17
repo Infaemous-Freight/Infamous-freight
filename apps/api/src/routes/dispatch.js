@@ -12,6 +12,14 @@ const { authenticate, requireScope } = require("../middleware/security");
 const { requirePermission, auditAction } = require("../middleware/rbac");
 const { limiters } = require("../middleware/security");
 const { Permission } = require("@infamous-freight/shared");
+const { validateStatusTransition } = require("../services/shipmentValidator");
+
+const SHIPMENT_STATUS = {
+  CREATED: "CREATED",
+  IN_TRANSIT: "IN_TRANSIT",
+  DELIVERED: "DELIVERED",
+  CANCELLED: "CANCELLED",
+};
 
 const router = express.Router();
 
@@ -262,6 +270,12 @@ router.post(
         return res.status(404).json({ error: "Shipment not found" });
       }
 
+      if (shipment.status !== SHIPMENT_STATUS.CREATED) {
+        return res.status(409).json({
+          error: `Shipment is not assignable from status ${shipment.status}`,
+        });
+      }
+
       // Create assignment
       const assignment = await prisma.assignment.create({
         data: {
@@ -277,7 +291,7 @@ router.post(
       // Update shipment status
       await prisma.shipment.update({
         where: { id: shipmentId },
-        data: { status: "ASSIGNED", assignedToId: driverId },
+        data: { driverId },
       });
 
       // Trigger dispatch optimization agent
@@ -330,11 +344,32 @@ router.patch(
         include: { shipment: true, driver: true },
       });
 
-      // Update shipment status if relevant
-      if (status === "DELIVERED") {
+      // Keep shipment lifecycle canonical: CREATED -> IN_TRANSIT -> DELIVERED
+      if (status === "IN_TRANSIT" || status === "DELIVERED" || status === "CANCELLED") {
+        const nextShipmentStatus =
+          status === "IN_TRANSIT"
+            ? SHIPMENT_STATUS.IN_TRANSIT
+            : status === "DELIVERED"
+              ? SHIPMENT_STATUS.DELIVERED
+              : SHIPMENT_STATUS.CANCELLED;
+
+        const shipment = await prisma.shipment.findUnique({
+          where: { id: assignment.shipmentId },
+          select: { status: true },
+        });
+
+        if (!shipment) {
+          return res.status(404).json({ error: "Shipment not found" });
+        }
+
+        const transition = validateStatusTransition(shipment.status, nextShipmentStatus);
+        if (!transition.valid) {
+          return res.status(409).json({ error: transition.error });
+        }
+
         await prisma.shipment.update({
           where: { id: assignment.shipmentId },
-          data: { status: "DELIVERED" },
+          data: { status: nextShipmentStatus },
         });
       }
 
@@ -377,7 +412,7 @@ router.post(
       // Reset shipment to CREATED
       await prisma.shipment.update({
         where: { id: assignment.shipmentId },
-        data: { status: "CREATED", assignedToId: null },
+        data: { status: SHIPMENT_STATUS.CREATED, driverId: null },
       });
 
       res.json({ success: true, data: assignment });
