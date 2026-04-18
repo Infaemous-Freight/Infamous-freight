@@ -22,6 +22,14 @@ if (!fs.existsSync(path.join(root, ".nvmrc"))) {
   fail("Missing .nvmrc at repository root.");
 }
 
+if (!fs.existsSync(path.join(root, ".tool-versions"))) {
+  fail("Missing .tool-versions at repository root.");
+}
+
+if (!fs.existsSync(path.join(root, ".python-version"))) {
+  fail("Missing .python-version at repository root.");
+}
+
 if (!fs.existsSync(path.join(root, "pnpm-lock.yaml"))) {
   fail("Missing pnpm-lock.yaml. Reproducible installs require a committed lockfile.");
 }
@@ -31,11 +39,13 @@ if (!fs.existsSync(path.join(root, "package.json"))) {
 }
 
 const nvmrc = readFile(".nvmrc").trim();
+const toolVersions = readFile(".tool-versions");
+const pythonVersion = readFile(".python-version").trim();
 const pkg = readJson("package.json");
 const expectedNodeMajor = majorFromVersion(nvmrc);
 
 if (!pkg.packageManager) {
-  fail('Root package.json must define "packageManager", for example "pnpm@10.15.0".');
+  fail('Root package.json must define "packageManager", for example "pnpm@10.33.0".');
 }
 
 if (!String(pkg.packageManager).startsWith("pnpm@")) {
@@ -54,6 +64,61 @@ const currentNodeMajor = process.versions.node.split(".")[0];
 
 if (expectedNodeMajor !== majorFromVersion(pkg.engines.node)) {
   fail(`Node engine mismatch. .nvmrc=${nvmrc}, package.json engines.node=${pkg.engines.node}.`);
+}
+
+const toolVersionEntries = new Map();
+for (const rawLine of toolVersions.split(/\r?\n/)) {
+  const line = rawLine.trim();
+  if (!line || line.startsWith("#")) {
+    continue;
+  }
+
+  const [name, value] = line.split(/\s+/);
+  if (name && value) {
+    toolVersionEntries.set(name, value);
+  }
+}
+
+const nodeToolValue = toolVersionEntries.get("nodejs");
+if (!nodeToolValue) {
+  fail('Missing "nodejs" runtime in .tool-versions.');
+}
+
+if (majorFromVersion(nodeToolValue) !== expectedNodeMajor) {
+  fail(`Node version mismatch. .tool-versions nodejs=${nodeToolValue}, .nvmrc=${nvmrc}.`);
+}
+
+const pnpmToolValue = toolVersionEntries.get("pnpm");
+if (!pnpmToolValue) {
+  fail('Missing "pnpm" runtime in .tool-versions.');
+}
+
+const packageManagerVersion = String(pkg.packageManager).split("@")[1] ?? "";
+if (pnpmToolValue !== packageManagerVersion) {
+  fail(
+    `pnpm version mismatch. .tool-versions pnpm=${pnpmToolValue}, packageManager=${pkg.packageManager}.`,
+  );
+}
+
+const pythonToolValue = toolVersionEntries.get("python");
+if (!pythonToolValue) {
+  fail('Missing "python" runtime in .tool-versions.');
+}
+
+if (majorFromVersion(pythonToolValue) !== majorFromVersion(pythonVersion)) {
+  fail(
+    `Python version mismatch. .tool-versions python=${pythonToolValue}, .python-version=${pythonVersion}.`,
+  );
+}
+
+if (fs.existsSync(path.join(root, "ai/Dockerfile"))) {
+  const aiDockerfile = readFile("ai/Dockerfile");
+  const pythonBaseImage = aiDockerfile.match(/FROM\s+python:(\d+(?:\.\d+)?)/i)?.[1];
+  if (pythonBaseImage && majorFromVersion(pythonBaseImage) !== majorFromVersion(pythonVersion)) {
+    fail(
+      `Python version mismatch. ai/Dockerfile python=${pythonBaseImage}, .python-version=${pythonVersion}.`,
+    );
+  }
 }
 
 for (const versionFile of [".node-version", "apps/web/.node-version"]) {
@@ -83,7 +148,9 @@ for (const netlifyFile of [
 }
 
 if (expectedNodeMajor !== currentNodeMajor) {
-  fail(`Node version mismatch. .nvmrc=${nvmrc}, runner node=${process.versions.node}.`);
+  warn(
+    `Node runtime mismatch for this shell. .nvmrc=${nvmrc}, runner node=${process.versions.node}. Use nvm before pnpm install/build commands.`,
+  );
 }
 
 const requiredScripts = ["lint", "typecheck", "test", "build"];

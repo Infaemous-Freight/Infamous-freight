@@ -1,29 +1,24 @@
-// Lightweight instrumentation bootstrap to ensure server startup
-let Sentry = null;
+import * as Sentry from "@sentry/node";
 
-const dsn = process.env.SENTRY_DSN;
+const dsn = process.env.SENTRY_DSN?.trim();
+const sendDefaultPii = process.env.SENTRY_SEND_DEFAULT_PII === "true";
+const sentryEnabled = Boolean(dsn);
 
-if (dsn) {
-  try {
-    Sentry = require("@sentry/node");
-    Sentry.init({
-      dsn,
-      environment:
-        process.env.SENTRY_ENVIRONMENT ||
-        process.env.NODE_ENV ||
-        "development",
-      tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE || 0),
-      release: process.env.SENTRY_RELEASE || process.env.RELEASE,
-      sendDefaultPii: process.env.SENTRY_SEND_DEFAULT_PII === "true",
-    });
-  } catch (err) {
-    // If Sentry isn't available, fail open
-    Sentry = null;
-  }
+if (sentryEnabled && !Sentry.getClient()) {
+  Sentry.init({
+    dsn,
+    environment:
+      process.env.SENTRY_ENVIRONMENT ||
+      process.env.NODE_ENV ||
+      "development",
+    tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE || 0),
+    release: process.env.SENTRY_RELEASE || process.env.RELEASE,
+    sendDefaultPii,
+  });
 }
 
 function captureException(error) {
-  if (!Sentry) return;
+  if (!sentryEnabled) return;
 
   try {
     if (error instanceof Error) {
@@ -54,3 +49,5 @@ process.on("unhandledRejection", (reason) => {
 process.on("uncaughtException", (err) => {
   captureException(err);
 });
+
+export { Sentry, sentryEnabled };
