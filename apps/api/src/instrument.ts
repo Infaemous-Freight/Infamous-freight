@@ -12,7 +12,7 @@ if (sentryEnabled && !Sentry.getClient()) {
       process.env.SENTRY_ENVIRONMENT ||
       process.env.NODE_ENV ||
       "development",
-    tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE || 0),
+    tracesSampleRate: Math.min(1, Math.max(0, Number(process.env.SENTRY_TRACES_SAMPLE_RATE ?? 0) || 0)),
     release: process.env.SENTRY_RELEASE || process.env.RELEASE,
     sendDefaultPii,
   });
