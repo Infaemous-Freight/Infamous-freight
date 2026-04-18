@@ -66,28 +66,33 @@ if (expectedNodeMajor !== majorFromVersion(pkg.engines.node)) {
   fail(`Node engine mismatch. .nvmrc=${nvmrc}, package.json engines.node=${pkg.engines.node}.`);
 }
 
-const toolVersionLine = (name) =>
-  toolVersions
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .find((line) => line.startsWith(`${name} `));
+const toolVersionEntries = new Map();
+for (const rawLine of toolVersions.split(/\r?\n/)) {
+  const line = rawLine.trim();
+  if (!line || line.startsWith("#")) {
+    continue;
+  }
 
-const nodeToolVersion = toolVersionLine("nodejs");
-if (!nodeToolVersion) {
+  const [name, value] = line.split(/\s+/);
+  if (name && value) {
+    toolVersionEntries.set(name, value);
+  }
+}
+
+const nodeToolValue = toolVersionEntries.get("nodejs");
+if (!nodeToolValue) {
   fail('Missing "nodejs" runtime in .tool-versions.');
 }
 
-const nodeToolValue = nodeToolVersion.split(/\s+/)[1] ?? "";
 if (majorFromVersion(nodeToolValue) !== expectedNodeMajor) {
   fail(`Node version mismatch. .tool-versions nodejs=${nodeToolValue}, .nvmrc=${nvmrc}.`);
 }
 
-const pnpmToolVersion = toolVersionLine("pnpm");
-if (!pnpmToolVersion) {
+const pnpmToolValue = toolVersionEntries.get("pnpm");
+if (!pnpmToolValue) {
   fail('Missing "pnpm" runtime in .tool-versions.');
 }
 
-const pnpmToolValue = pnpmToolVersion.split(/\s+/)[1] ?? "";
 const packageManagerVersion = String(pkg.packageManager).split("@")[1] ?? "";
 if (pnpmToolValue !== packageManagerVersion) {
   fail(
@@ -95,16 +100,25 @@ if (pnpmToolValue !== packageManagerVersion) {
   );
 }
 
-const pythonToolVersion = toolVersionLine("python");
-if (!pythonToolVersion) {
+const pythonToolValue = toolVersionEntries.get("python");
+if (!pythonToolValue) {
   fail('Missing "python" runtime in .tool-versions.');
 }
 
-const pythonToolValue = pythonToolVersion.split(/\s+/)[1] ?? "";
 if (majorFromVersion(pythonToolValue) !== majorFromVersion(pythonVersion)) {
   fail(
     `Python version mismatch. .tool-versions python=${pythonToolValue}, .python-version=${pythonVersion}.`,
   );
+}
+
+if (fs.existsSync(path.join(root, "ai/Dockerfile"))) {
+  const aiDockerfile = readFile("ai/Dockerfile");
+  const pythonBaseImage = aiDockerfile.match(/FROM\s+python:(\d+(?:\.\d+)?)/i)?.[1];
+  if (pythonBaseImage && majorFromVersion(pythonBaseImage) !== majorFromVersion(pythonVersion)) {
+    fail(
+      `Python version mismatch. ai/Dockerfile python=${pythonBaseImage}, .python-version=${pythonVersion}.`,
+    );
+  }
 }
 
 for (const versionFile of [".node-version", "apps/web/.node-version"]) {
