@@ -372,9 +372,9 @@ CI enforces baseline coverage thresholds for coverage-enabled test suites.
 
 ## 🧭 Runtime Policy
 
-- 🟢 Required runtime: Node.js 24.x
+- 🟢 Required runtimes: Node.js 24.x and Python 3.12.x
 - 📦 Required package manager: `pnpm` 10.x
-- 📚 Source of truth: `.nvmrc`, `.node-version`, and root `package.json`
+- 📚 Source of truth: `.nvmrc`, `.node-version`, `.python-version`, `.tool-versions`, and root `package.json`
 
 If your local environment does not match these versions, switch before running installs or checks.
 

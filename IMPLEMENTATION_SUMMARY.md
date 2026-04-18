@@ -23,7 +23,7 @@ Successfully implemented all recommended improvements from the RECOMMENDATIONS.m
    - **Impact**: Catches vulnerable dependencies before merge
 
 2. **Docker Node Version Fix**
-   - Updated `apps/api/Dockerfile` from `node:20-alpine` to `node:22-alpine`
+   - Updated `apps/api/Dockerfile` from `node:20-alpine` to `node:24-alpine`
    - Added health check to API container
    - **Impact**: Consistency between package.json engines and Docker runtime
 
