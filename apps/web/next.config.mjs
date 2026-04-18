@@ -169,4 +169,5 @@ export default withSentryConfig(nextConfig, {
 
     // Additional Sentry CLI options
     url: 'https://sentry.io/',
+    telemetry: false,
 });
