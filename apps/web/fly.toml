@@ -21,7 +21,7 @@ primary_region = 'dfw'
   processes = ['app']
 
   [[http_service.checks]]
-    grace_period = "20s"
+    grace_period = "40s"
     interval = "30s"
     method = "GET"
     timeout = "5s"
