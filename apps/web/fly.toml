@@ -7,6 +7,9 @@ app = 'infamous-freight'
 primary_region = 'dfw'
 
 [build]
+  # Web Dockerfile is monorepo-aware and expects workspace files from repo root.
+  context = "../.."
+  dockerfile = "Dockerfile.web"
 
 [http_service]
   internal_port = 8080
