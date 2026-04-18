@@ -13,10 +13,10 @@ if ! command -v pnpm >/dev/null 2>&1; then
   if command -v corepack >/dev/null 2>&1; then
     echo "==> Enabling pnpm via corepack"
     corepack enable
-    corepack prepare pnpm@10.15.0 --activate
+    corepack prepare pnpm@10.33.0 --activate
   else
     echo "==> Installing pnpm via npm"
-    npm install -g pnpm@10.15.0
+    npm install -g pnpm@10.33.0
   fi
 fi
 

@@ -328,13 +328,13 @@ FROM node:20-alpine  # ❌ Wrong version
 **Package.json requirement:**
 ```json
 "engines": {
-  "node": "22.x"
+  "node": "24.x"
 }
 ```
 
 **Recommended Fix:**
 ```dockerfile
-FROM node:22-alpine
+FROM node:24-alpine
 
 # Add health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

@@ -8,9 +8,43 @@ const sentryEnabled = Boolean(dsn);
 if (sentryEnabled && !Sentry.getClient()) {
   Sentry.init({
     dsn,
+    environment:
+      process.env.SENTRY_ENVIRONMENT ||
+      process.env.NODE_ENV ||
+      "development",
+    tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE || 0),
+    release: process.env.SENTRY_RELEASE || process.env.RELEASE,
     sendDefaultPii,
-    environment: process.env.NODE_ENV || "development",
   });
 }
+
+function captureException(error: unknown): void {
+  if (!sentryEnabled) return;
+
+  if (error instanceof Error) {
+    Sentry.captureException(error);
+    return;
+  }
+
+  if (error !== null && typeof error === "object") {
+    Sentry.captureException(error);
+    return;
+  }
+
+  const normalizedError = new Error(String(error));
+  Sentry.captureException(normalizedError, {
+    extra: {
+      originalThrowable: error,
+    },
+  });
+}
+
+process.on("unhandledRejection", (reason) => {
+  captureException(reason);
+});
+
+process.on("uncaughtException", (error) => {
+  captureException(error);
+});
 
 export { Sentry, sentryEnabled };
