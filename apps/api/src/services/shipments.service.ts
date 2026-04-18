@@ -2,12 +2,18 @@ import type { Shipment } from "@infamous-freight/shared";
 import { SHIPMENT_STATUSES } from "@infamous-freight/shared";
 import { prisma } from "../db/prisma.js";
 
-const SHIPMENT_TRANSITIONS: Record<string, readonly string[]> = {
+type MutableShipmentStatus = (typeof SHIPMENT_STATUSES)[number];
+
+const SHIPMENT_TRANSITIONS: Record<MutableShipmentStatus, readonly MutableShipmentStatus[]> = {
   CREATED: ["IN_TRANSIT", "CANCELLED"],
   IN_TRANSIT: ["DELIVERED", "CANCELLED"],
   DELIVERED: [],
   CANCELLED: [],
 };
+
+function isMutableShipmentStatus(status: Shipment["status"]): status is MutableShipmentStatus {
+  return SHIPMENT_STATUSES.includes(status as MutableShipmentStatus);
+}
 
 export async function listShipments(tenantId: string): Promise<Shipment[]> {
   const rows = await prisma.shipment.findMany({
@@ -35,20 +41,22 @@ export async function updateShipmentStatus(tenantId: string, shipmentId: string,
   const s = await prisma.shipment.findFirst({ where: { id: shipmentId, userId: tenantId } });
   if (!s) throw new Error("Shipment not found");
 
-  if (!SHIPMENT_STATUSES.includes(status)) {
+  if (!isMutableShipmentStatus(status)) {
     throw new Error(`Invalid shipment status: ${status}`);
   }
 
-  if (s.status !== status) {
-    const validNext = SHIPMENT_TRANSITIONS[s.status] || [];
-    if (!validNext.includes(status)) {
+  const nextStatus: MutableShipmentStatus = status;
+
+  if (s.status !== nextStatus) {
+    const validNext = SHIPMENT_TRANSITIONS[s.status as MutableShipmentStatus] || [];
+    if (!validNext.includes(nextStatus)) {
       throw new Error(`Invalid status transition from ${s.status} to ${status}`);
     }
   }
 
   const result = await prisma.shipment.updateMany({
     where: { id: shipmentId, userId: tenantId },
-    data: { status: status as any }
+    data: { status: nextStatus }
   });
 
   if (result.count === 0) {

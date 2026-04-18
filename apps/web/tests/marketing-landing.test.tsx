@@ -18,9 +18,9 @@ describe("marketing landing page navigation", () => {
     render(<InfamousFreightWebApp />);
 
     expect(screen.getByRole("link", { name: "Operations Dashboard" })).toHaveAttribute("href", "/dashboard");
-    expect(screen.getByRole("link", { name: "Loadboard" })).toHaveAttribute("href", "/loads");
-    expect(screen.getByRole("link", { name: "Shipment Tracking" })).toHaveAttribute("href", "/loads/active");
-    expect(screen.getByRole("link", { name: "Billing & Payments" })).toHaveAttribute("href", "/account/billing");
-    expect(screen.getByRole("link", { name: "Driver Workflow" })).toHaveAttribute("href", "/driver");
+    expect(screen.getByRole("link", { name: "Loadboard" })).toHaveAttribute("href", "/loadboard");
+    expect(screen.getByRole("link", { name: "Shipment Tracking" })).toHaveAttribute("href", "/shipments");
+    expect(screen.getByRole("link", { name: "Billing & Payments" })).toHaveAttribute("href", "/settings/billing");
+    expect(screen.getByRole("link", { name: "Shipment Workflow" })).toHaveAttribute("href", "/shipments");
   });
 });
