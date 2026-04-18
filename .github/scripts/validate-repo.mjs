@@ -22,6 +22,14 @@ if (!fs.existsSync(path.join(root, ".nvmrc"))) {
   fail("Missing .nvmrc at repository root.");
 }
 
+if (!fs.existsSync(path.join(root, ".tool-versions"))) {
+  fail("Missing .tool-versions at repository root.");
+}
+
+if (!fs.existsSync(path.join(root, ".python-version"))) {
+  fail("Missing .python-version at repository root.");
+}
+
 if (!fs.existsSync(path.join(root, "pnpm-lock.yaml"))) {
   fail("Missing pnpm-lock.yaml. Reproducible installs require a committed lockfile.");
 }
@@ -31,11 +39,13 @@ if (!fs.existsSync(path.join(root, "package.json"))) {
 }
 
 const nvmrc = readFile(".nvmrc").trim();
+const toolVersions = readFile(".tool-versions");
+const pythonVersion = readFile(".python-version").trim();
 const pkg = readJson("package.json");
 const expectedNodeMajor = majorFromVersion(nvmrc);
 
 if (!pkg.packageManager) {
-  fail('Root package.json must define "packageManager", for example "pnpm@10.15.0".');
+  fail('Root package.json must define "packageManager", for example "pnpm@10.33.0".');
 }
 
 if (!String(pkg.packageManager).startsWith("pnpm@")) {
@@ -54,6 +64,47 @@ const currentNodeMajor = process.versions.node.split(".")[0];
 
 if (expectedNodeMajor !== majorFromVersion(pkg.engines.node)) {
   fail(`Node engine mismatch. .nvmrc=${nvmrc}, package.json engines.node=${pkg.engines.node}.`);
+}
+
+const toolVersionLine = (name) =>
+  toolVersions
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line.startsWith(`${name} `));
+
+const nodeToolVersion = toolVersionLine("nodejs");
+if (!nodeToolVersion) {
+  fail('Missing "nodejs" runtime in .tool-versions.');
+}
+
+const nodeToolValue = nodeToolVersion.split(/\s+/)[1] ?? "";
+if (majorFromVersion(nodeToolValue) !== expectedNodeMajor) {
+  fail(`Node version mismatch. .tool-versions nodejs=${nodeToolValue}, .nvmrc=${nvmrc}.`);
+}
+
+const pnpmToolVersion = toolVersionLine("pnpm");
+if (!pnpmToolVersion) {
+  fail('Missing "pnpm" runtime in .tool-versions.');
+}
+
+const pnpmToolValue = pnpmToolVersion.split(/\s+/)[1] ?? "";
+const packageManagerVersion = String(pkg.packageManager).split("@")[1] ?? "";
+if (pnpmToolValue !== packageManagerVersion) {
+  fail(
+    `pnpm version mismatch. .tool-versions pnpm=${pnpmToolValue}, packageManager=${pkg.packageManager}.`,
+  );
+}
+
+const pythonToolVersion = toolVersionLine("python");
+if (!pythonToolVersion) {
+  fail('Missing "python" runtime in .tool-versions.');
+}
+
+const pythonToolValue = pythonToolVersion.split(/\s+/)[1] ?? "";
+if (majorFromVersion(pythonToolValue) !== majorFromVersion(pythonVersion)) {
+  fail(
+    `Python version mismatch. .tool-versions python=${pythonToolValue}, .python-version=${pythonVersion}.`,
+  );
 }
 
 for (const versionFile of [".node-version", "apps/web/.node-version"]) {
