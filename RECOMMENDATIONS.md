@@ -334,7 +334,7 @@ FROM node:20-alpine  # ❌ Wrong version
 
 **Recommended Fix:**
 ```dockerfile
-FROM node:22-alpine
+FROM node:24-alpine
 
 # Add health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
