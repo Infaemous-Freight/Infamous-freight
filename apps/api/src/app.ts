@@ -26,6 +26,7 @@ import rateRoutes from "./routes/rates.js";
 import { realtimeRoutes } from "./routes/realtime.routes.js";
 import referralRoutes from "./routes/referrals.js";
 import salesRoutes from "./routes/sales.js";
+import sentryAuthRoutes from "./routes/sentry-auth.js";
 import shipmentRoutes from "./routes/shipments.js";
 import { stripeRoutes } from "./routes/stripe.routes.js";
 import { tenants } from "./routes/tenants.js";
@@ -201,6 +202,7 @@ export function createApp(): Express {
   app.use("/api/realtime", realtimeRoutes);
   app.use("/api/referrals", referralRoutes);
   app.use("/api/sales", salesRoutes);
+  app.use("/api/sentry", sentryAuthRoutes);
   app.use("/api/shipments", shipmentRoutes);
   app.use("/api/stripe", stripeRoutes);
   app.use("/api/tenants", tenants);

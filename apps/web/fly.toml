@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for infamous-freight on 2026-04-18T06:53:29Z
+# fly.toml app configuration file generated for infamous-freight on 2026-04-18T07:06:37Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,9 +7,6 @@ app = 'infamous-freight'
 primary_region = 'dfw'
 
 [build]
-  # Web Dockerfile is monorepo-aware and expects workspace files from repo root.
-  context = "../.."
-  dockerfile = "Dockerfile.web"
 
 [env]
   PORT = "3000"

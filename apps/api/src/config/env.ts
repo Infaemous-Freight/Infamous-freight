@@ -55,6 +55,12 @@ const envSchema = z
     SLACK_WEBHOOK_URL: optionalNonEmptyString(z.string().trim().url()),
     PERSISTENCE_MODE: z.enum(["auto", "json"]).optional().default("auto"),
     SENTRY_DSN: z.string().optional(),
+    SENTRY_AUTH_TOKEN: optionalNonEmptyString(z.string().trim().min(1)),
+    SENTRY_ORG_SLUG: optionalNonEmptyString(z.string().trim().min(1)),
+    SENTRY_PROJECT_SLUG: optionalNonEmptyString(z.string().trim().min(1)),
+    SENTRY_OAUTH_CLIENT_ID: optionalNonEmptyString(z.string().trim().min(1)),
+    SENTRY_OAUTH_CLIENT_SECRET: optionalNonEmptyString(z.string().trim().min(1)),
+    SENTRY_OAUTH_REDIRECT_URI: optionalNonEmptyString(z.string().trim().url()),
     WEBHOOK_SECRET: z.string().optional(),
     AVATAR_STORAGE: z.enum(["local", "s3"]).optional().default("local"),
     AVATAR_UPLOAD_DIR: z.string().optional().default("apps/api/public/uploads"),
@@ -124,6 +130,14 @@ const envSchema = z
         message: "AUTH_COOKIE_SECURE must be true when AUTH_COOKIE_SAME_SITE=none",
       });
     }
+
+    if (values.SENTRY_OAUTH_CLIENT_SECRET && !values.SENTRY_OAUTH_CLIENT_ID) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["SENTRY_OAUTH_CLIENT_ID"],
+        message: "SENTRY_OAUTH_CLIENT_ID is required when SENTRY_OAUTH_CLIENT_SECRET is set",
+      });
+    }
   });
 
 const parsed = envSchema.parse(process.env);
@@ -174,6 +188,12 @@ export const env = {
   slackWebhookUrl: parsed.SLACK_WEBHOOK_URL,
   persistenceMode: parsed.PERSISTENCE_MODE,
   sentryDsn: parsed.SENTRY_DSN,
+  sentryAuthToken: parsed.SENTRY_AUTH_TOKEN,
+  sentryOrgSlug: parsed.SENTRY_ORG_SLUG,
+  sentryProjectSlug: parsed.SENTRY_PROJECT_SLUG,
+  sentryOAuthClientId: parsed.SENTRY_OAUTH_CLIENT_ID,
+  sentryOAuthClientSecret: parsed.SENTRY_OAUTH_CLIENT_SECRET,
+  sentryOAuthRedirectUri: parsed.SENTRY_OAUTH_REDIRECT_URI,
   webhookSecret: parsed.WEBHOOK_SECRET,
   s3Bucket: parsed.S3_BUCKET,
   s3Region: parsed.S3_REGION,
@@ -210,6 +230,11 @@ export const requiredEnv = {
 
 export const optionalEnv = {
   sentryDsn: env.sentryDsn,
+  sentryAuthToken: env.sentryAuthToken,
+  sentryOrgSlug: env.sentryOrgSlug,
+  sentryProjectSlug: env.sentryProjectSlug,
+  sentryOAuthClientId: env.sentryOAuthClientId,
+  sentryOAuthRedirectUri: env.sentryOAuthRedirectUri,
   redisUrl: env.redisUrl,
   stripeSecretKey: env.STRIPE_SECRET_KEY,
   stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,
