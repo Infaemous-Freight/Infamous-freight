@@ -147,6 +147,20 @@ for (const netlifyFile of [
   }
 }
 
+if (fs.existsSync(path.join(root, "fly.toml"))) {
+  const rootFlyToml = readFile("fly.toml");
+  const rootBuildContext = rootFlyToml.match(/^\s*context\s*=\s*"([^"]+)"/m)?.[1];
+  const rootDockerfile = rootFlyToml.match(/^\s*dockerfile\s*=\s*"([^"]+)"/m)?.[1];
+
+  if (rootBuildContext && rootBuildContext !== ".") {
+    fail(`fly.toml build.context must be "." for root API deploys.`);
+  }
+
+  if (rootDockerfile && rootDockerfile !== "Dockerfile.api") {
+    fail(`fly.toml build.dockerfile must be "Dockerfile.api".`);
+  }
+}
+
 if (fs.existsSync(path.join(root, ".devcontainer/Dockerfile"))) {
   const devcontainerDockerfile = readFile(".devcontainer/Dockerfile");
   const devcontainerNode = devcontainerDockerfile.match(/javascript-node:1-(\d+)-bookworm/i)?.[1];
