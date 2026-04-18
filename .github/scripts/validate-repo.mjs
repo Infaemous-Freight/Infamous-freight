@@ -222,6 +222,22 @@ if (fs.existsSync(path.join(root, "apps/web/fly.toml"))) {
   }
 }
 
+if (fs.existsSync(path.join(root, "apps/api/src/server.ts"))) {
+  if (!fs.existsSync(path.join(root, "apps/api/src/instrument.ts"))) {
+    fail("apps/api/src/instrument.ts is required for API Sentry instrumentation.");
+  }
+
+  const serverTs = readFile("apps/api/src/server.ts");
+  const firstImport = serverTs
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line.startsWith("import "));
+
+  if (firstImport !== 'import "./instrument.js";') {
+    fail('apps/api/src/server.ts must import "./instrument.js" as the first import.');
+  }
+}
+
 if (expectedNodeMajor !== currentNodeMajor) {
   const mismatchMessage = `Node runtime mismatch. .nvmrc=${nvmrc}, runner node=${process.versions.node}.`;
   if (String(process.env.CI || "").toLowerCase() === "true") {
