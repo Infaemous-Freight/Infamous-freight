@@ -15,7 +15,7 @@
     "prisma:generate": "node scripts/prisma-generate-safe.mjs",
     "db:migrate": "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 prisma migrate deploy --schema=prisma/schema.prisma",
     "db:migrate:dev": "PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1 prisma migrate dev --schema=prisma/schema.prisma",
-    "test:jest": "jest --config jest.config.cjs --runInBand --coverage=false --passWithNoTests __tests__/config/constants.test.js"
+    "test:jest": "pnpm --filter @infamous-freight/shared build && jest --config jest.config.cjs --runInBand --coverage=false --passWithNoTests __tests__/config/constants.test.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1025.0",

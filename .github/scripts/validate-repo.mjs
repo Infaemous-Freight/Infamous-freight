@@ -223,9 +223,12 @@ if (fs.existsSync(path.join(root, "apps/web/fly.toml"))) {
 }
 
 if (expectedNodeMajor !== currentNodeMajor) {
-  warn(
-    `Node runtime mismatch for this shell. .nvmrc=${nvmrc}, runner node=${process.versions.node}. Use nvm before pnpm install/build commands.`,
-  );
+  const mismatchMessage = `Node runtime mismatch. .nvmrc=${nvmrc}, runner node=${process.versions.node}.`;
+  if (String(process.env.CI || "").toLowerCase() === "true") {
+    fail(`${mismatchMessage} CI runners must use the pinned Node major.`);
+  } else {
+    warn(`${mismatchMessage} Use nvm before pnpm install/build commands.`);
+  }
 }
 
 const requiredScripts = ["lint", "typecheck", "test", "build"];
