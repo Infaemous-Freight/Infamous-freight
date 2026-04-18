@@ -181,12 +181,19 @@ if (fs.existsSync(path.join(root, ".devcontainer/init.sh"))) {
 if (fs.existsSync(path.join(root, "apps/web/fly.toml"))) {
   const webFlyToml = readFile("apps/web/fly.toml");
   const rootFlyToml = fs.existsSync(path.join(root, "fly.toml")) ? readFile("fly.toml") : "";
+  const topWebFlyToml = fs.existsSync(path.join(root, "fly.web.toml")) ? readFile("fly.web.toml") : "";
 
   const webAppMatch = webFlyToml.match(/^\s*app\s*=\s*['"]([^'"]+)['"]/m);
   const rootAppMatch = rootFlyToml.match(/^\s*app\s*=\s*['"]([^'"]+)['"]/m);
   if (webAppMatch && rootAppMatch && webAppMatch[1] === rootAppMatch[1]) {
     fail(
       `apps/web/fly.toml app (${webAppMatch[1]}) must differ from root fly.toml app (${rootAppMatch[1]}).`,
+    );
+  }
+  const topWebAppMatch = topWebFlyToml.match(/^\s*app\s*=\s*['"]([^'"]+)['"]/m);
+  if (webAppMatch && topWebAppMatch && webAppMatch[1] !== topWebAppMatch[1]) {
+    fail(
+      `apps/web/fly.toml app (${webAppMatch[1]}) must match fly.web.toml app (${topWebAppMatch[1]}).`,
     );
   }
 
