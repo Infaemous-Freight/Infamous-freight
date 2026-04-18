@@ -328,7 +328,7 @@ FROM node:20-alpine  # ❌ Wrong version
 **Package.json requirement:**
 ```json
 "engines": {
-  "node": "22.x"
+  "node": "24.x"
 }
 ```
 
