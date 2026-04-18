@@ -147,6 +147,37 @@ for (const netlifyFile of [
   }
 }
 
+if (fs.existsSync(path.join(root, ".devcontainer/Dockerfile"))) {
+  const devcontainerDockerfile = readFile(".devcontainer/Dockerfile");
+  const devcontainerNode = devcontainerDockerfile.match(/javascript-node:1-(\d+)-bookworm/i)?.[1];
+  if (devcontainerNode && devcontainerNode !== expectedNodeMajor) {
+    fail(
+      `Node version mismatch. .devcontainer/Dockerfile javascript-node:1-${devcontainerNode}-bookworm, .nvmrc=${nvmrc}.`,
+    );
+  }
+
+  const dockerfilePnpm = devcontainerDockerfile.match(/corepack prepare pnpm@([^\s]+)\s+--activate/i)?.[1];
+  const packageManagerVersion = String(pkg.packageManager).split("@")[1] ?? "";
+  if (dockerfilePnpm && dockerfilePnpm !== packageManagerVersion) {
+    fail(
+      `pnpm version mismatch. .devcontainer/Dockerfile pnpm=${dockerfilePnpm}, packageManager=${pkg.packageManager}.`,
+    );
+  }
+}
+
+if (fs.existsSync(path.join(root, ".devcontainer/init.sh"))) {
+  const devcontainerInit = readFile(".devcontainer/init.sh");
+  const initPnpmVersions = [...devcontainerInit.matchAll(/pnpm@([0-9.]+)/g)].map((m) => m[1]);
+  const packageManagerVersion = String(pkg.packageManager).split("@")[1] ?? "";
+  for (const initPnpmVersion of initPnpmVersions) {
+    if (initPnpmVersion !== packageManagerVersion) {
+      fail(
+        `pnpm version mismatch. .devcontainer/init.sh pnpm=${initPnpmVersion}, packageManager=${pkg.packageManager}.`,
+      );
+    }
+  }
+}
+
 if (expectedNodeMajor !== currentNodeMajor) {
   warn(
     `Node runtime mismatch for this shell. .nvmrc=${nvmrc}, runner node=${process.versions.node}. Use nvm before pnpm install/build commands.`,
