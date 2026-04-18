@@ -29,7 +29,7 @@
 API_PORT=8080
 NODE_ENV=production
 CORS_ORIGINS=https://infamous-freight-enterprises-e1mn358un-santorio-miles-projects.vercel.app,https://infamous-freight-enterprises.vercel.app
-SENTRY_DSN=https://b9dfa87d832ff88cd0bed7805b86b45c@o4510554478149632.ingest.us.sentry.io/4510554478477312
+SENTRY_DSN=https://<key>@o<org>.ingest.us.sentry.io/<project>
 ```
 
 **Active Machines:**
