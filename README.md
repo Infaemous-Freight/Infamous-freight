@@ -115,6 +115,10 @@ When opening PRs, state clearly whether your change targets:
 2. Platform infrastructure (`infra/*`, deployment config)
 3. Experimental or incubating surfaces
 
+## Product/UX Reference
+
+- Website blueprint and functionality guidance: `docs/website-product-spec.md`
+
 ### Surface Responsibilities
 
 | Surface         | Purpose                                  |

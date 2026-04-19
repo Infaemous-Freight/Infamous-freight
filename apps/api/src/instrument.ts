@@ -1,21 +1,41 @@
 import * as Sentry from "@sentry/node";
 
-const dsn = process.env.SENTRY_DSN?.trim();
+const rawDsn = process.env.SENTRY_DSN?.trim();
 const sendDefaultPii = process.env.SENTRY_SEND_DEFAULT_PII === "true";
+const dsn = rawDsn || undefined;
+let sentryEnabled = Boolean(Sentry.getClient());
+let sentryWarning: string | undefined;
 
-const sentryEnabled = Boolean(dsn);
+if (dsn && !sentryEnabled) {
+  const looksLikeSentryToken = /^sntr[a-z0-9]*_/i.test(dsn);
 
-if (sentryEnabled && !Sentry.getClient()) {
-  Sentry.init({
-    dsn,
-    environment:
-      process.env.SENTRY_ENVIRONMENT ||
-      process.env.NODE_ENV ||
-      "development",
-    tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE || 0),
-    release: process.env.SENTRY_RELEASE || process.env.RELEASE,
-    sendDefaultPii,
-  });
+  if (looksLikeSentryToken) {
+    sentryEnabled = false;
+    sentryWarning =
+      "SENTRY_DSN appears to be a Sentry auth token, not a DSN; error reporting is disabled.";
+  } else {
+    try {
+      Sentry.init({
+        dsn,
+        environment:
+          process.env.SENTRY_ENVIRONMENT ||
+          process.env.NODE_ENV ||
+          "development",
+        tracesSampleRate: Number(process.env.SENTRY_TRACES_SAMPLE_RATE || 0),
+        release: process.env.SENTRY_RELEASE || process.env.RELEASE,
+        sendDefaultPii,
+        integrations: [Sentry.processSessionIntegration()],
+      });
+      sentryEnabled = true;
+    } catch {
+      sentryEnabled = false;
+      sentryWarning = "Sentry initialization failed; error reporting is disabled.";
+    }
+  }
+}
+
+if (sentryWarning) {
+  console.warn(sentryWarning);
 }
 
 export function captureException(error: unknown): void {
