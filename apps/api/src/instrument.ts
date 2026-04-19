@@ -18,7 +18,7 @@ if (sentryEnabled && !Sentry.getClient()) {
   });
 }
 
-function captureException(error: unknown): void {
+export function captureException(error: unknown): void {
   if (!sentryEnabled) return;
 
   if (error instanceof Error) {
@@ -37,6 +37,26 @@ function captureException(error: unknown): void {
       originalThrowable: error,
     },
   });
+}
+
+export function runWithSentryCapture<T>(operation: () => T): T;
+export function runWithSentryCapture<T>(operation: () => Promise<T>): Promise<T>;
+export function runWithSentryCapture<T>(operation: () => T | Promise<T>): T | Promise<T> {
+  try {
+    const result = operation();
+
+    if (result && typeof (result as Promise<T>).then === "function") {
+      return (result as Promise<T>).catch((error: unknown) => {
+        captureException(error);
+        throw error;
+      });
+    }
+
+    return result;
+  } catch (error) {
+    captureException(error);
+    throw error;
+  }
 }
 
 process.on("unhandledRejection", (reason) => {
