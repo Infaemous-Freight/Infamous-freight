@@ -29,6 +29,11 @@ const PROTECTED_API_ROUTES = ["/api/admin", "/api/internal"];
 
 export function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
+  const isProduction =
+    process.env.NEXT_PUBLIC_ENV === "production" || process.env.NODE_ENV === "production";
+  const gaMeasurementId =
+    process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+  const gaEnabled = Boolean(isProduction && gaMeasurementId);
 
   // Skip middleware for static assets and health checks
   if (SKIP_PATHS.some((path) => pathname.startsWith(path))) {
@@ -76,16 +81,41 @@ export function proxy(request: NextRequest) {
     "camera=(), microphone=(), geolocation=(), payment=()",
   );
 
+  const scriptSrc = [
+    "'self'",
+    "'unsafe-inline'",
+    "'unsafe-eval'",
+    "https://vercel.live",
+    "https://va.vercel-scripts.com",
+  ];
+
+  const connectSrc = [
+    "'self'",
+    "https://*.vercel.app",
+    "https://*.supabase.co",
+    "https://vitals.vercel-insights.com",
+    "https://*.fly.dev",
+  ];
+
+  if (gaEnabled) {
+    scriptSrc.push("https://www.googletagmanager.com");
+    connectSrc.push(
+      "https://www.googletagmanager.com",
+      "https://www.google-analytics.com",
+      "https://*.google-analytics.com",
+    );
+  }
+
   // Strengthen Content Security Policy
   response.headers.set(
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live https://va.vercel-scripts.com",
+      `script-src ${scriptSrc.join(" ")}`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https: blob:",
       "font-src 'self' data:",
-      "connect-src 'self' https://*.vercel.app https://*.supabase.co https://vitals.vercel-insights.com https://*.fly.dev",
+      `connect-src ${connectSrc.join(" ")}`,
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
