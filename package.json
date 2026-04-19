@@ -49,6 +49,7 @@
     "@typescript-eslint/eslint-plugin": "^8.58.0",
     "@typescript-eslint/parser": "^8.58.0",
     "eslint-config-prettier": "^10.1.8",
+    "next": "16.2.3",
     "prettier": "^3.8.1"
   },
   "pnpm": {
