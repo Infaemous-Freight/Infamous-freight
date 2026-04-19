@@ -24,6 +24,14 @@
 - [ ] codeql
 - [ ] audit
 
+### Required Validation Commands
+> Paste the exact command(s) you ran and their result summary.  
+> If you skip a command, explain why.
+
+- `pnpm test:runInBand`:
+- `pnpm build`:
+- Additional checks:
+
 
 ## Area x Validation Plan
 | Area | sanity | lint | typecheck | test | build | codeql | audit |
