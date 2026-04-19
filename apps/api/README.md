@@ -133,6 +133,7 @@ See `.env.example` for required environment variables:
 - `REDIS_URL`: Redis connection string
 - `JWT_SECRET`: Secret for JWT signing
 - `SENTRY_DSN`: Sentry project DSN
+- `SENTRY_AUTH_TOKEN`: Sentry API token (secret; do not commit, store in secret manager)
 - `LOG_LEVEL`: Logging level (debug, info, warn, error)
 
 ## 📚 API Documentation
