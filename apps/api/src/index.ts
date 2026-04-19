@@ -1,3 +1,4 @@
+// Keep instrumentation bootstrap first so Sentry can patch runtime hooks early.
 import "./instrument.js";
 import cors from "cors";
 import express from "express";
