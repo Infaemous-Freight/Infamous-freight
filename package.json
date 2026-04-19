@@ -41,7 +41,8 @@
     "deploy:work": "bash scripts/deploy-work-branch.sh",
     "health": "pnpm run lint && pnpm run typecheck && pnpm run test",
     "health:quick": "pnpm run lint && pnpm run typecheck",
-    "fly:deploy:web": "bash scripts/fly-deploy-web.sh"
+    "fly:deploy:web": "bash scripts/fly-deploy-web.sh",
+    "test:runInBand": "pnpm run prisma:generate:offline && pnpm run build:shared && pnpm --filter @infamous/api test:jest && pnpm -r --if-present --workspace-concurrency=1 test -- --runInBand --maxWorkers=1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -94,5 +95,8 @@
       "sharp",
       "unrs-resolver"
     ]
+  },
+  "dependencies": {
+    "@sentry/node": "^10.48.0"
   }
 }
