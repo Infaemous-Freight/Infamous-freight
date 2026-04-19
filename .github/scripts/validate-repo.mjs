@@ -100,23 +100,33 @@ if (pnpmToolValue !== packageManagerVersion) {
   );
 }
 
+const pythonMajorMinorFromVersion = (version) =>
+  String(version)
+    .trim()
+    .split(".")
+    .slice(0, 2)
+    .join(".");
+
 const pythonToolValue = toolVersionEntries.get("python");
 if (!pythonToolValue) {
   fail('Missing "python" runtime in .tool-versions.');
 }
 
-if (majorFromVersion(pythonToolValue) !== majorFromVersion(pythonVersion)) {
+if (pythonMajorMinorFromVersion(pythonToolValue) !== pythonMajorMinorFromVersion(pythonVersion)) {
   fail(
-    `Python version mismatch. .tool-versions python=${pythonToolValue}, .python-version=${pythonVersion}.`,
+    `Python major.minor version mismatch. .tool-versions python=${pythonToolValue}, .python-version=${pythonVersion}.`,
   );
 }
 
 if (fs.existsSync(path.join(root, "ai/Dockerfile"))) {
   const aiDockerfile = readFile("ai/Dockerfile");
   const pythonBaseImage = aiDockerfile.match(/FROM\s+python:(\d+(?:\.\d+)?)/i)?.[1];
-  if (pythonBaseImage && majorFromVersion(pythonBaseImage) !== majorFromVersion(pythonVersion)) {
+  if (
+    pythonBaseImage &&
+    pythonMajorMinorFromVersion(pythonBaseImage) !== pythonMajorMinorFromVersion(pythonVersion)
+  ) {
     fail(
-      `Python version mismatch. ai/Dockerfile python=${pythonBaseImage}, .python-version=${pythonVersion}.`,
+      `Python major.minor version mismatch. ai/Dockerfile python=${pythonBaseImage}, .python-version=${pythonVersion}.`,
     );
   }
 }
