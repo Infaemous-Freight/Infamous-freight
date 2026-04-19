@@ -1,6 +1,7 @@
+// Keep instrumentation bootstrap first so Sentry can patch runtime hooks early.
+import "./instrument.js";
 import cors from "cors";
 import express from "express";
-import * as Sentry from "@sentry/node";
 import { ENV } from "./env.js";
 import { health } from "./routes/health.js";
 import { ai } from "./routes/ai.js";
@@ -10,35 +11,6 @@ import { tenants } from "./routes/tenants.js";
 import { HttpError } from "./utils/errors.js";
 
 const app = express();
-
-const SENTRY_SEND_DEFAULT_PII = process.env.SENTRY_SEND_DEFAULT_PII === "true";
-
-const redactSentryEvent = (event: Sentry.Event): Sentry.Event => {
-  if (!event.request) {
-    return event;
-  }
-
-  if (event.request.headers) {
-    delete event.request.headers.authorization;
-    delete event.request.headers.Authorization;
-    delete event.request.headers.cookie;
-    delete event.request.headers.Cookie;
-  }
-
-  if ("cookies" in event.request) {
-    delete (event.request as Sentry.Event["request"] & { cookies?: unknown }).cookies;
-  }
-
-  return event;
-};
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  sendDefaultPii: SENTRY_SEND_DEFAULT_PII,
-  environment: process.env.NODE_ENV,
-  tracesSampleRate: process.env.NODE_ENV === "production" ? 0.1 : 1.0,
-  beforeSend: (event) => redactSentryEvent(event),
-});
 
 app.use(cors({ origin: ENV.CORS_ORIGIN, credentials: true }));
 app.use(express.json());
