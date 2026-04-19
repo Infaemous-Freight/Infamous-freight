@@ -156,7 +156,7 @@ if (fs.existsSync(path.join(root, "fly.toml"))) {
     fail(`fly.toml build.context must be "." for root API deploys.`);
   }
 
-  if (rootDockerfile && rootDockerfile !== "Dockerfile.api") {
+  if (rootDockerfile !== "Dockerfile.api") {
     fail(`fly.toml build.dockerfile must be "Dockerfile.api".`);
   }
 }
