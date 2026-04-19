@@ -135,8 +135,8 @@ const nextConfig = {
 };
 
 export default withSentryConfig(nextConfig, {
-    org: 'infamous-freight-enterprise',
-    project: 'javascript-nextjs',
+    org: 'infmous',
+    project: 'infamous-freight',
 
     // An auth token is required for uploading source maps.
     authToken: process.env.SENTRY_AUTH_TOKEN,
