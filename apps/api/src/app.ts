@@ -43,6 +43,17 @@ const releaseInfo = {
   commit: process.env.GIT_SHA ?? process.env.GITHUB_SHA ?? "unknown",
 };
 
+function sentryStatePayload() {
+  const configured = Boolean(env.sentryDsn && env.sentryDsn.trim().length > 0);
+  const status = sentryEnabled ? "enabled" : configured ? "degraded" : "disabled";
+
+  return {
+    configured,
+    enabled: sentryEnabled,
+    status,
+  };
+}
+
 function healthPayload() {
   return {
     service: "infamous-freight-api",
@@ -52,6 +63,7 @@ function healthPayload() {
     version: releaseInfo.version,
     release: releaseInfo.release,
     commit: releaseInfo.commit,
+    sentry: sentryStatePayload(),
   };
 }
 
@@ -87,6 +99,7 @@ async function readinessPayload() {
   return {
     ok,
     checks,
+    sentry: sentryStatePayload(),
     timestamp: new Date().toISOString(),
     version: releaseInfo.version,
     release: releaseInfo.release,
@@ -212,7 +225,7 @@ export function createApp(): Express {
       if (!sentryEnabled) {
         res.status(503).json({
           success: false,
-          error: "Sentry is disabled: SENTRY_DSN is not configured",
+          error: "Sentry is disabled or failed to initialize",
           captured: false,
         });
         return;
