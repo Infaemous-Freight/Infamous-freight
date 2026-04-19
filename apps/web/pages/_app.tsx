@@ -29,7 +29,7 @@ const RTL_LOCALES = ["ar", "he"];
 function App({ Component, pageProps }: AppProps): React.ReactElement {
   const router = useRouter();
   const isProduction =
-    process.env.NEXT_PUBLIC_ENV === "production" || process.env.NODE_ENV === "production";
+    process.env.NEXT_PUBLIC_ENV === "production";
   const gaMeasurementId =
     process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
   const gaEnabled = Boolean(isProduction && gaMeasurementId);
