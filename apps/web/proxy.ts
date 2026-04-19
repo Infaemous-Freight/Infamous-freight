@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getAbVariant, shouldSetAbVariantCookie } from "./src/lib/ab-variant";
 
 /**
  * Edge Proxy - Runs on Vercel Edge Network
@@ -28,7 +29,7 @@ const SKIP_PATHS = [
 const PROTECTED_API_ROUTES = ["/api/admin", "/api/internal"];
 
 export function proxy(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
   // Skip middleware for static assets and health checks
   if (SKIP_PATHS.some((path) => pathname.startsWith(path))) {
@@ -123,13 +124,20 @@ export function proxy(request: NextRequest) {
   }
 
   // A/B Testing support via query params or cookies
-  const variant = searchParams.get("variant") || request.cookies.get("ab-variant")?.value;
+  const variant = getAbVariant(
+    request.nextUrl.searchParams,
+    request.cookies.get("ab-variant")?.value,
+  );
   if (variant) {
-    response.cookies.set("ab-variant", variant, {
-      maxAge: 60 * 60 * 24 * 30, // 30 days
-      httpOnly: false,
-      sameSite: "lax",
-    });
+    if (shouldSetAbVariantCookie(request.cookies.get("ab-variant")?.value, variant)) {
+      response.cookies.set("ab-variant", variant, {
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+        httpOnly: false,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+      });
+    }
     response.headers.set("X-AB-Variant", variant);
   }
 
