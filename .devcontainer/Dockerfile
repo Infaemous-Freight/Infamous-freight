@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm
+FROM mcr.microsoft.com/devcontainers/javascript-node:1-24-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -16,7 +16,7 @@ RUN apt-get update \
 USER vscode
 
 RUN corepack enable \
-  && corepack prepare pnpm@10.15.0 --activate \
+  && corepack prepare pnpm@10.33.0 --activate \
   && pnpm --version \
   && node --version \
   && npm --version

@@ -1,6 +1,7 @@
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import Script from "next/script";
 import * as Sentry from "@sentry/nextjs";
 import { appWithTranslation } from "next-i18next/pages";
 import GlobalLayout from "../components/GlobalLayout";
@@ -28,6 +29,9 @@ const RTL_LOCALES = ["ar", "he"];
 function App({ Component, pageProps }: AppProps): React.ReactElement {
   const router = useRouter();
   const isProduction = process.env.NEXT_PUBLIC_ENV === "production";
+  const gaMeasurementId =
+    process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+  const gaEnabled = Boolean(isProduction && gaMeasurementId);
 
   // Phase 7 Tier 5: Set document direction based on locale
   useEffect(() => {
@@ -63,6 +67,23 @@ function App({ Component, pageProps }: AppProps): React.ReactElement {
       router.events.off("routeChangeStart", handleRouteChange);
     };
   }, [router]);
+
+  // Track page views with Google Analytics (GA4)
+  useEffect(() => {
+    if (!gaEnabled || !gaMeasurementId) return;
+
+    const trackPageView = (url: string) => {
+      const gtag = (window as typeof window & {
+        gtag?: (command: string, targetId: string, params: Record<string, unknown>) => void;
+      }).gtag;
+
+      if (!gtag) return;
+      gtag("config", gaMeasurementId, { page_path: url });
+    };
+
+    router.events.on("routeChangeComplete", trackPageView);
+    return () => router.events.off("routeChangeComplete", trackPageView);
+  }, [gaEnabled, gaMeasurementId, router.events]);
 
   // Global keyboard shortcuts
   useEffect(() => {
@@ -132,6 +153,22 @@ function App({ Component, pageProps }: AppProps): React.ReactElement {
   return (
     // @ts-ignore - Sentry ErrorBoundary type incompatibility with React 19
     <SentryErrorBoundary>
+      {gaEnabled ? (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+            strategy="afterInteractive"
+          />
+          <Script id="ga4-init" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${gaMeasurementId}', { page_path: window.location.pathname });
+            `}
+          </Script>
+        </>
+      ) : null}
       <AuthProvider>
         <GlobalLayout>
           <Component {...pageProps} />

@@ -100,7 +100,7 @@ For system vulnerabilities (OS-level):
 
 ```dockerfile
 # In Dockerfile, update base image
-FROM node:22.11.0-alpine3.22  # Latest LTS + latest Alpine
+FROM node:24.15.0-alpine3.22  # Latest LTS + latest Alpine
 
 # Rebuild image
 docker build -t myapp:latest .
@@ -228,10 +228,10 @@ exit-code: 0               # Don't fail (warning only)
 
 ```dockerfile
 # Alpine (smallest, fastest to scan)
-FROM node:22.11.0-alpine3.22
+FROM node:24.15.0-alpine3.22
 
 # OR Debian-slim (more tested, larger)
-FROM node:22.11.0-slim
+FROM node:24.15.0-slim
 
 # ❌ Avoid: outdated/pinned versions
 FROM node:20.0.0-alpine  # Old, may have vulns
@@ -262,17 +262,17 @@ Don't include build tools in production image:
 
 ```dockerfile
 # ✅ Multi-stage build (no build tools in final image)
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /build
 COPY package*.json .
 RUN npm ci --omit=dev
 
-FROM node:22-alpine
+FROM node:24-alpine
 COPY --from=builder /build /app
 CMD ["node", "server.js"]
 
 # ❌ Single stage (includes build tools, larger attack surface)
-FROM node:22-alpine
+FROM node:24-alpine
 RUN npm install
 CMD ["node", "server.js"]
 ```

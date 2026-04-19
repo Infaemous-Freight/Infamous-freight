@@ -3,10 +3,12 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'infamous-freight'
+app = 'infamous-freight-enterprises-ra8cwg'
 primary_region = 'dfw'
 
 [build]
+  context = "../.."
+  dockerfile = "apps/web/Dockerfile"
 
 [env]
   PORT = "3000"

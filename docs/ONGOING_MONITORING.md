@@ -352,7 +352,7 @@ size-limit
 docker scan infamous-freight-api:latest
 
 # Check base image for updates
-docker pull node:22-alpine
+docker pull node:24-alpine
 # Compare with current base image
 
 # If vulnerabilities found:

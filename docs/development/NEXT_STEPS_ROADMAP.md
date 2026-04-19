@@ -18,6 +18,18 @@
 
 ---
 
+## 📌 This Week / Next 30 Days Priorities
+
+| Priority | Action                                   | Timeline      |
+| -------- | ---------------------------------------- | ------------- |
+| 1        | Add custom domain                        | This week     |
+| 2        | Set up analytics (Google Analytics)      | This week     |
+| 3        | Add error monitoring (Sentry)            | This week     |
+| 4        | ELD integrations (Samsara, Motive)       | Next 30 days  |
+| 5        | Mobile app for drivers                   | Next 30+ days |
+
+---
+
 ## 🚀 IMMEDIATE NEXT STEPS (Choose Your Path)
 
 ### PATH A: Deploy Now (Recommended) ⭐⭐⭐

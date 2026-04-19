@@ -22,6 +22,14 @@ if (!fs.existsSync(path.join(root, ".nvmrc"))) {
   fail("Missing .nvmrc at repository root.");
 }
 
+if (!fs.existsSync(path.join(root, ".tool-versions"))) {
+  fail("Missing .tool-versions at repository root.");
+}
+
+if (!fs.existsSync(path.join(root, ".python-version"))) {
+  fail("Missing .python-version at repository root.");
+}
+
 if (!fs.existsSync(path.join(root, "pnpm-lock.yaml"))) {
   fail("Missing pnpm-lock.yaml. Reproducible installs require a committed lockfile.");
 }
@@ -31,11 +39,13 @@ if (!fs.existsSync(path.join(root, "package.json"))) {
 }
 
 const nvmrc = readFile(".nvmrc").trim();
+const toolVersions = readFile(".tool-versions");
+const pythonVersion = readFile(".python-version").trim();
 const pkg = readJson("package.json");
 const expectedNodeMajor = majorFromVersion(nvmrc);
 
 if (!pkg.packageManager) {
-  fail('Root package.json must define "packageManager", for example "pnpm@10.15.0".');
+  fail('Root package.json must define "packageManager", for example "pnpm@10.33.0".');
 }
 
 if (!String(pkg.packageManager).startsWith("pnpm@")) {
@@ -54,6 +64,61 @@ const currentNodeMajor = process.versions.node.split(".")[0];
 
 if (expectedNodeMajor !== majorFromVersion(pkg.engines.node)) {
   fail(`Node engine mismatch. .nvmrc=${nvmrc}, package.json engines.node=${pkg.engines.node}.`);
+}
+
+const toolVersionEntries = new Map();
+for (const rawLine of toolVersions.split(/\r?\n/)) {
+  const line = rawLine.trim();
+  if (!line || line.startsWith("#")) {
+    continue;
+  }
+
+  const [name, value] = line.split(/\s+/);
+  if (name && value) {
+    toolVersionEntries.set(name, value);
+  }
+}
+
+const nodeToolValue = toolVersionEntries.get("nodejs");
+if (!nodeToolValue) {
+  fail('Missing "nodejs" runtime in .tool-versions.');
+}
+
+if (majorFromVersion(nodeToolValue) !== expectedNodeMajor) {
+  fail(`Node version mismatch. .tool-versions nodejs=${nodeToolValue}, .nvmrc=${nvmrc}.`);
+}
+
+const pnpmToolValue = toolVersionEntries.get("pnpm");
+if (!pnpmToolValue) {
+  fail('Missing "pnpm" runtime in .tool-versions.');
+}
+
+const packageManagerVersion = String(pkg.packageManager).split("@")[1] ?? "";
+if (pnpmToolValue !== packageManagerVersion) {
+  fail(
+    `pnpm version mismatch. .tool-versions pnpm=${pnpmToolValue}, packageManager=${pkg.packageManager}.`,
+  );
+}
+
+const pythonToolValue = toolVersionEntries.get("python");
+if (!pythonToolValue) {
+  fail('Missing "python" runtime in .tool-versions.');
+}
+
+if (majorFromVersion(pythonToolValue) !== majorFromVersion(pythonVersion)) {
+  fail(
+    `Python version mismatch. .tool-versions python=${pythonToolValue}, .python-version=${pythonVersion}.`,
+  );
+}
+
+if (fs.existsSync(path.join(root, "ai/Dockerfile"))) {
+  const aiDockerfile = readFile("ai/Dockerfile");
+  const pythonBaseImage = aiDockerfile.match(/FROM\s+python:(\d+(?:\.\d+)?)/i)?.[1];
+  if (pythonBaseImage && majorFromVersion(pythonBaseImage) !== majorFromVersion(pythonVersion)) {
+    fail(
+      `Python version mismatch. ai/Dockerfile python=${pythonBaseImage}, .python-version=${pythonVersion}.`,
+    );
+  }
 }
 
 for (const versionFile of [".node-version", "apps/web/.node-version"]) {
@@ -82,8 +147,104 @@ for (const netlifyFile of [
   }
 }
 
+if (fs.existsSync(path.join(root, "fly.toml"))) {
+  const rootFlyToml = readFile("fly.toml");
+  const rootBuildContext = rootFlyToml.match(/^\s*context\s*=\s*"([^"]+)"/m)?.[1];
+  const rootDockerfile = rootFlyToml.match(/^\s*dockerfile\s*=\s*"([^"]+)"/m)?.[1];
+
+  if (rootBuildContext && rootBuildContext !== ".") {
+    fail(`fly.toml build.context must be "." for root API deploys.`);
+  }
+
+  if (rootDockerfile && rootDockerfile !== "Dockerfile.api") {
+    fail(`fly.toml build.dockerfile must be "Dockerfile.api".`);
+  }
+}
+
+if (fs.existsSync(path.join(root, ".devcontainer/Dockerfile"))) {
+  const devcontainerDockerfile = readFile(".devcontainer/Dockerfile");
+  const devcontainerNode = devcontainerDockerfile.match(/javascript-node:1-(\d+)-bookworm/i)?.[1];
+  if (devcontainerNode && devcontainerNode !== expectedNodeMajor) {
+    fail(
+      `Node version mismatch. .devcontainer/Dockerfile javascript-node:1-${devcontainerNode}-bookworm, .nvmrc=${nvmrc}.`,
+    );
+  }
+
+  const dockerfilePnpm = devcontainerDockerfile.match(/corepack prepare pnpm@([^\s]+)\s+--activate/i)?.[1];
+  const packageManagerVersion = String(pkg.packageManager).split("@")[1] ?? "";
+  if (dockerfilePnpm && dockerfilePnpm !== packageManagerVersion) {
+    fail(
+      `pnpm version mismatch. .devcontainer/Dockerfile pnpm=${dockerfilePnpm}, packageManager=${pkg.packageManager}.`,
+    );
+  }
+}
+
+if (fs.existsSync(path.join(root, ".devcontainer/init.sh"))) {
+  const devcontainerInit = readFile(".devcontainer/init.sh");
+  const initPnpmVersions = [...devcontainerInit.matchAll(/pnpm@([0-9.]+)/g)].map((m) => m[1]);
+  const packageManagerVersion = String(pkg.packageManager).split("@")[1] ?? "";
+  for (const initPnpmVersion of initPnpmVersions) {
+    if (initPnpmVersion !== packageManagerVersion) {
+      fail(
+        `pnpm version mismatch. .devcontainer/init.sh pnpm=${initPnpmVersion}, packageManager=${pkg.packageManager}.`,
+      );
+    }
+  }
+}
+
+if (fs.existsSync(path.join(root, "apps/web/fly.toml"))) {
+  const webFlyToml = readFile("apps/web/fly.toml");
+  const rootFlyToml = fs.existsSync(path.join(root, "fly.toml")) ? readFile("fly.toml") : "";
+  const topWebFlyToml = fs.existsSync(path.join(root, "fly.web.toml")) ? readFile("fly.web.toml") : "";
+
+  const webAppMatch = webFlyToml.match(/^\s*app\s*=\s*['"]([^'"]+)['"]/m);
+  const rootAppMatch = rootFlyToml.match(/^\s*app\s*=\s*['"]([^'"]+)['"]/m);
+  if (webAppMatch && rootAppMatch && webAppMatch[1] === rootAppMatch[1]) {
+    fail(
+      `apps/web/fly.toml app (${webAppMatch[1]}) must differ from root fly.toml app (${rootAppMatch[1]}).`,
+    );
+  }
+  const topWebAppMatch = topWebFlyToml.match(/^\s*app\s*=\s*['"]([^'"]+)['"]/m);
+  if (webAppMatch && topWebAppMatch && webAppMatch[1] !== topWebAppMatch[1]) {
+    fail(
+      `apps/web/fly.toml app (${webAppMatch[1]}) must match fly.web.toml app (${topWebAppMatch[1]}).`,
+    );
+  }
+
+  const contextMatch = webFlyToml.match(/^\s*context\s*=\s*"([^"]+)"/m);
+  if (contextMatch && contextMatch[1] !== "../..") {
+    fail(`apps/web/fly.toml build.context must be \"../..\" for monorepo Docker builds.`);
+  }
+
+  const dockerfileMatch = webFlyToml.match(/^\s*dockerfile\s*=\s*"([^"]+)"/m);
+  if (dockerfileMatch && dockerfileMatch[1] !== "apps/web/Dockerfile") {
+    fail(`apps/web/fly.toml build.dockerfile must be \"apps/web/Dockerfile\".`);
+  }
+}
+
+if (fs.existsSync(path.join(root, "apps/api/src/server.ts"))) {
+  if (!fs.existsSync(path.join(root, "apps/api/src/instrument.ts"))) {
+    fail("apps/api/src/instrument.ts is required for API Sentry instrumentation.");
+  }
+
+  const serverTs = readFile("apps/api/src/server.ts");
+  const firstImport = serverTs
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find((line) => line.startsWith("import "));
+
+  if (firstImport !== 'import "./instrument.js";') {
+    fail('apps/api/src/server.ts must import "./instrument.js" as the first import.');
+  }
+}
+
 if (expectedNodeMajor !== currentNodeMajor) {
-  fail(`Node version mismatch. .nvmrc=${nvmrc}, runner node=${process.versions.node}.`);
+  const mismatchMessage = `Node runtime mismatch. .nvmrc=${nvmrc}, runner node=${process.versions.node}.`;
+  if (String(process.env.CI || "").toLowerCase() === "true") {
+    fail(`${mismatchMessage} CI runners must use the pinned Node major.`);
+  } else {
+    warn(`${mismatchMessage} Use nvm before pnpm install/build commands.`);
+  }
 }
 
 const requiredScripts = ["lint", "typecheck", "test", "build"];
