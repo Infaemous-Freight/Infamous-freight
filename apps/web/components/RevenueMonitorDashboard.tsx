@@ -100,7 +100,7 @@ export const RevenueMonitorDashboard: React.FC = () => {
       setLoading(false);
     } catch (error) {
       if ((error as Error).name === "AbortError") return;
-      // eslint-disable-next-line no-console
+
       console.error("Failed to fetch metrics:", error);
       if (isMountedRef.current) setLoading(false);
     }
