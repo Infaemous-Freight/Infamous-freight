@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [quality-gate]
-    if: ${{ success() && github.ref_name == 'main' }}
+    if: ${{ success() && ((github.event_name == 'workflow_dispatch' && inputs.environment == 'production') || (github.event_name == 'push' && github.ref_name == 'main')) }}
     steps:
       - uses: actions/checkout@v6
 
