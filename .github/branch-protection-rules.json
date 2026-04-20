@@ -16,11 +16,11 @@
       "restrictsPushes": true,
       "restrictsReviewDismissals": false,
       "requiredStatusCheckContexts": [
-        "sanity",
-        "lint",
-        "typecheck",
-        "test",
-        "build",
+        "CI Sanity / sanity",
+        "Continuous Integration / lint",
+        "Continuous Integration / typecheck",
+        "Continuous Integration / test",
+        "Continuous Integration / build",
         "CodeQL / Analyze",
         "Dependency Review / dependency-review"
       ]
