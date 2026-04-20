@@ -17,7 +17,7 @@
     "@infamous-freight/shared": "workspace:*",
     "@netlify/launchdarkly-server-sdk": "^0.1.5",
     "@sentry/nextjs": "^10.48.0",
-    "@stripe/react-stripe-js": "^6.1.0",
+    "@stripe/react-stripe-js": "^6.2.0",
     "@stripe/stripe-js": "^9.1.0",
     "@supabase/ssr": "^0.10.0",
     "@supabase/supabase-js": "2.103.0",
@@ -35,7 +35,7 @@
     "react-dom": "^19.2.5",
     "recharts": "^3.8.1",
     "strapi-plugin-netlify-deployments": "workspace:*",
-    "stripe": "^22.0.1",
+    "stripe": "^22.0.2",
     "styled-jsx": "^5.1.7"
   },
   "devDependencies": {
@@ -48,11 +48,11 @@
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.27",
     "eslint": "10.2.0",
-    "eslint-config-next": "^16.2.3",
+    "eslint-config-next": "^16.2.4",
     "jsdom": "^29.0.2",
     "postcss": "^8.5.9",
     "tailwindcss": "^4.2.2",
-    "typescript": "^6.0.2",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.4"
   }
 }
