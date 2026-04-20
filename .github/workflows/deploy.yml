@@ -2,16 +2,6 @@ name: Unified Deploy (Fly + Netlify)
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Target environment'
-        required: true
-        default: 'production'
-        type: choice
-        options:
-          - production
-          - staging
-          - develop
   push:
     branches:
       - staging
