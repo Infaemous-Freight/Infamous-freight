@@ -1,5 +1,5 @@
 name: Setup Workspace
-description: Checkout, setup pnpm + Node.js, install deps, build shared package
+description: Setup pnpm + Node.js, install deps, and optionally build the shared package
 inputs:
   node-version-file:
     description: Path to .nvmrc
