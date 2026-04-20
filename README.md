@@ -114,6 +114,32 @@ npm run test
 
 ---
 
+## 🔍 Error Monitoring (Sentry)
+
+`apps/web` is a **Vite + React** SPA. To set up or re-configure Sentry for it, run the React wizard — **not** the Next.js wizard:
+
+```bash
+cd apps/web
+npx @sentry/wizard@latest -i react
+```
+
+> ⚠️ Do **not** use `-i nextjs` — `apps/web` is not a Next.js app.
+
+### Optional Sentry environment variables
+
+| Variable | Purpose | Required |
+|---|---|---|
+| `VITE_SENTRY_DSN` | Sentry DSN for the web app | No (Sentry disabled if blank) |
+| `VITE_SENTRY_ENABLED` | Set to `false` to disable even when DSN is set | No (defaults enabled in prod) |
+| `SENTRY_AUTH_TOKEN` | CI secret — enables sourcemap upload to Sentry | No (skipped if absent) |
+| `SENTRY_ORG` | Sentry organization slug | No (only needed with `SENTRY_AUTH_TOKEN`) |
+| `SENTRY_PROJECT` | Sentry project slug | No (only needed with `SENTRY_AUTH_TOKEN`) |
+| `SENTRY_SOURCEMAPS` | Set to `1` to force sourcemap generation without upload | No |
+
+Sourcemaps are generated **only** when `SENTRY_AUTH_TOKEN` is present or `SENTRY_SOURCEMAPS=1` is set, so local and PR builds are not affected.
+
+---
+
 ## 🚀 Deployment
 
 ### GitHub Actions CI/CD
@@ -125,6 +151,9 @@ Add these secrets to your GitHub repository:
 - 🔐 `NETLIFY_SITE_ID` — Netlify site ID
 - 🔐 `VITE_API_URL` — Production API URL
 - 🔐 `VITE_STRIPE_PUBLIC_KEY` — Stripe publishable key
+- 🔐 `SENTRY_AUTH_TOKEN` — (optional) Sentry auth token for sourcemap upload
+- ⚙️ `SENTRY_ORG` — (optional) Sentry org slug (e.g. `infmous`)
+- ⚙️ `SENTRY_PROJECT` — (optional) Sentry project slug (e.g. `infamous-freight`)
 
 Push to `main` and the pipeline deploys:
 
