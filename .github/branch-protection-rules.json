@@ -16,12 +16,13 @@
       "restrictsPushes": true,
       "restrictsReviewDismissals": false,
       "requiredStatusCheckContexts": [
-        "CI Sanity / sanity",
-        "CI / Lint, Typecheck, Test, Build",
+        "sanity",
+        "lint",
+        "typecheck",
+        "test",
+        "build",
         "CodeQL / Analyze",
-        "Dependency Review / dependency-review",
-        "Netlify Preview Validation / netlify preview deploy",
-        "Netlify Preview Validation / preview quality checks"
+        "Dependency Review / dependency-review"
       ]
     }
   ]

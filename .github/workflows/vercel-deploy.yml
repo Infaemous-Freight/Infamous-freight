@@ -39,7 +39,7 @@ jobs:
           fi
 
       - name: Install Vercel CLI
-        run: npm install --global vercel@latest
+        run: npm install --global vercel@39
 
       - name: Pull Vercel env (Production)
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
@@ -63,8 +63,16 @@ jobs:
             echo "Vercel deploy URL not found"
             exit 1
           fi
-          echo "Checking $DEPLOY_URL"
-          curl -I -sf "$DEPLOY_URL" > /dev/null
+          for attempt in 1 2 3 4 5; do
+            echo "Health check attempt $attempt: $DEPLOY_URL"
+            if curl -I -sf "$DEPLOY_URL" > /dev/null; then
+              echo "Health check passed"
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          echo "Health check failed after 5 attempts"
+          exit 1
 
       - name: Deployment summary
         run: |

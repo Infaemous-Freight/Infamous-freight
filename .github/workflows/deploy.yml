@@ -1,13 +1,22 @@
 name: Unified Deploy (Fly + Netlify)
 
 on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+          - develop
   push:
     branches:
-      - main
       - staging
       - develop
       - "release/**"
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -60,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [quality-gate]
-    if: ${{ always() && github.ref_name == 'main' }}
+    if: ${{ success() && github.ref_name == 'main' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -121,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [quality-gate]
-    if: ${{ always() && (github.ref_name == 'main' || github.ref_name == 'staging' || github.ref_name == 'develop' || startsWith(github.ref_name, 'release/')) }}
+    if: ${{ success() && (github.ref_name == 'main' || github.ref_name == 'staging' || github.ref_name == 'develop' || startsWith(github.ref_name, 'release/')) }}
     steps:
       - uses: actions/checkout@v6
 

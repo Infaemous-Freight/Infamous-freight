@@ -82,14 +82,23 @@ jobs:
           APP_URL="${{ steps.get-url.outputs.app_url }}"
           API_HEALTH="$APP_URL/api/health"
           ROOT_HEALTH="$APP_URL/health"
-          echo "Checking $API_HEALTH"
-          if curl -sf "$API_HEALTH" > /tmp/fly-health.json; then
-            cat /tmp/fly-health.json
-            exit 0
-          fi
-          echo "Checking fallback $ROOT_HEALTH"
-          curl -sf "$ROOT_HEALTH" > /tmp/fly-health.json
-          cat /tmp/fly-health.json
+          for attempt in 1 2 3 4 5; do
+            echo "Health check attempt $attempt"
+            if curl -sf "$API_HEALTH" > /tmp/fly-health.json; then
+              echo "Health check passed: $API_HEALTH"
+              cat /tmp/fly-health.json
+              exit 0
+            fi
+            if curl -sf "$ROOT_HEALTH" > /tmp/fly-health.json; then
+              echo "Fallback health check passed: $ROOT_HEALTH"
+              cat /tmp/fly-health.json
+              exit 0
+            fi
+            echo "Attempt $attempt failed, retrying in $((attempt * 3))s..."
+            sleep $((attempt * 3))
+          done
+          echo "Health check failed after 5 attempts" >&2
+          exit 1
 
       - name: Deployment summary
         run: |

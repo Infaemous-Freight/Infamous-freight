@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   deploy-api:
     uses: ./.github/workflows/fly-deploy.yml
@@ -19,6 +23,7 @@ jobs:
 
   production-validation:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     needs: [deploy-api, deploy-web]
     if: ${{ vars.PRODUCTION_VALIDATION_ENABLED == 'true' }}
     steps:
