@@ -95,8 +95,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
       '@launchdarkly/node-server-sdk':
-        specifier: ^9.10.10
-        version: 9.10.10
+        specifier: ^9.10.11
+        version: 9.10.11
       '@prisma/adapter-pg':
         specifier: ^7.7.0
         version: 7.7.0
@@ -170,8 +170,8 @@ importers:
         specifier: ^22.0.1
         version: 22.0.1(@types/node@25.6.0)
       uuid:
-        specifier: ^13.0.0
-        version: 13.0.0
+        specifier: ^14.0.0
+        version: 14.0.0
       winston:
         specifier: ^3.19.0
         version: 3.19.0
@@ -198,8 +198,8 @@ importers:
         specifier: ^25.6.0
         version: 25.6.0
       '@types/pdfkit':
-        specifier: ^0.17.5
-        version: 0.17.5
+        specifier: ^0.17.6
+        version: 0.17.6
       '@types/supertest':
         specifier: ^7.2.0
         version: 7.2.0
@@ -283,8 +283,8 @@ importers:
         specifier: ^10.48.0
         version: 10.48.0(@opentelemetry/context-async-hooks@2.6.1(@opentelemetry/api@1.9.1))(@opentelemetry/core@2.6.1(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.6.1(@opentelemetry/api@1.9.1))(next@16.2.4(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.58.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)(webpack@5.105.4)
       '@stripe/react-stripe-js':
-        specifier: ^6.1.0
-        version: 6.1.0(@stripe/stripe-js@9.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        specifier: ^6.2.0
+        version: 6.2.0(@stripe/stripe-js@9.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@stripe/stripe-js':
         specifier: ^9.1.0
         version: 9.1.0
@@ -417,8 +417,8 @@ importers:
         specifier: ^25.6.0
         version: 25.6.0
       '@types/pdfkit':
-        specifier: ^0.17.5
-        version: 0.17.5
+        specifier: ^0.17.6
+        version: 0.17.6
       '@types/pg':
         specifier: ^8.20.0
         version: 8.20.0
@@ -2182,8 +2182,8 @@ packages:
   '@kurkle/color@0.3.4':
     resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
 
-  '@launchdarkly/js-sdk-common@2.24.0':
-    resolution: {integrity: sha512-f/xRD8gl/bSOVljat79nAzX0V0QjJ76R54aAbB6PJDWL+7BWBSFMxduaeokzbX53cs3oOVajL8ej/ps7+ojMeQ==}
+  '@launchdarkly/js-sdk-common@2.24.1':
+    resolution: {integrity: sha512-rrqZrUwjPWtSkjDNG1qX+BawlyGTx3RFTX4cdHeIR6MOyJR5i9DTzCit8bNBxjI/kGfxZHBepaPlGxoCfJjGFQ==}
 
   '@launchdarkly/js-sdk-common@2.8.0':
     resolution: {integrity: sha512-XLYhB0A0vec1gwbnVNU+rzMd1JxdtMJXSA76y3ASJ6X0cG0qTRKQdFba4n4RwIs0y1bX3rncFHJMhBjrXtyPhA==}
@@ -2191,14 +2191,14 @@ packages:
   '@launchdarkly/js-server-sdk-common-edge@2.3.9':
     resolution: {integrity: sha512-pgQatwvb3WKBdaSpZPDdv1whmTUuuYmJlVu/XdgEFFLd5r90Ixf4LZXmNyGW6+x1VEDgxj9kOkbUfSGJf0EO0g==}
 
-  '@launchdarkly/js-server-sdk-common@2.18.3':
-    resolution: {integrity: sha512-9lf1IRLJSghtDZlUT04KmmJOwRnAUuqXUcn7C2S9jNPDvrsmFJeD9Dpn7PoCUOR5rZgqAEveWdlBw9qjWeY6jw==}
+  '@launchdarkly/js-server-sdk-common@2.18.4':
+    resolution: {integrity: sha512-N3cYW1MTiXLpUzyIGU2jYo02/ZGeQFxz1diL3utgR+Mkrnb448e34uqt6Mrmv7lHr/IUL5aSgHdiJZc/5+WQAA==}
 
   '@launchdarkly/js-server-sdk-common@2.6.1':
     resolution: {integrity: sha512-PcyglkUi/P1fBT3GqwZ/K9MvLj2e5Rw5XLP/gC2qIIHJxIbni8oy8Zon+6bP890DYgZtqqeX6tKhAw/gwOYkhQ==}
 
-  '@launchdarkly/node-server-sdk@9.10.10':
-    resolution: {integrity: sha512-qJNVrHbX+FKUhVUl7FWK9ICsL4lJmHBE7vOCkvERFFODRxYrrf8HdiyYDf79aI8JMSOLCKZgcJJKNXAvRJXThg==}
+  '@launchdarkly/node-server-sdk@9.10.11':
+    resolution: {integrity: sha512-2YsWGb7S5lxIg9DJpQDkLem69xzfP9PLXnOqZrfZEae5vh68V9nnKG6VpG3gTaHBJg1gDrqcpdJxCwPodI+MSA==}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.3':
     resolution: {integrity: sha512-QZHtlVgbAdy2zAqNA9Gu1UpIuI8Xvsd1v8ic6B2pZmeFnFcMWiPLfWXh7TVw4eGEZ/C9TH281KwhVoeQUKbyjw==}
@@ -3861,10 +3861,10 @@ packages:
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
-  '@stripe/react-stripe-js@6.1.0':
-    resolution: {integrity: sha512-LbKbRv4+wUSHLb5VNxqiYcKaqXPvTju0bJaF0RrzH0h4+aKWDXAk4RzUBcpNxxj8KtjuxICElANs1Li7aTv1IQ==}
+  '@stripe/react-stripe-js@6.2.0':
+    resolution: {integrity: sha512-GSCErjljZEQv9LaxP30xGOwstcMyyUzb5JyihXwvjOU95yrfhbiPG4K2KkwxYxn+WY0/AyHsRhPPoGRw7urBzg==}
     peerDependencies:
-      '@stripe/stripe-js': '>=9.0.0 <10.0.0'
+      '@stripe/stripe-js': '>=9.2.0 <10.0.0'
       react: '>=16.8.0 <20.0.0'
       react-dom: '>=16.8.0 <20.0.0'
 
@@ -4160,8 +4160,8 @@ packages:
   '@types/node@25.6.0':
     resolution: {integrity: sha512-+qIYRKdNYJwY3vRCZMdJbPLJAtGjQBudzZzdzwQYkEPQd+PJGixUL5QfvCLDaULoLv+RhT3LDkwEfKaAkgSmNQ==}
 
-  '@types/pdfkit@0.17.5':
-    resolution: {integrity: sha512-T3ZHnvF91HsEco5ClhBCOuBwobZfPcI2jaiSHybkkKYq4KhVIIurod94JVKvDIG0JXT6o3KiERC0X0//m8dyrg==}
+  '@types/pdfkit@0.17.6':
+    resolution: {integrity: sha512-tIwzxk2uWKp0Cq9JIluQXJid77lYhF52EsIOwhsMF4iWLA6YneoBR1xVKYYdAysHuepUB0OX4tdwMiUDdGKmig==}
 
   '@types/pg-pool@2.0.7':
     resolution: {integrity: sha512-U4CwmGVQcbEuqpyju8/ptOKg6gEC+Tqsvj2xS9o1g71bUh8twxnC6ZL5rZKCsGN0iyH0CwgUyc9VR5owNQF9Ng==}
@@ -9025,8 +9025,8 @@ packages:
     resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
     hasBin: true
 
-  uuid@13.0.0:
-    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
+  uuid@14.0.0:
+    resolution: {integrity: sha512-Qo+uWgilfSmAhXCMav1uYFynlQO7fMFiMVZsQqZRMIXp0O7rR7qjkj+cPvBHLgBqi960QCoo/PH2/6ZtVqKvrg==}
     hasBin: true
 
   uuid@7.0.3:
@@ -11829,7 +11829,7 @@ snapshots:
 
   '@kurkle/color@0.3.4': {}
 
-  '@launchdarkly/js-sdk-common@2.24.0': {}
+  '@launchdarkly/js-sdk-common@2.24.1': {}
 
   '@launchdarkly/js-sdk-common@2.8.0': {}
 
@@ -11838,9 +11838,9 @@ snapshots:
       '@launchdarkly/js-server-sdk-common': 2.6.1
       crypto-js: 4.2.0
 
-  '@launchdarkly/js-server-sdk-common@2.18.3':
+  '@launchdarkly/js-server-sdk-common@2.18.4':
     dependencies:
-      '@launchdarkly/js-sdk-common': 2.24.0
+      '@launchdarkly/js-sdk-common': 2.24.1
       semver: 7.5.4
 
   '@launchdarkly/js-server-sdk-common@2.6.1':
@@ -11848,9 +11848,9 @@ snapshots:
       '@launchdarkly/js-sdk-common': 2.8.0
       semver: 7.5.4
 
-  '@launchdarkly/node-server-sdk@9.10.10':
+  '@launchdarkly/node-server-sdk@9.10.11':
     dependencies:
-      '@launchdarkly/js-server-sdk-common': 2.18.3
+      '@launchdarkly/js-server-sdk-common': 2.18.4
       https-proxy-agent: 7.0.6
       launchdarkly-eventsource: 2.2.0
     transitivePeerDependencies:
@@ -13845,7 +13845,7 @@ snapshots:
 
   '@standard-schema/utils@0.3.0': {}
 
-  '@stripe/react-stripe-js@6.1.0(@stripe/stripe-js@9.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@stripe/react-stripe-js@6.2.0(@stripe/stripe-js@9.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
       '@stripe/stripe-js': 9.1.0
       prop-types: 15.8.1
@@ -14162,7 +14162,7 @@ snapshots:
     dependencies:
       undici-types: 7.19.2
 
-  '@types/pdfkit@0.17.5':
+  '@types/pdfkit@0.17.6':
     dependencies:
       '@types/node': 25.6.0
 
@@ -19929,7 +19929,7 @@ snapshots:
 
   uuid@11.1.0: {}
 
-  uuid@13.0.0: {}
+  uuid@14.0.0: {}
 
   uuid@7.0.3: {}
 
