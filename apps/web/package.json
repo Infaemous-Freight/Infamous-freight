@@ -18,7 +18,7 @@
     "@netlify/launchdarkly-server-sdk": "^0.1.5",
     "@sentry/nextjs": "^10.48.0",
     "@stripe/react-stripe-js": "^6.1.0",
-    "@stripe/stripe-js": "^9.1.0",
+    "@stripe/stripe-js": "^9.2.0",
     "@supabase/ssr": "^0.10.0",
     "@supabase/supabase-js": "2.103.0",
     "@vercel/analytics": "^2.0.1",
