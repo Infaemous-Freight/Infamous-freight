@@ -37,7 +37,7 @@ export class StripeService {
     }
 
     return {
-      checkoutUrl: `${input.successUrl}?tenantId=${encodeURIComponent(input.tenantId)}`,
+      checkoutUrl: input.successUrl,
       mode: "subscription",
       trialDays: this.getTrialDays(),
     };

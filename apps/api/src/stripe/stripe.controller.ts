@@ -10,14 +10,41 @@ type CheckoutBody = {
   idempotencyKey?: string;
 };
 
+function readHeaderValue(value: string | string[] | undefined): string | undefined {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return value;
+}
+
 export async function createCheckoutSessionController(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const body = (req.body ?? {}) as CheckoutBody;
+    if (!stripeService.isConfigured()) {
+      res.status(503).json({
+        success: false,
+        error: "Stripe billing is not configured",
+      });
+      return;
+    }
 
-    if (!body.tenantId || !body.customerEmail || !body.priceId || !body.successUrl || !body.cancelUrl || !body.idempotencyKey) {
+    const body = (req.body ?? {}) as CheckoutBody;
+    const headerIdempotencyKey = readHeaderValue(req.headers["idempotency-key"]);
+    const idempotencyKey = body.idempotencyKey ?? headerIdempotencyKey;
+
+    if (!body.tenantId || !body.customerEmail || !body.priceId || !body.successUrl || !body.cancelUrl || !idempotencyKey) {
       res.status(400).json({
         success: false,
         error: "Missing required fields",
+      });
+      return;
+    }
+
+    const authTenantId = req.auth?.organizationId ?? req.auth?.orgId;
+    if (authTenantId && body.tenantId !== authTenantId) {
+      res.status(403).json({
+        success: false,
+        error: "Tenant mismatch",
       });
       return;
     }
@@ -28,7 +55,7 @@ export async function createCheckoutSessionController(req: Request, res: Respons
       priceId: body.priceId,
       successUrl: body.successUrl,
       cancelUrl: body.cancelUrl,
-      idempotencyKey: body.idempotencyKey,
+      idempotencyKey,
     });
 
     res.status(200).json({
@@ -42,8 +69,12 @@ export async function createCheckoutSessionController(req: Request, res: Respons
 
 export async function stripeWebhookController(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const signature = req.headers["stripe-signature"];
-    const normalizedSignature = Array.isArray(signature) ? signature[0] : signature;
+    if (!stripeService.isConfigured()) {
+      res.status(503).json({ success: false, error: "Stripe billing is not configured" });
+      return;
+    }
+
+    const normalizedSignature = readHeaderValue(req.headers["stripe-signature"]);
 
     if (!stripeService.validateWebhookSignature(normalizedSignature)) {
       res.status(400).json({ success: false, error: "Invalid webhook signature" });
