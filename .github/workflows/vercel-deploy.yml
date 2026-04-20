@@ -21,7 +21,7 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Validate Vercel secrets
         run: |
@@ -72,3 +72,24 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **URL**: ${{ steps.deploy.outputs.deploy_url }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Dashboard**: https://vercel.com/dashboard" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify deployment status
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+          deploy_status="${{ job.status }}"
+          deploy_url="${{ steps.deploy.outputs.deploy_url }}"
+          {
+            echo "## ▲ Vercel Deploy Notification"
+            echo ""
+            echo "- **Status**: ${deploy_status}"
+            echo "- **URL**: ${deploy_url:-N/A}"
+            echo "- **Ref**: \`${GITHUB_REF_NAME}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+            summary="Vercel deploy ${deploy_status} for ${GITHUB_REF_NAME} — ${deploy_url:-no URL}"
+            payload=$(SUMMARY="$summary" python3 -c 'import json, os; print(json.dumps({"text": os.environ["SUMMARY"]}))')
+            curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" >/dev/null
+          fi
