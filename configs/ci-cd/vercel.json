@@ -1,5 +1,6 @@
 {
   "framework": "nextjs",
-  "buildCommand": "pnpm install --frozen-lockfile && pnpm --filter web build",
+  "installCommand": "corepack enable && corepack prepare pnpm@10.33.0 --activate && pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm --filter @infamous-freight/shared build && pnpm --filter web build",
   "outputDirectory": "apps/web/.next"
 }
