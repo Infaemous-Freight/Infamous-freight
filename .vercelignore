@@ -1,12 +1,9 @@
-.vercelignore
-
-# Excluded paths
-apps/web/.next/
+# Build artifacts – never needed by Vercel
 .next/
-src/
+apps/web/.next/
+dist/
+coverage/
+# Non-deployment directories
 archive/
-api/
-apps/api/
-mobile/
-e2e/
 docs/
+e2e/
