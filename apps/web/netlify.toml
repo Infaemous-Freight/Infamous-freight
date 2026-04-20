@@ -48,6 +48,21 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+# Persist additional cache directories between builds to speed up rebuilds.
+# @netlify/plugin-nextjs already preserves apps/web/.next/cache; the paths below
+# cover the tooling caches (webpack/babel/eslint/tsc) and Turborepo's local
+# cache, which Netlify does not retain by default.
+[[plugins]]
+  package = "netlify-plugin-cache"
+  [plugins.inputs]
+    paths = [
+      "node_modules/.cache",
+      "apps/web/node_modules/.cache",
+      "apps/web/.next/cache",
+      ".turbo",
+      "apps/web/.turbo",
+    ]
+
 # Centralized redirects / rewrites.
 [[redirects]]
   from = "https://infamousfreight.com/*"
