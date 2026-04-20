@@ -29,11 +29,10 @@ const PROTECTED_API_ROUTES = ["/api/admin", "/api/internal"];
 
 export function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
-  const isProduction =
-    process.env.NEXT_PUBLIC_ENV === "production" || process.env.NODE_ENV === "production";
+  const analyticsEnabledEnv = process.env.NEXT_PUBLIC_ENV === "production";
   const gaMeasurementId =
     process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
-  const gaEnabled = Boolean(isProduction && gaMeasurementId);
+  const gaEnabled = Boolean(analyticsEnabledEnv && gaMeasurementId);
 
   // Skip middleware for static assets and health checks
   if (SKIP_PATHS.some((path) => pathname.startsWith(path))) {
