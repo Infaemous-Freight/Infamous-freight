@@ -28,7 +28,7 @@
     "firebase": "^12.12.0",
     "framer-motion": "^12.38.0",
     "jsonwebtoken": "^9.0.3",
-    "lucide-react": "^1.7.0",
+    "lucide-react": "^1.8.0",
     "next": "^16.2.4",
     "next-i18next": "^16.0.5",
     "react": "^19.2.5",
