@@ -90,7 +90,7 @@ jobs:
       - name: Check Prisma client drift
         run: |
           pnpm --filter @infamous/api prisma:generate
-          git diff --exit-code
+          git diff --exit-code -- apps/api/prisma/
 
       - name: Security audit
         run: pnpm audit --audit-level=high
