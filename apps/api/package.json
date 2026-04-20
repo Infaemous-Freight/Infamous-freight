@@ -21,7 +21,7 @@
     "@aws-sdk/client-s3": "^3.1032.0",
     "@aws-sdk/s3-request-presigner": "^3.1029.0",
     "@infamous-freight/shared": "workspace:*",
-    "@launchdarkly/node-server-sdk": "^9.10.10",
+    "@launchdarkly/node-server-sdk": "^9.10.11",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "@sendgrid/mail": "^8.1.6",
