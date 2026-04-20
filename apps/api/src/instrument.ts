@@ -39,12 +39,27 @@ function captureException(error: unknown): void {
   });
 }
 
+function flushAndExit(): void {
+  process.exitCode = 1;
+
+  if (!sentryEnabled) {
+    process.exit(1);
+  }
+
+  void Sentry.flush(2000)
+    .catch(() => undefined)
+    .finally(() => {
+      process.exit(1);
+    });
+}
+
 process.on("unhandledRejection", (reason) => {
   captureException(reason);
 });
 
 process.on("uncaughtException", (error) => {
   captureException(error);
+  flushAndExit();
 });
 
 export { Sentry, sentryEnabled };
