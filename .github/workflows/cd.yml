@@ -32,3 +32,32 @@ jobs:
           curl -f --fail-with-body "$DEPLOYED_API_URL" || { echo "::error::API health check failed for $DEPLOYED_API_URL"; exit 1; }
           echo "Checking Web: $DEPLOYED_WEB_URL"
           curl -f --fail-with-body "$DEPLOYED_WEB_URL" || { echo "::error::Web health check failed for $DEPLOYED_WEB_URL"; exit 1; }
+
+  notify-deploy:
+    name: Notify deploy status
+    runs-on: ubuntu-latest
+    needs: [deploy-api, deploy-web]
+    if: always()
+    steps:
+      - name: Post deployment summary
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          set -euo pipefail
+          api_status="${{ needs.deploy-api.result }}"
+          web_status="${{ needs.deploy-web.result }}"
+          {
+            echo "## 🚀 CD Pipeline — Deploy Status"
+            echo ""
+            echo "| Service | Status |"
+            echo "|---------|--------|"
+            echo "| **API (Fly.io)** | ${api_status} |"
+            echo "| **Web (Vercel)** | ${web_status} |"
+            echo ""
+            echo "Triggered by \`${GITHUB_REF_NAME}\` at $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "${SLACK_WEBHOOK_URL:-}" ]; then
+            summary="CD Deploy — API: ${api_status} / Web: ${web_status} (${GITHUB_REF_NAME})"
+            payload=$(SUMMARY="$summary" python3 -c 'import json, os; print(json.dumps({"text": os.environ["SUMMARY"]}))')
+            curl -sS -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL" >/dev/null
+          fi
