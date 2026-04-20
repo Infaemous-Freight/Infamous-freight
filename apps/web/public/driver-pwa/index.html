@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#dc2626">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Infamous Freight - Driver App</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: #000; font-family: -apple-system, system-ui, sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-black text-white">
+  <!-- Driver PWA App -->
+  <div id="app" class="min-h-screen">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-black/90 backdrop-blur-lg border-b border-zinc-800 px-4 py-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <h1 class="font-bold text-lg">Driver App</h1>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span class="text-xs text-emerald-400">Online</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 py-4 space-y-4">
+      <!-- Current Load Card -->
+      <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-medium text-red-400 bg-red-600/10 px-2 py-0.5 rounded-full">ACTIVE LOAD</span>
+          <span class="text-xs text-zinc-500">#LD-2847</span>
+        </div>
+        
+        <div class="space-y-2">
+          <div class="flex items-start gap-3">
+            <div class="flex flex-col items-center">
+              <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+              <div class="w-0.5 h-8 bg-zinc-700 my-1"></div>
+              <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            </div>
+            <div class="space-y-4 pt-0.5">
+              <div>
+                <p class="text-sm text-zinc-400">Pickup</p>
+                <p class="font-medium">Chicago, IL</p>
+                <p class="text-xs text-zinc-500">Today 2:00 PM</p>
+              </div>
+              <div>
+                <p class="text-sm text-zinc-400">Delivery</p>
+                <p class="font-medium">Dallas, TX</p>
+                <p class="text-xs text-zinc-500">Tomorrow 8:00 AM</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-2 gap-2 mt-4">
+          <button onclick="updateStatus('picked_up')" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-3 rounded-lg transition-colors">
+            Mark Picked Up
+          </button>
+          <button onclick="updateStatus('delivered')" class="bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium py-3 rounded-lg transition-colors">
+            Mark Delivered
+          </button>
+        </div>
+      </div>
+
+      <!-- Upload POD -->
+      <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+        <h3 class="font-medium mb-3">Upload POD</h3>
+        <label class="block border-2 border-dashed border-zinc-700 rounded-xl p-6 text-center cursor-pointer hover:border-zinc-500 transition-colors">
+          <input type="file" accept="image/*" capture="environment" class="hidden" onchange="handlePhoto(this)">
+          <svg class="w-8 h-8 text-zinc-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <p class="text-sm text-zinc-400">Tap to take photo</p>
+        </label>
+      </div>
+
+      <!-- HOS Clock -->
+      <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-medium">Hours of Service</h3>
+          <span class="text-xs text-emerald-400">6h 42m remaining</span>
+        </div>
+        <div class="h-3 rounded-full bg-zinc-800 overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-emerald-500 to-yellow-500 w-3/4 rounded-full"></div>
+        </div>
+        <div class="flex justify-between mt-2 text-xs text-zinc-500">
+          <span>5h 18m driven</span>
+          <span>11h limit</span>
+        </div>
+      </div>
+
+      <!-- Status Buttons -->
+      <div class="grid grid-cols-3 gap-2">
+        <button onclick="updateStatus('driving')" class="bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-medium py-3 rounded-lg transition-colors">
+          Driving
+        </button>
+        <button onclick="updateStatus('on_duty')" class="bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-medium py-3 rounded-lg transition-colors">
+          On Duty
+        </button>
+        <button onclick="updateStatus('off_duty')" class="bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-medium py-3 rounded-lg transition-colors">
+          Off Duty
+        </button>
+      </div>
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-lg border-t border-zinc-800 px-4 py-2">
+      <div class="flex items-center justify-around">
+        <button class="flex flex-col items-center gap-1 text-red-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          <span class="text-[10px]">Loads</span>
+        </button>
+        <button class="flex flex-col items-center gap-1 text-zinc-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span class="text-[10px]">Map</span>
+        </button>
+        <button class="flex flex-col items-center gap-1 text-zinc-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          <span class="text-[10px]">Chat</span>
+        </button>
+        <button class="flex flex-col items-center gap-1 text-zinc-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          <span class="text-[10px]">Profile</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Safe area padding for bottom nav -->
+    <div class="h-16"></div>
+  </div>
+
+  <script>
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(() => {
+        console.log('Service Worker registered');
+      });
+    }
+
+    // Update load status
+    function updateStatus(status) {
+      console.log('Status updated:', status);
+      // Send to API
+      fetch('/api/driver/status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status, timestamp: new Date().toISOString() }),
+      });
+      
+      // Show feedback
+      const toast = document.createElement('div');
+      toast.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-medium z-50 animate-bounce';
+      toast.textContent = 'Status updated!';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    // Handle photo upload
+    function handlePhoto(input) {
+      const file = input.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'POD');
+        
+        fetch('/api/uploads/pod', {
+          method: 'POST',
+          body: formData,
+        }).then(() => {
+          alert('POD uploaded successfully!');
+        });
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Infamous Freight — Book It",
+  "version": "1.0.0",
+  "description": "One-click load booking from DAT, Truckstop, and 123Loadboard directly into Infamous Freight TMS",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.dat.com/*",
+    "https://*.truckstop.com/*",
+    "https://*.123loadboard.com/*",
+    "https://*.infamousfreight.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.dat.com/*",
+        "https://*.truckstop.com/*",
+        "https://*.123loadboard.com/*"
+      ],
+      "js": ["src/content.js"],
+      "css": ["src/content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,126 @@
+/**
+ * RECOMMENDATION: Exit-Intent Popup
+ * Captures leaving visitors with a discount offer
+ */
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Gift, Loader2, CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
+export function ExitIntentPopup() {
+  const [show, setShow] = useState(false);
+  const [email, setEmail] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let shown = false;
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY < 10 && !shown && !localStorage.getItem('exit-popup-shown')) {
+        shown = true;
+        setShow(true);
+        localStorage.setItem('exit-popup-shown', 'true');
+      }
+    };
+
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    await fetch('/api/leads/discount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: 'exit-intent' }),
+    });
+
+    setLoading(false);
+    setSubmitted(true);
+  };
+
+  if (localStorage.getItem('exit-popup-dismissed')) return null;
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+        >
+          <motion.div
+            initial={{ scale: 0.8, y: 50 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.8, y: 50 }}
+            className="relative w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-8"
+          >
+            <button
+              onClick={() => { setShow(false); localStorage.setItem('exit-popup-dismissed', 'true'); }}
+              className="absolute right-4 top-4 text-zinc-500 hover:text-white"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {!submitted ? (
+              <>
+                <div className="text-center mb-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-600/10 mb-4">
+                    <Gift className="h-8 w-8 text-red-500" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-white">Wait! Don't Leave Empty-Handed</h2>
+                  <p className="text-zinc-400 mt-2">
+                    Get <span className="text-red-400 font-bold">10% off</span> your first 3 months + a free onboarding call
+                  </p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="border-zinc-700 bg-zinc-800 text-white text-center"
+                    required
+                  />
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-red-600 hover:bg-red-700"
+                  >
+                    {loading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      'Claim My 10% Discount'
+                    )}
+                  </Button>
+                  <p className="text-xs text-zinc-500 text-center">
+                    No spam. Unsubscribe anytime.
+                  </p>
+                </form>
+              </>
+            ) : (
+              <div className="text-center py-4">
+                <CheckCircle className="h-12 w-12 text-emerald-500 mx-auto mb-3" />
+                <h3 className="text-lg font-semibold text-white">Discount Activated!</h3>
+                <p className="text-zinc-400 mt-2">
+                  Check your email for the 10% off code.
+                </p>
+                <Button
+                  onClick={() => setShow(false)}
+                  className="mt-4 bg-red-600 hover:bg-red-700"
+                >
+                  Start Free Trial
+                </Button>
+              </div>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}

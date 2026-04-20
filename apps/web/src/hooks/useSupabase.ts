@@ -1,0 +1,133 @@
+import { useState, useEffect, useCallback } from 'react';
+import { createClient, SupabaseClient, User, AuthError } from '@supabase/supabase-js';
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+let supabaseInstance: SupabaseClient | null = null;
+
+function getSupabase(): SupabaseClient {
+  if (!supabaseInstance) {
+    supabaseInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
+    });
+  }
+  return supabaseInstance;
+}
+
+export function useSupabaseAuth() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<AuthError | null>(null);
+
+  useEffect(() => {
+    const supabase = getSupabase();
+
+    // Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    // Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signIn = useCallback(async (email: string, password: string) => {
+    setError(null);
+    const supabase = getSupabase();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) setError(error);
+    return data;
+  }, []);
+
+  const signUp = useCallback(async (email: string, password: string, metadata?: Record<string, any>) => {
+    setError(null);
+    const supabase = getSupabase();
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: metadata },
+    });
+    if (error) setError(error);
+    return data;
+  }, []);
+
+  const signOut = useCallback(async () => {
+    const supabase = getSupabase();
+    await supabase.auth.signOut();
+    setUser(null);
+  }, []);
+
+  const resetPassword = useCallback(async (email: string) => {
+    setError(null);
+    const supabase = getSupabase();
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) setError(error);
+    return data;
+  }, []);
+
+  return {
+    user,
+    loading,
+    error,
+    signIn,
+    signUp,
+    signOut,
+    resetPassword,
+    supabase: getSupabase(),
+  };
+}
+
+export function useSupabaseStorage() {
+  const uploadFile = useCallback(async (bucket: string, path: string, file: File) => {
+    const supabase = getSupabase();
+    const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
+      upsert: true,
+      contentType: file.type,
+    });
+    if (error) throw error;
+    return data;
+  }, []);
+
+  const getPublicUrl = useCallback((bucket: string, path: string) => {
+    const supabase = getSupabase();
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+    return data.publicUrl;
+  }, []);
+
+  const deleteFile = useCallback(async (bucket: string, path: string) => {
+    const supabase = getSupabase();
+    const { error } = await supabase.storage.from(bucket).remove([path]);
+    if (error) throw error;
+  }, []);
+
+  return { uploadFile, getPublicUrl, deleteFile };
+}
+
+export function useSupabaseRealtime(channel: string, event: string, callback: (payload: any) => void) {
+  useEffect(() => {
+    const supabase = getSupabase();
+    const sub = supabase
+      .channel(channel)
+      .on('postgres_changes', { event: '*', schema: 'public', table: event }, callback)
+      .subscribe();
+
+    return () => {
+      sub.unsubscribe();
+    };
+  }, [channel, event, callback]);
+}
+
+export { getSupabase };

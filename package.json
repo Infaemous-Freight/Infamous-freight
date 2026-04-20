@@ -1,0 +1,35 @@
+{
+  "name": "infamous-freight",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Infamous Freight — The freight dispatch platform built by truckers, for truckers",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "cd apps/api && npm run start:dev",
+    "dev:web": "cd apps/web && npm run dev",
+    "build": "npm run build:api && npm run build:web",
+    "build:api": "cd apps/api && npm run build",
+    "build:web": "cd apps/web && npm run build",
+    "start": "cd apps/api && npm run start:prod",
+    "lint": "cd apps/api && npm run lint && cd ../web && npm run lint",
+    "test": "cd apps/api && npm run test",
+    "prisma:generate": "cd apps/api && npx prisma generate",
+    "prisma:migrate": "cd apps/api && npx prisma migrate dev",
+    "prisma:seed": "cd apps/api && npx prisma db seed",
+    "db:setup": "npm run prisma:generate && npm run prisma:migrate && npm run prisma:seed",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "setup": "npm install && npm run db:setup"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}

@@ -1,0 +1,120 @@
+/* Infamous Freight — Book It Button Styles */
+
+.infamous-book-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 6px 14px !important;
+  background: linear-gradient(135deg, #ff3d00, #ff6d00) !important;
+  color: white !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 8px rgba(255, 61, 0, 0.3) !important;
+  text-decoration: none !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  z-index: 999999 !important;
+}
+
+.infamous-book-btn:hover {
+  background: linear-gradient(135deg, #ff6d00, #ff8d00) !important;
+  box-shadow: 0 4px 12px rgba(255, 61, 0, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.infamous-book-btn:active {
+  transform: translateY(0) !important;
+}
+
+.infamous-book-btn.booked {
+  background: #4caf50 !important;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3) !important;
+}
+
+.infamous-book-btn.booked::after {
+  content: 'ed!';
+}
+
+/* Floating panel */
+.infamous-panel {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  width: 320px !important;
+  background: #141414 !important;
+  border: 1px solid #333 !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  z-index: 999999 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
+  color: white !important;
+}
+
+.infamous-panel-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 12px !important;
+}
+
+.infamous-panel-title {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #ff3d00 !important;
+}
+
+.infamous-panel-close {
+  background: none !important;
+  border: none !important;
+  color: #888 !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+}
+
+.infamous-panel-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  padding: 6px 0 !important;
+  border-bottom: 1px solid #222 !important;
+  font-size: 12px !important;
+}
+
+.infamous-panel-label {
+  color: #888 !important;
+}
+
+.infamous-panel-value {
+  font-weight: 600 !important;
+}
+
+.infamous-panel-actions {
+  display: flex !important;
+  gap: 8px !important;
+  margin-top: 12px !important;
+}
+
+.infamous-panel-btn {
+  flex: 1 !important;
+  padding: 10px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  border: none !important;
+}
+
+.infamous-panel-btn-primary {
+  background: linear-gradient(135deg, #ff3d00, #ff6d00) !important;
+  color: white !important;
+}
+
+.infamous-panel-btn-secondary {
+  background: #222 !important;
+  color: #888 !important;
+}
