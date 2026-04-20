@@ -125,6 +125,10 @@ npx @sentry/wizard@latest -i react
 
 > ⚠️ Do **not** use `-i nextjs` — `apps/web` is not a Next.js app.
 
+**Netlify sourcemap policy:** Public requests for `*.map` files are blocked (404).
+Sourcemaps are still uploaded to Sentry during Netlify builds when
+`SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` are configured.
+
 ### Optional Sentry environment variables
 
 | Variable | Purpose | Required |
