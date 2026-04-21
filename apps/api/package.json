@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "type": "commonjs",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "prisma:generate": "node ./scripts/prisma-generate-if-schema.cjs",
     "build": "npm run prisma:generate && tsc -p tsconfig.json",
     "lint": "tsc --noEmit -p tsconfig.json",
     "test": "jest --runInBand",
     "start:dev": "tsx watch src/index.ts",
-    "start:prod": "node dist/index.js"
+    "start:prod": "node dist/src/index.js"
   },
   "dependencies": {
     "express": "^4.21.2"
