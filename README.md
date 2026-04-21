@@ -112,6 +112,27 @@ npm run build
 npm run test
 ```
 
+### Git remote troubleshooting
+
+If `git push` fails with:
+
+```text
+fatal: No configured push destination.
+```
+
+Configure an upstream remote and branch:
+
+```bash
+git remote add origin <your-repo-url>
+git push -u origin <your-branch>
+```
+
+You can verify remotes any time with:
+
+```bash
+git remote -v
+```
+
 ---
 
 ## 🔍 Error Monitoring (Sentry)
