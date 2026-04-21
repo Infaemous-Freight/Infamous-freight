@@ -39,15 +39,13 @@ Reference these guidelines when:
 
 ## How to Use
 
-Read individual rule files for detailed explanations and SQL examples:
+Use the references below for detailed explanations and SQL examples:
 
-```
-references/query-missing-indexes.md
-references/query-partial-indexes.md
-references/_sections.md
-```
+- Supabase database guides: https://supabase.com/docs/guides/database/overview
+- PostgreSQL documentation: https://www.postgresql.org/docs/current/
+- PostgreSQL performance optimization wiki: https://wiki.postgresql.org/wiki/Performance_Optimization
 
-Each rule file contains:
+These resources typically contain:
 - Brief explanation of why it matters
 - Incorrect SQL example with explanation
 - Correct SQL example with explanation
