@@ -166,3 +166,5 @@ export function ReferralProgram() {
     </motion.div>
   );
 }
+
+export default ReferralProgram;
