@@ -120,7 +120,7 @@ If `git push` fails with:
 fatal: No configured push destination.
 ```
 
-configure an upstream remote and branch:
+Configure an upstream remote and branch:
 
 ```bash
 git remote add origin <your-repo-url>
