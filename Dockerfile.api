@@ -3,38 +3,34 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies for workspaces
 COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm ci
+COPY apps/api/package.json ./apps/api/package.json
+RUN npm ci --workspaces --include-workspace-root
 
-# Copy source and build
-COPY . .
-RUN npx prisma generate
-RUN npm run build
+# Copy source and build API workspace
+COPY apps/api ./apps/api
+RUN npm --workspace @infamous-freight/api run build
 
 # Production stage
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Install production dependencies only
 COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm ci --only=production
-RUN npx prisma generate
+COPY apps/api/package.json ./apps/api/package.json
+RUN npm ci --omit=dev --workspaces --include-workspace-root
 
-# Copy built app
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/apps/api/dist ./apps/api/dist
 
 # Security: run as non-root
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 USER nodejs
 
-EXPOSE 3001
+EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-CMD ["node", "dist/main"]
+CMD ["node", "apps/api/dist/src/index.js"]
