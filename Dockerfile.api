@@ -19,7 +19,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY apps/api/package.json ./apps/api/package.json
-RUN npm ci --omit=dev --workspaces --include-workspace-root
+RUN npm ci --omit=dev --workspace @infamous-freight/api
 
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 
