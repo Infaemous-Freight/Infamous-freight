@@ -1,51 +1,23 @@
-app = "infamous-freight-api"
-primary_region = "dfw"
-kill_signal = "SIGINT"
-kill_timeout = 5
+# fly.toml app configuration file generated for infamous-freight on 2026-04-21T07:42:23Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'infamous-freight'
+primary_region = 'iad'
 
 [build]
-  dockerfile = "Dockerfile.api"
-
-[env]
-  NODE_ENV = "production"
-  PORT = "3001"
-  API_RATE_LIMIT_ENABLED = "true"
-  REDIS_DB = "0"
 
 [http_service]
-  internal_port = 3001
+  internal_port = 3000
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 1
-  processes = ["app"]
-
-  [[http_service.checks]]
-    interval = "30s"
-    timeout = "5s"
-    grace_period = "10s"
-    method = "GET"
-    path = "/health"
-    protocol = "http"
-
-  [[http_service.ports]]
-    port = 80
-    handlers = ["http"]
-    force_https = true
-
-  [[http_service.ports]]
-    port = 443
-    handlers = ["tls", "http"]
-
-[mounts]
-  source = "infamous_data"
-  destination = "/app/data"
-
-[metrics]
-  port = 3001
-  path = "/metrics"
+  min_machines_running = 0
+  processes = ['app']
 
 [[vm]]
-  memory = "512mb"
-  cpu_kind = "shared"
+  memory = '1gb'
+  cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 1024

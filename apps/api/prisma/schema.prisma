@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Carrier {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String
+  mcNumber          String?
+  dotNumber         String?
+  phone             String?
+  address           String?
+  status            String    @default("trial")
+  subscriptionTier  String    @default("starter")
+  stripeCustomerId  String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  drivers   Driver[]
+  loads     Load[]
+  invoices  Invoice[]
+  documents Document[]
+  teamMembers TeamMember[]
+}
+
+model Driver {
+  id              String   @id @default(cuid())
+  carrierId       String
+  name            String
+  phone           String?
+  licenseNumber   String?
+  licenseState    String?
+  equipmentType   String?
+  status          String   @default("available")
+  currentLat      Float?
+  currentLng      Float?
+  hosStatus       String   @default("off_duty")
+  hoursRemaining  Float    @default(11)
+  lastLocationAt  DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+  loads   Load[]
+}
+
+model Load {
+  id              String    @id @default(cuid())
+  carrierId       String
+  driverId        String?
+  brokerName      String
+  brokerMc        String?
+  originCity      String
+  originState     String
+  originLat       Float
+  originLng       Float
+  destCity        String
+  destState       String
+  destLat         Float
+  destLng         Float
+  distance        Int
+  rate            Float
+  ratePerMile     Float
+  equipmentType   String
+  weight          Int
+  status          String    @default("available")
+  pickupDate      DateTime
+  deliveryDate    DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  carrier  Carrier   @relation(fields: [carrierId], references: [id])
+  driver   Driver?   @relation(fields: [driverId], references: [id])
+  invoice  Invoice?
+}
+
+model Invoice {
+  id              String    @id @default(cuid())
+  loadId          String    @unique
+  carrierId       String
+  invoiceNumber   String    @unique
+  brokerName      String
+  brokerEmail     String?
+  amount          Float
+  status          String    @default("draft")
+  dueDate         DateTime?
+  paidAt          DateTime?
+  createdAt       DateTime  @default(now())
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+  load    Load    @relation(fields: [loadId], references: [id])
+}
+
+model Document {
+  id          String    @id @default(cuid())
+  carrierId   String
+  type        String    // insurance, authority, license, etc.
+  fileUrl     String
+  expiryDate  DateTime?
+  status      String    @default("active")
+  createdAt   DateTime  @default(now())
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  carrierId   String
+  email       String
+  name        String
+  role        String   @default("dispatcher") // owner, dispatcher, safety, accountant, driver
+  status      String   @default("active")
+  invitedAt   DateTime @default(now())
+  acceptedAt  DateTime?
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  entityType  String   // load, driver, invoice, etc.
+  entityId    String
+  action      String   // create, update, delete, view
+  userId      String
+  userName    String
+  details     String?
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+}
