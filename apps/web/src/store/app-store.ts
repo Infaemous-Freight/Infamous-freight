@@ -92,7 +92,10 @@ export const useAppStore = create<AppState>((set) => ({
     notifications: s.notifications.map((n) => n.id === id ? { ...n, read: true } : n),
     unreadCount: Math.max(0, s.unreadCount - 1),
   })),
-  markAllRead: () => set({ notifications: (s) => s.notifications.map((n) => ({ ...n, read: true })), unreadCount: 0 }),
+  markAllRead: () => set((s) => ({
+    notifications: s.notifications.map((n) => ({ ...n, read: true })),
+    unreadCount: 0,
+  })),
 
   // Modals
   activeModal: null,

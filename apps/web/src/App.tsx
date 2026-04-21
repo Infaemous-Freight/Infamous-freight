@@ -13,8 +13,8 @@ import MetricsDashboard from '@/pages/MetricsDashboard';
 import CaseStudies from '@/pages/CaseStudies';
 import ProductHunt from '@/pages/ProductHunt';
 import GDPR from '@/pages/GDPR';
-import PayPerLoadPricing from '@/components/PayPerLoadPricing';
-import ReferralProgram from '@/components/ReferralProgram';
+import { PayPerLoadPricing } from '@/components/PayPerLoadPricing';
+import { ReferralProgram } from '@/components/ReferralProgram';
 import LoginPage from '@/pages/LoginPage';
 
 function App() {
