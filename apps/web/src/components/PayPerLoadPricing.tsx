@@ -120,3 +120,5 @@ export function PayPerLoadPricing() {
     </motion.div>
   );
 }
+
+export default PayPerLoadPricing;
