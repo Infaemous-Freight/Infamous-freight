@@ -100,5 +100,5 @@ Do NOT use `apply_migration` to change a local database schema — it writes a m
 
 ## Reference Guides
 
-- **Skill Feedback** → [references/skill-feedback.md](references/skill-feedback.md)
-  **MUST read when** the user reports that this skill gave incorrect guidance or is missing information.
+- **Skill Feedback**
+  **MUST read when** the user reports that this skill gave incorrect guidance or is missing information. Follow the repository's skill feedback process/documentation if available.
