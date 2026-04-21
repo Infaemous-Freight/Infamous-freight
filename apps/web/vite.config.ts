@@ -50,10 +50,11 @@ export default defineConfig({
     sourcemap: uploadSourcemaps,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          charts: ['recharts'],
-          stripe: ['@stripe/stripe-js', '@stripe/react-stripe-js'],
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return;
+          if (id.includes('recharts')) return 'charts';
+          if (id.includes('@stripe/stripe-js') || id.includes('@stripe/react-stripe-js')) return 'stripe';
+          if (id.includes('react')) return 'vendor';
         },
       },
     },
