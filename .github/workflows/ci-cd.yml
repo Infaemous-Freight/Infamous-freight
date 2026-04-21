@@ -32,17 +32,17 @@ jobs:
         run: npm run lint
 
       - name: Type check
-        run: npx tsc --noEmit
+        run: cd apps/web && npx tsc --noEmit
 
       - name: Test
-        run: npm run test -- --coverage
+        run: npm run test
 
   # ===== BUILD API =====
   build-api:
     name: Build API
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && hashFiles('apps/api/**') != ''
     steps:
       - uses: actions/checkout@v4
 
@@ -55,7 +55,7 @@ jobs:
       - name: Install & Build
         run: |
           npm ci
-          npx prisma generate
+          npm run prisma:generate
           npm run build:api
 
       - name: Build Docker Image

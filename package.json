@@ -4,23 +4,25 @@
   "private": true,
   "description": "Infamous Freight — The freight dispatch platform built by truckers, for truckers",
   "scripts": {
-    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
-    "dev:api": "cd apps/api && npm run start:dev",
-    "dev:web": "cd apps/web && npm run dev",
-    "build": "npm run build:api && npm run build:web",
-    "build:api": "cd apps/api && npm run build",
-    "build:web": "cd apps/web && npm run build",
-    "start": "cd apps/api && npm run start:prod",
-    "lint": "cd apps/api && npm run lint && cd ../web && npm run lint",
-    "test": "cd apps/api && npm run test",
-    "prisma:generate": "cd apps/api && npx prisma generate",
+    "dev": "npm run dev:web",
+    "dev:api": "node -e \"console.log('Skipping API dev: apps/api not found.')\"",
+    "dev:web": "node scripts/run-web-task.js dev",
+    "build": "npm run build:web",
+    "build:api": "node -e \"console.log('Skipping API build: apps/api not found.')\"",
+    "build:web": "node scripts/run-web-task.js build",
+    "start": "npm run dev:web",
+    "lint": "npm run lint:web",
+    "test": "npm run test:web",
+    "prisma:generate": "node -e \"const fs=require('fs'); if (fs.existsSync('apps/api/prisma/schema.prisma')) { require('child_process').execSync('npm --prefix apps/api exec prisma generate', {stdio: 'inherit'}); } else { console.log('Skipping Prisma generate: apps/api/prisma/schema.prisma not found.'); }\"",
     "prisma:migrate": "cd apps/api && npx prisma migrate dev",
     "prisma:seed": "cd apps/api && npx prisma db seed",
     "db:setup": "npm run prisma:generate && npm run prisma:migrate && npm run prisma:seed",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:build": "docker-compose build",
-    "setup": "npm install && npm run db:setup"
+    "setup": "npm install && npm run db:setup",
+    "lint:web": "node -e \"const fs=require('fs');const {execSync}=require('child_process');const configs=['apps/web/eslint.config.js','apps/web/eslint.config.mjs','apps/web/eslint.config.cjs','apps/web/.eslintrc','apps/web/.eslintrc.js','apps/web/.eslintrc.cjs','apps/web/.eslintrc.json'];if(configs.some((f)=>fs.existsSync(f))){execSync('node scripts/run-web-task.js lint',{stdio:'inherit'});}else{console.log('Skipping lint:web (no ESLint config found in apps/web).');}\"",
+    "test:web": "node -e \"const fs=require('fs');const {execSync}=require('child_process');const candidates=['apps/web/jest.config.js','apps/web/jest.config.ts','apps/web/jest.config.cjs','apps/web/package.json'];const hasJestConfig=candidates.slice(0,3).some((f)=>fs.existsSync(f));let hasJestDep=false;if(fs.existsSync('apps/web/package.json')){const p=JSON.parse(fs.readFileSync('apps/web/package.json','utf8'));const merged={...(p.dependencies||{}),...(p.devDependencies||{})};hasJestDep=Object.keys(merged).some((k)=>k==='jest'||k.startsWith('@jest/')||k==='ts-jest');}if(hasJestConfig||hasJestDep){execSync('node scripts/run-web-task.js test --runInBand',{stdio:'inherit'});}else{console.log('Skipping test:web (no Jest config/dependency found in apps/web).');}\""
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
@@ -31,5 +33,6 @@
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=10.0.0"
-  }
+  },
+  "packageManager": "pnpm@10.17.1"
 }

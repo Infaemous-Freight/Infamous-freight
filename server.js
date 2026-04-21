@@ -1,0 +1,60 @@
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+const port = Number(process.env.PORT || 3000);
+const distDir = path.join(__dirname, 'apps', 'web', 'dist');
+
+const sendFile = (res, filePath, contentType = 'text/html') => {
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('Not found');
+      return;
+    }
+    res.writeHead(200, { 'Content-Type': contentType });
+    res.end(data);
+  });
+};
+
+const mime = {
+  '.css': 'text/css',
+  '.js': 'application/javascript',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+};
+
+http
+  .createServer((req, res) => {
+    if (req.url === '/health') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ status: 'ok' }));
+      return;
+    }
+
+    const rawPath = req.url && req.url !== '/' ? req.url : '/index.html';
+    const safePath = path.normalize(rawPath).replace(/^(\.\.[/\\])+/, '');
+    const filePath = path.join(distDir, safePath);
+    const ext = path.extname(filePath).toLowerCase();
+
+    if (!filePath.startsWith(distDir)) {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end('Bad request');
+      return;
+    }
+
+    fs.stat(filePath, (err, stats) => {
+      if (!err && stats.isFile()) {
+        sendFile(res, filePath, mime[ext] || 'application/octet-stream');
+        return;
+      }
+      sendFile(res, path.join(distDir, 'index.html'));
+    });
+  })
+  .listen(port, '0.0.0.0', () => {
+    console.log(`Server listening on port ${port}`);
+  });
