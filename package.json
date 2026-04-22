@@ -5,25 +5,29 @@
   "description": "Infamous Freight — The freight dispatch platform built by truckers, for truckers",
   "scripts": {
     "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
-    "dev:api": "cd apps/api && npm run start:dev",
+    "dev:api": "npm --prefix apps/api run start:dev",
     "dev:web": "cd apps/web && npm run dev",
     "build": "npm run build:api && npm run build:web",
-    "build:api": "cd apps/api && npm run build",
+    "build:api": "npm --prefix apps/api run build",
     "build:web": "cd apps/web && npm run build",
-    "start": "cd apps/api && npm run start:prod",
-    "lint": "cd apps/api && npm run lint && cd ../web && npm run lint",
-    "test": "cd apps/api && npm run test",
-    "prisma:generate": "cd apps/api && npx prisma generate",
-    "prisma:migrate": "cd apps/api && npx prisma migrate dev",
-    "prisma:seed": "cd apps/api && npx prisma db seed",
+    "start": "npm --prefix apps/api run start:prod",
+    "lint": "npm --prefix apps/api run lint && npm --prefix apps/web run lint",
+    "test": "npm --prefix apps/api run test",
+    "prisma:generate": "npx prisma generate --schema apps/api/prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate dev --schema apps/api/prisma/schema.prisma",
+    "prisma:seed": "npx prisma db seed --schema apps/api/prisma/schema.prisma",
     "db:setup": "npm run prisma:generate && npm run prisma:migrate && npm run prisma:seed",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:build": "docker-compose build",
     "setup": "npm install && npm run db:setup"
   },
+  "dependencies": {
+    "@prisma/client": "^5.22.0"
+  },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "prisma": "^5.22.0"
   },
   "workspaces": [
     "apps/*"
