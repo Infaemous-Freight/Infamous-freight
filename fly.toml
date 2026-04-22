@@ -1,15 +1,15 @@
-# fly.toml app configuration file generated for infamous-freight on 2026-04-21T07:42:23Z
+# fly.toml app configuration file generated for infamous-freight on 2026-04-22T10:53:49Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'infamous-freight'
-primary_region = 'iad'
+primary_region = 'dfw'
 
 [build]
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
