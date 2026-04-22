@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "build": "npm run prisma:generate && tsc -p tsconfig.build.json && node -e \"require('fs').copyFileSync('dist/server.js', 'dist/main.js')\"",
+    "build": "npm run prisma:generate && tsc -p tsconfig.build.json && node -e \"const fs=require('fs');const candidates=['dist/server.js','dist/src/server.js'];const src=candidates.find((f)=>fs.existsSync(f));if(!src){throw new Error('Could not locate compiled server entrypoint');}fs.copyFileSync(src,'dist/main.js')\"",
     "start:dev": "tsx watch src/server.ts",
     "start:prod": "node dist/main.js",
     "test": "jest --runInBand",
