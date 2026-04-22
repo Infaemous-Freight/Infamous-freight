@@ -155,8 +155,8 @@ curl -X POST https://api.infamousfreight.com/stripe/checkout \
   -d '{
     "priceId": "price_xxx",
     "customerEmail": "test@example.com",
-    "successUrl": "https://www.infamousfreight.com/success",
-    "cancelUrl": "https://www.infamousfreight.com/cancel"
+    "successUrl": "https://infamousfreight.com/success",
+    "cancelUrl": "https://infamousfreight.com/cancel"
   }'
 ```
 

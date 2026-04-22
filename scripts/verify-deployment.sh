@@ -4,8 +4,8 @@
 
 set -euo pipefail
 
-API_URL="${1:-https://infamous-freight-api.fly.dev}"
-WEB_URL="${2:-https://infamous-freight.netlify.app}"
+API_URL="${1:-https://api.infamousfreight.com}"
+WEB_URL="${2:-https://infamousfreight.com}"
 RED="\033[0;31m"
 GREEN="\033[0;32m"
 YELLOW="\033[0;33m"
