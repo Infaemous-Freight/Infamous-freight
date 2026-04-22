@@ -30,18 +30,22 @@ const mime = {
 
 http
   .createServer((req, res) => {
-    if (req.url === '/health') {
+    const pathname = new URL(req.url || '/', 'http://localhost').pathname;
+
+    if (pathname === '/health') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ status: 'ok' }));
       return;
     }
 
-    const rawPath = req.url && req.url !== '/' ? req.url : '/index.html';
+    const rawPath = pathname !== '/' ? pathname : '/index.html';
     const safePath = path.normalize(rawPath).replace(/^(\.\.[/\\])+/, '');
-    const filePath = path.join(distDir, safePath);
+    const relativeSafePath = safePath.replace(/^[/\\]+/, '');
+    const distDirResolved = path.resolve(distDir);
+    const filePath = path.resolve(distDirResolved, relativeSafePath);
     const ext = path.extname(filePath).toLowerCase();
 
-    if (!filePath.startsWith(distDir)) {
+    if (filePath !== distDirResolved && !filePath.startsWith(distDirResolved + path.sep)) {
       res.writeHead(400, { 'Content-Type': 'text/plain' });
       res.end('Bad request');
       return;
