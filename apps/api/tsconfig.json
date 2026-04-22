@@ -15,8 +15,7 @@
     ]
   },
   "include": [
-    "src/app.ts",
-    "src/server.ts",
+    "src/**/*.ts",
     "test/**/*.ts"
   ]
 }
