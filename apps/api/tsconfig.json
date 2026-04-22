@@ -9,6 +9,8 @@
     "skipLibCheck": true,
     "outDir": "dist",
     "rootDir": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "types": [
       "node",
       "jest"
