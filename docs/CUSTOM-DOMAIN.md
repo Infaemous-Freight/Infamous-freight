@@ -19,10 +19,11 @@ Add these DNS records at your domain registrar:
 
 | Type | Name | Value | TTL |
 |------|------|-------|-----|
-| CNAME | `www` | `infamous-freight.netlify.app` | Auto |
+| ALIAS / ANAME | `@` | `apex-loadbalancer.netlify.com` | Auto |
 | A | `@` | `75.2.60.5` | Auto |
+| CNAME | `www` | `infamous-freight.netlify.app` | Auto |
 
-> The A record points to Netlify's load balancer. The CNAME sends `www` to Netlify.
+> The ALIAS/A records point the apex (`infamousfreight.com`) directly at Netlify. The `www` CNAME is still registered so Netlify can 301 it to the apex.
 
 ### For the API (Fly.io)
 
@@ -31,7 +32,7 @@ Add these DNS records at your domain registrar:
 | CNAME | `api` | `infamous-freight-api.fly.dev` | Auto |
 
 This gives you:
-- **Web:** `https://www.infamousfreight.com`
+- **Web:** `https://infamousfreight.com`
 - **API:** `https://api.infamousfreight.com`
 
 ---
@@ -40,16 +41,17 @@ This gives you:
 
 1. Go to your Netlify dashboard: `https://app.netlify.com/sites/d03682ba-fcb4-4dc6-984e-f7eae7fff59c/settings/domain`
 2. Click **Add custom domain**
-3. Enter: `www.infamousfreight.com`
+3. Enter: `infamousfreight.com`
 4. Click **Verify** → **Add domain**
-5. Netlify will request an SSL certificate automatically (HTTPS)
+5. Also add `www.infamousfreight.com` so Netlify provisions an SSL certificate for it
+6. Netlify will request an SSL certificate automatically (HTTPS)
 
 ### Primary Domain
 
-Set `www.infamousfreight.com` as your primary domain and redirect the apex domain:
+Set `infamousfreight.com` (the apex) as the primary domain so everything funnels to one canonical host:
 
-1. In Netlify domain settings, click **Set as primary** on `www.infamousfreight.com`
-2. Enable **Redirect apex to www** (or vice versa, your preference)
+1. In Netlify domain settings, click **Set as primary** on `infamousfreight.com`
+2. Leave `www.infamousfreight.com` registered as a domain alias — `netlify.toml` already 301s it (and the default `infamous-freight.netlify.app` URL) to the apex
 
 ---
 
@@ -94,9 +96,7 @@ Update your API's CORS settings to accept requests from your custom domain:
 ```typescript
 app.enableCors({
   origin: [
-    'https://www.infamousfreight.com',
     'https://infamousfreight.com',
-    'https://infamous-freight.netlify.app',
     'http://localhost:5173',
   ],
   credentials: true,
@@ -111,7 +111,7 @@ Test that everything is secure:
 
 ```bash
 # Test web
-curl -sI https://www.infamousfreight.com | head -5
+curl -sI https://infamousfreight.com | head -5
 
 # Test API health
 curl -s https://api.infamousfreight.com/health
@@ -128,7 +128,7 @@ All should return `200 OK` with valid SSL certificates.
 
 | Service | URL |
 |---------|-----|
-| **Main App** | `https://www.infamousfreight.com` |
+| **Main App** | `https://infamousfreight.com` |
 | **API** | `https://api.infamousfreight.com` |
 | **WebSocket** | `wss://api.infamousfreight.com` |
 | **Health Check** | `https://api.infamousfreight.com/health` |
@@ -151,11 +151,11 @@ If using Cloudflare as your DNS provider, you get free DDoS protection and cachi
 ### Cloudflare Page Rules (Free Performance Boost)
 
 ```
-Rule 1: www.infamousfreight.com/static/*
+Rule 1: infamousfreight.com/static/*
   - Cache Level: Cache Everything
   - Edge Cache TTL: 1 month
 
-Rule 2: www.infamousfreight.com/api/*
+Rule 2: infamousfreight.com/api/*
   - Cache Level: Bypass
   - Security Level: High
 ```
@@ -166,7 +166,7 @@ Rule 2: www.infamousfreight.com/api/*
 
 ### "Domain not found"
 - DNS propagation takes 5 minutes to 48 hours
-- Check: `dig www.infamousfreight.com +short`
+- Check: `dig infamousfreight.com +short`
 
 ### "SSL certificate error"
 - Netlify/Fly.io need time to provision certificates (up to 24 hours)

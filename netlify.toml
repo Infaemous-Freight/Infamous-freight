@@ -5,6 +5,33 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
+  # Skip the UI-installed @netlify/plugin-nextjs — this is a Vite app, not Next.js.
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+
+# Canonical host: redirect every alternate hostname to https://infamousfreight.com
+[[redirects]]
+  from = "https://www.infamousfreight.com/*"
+  to = "https://infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.infamousfreight.com/*"
+  to = "https://infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://infamous-freight.netlify.app/*"
+  to = "https://infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://infamousfreight.com/*"
+  to = "https://infamousfreight.com/:splat"
+  status = 301
+  force = true
 
 [[redirects]]
   from = "/api/*"
@@ -46,3 +73,9 @@
   for = "*.css"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Declaring the sitemap plugin here forces Netlify to install it from npm
+# (which ships the required manifest.yml) instead of relying on a stale
+# UI-configured installation that was missing the manifest.
+[[plugins]]
+  package = "@netlify/plugin-sitemap"

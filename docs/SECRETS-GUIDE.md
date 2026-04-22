@@ -124,9 +124,9 @@ Watch progress at: `https://github.com/Infaemous-Freight/Infamous-freight/action
 
 | Service | URL | What to Check |
 |---------|-----|---------------|
-| API | `https://infamous-freight-api.fly.dev/health` | Should return `{"status":"ok"}` |
-| Web | `https://infamous-freight.netlify.app` | Should show login page |
-| API Docs | `https://infamous-freight-api.fly.dev/api/docs` | Swagger/OpenAPI UI |
+| API | `https://api.infamousfreight.com/health` | Should return `{"status":"ok"}` |
+| Web | `https://infamousfreight.com` | Should show login page |
+| API Docs | `https://api.infamousfreight.com/api/docs` | Swagger/OpenAPI UI |
 
 ---
 

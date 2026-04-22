@@ -1,0 +1,174 @@
+functionsDirectory = "/opt/build/repo/apps/web/.netlify/functions"
+functionsDirectoryOrigin = "ui"
+headersOrigin = "config"
+redirectsOrigin = "config"
+
+[functions]
+
+[functions."*"]
+
+[[plugins]]
+origin = "ui"
+package = "@netlify/plugin-nextjs"
+
+[plugins.inputs]
+
+[[plugins]]
+origin = "ui"
+package = "@netlify/plugin-lighthouse"
+pinned_version = "6.0.1"
+
+[plugins.inputs]
+
+[[plugins]]
+origin = "config"
+package = "@netlify/plugin-sitemap"
+
+[plugins.inputs]
+
+[[plugins]]
+origin = "ui"
+package = "@sentry/netlify-build-plugin"
+
+[plugins.inputs]
+
+[build]
+publish = "/opt/build/repo/apps/web/dist"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "npm run build:web"
+functions = "/opt/build/repo/apps/web/.netlify/functions"
+
+[build.environment]
+NODE_VERSION = "20"
+NPM_FLAGS = "--legacy-peer-deps"
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+X-Frame-Options = "SAMEORIGIN"
+X-Content-Type-Options = "nosniff"
+X-XSS-Protection = "1; mode=block"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.infamousfreight.com wss://api.infamousfreight.com https://*.supabase.co; frame-src https://js.stripe.com;"
+
+[[headers]]
+for = "*.js"
+
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "*.css"
+
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[redirects]]
+from = "https://www.infamousfreight.com/*"
+to = "https://infamousfreight.com/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "http://www.infamousfreight.com/*"
+to = "https://infamousfreight.com/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "https://infamous-freight.netlify.app/*"
+to = "https://infamousfreight.com/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "http://infamousfreight.com/*"
+to = "https://infamousfreight.com/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/api/*"
+to = "https://infamous-freight-api.fly.dev/api/:splat"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/socket.io/*"
+to = "https://infamous-freight-api.fly.dev/socket.io/:splat"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/*.map"
+to = "/404"
+status = 404.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
