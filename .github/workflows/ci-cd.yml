@@ -55,7 +55,7 @@ jobs:
       - name: Install & Build
         run: |
           npm ci
-          npx prisma generate
+          npm run prisma:generate
           npm run build:api
 
       - name: Build Docker Image

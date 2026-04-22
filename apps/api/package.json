@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "build": "npm run prisma:generate && tsc -p tsconfig.build.json && node -e \"require('fs').copyFileSync('dist/server.js', 'dist/main.js')\"",
+    "build": "npm run prisma:generate && tsc -p tsconfig.build.json && node -e \"require(\\\"fs\\\").copyFileSync(\\\"dist/src/server.js\\\", \\\"dist/main.js\\\")\"",
     "start:dev": "tsx watch src/server.ts",
     "start:prod": "node dist/main.js",
     "test": "jest --runInBand",
