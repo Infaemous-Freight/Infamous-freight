@@ -5,6 +5,10 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
+  # This project builds with Vite, not Next.js. Skip the Next.js runtime
+  # plugin (installed via the Netlify UI) so it does not look for a .next
+  # directory and fail the deploy.
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 [[redirects]]
   from = "/api/*"
