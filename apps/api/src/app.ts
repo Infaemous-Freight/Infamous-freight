@@ -115,6 +115,12 @@ export function createApp() {
       });
     }
 
+    const parseError = err as Error & { status?: number; type?: string };
+    if (parseError.status === 400 && parseError.type === 'entity.parse.failed') {
+      return res.status(400).json({
+        error: 'Invalid JSON body',
+      });
+    }
     return res.status(500).json({
       error: 'Internal server error',
     });
