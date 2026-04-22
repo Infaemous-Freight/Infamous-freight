@@ -2,7 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const apiDir = path.join(process.cwd(), 'apps', 'api');
+const repoRoot = path.resolve(__dirname, '..');
+const apiDir = path.join(repoRoot, 'apps', 'api');
 const apiPackageJson = path.join(apiDir, 'package.json');
 
 if (!fs.existsSync(apiDir) || !fs.statSync(apiDir).isDirectory()) {
