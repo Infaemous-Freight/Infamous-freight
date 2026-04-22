@@ -13,7 +13,7 @@ fi
 
 echo "[setup] Installing dependencies"
 if [[ "$PKG_CMD" == "pnpm" ]]; then
-  pnpm install --frozen-lockfile=false
+  pnpm install --frozen-lockfile
 else
   npm ci
 fi
