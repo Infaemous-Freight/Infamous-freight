@@ -4,23 +4,23 @@
   "private": true,
   "description": "Infamous Freight \u2014 The freight dispatch platform built by truckers, for truckers",
   "scripts": {
-    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
-    "dev:api": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run start:dev",
-    "dev:web": "cd apps/web && npm run dev",
-    "build": "npm run build:api && npm run build:web",
-    "build:api": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run build",
-    "build:web": "cd apps/web && npm run build",
-    "start": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run start:prod",
-    "lint": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run lint && npm --prefix apps/web run lint",
-    "test": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run test -- --runInBand",
-    "prisma:generate": "node scripts/ensure-api-workspace.js && npm --prefix apps/api exec prisma generate",
-    "prisma:migrate": "node scripts/ensure-api-workspace.js && npm --prefix apps/api exec prisma migrate dev",
-    "prisma:seed": "node scripts/ensure-api-workspace.js && npm --prefix apps/api exec prisma db seed",
-    "db:setup": "npm run prisma:generate && npm run prisma:migrate && npm run prisma:seed",
+    "dev": "concurrently \"pnpm run dev:api\" \"pnpm run dev:web\"",
+    "dev:api": "node scripts/ensure-api-workspace.js && pnpm --filter @infamous-freight/api run start:dev",
+    "dev:web": "pnpm --filter @infamous-freight/web run dev",
+    "build": "pnpm run build:api && pnpm run build:web",
+    "build:api": "node scripts/ensure-api-workspace.js && pnpm --filter @infamous-freight/api run build",
+    "build:web": "pnpm --filter @infamous-freight/web run build",
+    "start": "node scripts/ensure-api-workspace.js && pnpm --filter @infamous-freight/api run start:prod",
+    "lint": "node scripts/ensure-api-workspace.js && pnpm --filter @infamous-freight/api run lint && pnpm --filter @infamous-freight/web run lint",
+    "test": "node scripts/ensure-api-workspace.js && pnpm --filter @infamous-freight/api run test",
+    "prisma:generate": "node scripts/ensure-api-workspace.js && pnpm --filter @infamous-freight/api exec prisma generate",
+    "prisma:migrate": "node scripts/ensure-api-workspace.js && pnpm --filter @infamous-freight/api exec prisma migrate dev",
+    "prisma:seed": "node scripts/ensure-api-workspace.js && pnpm --filter @infamous-freight/api exec prisma db seed",
+    "db:setup": "pnpm run prisma:generate && pnpm run prisma:migrate && pnpm run prisma:seed",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:build": "docker-compose build",
-    "setup": "npm install && npm run db:setup"
+    "setup": "pnpm install && pnpm run db:setup"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
@@ -30,6 +30,7 @@
   ],
   "engines": {
     "node": ">=20.0.0",
-    "npm": ">=10.0.0"
-  }
+    "pnpm": ">=10.0.0"
+  },
+  "packageManager": "pnpm@10.18.3"
 }

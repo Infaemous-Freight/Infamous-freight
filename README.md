@@ -66,7 +66,7 @@ It brings together:
 ### 1️⃣ Install dependencies
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2️⃣ Copy environment config
@@ -86,8 +86,8 @@ docker-compose up -d
 ### 4️⃣ Or start manually
 
 ```bash
-npm run db:setup
-npm run dev
+pnpm run db:setup
+pnpm run dev
 ```
 
 ---
@@ -97,19 +97,19 @@ npm run dev
 ### Recommended local flow
 
 ```bash
-npm install
-npm run db:setup
-npm run dev
+pnpm install
+pnpm run db:setup
+pnpm run dev
 ```
 
 ### Common commands
 
 ```bash
-npm install
-npm run db:setup
-npm run dev
-npm run build
-npm run test
+pnpm install
+pnpm run db:setup
+pnpm run dev
+pnpm run build
+pnpm run test
 ```
 
 ### Git remote troubleshooting
@@ -197,7 +197,7 @@ flyctl deploy --app infamous-freight-api
 #### Web (Vercel)
 
 ```bash
-npm install -g vercel
+pnpm add -g vercel
 vercel deploy --prod
 ```
 

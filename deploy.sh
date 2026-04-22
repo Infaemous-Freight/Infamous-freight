@@ -28,7 +28,7 @@ check_prereq() {
 echo ""
 echo "Checking prerequisites..."
 check_prereq node
-check_prereq npm
+check_prereq pnpm
 check_prereq git
 
 # Check environment variables
@@ -44,24 +44,22 @@ fi
 # Install dependencies
 echo ""
 echo "📦 Installing dependencies..."
-npm install
+pnpm install --frozen-lockfile
 
 # Generate Prisma client
 echo ""
 echo "🔄 Generating Prisma client..."
-cd apps/api
-npx prisma generate
-cd ../..
+pnpm --filter @infamous-freight/api exec prisma generate
 
 # Run tests
 echo ""
 echo "🧪 Running tests..."
-npm run test --if-present || echo -e "${YELLOW}⚠️  No tests configured${NC}"
+pnpm run test --if-present || echo -e "${YELLOW}⚠️  No tests configured${NC}"
 
 # Build
 echo ""
 echo "🔨 Building..."
-npm run build
+pnpm run build
 
 # Deploy API to Fly.io
 echo ""
@@ -82,7 +80,7 @@ if command -v netlify &> /dev/null; then
     echo -e "${GREEN}✅ Web deployed to Netlify${NC}"
 else
     echo -e "${YELLOW}⚠️  Netlify CLI not found. Skipping web deploy.${NC}"
-    echo "   Install: npm install -g netlify-cli"
+    echo "   Install: pnpm add -g netlify-cli"
 fi
 
 echo ""

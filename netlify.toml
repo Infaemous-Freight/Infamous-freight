@@ -1,10 +1,10 @@
 [build]
   publish = "apps/web/dist"
-  command = "npm run build:web"
+  command = "pnpm run build:web"
 
 [build.environment]
   NODE_VERSION = "20"
-  NPM_FLAGS = "--legacy-peer-deps"
+  NPM_FLAGS = ""
   # Skip the UI-installed @netlify/plugin-nextjs — this is a Vite app, not Next.js.
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
 

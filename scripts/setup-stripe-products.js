@@ -199,7 +199,7 @@ async function main() {
     console.log('  1. Copy the Price IDs above into your .env file');
     console.log('  2. Configure the webhook endpoint in Stripe Dashboard');
     console.log('  3. Set up the customer portal in Stripe Dashboard');
-    console.log('  4. Test with: npm run test:stripe');
+    console.log('  4. Test with: pnpm run test:stripe');
   } catch (err) {
     console.error('❌ Error:', err.message);
     process.exit(1);

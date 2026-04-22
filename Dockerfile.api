@@ -3,38 +3,40 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm ci
+# Install dependencies for the API workspace
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/api/package.json ./apps/api/package.json
+COPY apps/api/prisma ./apps/api/prisma
+RUN corepack enable && pnpm install --frozen-lockfile --filter @infamous-freight/api...
 
-# Copy source and build
-COPY . .
-RUN npx prisma generate
-RUN npm run build
+# Copy API source and build
+COPY apps/api ./apps/api
+RUN pnpm --filter @infamous-freight/api exec prisma generate
+RUN pnpm --filter @infamous-freight/api run build
 
 # Production stage
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Install production dependencies only
-COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm ci --only=production
-RUN npx prisma generate
+# Install production dependencies only for API workspace
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/api/package.json ./apps/api/package.json
+COPY apps/api/prisma ./apps/api/prisma
+RUN corepack enable && pnpm install --prod --frozen-lockfile --filter @infamous-freight/api...
+RUN pnpm --filter @infamous-freight/api exec prisma generate
 
 # Copy built app
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/apps/api/dist ./apps/api/dist
 
 # Security: run as non-root
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 USER nodejs
 
-EXPOSE 3001
+EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-CMD ["node", "dist/main"]
+CMD ["node", "apps/api/dist/main"]
