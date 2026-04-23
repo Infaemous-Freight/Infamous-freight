@@ -55,9 +55,9 @@ ID of the integration's own site. Netlify keeps those deploys immutable.
 | **Owner / Maintainer** | Neon (Serverless Postgres) |
 | **Source artifact** | `https://37fb2d91-fc5f-402b-b52c-84240e7335fa.netlify.app/packages/buildhooks.tgz` |
 | **Pinned version** | `0.0.0-wid8g` |
-| **lock-file integrity** | `sha512-fOhoaX3zsXoz8/ivbo9KyTqG+faemDQs/WG9HQ/B3LcA5oPLqTWsD20bpQe7hiQrzZ6f7YFBBBynBz+5hdDjiw==` |
+| **Historical lock-file integrity (last known)** | `sha512-fOhoaX3zsXoz8/ivbo9KyTqG+faemDQs/WG9HQ/B3LcA5oPLqTWsD20bpQe7hiQrzZ6f7YFBBBynBz+5hdDjiw==` — recorded from a prior `apps/web/.netlify/plugins/package-lock.json` entry; not present in the current repo state. |
 | **Status** | 🗑️ **Removed** — this project uses Supabase Postgres, not Neon. The package was auto-installed when the Neon integration was briefly evaluated and was never used in production. |
-| **Update path** | N/A — removed. If Neon is adopted in future, re-enable the integration from the Netlify dashboard. |
+| **Update path** | N/A — removed. If Neon is adopted in future, re-enable the integration from the Netlify dashboard and regenerate the lockfile; treat the integrity above as historical audit data only unless verified against the prior commit where it appeared. |
 
 ---
 
