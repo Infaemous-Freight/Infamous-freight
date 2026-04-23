@@ -20,7 +20,7 @@ The repo is actively evolving. A number of major product areas already exist in 
 - NestJS API entrypoint and modular feature structure
 - Prisma schema for core freight entities such as carriers, drivers, loads, invoices, documents, team members, and audit logs
 - Deployment configuration for Fly.io and Netlify
-- Basic API health test coverage
+- Initial API test scaffolding
 - Sentry and Vercel Speed Insights setup on the frontend
 
 ### What still needs work
