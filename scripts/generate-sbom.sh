@@ -34,7 +34,7 @@ cd "$REPO_ROOT"
 
 # ── Step 1: Generate full SPDX SBOM ─────────────────────────────────────────
 echo "[1/4] Generating full SPDX SBOM..."
-npm sbom --sbom-format spdx --json 2>/dev/null > "$SBOM_FILE"
+npm sbom --sbom-format spdx --json > "$SBOM_FILE"
 echo "  Written: $SBOM_FILE"
 if command -v jq >/dev/null 2>&1; then
   TOTAL=$(jq '.packages | length' "$SBOM_FILE")
