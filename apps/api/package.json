@@ -4,7 +4,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/Infaemous-Freight/Infamous-freight",
+    "url": "git+https://github.com/Infaemous-Freight/Infamous-freight.git",
     "directory": "apps/api"
   },
   "type": "commonjs",
