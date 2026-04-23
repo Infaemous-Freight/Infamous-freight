@@ -1,35 +1,23 @@
-# Infamous Freight API — Production Dockerfile
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS build
 
-WORKDIR /app
+WORKDIR /app/apps/api
 
-# Install dependencies
-COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm ci
+COPY apps/api/package.json ./package.json
+RUN npm install
 
-# Copy source and build
-COPY . .
-RUN npx prisma generate
-RUN npm run build
+COPY apps/api ./
+RUN npx tsc -p tsconfig.build.json
 
-# Production stage
-FROM node:20-alpine
+FROM node:20-alpine AS runtime
 
-WORKDIR /app
+WORKDIR /app/apps/api
+ENV NODE_ENV=production
 
-# Install production dependencies only
-COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm ci --omit=dev
+COPY apps/api/package.json ./package.json
+RUN npm install --omit=dev
 
-# Copy generated Prisma client from builder
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
-# Copy built app
-COPY --from=builder /app/dist ./dist
+COPY --from=build /app/apps/api/dist ./dist
 
-# Security: run as non-root
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 USER nodejs
