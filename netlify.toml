@@ -12,28 +12,28 @@
   # Skip the UI-installed @netlify/plugin-nextjs — this is a Vite app, not Next.js.
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
-# Canonical host: redirect every alternate hostname to https://infamousfreight.com
+# Canonical host: redirect every alternate hostname to https://www.infamousfreight.com
 [[redirects]]
-  from = "https://www.infamousfreight.com/*"
-  to = "https://infamousfreight.com/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://www.infamousfreight.com/*"
-  to = "https://infamousfreight.com/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "https://infamous-freight.netlify.app/*"
-  to = "https://infamousfreight.com/:splat"
+  from = "https://infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/:splat"
   status = 301
   force = true
 
 [[redirects]]
   from = "http://infamousfreight.com/*"
-  to = "https://infamousfreight.com/:splat"
+  to = "https://www.infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://infamous-freight.netlify.app/*"
+  to = "https://www.infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/:splat"
   status = 301
   force = true
 

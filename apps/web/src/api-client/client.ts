@@ -1,7 +1,10 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+// Empty string means "same origin" — the Netlify /api/* proxy forwards requests
+// to the Fly.io backend. Set VITE_API_URL to an absolute URL (e.g.
+// https://api.infamousfreight.com) only when bypassing the proxy.
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
 
 class ApiClient {
   private client: AxiosInstance;
