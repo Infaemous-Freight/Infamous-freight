@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
+import { validateEnv } from './config/env.validation';
+
 // Core infrastructure
 import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
@@ -28,15 +30,16 @@ import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: validateEnv,
+    }),
 
-    // Infrastructure
     PrismaModule,
     RedisModule,
     RateLimitModule,
     RBACModule,
 
-    // Features
     LoadsModule,
     InvoiceModule,
     ELDModule,
