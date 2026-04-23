@@ -5,7 +5,6 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // CORS — only the canonical apex host in production; localhost for dev.
   app.enableCors({
     origin: [
       'https://infamousfreight.com',
@@ -17,17 +16,15 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
 
-  // Global validation pipe
-  app.useGlobalPipe(new ValidationPipe({
+  app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
     transform: true,
   }));
 
-  // API prefix
   app.setGlobalPrefix('api');
 
-  const port = process.env.PORT || 3001;
+  const port = Number(process.env.PORT || 3001);
   await app.listen(port);
 
   console.log(`
@@ -37,7 +34,7 @@ async function bootstrap() {
   ║                                                          ║
   ║   Version: 1.0.0                                         ║
   ║   Port: ${port}                                              ║
-  ║   Health: http://localhost:${port}/health                       ║
+  ║   Health: http://localhost:${port}/api/health                   ║
   ║   Environment: ${process.env.NODE_ENV || 'development'}                          ║
   ║                                                          ║
   ╚══════════════════════════════════════════════════════════╝
