@@ -188,7 +188,7 @@ Push to `main` and the pipeline deploys:
 #### API (Fly.io)
 
 ```bash
-flyctl deploy --app infamous-freight-api
+flyctl deploy --app infamous-freight
 ```
 
 #### Web (Netlify)

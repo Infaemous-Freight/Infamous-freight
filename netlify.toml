@@ -39,12 +39,12 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://infamous-freight-api.fly.dev/api/:splat"
+  to = "https://infamous-freight.fly.dev/api/:splat"
   status = 200
 
 [[redirects]]
   from = "/socket.io/*"
-  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"
+  to = "https://infamous-freight.fly.dev/socket.io/:splat"
   status = 200
 
 [[redirects]]
