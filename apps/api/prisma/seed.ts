@@ -7,8 +7,16 @@ import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl?.trim()) {
+  throw new Error(
+    'Missing required environment variable: DATABASE_URL. Set DATABASE_URL before running the seed script.',
+  );
+}
+
 const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL ?? '',
+  connectionString: databaseUrl,
 });
 
 const prisma = new PrismaClient({ adapter });
