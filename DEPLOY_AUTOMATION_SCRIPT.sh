@@ -13,7 +13,7 @@
 set -euo pipefail
 
 REPO="${REPO:-Infaemous-Freight/Infamous-freight}"
-CI_WORKFLOW="${CI_WORKFLOW:-ci-cd.yml}"
+CI_WORKFLOW="${CI_WORKFLOW:-ci.yml}"
 FLY_WORKFLOW="${FLY_WORKFLOW:-fly-deploy.yml}"
 VERCEL_WORKFLOW="${VERCEL_WORKFLOW:-vercel-deploy.yml}"
 BRANCH="${BRANCH:-main}"
