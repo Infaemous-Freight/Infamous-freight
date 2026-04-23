@@ -46,6 +46,7 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@v1
 
       - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only --app infamous-freight-api
+        run: flyctl deploy --remote-only --app infamous-freight-api --image "$IMAGE_NAME:${{ github.sha }}"
         env:
+          IMAGE_NAME: ghcr.io/${{ github.repository }}-api
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
