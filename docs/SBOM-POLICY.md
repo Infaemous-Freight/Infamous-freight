@@ -264,4 +264,4 @@ Before closing an SBOM review, confirm all of the following:
 - `README.md`
 - `docs/INTEGRATIONS-AND-SECRETS.md`
 - `docs/NETLIFY-BUILDHOOKS.md`
-- SBOM remediation tracker issue
+- [SBOM remediation tracker issue](https://github.com/OWNER/REPO/issues/ISSUE_NUMBER)
