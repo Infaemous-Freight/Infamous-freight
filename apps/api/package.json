@@ -7,7 +7,8 @@
     "build": "npm run prisma:generate && tsc -p tsconfig.build.json",
     "start:dev": "tsx watch src/main.ts",
     "start:prod": "node dist/main.js",
-    "test": "jest --runInBand",
+    "test": "node -e \"console.error('The default API test suite is still wired to the legacy Express app and does not validate the Nest runtime entrypoint (src/main.ts). Update apps/api/test to boot the Nest app and verify /api/health, then replace this guard with the new Jest command.'); process.exit(1)\"",
+    "test:legacy": "jest --runInBand",
     "lint": "tsc -p tsconfig.json --noEmit",
     "prisma:generate": "prisma generate"
   },
