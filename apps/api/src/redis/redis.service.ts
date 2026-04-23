@@ -3,13 +3,20 @@ import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService implements OnModuleDestroy {
-  private readonly redis: Redis;
+  private readonly redis?: Redis;
   private readonly logger = new Logger(RedisService.name);
-  private readonly DEFAULT_TTL = 300; // 5 minutes
+  private readonly DEFAULT_TTL = 300;
 
   constructor() {
+    const host = process.env.REDIS_HOST?.trim();
+
+    if (!host) {
+      this.logger.warn('REDIS_HOST not set. Redis features are disabled.');
+      return;
+    }
+
     this.redis = new Redis({
-      host: process.env.REDIS_HOST || 'localhost',
+      host,
       port: parseInt(process.env.REDIS_PORT || '6379', 10),
       password: process.env.REDIS_PASSWORD || undefined,
       db: parseInt(process.env.REDIS_DB || '0', 10),
@@ -21,6 +28,8 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async ping(): Promise<boolean> {
+    if (!this.redis) return false;
+
     try {
       return (await this.redis.ping()) === 'PONG';
     } catch {
@@ -29,10 +38,13 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async keys(pattern: string): Promise<string[]> {
+    if (!this.redis) return [];
     return this.redis.keys(pattern);
   }
 
   async get<T>(key: string): Promise<T | null> {
+    if (!this.redis) return null;
+
     try {
       const data = await this.redis.get(key);
       return data ? JSON.parse(data) : null;
@@ -42,14 +54,17 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async set(key: string, value: any, ttl: number = this.DEFAULT_TTL): Promise<void> {
+    if (!this.redis) return;
     await this.redis.setex(key, ttl, JSON.stringify(value));
   }
 
   async del(key: string): Promise<void> {
+    if (!this.redis) return;
     await this.redis.del(key);
   }
 
   async delPattern(pattern: string): Promise<void> {
+    if (!this.redis) return;
     const keys = await this.keys(pattern);
     if (keys.length) {
       await this.redis.del(...keys);
@@ -81,6 +96,8 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async incrementCounter(key: string, windowSeconds: number): Promise<number> {
+    if (!this.redis) return 1;
+
     const multi = this.redis.multi();
     multi.incr(key);
     multi.expire(key, windowSeconds);
@@ -106,19 +123,26 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async addToLeaderboard(driverId: string, score: number): Promise<void> {
+    if (!this.redis) return;
     await this.redis.zadd('leaderboard:weekly', score, driverId);
   }
 
   async getLeaderboard(topN: number = 10): Promise<Array<{ driverId: string; score: number }>> {
+    if (!this.redis) return [];
+
     const results = await this.redis.zrevrange('leaderboard:weekly', 0, topN - 1, 'WITHSCORES');
     const leaderboard: Array<{ driverId: string; score: number }> = [];
+
     for (let i = 0; i < results.length; i += 2) {
       leaderboard.push({ driverId: results[i], score: parseFloat(results[i + 1]) });
     }
+
     return leaderboard;
   }
 
   async onModuleDestroy(): Promise<void> {
-    await this.redis.quit();
+    if (this.redis) {
+      await this.redis.quit();
+    }
   }
 }
