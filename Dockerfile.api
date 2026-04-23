@@ -19,12 +19,16 @@ FROM dhi.io/node:20
 
 WORKDIR /app
 
-# Copy runtime assets from builder
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
+# Create a dedicated non-root user for the runtime container
+RUN groupadd --system app && useradd --system --gid app --create-home --home-dir /home/app app
 
+# Copy runtime assets from builder
+COPY --from=builder --chown=app:app /app/package*.json ./
+COPY --from=builder --chown=app:app /app/prisma ./prisma
+COPY --from=builder --chown=app:app /app/node_modules ./node_modules
+COPY --from=builder --chown=app:app /app/dist ./dist
+
+USER app
 ENV PORT=3000
 EXPOSE 3000
 
