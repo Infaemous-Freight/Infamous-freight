@@ -15,7 +15,7 @@ RUN npm run build
 RUN npm prune --omit=dev
 
 # Production stage
-FROM dhi.io/node:20
+FROM dhi.io/node:20.11.1
 
 WORKDIR /app
 
