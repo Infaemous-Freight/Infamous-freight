@@ -29,7 +29,7 @@ jobs:
         run: npm run lint
 
       - name: Type check
-        run: npm run typecheck
+        run: npm run --workspaces --if-present typecheck
 
       - name: Test
         run: npm run test -- --coverage
