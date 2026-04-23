@@ -3,7 +3,7 @@
 # Docker Hardened Images:
 # - use `-dev` variants in build stages
 # - use non-dev variants for runtime stages
-ARG NODE_VERSION=22
+ARG NODE_VERSION=22.21.1
 FROM dhi.io/node:${NODE_VERSION}-dev AS base
 
 LABEL fly_launch_runtime="Node.js"
