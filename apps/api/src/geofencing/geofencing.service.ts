@@ -144,7 +144,7 @@ export class GeofencingService {
   async generateTrackingLink(loadId: string): Promise<string> {
     const token = Buffer.from(`${loadId}_${Date.now()}`).toString('base64');
     await this.redis.set(`track:${token}`, { loadId, createdAt: Date.now() }, 86400 * 7); // 7 days
-    return `https://infamousfreight.com/track?t=${token}`;
+    return `https://www.infamousfreight.com/track?t=${token}`;
   }
 
   async getTrackingInfo(token: string): Promise<any> {

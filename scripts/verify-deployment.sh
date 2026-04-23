@@ -5,7 +5,7 @@
 set -euo pipefail
 
 API_URL="${1:-https://api.infamousfreight.com}"
-WEB_URL="${2:-https://infamousfreight.com}"
+WEB_URL="${2:-https://www.infamousfreight.com}"
 RED="\033[0;31m"
 GREEN="\033[0;32m"
 YELLOW="\033[0;33m"

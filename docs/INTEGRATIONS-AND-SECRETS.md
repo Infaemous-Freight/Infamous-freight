@@ -104,7 +104,7 @@ here for ownership awareness.
 ### 3.2 Deploy failure — Web (Vercel)
 
 **Symptom:** The `deploy-web` job fails or the web app is unreachable at
-`https://infamousfreight.com`.
+`https://www.infamousfreight.com`.
 
 **Steps:**
 
@@ -120,10 +120,11 @@ here for ownership awareness.
 3. **Build error (TypeScript / Vite):**
    Reproduce locally before investigating CI:
    ```bash
-   VITE_API_URL=https://api.infamousfreight.com \
    VITE_STRIPE_PUBLIC_KEY=pk_live_... \
    npm run build:web
    ```
+   Leave `VITE_API_URL` unset so the build uses the same-origin proxy model as
+   production.
 
 4. **Sentry source-map upload failure (non-blocking):**
    A Sentry upload failure should not block the deploy.  If it does, check

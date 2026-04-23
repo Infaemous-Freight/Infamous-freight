@@ -5,6 +5,14 @@ these are sourced from URL-hosted tarballs rather than a public npm registry. Th
 document records the ownership, source artifact, integrity value, and maintenance
 path for each such package.
 
+> **Frontend architecture note:** `apps/web` is a **Vite + React SPA**, not a
+> Next.js application. The `@netlify/plugin-nextjs` appears in
+> `apps/web/.netlify/netlify.toml` because it was enabled from the Netlify UI at some
+> point, but it is explicitly disabled at build time via
+> `NETLIFY_NEXT_PLUGIN_SKIP = "true"` in the root `netlify.toml`. Its presence in the
+> UI plugin list is the reason the Netlify dashboard may report a "Next.js-style
+> runtime" — the skip flag prevents it from affecting the actual build output.
+
 ---
 
 ## Background
@@ -82,7 +90,7 @@ ID of the integration's own site. Netlify keeps those deploys immutable.
 | **Source artifact** | `https://abfbde63-a3d0-4974-a9f9-57f108242e67.netlify.app/packages/buildhooks.tgz` |
 | **Pinned version** | `0.0.0-h7ovu` |
 | **lock-file integrity** | `sha512-pz6fSHzWMrOeuRCRH2bUCtgqBcLmVwjMFC5+O6dOk4iO0t8FFQEnLAFjh/f/YyG7CBTAbZhe8bSsR0RMlDK8NQ==` |
-| **Status** | 🗑️ **Removed** — `apps/api` uses Prisma, but the API is deployed to **Fly.io**, not Netlify. The Netlify build only produces the static Vite frontend. This build hook was auto-installed when the Prisma × Netlify integration was evaluated and has no effect on the actual deploy. |
+| **Status** | 🗑️ **Removed** — `apps/api` uses Prisma, but the API is deployed to **Fly.io**, not Netlify. The Netlify build only produces the static **Vite** SPA (`apps/web`). This build hook was auto-installed when the Prisma × Netlify integration was evaluated and has no effect on the actual deploy. |
 | **Update path** | N/A — removed. If the API is ever migrated to Netlify Functions, re-enable the Prisma Netlify integration from the dashboard. |
 
 ---

@@ -379,7 +379,7 @@ Examples:
 
 ## 🌐 Live Project
 
-- Website: `infaemous-freight.github.io/Infamous-freight/`
+- Website: `https://www.infamousfreight.com`
 
 ---
 

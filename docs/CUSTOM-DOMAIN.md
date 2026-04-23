@@ -19,11 +19,12 @@ Add these DNS records at your domain registrar:
 
 | Type | Name | Value | TTL |
 |------|------|-------|-----|
+| CNAME | `www` | `infamous-freight.netlify.app` | Auto |
 | ALIAS / ANAME | `@` | `apex-loadbalancer.netlify.com` | Auto |
 | A | `@` | `75.2.60.5` | Auto |
-| CNAME | `www` | `infamous-freight.netlify.app` | Auto |
 
-> The ALIAS/A records point the apex (`infamousfreight.com`) directly at Netlify. The `www` CNAME is still registered so Netlify can 301 it to the apex.
+> The `www` CNAME is the primary address; the apex ALIAS/A records exist so Netlify can
+> 301 apex traffic to `www`. Both must be registered so Netlify provisions SSL for both.
 
 ### For the API (Fly.io)
 
@@ -32,7 +33,7 @@ Add these DNS records at your domain registrar:
 | CNAME | `api` | `infamous-freight-api.fly.dev` | Auto |
 
 This gives you:
-- **Web:** `https://infamousfreight.com`
+- **Web:** `https://www.infamousfreight.com`
 - **API:** `https://api.infamousfreight.com`
 
 ---
@@ -48,10 +49,10 @@ This gives you:
 
 ### Primary Domain
 
-Set `infamousfreight.com` (the apex) as the primary domain so everything funnels to one canonical host:
+Set `www.infamousfreight.com` as the primary domain — all other hostnames redirect to it:
 
-1. In Netlify domain settings, click **Set as primary** on `infamousfreight.com`
-2. Leave `www.infamousfreight.com` registered as a domain alias — `netlify.toml` already 301s it (and the default `infamous-freight.netlify.app` URL) to the apex
+1. In Netlify domain settings, click **Set as primary** on `www.infamousfreight.com`
+2. Leave `infamousfreight.com` (apex) registered as a domain alias — `netlify.toml` already 301s it (and the default `infamous-freight.netlify.app` URL) to `www`
 
 ---
 
@@ -72,18 +73,23 @@ fly certs create api.infamousfreight.com --app infamous-freight-api
 
 ## Step 4: Update Frontend API URL
 
-Once your API subdomain is live, update the frontend to use it:
+The frontend uses the Netlify `/api/*` reverse-proxy to reach the Fly.io backend.
+Leave `VITE_API_URL` **unset** (empty) so API calls are routed through the proxy:
 
 ### `apps/web/.env.production`
 ```
-VITE_API_URL=https://api.infamousfreight.com
-VITE_SOCKET_URL=wss://api.infamousfreight.com
+VITE_API_URL=
 VITE_STRIPE_PUBLIC_KEY=pk_live_...
 ```
 
+> Setting `VITE_API_URL` to an absolute URL (e.g. `https://api.infamousfreight.com`)
+> bypasses the proxy and contacts the backend directly. Only do this if you have
+> a specific reason to skip the proxy.
+
 ### `apps/web/src/api-client/client.ts`
 ```typescript
-const API_BASE = import.meta.env.VITE_API_URL || 'https://api.infamousfreight.com';
+// Empty string → same-origin requests; Netlify /api/* proxy forwards to Fly.io
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
 ```
 
 ---
@@ -96,6 +102,7 @@ Update your API's CORS settings to accept requests from your custom domain:
 ```typescript
 app.enableCors({
   origin: [
+    'https://www.infamousfreight.com',
     'https://infamousfreight.com',
     'http://localhost:5173',
   ],
@@ -111,7 +118,7 @@ Test that everything is secure:
 
 ```bash
 # Test web
-curl -sI https://infamousfreight.com | head -5
+curl -sI https://www.infamousfreight.com | head -5
 
 # Test API health
 curl -s https://api.infamousfreight.com/health
@@ -128,7 +135,7 @@ All should return `200 OK` with valid SSL certificates.
 
 | Service | URL |
 |---------|-----|
-| **Main App** | `https://infamousfreight.com` |
+| **Main App** | `https://www.infamousfreight.com` |
 | **API** | `https://api.infamousfreight.com` |
 | **WebSocket** | `wss://api.infamousfreight.com` |
 | **Health Check** | `https://api.infamousfreight.com/health` |
@@ -151,11 +158,11 @@ If using Cloudflare as your DNS provider, you get free DDoS protection and cachi
 ### Cloudflare Page Rules (Free Performance Boost)
 
 ```
-Rule 1: infamousfreight.com/static/*
+Rule 1: www.infamousfreight.com/static/*
   - Cache Level: Cache Everything
   - Edge Cache TTL: 1 month
 
-Rule 2: infamousfreight.com/api/*
+Rule 2: www.infamousfreight.com/api/*
   - Cache Level: Bypass
   - Security Level: High
 ```
@@ -166,7 +173,7 @@ Rule 2: infamousfreight.com/api/*
 
 ### "Domain not found"
 - DNS propagation takes 5 minutes to 48 hours
-- Check: `dig infamousfreight.com +short`
+- Check: `dig www.infamousfreight.com +short`
 
 ### "SSL certificate error"
 - Netlify/Fly.io need time to provision certificates (up to 24 hours)

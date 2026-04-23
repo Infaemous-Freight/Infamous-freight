@@ -57,8 +57,8 @@ set_secret "STRIPE_WEBHOOK_SECRET" "$STRIPE_WEBHOOK_SECRET"
 set_secret "SUPABASE_URL" "$SUPABASE_URL"
 set_secret "SUPABASE_SERVICE_KEY" "$SUPABASE_SERVICE_KEY"
 
-# Frontend
-set_secret "VITE_API_URL" "https://infamous-freight-api.fly.dev"
+# Frontend — leave VITE_API_URL empty to use the Netlify /api/* proxy
+set_secret "VITE_API_URL" ""
 set_secret "VITE_STRIPE_PUBLIC_KEY" "$VITE_STRIPE_PUBLIC_KEY"
 
 # ============================================

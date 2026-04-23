@@ -5,9 +5,10 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // CORS — only the canonical apex host in production; localhost for dev.
+  // CORS — canonical www host and apex redirect in production; localhost for dev.
   app.enableCors({
     origin: [
+      'https://www.infamousfreight.com',
       'https://infamousfreight.com',
       'http://localhost:5173',
       'http://localhost:3000',

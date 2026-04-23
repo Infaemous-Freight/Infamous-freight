@@ -160,7 +160,7 @@ export class ComplianceExpiryService {
     }));
 
     return {
-      url: `https://infamousfreight.com/verify/${carrierId}`,
+      url: `https://www.infamousfreight.com/verify/${carrierId}`,
       insuranceStatus,
       coverages,
     };

@@ -45,7 +45,7 @@ fly apps list
 ### Frontend Environment
 | Secret Name | Value | Notes |
 |-------------|-------|-------|
-| `VITE_API_URL` | `https://infamous-freight-api.fly.dev` | Your Fly.io API URL |
+| `VITE_API_URL` | *(leave empty)* | Leave unset to use the Netlify `/api/*` proxy (recommended); set to `https://infamous-freight-api.fly.dev` only to bypass the proxy |
 | `VITE_STRIPE_PUBLIC_KEY` | `pk_live_...` | https://dashboard.stripe.com/apikeys |
 
 ### Supabase (Auth + Database)
@@ -125,7 +125,7 @@ Watch progress at: `https://github.com/Infaemous-Freight/Infamous-freight/action
 | Service | URL | What to Check |
 |---------|-----|---------------|
 | API | `https://api.infamousfreight.com/health` | Should return `{"status":"ok"}` |
-| Web | `https://infamousfreight.com` | Should show login page |
+| Web | `https://www.infamousfreight.com` | Should show login page |
 | API Docs | `https://api.infamousfreight.com/api/docs` | Swagger/OpenAPI UI |
 
 ---

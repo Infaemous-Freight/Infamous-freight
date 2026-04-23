@@ -78,33 +78,9 @@ for = "*.css"
 Cache-Control = "public, max-age=31536000, immutable"
 
 [[redirects]]
-from = "https://www.infamousfreight.com/*"
-to = "https://infamousfreight.com/:splat"
-status = 301.0
-force = true
-
-[redirects.query]
-
-[redirects.conditions]
-
-[redirects.headers]
-
-[[redirects]]
-from = "http://www.infamousfreight.com/*"
-to = "https://infamousfreight.com/:splat"
-status = 301.0
-force = true
-
-[redirects.query]
-
-[redirects.conditions]
-
-[redirects.headers]
-
-[[redirects]]
-from = "https://infamous-freight.netlify.app/*"
-to = "https://infamousfreight.com/:splat"
-status = 301.0
+from = "https://infamousfreight.com/*"
+to = "https://www.infamousfreight.com/:splat"
+status = 301
 force = true
 
 [redirects.query]
@@ -115,8 +91,32 @@ force = true
 
 [[redirects]]
 from = "http://infamousfreight.com/*"
-to = "https://infamousfreight.com/:splat"
-status = 301.0
+to = "https://www.infamousfreight.com/:splat"
+status = 301
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "https://infamous-freight.netlify.app/*"
+to = "https://www.infamousfreight.com/:splat"
+status = 301
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "http://www.infamousfreight.com/*"
+to = "https://www.infamousfreight.com/:splat"
+status = 301
 force = true
 
 [redirects.query]
@@ -128,7 +128,7 @@ force = true
 [[redirects]]
 from = "/api/*"
 to = "https://infamous-freight-api.fly.dev/api/:splat"
-status = 200.0
+status = 200
 force = false
 
 [redirects.query]
@@ -140,7 +140,7 @@ force = false
 [[redirects]]
 from = "/socket.io/*"
 to = "https://infamous-freight-api.fly.dev/socket.io/:splat"
-status = 200.0
+status = 200
 force = false
 
 [redirects.query]
@@ -152,7 +152,7 @@ force = false
 [[redirects]]
 from = "/*.map"
 to = "/404"
-status = 404.0
+status = 404
 force = true
 
 [redirects.query]
@@ -164,7 +164,7 @@ force = true
 [[redirects]]
 from = "/*"
 to = "/index.html"
-status = 200.0
+status = 200
 force = true
 
 [redirects.query]

@@ -195,4 +195,4 @@ jobs:
           needs.deploy-api.result == 'success' &&
           needs.deploy-web.result == 'success'
         run: |
-          echo "::notice::Deployment successful! API: https://api.infamousfreight.com | Web: https://infamousfreight.com"
+          echo "::notice::Deployment successful! API: https://api.infamousfreight.com | Web: https://www.infamousfreight.com"
