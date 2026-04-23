@@ -178,11 +178,12 @@ bash DEPLOY_AUTOMATION_SCRIPT.sh
 This script will:
 
 1. verify required deploy secrets are set (Sentry secrets optional)
-2. trigger CI workflow (`ci-cd.yml`) on `main`
-3. wait for CI completion (poll every 15s, timeout 20 minutes)
+2. trigger the combined CI/CD workflow (`ci-cd.yml`) on `main`
+3. wait for workflow completion (poll every 15s, timeout 20 minutes)
 4. trigger and wait for Fly.io deployment workflow (`fly-deploy.yml`)
 5. trigger and wait for Vercel deployment workflow (`vercel-deploy.yml`)
 
+> **Important:** `ci-cd.yml` is not a CI-only workflow. If it is configured to deploy to Fly.io and/or Vercel, running it together with `fly-deploy.yml` and `vercel-deploy.yml` can cause duplicate deployments. Use the separate deployment workflows only when `ci-cd.yml` is configured for validation/build steps only, or otherwise does not deploy those targets.
 Prerequisites:
 
 ```bash
