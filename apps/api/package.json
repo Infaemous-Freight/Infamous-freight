@@ -4,7 +4,7 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "build": "npm run prisma:generate && tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json",
     "start:dev": "tsx watch src/server.ts",
     "start:prod": "node dist/src/server.js",
     "test": "jest --runInBand",
