@@ -80,7 +80,7 @@ Edit `.env` with the required API keys and environment values.
 ### 3️⃣ Start with Docker (recommended)
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### 4️⃣ Or start manually
@@ -167,6 +167,41 @@ Sourcemaps are generated **only** when `SENTRY_AUTH_TOKEN` is present or `SENTRY
 
 ## 🚀 Deployment
 
+### One-command deployment automation
+
+Run the CI/CD orchestration script:
+
+```bash
+bash DEPLOY_AUTOMATION_SCRIPT.sh
+```
+
+This script will:
+
+1. verify required deploy secrets are set (Sentry secrets optional)
+2. trigger CI workflow (`ci-cd.yml`) on `main`
+3. wait for CI completion (poll every 15s, timeout 20 minutes)
+4. trigger and wait for Fly.io deployment workflow (`fly-deploy.yml`)
+5. trigger and wait for Vercel deployment workflow (`vercel-deploy.yml`)
+
+Prerequisites:
+
+```bash
+# Install GitHub CLI
+# macOS:  brew install gh
+# Linux:  sudo apt-get install gh
+# Windows: choco install gh
+
+gh auth login
+```
+
+
+Set and verify required repository secrets (and optionally make repo private):
+
+```bash
+bash setup-secrets-and-privacy.sh
+```
+
+
 ### GitHub Actions CI/CD
 
 Add these secrets to your GitHub repository:
@@ -181,10 +216,24 @@ Add these secrets to your GitHub repository:
 - ⚙️ `SENTRY_ORG` — (optional) Sentry org slug (e.g. `infmous`)
 - ⚙️ `SENTRY_PROJECT` — (optional) Sentry project slug (e.g. `infamous-freight`)
 
-Push to `main` and the pipeline deploys:
+Push to `main` and monitor:
 
-- 🚚 API to **Fly.io**
-- 🌐 Web to **Vercel**
+- CI: `https://github.com/Infaemous-Freight/Infamous-freight/actions/workflows/ci-cd.yml`
+- Fly deploy: `https://github.com/Infaemous-Freight/Infamous-freight/actions/workflows/fly-deploy.yml`
+- Vercel deploy: `https://github.com/Infaemous-Freight/Infamous-freight/actions/workflows/vercel-deploy.yml`
+
+
+### DNS verification for `infamousfreight.com`
+
+If Vercel shows **Invalid Configuration**, verify apex DNS with:
+
+```bash
+bash scripts/check-vercel-dns.sh infamousfreight.com
+```
+
+Expected state for this project:
+- `A @ -> 216.198.79.1`
+- No conflicting `AAAA @` records
 
 ### Manual deployment
 

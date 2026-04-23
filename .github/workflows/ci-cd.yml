@@ -5,15 +5,21 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   NODE_VERSION: '20'
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  # ===== TEST =====
-  test:
+  test-and-lint:
     name: Test & Lint
     runs-on: ubuntu-latest
     steps:
@@ -23,25 +29,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Prisma generate
+        run: npm run prisma:generate
 
       - name: Lint
         run: npm run lint
 
       - name: Type check
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
       - name: Test
-        run: npm run test -- --coverage
+        run: npm run test -- --runInBand --coverage
 
-  # ===== BUILD API =====
   build-api:
     name: Build API
     runs-on: ubuntu-latest
-    needs: test
+    needs: test-and-lint
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
@@ -50,15 +58,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: npm
 
-      - name: Install & Build
+      - name: Install and build API
         run: |
           npm ci
-          npx prisma generate
+          npm run prisma:generate
           npm run build:api
 
-      - name: Build Docker Image
+      - name: Build Docker image
         run: |
           docker build -f Dockerfile.api -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${{ github.sha }} .
           docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:latest
@@ -70,16 +78,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push API Image
+      - name: Push API image
         run: |
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${{ github.sha }}
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:latest
 
-  # ===== BUILD WEB =====
   build-web:
     name: Build Web
     runs-on: ubuntu-latest
-    needs: test
+    needs: test-and-lint
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
@@ -88,9 +95,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: npm
 
-      - name: Install & Build
+      - name: Install and build web
         run: |
           npm ci
           npm run build:web
@@ -98,13 +105,6 @@ jobs:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_STRIPE_PUBLIC_KEY: ${{ secrets.VITE_STRIPE_PUBLIC_KEY }}
 
-      - name: Upload Web Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-dist
-          path: apps/web/dist
-
-  # ===== DEPLOY TO FLY.IO =====
   deploy-api:
     name: Deploy API to Fly.io
     runs-on: ubuntu-latest
@@ -121,14 +121,11 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-  # ===== DEPLOY TO VERCEL =====
   deploy-web:
     name: Deploy Web to Vercel
     runs-on: ubuntu-latest
     needs: build-web
     if: github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -136,18 +133,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: npm
 
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
-      - name: Pull Vercel Environment Information
+      - name: Pull Vercel environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      - name: Build Project Artifacts
+      - name: Build Vercel artifacts
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -158,25 +155,27 @@ jobs:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
 
-      - name: Deploy Project Artifacts to Vercel
+      - name: Deploy to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-  # ===== NOTIFY =====
   notify:
     name: Notify
     runs-on: ubuntu-latest
-    needs: [deploy-api, deploy-web]
+    needs: [test-and-lint, build-api, build-web, deploy-api, deploy-web]
     if: always()
     steps:
       - name: Notify on failure
-        if: failure()
-        run: |
-          echo "::error::Deployment failed! Check the logs above."
+        if: contains(needs.*.result, 'failure')
+        run: echo "::error::Deployment failed. Review CI/CD run logs."
 
       - name: Notify on success
-        if: success()
-        run: |
-          echo "::notice::Deployment successful! API: https://api.infamousfreight.com | Web: https://infamousfreight.com"
+        if: >-
+          needs.test-and-lint.result == 'success' &&
+          (needs.build-api.result == 'success' || needs.build-api.result == 'skipped') &&
+          (needs.build-web.result == 'success' || needs.build-web.result == 'skipped') &&
+          (needs.deploy-api.result == 'success' || needs.deploy-api.result == 'skipped') &&
+          (needs.deploy-web.result == 'success' || needs.deploy-web.result == 'skipped')
+        run: echo "::notice::Deployment successful! API: https://api.infamousfreight.com | Web: https://infamousfreight.com"
