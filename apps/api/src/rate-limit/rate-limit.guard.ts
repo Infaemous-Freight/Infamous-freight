@@ -18,7 +18,10 @@ export class RateLimitGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Check if endpoint is marked to skip rate limiting
+    if (process.env.API_RATE_LIMIT_ENABLED === 'false') {
+      return true;
+    }
+
     const skipRateLimit = this.reflector.getAllAndOverride<boolean>(SKIP_RATE_LIMIT_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -29,13 +32,11 @@ export class RateLimitGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
     const clientId = this.getClientId(request);
 
-    // Use auth config for auth endpoints, API config for everything else
     const isAuthEndpoint = request.path.includes('/auth/') || request.path.includes('/login');
     const result = isAuthEndpoint
       ? await this.rateLimitService.checkAuthLimit(clientId)
       : await this.rateLimitService.checkApiLimit(clientId);
 
-    // Add rate limit headers
     const response = context.switchToHttp().getResponse();
     response.setHeader('X-RateLimit-Limit', isAuthEndpoint ? 5 : 60);
     response.setHeader('X-RateLimit-Remaining', result.remaining);
@@ -56,7 +57,6 @@ export class RateLimitGuard implements CanActivate {
   }
 
   private getClientId(request: Request): string {
-    // Use user ID if authenticated, otherwise IP + user agent hash
     const userId = (request as any).user?.id;
     if (userId) return `user:${userId}`;
 
