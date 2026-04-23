@@ -2,9 +2,14 @@
   "name": "@infamous-freight/api",
   "version": "1.0.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Infaemous-Freight/Infamous-freight.git",
+    "directory": "apps/api"
+  },
   "type": "commonjs",
   "scripts": {
-    "build": "npm run prisma:generate && tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json",
     "start:dev": "tsx watch src/server.ts",
     "start:prod": "node dist/src/server.js",
     "test": "jest --runInBand",
