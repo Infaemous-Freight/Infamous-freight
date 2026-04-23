@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 // Core infrastructure
+import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { RateLimitModule } from './rate-limit/rate-limit.module';
 
@@ -30,6 +31,7 @@ import { HealthController } from './health/health.controller';
     ConfigModule.forRoot({ isGlobal: true }),
 
     // Infrastructure
+    PrismaModule,
     RedisModule,
     RateLimitModule,
     RBACModule,
