@@ -11,7 +11,7 @@ secret is rotated.
 | Service | Category | Runtime Purpose | Owner | Docs |
 |---------|----------|-----------------|-------|------|
 | **Fly.io** | Hosting | Runs the Node/Express API container in production | Platform team | https://fly.io/docs |
-| **Vercel** | Hosting | Builds and serves the React web app in production | Platform team | https://vercel.com/docs |
+| **Netlify** | Hosting | Builds and serves the React web app in production via native Git integration | Platform team | https://docs.netlify.com |
 | **GitHub Container Registry (GHCR)** | Container registry | Stores tagged API Docker images produced by the `build-api` CI job | Platform team | https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry |
 | **Sentry** | Observability | Captures runtime errors and uploads source-maps during web builds | Platform team | https://docs.sentry.io |
 | **Stripe** | Payments | Processes freight invoices and carrier pay-outs; web SDK loaded at runtime | Payments team | https://stripe.com/docs |
@@ -33,14 +33,11 @@ unless otherwise noted.
 |--------|-------|---------|------------------|---------|
 | `GITHUB_TOKEN` | GitHub (auto-provisioned) | GitHub Actions (built-in) | `build-api` (GHCR push) | Authenticates Docker pushes to GitHub Container Registry; never needs to be set manually |
 | `FLY_API_TOKEN` | Platform team | GitHub Actions repo secret | `deploy-api` | Authorises `flyctl deploy` to push the API container to Fly.io |
-| `VERCEL_TOKEN` | Platform team | GitHub Actions repo secret | `deploy-web` | Authenticates Vercel CLI (`vercel pull`, `vercel build`, `vercel deploy`) |
-| `VERCEL_ORG_ID` | Platform team | GitHub Actions repo secret | `deploy-web` | Scopes Vercel CLI commands to the correct team/organisation |
-| `VERCEL_PROJECT_ID` | Platform team | GitHub Actions repo secret | `deploy-web` | Identifies the Vercel project for the web app |
-| `VITE_API_URL` | Platform team | GitHub Actions repo secret | `build-web`, `deploy-web` | Injected as a Vite build-time env-var; sets the production API base URL used by the React app |
-| `VITE_STRIPE_PUBLIC_KEY` | Payments team | GitHub Actions repo secret | `build-web`, `deploy-web` | Injected as a Vite build-time env-var; used by `@stripe/stripe-js` to initialise the Stripe payment element |
-| `SENTRY_AUTH_TOKEN` | Platform team | GitHub Actions repo secret | `deploy-web` | Allows `@sentry/vite-plugin` to upload source-maps and create releases in Sentry |
-| `SENTRY_ORG` | Platform team | GitHub Actions repo secret | `deploy-web` | Sentry organization slug (e.g. `infamous`) |
-| `SENTRY_PROJECT` | Platform team | GitHub Actions repo secret | `deploy-web` | Sentry project slug (e.g. `infamous-freight`) |
+| `VITE_API_URL` | Platform team | GitHub Actions repo secret | _(unused in CI; set in Netlify environment)_ | Sets the production API base URL used by the React app |
+| `VITE_STRIPE_PUBLIC_KEY` | Payments team | GitHub Actions repo secret | _(unused in CI; set in Netlify environment)_ | Used by `@stripe/stripe-js` to initialise the Stripe payment element |
+| `SENTRY_AUTH_TOKEN` | Platform team | GitHub Actions repo secret | _(follow-up: API source-maps)_ | Allows Sentry tooling to upload source-maps and create releases in Sentry |
+| `SENTRY_ORG` | Platform team | GitHub Actions repo secret | _(follow-up)_ | Sentry organization slug (e.g. `infamous`) |
+| `SENTRY_PROJECT` | Platform team | GitHub Actions repo secret | _(follow-up)_ | Sentry project slug (e.g. `infamous-freight`) |
 
 ### 2.2 Runtime secrets (application layer, not in `ci-cd.yml`)
 
@@ -101,45 +98,32 @@ here for ownership awareness.
 
 ---
 
-### 3.2 Deploy failure — Web (Vercel)
+### 3.2 Deploy failure — Web (Netlify)
 
-**Symptom:** The `deploy-web` job fails or the web app is unreachable at
-`https://infamousfreight.com`.
+**Symptom:** The web app is unreachable at `https://www.infamousfreight.com`.
+
+Web deploys are handled automatically by **Netlify's native Git integration** on
+push to `main`.  GitHub Actions does not deploy the web app.
 
 **Steps:**
 
-1. Open the failed workflow run and expand the failing step (usually
-   `Pull Vercel Environment Information`, `Build Project Artifacts`, or
-   `Deploy Project Artifacts to Vercel`).
+1. Open the Netlify dashboard → Sites → `infamous-freight` → Deploys and review
+   the failing build log.
 
-2. **Auth / project not found error:**
-   Verify that `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID` are
-   all set and correct in GitHub Actions secrets.  Rotate the token if needed
-   (see §3.3).
-
-3. **Build error (TypeScript / Vite):**
-   Reproduce locally before investigating CI:
+2. **Build error (TypeScript / Vite):**
+   Reproduce locally before investigating:
    ```bash
    VITE_API_URL=https://api.infamousfreight.com \
    VITE_STRIPE_PUBLIC_KEY=pk_live_... \
    npm run build:web
    ```
 
-4. **Sentry source-map upload failure (non-blocking):**
-   A Sentry upload failure should not block the deploy.  If it does, check
-   `SENTRY_AUTH_TOKEN` is valid and the Sentry project exists.
+3. **Missing environment variable:**
+   Add or correct the variable in Netlify → Site settings → Environment variables.
 
-5. **Manual deploy:**
-   ```bash
-   npm install -g vercel
-   vercel pull --yes --environment=production --token=<VERCEL_TOKEN>
-   vercel build --prod --token=<VERCEL_TOKEN>
-   vercel deploy --prebuilt --prod --token=<VERCEL_TOKEN>
-   ```
-
-6. **Rollback to previous deployment:**
-   In the Vercel dashboard, navigate to the project → Deployments → select the
-   last successful build → Promote to Production.
+4. **Rollback to previous deployment:**
+   In the Netlify dashboard, navigate to the site → Deploys → select the last
+   successful build → Publish deploy.
 
 ---
 
@@ -151,7 +135,6 @@ in public logs) or on the schedule below.
 | Secret | Rotation frequency | Steps |
 |--------|--------------------|-------|
 | `FLY_API_TOKEN` | On exposure / annually | 1. Log in to Fly.io → Personal Access Tokens → revoke old token, create new one. 2. Update GitHub Actions secret `FLY_API_TOKEN`. 3. Trigger a test deploy to confirm. |
-| `VERCEL_TOKEN` | On exposure / annually | 1. Vercel dashboard → Account Settings → Tokens → delete old, create new. 2. Update `VERCEL_TOKEN` in GitHub Actions. 3. Re-run `deploy-web` job. |
 | `SENTRY_AUTH_TOKEN` | On exposure | 1. Sentry → Settings → Auth Tokens → revoke, create new with `project:releases` scope. 2. Update `SENTRY_AUTH_TOKEN` in GitHub Actions. |
 | `STRIPE_SECRET_KEY` | On exposure | 1. Stripe Dashboard → API Keys → roll key. 2. Update the Fly.io app secret (`fly secrets set STRIPE_SECRET_KEY=...`). 3. Verify webhook signing still works. |
 | `STRIPE_WEBHOOK_SECRET` | On endpoint change / exposure | 1. Stripe Dashboard → Webhooks → regenerate signing secret. 2. Update `STRIPE_WEBHOOK_SECRET` on the Fly.io app. |
@@ -178,13 +161,13 @@ gh secret set SECRET_NAME --body "new-value" \
 3. Until restored, update the web app to show a maintenance banner or redirect
    to a static status page.
 
-#### Vercel outage (Web down)
+#### Netlify outage (Web down)
 
-1. Check status at https://www.vercel-status.com.
-2. The last successful build artifact is retained by Vercel; the previous
-   deployment is usually still active.
-3. If a full Vercel outage, the built `apps/web/dist` artifact (uploaded by the
-   `Upload Web Artifact` CI step) can be served manually from Netlify or a CDN.
+1. Check status at https://www.netlifystatus.com.
+2. The last successful Netlify deploy remains live; Netlify serves from its CDN
+   and typically maintains the previous build during a partial outage.
+3. For a full outage, the built `apps/web/dist` can be served temporarily from
+   a CDN or another static host.
 
 #### Stripe outage (Payments unavailable)
 
