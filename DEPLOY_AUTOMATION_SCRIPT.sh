@@ -44,24 +44,39 @@ wait_for_workflow() {
   local max_wait="$2"
   local poll_interval=15
   local elapsed=0
+  local wait_started_at
+  local run_id=""
+
+  wait_started_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
   log_info "Polling $workflow_file status (timeout: ${max_wait}s)..."
 
   while [ "$elapsed" -lt "$max_wait" ]; do
-    local latest_run
-    latest_run="$(gh run list --repo "$REPO" --workflow "$workflow_file" --branch "$BRANCH" --limit 1 --json status,conclusion,databaseId,url --jq '.[0]')"
+    if [ -z "$run_id" ]; then
+      local matching_run
+      matching_run="$(gh run list \
+        --repo "$REPO" \
+        --workflow "$workflow_file" \
+        --branch "$BRANCH" \
+        --limit 20 \
+        --json databaseId,createdAt,status,conclusion,url \
+        --jq --arg wait_started_at "$wait_started_at" '[.[] | select(.createdAt >= $wait_started_at)][0]')"
 
-    if [ -z "$latest_run" ] || [ "$latest_run" = "null" ]; then
-      log_warning "Workflow not visible yet, retrying..."
-      sleep "$poll_interval"
-      elapsed=$((elapsed + poll_interval))
-      continue
+      if [ -z "$matching_run" ] || [ "$matching_run" = "null" ]; then
+        log_warning "Triggered workflow run not visible yet, retrying..."
+        sleep "$poll_interval"
+        elapsed=$((elapsed + poll_interval))
+        continue
+      fi
+
+      run_id="$(echo "$matching_run" | jq -r '.databaseId')"
     fi
 
-    local status conclusion run_url
-    status="$(echo "$latest_run" | jq -r '.status')"
-    conclusion="$(echo "$latest_run" | jq -r '.conclusion')"
-    run_url="$(echo "$latest_run" | jq -r '.url')"
+    local run_details status conclusion run_url
+    run_details="$(gh run view "$run_id" --repo "$REPO" --json status,conclusion,url,databaseId)"
+    status="$(echo "$run_details" | jq -r '.status')"
+    conclusion="$(echo "$run_details" | jq -r '.conclusion')"
+    run_url="$(echo "$run_details" | jq -r '.url')"
 
     if [ "$status" = "completed" ]; then
       if [ "$conclusion" = "success" ]; then
