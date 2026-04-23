@@ -70,21 +70,27 @@ fly certs create api.infamousfreight.com --app infamous-freight-api
 
 ---
 
-## Step 4: Update Frontend API URL
+## Step 4: Frontend API URL
 
-Once your API subdomain is live, update the frontend to use it:
+The Netlify `netlify.toml` already proxies `/api/*` → `https://infamous-freight-api.fly.dev/api/:splat`
+and `/socket.io/*` → `https://infamous-freight-api.fly.dev/socket.io/:splat`.
+
+This means the frontend can use **relative paths** to reach the API without
+CORS or cross-origin certificates. Leave `VITE_API_URL` and `VITE_SOCKET_URL`
+empty in the Netlify environment (or in `apps/web/.env.production`) so the
+built SPA routes through the proxy:
 
 ### `apps/web/.env.production`
 ```
-VITE_API_URL=https://api.infamousfreight.com
-VITE_SOCKET_URL=wss://api.infamousfreight.com
+VITE_API_URL=
+VITE_SOCKET_URL=
 VITE_STRIPE_PUBLIC_KEY=pk_live_...
 ```
 
-### `apps/web/src/api-client/client.ts`
-```typescript
-const API_BASE = import.meta.env.VITE_API_URL || 'https://api.infamousfreight.com';
-```
+> **Note:** Do **not** set `NEXT_PUBLIC_API_URL` in the Netlify dashboard.
+> `apps/web` is a **Vite** app; only `VITE_*` variables are read at build time.
+> Any `NEXT_PUBLIC_*` variable set in the Netlify dashboard is ignored by the
+> Vite build.
 
 ---
 

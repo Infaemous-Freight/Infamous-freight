@@ -22,7 +22,8 @@ export function useNotifications(userId: string, companyId: string) {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const newSocket = io(`${process.env.NEXT_PUBLIC_API_URL}/notifications`, {
+    const socketUrl = import.meta.env.VITE_SOCKET_URL ?? '';
+    const newSocket = io(`${socketUrl}/notifications`, {
       query: { userId },
     });
 
