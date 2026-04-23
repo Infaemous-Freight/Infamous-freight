@@ -43,7 +43,7 @@ jobs:
         run: npm run typecheck
 
       - name: Test
-        run: npm run test -- --runInBand --coverage
+        run: npm run test -- --coverage
 
   build-api:
     name: Build API
