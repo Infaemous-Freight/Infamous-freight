@@ -92,6 +92,7 @@ if command -v jq &>/dev/null; then
     .packages[]
     | select(
         (.licenseConcluded == "NOASSERTION"
+         or .licenseConcluded == "UNKNOWN"
          or .licenseConcluded == null
          or .licenseConcluded == "")
         and .name != "NOASSERTION"
