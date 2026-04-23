@@ -146,8 +146,8 @@ npx @sentry/wizard@latest -i react
 
 > ⚠️ Do **not** use `-i nextjs` — `apps/web` is not a Next.js app.
 
-**Vercel sourcemap policy:** Public requests for `*.map` files are blocked (404).
-Sourcemaps are still uploaded to Sentry during Vercel builds when
+**Netlify sourcemap policy:** Public requests for `*.map` files are blocked (404).
+Sourcemaps are still uploaded to Sentry during builds when
 `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` are configured.
 
 ### Optional Sentry environment variables
@@ -172,9 +172,6 @@ Sourcemaps are generated **only** when `SENTRY_AUTH_TOKEN` is present or `SENTRY
 Add these secrets to your GitHub repository:
 
 - 🔐 `FLY_API_TOKEN` — Fly.io deployment token
-- 🔐 `VERCEL_TOKEN` — Vercel auth token
-- 🔐 `VERCEL_ORG_ID` — Vercel organization/team ID
-- 🔐 `VERCEL_PROJECT_ID` — Vercel project ID for the web app
 - 🔐 `VITE_API_URL` — Production API URL
 - 🔐 `VITE_STRIPE_PUBLIC_KEY` — Stripe publishable key
 - 🔐 `SENTRY_AUTH_TOKEN` — (optional) Sentry auth token for sourcemap upload
@@ -184,7 +181,7 @@ Add these secrets to your GitHub repository:
 Push to `main` and the pipeline deploys:
 
 - 🚚 API to **Fly.io**
-- 🌐 Web to **Vercel**
+- 🌐 Web to **Netlify** (via Netlify's native Git integration)
 
 ### Manual deployment
 
@@ -194,11 +191,14 @@ Push to `main` and the pipeline deploys:
 flyctl deploy --app infamous-freight-api
 ```
 
-#### Web (Vercel)
+#### Web (Netlify)
+
+Netlify auto-deploys from the `main` branch via its native Git integration.
+For manual deploys:
 
 ```bash
-npm install -g vercel
-vercel deploy --prod
+npm install -g netlify-cli
+netlify deploy --prod --dir=apps/web/dist
 ```
 
 ---
@@ -214,7 +214,7 @@ vercel deploy --prod
 | 📡 Realtime | Socket.io WebSockets |
 | 💳 Payments | Stripe |
 | 🔐 Auth | Supabase Auth + JWT |
-| ☁️ Deployment | Fly.io (API), Vercel (Web), Docker |
+| ☁️ Deployment | Fly.io (API), Netlify (Web), Docker |
 
 ---
 
