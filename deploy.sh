@@ -66,11 +66,11 @@ npm run build
 # Deploy API to Fly.io
 echo ""
 echo "🚀 Deploying API to Fly.io..."
-if command -v fly &> /dev/null; then
-    fly deploy --app infamous-freight-api --remote-only
+if command -v flyctl &> /dev/null; then
+    flyctl deploy --app infamous-freight-api --remote-only
     echo -e "${GREEN}✅ API deployed to Fly.io${NC}"
 else
-    echo -e "${YELLOW}⚠️  Fly CLI not found. Skipping API deploy.${NC}"
+    echo -e "${YELLOW}⚠️  Fly CLI (flyctl) not found. Skipping API deploy.${NC}"
     echo "   Install: curl -L https://fly.io/install.sh | sh"
 fi
 
