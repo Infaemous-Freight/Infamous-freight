@@ -36,7 +36,11 @@ cd "$REPO_ROOT"
 echo "[1/4] Generating full SPDX SBOM..."
 npm sbom --sbom-format spdx --json 2>/dev/null > "$SBOM_FILE"
 echo "  Written: $SBOM_FILE"
-TOTAL=$(jq '.packages | length' "$SBOM_FILE")
+if command -v jq >/dev/null 2>&1; then
+  TOTAL=$(jq '.packages | length' "$SBOM_FILE")
+else
+  TOTAL=$(node -e 'const fs = require("fs"); const sbom = JSON.parse(fs.readFileSync(process.argv[1], "utf8")); process.stdout.write(String(Array.isArray(sbom.packages) ? sbom.packages.length : 0));' "$SBOM_FILE")
+fi
 echo "  Total packages in SBOM: $TOTAL"
 echo ""
 
