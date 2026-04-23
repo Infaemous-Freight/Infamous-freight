@@ -379,7 +379,8 @@ Examples:
 
 ## 🌐 Live Project
 
-- Website: [infaemous-freight.github.io/Infamous-freight](https://infaemous-freight.github.io/Infamous-freight/)
+- Website: [infamousfreight.com](https://infamousfreight.com)
+- GitHub Pages Preview: [infaemous-freight.github.io/Infamous-freight](https://infaemous-freight.github.io/Infamous-freight/)
 - Repository: [github.com/Infaemous-Freight/Infamous-freight](https://github.com/Infaemous-Freight/Infamous-freight)
 
 ---
