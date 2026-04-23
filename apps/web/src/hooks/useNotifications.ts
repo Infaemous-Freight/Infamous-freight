@@ -22,9 +22,9 @@ export function useNotifications(userId: string, companyId: string) {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    // Use VITE_API_URL if set (e.g. direct to https://api.infamousfreight.com),
-    // or fall back to '' so the Netlify /socket.io/* proxy handles the connection.
-    const socketBase = import.meta.env.VITE_API_URL ?? '';
+    // Prefer an explicit socket origin so production does not fall back to the
+    // web origin, which can be blocked by CSP during the WebSocket upgrade.
+    const socketBase = (import.meta.env.VITE_API_URL ?? 'wss://api.infamousfreight.com').replace(/\/$/, '');
     const newSocket = io(`${socketBase}/notifications`, {
       query: { userId },
     });
