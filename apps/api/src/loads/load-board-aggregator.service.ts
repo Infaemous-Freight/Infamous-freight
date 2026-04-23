@@ -77,9 +77,6 @@ export class LoadBoardAggregatorService {
     private readonly rateLimit: RateLimitService,
   ) {}
 
-  /**
-   * Search all connected load boards simultaneously
-   */
   async searchAllBoards(filters: LoadSearchFilters): Promise<UnifiedLoad[]> {
     const [datLoads, truckstopLoads, l123Loads] = await Promise.allSettled([
       this.searchDAT(filters),
@@ -98,10 +95,8 @@ export class LoadBoardAggregatorService {
     if (l123Loads.status === 'fulfilled') loads.push(...l123Loads.value);
     else this.logger.error('123Loadboard search failed:', l123Loads.reason);
 
-    // Deduplicate by origin→destination→broker→pickup date
     const deduped = this.deduplicateLoads(loads);
 
-    // Sort by posted time (newest first), then by rate/mile
     deduped.sort((a, b) => {
       if (Math.abs(a.ageMinutes - b.ageMinutes) < 5) {
         return b.ratePerMile - a.ratePerMile;
@@ -109,26 +104,18 @@ export class LoadBoardAggregatorService {
       return a.ageMinutes - b.ageMinutes;
     });
 
-    // Cache results for 2 minutes
-    await this.redis.set('loads:search:' + JSON.stringify(filters), deduped, 120);
+    await this.redis.set(`loads:search:${JSON.stringify(filters)}`, deduped, 120);
 
     return deduped;
   }
 
-  /**
-   * Subscribe to real-time load alerts via WebSocket
-   */
   async subscribeToLaneAlerts(carrierId: string, lanes: { origin: string; destination: string }[]): Promise<void> {
-    await this.redis.set(`alerts:lanes:${carrierId}`, lanes, 86400); // 24h TTL
+    await this.redis.set(`alerts:lanes:${carrierId}`, lanes, 86400);
     this.logger.log(`Carrier ${carrierId} subscribed to ${lanes.length} lane alerts`);
   }
 
-  /**
-   * Check for new loads matching carrier's subscribed lanes
-   * Called by a cron job every 2 minutes
-   */
   async checkNewLoadsForAlerts(): Promise<Array<{ carrierId: string; loads: UnifiedLoad[] }>> {
-    const keys = await this.redis['redis'].keys('alerts:lanes:*');
+    const keys = await this.redis.keys('alerts:lanes:*');
     const notifications: Array<{ carrierId: string; loads: UnifiedLoad[] }> = [];
 
     for (const key of keys) {
@@ -144,8 +131,7 @@ export class LoadBoardAggregatorService {
 
         const cached = await this.redis.get<UnifiedLoad[]>(`loads:search:${JSON.stringify(filters)}`);
         if (cached && cached.length > 0) {
-          // Only alert on loads posted in last 10 minutes
-          const newLoads = cached.filter(l => l.ageMinutes <= 10);
+          const newLoads = cached.filter((load) => load.ageMinutes <= 10);
           if (newLoads.length > 0) {
             notifications.push({ carrierId, loads: newLoads });
           }
@@ -155,8 +141,6 @@ export class LoadBoardAggregatorService {
 
     return notifications;
   }
-
-  // ===== DAT iQ API =====
 
   private async searchDAT(filters: LoadSearchFilters): Promise<UnifiedLoad[]> {
     const apiKey = process.env.DAT_API_KEY;
@@ -183,7 +167,7 @@ export class LoadBoardAggregatorService {
       );
 
       return (response.data?.loads || []).map((l: any) => this.normalizeDATLoad(l));
-    } catch (err) {
+    } catch (err: any) {
       this.logger.error('DAT API error:', err.message);
       return [];
     }
@@ -212,11 +196,9 @@ export class LoadBoardAggregatorService {
       commodity: load.commodity,
       postedAt: new Date(load.postedDate),
       ageMinutes: Math.floor((Date.now() - new Date(load.postedDate).getTime()) / 60000),
-      isHighUrgency: load.urgency === 'high' || (load.ratePerMile > 3.5),
+      isHighUrgency: load.urgency === 'high' || load.ratePerMile > 3.5,
     };
   }
-
-  // ===== Truckstop.com API =====
 
   private async searchTruckstop(filters: LoadSearchFilters): Promise<UnifiedLoad[]> {
     const apiKey = process.env.TRUCKSTOP_API_KEY;
@@ -242,7 +224,7 @@ export class LoadBoardAggregatorService {
       );
 
       return (response.data?.loads || []).map((l: any) => this.normalizeTruckstopLoad(l));
-    } catch (err) {
+    } catch (err: any) {
       this.logger.error('Truckstop API error:', err.message);
       return [];
     }
@@ -276,8 +258,6 @@ export class LoadBoardAggregatorService {
     };
   }
 
-  // ===== 123Loadboard API =====
-
   private async search123Loadboard(filters: LoadSearchFilters): Promise<UnifiedLoad[]> {
     const apiKey = process.env.LOADBOARD_API_KEY;
     if (!apiKey) {
@@ -298,7 +278,7 @@ export class LoadBoardAggregatorService {
       );
 
       return (response.data?.data || []).map((l: any) => this.normalize123LoadboardLoad(l));
-    } catch (err) {
+    } catch (err: any) {
       this.logger.error('123Loadboard API error:', err.message);
       return [];
     }
@@ -331,19 +311,15 @@ export class LoadBoardAggregatorService {
     };
   }
 
-  // ===== Deduplication =====
-
   private deduplicateLoads(loads: UnifiedLoad[]): UnifiedLoad[] {
     const seen = new Map<string, UnifiedLoad>();
 
     for (const load of loads) {
-      // Fingerprint: origin city + dest city + pickup date (day only) + rate
       const key = `${load.origin.city}|${load.destination.city}|${load.pickupDate.toDateString()}|${Math.round(load.rate / 100)}`;
 
       if (!seen.has(key)) {
         seen.set(key, load);
       } else {
-        // Keep the one with higher rate/mile
         const existing = seen.get(key)!;
         if (load.ratePerMile > existing.ratePerMile) {
           seen.set(key, load);
@@ -354,11 +330,8 @@ export class LoadBoardAggregatorService {
     return Array.from(seen.values());
   }
 
-  // ===== Utility =====
-
   private estimateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-    // Haversine formula for approximate distance
-    const R = 3959; // Earth radius in miles
+    const R = 3959;
     const dLat = this.toRad(lat2 - lat1);
     const dLng = this.toRad(lng2 - lng1);
     const a =
