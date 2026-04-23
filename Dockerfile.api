@@ -3,38 +3,40 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install dependencies
+# Install workspace dependencies first for better layer caching
 COPY package*.json ./
-COPY prisma ./prisma/
+COPY apps/api/package.json ./apps/api/package.json
+COPY scripts ./scripts
 RUN npm ci
 
-# Copy source and build
-COPY . .
-RUN npx prisma generate
-RUN npm run build
+# Copy API source and build only the API workspace
+COPY apps/api ./apps/api
+RUN node scripts/ensure-api-workspace.js && npm --prefix apps/api run build
 
 # Production stage
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Install production dependencies only
-COPY package*.json ./
-COPY prisma ./prisma/
-RUN npm ci --only=production
-RUN npx prisma generate
+ENV NODE_ENV=production
 
-# Copy built app
-COPY --from=builder /app/dist ./dist
+# Install only production dependencies required by the workspace
+COPY package*.json ./
+COPY apps/api/package.json ./apps/api/package.json
+COPY scripts ./scripts
+RUN npm ci --omit=dev
+
+# Copy built application artifacts
+COPY --from=builder /app/apps/api/dist ./apps/api/dist
+COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
 
 # Security: run as non-root
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 USER nodejs
 
 EXPOSE 3001
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://127.0.0.1:3001/api/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"
 
-CMD ["node", "dist/main"]
+CMD ["npm", "--prefix", "apps/api", "run", "start:prod"]
