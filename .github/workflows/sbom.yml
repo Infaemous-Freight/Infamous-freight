@@ -1,0 +1,72 @@
+name: SBOM — Generate & Upload
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package-lock.json'
+      - 'apps/*/package.json'
+      - 'scripts/generate-sbom.js'
+  schedule:
+    # Quarterly automated refresh: 1st day of Jan, Apr, Jul, Oct at 06:00 UTC
+    - cron: '0 6 1 1,4,7,10 *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sbom:
+    name: Generate SBOM views
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020  # v4.4.0
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate categorised SBOM views
+        run: node scripts/generate-sbom.js --output-dir sbom
+
+      - name: Upload runtime SBOM
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        with:
+          name: sbom-runtime
+          path: sbom/runtime.json
+          retention-days: 90
+
+      - name: Upload build-CI SBOM
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        with:
+          name: sbom-build-ci
+          path: sbom/build-ci.json
+          retention-days: 90
+
+      - name: Upload license-unknowns report
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2
+        with:
+          name: sbom-license-unknowns
+          path: sbom/license-unknowns.json
+          retention-days: 90
+
+      - name: Warn on new unknown-license packages
+        run: |
+          # Count packages with no license metadata in the current lockfile.
+          # The baseline of 2 matches the entries already triaged in
+          # docs/SBOM-LICENSE-TRIAGE.md (exit v0.1.2 and xmlhttprequest-ssl v2.1.2).
+          # Raise this number whenever a new entry is triaged and recorded there.
+          KNOWN_TRIAGED=2
+          UNKNOWN_COUNT=$(node -e "
+            const data = require('./sbom/license-unknowns.json');
+            process.stdout.write(String(data.packages.length));
+          ")
+          NEW_COUNT=$(( UNKNOWN_COUNT - KNOWN_TRIAGED ))
+          if [ "$NEW_COUNT" -gt 0 ]; then
+            echo "::warning::$NEW_COUNT package(s) with no license metadata have appeared since the last triage. Update docs/SBOM-LICENSE-TRIAGE.md before merging."
+          fi

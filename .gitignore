@@ -8,6 +8,9 @@ dist/
 build/
 *.tsbuildinfo
 
+# Generated SBOM views (produced by scripts/generate-sbom.js; uploaded as CI artifacts)
+sbom/
+
 # Environment variables
 .env
 .env.local

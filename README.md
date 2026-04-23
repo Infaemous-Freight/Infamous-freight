@@ -329,6 +329,7 @@ For operational ownership, deployment runbooks, integration provenance, and SBOM
 - `docs/INTEGRATIONS-AND-SECRETS.md` — external integrations, secret ownership, deploy failure runbooks, and rotation guidance
 - `docs/NETLIFY-BUILDHOOKS.md` — provenance, integrity, and maintenance guidance for Netlify URL-hosted buildhook packages
 - `docs/SBOM-POLICY.md` — runtime-vs-build SBOM policy, review cadence, classification rules, and triage standards
+- `docs/SBOM-LICENSE-TRIAGE.md` — triage outcomes for packages with no license metadata in the lockfile
 
 ---
 

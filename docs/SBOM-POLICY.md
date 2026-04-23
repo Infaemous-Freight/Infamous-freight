@@ -79,9 +79,29 @@ The source of truth for JavaScript dependency resolution is:
 - root `package-lock.json`
 - workspace `package.json` files under `apps/*`
 
-### 3.2 Minimum generation flow
+### 3.2 Automated generation
 
-From the repository root:
+The repository includes a generation script and a dedicated CI workflow:
+
+```bash
+# Run locally from the repo root
+npm ci
+node scripts/generate-sbom.js
+```
+
+This produces three output files in `sbom/`:
+
+| File | Contents |
+|---|---|
+| `sbom/runtime.json` | All non-dev packages (ships with or supports the running application) |
+| `sbom/build-ci.json` | All `devDependencies` — build, test, lint, and CI-only packages |
+| `sbom/license-unknowns.json` | Packages whose lockfile entry has no `license` field |
+
+The CI workflow `.github/workflows/sbom.yml` runs automatically on every push to `main` that touches the lockfile or workspace `package.json` files, and quarterly on a cron schedule. It uploads the three views as workflow artifacts (retained 90 days) and emits a warning if the `license-unknowns.json` count exceeds the number of entries already triaged in `docs/SBOM-LICENSE-TRIAGE.md`.
+
+### 3.3 Raw SPDX generation (optional)
+
+For a standards-compliant SPDX document, use `npm sbom` directly:
 
 ```bash
 npm ci
@@ -90,7 +110,7 @@ npm sbom --sbom-format spdx > sbom.spdx.json
 
 If a future pipeline emits CycloneDX as well, SPDX remains the required baseline unless the compliance consumer explicitly asks for another format.
 
-### 3.3 Review views to produce from the raw SBOM
+### 3.4 Review views to produce from the raw SBOM
 
 Every formal SBOM review should produce these views:
 
@@ -250,11 +270,12 @@ For this repository specifically:
 
 Before closing an SBOM review, confirm all of the following:
 
-- [ ] raw SPDX SBOM was generated from the current lockfile
-- [ ] runtime direct dependency view was produced
+- [ ] `node scripts/generate-sbom.js` was run against the current lockfile
+- [ ] `sbom/runtime.json` was reviewed for unexpected packages
+- [ ] `sbom/build-ci.json` was checked for incorrectly classified runtime packages
+- [ ] `sbom/license-unknowns.json` is empty or all entries are recorded in `docs/SBOM-LICENSE-TRIAGE.md`
 - [ ] duplicate-version drift was reviewed
-- [ ] `NOASSERTION` / `UNKNOWN` entries were triaged
-- [ ] external URL-hosted packages were reviewed for provenance
+- [ ] external URL-hosted packages were reviewed for provenance (`docs/NETLIFY-BUILDHOOKS.md`)
 - [ ] any remediation work was opened as linked issues or PRs
 
 ---
@@ -264,4 +285,7 @@ Before closing an SBOM review, confirm all of the following:
 - `README.md`
 - `docs/INTEGRATIONS-AND-SECRETS.md`
 - `docs/NETLIFY-BUILDHOOKS.md`
+- `docs/SBOM-LICENSE-TRIAGE.md` — triage outcomes for packages with no lockfile license metadata
+- `scripts/generate-sbom.js` — generation script (runtime/build-CI split + license-unknowns report)
+- `.github/workflows/sbom.yml` — CI workflow for automated SBOM generation and upload
 - [SBOM remediation tracker issue](https://github.com/OWNER/REPO/issues/ISSUE_NUMBER)
