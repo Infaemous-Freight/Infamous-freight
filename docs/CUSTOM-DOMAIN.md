@@ -29,7 +29,7 @@ Add these DNS records at your domain registrar:
 
 | Type | Name | Value | TTL |
 |------|------|-------|-----|
-| CNAME | `api` | `infamous-freight-api.fly.dev` | Auto |
+| CNAME | `api` | `infamous-freight.fly.dev` | Auto |
 
 This gives you:
 - **Web:** `https://infamousfreight.com`

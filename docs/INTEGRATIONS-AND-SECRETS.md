@@ -75,10 +75,10 @@ here for ownership awareness.
    Rotate `FLY_API_TOKEN` (see §3.3) and re-run the workflow.
 
 3. **No machines / capacity error:** Log in to the Fly.io dashboard and check
-   the `infamous-freight-api` app health.  Scale or restart:
+   the `infamous-freight` app health.  Scale or restart:
    ```bash
-   fly status --app infamous-freight-api
-   fly machines restart --app infamous-freight-api
+   fly status --app infamous-freight
+   fly machines restart --app infamous-freight
    ```
 
 4. **Build failed before deploy:** The `build-api` job must succeed before
@@ -87,13 +87,13 @@ here for ownership awareness.
 5. **Manual deploy:**
    ```bash
    fly auth login
-   flyctl deploy --remote-only --app infamous-freight-api
+   flyctl deploy --remote-only --app infamous-freight
    ```
 
 6. **Rollback to last good release:**
    ```bash
-   fly releases --app infamous-freight-api   # find the last good version
-   fly deploy --image <previous-image-tag> --app infamous-freight-api
+   fly releases --app infamous-freight   # find the last good version
+   fly deploy --image <previous-image-tag> --app infamous-freight
    ```
 
 ---
@@ -156,7 +156,7 @@ gh secret set SECRET_NAME --body "new-value" \
 1. Check status at https://status.fly.io.
 2. If a regional outage, consider scaling to a different region:
    ```bash
-   fly regions add iad --app infamous-freight-api   # e.g. us-east
+   fly regions add iad --app infamous-freight   # e.g. us-east
    ```
 3. Until restored, update the web app to show a maintenance banner or redirect
    to a static status page.

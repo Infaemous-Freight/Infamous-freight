@@ -14,11 +14,11 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://infamous-freight-api.fly.dev/api/:path*"
+      "destination": "https://infamous-freight.fly.dev/api/:path*"
     },
     {
       "source": "/socket.io/:path*",
-      "destination": "https://infamous-freight-api.fly.dev/socket.io/:path*"
+      "destination": "https://infamous-freight.fly.dev/socket.io/:path*"
     },
     {
       "source": "/(.*)",

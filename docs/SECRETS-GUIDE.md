@@ -27,7 +27,7 @@ This guide walks you through adding all required secrets to your GitHub repo for
 **Verify Fly app exists:**
 ```bash
 fly apps list
-# Should show: infamous-freight-api
+# Should show: infamous-freight
 ```
 
 ### Netlify (Web Deployment)
@@ -45,7 +45,7 @@ fly apps list
 ### Frontend Environment
 | Secret Name | Value | Notes |
 |-------------|-------|-------|
-| `VITE_API_URL` | `https://infamous-freight-api.fly.dev` | Your Fly.io API URL |
+| `VITE_API_URL` | Leave empty when using Netlify/Vercel rewrites; otherwise set to `https://infamous-freight.fly.dev` | Empty uses the platform proxy in production; use the Fly.io API URL only for non-proxied/direct backend deployments |
 | `VITE_STRIPE_PUBLIC_KEY` | `pk_live_...` | https://dashboard.stripe.com/apikeys |
 
 ### Supabase (Auth + Database)
@@ -134,7 +134,7 @@ Watch progress at: `https://github.com/Infaemous-Freight/Infamous-freight/action
 
 ```bash
 # API (Fly.io)
-fly deploy --app infamous-freight-api
+fly deploy --app infamous-freight
 
 # Web (Netlify)
 npm run build:web
