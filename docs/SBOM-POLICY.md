@@ -94,7 +94,7 @@ This produces three output files in `sbom/`:
 | File | Contents |
 |---|---|
 | `sbom/runtime.json` | All non-dev packages (ships with or supports the running application) |
-| `sbom/build-ci.json` | All `devDependencies` — build, test, lint, and CI-only packages |
+| `sbom/build-ci.json` | All dev-flagged packages — including dev dependencies and their transitive dependency graph; build, test, lint, and CI-only packages |
 | `sbom/license-unknowns.json` | Packages whose lockfile entry has no `license` field |
 
 The CI workflow `.github/workflows/sbom.yml` runs automatically on every push to `main` that touches the lockfile or workspace `package.json` files, and quarterly on a cron schedule. It uploads the three views as workflow artifacts (retained 90 days) and emits a warning if the `license-unknowns.json` count exceeds the number of entries already triaged in `docs/SBOM-LICENSE-TRIAGE.md`.
