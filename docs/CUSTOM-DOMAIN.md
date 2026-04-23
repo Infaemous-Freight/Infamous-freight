@@ -57,7 +57,7 @@ Set `infamousfreight.com` (the apex) as the primary domain so everything funnels
 
 ## Step 3: Fly.io Custom Domain
 
-1. Go to your Fly.io dashboard: `https://fly.io/apps/infamous-freight-api`
+1. Go to your Fly.io dashboard: `https://fly.io/apps/infamous-freight`
 2. Click **Certificates**
 3. Click **Add certificate**
 4. Enter: `api.infamousfreight.com`
@@ -65,7 +65,7 @@ Set `infamousfreight.com` (the apex) as the primary domain so everything funnels
 
 Or via CLI:
 ```bash
-fly certs create api.infamousfreight.com --app infamous-freight-api
+fly certs create api.infamousfreight.com --app infamous-freight
 ```
 
 ---
@@ -178,5 +178,5 @@ Rule 2: infamousfreight.com/api/*
 - Add `http://localhost:5173` for local development
 
 ### "API 404 on custom domain"
-- Verify Fly.io cert is active: `fly certs show api.infamousfreight.com`
+- Verify Fly.io cert is active: `fly certs show api.infamousfreight.com --app infamous-freight`
 - Check DNS CNAME resolves: `dig api.infamousfreight.com +short`

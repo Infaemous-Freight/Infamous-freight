@@ -67,7 +67,7 @@ npm run build
 echo ""
 echo "🚀 Deploying API to Fly.io..."
 if command -v flyctl &> /dev/null; then
-    flyctl deploy --app infamous-freight-api --remote-only
+    flyctl deploy --app infamous-freight --remote-only
     echo -e "${GREEN}✅ API deployed to Fly.io${NC}"
 else
     echo -e "${YELLOW}⚠️  Fly CLI (flyctl) not found. Skipping API deploy.${NC}"
