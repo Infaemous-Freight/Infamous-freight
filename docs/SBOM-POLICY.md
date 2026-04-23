@@ -90,6 +90,25 @@ npm sbom --sbom-format spdx > sbom.spdx.json
 
 If a future pipeline emits CycloneDX as well, SPDX remains the required baseline unless the compliance consumer explicitly asks for another format.
 
+### 3.2.1 Automated generation script
+
+`scripts/generate-sbom.sh` automates the full generation and split workflow:
+
+```bash
+./scripts/generate-sbom.sh [output-dir]
+```
+
+It produces four output files in the chosen directory (default: `sbom/`):
+
+| File | Contents |
+|------|----------|
+| `sbom-full.spdx.json` | Complete raw SPDX SBOM from the lockfile |
+| `runtime-direct.txt` | Runtime direct dependency names from all workspace `package.json` files |
+| `buildci-direct.txt` | Build/CI/dev direct dependency names from all workspace `package.json` files |
+| `license-unknowns.txt` | Packages with `NOASSERTION` or missing license (requires `jq`) |
+
+Review `license-unknowns.txt` against `docs/SBOM-LICENSE-TRIAGE.md` to confirm each entry has a recorded triage outcome before closing a review.
+
 ### 3.3 Review views to produce from the raw SBOM
 
 Every formal SBOM review should produce these views:
@@ -253,7 +272,7 @@ Before closing an SBOM review, confirm all of the following:
 - [ ] raw SPDX SBOM was generated from the current lockfile
 - [ ] runtime direct dependency view was produced
 - [ ] duplicate-version drift was reviewed
-- [ ] `NOASSERTION` / `UNKNOWN` entries were triaged
+- [ ] `NOASSERTION` / `UNKNOWN` entries were triaged against `docs/SBOM-LICENSE-TRIAGE.md`
 - [ ] external URL-hosted packages were reviewed for provenance
 - [ ] any remediation work was opened as linked issues or PRs
 
@@ -264,4 +283,6 @@ Before closing an SBOM review, confirm all of the following:
 - `README.md`
 - `docs/INTEGRATIONS-AND-SECRETS.md`
 - `docs/NETLIFY-BUILDHOOKS.md`
-- [SBOM remediation tracker issue](https://github.com/OWNER/REPO/issues/ISSUE_NUMBER)
+- `docs/SBOM-LICENSE-TRIAGE.md`
+- `scripts/generate-sbom.sh`
+- [SBOM remediation tracker issue](https://github.com/Infaemous-Freight/Infamous-freight/issues/1524)
