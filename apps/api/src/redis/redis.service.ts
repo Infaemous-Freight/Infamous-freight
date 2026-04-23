@@ -10,14 +10,26 @@ export class RedisService implements OnModuleDestroy {
   constructor() {
     this.redis = new Redis({
       host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT || '6379'),
+      port: parseInt(process.env.REDIS_PORT || '6379', 10),
       password: process.env.REDIS_PASSWORD || undefined,
-      db: parseInt(process.env.REDIS_DB || '0'),
+      db: parseInt(process.env.REDIS_DB || '0', 10),
       retryStrategy: (times) => Math.min(times * 50, 2000),
     });
 
     this.redis.on('connect', () => this.logger.log('Redis connected'));
     this.redis.on('error', (err) => this.logger.error('Redis error:', err));
+  }
+
+  async ping(): Promise<boolean> {
+    try {
+      return (await this.redis.ping()) === 'PONG';
+    } catch {
+      return false;
+    }
+  }
+
+  async keys(pattern: string): Promise<string[]> {
+    return this.redis.keys(pattern);
   }
 
   async get<T>(key: string): Promise<T | null> {
@@ -38,7 +50,7 @@ export class RedisService implements OnModuleDestroy {
   }
 
   async delPattern(pattern: string): Promise<void> {
-    const keys = await this.redis.keys(pattern);
+    const keys = await this.keys(pattern);
     if (keys.length) {
       await this.redis.del(...keys);
     }
@@ -52,7 +64,6 @@ export class RedisService implements OnModuleDestroy {
     return value;
   }
 
-  // Cache load data for fast matching
   async cacheLoad(loadId: string, data: any): Promise<void> {
     await this.set(`load:${loadId}`, data, 600);
   }
@@ -61,7 +72,6 @@ export class RedisService implements OnModuleDestroy {
     return this.get(`load:${loadId}`);
   }
 
-  // Cache driver scores for auto-dispatch
   async cacheDriverScores(loadId: string, scores: any[]): Promise<void> {
     await this.set(`dispatch:scores:${loadId}`, scores, 60);
   }
@@ -70,7 +80,6 @@ export class RedisService implements OnModuleDestroy {
     return this.get(`dispatch:scores:${loadId}`);
   }
 
-  // Rate limiting helpers
   async incrementCounter(key: string, windowSeconds: number): Promise<number> {
     const multi = this.redis.multi();
     multi.incr(key);
@@ -79,16 +88,14 @@ export class RedisService implements OnModuleDestroy {
     return (results?.[0]?.[1] as number) || 0;
   }
 
-  // Market rates cache
   async cacheMarketRate(lane: string, rate: number): Promise<void> {
-    await this.set(`market:rate:${lane}`, rate, 3600); // 1 hour
+    await this.set(`market:rate:${lane}`, rate, 3600);
   }
 
   async getCachedMarketRate(lane: string): Promise<number | null> {
     return this.get(`market:rate:${lane}`);
   }
 
-  // Session blacklisting (logout)
   async blacklistToken(token: string, expSeconds: number): Promise<void> {
     await this.set(`blacklist:${token}`, '1', expSeconds);
   }
@@ -98,7 +105,6 @@ export class RedisService implements OnModuleDestroy {
     return val !== null;
   }
 
-  // Leaderboard for gamification
   async addToLeaderboard(driverId: string, score: number): Promise<void> {
     await this.redis.zadd('leaderboard:weekly', score, driverId);
   }
@@ -112,7 +118,7 @@ export class RedisService implements OnModuleDestroy {
     return leaderboard;
   }
 
-  async onModuleDestroy() {
+  async onModuleDestroy(): Promise<void> {
     await this.redis.quit();
   }
 }
