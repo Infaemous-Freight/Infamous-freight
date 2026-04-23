@@ -45,7 +45,7 @@ fly apps list
 ### Frontend Environment
 | Secret Name | Value | Notes |
 |-------------|-------|-------|
-| `VITE_API_URL` | *(leave empty)* | Leave unset to use the Netlify `/api/*` proxy (recommended); set to `https://infamous-freight-api.fly.dev` only to bypass the proxy |
+| `VITE_API_URL` | *(leave empty)* | Leave unset to use the Netlify `/api/*` proxy (recommended); set to `https://api.infamousfreight.com` only to bypass the proxy |
 | `VITE_STRIPE_PUBLIC_KEY` | `pk_live_...` | https://dashboard.stripe.com/apikeys |
 
 ### Supabase (Auth + Database)
