@@ -191,6 +191,10 @@ Prerequisites:
 # Linux:  sudo apt-get install gh
 # Windows: choco install gh
 
+# Install jq
+# macOS:  brew install jq
+# Linux:  sudo apt-get install jq
+# Windows: choco install jq
 gh auth login
 ```
 
