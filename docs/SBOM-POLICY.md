@@ -288,4 +288,4 @@ Before closing an SBOM review, confirm all of the following:
 - `docs/SBOM-LICENSE-TRIAGE.md` — triage outcomes for packages with no lockfile license metadata
 - `scripts/generate-sbom.js` — generation script (runtime/build-CI split + license-unknowns report)
 - `.github/workflows/sbom.yml` — CI workflow for automated SBOM generation and upload
-- [SBOM remediation tracker issue](https://github.com/OWNER/REPO/issues/ISSUE_NUMBER)
+- [SBOM remediation tracker issue](https://github.com/Infaemous-Freight/Infamous-freight/issues/1524)
