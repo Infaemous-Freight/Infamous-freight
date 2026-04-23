@@ -322,6 +322,16 @@ Infamous Freight is built to centralize dispatch, tracking, compliance, communic
 
 ---
 
+## 📚 Operations & Supply Chain Reference
+
+For operational ownership, deployment runbooks, integration provenance, and SBOM review standards, use these docs:
+
+- `docs/INTEGRATIONS-AND-SECRETS.md` — external integrations, secret ownership, deploy failure runbooks, and rotation guidance
+- `docs/NETLIFY-BUILDHOOKS.md` — provenance, integrity, and maintenance guidance for Netlify URL-hosted buildhook packages
+- `docs/SBOM-POLICY.md` — runtime-vs-build SBOM policy, review cadence, classification rules, and triage standards
+
+---
+
 ## 🔒 Security
 
 Security expectations include:
