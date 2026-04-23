@@ -36,7 +36,7 @@ RUN npm prune --omit=dev
 
 
 # Final stage for app image
-FROM dhi.io/node:${NODE_VERSION}
+FROM dhi.io/node:22.21.1
 
 # Copy built application
 COPY --from=build /app /app
