@@ -22,7 +22,10 @@ export function useNotifications(userId: string, companyId: string) {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const newSocket = io(`${process.env.NEXT_PUBLIC_API_URL}/notifications`, {
+    // Use VITE_API_URL if set (e.g. direct to https://api.infamousfreight.com),
+    // or fall back to '' so the Netlify /socket.io/* proxy handles the connection.
+    const socketBase = import.meta.env.VITE_API_URL ?? '';
+    const newSocket = io(`${socketBase}/notifications`, {
       query: { userId },
     });
 
