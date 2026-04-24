@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Zap, Eye, EyeOff } from 'lucide-react';
 import { useAppStore } from '@/store/app-store';
+import { useSupabaseAuth } from '@/hooks/useSupabase';
 import toast from 'react-hot-toast';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { setUser } = useAppStore();
+  const { signIn, signUp } = useSupabaseAuth();
   const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
@@ -18,22 +20,42 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Mock login — in production: call api.login() or api.register()
-    await new Promise((r) => setTimeout(r, 1000));
+    try {
+      const authResponse = isRegister
+        ? await signUp(email, password, { companyName })
+        : await signIn(email, password);
 
-    const mockToken = `mock_token_${Date.now()}`;
-    localStorage.setItem('infamous_token', mockToken);
-    setUser({
-      id: 'user_1',
-      email,
-      name: email.split('@')[0],
-      role: 'owner',
-      carrierId: 'carrier_1',
-    });
+      const authUser = authResponse.user;
+      const authSession = authResponse.session;
 
-    toast.success(isRegister ? 'Account created!' : 'Welcome back!');
-    navigate('/');
-    setLoading(false);
+      if (!authUser) {
+        toast.error('Authentication failed. Please try again.');
+        return;
+      }
+
+      if (!authSession) {
+        toast.success('Account created. Check your email to verify your account before signing in.');
+        navigate('/login');
+        return;
+      }
+
+      localStorage.setItem('infamous_token', authSession.access_token);
+      setUser({
+        id: authUser.id,
+        email: authUser.email ?? email,
+        name: authUser.user_metadata?.full_name ?? authUser.email?.split('@')[0] ?? 'User',
+        role: authUser.user_metadata?.role ?? 'owner',
+        carrierId: authUser.user_metadata?.carrierId ?? 'carrier_default',
+      });
+
+      toast.success(isRegister ? 'Account created!' : 'Welcome back!');
+      navigate('/');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to authenticate right now.';
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

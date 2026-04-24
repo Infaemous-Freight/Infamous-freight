@@ -7,6 +7,10 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 let supabaseInstance: SupabaseClient | null = null;
 
 function getSupabase(): SupabaseClient {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    throw new Error('Supabase auth is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+  }
+
   if (!supabaseInstance) {
     supabaseInstance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
@@ -16,6 +20,7 @@ function getSupabase(): SupabaseClient {
       },
     });
   }
+
   return supabaseInstance;
 }
 
@@ -25,32 +30,47 @@ export function useSupabaseAuth() {
   const [error, setError] = useState<AuthError | null>(null);
 
   useEffect(() => {
-    const supabase = getSupabase();
+    let subscription: { unsubscribe: () => void } | null = null;
 
-    // Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+    try {
+      const supabase = getSupabase();
+
+      supabase.auth.getSession().then(({ data: { session }, error }) => {
+        if (error) {
+          setError(error);
+        } else {
+          setError(null);
+        }
+        setUser(session?.user ?? null);
+        setLoading(false);
+      });
+
+      const authSubscription = supabase.auth.onAuthStateChange((_event, session) => {
+        setUser(session?.user ?? null);
+        setLoading(false);
+      });
+
+      subscription = authSubscription.data.subscription;
+    } catch {
+      setUser(null);
       setLoading(false);
-    });
+    }
 
-    // Subscribe to auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    return () => subscription?.unsubscribe();
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
     setError(null);
     const supabase = getSupabase();
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setError(error);
+    if (error) {
+      setError(error);
+      throw error;
+    }
     return data;
   }, []);
 
-  const signUp = useCallback(async (email: string, password: string, metadata?: Record<string, any>) => {
+  const signUp = useCallback(async (email: string, password: string, metadata?: Record<string, unknown>) => {
     setError(null);
     const supabase = getSupabase();
     const { data, error } = await supabase.auth.signUp({
@@ -58,13 +78,19 @@ export function useSupabaseAuth() {
       password,
       options: { data: metadata },
     });
-    if (error) setError(error);
+    if (error) {
+      setError(error);
+      throw error;
+    }
     return data;
   }, []);
 
   const signOut = useCallback(async () => {
     const supabase = getSupabase();
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      throw error;
+    }
     setUser(null);
   }, []);
 
@@ -74,7 +100,10 @@ export function useSupabaseAuth() {
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-    if (error) setError(error);
+    if (error) {
+      setError(error);
+      throw error;
+    }
     return data;
   }, []);
 
@@ -86,7 +115,6 @@ export function useSupabaseAuth() {
     signUp,
     signOut,
     resetPassword,
-    supabase: getSupabase(),
   };
 }
 
@@ -116,7 +144,7 @@ export function useSupabaseStorage() {
   return { uploadFile, getPublicUrl, deleteFile };
 }
 
-export function useSupabaseRealtime(channel: string, event: string, callback: (payload: any) => void) {
+export function useSupabaseRealtime(channel: string, event: string, callback: (payload: unknown) => void) {
   useEffect(() => {
     const supabase = getSupabase();
     const sub = supabase
