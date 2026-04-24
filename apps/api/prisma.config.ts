@@ -4,7 +4,7 @@ import { defineConfig, env } from "prisma/config";
 
 // Load repository-level env first, then allow apps/api/.env to override.
 loadEnv({ path: path.resolve(__dirname, "../../.env") });
-loadEnv();
+loadEnv({ path: path.resolve(__dirname, ".env"), override: true });
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
