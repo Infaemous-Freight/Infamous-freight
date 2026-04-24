@@ -19,7 +19,7 @@ if ! command -v docker >/dev/null 2>&1; then
 fi
 
 echo "==> Installing workspace dependencies"
-npm install
+npm ci
 
 echo "==> Running full verification"
 npm run verify:all
