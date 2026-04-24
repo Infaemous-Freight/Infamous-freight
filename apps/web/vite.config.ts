@@ -22,6 +22,9 @@ export default defineConfig({
             org: sentryOrg as string,
             project: sentryProject as string,
             authToken: sentryAuthToken as string,
+            errorHandler: (error) => {
+              console.warn('[sentry-vite-plugin] source-map upload skipped:', error.message);
+            },
           }),
         ]
       : []),
