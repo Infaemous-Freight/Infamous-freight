@@ -1,37 +1,82 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store/app-store';
+import { getSupabase } from '@/hooks/useSupabase';
 import Sidebar from '@/components/ui/Sidebar';
 import TopBar from '@/components/ui/TopBar';
 import { Toaster } from 'react-hot-toast';
 
 const AppLayout: React.FC = () => {
-  const { sidebarOpen, isAuthenticated, isLoading, setUser, setLoading } = useAppStore();
+  const { sidebarOpen, isLoading, setUser, setLoading } = useAppStore();
   const location = useLocation();
   const navigate = useNavigate();
 
   // Auth check on mount
   useEffect(() => {
-    const token = localStorage.getItem('infamous_token');
-    if (!token && location.pathname !== '/login' && location.pathname !== '/register') {
+    const publicPaths = ['/login', '/register', '/onboarding', '/track'];
+
+    let supabase;
+    try {
+      supabase = getSupabase();
+    } catch {
+      setUser(null);
       setLoading(false);
-      navigate('/login');
+      if (!publicPaths.some((p) => location.pathname.startsWith(p))) {
+        navigate('/login');
+      }
       return;
     }
 
-    // Validate token / fetch user
-    if (token) {
-      // Mock user for now — in production: api.me()
+    const syncSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        localStorage.removeItem('infamous_token');
+        setUser(null);
+
+        if (!publicPaths.some((p) => location.pathname.startsWith(p))) {
+          navigate('/login');
+        }
+
+        setLoading(false);
+        return;
+      }
+
+      localStorage.setItem('infamous_token', session.access_token);
       setUser({
-        id: 'user_1',
-        email: 'dispatch@acmetrucking.com',
-        name: 'Marcus',
-        role: 'owner',
-        carrierId: 'carrier_1',
+        id: session.user.id,
+        email: session.user.email ?? '',
+        name: session.user.user_metadata?.full_name ?? session.user.email?.split('@')[0] ?? 'User',
+        role: session.user.user_metadata?.role ?? 'owner',
+        carrierId: session.user.user_metadata?.carrierId ?? 'carrier_default',
       });
-    }
-    setLoading(false);
-  }, []);
+      setLoading(false);
+    };
+
+    syncSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        localStorage.setItem('infamous_token', session.access_token);
+        setUser({
+          id: session.user.id,
+          email: session.user.email ?? '',
+          name: session.user.user_metadata?.full_name ?? session.user.email?.split('@')[0] ?? 'User',
+          role: session.user.user_metadata?.role ?? 'owner',
+          carrierId: session.user.user_metadata?.carrierId ?? 'carrier_default',
+        });
+      } else {
+        localStorage.removeItem('infamous_token');
+        setUser(null);
+        if (!publicPaths.some((p) => location.pathname.startsWith(p))) {
+          navigate('/login');
+        }
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [location.pathname, navigate, setLoading, setUser]);
 
   if (isLoading) {
     return (
