@@ -12,7 +12,7 @@
     "build:web": "cd apps/web && npm run build",
     "build:mobile": "npm run build:web && node scripts/verify-mobile-pwa-build.js",
     "build:all:apps": "npm run build:api && npm run build:mobile",
-    "verify:all": "npm run prisma:generate && npm run lint && npm run build:all:apps && npm run test -- --runInBand",
+    "verify:all": "npm run prisma:generate && npm run lint && npm run build:all:apps && npm run test",
     "setup:env": "bash scripts/bootstrap-environment.sh",
     "start": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run start:prod",
     "lint": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run lint && npm --prefix apps/web run lint",
