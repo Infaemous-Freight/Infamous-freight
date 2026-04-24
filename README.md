@@ -77,6 +77,8 @@ cp .env.example .env
 
 Edit `.env` with the required API keys and environment values.
 
+> Prisma commands run from the repo root (for example `npm run prisma:generate`) read `DATABASE_URL` from this root `.env` file.
+
 ### 3️⃣ Start with Docker (recommended)
 
 ```bash
