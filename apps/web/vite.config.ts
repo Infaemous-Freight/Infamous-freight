@@ -22,6 +22,20 @@ export default defineConfig({
             org: sentryOrg as string,
             project: sentryProject as string,
             authToken: sentryAuthToken as string,
+            errorHandler: (error) => {
+              const message = error.message ?? String(error);
+              const isAuthFailure =
+                message.includes('Invalid token') ||
+                message.includes('http status: 401') ||
+                message.includes('HTTP 401');
+
+              if (isAuthFailure) {
+                console.warn('[sentry-vite-plugin] source-map upload skipped:', message);
+                return;
+              }
+
+              throw error;
+            },
           }),
         ]
       : []),
