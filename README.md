@@ -77,6 +77,8 @@ cp .env.example .env
 
 Edit `.env` with the required API keys and environment values.
 
+> Prisma commands run from the repo root (for example `npm run prisma:generate`) load environment values from the root `.env` file, but API-local overrides (such as `apps/api/.env`) may also apply depending on how Prisma is invoked. If the same variable is defined in multiple places, use the effective override order for your command and verify which `DATABASE_URL` Prisma will use.
+
 ### 3️⃣ Start with Docker (recommended)
 
 ```bash
