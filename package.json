@@ -13,7 +13,7 @@
     "build:mobile": "npm run build:web && node scripts/verify-mobile-pwa-build.js",
     "build:all:apps": "npm run build:api && npm run build:mobile",
     "verify:all": "npm run prisma:generate && npm run lint && npm run build:all:apps && npm run test",
-    "setup:env": "bash scripts/bootstrap-environment.sh",
+    "setup:env": "node -e \"const { spawnSync } = require('child_process'); const isWin = process.platform === 'win32'; const candidates = isWin ? [['bash', ['scripts/bootstrap-environment.sh']]] : [['bash', ['scripts/bootstrap-environment.sh']], ['sh', ['scripts/bootstrap-environment.sh']]]; let lastError = null; for (const [command, args] of candidates) { const result = spawnSync(command, args, { stdio: 'inherit' }); if (!result.error) { process.exit(result.status ?? 0); } lastError = result.error; } if (isWin) { console.error('setup:env requires a POSIX shell to run scripts/bootstrap-environment.sh. On Windows, please run this command from Git Bash or WSL.'); } else { console.error('setup:env could not find a compatible shell (tried: bash, sh).'); } if (lastError) { console.error(lastError.message); } process.exit(1);\"",
     "start": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run start:prod",
     "lint": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run lint && npm --prefix apps/web run lint",
     "test": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run test -- --runInBand",
