@@ -35,7 +35,12 @@ export function useSupabaseAuth() {
     try {
       const supabase = getSupabase();
 
-      supabase.auth.getSession().then(({ data: { session } }) => {
+      supabase.auth.getSession().then(({ data: { session }, error }) => {
+        if (error) {
+          setError(error);
+        } else {
+          setError(null);
+        }
         setUser(session?.user ?? null);
         setLoading(false);
       });
