@@ -16,7 +16,7 @@
     "build:web": "cd apps/web && npm run build",
     "start": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run start:prod",
     "lint": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run lint && npm --prefix apps/web run lint",
-    "test": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run test -- --runInBand",
+    "test": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run test",
     "prisma:generate": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run prisma:generate",
     "prisma:migrate": "node scripts/ensure-api-workspace.js && npm --prefix apps/api exec prisma migrate dev --schema prisma/schema.prisma",
     "prisma:seed": "node scripts/ensure-api-workspace.js && npm --prefix apps/api exec prisma db seed --schema prisma/schema.prisma",
