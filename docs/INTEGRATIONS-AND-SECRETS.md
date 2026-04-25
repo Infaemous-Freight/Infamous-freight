@@ -24,7 +24,7 @@ secret is rotated.
 ## 2. Secrets Inventory
 
 All secrets are stored as **GitHub Actions repository secrets** at
-`https://github.com/Infaemous-Freight/Infamous-freight/settings/secrets/actions`
+`https://github.com/Infamous-Freight/Infamous-freight/settings/secrets/actions`
 unless otherwise noted.
 
 ### 2.1 Workflow secrets (referenced in `ci-cd.yml`)
@@ -144,7 +144,7 @@ in public logs) or on the schedule below.
 **How to update a GitHub Actions secret:**
 ```bash
 gh secret set SECRET_NAME --body "new-value" \
-  -R Infaemous-Freight/Infamous-freight
+  -R Infamous-Freight/Infamous-freight
 ```
 
 ---

@@ -5,7 +5,7 @@
   "description": "Infamous Freight — The freight dispatch platform built by truckers, for truckers",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Infaemous-Freight/Infamous-freight.git"
+    "url": "git+https://github.com/Infamous-Freight/Infamous-freight.git"
   },
   "scripts": {
     "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",

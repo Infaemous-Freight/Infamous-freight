@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security issue or exposed secret
-    url: https://github.com/Infaemous-Freight/Infamous-freight/security/policy
+    url: https://github.com/Infamous-Freight/Infamous-freight/security/policy
     about: Do not open public issues for vulnerabilities, exposed tokens, or private credentials.
   - name: Production launch runbook
-    url: https://github.com/Infaemous-Freight/Infamous-freight/blob/main/docs/PRODUCTION-LAUNCH-RUNBOOK.md
+    url: https://github.com/Infamous-Freight/Infamous-freight/blob/main/docs/PRODUCTION-LAUNCH-RUNBOOK.md
     about: Follow this runbook for production deploy, secrets, and smoke-test steps.

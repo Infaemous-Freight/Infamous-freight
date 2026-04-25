@@ -4,10 +4,9 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Infaemous-Freight/Infamous-freight.git",
+    "url": "git+https://github.com/Infamous-Freight/Infamous-freight.git",
     "directory": "apps/api"
   },
-  "type": "commonjs",
   "scripts": {
     "build": "npm run prisma:generate && tsc -p tsconfig.build.json",
     "start:dev": "tsx watch src/server.ts",

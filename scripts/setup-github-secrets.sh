@@ -6,7 +6,7 @@
 
 set -e
 
-REPO="Infaemous-Freight/Infamous-freight"
+REPO="Infamous-Freight/Infamous-freight"
 echo "🔐 Setting up GitHub secrets for $REPO..."
 
 # Check gh CLI is installed

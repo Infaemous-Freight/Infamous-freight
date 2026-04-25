@@ -7,19 +7,19 @@ This runbook covers the final production steps for Infamous Freight after the fr
 Use one of these commands from your workstation or deployment box:
 
 ```bash
-gh repo clone Infaemous-Freight/Infamous-freight
+gh repo clone Infamous-Freight/Infamous-freight
 ```
 
 or:
 
 ```bash
-git clone git@github.com:Infaemous-Freight/Infamous-freight.git
+git clone git@github.com:Infamous-Freight/Infamous-freight.git
 ```
 
 or:
 
 ```bash
-git clone https://github.com/Infaemous-Freight/Infamous-freight.git
+git clone https://github.com/Infamous-Freight/Infamous-freight.git
 ```
 
 Then enter the repo:

@@ -406,10 +406,8 @@ Examples:
 ## 🌐 Live Project
 
 - Website: [infamousfreight.com](https://infamousfreight.com)
-- GitHub Pages Preview: [infaemous-freight.github.io/Infamous-freight](https://infaemous-freight.github.io/Infamous-freight/)
-- Repository: [github.com/Infaemous-Freight/Infamous-freight](https://github.com/Infaemous-Freight/Infamous-freight)
-
-> Replace the GitHub Pages and repository URLs above if you rename the current `Infaemous` slug to the cleaner `Infamous` spelling.
+- GitHub Pages Preview: [infamous-freight.github.io/Infamous-freight](https://infamous-freight.github.io/Infamous-freight/)
+- Repository: [github.com/Infamous-Freight/Infamous-freight](https://github.com/Infamous-Freight/Infamous-freight)
 
 ---
 
