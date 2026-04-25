@@ -2,6 +2,20 @@
 
 This runbook covers the final production steps for Infamous Freight after the frontend is live and the API deployment is still blocked.
 
+## Canonical production website
+
+Use this as the main and only production website URL across every platform:
+
+```text
+https://www.infamousfreight.com
+```
+
+The bare domain must redirect to the canonical host:
+
+```text
+https://infamousfreight.com -> https://www.infamousfreight.com
+```
+
 ## Current production architecture
 
 - Frontend: Netlify, `https://www.infamousfreight.com`
@@ -9,6 +23,65 @@ This runbook covers the final production steps for Infamous Freight after the fr
 - Fly API URL: `https://infamous-freight.fly.dev`
 - Frontend API base URL: `/api`
 - Netlify API proxy target: `https://infamous-freight.fly.dev/api/:splat`
+
+## Required production environment values
+
+### Netlify
+
+```text
+NEXT_PUBLIC_SITE_URL=https://www.infamousfreight.com
+VITE_SITE_URL=https://www.infamousfreight.com
+PUBLIC_SITE_URL=https://www.infamousfreight.com
+VITE_API_URL=/api
+```
+
+### GitHub Actions
+
+```text
+FLY_API_TOKEN=<rotated Fly deploy token>
+SITE_URL=https://www.infamousfreight.com
+PUBLIC_SITE_URL=https://www.infamousfreight.com
+VITE_SITE_URL=https://www.infamousfreight.com
+NEXT_PUBLIC_SITE_URL=https://www.infamousfreight.com
+VITE_API_URL=/api
+```
+
+### Fly.io
+
+Set these from an authenticated shell:
+
+```bash
+flyctl secrets set \
+  SITE_URL="https://www.infamousfreight.com" \
+  PUBLIC_SITE_URL="https://www.infamousfreight.com" \
+  FRONTEND_URL="https://www.infamousfreight.com" \
+  CORS_ORIGIN="https://www.infamousfreight.com" \
+  API_PUBLIC_URL="https://infamous-freight.fly.dev" \
+  --app infamous-freight
+```
+
+### Stripe
+
+Configure Dashboard-hosted URLs to use the canonical domain:
+
+```text
+Business website: https://www.infamousfreight.com
+Webhook endpoint: https://www.infamousfreight.com/api/stripe/webhook
+Checkout success URL: https://www.infamousfreight.com/billing/success
+Checkout cancel URL: https://www.infamousfreight.com/billing/cancel
+Customer portal return URL: https://www.infamousfreight.com/billing
+```
+
+### Supabase and Firebase
+
+Use the canonical host for auth redirects and authorized domains:
+
+```text
+https://www.infamousfreight.com
+https://www.infamousfreight.com/*
+```
+
+Keep bare-domain URLs only as redirect compatibility entries if required.
 
 ## Security first
 
@@ -72,6 +145,7 @@ Or run manually:
 
 ```bash
 curl -i https://www.infamousfreight.com
+curl -i https://infamousfreight.com
 curl -i https://infamous-freight.fly.dev/health
 curl -i https://infamous-freight.fly.dev/api/health
 curl -i https://www.infamousfreight.com/api/health
@@ -80,7 +154,10 @@ curl -i https://www.infamousfreight.com/api/health
 Expected result:
 
 ```text
-HTTP 200 from frontend, Fly API health, and proxied API health.
+https://www.infamousfreight.com returns HTTP 200.
+https://infamousfreight.com redirects to https://www.infamousfreight.com.
+Fly API health returns HTTP 200.
+Proxied API health returns HTTP 200.
 ```
 
 ## Launch gate
@@ -88,6 +165,7 @@ HTTP 200 from frontend, Fly API health, and proxied API health.
 Do not mark production ready until all of these pass:
 
 - `https://www.infamousfreight.com` returns HTTP 200.
+- `https://infamousfreight.com` redirects to `https://www.infamousfreight.com`.
 - `https://infamous-freight.fly.dev/health` returns HTTP 200.
 - `https://infamous-freight.fly.dev/api/health` returns HTTP 200.
 - `https://www.infamousfreight.com/api/health` returns HTTP 200.
