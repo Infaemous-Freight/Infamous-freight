@@ -15,12 +15,12 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@sentry/react": "^10.49.0",
+    "@sentry/react": "^10.50.0",
     "@stripe/react-stripe-js": "^2.4.0",
     "@stripe/stripe-js": "^2.2.0",
-    "@supabase/supabase-js": "^2.49.8",
+    "@supabase/supabase-js": "^2.104.1",
     "@vercel/speed-insights": "^2.0.0",
-    "axios": "^1.6.0",
+    "axios": "^1.15.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "date-fns": "^3.0.0",
@@ -46,6 +46,6 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.6.3",
-    "vite": "^8.0.9"
+    "vite": "^8.0.10"
   }
 }
