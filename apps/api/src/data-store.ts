@@ -68,7 +68,7 @@ class PrismaDataStore implements DataStore {
       where: { carrierId: tenantId },
       orderBy: { createdAt: 'desc' },
     });
-    return loads.map((load) => ({ ...load, tenantId: load.carrierId }));
+    return loads.map((load: (typeof loads)[number]) => ({ ...load, tenantId: load.carrierId }));
   }
 
   async createLoad(tenantId: string, payload: Record<string, unknown>): Promise<LoadRecord> {
@@ -128,7 +128,7 @@ class PrismaDataStore implements DataStore {
       where: { carrierId: tenantId },
       orderBy: { createdAt: 'desc' },
     });
-    return drivers.map((driver) => ({ ...driver, tenantId: driver.carrierId }));
+    return drivers.map((driver: (typeof drivers)[number]) => ({ ...driver, tenantId: driver.carrierId }));
   }
 
   async createDriver(tenantId: string, payload: Record<string, unknown>): Promise<DriverRecord> {
