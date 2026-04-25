@@ -10,6 +10,50 @@ export type LoadRecord = BaseRecord & Record<string, unknown>;
 export type DriverRecord = BaseRecord & Record<string, unknown>;
 export type ShipmentRecord = BaseRecord & Record<string, unknown>;
 
+type PrismaLoadRecord = {
+  id: string;
+  carrierId: string;
+  driverId: string | null;
+  brokerName: string;
+  brokerMc: string | null;
+  originCity: string;
+  originState: string;
+  originLat: number;
+  originLng: number;
+  destCity: string;
+  destState: string;
+  destLat: number;
+  destLng: number;
+  distance: number;
+  rate: number;
+  ratePerMile: number;
+  equipmentType: string;
+  weight: number;
+  status: string;
+  pickupDate: Date;
+  deliveryDate: Date | null;
+  notes: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type PrismaDriverRecord = {
+  id: string;
+  carrierId: string;
+  name: string;
+  phone: string | null;
+  licenseNumber: string | null;
+  licenseState: string | null;
+  equipmentType: string | null;
+  status: string;
+  currentLat: number | null;
+  currentLng: number | null;
+  hosStatus: string;
+  hoursRemaining: number;
+  lastLocationAt: Date;
+  createdAt: Date;
+};
+
 export interface DataStore {
   listLoads(tenantId: string): Promise<LoadRecord[]>;
   createLoad(tenantId: string, payload: Record<string, unknown>): Promise<LoadRecord>;
@@ -67,8 +111,8 @@ class PrismaDataStore implements DataStore {
     const loads = await this.prisma.load.findMany({
       where: { carrierId: tenantId },
       orderBy: { createdAt: 'desc' },
-    });
-    return loads.map((load) => ({ ...load, tenantId: load.carrierId }));
+    }) as PrismaLoadRecord[];
+    return loads.map((load: PrismaLoadRecord) => ({ ...load, tenantId: load.carrierId }));
   }
 
   async createLoad(tenantId: string, payload: Record<string, unknown>): Promise<LoadRecord> {
@@ -119,7 +163,7 @@ class PrismaDataStore implements DataStore {
         deliveryDate: data.deliveryDate ? new Date(data.deliveryDate) : undefined,
         driverId: data.driverId,
       },
-    });
+    }) as PrismaLoadRecord;
     return { ...load, tenantId: load.carrierId };
   }
 
@@ -127,8 +171,11 @@ class PrismaDataStore implements DataStore {
     const drivers = await this.prisma.driver.findMany({
       where: { carrierId: tenantId },
       orderBy: { createdAt: 'desc' },
-    });
-    return drivers.map((driver) => ({ ...driver, tenantId: driver.carrierId }));
+    }) as PrismaDriverRecord[];
+    return drivers.map((driver: PrismaDriverRecord) => ({
+      ...driver,
+      tenantId: driver.carrierId,
+    }));
   }
 
   async createDriver(tenantId: string, payload: Record<string, unknown>): Promise<DriverRecord> {
@@ -159,7 +206,7 @@ class PrismaDataStore implements DataStore {
         hosStatus: data.hosStatus,
         hoursRemaining: data.hoursRemaining,
       },
-    });
+    }) as PrismaDriverRecord;
     return { ...driver, tenantId: driver.carrierId };
   }
 
