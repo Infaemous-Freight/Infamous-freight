@@ -211,7 +211,6 @@ deploy_netlify() {
   fi
 
   cd "$PROJECT_ROOT"
-  npm run build:web
 
   if [[ "$env" == "production" ]]; then
     netlify deploy --prod --dir=apps/web/dist
