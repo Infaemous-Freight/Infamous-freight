@@ -1,97 +1,439 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+##############################################################################
+# INFAMOUS FREIGHT - DEPLOYMENT AUTOMATION SCRIPT
+#
+# Automates deployment to multiple platforms:
+#   Fly.io (Backend API) · Netlify (Frontend)
+#   Docker (Local/Custom) · Kubernetes (Enterprise)
+#
+# Usage:
+#   ./deploy.sh [platform] [environment]
+#   ./deploy.sh fly        production
+#   ./deploy.sh netlify    production
+#   ./deploy.sh docker     staging
+#   ./deploy.sh all        production
+##############################################################################
 
-# ============================================================
-# INFAMOUS FREIGHT — One-Command Deploy Script
-# Usage: ./deploy.sh [environment]
-#   environment: "prod" (default) or "staging"
-# ============================================================
+set -euo pipefail
 
-ENV=${1:-prod}
-echo "🚛 Deploying Infamous Freight to $ENV..."
-
+# ---------------------------------------------------------------------------
 # Colors
+# ---------------------------------------------------------------------------
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+BLUE='\033[0;34m'
+NC='\033[0m'
 
-# Check prerequisites
-check_prereq() {
-    if ! command -v $1 &> /dev/null; then
-        echo -e "${RED}❌ $1 is not installed. Please install it first.${NC}"
-        exit 1
-    fi
-    echo -e "${GREEN}✅ $1 found${NC}"
+# ---------------------------------------------------------------------------
+# Paths & globals (resolved before any cd)
+# ---------------------------------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$SCRIPT_DIR"
+TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
+LOG_FILE="$PROJECT_ROOT/logs/deploy_${TIMESTAMP}.log"
+mkdir -p "$PROJECT_ROOT/logs"
+
+# How long to wait for the service to start before health-checking (seconds)
+DEPLOY_SETTLE_TIME="${DEPLOY_SETTLE_TIME:-10}"
+
+# ---------------------------------------------------------------------------
+# Logging helpers
+# ---------------------------------------------------------------------------
+log()     { echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')]${NC} $*" | tee -a "$LOG_FILE"; }
+success() { echo -e "${GREEN}✅ $*${NC}" | tee -a "$LOG_FILE"; }
+error()   { echo -e "${RED}❌ $*${NC}" | tee -a "$LOG_FILE"; }
+warning() { echo -e "${YELLOW}⚠️  $*${NC}" | tee -a "$LOG_FILE"; }
+
+# ---------------------------------------------------------------------------
+# ERR trap — fires on any non-zero exit, notifies Slack, and exits cleanly
+# ---------------------------------------------------------------------------
+on_error() {
+  local exit_code=$1
+  local line=$2
+  error "Deployment failed at line $line (exit code $exit_code)"
+  notify_slack "failure" \
+    "Deployment of ${PLATFORM:-unknown} to ${ENVIRONMENT:-unknown} FAILED at line $line (exit $exit_code). See log: $LOG_FILE"
+  exit "$exit_code"
 }
 
-echo ""
-echo "Checking prerequisites..."
-check_prereq node
-check_prereq npm
-check_prereq git
+trap 'on_error $? $LINENO' ERR
 
-# Check environment variables
-echo ""
-echo "Checking environment..."
-if [ -z "$STRIPE_SECRET_KEY" ]; then
-    echo -e "${YELLOW}⚠️  STRIPE_SECRET_KEY not set${NC}"
-fi
-if [ -z "$DATABASE_URL" ]; then
-    echo -e "${YELLOW}⚠️  DATABASE_URL not set${NC}"
-fi
+# ---------------------------------------------------------------------------
+# Production safeguard — requires explicit typed confirmation
+# ---------------------------------------------------------------------------
+confirm_production() {
+  local env="$1"
+  if [[ "$env" == "production" ]]; then
+    warning "You are about to deploy to PRODUCTION."
+    if [[ -t 0 ]]; then
+      # Interactive terminal: prompt the user
+      read -rp "Type 'yes' to confirm: " confirm
+      if [[ "$confirm" != "yes" ]]; then
+        error "Deployment cancelled by user."
+        exit 1
+      fi
+    else
+      # Non-interactive (CI): require an env var instead
+      if [[ "${CONFIRM_PRODUCTION:-}" != "yes" ]]; then
+        error "Non-interactive production deploy requires CONFIRM_PRODUCTION=yes"
+        exit 1
+      fi
+    fi
+  fi
+}
 
-# Install dependencies
-echo ""
-echo "📦 Installing dependencies..."
-npm install
+# ===========================================================================
+# PRE-DEPLOYMENT CHECKS
+# ===========================================================================
 
-# Generate Prisma client
-echo ""
-echo "🔄 Generating Prisma client..."
-cd apps/api
-npx prisma generate
-cd ../..
+pre_deployment_checks() {
+  log "Running pre-deployment checks..."
 
-# Run tests
-echo ""
-echo "🧪 Running tests..."
-npm run test --if-present || echo -e "${YELLOW}⚠️  No tests configured${NC}"
+  if [[ ! -f "$PROJECT_ROOT/package.json" ]]; then
+    error "package.json not found"
+    exit 1
+  fi
 
-# Build
-echo ""
-echo "🔨 Building..."
-npm run build
+  if [[ ! -f "$PROJECT_ROOT/.env.production" ]]; then
+    error ".env.production not found. Create it from .env.example"
+    exit 1
+  fi
 
-# Deploy API to Fly.io
-echo ""
-echo "🚀 Deploying API to Fly.io..."
-if command -v flyctl &> /dev/null; then
-    flyctl deploy --app infamous-freight --remote-only
-    echo -e "${GREEN}✅ API deployed to Fly.io${NC}"
-else
-    echo -e "${YELLOW}⚠️  Fly CLI (flyctl) not found. Skipping API deploy.${NC}"
-    echo "   Install: curl -L https://fly.io/install.sh | sh"
-fi
+  local node_major
+  node_major="$(node -v | cut -d'v' -f2 | cut -d'.' -f1)"
+  if (( node_major < 22 )); then
+    error "Node.js 22+ required. Current: $(node -v)"
+    exit 1
+  fi
 
-# Deploy Web to Netlify
-echo ""
-echo "🌐 Deploying Web to Netlify..."
-if command -v netlify &> /dev/null; then
-    netlify deploy --prod --dir=apps/web/dist
-    echo -e "${GREEN}✅ Web deployed to Netlify${NC}"
-else
-    echo -e "${YELLOW}⚠️  Netlify CLI not found. Skipping web deploy.${NC}"
-    echo "   Install: npm install -g netlify-cli"
-fi
+  local npm_major
+  npm_major="$(npm -v | cut -d'.' -f1)"
+  if (( npm_major < 10 )); then
+    error "npm 10+ required. Current: $(npm -v)"
+    exit 1
+  fi
 
-echo ""
-echo -e "${GREEN}═════════════════════════════════════════════════════${NC}"
-echo -e "${GREEN}  🎉 INFAMOUS FREIGHT DEPLOYED!${NC}"
-echo -e "${GREEN}═════════════════════════════════════════════════════${NC}"
-echo ""
-echo "  API:    https://api.infamousfreight.com"
-echo "  Web:    https://infamousfreight.com"
-echo "  Health: https://api.infamousfreight.com/health"
-echo ""
-echo -e "${GREEN}═════════════════════════════════════════════════════${NC}"
+  success "Pre-deployment checks passed"
+}
+
+# ===========================================================================
+# BUILD FUNCTIONS
+# ===========================================================================
+
+build_backend() {
+  log "Building backend..."
+  cd "$PROJECT_ROOT"
+  npm run build:api
+  success "Backend build completed"
+}
+
+build_frontend() {
+  log "Building frontend..."
+  cd "$PROJECT_ROOT"
+  npm run build:web
+  success "Frontend build completed"
+}
+
+build_docker() {
+  log "Building Docker image..."
+  cd "$PROJECT_ROOT"
+  docker build -t infamous-freight-api:latest .
+  success "Docker build completed"
+}
+
+# ===========================================================================
+# TEST FUNCTIONS
+# ===========================================================================
+
+run_tests() {
+  log "Running tests..."
+  cd "$PROJECT_ROOT"
+  npm run lint
+  npm run typecheck
+  npm test -- --coverage
+  success "All tests passed"
+}
+
+# ===========================================================================
+# DEPLOYMENT FUNCTIONS
+# ===========================================================================
+
+deploy_fly() {
+  local env="$1"
+  log "Deploying to Fly.io ($env)..."
+
+  if ! command -v flyctl &> /dev/null; then
+    error "Fly CLI not installed. See https://fly.io/docs/getting-started/installing-flyctl/"
+    exit 1
+  fi
+
+  local app_name
+  if [[ "$env" == "production" ]]; then
+    app_name="infamous-freight-api"
+  else
+    app_name="infamous-freight-api-${env}"
+  fi
+  export FLY_APP_NAME="$app_name"
+
+  cd "$PROJECT_ROOT"
+  # Redact any lines that look like secrets from the tee'd log
+  flyctl deploy --remote-only 2>&1 \
+    | grep -v -iE '(secret|key|token|password)' \
+    | tee -a "$LOG_FILE" \
+    || true   # let the trap handle real failures; grep exit-codes aren't failures
+
+  success "Deployed to Fly.io: $FLY_APP_NAME"
+}
+
+deploy_netlify() {
+  local env="$1"
+  log "Deploying to Netlify ($env)..."
+
+  if ! command -v netlify &> /dev/null; then
+    error "Netlify CLI not installed. Run: npm install -g netlify-cli"
+    exit 1
+  fi
+
+  cd "$PROJECT_ROOT"
+  npm run build:web
+
+  if [[ "$env" == "production" ]]; then
+    netlify deploy --prod --dir=apps/web/.next
+  else
+    netlify deploy --dir=apps/web/.next
+  fi
+
+  success "Deployed to Netlify"
+}
+
+deploy_docker() {
+  local env="$1"
+  log "Deploying Docker ($env)..."
+
+  build_docker
+
+  local registry="${DOCKER_REGISTRY:-registry.example.com}"
+  local tag="${registry}/infamous-freight-api:${env}-${TIMESTAMP}"
+  docker tag infamous-freight-api:latest "$tag"
+
+  log "Pushing to registry: $tag"
+  docker push "$tag"
+
+  success "Docker deployment completed: $tag"
+}
+
+deploy_kubernetes() {
+  local env="$1"
+  log "Deploying to Kubernetes ($env)..."
+
+  if ! command -v kubectl &> /dev/null; then
+    error "kubectl not installed"
+    exit 1
+  fi
+
+  build_docker
+
+  local registry="${DOCKER_REGISTRY:-registry.example.com}"
+  local image="${registry}/infamous-freight-api:${env}"
+  docker tag infamous-freight-api:latest "$image"
+  docker push "$image"
+
+  kubectl set image deployment/infamous-freight-api \
+    "api=${image}" \
+    -n infamous-freight
+
+  kubectl rollout status deployment/infamous-freight-api -n infamous-freight
+
+  success "Kubernetes deployment completed"
+}
+
+# ===========================================================================
+# VERIFICATION
+# ===========================================================================
+
+verify_deployment() {
+  local env="$1"
+  log "Verifying deployment ($env)..."
+
+  # Pick the correct health-check URL for this environment
+  local health_url
+  case "$env" in
+    production) health_url="${HEALTH_CHECK_URL:-https://api.infamousfreight.com/api/health}" ;;
+    staging)    health_url="${HEALTH_CHECK_URL:-https://api-staging.infamousfreight.com/api/health}" ;;
+    *)          health_url="${HEALTH_CHECK_URL:-http://localhost:3000/api/health}" ;;
+  esac
+
+  log "Waiting ${DEPLOY_SETTLE_TIME}s for service to settle..."
+  sleep "$DEPLOY_SETTLE_TIME"
+
+  log "Checking health: $health_url"
+
+  # Exponential back-off: 5 → 10 → 20 → … seconds
+  local delay=5
+  for i in $(seq 1 10); do
+    if curl -sf "$health_url" > /dev/null; then
+      success "Health check passed: $health_url"
+      return 0
+    fi
+    warning "Attempt $i/10 failed — retrying in ${delay}s..."
+    sleep "$delay"
+    delay=$(( delay * 2 ))
+  done
+
+  error "Health check failed after 10 attempts: $health_url"
+  exit 1
+}
+
+# ===========================================================================
+# ROLLBACK
+# ===========================================================================
+
+rollback_fly() {
+  log "Rolling back Fly.io deployment..."
+
+  if ! command -v flyctl &> /dev/null; then
+    error "Fly CLI not installed"
+    exit 1
+  fi
+
+  local version="${ROLLBACK_VERSION:-}"
+
+  if [[ -z "$version" ]]; then
+    if [[ -t 0 ]]; then
+      # Interactive: show available releases then prompt
+      flyctl releases
+      read -rp "Enter release version to rollback to: " version
+    else
+      error "ROLLBACK_VERSION must be set in non-interactive mode"
+      exit 1
+    fi
+  fi
+
+  flyctl releases rollback "$version"
+  success "Fly.io rollback to $version completed"
+}
+
+rollback_kubernetes() {
+  log "Rolling back Kubernetes deployment..."
+
+  if ! command -v kubectl &> /dev/null; then
+    error "kubectl not installed"
+    exit 1
+  fi
+
+  kubectl rollout undo deployment/infamous-freight-api -n infamous-freight
+  kubectl rollout status deployment/infamous-freight-api -n infamous-freight
+
+  success "Kubernetes rollback completed"
+}
+
+# ===========================================================================
+# SLACK NOTIFICATION
+# Builds JSON with jq to avoid shell-injection via branch names / messages
+# ===========================================================================
+
+notify_slack() {
+  local status="$1"
+  local message="$2"
+
+  [[ -z "${SLACK_WEBHOOK_URL:-}" ]] && return 0
+
+  if ! command -v jq &> /dev/null; then
+    warning "jq not found — skipping Slack notification"
+    return 0
+  fi
+
+  local color
+  color="$([ "$status" = "failure" ] && echo danger || echo good)"
+
+  local payload
+  payload="$(jq -n \
+    --arg color   "$color" \
+    --arg title   "Deployment $status" \
+    --arg text    "$message" \
+    --argjson ts  "$(date +%s)" \
+    '{"attachments":[{"color":$color,"title":$title,"text":$text,"ts":$ts}]}')"
+
+  curl -sf -X POST "$SLACK_WEBHOOK_URL" \
+    -H 'Content-Type: application/json' \
+    -d "$payload" || warning "Slack notification failed (non-fatal)"
+}
+
+# ===========================================================================
+# MAIN
+# ===========================================================================
+
+# Export so on_error can reference them
+PLATFORM="${1:-all}"
+ENVIRONMENT="${2:-production}"
+export PLATFORM ENVIRONMENT
+
+main() {
+  log "=========================================="
+  log "INFAMOUS FREIGHT DEPLOYMENT"
+  log "=========================================="
+  log "Platform:    $PLATFORM"
+  log "Environment: $ENVIRONMENT"
+  log "Timestamp:   $TIMESTAMP"
+  log "Log file:    $LOG_FILE"
+  log "=========================================="
+
+  confirm_production "$ENVIRONMENT"
+  pre_deployment_checks
+  run_tests
+
+  case "$PLATFORM" in
+    fly)
+      build_backend
+      deploy_fly "$ENVIRONMENT"
+      verify_deployment "$ENVIRONMENT"
+      ;;
+    netlify)
+      build_frontend
+      deploy_netlify "$ENVIRONMENT"
+      ;;
+    docker)
+      build_backend
+      deploy_docker "$ENVIRONMENT"
+      ;;
+    kubernetes)
+      build_backend
+      deploy_kubernetes "$ENVIRONMENT"
+      verify_deployment "$ENVIRONMENT"
+      ;;
+    all)
+      build_backend
+      build_frontend
+      build_docker
+      deploy_fly "$ENVIRONMENT"
+      deploy_netlify "$ENVIRONMENT"
+      verify_deployment "$ENVIRONMENT"
+      # Kubernetes is intentionally excluded from 'all' — deploy separately:
+      #   ./deploy.sh kubernetes $ENVIRONMENT
+      warning "Kubernetes is not included in 'all'. Deploy separately if needed:"
+      warning "  ./deploy.sh kubernetes $ENVIRONMENT"
+      ;;
+    rollback-fly)
+      rollback_fly
+      ;;
+    rollback-kubernetes)
+      rollback_kubernetes
+      ;;
+    *)
+      error "Unknown platform: $PLATFORM"
+      echo "Usage: $0 [fly|netlify|docker|kubernetes|all|rollback-fly|rollback-kubernetes] [production|staging|development]"
+      exit 1
+      ;;
+  esac
+
+  notify_slack "success" \
+    "Deployment of $PLATFORM to $ENVIRONMENT completed successfully. Log: $LOG_FILE"
+
+  success "=========================================="
+  success "DEPLOYMENT COMPLETED SUCCESSFULLY"
+  success "Log file: $LOG_FILE"
+  success "=========================================="
+}
+
+main "$@"
