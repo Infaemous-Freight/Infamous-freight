@@ -73,15 +73,19 @@ describe('configuration safety', () => {
     const previousNodeEnv = process.env.NODE_ENV;
     const previousDatabaseUrl = process.env.DATABASE_URL;
 
-    process.env.NODE_ENV = 'production';
-    delete process.env.DATABASE_URL;
+    try {
+      process.env.NODE_ENV = 'production';
+      delete process.env.DATABASE_URL;
 
-    expect(() => createApp()).toThrow('DATABASE_URL is required outside of test mode.');
+      expect(() => createApp()).toThrow('DATABASE_URL is required outside of test mode.');
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
 
-    process.env.NODE_ENV = previousNodeEnv;
-
-    if (previousDatabaseUrl) {
-      process.env.DATABASE_URL = previousDatabaseUrl;
+      if (previousDatabaseUrl !== undefined) {
+        process.env.DATABASE_URL = previousDatabaseUrl;
+      } else {
+        delete process.env.DATABASE_URL;
+      }
     }
   });
 });
