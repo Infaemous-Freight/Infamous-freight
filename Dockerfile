@@ -1,4 +1,4 @@
-FROM node:20-alpine AS deps
+FROM node:22-alpine AS deps
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/package.json
 RUN npm ci --omit=dev --workspace apps/api --include-workspace-root=false
 
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ COPY apps/api ./apps/api
 RUN npm run prisma:generate --workspace apps/api
 RUN npm run build --workspace apps/api
 
-FROM node:20-alpine AS runtime
+FROM node:22-alpine AS runtime
 
 WORKDIR /app
 ENV NODE_ENV=production
