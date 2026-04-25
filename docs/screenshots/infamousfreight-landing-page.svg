@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Infamous Freight Landing Page Mock</title>
+  <desc id="desc">A branded landing page style mock for the README screenshots section.</desc>
+  <rect width="1440" height="900" fill="#0b0d12"/>
+  <rect x="32" y="32" width="1376" height="836" rx="28" fill="#111827" stroke="#334155"/>
+  <text x="96" y="112" fill="#ef4444" font-size="28" font-weight="800" font-family="Inter, Arial, sans-serif">INFAMOUS FREIGHT</text>
+  <text x="96" y="206" fill="#f8fafc" font-size="68" font-weight="800" font-family="Inter, Arial, sans-serif">Freight operations</text>
+  <text x="96" y="278" fill="#f8fafc" font-size="68" font-weight="800" font-family="Inter, Arial, sans-serif">without the chaos.</text>
+  <text x="96" y="336" fill="#cbd5e1" font-size="28" font-family="Inter, Arial, sans-serif">Dispatch automation, shipment visibility, compliance tooling, and</text>
+  <text x="96" y="374" fill="#cbd5e1" font-size="28" font-family="Inter, Arial, sans-serif">driver operations in one platform built for freight teams.</text>
+  <rect x="96" y="430" width="220" height="54" rx="14" fill="#ef4444"/>
+  <text x="146" y="465" fill="#ffffff" font-size="22" font-weight="700" font-family="Inter, Arial, sans-serif">Book a Demo</text>
+  <rect x="336" y="430" width="220" height="54" rx="14" fill="#172033" stroke="#475569"/>
+  <text x="395" y="465" fill="#f8fafc" font-size="22" font-weight="700" font-family="Inter, Arial, sans-serif">View Platform</text>
+  <rect x="782" y="126" width="530" height="562" rx="24" fill="#0b1220" stroke="#334155"/>
+  <text x="818" y="172" fill="#f8fafc" font-size="24" font-weight="700" font-family="Inter, Arial, sans-serif">Operations Dashboard</text>
+  <rect x="818" y="198" width="150" height="12" rx="6" fill="#ef4444"/>
+  <rect x="818" y="238" width="130" height="88" rx="16" fill="#172033"/>
+  <rect x="964" y="238" width="130" height="88" rx="16" fill="#172033"/>
+  <rect x="1110" y="238" width="166" height="88" rx="16" fill="#172033"/>
+  <rect x="818" y="356" width="458" height="138" rx="18" fill="#111827" stroke="#1f2937"/>
+  <polyline points="850,466 920,430 990,450 1060,386 1130,408 1200,356" fill="none" stroke="#ef4444" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="818" y="526" width="218" height="118" rx="18" fill="#111827" stroke="#1f2937"/>
+  <rect x="1058" y="526" width="218" height="118" rx="18" fill="#111827" stroke="#1f2937"/>
+  <text x="96" y="586" fill="#f8fafc" font-size="22" font-weight="700" font-family="Inter, Arial, sans-serif">Trusted workflow areas</text>
+  <rect x="96" y="620" width="170" height="84" rx="16" fill="#172033"/>
+  <rect x="286" y="620" width="170" height="84" rx="16" fill="#172033"/>
+  <rect x="476" y="620" width="170" height="84" rx="16" fill="#172033"/>
+  <text x="122" y="669" fill="#f8fafc" font-size="20" font-weight="700" font-family="Inter, Arial, sans-serif">Dispatch</text>
+  <text x="320" y="669" fill="#f8fafc" font-size="20" font-weight="700" font-family="Inter, Arial, sans-serif">Tracking</text>
+  <text x="515" y="669" fill="#f8fafc" font-size="20" font-weight="700" font-family="Inter, Arial, sans-serif">Compliance</text>
+</svg>
