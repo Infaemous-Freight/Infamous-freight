@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # Infamous Freight - Post-Deployment Verification Script
-# Usage: ./scripts/verify-deployment.sh [API_URL] [WEB_URL]
+# Usage: ./scripts/verify-deployment.sh [API_URL] [WEB_URL] [TENANT_ID] [ROLE]
 
 set -euo pipefail
 
 API_URL="${1:-https://api.infamousfreight.com}"
 WEB_URL="${2:-https://infamousfreight.com}"
+TENANT_ID="${3:-deployment-smoke-tenant}"
+ROLE="${4:-dispatcher}"
 RED="\033[0;31m"
 GREEN="\033[0;32m"
 YELLOW="\033[0;33m"
@@ -30,13 +32,21 @@ echo "=================================="
 echo "  Infamous Freight - Go-Live Check"
 echo "  API: $API_URL"
 echo "  Web: $WEB_URL"
+echo "  Tenant: $TENANT_ID"
+echo "  Role: $ROLE"
 echo "=================================="
 echo ""
 
 echo "--- API Health Checks ---"
 check "Health endpoint" "curl -sf $API_URL/health"
-check "Health/ready endpoint" "curl -sf $API_URL/health/ready"
-check "Health/live endpoint" "curl -sf $API_URL/health/live"
+check "API health endpoint" "curl -sf $API_URL/api/health"
+
+echo ""
+echo "--- API Core Endpoint Checks ---"
+COMMON_HEADERS="-H 'x-tenant-id: $TENANT_ID' -H 'x-user-role: $ROLE' -H 'Content-Type: application/json'"
+check "GET /api/loads" "eval curl -sf $COMMON_HEADERS $API_URL/api/loads"
+check "GET /api/shipments" "eval curl -sf $COMMON_HEADERS $API_URL/api/shipments"
+check "GET /api/drivers" "eval curl -sf $COMMON_HEADERS $API_URL/api/drivers"
 
 echo ""
 echo "--- Frontend Checks ---"
@@ -45,7 +55,7 @@ check "Web app JS bundles" "curl -sf $WEB_URL/assets/ | grep -q '.js' || curl -s
 
 echo ""
 echo "--- API CORS Checks ---"
-check "CORS preflight" "curl -sfI -X OPTIONS -H 'Origin: $WEB_URL' -H 'Access-Control-Request-Method: GET' $API_URL/health | grep -qi 'access-control-allow-origin'"
+check "CORS preflight" "curl -sfI -X OPTIONS -H 'Origin: $WEB_URL' -H 'Access-Control-Request-Method: GET' $API_URL/api/health | grep -qi 'access-control-allow-origin'"
 
 echo ""
 echo "--- Security Headers Check ---"
