@@ -50,7 +50,12 @@ Thumbs.db
 
 # Testing
 coverage/
+apps/api/coverage/
 .nyc_output/
+
+# Generated validation reports
+reports/validation-status.txt
+docker-build.log
 
 # Prisma
 prisma/migrations/
