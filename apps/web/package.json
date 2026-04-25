@@ -4,12 +4,11 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Infaemous-Freight/Infamous-freight.git",
+    "url": "git+https://github.com/Infamous-Freight/Infamous-freight.git",
     "directory": "apps/web"
   },
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 5173",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "tsc --noEmit"

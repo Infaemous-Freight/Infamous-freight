@@ -6,7 +6,7 @@ This guide walks you through adding all required secrets to your GitHub repo for
 
 ## Step 1: Open GitHub Secrets
 
-1. Go to: `https://github.com/Infaemous-Freight/Infamous-freight/settings/secrets/actions`
+1. Go to: `https://github.com/Infamous-Freight/Infamous-freight/settings/secrets/actions`
 2. Click **New repository secret**
 3. Add each secret below
 
@@ -116,7 +116,7 @@ GitHub Actions will automatically:
 2. Build API Docker image → deploy to Fly.io
 3. Build web app → deploy to Netlify
 
-Watch progress at: `https://github.com/Infaemous-Freight/Infamous-freight/actions`
+Watch progress at: `https://github.com/Infamous-Freight/Infamous-freight/actions`
 
 ---
 
@@ -164,7 +164,7 @@ netlify deploy --prod --dir=apps/web/dist
 ## Need Help?
 
 If any step fails, check:
-1. GitHub Actions logs: `https://github.com/Infaemous-Freight/Infamous-freight/actions`
+1. GitHub Actions logs: `https://github.com/Infamous-Freight/Infamous-freight/actions`
 2. Fly.io dashboard: `https://fly.io/dashboard`
 3. Netlify dashboard: `https://app.netlify.com/sites/d03682ba-fcb4-4dc6-984e-f7eae7fff59c`
 4. Stripe dashboard: `https://dashboard.stripe.com`

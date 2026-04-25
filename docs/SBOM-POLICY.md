@@ -285,4 +285,4 @@ Before closing an SBOM review, confirm all of the following:
 - `docs/NETLIFY-BUILDHOOKS.md`
 - `docs/SBOM-LICENSE-TRIAGE.md`
 - `scripts/generate-sbom.sh`
-- [SBOM remediation tracker issue](https://github.com/Infaemous-Freight/Infamous-freight/issues/1524)
+- [SBOM remediation tracker issue](https://github.com/Infamous-Freight/Infamous-freight/issues/1524)
