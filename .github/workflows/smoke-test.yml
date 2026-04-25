@@ -8,26 +8,31 @@ on:
     types:
       - completed
 
+permissions:
+  contents: read
+
 jobs:
   smoke-test:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
       - name: Check canonical frontend
-        run: curl --fail --show-error --location --head https://www.infamousfreight.com
+        run: curl --fail --show-error --location --head --retry 5 --retry-delay 10 --retry-connrefused https://www.infamousfreight.com
 
       - name: Check bare domain redirects to canonical www host
         run: |
           set -euo pipefail
-          final_url=$(curl --silent --location --head --output /dev/null --write-out '%{url_effective}' https://infamousfreight.com)
+          final_url=$(curl --silent --location --head --retry 5 --retry-delay 10 --retry-connrefused --output /dev/null --write-out '%{url_effective}' https://infamousfreight.com)
           test "$final_url" = "https://www.infamousfreight.com/"
 
       - name: Check Fly root health
-        run: curl --fail --show-error --silent https://infamous-freight.fly.dev/health
+        run: curl --fail --show-error --silent --retry 5 --retry-delay 10 --retry-connrefused https://infamous-freight.fly.dev/health
 
       - name: Check Fly API health
-        run: curl --fail --show-error --silent https://infamous-freight.fly.dev/api/health
+        run: curl --fail --show-error --silent --retry 5 --retry-delay 10 --retry-connrefused https://infamous-freight.fly.dev/api/health
 
       - name: Check proxied API health
-        run: curl --fail --show-error --silent https://www.infamousfreight.com/api/health
+        run: curl --fail --show-error --silent --retry 5 --retry-delay 10 --retry-connrefused https://www.infamousfreight.com/api/health
