@@ -3,8 +3,9 @@ FROM node:20-alpine AS build
 WORKDIR /app/apps/api
 
 COPY apps/api/package.json ./package.json
+COPY apps/api/package-lock.json ./package-lock.json
 COPY apps/api/prisma ./prisma
-RUN npm install
+RUN npm ci
 RUN npm run prisma:generate
 
 COPY apps/api ./
