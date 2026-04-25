@@ -153,7 +153,19 @@ run_tests() {
   log "Running tests..."
   cd "$PROJECT_ROOT"
   npm run lint
-  npm run typecheck
+
+  local tsconfig_paths=()
+  shopt -s nullglob
+  tsconfig_paths=("$PROJECT_ROOT"/apps/*/tsconfig.json)
+  shopt -u nullglob
+
+  if (( ${#tsconfig_paths[@]} > 0 )); then
+    for tsconfig_path in "${tsconfig_paths[@]}"; do
+      npx tsc -p "$tsconfig_path" --noEmit
+    done
+  else
+    log "No app tsconfig.json files found under apps/, skipping typecheck"
+  fi
   npm test -- --coverage
   success "All tests passed"
 }
