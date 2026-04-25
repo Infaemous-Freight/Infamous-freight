@@ -92,7 +92,7 @@ here for ownership awareness.
 
 6. **Rollback to last good release:**
    ```bash
-   fly releases --app infamous-freight   # find the last good version
+   flyctl releases --app infamous-freight   # find the last good version
    IMAGE=<previous-image-tag>
    flyctl deploy --image "$IMAGE" --app infamous-freight
 
