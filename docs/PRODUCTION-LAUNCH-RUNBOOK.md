@@ -2,6 +2,32 @@
 
 This runbook covers the final production steps for Infamous Freight after the frontend is live and the API deployment is still blocked.
 
+## Clone the repository
+
+Use one of these commands from your workstation or deployment box:
+
+```bash
+gh repo clone Infaemous-Freight/Infamous-freight
+```
+
+or:
+
+```bash
+git clone git@github.com:Infaemous-Freight/Infamous-freight.git
+```
+
+or:
+
+```bash
+git clone https://github.com/Infaemous-Freight/Infamous-freight.git
+```
+
+Then enter the repo:
+
+```bash
+cd Infamous-freight
+```
+
 ## Canonical production website
 
 Use this as the main and only production website URL across every platform:
@@ -58,6 +84,13 @@ flyctl secrets set \
   CORS_ORIGIN="https://www.infamousfreight.com" \
   API_PUBLIC_URL="https://infamous-freight.fly.dev" \
   --app infamous-freight
+```
+
+Or run the repo helper after cloning:
+
+```bash
+chmod +x scripts/production-canonical-env.sh
+./scripts/production-canonical-env.sh
 ```
 
 ### Stripe
@@ -141,7 +174,14 @@ Go to:
 GitHub repository -> Actions -> Smoke Test -> Run workflow
 ```
 
-Or run manually:
+Or run manually after cloning:
+
+```bash
+chmod +x scripts/production-smoke-test.sh
+./scripts/production-smoke-test.sh
+```
+
+Or run the raw curl checks:
 
 ```bash
 curl -i https://www.infamousfreight.com
