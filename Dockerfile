@@ -28,6 +28,6 @@ ENV PORT=3000
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD node -e "const port = process.env.PORT || 3000; require('http').get('http://localhost:' + port + '/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "const port = process.env.PORT || 3000; const http = require('http'); const req = http.get('http://localhost:' + port + '/api/health', (r) => { let body = ''; r.on('data', (chunk) => { body += chunk; }); r.on('end', () => { try { const health = JSON.parse(body); process.exit(r.statusCode === 200 && health.status === 'ok' ? 0 : 1); } catch (e) { process.exit(1); } }); }); req.on('error', () => process.exit(1));"
 
 CMD ["node", "dist/src/server.js"]
