@@ -6,12 +6,16 @@ on:
 jobs:
   smoke-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Check frontend
-        run: curl -I https://www.infamousfreight.com
+        run: curl --fail --show-error --location --head https://www.infamousfreight.com
 
-      - name: Check API
-        run: curl -f https://infamous-freight.fly.dev/api/health
+      - name: Check Fly root health
+        run: curl --fail --show-error --silent https://infamous-freight.fly.dev/health
 
-      - name: Check proxied API
-        run: curl -f https://www.infamousfreight.com/api/health
+      - name: Check Fly API health
+        run: curl --fail --show-error --silent https://infamous-freight.fly.dev/api/health
+
+      - name: Check proxied API health
+        run: curl --fail --show-error --silent https://www.infamousfreight.com/api/health
