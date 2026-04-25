@@ -1,29 +1,41 @@
+FROM node:20-alpine AS deps
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+COPY apps/api/package.json ./apps/api/package.json
+
+RUN npm ci --omit=dev --workspace apps/api --include-workspace-root=false
+
 FROM node:20-alpine AS build
+WORKDIR /app
 
-WORKDIR /app/apps/api
+COPY package.json package-lock.json ./
+COPY apps/api/package.json ./apps/api/package.json
+RUN npm ci --workspace apps/api
 
-COPY apps/api/package.json ./package.json
-COPY apps/api/package-lock.json ./package-lock.json
-COPY apps/api/prisma ./prisma
-RUN npm ci
-RUN npm run prisma:generate
-
-COPY apps/api ./
-RUN npx tsc -p tsconfig.build.json
+COPY apps/api ./apps/api
+RUN npm run prisma:generate --workspace apps/api
+RUN npm run build --workspace apps/api
 
 FROM node:20-alpine AS runtime
+WORKDIR /app
 
-WORKDIR /app/apps/api
 ENV NODE_ENV=production
 
-COPY --from=build /app/apps/api/package.json ./package.json
-RUN npm install --omit=dev
-COPY --from=build /app/apps/api/dist ./dist
-COPY --from=build /app/apps/api/prisma ./prisma
+RUN apk add --no-cache openssl
 
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
+COPY package.json package-lock.json ./
+COPY apps/api/package.json ./apps/api/package.json
+COPY --from=build /app/apps/api/dist ./apps/api/dist
+COPY --from=build /app/apps/api/prisma ./apps/api/prisma
+
+RUN addgroup -g 1001 -S nodejs \
+  && adduser -S nodejs -u 1001
+
 USER nodejs
+WORKDIR /app/apps/api
 
 ENV PORT=3000
 EXPOSE 3000
