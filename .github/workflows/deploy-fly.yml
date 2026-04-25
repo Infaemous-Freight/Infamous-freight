@@ -1,0 +1,20 @@
+name: Deploy Fly API
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - Dockerfile
+      - fly.toml
+      - apps/api/**
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only --app infamous-freight
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
