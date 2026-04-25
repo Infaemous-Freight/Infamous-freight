@@ -3,12 +3,17 @@ set -e
 
 # ============================================================
 # INFAMOUS FREIGHT — One-Command Deploy Script
-# Usage: ./deploy.sh [environment]
+# Usage: ./deploy.sh [environment] [fly-image]
 #   environment: "prod" (default) or "staging"
+#   fly-image: optional image reference for rollback/redeploy
 # ============================================================
 
 ENV=${1:-prod}
+FLY_IMAGE=${2:-}
 echo "🚛 Deploying Infamous Freight to $ENV..."
+if [ -n "$FLY_IMAGE" ]; then
+    echo "📦 Using prebuilt Fly image: $FLY_IMAGE"
+fi
 
 # Colors
 RED='\033[0;31m'
@@ -25,10 +30,26 @@ check_prereq() {
     echo -e "${GREEN}✅ $1 found${NC}"
 }
 
+run_pm_script() {
+    local script_name=$1
+    shift || true
+    if [ "$PACKAGE_MANAGER" = "pnpm" ]; then
+        pnpm "$script_name" "$@"
+    else
+        npm run "$script_name" "$@"
+    fi
+}
+
 echo ""
 echo "Checking prerequisites..."
 check_prereq node
-check_prereq npm
+if command -v pnpm &> /dev/null; then
+    PACKAGE_MANAGER="pnpm"
+    echo -e "${GREEN}✅ pnpm found${NC}"
+else
+    PACKAGE_MANAGER="npm"
+    check_prereq npm
+fi
 check_prereq git
 
 # Check environment variables
@@ -44,30 +65,44 @@ fi
 # Install dependencies
 echo ""
 echo "📦 Installing dependencies..."
-npm install
+if [ "$PACKAGE_MANAGER" = "pnpm" ]; then
+    if [ -f "pnpm-lock.yaml" ]; then
+        pnpm install --frozen-lockfile
+    else
+        pnpm install --no-frozen-lockfile
+    fi
+else
+    npm install
+fi
 
 # Generate Prisma client
 echo ""
 echo "🔄 Generating Prisma client..."
-cd apps/api
-npx prisma generate
-cd ../..
+run_pm_script prisma:generate
 
 # Run tests
 echo ""
 echo "🧪 Running tests..."
-npm run test --if-present || echo -e "${YELLOW}⚠️  No tests configured${NC}"
+if [ "$PACKAGE_MANAGER" = "pnpm" ]; then
+    pnpm test -- --runInBand
+else
+    npm run test -- --runInBand
+fi
 
 # Build
 echo ""
 echo "🔨 Building..."
-npm run build
+run_pm_script build
 
 # Deploy API to Fly.io
 echo ""
 echo "🚀 Deploying API to Fly.io..."
 if command -v flyctl &> /dev/null; then
-    flyctl deploy --app infamous-freight --remote-only
+    if [ -n "$FLY_IMAGE" ]; then
+        flyctl deploy --app infamous-freight --image "$FLY_IMAGE"
+    else
+        flyctl deploy --app infamous-freight --remote-only
+    fi
     echo -e "${GREEN}✅ API deployed to Fly.io${NC}"
 else
     echo -e "${YELLOW}⚠️  Fly CLI (flyctl) not found. Skipping API deploy.${NC}"
