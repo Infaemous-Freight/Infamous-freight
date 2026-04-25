@@ -193,12 +193,12 @@ deploy_fly() {
 
   cd "$PROJECT_ROOT"
   # Redact any lines that look like secrets from the tee'd log
-  flyctl deploy --remote-only 2>&1 \
+  flyctl deploy --app "$app_name" --remote-only 2>&1 \
     | grep -v -iE '(secret|key|token|password)' \
     | tee -a "$LOG_FILE" \
     || true   # let the trap handle real failures; grep exit-codes aren't failures
 
-  success "Deployed to Fly.io: $FLY_APP_NAME"
+  success "Deployed to Fly.io: $app_name"
 }
 
 deploy_netlify() {
