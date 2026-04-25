@@ -14,15 +14,32 @@ concurrency:
   group: fly-api-production
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     name: Deploy API to Fly.io
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Validate required secrets
+        run: |
+          set -euo pipefail
+          if [ -z "${FLY_API_TOKEN:-}" ]; then
+            echo "ERROR: GitHub Actions secret FLY_API_TOKEN is missing."
+            echo "Add the rotated Fly deploy token at: Repository Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          echo "Required Fly deploy secret is present."
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Set up flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
