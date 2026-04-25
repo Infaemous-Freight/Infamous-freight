@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="420" viewBox="0 0 1600 420" role="img" aria-labelledby="title desc">
+  <title id="title">Infamous Freight Banner</title>
+  <desc id="desc">Infamous Freight branded banner for the repository README.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0d12"/>
+      <stop offset="100%" stop-color="#151922"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="420" fill="url(#bg)" rx="24"/>
+  <rect x="52" y="58" width="1496" height="304" rx="20" fill="#0f1720" stroke="#1f2937"/>
+  <rect x="84" y="86" width="8" height="248" rx="4" fill="url(#accent)"/>
+  <text x="120" y="150" fill="#f8fafc" font-size="62" font-weight="800" font-family="Inter, Arial, sans-serif">INFAMOUS FREIGHT</text>
+  <text x="120" y="205" fill="#f87171" font-size="26" font-weight="700" font-family="Inter, Arial, sans-serif">AI-powered freight dispatch, visibility, compliance, and logistics automation</text>
+  <text x="120" y="250" fill="#cbd5e1" font-size="24" font-family="Inter, Arial, sans-serif">Built by truckers, for truckers.</text>
+  <g transform="translate(980 92)">
+    <rect width="500" height="230" rx="18" fill="#111827" stroke="#334155"/>
+    <rect x="24" y="24" width="140" height="22" rx="11" fill="#ef4444" opacity="0.95"/>
+    <rect x="24" y="66" width="190" height="14" rx="7" fill="#334155"/>
+    <rect x="24" y="94" width="452" height="94" rx="14" fill="#0b1220" stroke="#1f2937"/>
+    <rect x="40" y="112" width="160" height="56" rx="10" fill="#1f2937"/>
+    <rect x="216" y="112" width="120" height="56" rx="10" fill="#172033"/>
+    <rect x="352" y="112" width="108" height="56" rx="10" fill="#172033"/>
+    <rect x="24" y="202" width="120" height="10" rx="5" fill="#475569"/>
+    <rect x="154" y="202" width="170" height="10" rx="5" fill="#334155"/>
+  </g>
+</svg>
