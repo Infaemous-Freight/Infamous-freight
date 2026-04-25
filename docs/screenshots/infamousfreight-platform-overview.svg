@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Infamous Freight Platform Overview Mock</title>
+  <desc id="desc">A dashboard style platform overview mock for the README screenshots section.</desc>
+  <rect width="1440" height="900" fill="#0b0d12"/>
+  <rect x="28" y="28" width="1384" height="844" rx="26" fill="#111827" stroke="#334155"/>
+  <rect x="56" y="56" width="268" height="788" rx="22" fill="#0b1220" stroke="#1f2937"/>
+  <text x="88" y="108" fill="#ef4444" font-size="26" font-weight="800" font-family="Inter, Arial, sans-serif">INFAMOUS FREIGHT</text>
+  <rect x="88" y="144" width="204" height="18" rx="9" fill="#172033"/>
+  <rect x="88" y="196" width="204" height="48" rx="12" fill="#ef4444"/>
+  <rect x="88" y="262" width="204" height="48" rx="12" fill="#172033"/>
+  <rect x="88" y="328" width="204" height="48" rx="12" fill="#172033"/>
+  <rect x="88" y="394" width="204" height="48" rx="12" fill="#172033"/>
+  <rect x="352" y="56" width="1032" height="108" rx="22" fill="#0b1220" stroke="#1f2937"/>
+  <text x="392" y="110" fill="#f8fafc" font-size="34" font-weight="800" font-family="Inter, Arial, sans-serif">Platform Overview</text>
+  <text x="392" y="142" fill="#cbd5e1" font-size="20" font-family="Inter, Arial, sans-serif">Live dispatch, load status, revenue, and compliance signals in one control plane.</text>
+  <rect x="352" y="194" width="240" height="124" rx="20" fill="#172033"/>
+  <rect x="612" y="194" width="240" height="124" rx="20" fill="#172033"/>
+  <rect x="872" y="194" width="240" height="124" rx="20" fill="#172033"/>
+  <rect x="1132" y="194" width="252" height="124" rx="20" fill="#172033"/>
+  <text x="382" y="236" fill="#cbd5e1" font-size="18" font-family="Inter, Arial, sans-serif">Active Loads</text>
+  <text x="642" y="236" fill="#cbd5e1" font-size="18" font-family="Inter, Arial, sans-serif">On-Time Rate</text>
+  <text x="902" y="236" fill="#cbd5e1" font-size="18" font-family="Inter, Arial, sans-serif">Revenue Today</text>
+  <text x="1162" y="236" fill="#cbd5e1" font-size="18" font-family="Inter, Arial, sans-serif">Compliance Alerts</text>
+  <text x="382" y="286" fill="#f8fafc" font-size="40" font-weight="800" font-family="Inter, Arial, sans-serif">128</text>
+  <text x="642" y="286" fill="#f8fafc" font-size="40" font-weight="800" font-family="Inter, Arial, sans-serif">97.4%</text>
+  <text x="902" y="286" fill="#f8fafc" font-size="40" font-weight="800" font-family="Inter, Arial, sans-serif">$42.8k</text>
+  <text x="1162" y="286" fill="#f8fafc" font-size="40" font-weight="800" font-family="Inter, Arial, sans-serif">04</text>
+  <rect x="352" y="346" width="650" height="498" rx="22" fill="#0b1220" stroke="#1f2937"/>
+  <text x="388" y="392" fill="#f8fafc" font-size="24" font-weight="700" font-family="Inter, Arial, sans-serif">Shipment and ETA View</text>
+  <rect x="388" y="420" width="578" height="14" rx="7" fill="#172033"/>
+  <polyline points="408,742 500,684 592,702 684,614 776,630 868,560 960,516" fill="none" stroke="#ef4444" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="1030" y="346" width="354" height="236" rx="22" fill="#0b1220" stroke="#1f2937"/>
+  <text x="1062" y="392" fill="#f8fafc" font-size="24" font-weight="700" font-family="Inter, Arial, sans-serif">Driver Queue</text>
+  <rect x="1062" y="426" width="290" height="38" rx="12" fill="#172033"/>
+  <rect x="1062" y="478" width="290" height="38" rx="12" fill="#172033"/>
+  <rect x="1062" y="530" width="290" height="38" rx="12" fill="#172033"/>
+  <rect x="1030" y="608" width="354" height="236" rx="22" fill="#0b1220" stroke="#1f2937"/>
+  <text x="1062" y="654" fill="#f8fafc" font-size="24" font-weight="700" font-family="Inter, Arial, sans-serif">Alerts and Exceptions</text>
+  <rect x="1062" y="688" width="290" height="18" rx="9" fill="#ef4444"/>
+  <rect x="1062" y="724" width="252" height="14" rx="7" fill="#334155"/>
+  <rect x="1062" y="754" width="230" height="14" rx="7" fill="#334155"/>
+</svg>
