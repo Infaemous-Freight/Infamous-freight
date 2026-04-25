@@ -43,13 +43,16 @@ run_pm_script() {
 echo ""
 echo "Checking prerequisites..."
 check_prereq node
-if command -v pnpm &> /dev/null; then
+if [ -f "pnpm-lock.yaml" ]; then
     PACKAGE_MANAGER="pnpm"
-    echo -e "${GREEN}✅ pnpm found${NC}"
+elif [ -f "package-lock.json" ]; then
+    PACKAGE_MANAGER="npm"
+elif command -v pnpm &> /dev/null; then
+    PACKAGE_MANAGER="pnpm"
 else
     PACKAGE_MANAGER="npm"
-    check_prereq npm
 fi
+check_prereq "$PACKAGE_MANAGER"
 check_prereq git
 
 # Check environment variables
