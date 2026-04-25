@@ -14,8 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Check frontend
+      - name: Check canonical frontend
         run: curl --fail --show-error --location --head https://www.infamousfreight.com
+
+      - name: Check bare domain redirects to canonical www host
+        run: |
+          set -euo pipefail
+          final_url=$(curl --silent --location --head --output /dev/null --write-out '%{url_effective}' https://infamousfreight.com)
+          test "$final_url" = "https://www.infamousfreight.com/"
 
       - name: Check Fly root health
         run: curl --fail --show-error --silent https://infamous-freight.fly.dev/health
