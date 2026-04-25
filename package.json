@@ -31,7 +31,10 @@
     "validate": "bash scripts/validate-repo.sh",
     "deploy:full": "bash scripts/deploy-entire-repo.sh",
     "setup": "npm run env:setup && npm run db:setup",
-    "env:setup": "node scripts/setup-environment.js"
+    "env:setup": "node scripts/setup-environment.js",
+    "production:preflight": "bash scripts/production-preflight.sh",
+    "production:canonical-env": "bash scripts/production-canonical-env.sh",
+    "production:smoke-test": "bash scripts/production-smoke-test.sh"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"
