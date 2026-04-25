@@ -8,13 +8,40 @@ on:
       - Dockerfile
       - fly.toml
       - apps/api/**
+      - .github/workflows/deploy-fly.yml
+
+concurrency:
+  group: fly-api-production
+  cancel-in-progress: true
 
 jobs:
   deploy:
+    name: Deploy API to Fly.io
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only --app infamous-freight
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy API
+        run: flyctl deploy --remote-only --app infamous-freight
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Verify Fly health endpoint
+        run: |
+          set -euo pipefail
+          for attempt in {1..18}; do
+            if curl --fail --show-error --silent https://infamous-freight.fly.dev/api/health; then
+              echo "Fly API health check passed"
+              exit 0
+            fi
+            echo "Health check attempt ${attempt} failed; retrying in 10 seconds..."
+            sleep 10
+          done
+          echo "Fly API health check failed"
+          exit 1
