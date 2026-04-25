@@ -332,6 +332,21 @@ For operational ownership, deployment runbooks, integration provenance, and SBOM
 - `docs/NETLIFY-BUILDHOOKS.md` — provenance, integrity, and maintenance guidance for Netlify URL-hosted buildhook packages
 - `docs/SBOM-POLICY.md` — runtime-vs-build SBOM policy, review cadence, classification rules, and triage standards
 
+### Launch Readiness
+
+Production launch approval is evidence-based. Use these documents before private beta, paid beta, or public launch:
+
+- `docs/LAUNCH_READINESS_INDEX.md` — entry point for launch readiness, launch gates, and execution order
+- `docs/PRODUCTION_READINESS_VERIFICATION.md` — main readiness checklist and launch decision gate
+- `docs/LAUNCH_EVIDENCE_LOG.md` — required evidence log for test output, owners, blockers, and final decision
+- `docs/ROLLBACK_PLAN.md` — rollback triggers and recovery process
+- `docs/PRODUCTION_TEST_DATA_PLAN.md` — controlled production test data and cleanup rules
+- `docs/STRIPE_WEBHOOK_VERIFICATION.md` — Stripe webhook, billing, idempotency, refund, and failure checks
+- `docs/ADMIN_RECOVERY_RUNBOOK.md` — admin recovery procedures for support and operations
+- `docs/BACKUP_RESTORE_VERIFICATION.md` — backup and restore proof process
+- `docs/NOTIFICATION_DELIVERABILITY_VERIFICATION.md` — email, SMS, in-app, and support inbox delivery checks
+- `docs/LAUNCH_BLOCKER_TEMPLATE.md` — blocker format for failed or unknown launch checks
+
 ---
 
 ## 🔒 Security

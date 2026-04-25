@@ -63,3 +63,6 @@ prisma/migrations/
 # Temporary files
 *.tmp
 *.temp
+reports/validation-status.txt
+/tmp/docker-build.log
+apps/api/coverage/

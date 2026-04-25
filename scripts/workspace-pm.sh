@@ -10,6 +10,36 @@ detect_package_manager() {
   echo "npm"
 }
 
+should_install_workspace_dependencies() {
+  local package_manager="$1"
+
+  if [ ! -d "node_modules" ]; then
+    return 0
+  fi
+
+  if [ "$package_manager" = "pnpm" ]; then
+    if [ -f "pnpm-lock.yaml" ] && [ ! -f "node_modules/.modules.yaml" ]; then
+      return 0
+    fi
+
+    if [ -f "pnpm-lock.yaml" ] && [ "pnpm-lock.yaml" -nt "node_modules/.modules.yaml" ]; then
+      return 0
+    fi
+
+    return 1
+  fi
+
+  if [ -f "package-lock.json" ] && [ ! -f "node_modules/.package-lock.json" ]; then
+    return 0
+  fi
+
+  if [ -f "package-lock.json" ] && [ "package-lock.json" -nt "node_modules/.package-lock.json" ]; then
+    return 0
+  fi
+
+  return 1
+}
+
 install_workspace_dependencies() {
   local package_manager="$1"
 
