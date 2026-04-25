@@ -63,19 +63,19 @@ It brings together:
 
 ## ⚡ Quick Start
 
-### 1️⃣ Install dependencies
+### 1️⃣ Install dependencies + bootstrap environment files
 
 ```bash
-npm install
+npm run env:setup
 ```
 
-### 2️⃣ Copy environment config
+This installs workspace dependencies and creates local `.env` files from `*.env.example` for:
 
-```bash
-cp .env.example .env
-```
+- repo root
+- `apps/api`
+- `apps/web`
 
-Edit `.env` with the required API keys and environment values.
+Edit the generated `.env` files with the required API keys and environment values.
 
 > Prisma commands run from the repo root (for example `npm run prisma:generate`) load environment values from the root `.env` file, but API-local overrides (such as `apps/api/.env`) may also apply depending on how Prisma is invoked. If the same variable is defined in multiple places, use the effective override order for your command and verify which `DATABASE_URL` Prisma will use.
 
@@ -99,7 +99,7 @@ npm run dev
 ### Recommended local flow
 
 ```bash
-npm install
+npm run env:setup
 npm run db:setup
 npm run dev
 ```
@@ -107,7 +107,7 @@ npm run dev
 ### Common commands
 
 ```bash
-npm install
+npm run env:setup
 npm run db:setup
 npm run dev
 npm run build
