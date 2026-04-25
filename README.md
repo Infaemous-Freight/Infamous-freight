@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/screenshots/infamousfreight-banner.svg" alt="Infamous Freight" width="100%">
+</p>
+
 # 🚛 Infamous Freight
 
 > **The freight dispatch platform built by truckers, for truckers.**
@@ -14,14 +18,14 @@ Infamous Freight is designed to reduce manual dispatch work, improve load execut
 
 It brings together:
 
-- 🚚 dispatch automation
-- 📍 real-time tracking and ETA visibility
+- 🚚 Dispatch automation
+- 📍 Real-time tracking and ETA visibility
 - 🤖 AI-assisted load matching and negotiation
-- 💬 driver-dispatch messaging
-- 📄 digital paperwork and invoicing
-- 💵 payroll and factoring workflows
-- 🛡️ compliance monitoring
-- 📊 rate analytics and broker intelligence
+- 💬 Driver-dispatch messaging
+- 📄 Digital paperwork and invoicing
+- 💵 Payroll and factoring workflows
+- 🛡️ Compliance monitoring
+- 📊 Rate analytics and broker intelligence
 
 ---
 
@@ -53,11 +57,15 @@ It brings together:
 
 ## 📸 Screenshots
 
+<p align="center">
+  <img src="docs/screenshots/infamousfreight-showcase-banner.svg" alt="Infamous Freight Showcase" width="100%">
+</p>
+
 ### 🖥️ Infamous Freight Landing Page
-![Infamous Freight Landing Page](docs/screenshots/infamousfreight-landing-page.png)
+![Infamous Freight Landing Page](docs/screenshots/infamousfreight-landing-page.svg)
 
 ### 📊 Platform Overview
-![Infamous Freight Platform Overview](docs/screenshots/infamousfreight-platform-overview.png)
+![Infamous Freight Platform Overview](docs/screenshots/infamousfreight-platform-overview.svg)
 
 ---
 
@@ -77,15 +85,15 @@ This installs workspace dependencies and creates local `.env` files from `*.env.
 
 Edit the generated `.env` files with the required API keys and environment values.
 
-> Prisma commands run from the repo root (for example `npm run prisma:generate`) load environment values from the root `.env` file, but API-local overrides (such as `apps/api/.env`) may also apply depending on how Prisma is invoked. If the same variable is defined in multiple places, use the effective override order for your command and verify which `DATABASE_URL` Prisma will use.
+> Prisma commands run from the repo root, such as `npm run prisma:generate`, load environment values from the root `.env` file. API-local overrides such as `apps/api/.env` may also apply depending on how Prisma is invoked. If the same variable is defined in multiple places, verify which `DATABASE_URL` Prisma will use for that command.
 
-### 3️⃣ Start with Docker (recommended)
+### 2️⃣ Start with Docker (recommended)
 
 ```bash
 docker-compose up -d
 ```
 
-### 4️⃣ Or start manually
+### 3️⃣ Or start manually
 
 ```bash
 npm run db:setup
@@ -114,11 +122,13 @@ npm run build
 npm run test
 ```
 
-### Git remote troubleshooting
+---
+
+## 🧰 Git Remote Troubleshooting
 
 If `git push` fails with:
 
-```text
+```bash
 fatal: No configured push destination.
 ```
 
@@ -139,31 +149,31 @@ git remote -v
 
 ## 🔍 Error Monitoring (Sentry)
 
-`apps/web` is a **Vite + React** SPA. To set up or re-configure Sentry for it, run the React wizard — **not** the Next.js wizard:
+`apps/web` is a Vite + React SPA. To set up or re-configure Sentry for it, run the React wizard:
 
 ```bash
 cd apps/web
 npx @sentry/wizard@latest -i react
 ```
 
-> ⚠️ Do **not** use `-i nextjs` — `apps/web` is not a Next.js app.
+> ⚠️ Do not use `-i nextjs` — `apps/web` is not a Next.js app.
 
-**Netlify sourcemap policy:** Public requests for `*.map` files are blocked (404).
-Sourcemaps are still uploaded to Sentry during builds when
-`SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` are configured.
+### Netlify sourcemap policy
+
+Public requests for `*.map` files are blocked (`404`). Sourcemaps are still uploaded to Sentry during builds when `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` are configured.
 
 ### Optional Sentry environment variables
 
 | Variable | Purpose | Required |
 |---|---|---|
-| `VITE_SENTRY_DSN` | Sentry DSN for the web app | No (Sentry disabled if blank) |
-| `VITE_SENTRY_ENABLED` | Set to `false` to disable even when DSN is set | No (defaults enabled in prod) |
-| `SENTRY_AUTH_TOKEN` | CI secret — enables sourcemap upload to Sentry | No (skipped if absent) |
-| `SENTRY_ORG` | Sentry organization slug | No (only needed with `SENTRY_AUTH_TOKEN`) |
-| `SENTRY_PROJECT` | Sentry project slug | No (only needed with `SENTRY_AUTH_TOKEN`) |
+| `VITE_SENTRY_DSN` | Sentry DSN for the web app | No |
+| `VITE_SENTRY_ENABLED` | Set to `false` to disable even when DSN is set | No |
+| `SENTRY_AUTH_TOKEN` | CI secret for sourcemap upload | No |
+| `SENTRY_ORG` | Sentry organization slug | No |
+| `SENTRY_PROJECT` | Sentry project slug | No |
 | `SENTRY_SOURCEMAPS` | Set to `1` to force sourcemap generation without upload | No |
 
-Sourcemaps are generated **only** when `SENTRY_AUTH_TOKEN` is present or `SENTRY_SOURCEMAPS=1` is set, so local and PR builds are not affected.
+> Sourcemaps are generated only when `SENTRY_AUTH_TOKEN` is present or `SENTRY_SOURCEMAPS=1` is set, so local and PR builds are not affected.
 
 ---
 
@@ -176,14 +186,14 @@ Add these secrets to your GitHub repository:
 - 🔐 `FLY_API_TOKEN` — Fly.io deployment token
 - 🔐 `VITE_API_URL` — Production API URL
 - 🔐 `VITE_STRIPE_PUBLIC_KEY` — Stripe publishable key
-- 🔐 `SENTRY_AUTH_TOKEN` — (optional) Sentry auth token for sourcemap upload
-- ⚙️ `SENTRY_ORG` — (optional) Sentry org slug (e.g. `infmous`)
-- ⚙️ `SENTRY_PROJECT` — (optional) Sentry project slug (e.g. `infamous-freight`)
+- 🔐 `SENTRY_AUTH_TOKEN` — optional Sentry auth token for sourcemap upload
+- ⚙️ `SENTRY_ORG` — optional Sentry org slug
+- ⚙️ `SENTRY_PROJECT` — optional Sentry project slug
 
 Push to `main` and the pipeline deploys:
 
-- 🚚 API to **Fly.io**
-- 🌐 Web to **Netlify** (via Netlify's native Git integration)
+- 🚚 API to Fly.io
+- 🌐 Web to Netlify via Netlify’s native Git integration
 
 ### Manual deployment
 
@@ -195,8 +205,7 @@ flyctl deploy --app infamous-freight
 
 #### Web (Netlify)
 
-Netlify auto-deploys from the `main` branch via its native Git integration.
-For manual deploys:
+Netlify auto-deploys from the `main` branch via its native Git integration. For manual deploys:
 
 ```bash
 npm install -g netlify-cli
@@ -223,49 +232,47 @@ netlify deploy --prod --dir=apps/web/dist
 ## 🗂️ Project Structure
 
 ```text
-infamous-all-in/
-├── apps/
-│   ├── api/              # NestJS backend
-│   │   ├── src/
-│   │   │   ├── dispatch/          # Auto-dispatch AI, backhaul, rate negotiation
-│   │   │   ├── loads/             # Load board aggregation
-│   │   │   ├── invoice/           # BOL/POD + invoicing
-│   │   │   ├── eld/               # ELD integrations
-│   │   │   ├── chat/              # Real-time messaging
-│   │   │   ├── payroll/           # Driver settlements
-│   │   │   ├── factoring/         # Factoring integrations
-│   │   │   ├── compliance-csa/    # CSA/SMS monitoring
-│   │   │   ├── compliance-expiry/ # Document expiry tracking
-│   │   │   ├── accounting/        # QuickBooks + Xero
-│   │   │   ├── rate-analytics/    # Rate trends + comparisons
-│   │   │   ├── broker-credit/     # Broker scoring
-│   │   │   ├── geofencing/        # ETA + alerts
-│   │   │   ├── ifta/              # Fuel tax reporting
-│   │   │   ├── rbac/              # Role-based access
-│   │   │   ├── redis/             # Caching layer
-│   │   │   ├── rate-limit/        # API rate limiting
-│   │   │   ├── stripe/            # Payment processing
-│   │   │   ├── uploads/           # Document uploads
-│   │   │   ├── notifications/     # WebSocket notifications
-│   │   │   ├── audit/             # Audit logging
-│   │   │   └── ...
-│   │
-│   └── web/              # React frontend
-│       ├── src/
-│       │   ├── pages/          # Dashboard, Loads, Dispatch, Drivers
-│       │   ├── components/     # UI and feature components
-│       │   ├── layouts/        # App shell and sidebar
-│       │   ├── store/          # Zustand state management
-│       │   ├── api-client/     # Axios API wrapper
-│       │   └── extension/      # Chrome extension
+apps/
+├── api/                    # NestJS backend
+│   └── src/
+│       ├── dispatch/       # Auto-dispatch AI, backhaul, rate negotiation
+│       ├── loads/          # Load board aggregation
+│       ├── invoice/        # BOL/POD + invoicing
+│       ├── eld/            # ELD integrations
+│       ├── chat/           # Real-time messaging
+│       ├── payroll/        # Driver settlements
+│       ├── factoring/      # Factoring integrations
+│       ├── compliance-csa/ # CSA/SMS monitoring
+│       ├── compliance-expiry/
+│       ├── accounting/
+│       ├── rate-analytics/
+│       ├── broker-credit/
+│       ├── geofencing/
+│       ├── ifta/
+│       ├── rbac/
+│       ├── redis/
+│       ├── rate-limit/
+│       ├── stripe/
+│       ├── uploads/
+│       ├── notifications/
+│       └── audit/
 │
-├── compliance/           # Canadian HOS rules
-├── templates/            # Cold emails + LinkedIn calendar
-├── docs/                 # Sales playbook, launch checklists
-├── Dockerfile.api
-├── docker-compose.yml
-├── nginx.conf
-└── .github/workflows/    # CI/CD pipeline
+└── web/                    # React frontend
+    └── src/
+        ├── pages/          # Dashboard, Loads, Dispatch, Drivers
+        ├── components/     # UI and feature components
+        ├── layouts/        # App shell and sidebar
+        ├── store/          # Zustand state management
+        ├── api-client/     # Axios API wrapper
+        └── extension/      # Chrome extension
+
+compliance/                 # Canadian HOS rules
+templates/                  # Cold emails + LinkedIn calendar
+docs/                       # Sales playbook, launch checklists
+Dockerfile.api
+docker-compose.yml
+nginx.conf
+.github/workflows/          # CI/CD pipeline
 ```
 
 ---
@@ -297,22 +304,22 @@ Broker scoring, market rate analysis, historical pricing, and load decision supp
 ### ✅ Implemented Areas
 
 - 🧠 AI dispatch and negotiation workflows
-- 🔎 load aggregation and booking support
-- 💬 real-time chat and operational messaging
-- 🧾 document upload, BOL/POD, and invoicing flows
-- 💳 payment and subscription infrastructure
-- 📊 broker, rate, and operations analytics
-- 🔐 role-based access and audit support
-- 🛡️ compliance and tracking services
+- 🔎 Load aggregation and booking support
+- 💬 Real-time chat and operational messaging
+- 🧾 Document upload, BOL/POD, and invoicing flows
+- 💳 Payment and subscription infrastructure
+- 📊 Broker, rate, and operations analytics
+- 🔐 Role-based access and audit support
+- 🛡️ Compliance and tracking services
 - 🔁 CI/CD pipeline and deployment automation
 
 ### 🚧 Expansion Areas
 
-- 📱 deeper mobile operations support
-- 🤖 expanded AI orchestration and workflow automation
-- 🌍 broader carrier network intelligence
-- 📈 improved analytics and operational reporting
-- 🔗 expanded third-party integration coverage
+- 📱 Deeper mobile operations support
+- 🤖 Expanded AI orchestration and workflow automation
+- 🌍 Broader carrier network intelligence
+- 📈 Improved analytics and operational reporting
+- 🔗 Expanded third-party integration coverage
 
 ---
 
@@ -328,24 +335,26 @@ Infamous Freight is built to centralize dispatch, tracking, compliance, communic
 
 For operational ownership, deployment runbooks, integration provenance, and SBOM review standards, use these docs:
 
-- `docs/INTEGRATIONS-AND-SECRETS.md` — external integrations, secret ownership, deploy failure runbooks, and rotation guidance
-- `docs/NETLIFY-BUILDHOOKS.md` — provenance, integrity, and maintenance guidance for Netlify URL-hosted buildhook packages
-- `docs/SBOM-POLICY.md` — runtime-vs-build SBOM policy, review cadence, classification rules, and triage standards
+- [`docs/INTEGRATIONS-AND-SECRETS.md`](docs/INTEGRATIONS-AND-SECRETS.md) — external integrations, secret ownership, deploy failure runbooks, and rotation guidance
+- [`docs/NETLIFY-BUILDHOOKS.md`](docs/NETLIFY-BUILDHOOKS.md) — provenance, integrity, and maintenance guidance for Netlify URL-hosted buildhook packages
+- [`docs/SBOM-POLICY.md`](docs/SBOM-POLICY.md) — runtime-vs-build SBOM policy, review cadence, classification rules, and triage standards
 
-### Launch Readiness
+---
+
+## ✅ Launch Readiness
 
 Production launch approval is evidence-based. Use these documents before private beta, paid beta, or public launch:
 
-- `docs/LAUNCH_READINESS_INDEX.md` — entry point for launch readiness, launch gates, and execution order
-- `docs/PRODUCTION_READINESS_VERIFICATION.md` — main readiness checklist and launch decision gate
-- `docs/LAUNCH_EVIDENCE_LOG.md` — required evidence log for test output, owners, blockers, and final decision
-- `docs/ROLLBACK_PLAN.md` — rollback triggers and recovery process
-- `docs/PRODUCTION_TEST_DATA_PLAN.md` — controlled production test data and cleanup rules
-- `docs/STRIPE_WEBHOOK_VERIFICATION.md` — Stripe webhook, billing, idempotency, refund, and failure checks
-- `docs/ADMIN_RECOVERY_RUNBOOK.md` — admin recovery procedures for support and operations
-- `docs/BACKUP_RESTORE_VERIFICATION.md` — backup and restore proof process
-- `docs/NOTIFICATION_DELIVERABILITY_VERIFICATION.md` — email, SMS, in-app, and support inbox delivery checks
-- `docs/LAUNCH_BLOCKER_TEMPLATE.md` — blocker format for failed or unknown launch checks
+- [`docs/LAUNCH_READINESS_INDEX.md`](docs/LAUNCH_READINESS_INDEX.md) — entry point for launch readiness, launch gates, and execution order
+- [`docs/PRODUCTION_READINESS_VERIFICATION.md`](docs/PRODUCTION_READINESS_VERIFICATION.md) — main readiness checklist and launch decision gate
+- [`docs/LAUNCH_EVIDENCE_LOG.md`](docs/LAUNCH_EVIDENCE_LOG.md) — required evidence log for test output, owners, blockers, and final decision
+- [`docs/ROLLBACK_PLAN.md`](docs/ROLLBACK_PLAN.md) — rollback triggers and recovery process
+- [`docs/PRODUCTION_TEST_DATA_PLAN.md`](docs/PRODUCTION_TEST_DATA_PLAN.md) — controlled production test data and cleanup rules
+- [`docs/STRIPE_WEBHOOK_VERIFICATION.md`](docs/STRIPE_WEBHOOK_VERIFICATION.md) — Stripe webhook, billing, idempotency, refund, and failure checks
+- [`docs/ADMIN_RECOVERY_RUNBOOK.md`](docs/ADMIN_RECOVERY_RUNBOOK.md) — admin recovery procedures for support and operations
+- [`docs/BACKUP_RESTORE_VERIFICATION.md`](docs/BACKUP_RESTORE_VERIFICATION.md) — backup and restore proof process
+- [`docs/NOTIFICATION_DELIVERABILITY_VERIFICATION.md`](docs/NOTIFICATION_DELIVERABILITY_VERIFICATION.md) — email, SMS, in-app, and support inbox delivery checks
+- [`docs/LAUNCH_BLOCKER_TEMPLATE.md`](docs/LAUNCH_BLOCKER_TEMPLATE.md) — blocker format for failed or unknown launch checks
 
 ---
 
@@ -353,11 +362,11 @@ Production launch approval is evidence-based. Use these documents before private
 
 Security expectations include:
 
-- 🚫 never commit secrets
-- ✅ validate all external inputs
-- 🔐 protect auth and token flows
-- 🧱 maintain role-based access boundaries
-- 📜 log important operational and audit events
+- 🚫 Never commit secrets
+- ✅ Validate all external inputs
+- 🔐 Protect auth and token flows
+- 🧱 Maintain role-based access boundaries
+- 📜 Log important operational and audit events
 
 ---
 
@@ -369,10 +378,10 @@ See `CONTRIBUTING.md`.
 
 Before submitting a PR:
 
-- ✅ build passes
-- ✅ tests pass
-- ✅ environment changes are documented
-- ✅ screenshots or logs are included when relevant
+- ✅ Build passes
+- ✅ Tests pass
+- ✅ Environment changes are documented
+- ✅ Screenshots or logs are included when relevant
 
 ### 🌿 Branch Naming Examples
 
@@ -399,6 +408,8 @@ Examples:
 - Website: [infamousfreight.com](https://infamousfreight.com)
 - GitHub Pages Preview: [infaemous-freight.github.io/Infamous-freight](https://infaemous-freight.github.io/Infamous-freight/)
 - Repository: [github.com/Infaemous-Freight/Infamous-freight](https://github.com/Infaemous-Freight/Infamous-freight)
+
+> Replace the GitHub Pages and repository URLs above if you rename the current `Infaemous` slug to the cleaner `Infamous` spelling.
 
 ---
 
