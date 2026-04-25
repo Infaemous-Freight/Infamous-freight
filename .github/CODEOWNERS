@@ -1,0 +1,16 @@
+# Default owner for all repository changes
+* @MrMiless44
+
+# GitHub workflows and repository governance
+.github/ @MrMiless44
+
+# API service
+apps/api/ @MrMiless44
+
+# Web app
+apps/web/ @MrMiless44
+
+# Deployment and runtime config
+Dockerfile @MrMiless44
+fly.toml @MrMiless44
+netlify.toml @MrMiless44

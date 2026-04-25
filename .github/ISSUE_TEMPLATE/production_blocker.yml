@@ -1,0 +1,50 @@
+name: Production blocker
+description: Track a launch, deployment, secret, or outage blocker
+title: "blocker: "
+labels: [blocker, production]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is blocked?
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Who or what is affected?
+    validations:
+      required: true
+  - type: textarea
+    id: actions
+    attributes:
+      label: Required actions
+      description: Use checklist format.
+      placeholder: |
+        - [ ] Rotate secret
+        - [ ] Redeploy service
+        - [ ] Run smoke test
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: Commands, URLs, or checks required to close this blocker.
+      render: shell
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Launch blocker
+        - Production outage
+        - Security incident
+        - Degraded service
+        - Internal blocker
+    validations:
+      required: true

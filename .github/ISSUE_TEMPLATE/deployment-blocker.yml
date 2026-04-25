@@ -1,0 +1,58 @@
+name: Deployment blocker
+description: Track a production, staging, CI/CD, DNS, or environment blocker
+title: "Deployment blocker: "
+labels:
+  - deployment
+  - blocker
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for launch blockers, API health failures, DNS problems, missing secrets, failed deploys, or broken production integrations.
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: production, staging, preview, local
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is blocked?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Paste sanitized logs, curl output, screenshots, or workflow links. Do not paste secrets.
+      render: shell
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks completed
+      options:
+        - label: No secrets were pasted into this issue.
+          required: true
+        - label: I checked the production launch runbook.
+          required: false
+        - label: I checked GitHub Actions logs.
+          required: false
+        - label: I checked platform logs or dashboard state.
+          required: false

@@ -24,7 +24,7 @@ record_skip() {
 }
 
 echo "==> Ensuring dependencies are installed"
-if [ ! -d "node_modules" ]; then
+if should_install_workspace_dependencies "$PACKAGE_MANAGER"; then
   install_workspace_dependencies "$PACKAGE_MANAGER"
 fi
 record_pass "Dependency installation check"
@@ -38,7 +38,7 @@ run_workspace_script "$PACKAGE_MANAGER" test
 record_pass "API tests"
 
 echo "==> Running API coverage"
-if npm --prefix apps/api run test:coverage; then
+if run_workspace_script "$PACKAGE_MANAGER" test:coverage; then
   record_pass "API coverage generation"
 else
   record_fail "API coverage generation"
