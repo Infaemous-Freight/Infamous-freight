@@ -1,5 +1,4 @@
 import cors from 'cors';
-import helmet from 'helmet';
 import express, { NextFunction, Request, Response } from 'express';
 import * as Sentry from '@sentry/node';
 import { createDataStore, DataStore } from './data-store';
@@ -60,6 +59,16 @@ function getAllowedCorsOrigins(): string[] {
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
+}
+
+function applySecurityHeaders(_req: Request, res: Response, next: NextFunction) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('X-DNS-Prefetch-Control', 'off');
+  res.removeHeader('X-Powered-By');
+  next();
 }
 
 function initializeSentry() {
@@ -134,12 +143,8 @@ export function createApp() {
 
   initializeSentry();
 
-  app.use(
-    helmet({
-      contentSecurityPolicy: false,
-      crossOriginEmbedderPolicy: false,
-    }),
-  );
+  app.disable('x-powered-by');
+  app.use(applySecurityHeaders);
 
   const allowedOrigins = getAllowedCorsOrigins();
   app.use(
