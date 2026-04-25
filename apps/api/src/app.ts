@@ -143,8 +143,8 @@ export function createApp() {
 declare global {
   namespace Express {
     interface Request {
-      tenantId: string;
-      userRole: Role;
+      tenantId?: string;
+      userRole?: Role;
     }
   }
 }
