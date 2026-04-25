@@ -214,9 +214,9 @@ deploy_netlify() {
   npm run build:web
 
   if [[ "$env" == "production" ]]; then
-    netlify deploy --prod --dir=apps/web/.next
+    netlify deploy --prod --dir=apps/web/dist
   else
-    netlify deploy --dir=apps/web/.next
+    netlify deploy --dir=apps/web/dist
   fi
 
   success "Deployed to Netlify"
