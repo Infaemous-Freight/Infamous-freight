@@ -95,8 +95,11 @@ pre_deployment_checks() {
     exit 1
   fi
 
-  if [[ ! -f "$PROJECT_ROOT/.env.production" ]]; then
-    error ".env.production not found. Create it from .env.example"
+  local env_name env_file
+  env_name="${ENVIRONMENT:-production}"
+  env_file="$PROJECT_ROOT/.env.${env_name}"
+  if [[ ! -f "$env_file" ]]; then
+    error "$(basename "$env_file") not found. Create it from .env.example"
     exit 1
   fi
 
