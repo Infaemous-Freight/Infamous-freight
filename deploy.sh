@@ -273,9 +273,9 @@ verify_deployment() {
   # Pick the correct health-check URL for this environment
   local health_url
   case "$env" in
-    production) health_url="${HEALTH_CHECK_URL:-https://api.infamousfreight.com/api/health}" ;;
-    staging)    health_url="${HEALTH_CHECK_URL:-https://api-staging.infamousfreight.com/api/health}" ;;
-    *)          health_url="${HEALTH_CHECK_URL:-http://localhost:3000/api/health}" ;;
+    production) health_url="${HEALTH_CHECK_URL:-https://api.infamousfreight.com/health}" ;;
+    staging)    health_url="${HEALTH_CHECK_URL:-https://api-staging.infamousfreight.com/health}" ;;
+    *)          health_url="${HEALTH_CHECK_URL:-http://localhost:3000/health}" ;;
   esac
 
   log "Waiting ${DEPLOY_SETTLE_TIME}s for service to settle..."
