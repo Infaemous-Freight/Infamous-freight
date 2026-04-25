@@ -105,8 +105,8 @@ pre_deployment_checks() {
 
   local node_major
   node_major="$(node -v | cut -d'v' -f2 | cut -d'.' -f1)"
-  if (( node_major < 22 )); then
-    error "Node.js 22+ required. Current: $(node -v)"
+  if (( node_major < 20 )); then
+    error "Node.js 20+ required. Current: $(node -v)"
     exit 1
   fi
 
