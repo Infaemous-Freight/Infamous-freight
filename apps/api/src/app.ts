@@ -1,4 +1,5 @@
 import cors from 'cors';
+import helmet from 'helmet';
 import express, { NextFunction, Request, Response } from 'express';
 import * as Sentry from '@sentry/node';
 import { createDataStore, DataStore } from './data-store';
@@ -7,12 +8,23 @@ type Role = 'owner' | 'admin' | 'dispatcher';
 
 const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'dispatcher'];
 
-function getTenantId(req: Request): string | null {
-  const tenantHeader = req.header('x-tenant-id');
-  const tenantBody = typeof req.body?.tenantId === 'string' ? req.body.tenantId : null;
-  const tenantQuery = typeof req.query?.tenantId === 'string' ? req.query.tenantId : null;
+class HttpError extends Error {
+  statusCode: number;
+  code: string;
 
-  return tenantHeader ?? tenantBody ?? tenantQuery;
+  constructor(statusCode: number, code: string, message: string) {
+    super(message);
+    this.statusCode = statusCode;
+    this.code = code;
+  }
+}
+
+function getTenantId(req: Request): string | null {
+  const tenantHeader = req.header('x-tenant-id')?.trim();
+  const tenantBody = typeof req.body?.tenantId === 'string' ? req.body.tenantId.trim() : null;
+  const tenantQuery = typeof req.query?.tenantId === 'string' ? req.query.tenantId.trim() : null;
+
+  return tenantHeader || tenantBody || tenantQuery || null;
 }
 
 function requireTenant(req: Request, res: Response, next: NextFunction) {
@@ -43,6 +55,13 @@ function requireRole(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
+function getAllowedCorsOrigins(): string[] {
+  return (process.env.CORS_ORIGINS ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
 function initializeSentry() {
   const dsn = process.env.SENTRY_DSN;
 
@@ -65,34 +84,46 @@ function wrapAsync(
   };
 }
 
+function getRequiredTenantId(req: Request): string {
+  if (!req.tenantId) {
+    throw new HttpError(
+      400,
+      'tenant_id_required',
+      'Provide tenantId via x-tenant-id header, query, or body.',
+    );
+  }
+
+  return req.tenantId;
+}
+
 function registerRoutes(app: express.Express, dataStore: DataStore) {
   app.get('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.listLoads(req.tenantId);
+    const data = await dataStore.listLoads(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
   app.post('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.createLoad(req.tenantId, req.body);
+    const data = await dataStore.createLoad(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
   app.get('/api/drivers', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.listDrivers(req.tenantId);
+    const data = await dataStore.listDrivers(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
   app.post('/api/drivers', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.createDriver(req.tenantId, req.body);
+    const data = await dataStore.createDriver(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
   app.get('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.listShipments(req.tenantId);
+    const data = await dataStore.listShipments(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
   app.post('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.createShipment(req.tenantId, req.body);
+    const data = await dataStore.createShipment(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 }
@@ -103,7 +134,25 @@ export function createApp() {
 
   initializeSentry();
 
-  app.use(cors());
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+      crossOriginEmbedderPolicy: false,
+    }),
+  );
+
+  const allowedOrigins = getAllowedCorsOrigins();
+  app.use(
+    cors({
+      origin:
+        process.env.NODE_ENV === 'production'
+          ? allowedOrigins
+          : allowedOrigins.length
+            ? allowedOrigins
+            : true,
+      credentials: true,
+    }),
+  );
   app.use(express.json());
 
   app.get('/health', wrapAsync(async (_req, res) => {
@@ -129,6 +178,13 @@ export function createApp() {
   registerRoutes(app, dataStore);
 
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+    if (err instanceof HttpError) {
+      return res.status(err.statusCode).json({
+        error: err.code,
+        message: err.message,
+      });
+    }
+
     Sentry.captureException(err);
 
     res.status(500).json({
