@@ -41,22 +41,40 @@ describe('tenant-protected resource routes', () => {
 
   it('creates and lists records only for same tenant', async () => {
     const app = createApp();
+    const shipmentForTenant1 = {
+      reference: 'REF-1',
+      brokerName: 'Broker One',
+      origin: 'Dallas, TX',
+      dest: 'Austin, TX',
+      pickupDate: '2024-01-10',
+      deliveryDate: '2024-01-11',
+    };
+    const shipmentForTenant2 = {
+      reference: 'REF-2',
+      brokerName: 'Broker Two',
+      origin: 'Houston, TX',
+      dest: 'San Antonio, TX',
+      pickupDate: '2024-01-12',
+      deliveryDate: '2024-01-13',
+    };
 
     const createForT1 = await request(app)
       .post('/api/shipments')
       .set('x-tenant-id', 'tenant-1')
       .set('x-user-role', 'dispatcher')
-      .send({ reference: 'REF-1' });
+      .send(shipmentForTenant1);
 
     expect(createForT1.status).toBe(201);
     expect(createForT1.body.data.tenantId).toBe('tenant-1');
 
-    await request(app)
+    const createForT2 = await request(app)
       .post('/api/shipments')
       .set('x-tenant-id', 'tenant-2')
       .set('x-user-role', 'dispatcher')
-      .send({ reference: 'REF-2' });
+      .send(shipmentForTenant2);
 
+    expect(createForT2.status).toBe(201);
+    expect(createForT2.body.data.tenantId).toBe('tenant-2');
     const listT1 = await request(app)
       .get('/api/shipments')
       .set('x-tenant-id', 'tenant-1')
