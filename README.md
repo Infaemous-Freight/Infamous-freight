@@ -358,6 +358,22 @@ Production launch approval is evidence-based. Use these documents before private
 
 ---
 
+## 📦 Production Operations
+
+For operating model, compliance, carrier vetting, dispatch, daily operations, sales, and launch execution, use these docs:
+
+- [`docs/production-operations/README.md`](docs/production-operations/README.md) — production operations package index
+- [`docs/production-operations/OPERATING_MODEL.md`](docs/production-operations/OPERATING_MODEL.md) — brokerage and logistics operating model
+- [`docs/production-operations/LAUNCH_CHECKLIST.md`](docs/production-operations/LAUNCH_CHECKLIST.md) — launch execution checklist
+- [`docs/production-operations/COMPLIANCE_CHECKLIST.md`](docs/production-operations/COMPLIANCE_CHECKLIST.md) — freight brokerage compliance checklist
+- [`docs/production-operations/CARRIER_VETTING_SOP.md`](docs/production-operations/CARRIER_VETTING_SOP.md) — carrier qualification workflow
+- [`docs/production-operations/DISPATCH_WORKFLOW.md`](docs/production-operations/DISPATCH_WORKFLOW.md) — shipment dispatch workflow
+- [`docs/production-operations/DAILY_OPERATIONS_SOP.md`](docs/production-operations/DAILY_OPERATIONS_SOP.md) — daily operating cadence
+- [`docs/production-operations/SHIPPER_SALES_SCRIPT.md`](docs/production-operations/SHIPPER_SALES_SCRIPT.md) — shipper outreach script
+- [`docs/production-operations/GITHUB_EXECUTION_BACKLOG.md`](docs/production-operations/GITHUB_EXECUTION_BACKLOG.md) — repo execution backlog
+
+---
+
 ## 🔒 Security
 
 Security expectations include:
