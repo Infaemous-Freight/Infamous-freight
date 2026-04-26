@@ -1,0 +1,34 @@
+name: Production Operations Task
+description: Track an Infamous Freight operating, compliance, dispatch, or sales task
+title: "[Ops]: "
+labels: ["operations"]
+body:
+  - type: textarea
+    id: task
+    attributes:
+      label: Task
+      description: What needs to be completed?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Compliance
+        - Dispatch
+        - Carrier Vetting
+        - Sales
+        - Tracking
+        - Billing
+        - Documentation
+        - Deployment
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Definition of Done
+      description: What proves this is complete?
+    validations:
+      required: true
