@@ -37,6 +37,8 @@ const FREIGHT_OPERATION_RESOURCES: FreightOperationResource[] = [
   'rateAgreements',
   'operationalMetrics',
   'loadBoardPosts',
+  'carrierApplications',
+  'invoices',
 ];
 const LOAD_ASSIGNMENT_DECISIONS: LoadAssignmentDecision[] = ['accepted', 'rejected'];
 
@@ -413,6 +415,21 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
   app.post('/api/workflows/load-board-posts/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
+  }));
+
+  app.post('/api/workflows/carrier-applications/:id/approve', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.approveCarrierApplication(getRequiredTenantId(req), req.params.id);
+    res.status(200).json({ data });
+  }));
+
+  app.post('/api/workflows/loads/:loadId/generate-invoice', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.generateInvoice(getRequiredTenantId(req), req.params.loadId, req.body);
+    res.status(201).json({ data });
+  }));
+
+  app.get('/api/tracking/:loadId', wrapAsync(async (req, res) => {
+    const data = await dataStore.getCustomerTracking(req.params.loadId);
+    res.status(200).json({ data, count: data.length });
   }));
 }
 

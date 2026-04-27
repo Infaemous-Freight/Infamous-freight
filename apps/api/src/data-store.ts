@@ -16,7 +16,9 @@ export type FreightOperationResource =
   | 'carrierPayments'
   | 'rateAgreements'
   | 'operationalMetrics'
-  | 'loadBoardPosts';
+  | 'loadBoardPosts'
+  | 'carrierApplications'
+  | 'invoices';
 
 export type LoadAssignmentDecision = 'accepted' | 'rejected';
 export type FreightWorkflowResult = Record<string, unknown>;
@@ -130,6 +132,17 @@ const OPERATION_CONFIG: Record<FreightOperationResource, OperationConfig> = {
     tenantRelation: 'load',
     dateFields: ['postedAt', 'expiresAt'],
   },
+  carrierApplications: {
+    delegate: 'carrierApplication',
+    tenantField: 'carrierId',
+    dateFields: ['approvedAt', 'rejectedAt'],
+  },
+  invoices: {
+    delegate: 'invoice',
+    tenantField: 'carrierId',
+    numberFields: ['shipperRate', 'carrierRate', 'grossMargin', 'grossMarginPct'],
+    dateFields: ['dueDate', 'paidAt'],
+  },
 };
 
 export interface DataStore {
@@ -194,6 +207,16 @@ export interface DataStore {
     postId: string,
     payload: Record<string, unknown>,
   ): Promise<FreightOperationRecord>;
+  approveCarrierApplication(
+    tenantId: string,
+    applicationId: string,
+  ): Promise<FreightOperationRecord>;
+  generateInvoice(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightWorkflowResult>;
+  getCustomerTracking(loadId: string): Promise<FreightOperationRecord[]>;
   syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean>;
   getCarrierStripeCustomerId(tenantId: string): Promise<string | null>;
   healthCheck(): Promise<'connected' | 'disconnected'>;
@@ -295,6 +318,8 @@ class MemoryDataStore implements DataStore {
     rateAgreements: [],
     operationalMetrics: [],
     loadBoardPosts: [],
+    carrierApplications: [],
+    invoices: [],
   };
 
   async listLoads(tenantId: string): Promise<LoadRecord[]> {
@@ -480,6 +505,56 @@ class MemoryDataStore implements DataStore {
       ...payload,
       status: payload.status ?? 'expired',
     });
+  }
+
+  async approveCarrierApplication(
+    tenantId: string,
+    applicationId: string,
+  ): Promise<FreightOperationRecord> {
+    return this.updateFreightOperation('carrierApplications', tenantId, applicationId, {
+      status: 'approved',
+      approvedAt: new Date().toISOString(),
+    });
+  }
+
+  async generateInvoice(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightWorkflowResult> {
+    const shipperRate = Number(payload.shipperRate ?? 0);
+    const carrierRate = Number(payload.carrierRate ?? 0);
+    const grossMargin = shipperRate - carrierRate;
+    const grossMarginPct = shipperRate > 0 ? Number(((grossMargin / shipperRate) * 100).toFixed(2)) : 0;
+    const invoiceNumber = `INF-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 9999).toString().padStart(4, '0')}`;
+
+    const invoice = await this.createFreightOperation('invoices', tenantId, {
+      ...payload,
+      loadId,
+      invoiceNumber,
+      shipperRate,
+      carrierRate,
+      grossMargin,
+      grossMarginPct,
+      status: 'draft',
+      createdAt: new Date().toISOString(),
+    });
+
+    return { invoice, grossMargin, grossMarginPct };
+  }
+
+  async getCustomerTracking(loadId: string): Promise<FreightOperationRecord[]> {
+    return this.freightOperations.shipmentTracking
+      .filter((record) => record.loadId === loadId)
+      .map(({ id, tenantId, loadId: lid, status, latitude, longitude, deliveryETA }) => ({
+        id,
+        tenantId,
+        loadId: lid,
+        status,
+        latitude,
+        longitude,
+        deliveryETA,
+      }));
   }
 
   async syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean> {
@@ -880,6 +955,94 @@ class PrismaDataStore implements DataStore {
       ...payload,
       status: payload.status ?? 'expired',
     });
+  }
+
+  async approveCarrierApplication(
+    tenantId: string,
+    applicationId: string,
+  ): Promise<FreightOperationRecord> {
+    const existing = await this.prisma.carrier.findFirst({
+      where: { id: applicationId },
+      select: { id: true },
+    });
+
+    if (!existing) {
+      throw new Error('freight_operation_not_found');
+    }
+
+    const updated = await this.prisma.carrier.update({
+      where: { id: applicationId },
+      data: { status: 'approved' },
+    }) as Record<string, unknown>;
+
+    return normalizeOperationRecord(updated, tenantId);
+  }
+
+  async generateInvoice(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightWorkflowResult> {
+    const shipperRate = Number(payload.shipperRate ?? 0);
+    const carrierRate = Number(payload.carrierRate ?? 0);
+    const grossMargin = shipperRate - carrierRate;
+    const grossMarginPct = shipperRate > 0 ? Number(((grossMargin / shipperRate) * 100).toFixed(2)) : 0;
+    const invoiceNumber = `INF-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 9999).toString().padStart(4, '0')}`;
+
+    const brokerName = typeof payload.brokerName === 'string' ? payload.brokerName : 'Unknown';
+    const invoice = await this.prisma.invoice.create({
+      data: {
+        loadId,
+        carrierId: tenantId,
+        invoiceNumber,
+        brokerName,
+        brokerEmail: typeof payload.brokerEmail === 'string' ? payload.brokerEmail : undefined,
+        amount: shipperRate,
+        status: 'draft',
+        dueDate: payload.dueDate ? new Date(String(payload.dueDate)) : undefined,
+      },
+    }) as Record<string, unknown>;
+
+    const invoiceRecord = normalizeOperationRecord(
+      { ...invoice, shipperRate, carrierRate, grossMargin, grossMarginPct },
+      tenantId,
+    );
+
+    return { invoice: invoiceRecord, grossMargin, grossMarginPct };
+  }
+
+  async getCustomerTracking(loadId: string): Promise<FreightOperationRecord[]> {
+    const records = await this.prisma.shipmentTracking.findMany({
+      where: { loadId },
+      select: {
+        id: true,
+        loadId: true,
+        status: true,
+        latitude: true,
+        longitude: true,
+        deliveryETA: true,
+        load: { select: { carrierId: true } },
+      },
+      orderBy: { createdAt: 'asc' },
+    }) as Array<{
+      id: string;
+      loadId: string;
+      status: string;
+      latitude: number | null;
+      longitude: number | null;
+      deliveryETA: Date | null;
+      load: { carrierId: string };
+    }>;
+
+    return records.map(({ id, loadId: lid, status, latitude, longitude, deliveryETA, load }) => ({
+      id,
+      tenantId: load.carrierId,
+      loadId: lid,
+      status,
+      latitude,
+      longitude,
+      deliveryETA,
+    }));
   }
 
   async syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean> {
