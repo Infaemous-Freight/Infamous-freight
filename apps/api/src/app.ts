@@ -1,6 +1,7 @@
 import cors from 'cors';
 import helmet from 'helmet';
-import express, { NextFunction, Request, Response } from 'express';
+import express, { NextFunction, Request, RequestHandler, Response } from 'express';
+import { createRateLimiter, getRateLimitConfig } from './rate-limit-middleware';
 import * as Sentry from '@sentry/node';
 import {
   createDataStore,
@@ -191,10 +192,10 @@ function getCarrierIdFromBillingSync(billingSync: ReturnType<typeof getBillingSy
   return billingSync?.carrierId ?? null;
 }
 
-function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
+function registerWebhookRoute(app: express.Express, dataStore: DataStore, billingRateLimiter: RequestHandler) {
   const webhookEvents = createStripeWebhookEventStore();
 
-  app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), wrapAsync(async (req, res) => {
+  app.post('/api/billing/webhook', billingRateLimiter, express.raw({ type: 'application/json' }), wrapAsync(async (req, res) => {
     const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(JSON.stringify(req.body ?? {}));
     const signature = req.header('stripe-signature');
 
@@ -249,7 +250,12 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
   }));
 }
 
-function registerRoutes(app: express.Express, dataStore: DataStore) {
+function registerRoutes(
+  app: express.Express,
+  dataStore: DataStore,
+  billingRateLimiter: RequestHandler,
+  apiWriteRateLimiter: RequestHandler,
+) {
   const aiUsageStore = createAiUsageStore();
 
   app.get('/api/billing/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
@@ -262,7 +268,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     });
   }));
 
-  app.post('/api/billing/checkout-session', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
+  app.post('/api/billing/checkout-session', billingRateLimiter, requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
     const carrierId = getRequiredTenantId(req);
     const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(carrierId);
 
@@ -284,7 +290,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data: { url } });
   }));
 
-  app.post('/api/billing/customer-portal', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
+  app.post('/api/billing/customer-portal', billingRateLimiter, requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
     const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(getRequiredTenantId(req));
 
     if (!stripeCustomerId) {
@@ -299,7 +305,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data: { url } });
   }));
 
-  app.post('/api/ai-usage/events', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/ai-usage/events', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     if (!req.body?.feature || typeof req.body.feature !== 'string') {
       throw new HttpError(400, 'ai_usage_feature_required', 'AI usage events require a feature string.');
     }
@@ -322,7 +328,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/loads', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.createLoad(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
@@ -332,7 +338,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/drivers', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/drivers', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.createDriver(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
@@ -342,7 +348,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/shipments', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.createShipment(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
@@ -353,13 +359,13 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/freight-operations/:resource', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/freight-operations/:resource', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.createFreightOperation(resource, getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.patch('/api/freight-operations/:resource/:id', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.patch('/api/freight-operations/:resource/:id', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.updateFreightOperation(
       resource,
@@ -370,12 +376,12 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data });
   }));
 
-  app.post('/api/workflows/quotes/:id/convert-to-load', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/quotes/:id/convert-to-load', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.convertQuoteToLoad(getRequiredTenantId(req), req.params.id, req.body);
     res.status(201).json({ data });
   }));
 
-  app.post('/api/workflows/load-assignments/:id/:decision', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/load-assignments/:id/:decision', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.respondToLoadAssignment(
       getRequiredTenantId(req),
       req.params.id,
@@ -385,32 +391,32 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data });
   }));
 
-  app.post('/api/workflows/dispatches/:id/confirm', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/dispatches/:id/confirm', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.confirmDispatch(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
 
-  app.post('/api/workflows/loads/:loadId/tracking-updates', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/loads/:loadId/tracking-updates', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.recordTrackingUpdate(getRequiredTenantId(req), req.params.loadId, req.body);
     res.status(201).json({ data });
   }));
 
-  app.post('/api/workflows/loads/:loadId/verify-delivery', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/loads/:loadId/verify-delivery', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.verifyDelivery(getRequiredTenantId(req), req.params.loadId, req.body);
     res.status(201).json({ data });
   }));
 
-  app.post('/api/workflows/carrier-payments/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/carrier-payments/:id/status', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.updateCarrierPaymentStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
 
-  app.post('/api/workflows/operational-metrics/rollup', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/operational-metrics/rollup', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.rollupOperationalMetrics(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.post('/api/workflows/load-board-posts/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/load-board-posts/:id/status', apiWriteRateLimiter, requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
@@ -442,7 +448,31 @@ export function createApp() {
     }),
   );
 
-  registerWebhookRoute(app, dataStore);
+  // ── Rate limiters ────────────────────────────────────────────────────────
+  // Each limiter is backed by its own in-memory store so separate app
+  // instances (e.g. in tests) never share counter state.
+  const billingRateLimiter = createRateLimiter(
+    getRateLimitConfig(
+      'RATE_LIMIT_BILLING_MAX',
+      'RATE_LIMIT_BILLING_WINDOW_SECONDS',
+      /* defaultMax */ 10,
+      /* defaultWindowMs */ 60 * 1000,
+      'rl:billing',
+    ),
+  );
+
+  const apiWriteRateLimiter = createRateLimiter(
+    getRateLimitConfig(
+      'RATE_LIMIT_API_WRITE_MAX',
+      'RATE_LIMIT_API_WRITE_WINDOW_SECONDS',
+      /* defaultMax */ 60,
+      /* defaultWindowMs */ 60 * 1000,
+      'rl:api:write',
+    ),
+  );
+  // ─────────────────────────────────────────────────────────────────────────
+
+  registerWebhookRoute(app, dataStore, billingRateLimiter);
   app.use(express.json());
 
   app.get('/health', wrapAsync(async (_req, res) => {
@@ -465,7 +495,7 @@ export function createApp() {
     });
   }));
 
-  registerRoutes(app, dataStore);
+  registerRoutes(app, dataStore, billingRateLimiter, apiWriteRateLimiter);
 
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof HttpError) {
