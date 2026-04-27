@@ -160,7 +160,7 @@ function getLoadAssignmentDecision(req: Request): LoadAssignmentDecision {
   return decision as LoadAssignmentDecision;
 }
 
-function registerRoutes(app: express.Express, dataStore: DataStore) {
+function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
   app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), wrapAsync(async (req, res) => {
     const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(JSON.stringify(req.body ?? {}));
     const signature = req.header('stripe-signature');
@@ -179,7 +179,9 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
 
     res.status(200).json({ received: true });
   }));
+}
 
+function registerRoutes(app: express.Express, dataStore: DataStore) {
   app.post('/api/billing/customer-portal', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
     const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(getRequiredTenantId(req));
 
@@ -320,7 +322,7 @@ export function createApp() {
     }),
   );
 
-  registerRoutes(app, dataStore);
+  registerWebhookRoute(app, dataStore);
   app.use(express.json());
 
   app.get('/health', wrapAsync(async (_req, res) => {
@@ -342,6 +344,8 @@ export function createApp() {
       services: { database },
     });
   }));
+
+  registerRoutes(app, dataStore);
 
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof HttpError) {
