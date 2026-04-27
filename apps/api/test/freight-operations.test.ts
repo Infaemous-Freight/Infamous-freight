@@ -1,14 +1,11 @@
 import request from 'supertest';
 import { createApp } from '../src/app';
-
-const headers = {
-  'x-tenant-id': 'carrier_123',
-  'x-user-role': 'dispatcher',
-};
+import { authHeaders, TEST_JWT_SECRET } from './helpers';
 
 describe('freight operations API', () => {
   beforeEach(() => {
     process.env.NODE_ENV = 'test';
+    process.env.JWT_SECRET = TEST_JWT_SECRET;
   });
 
   it('creates, lists, and updates quote requests for a tenant', async () => {
@@ -16,7 +13,7 @@ describe('freight operations API', () => {
 
     const createResponse = await request(app)
       .post('/api/freight-operations/quoteRequests')
-      .set(headers)
+      .set(authHeaders('carrier_123', 'dispatcher'))
       .send({
         brokerName: 'Acme Broker',
         originCity: 'Dallas',
@@ -40,7 +37,7 @@ describe('freight operations API', () => {
 
     const listResponse = await request(app)
       .get('/api/freight-operations/quoteRequests')
-      .set(headers)
+      .set(authHeaders('carrier_123', 'dispatcher'))
       .expect(200);
 
     expect(listResponse.body.count).toBe(1);
@@ -48,7 +45,7 @@ describe('freight operations API', () => {
 
     const updateResponse = await request(app)
       .patch(`/api/freight-operations/quoteRequests/${createResponse.body.data.id}`)
-      .set(headers)
+      .set(authHeaders('carrier_123', 'dispatcher'))
       .send({ status: 'accepted' })
       .expect(200);
 
@@ -64,7 +61,7 @@ describe('freight operations API', () => {
 
     await request(app)
       .post('/api/freight-operations/carrierPayments')
-      .set(headers)
+      .set(authHeaders('carrier_123', 'dispatcher'))
       .send({
         loadId: 'load_123',
         amount: 1200,
@@ -75,7 +72,7 @@ describe('freight operations API', () => {
 
     const otherTenantResponse = await request(app)
       .get('/api/freight-operations/carrierPayments')
-      .set({ ...headers, 'x-tenant-id': 'carrier_999' })
+      .set(authHeaders('carrier_999', 'dispatcher'))
       .expect(200);
 
     expect(otherTenantResponse.body.count).toBe(0);
@@ -87,7 +84,7 @@ describe('freight operations API', () => {
 
     const response = await request(app)
       .get('/api/freight-operations/notAResource')
-      .set(headers)
+      .set(authHeaders('carrier_123', 'dispatcher'))
       .expect(404);
 
     expect(response.body).toMatchObject({
@@ -95,17 +92,11 @@ describe('freight operations API', () => {
     });
   });
 
-  it('requires tenant and role headers', async () => {
+  it('requires a valid Bearer token', async () => {
     const app = createApp();
 
     await request(app)
       .get('/api/freight-operations/quoteRequests')
-      .set({ 'x-user-role': 'dispatcher' })
-      .expect(400);
-
-    await request(app)
-      .get('/api/freight-operations/quoteRequests')
-      .set({ 'x-tenant-id': 'carrier_123' })
-      .expect(403);
+      .expect(401);
   });
 });

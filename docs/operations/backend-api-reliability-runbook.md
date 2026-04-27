@@ -1,6 +1,6 @@
 # Backend API Reliability Runbook
 
-_Last updated: April 24, 2026_
+_Last updated: April 27, 2026_
 
 ## 1) Deploy and verify
 
@@ -14,18 +14,21 @@ _Last updated: April 24, 2026_
 
 ## 2) Manual API endpoint verification
 
-Use a tenant and role header so tenant isolation and RBAC are validated.
+Obtain a signed JWT for a known carrier identity (e.g. via the Supabase dashboard or your
+internal token-issuing endpoint).  The token must contain `tenantId` and `role` claims.
 
 ```bash
 export API_URL="https://api.infamousfreight.com"
-export TENANT_ID="deployment-smoke-tenant"
-export ROLE="dispatcher"
+export TOKEN="<signed-jwt-for-your-smoke-tenant>"
 
 curl -sf "$API_URL/api/health"
-curl -sf -H "x-tenant-id: $TENANT_ID" -H "x-user-role: $ROLE" "$API_URL/api/loads"
-curl -sf -H "x-tenant-id: $TENANT_ID" -H "x-user-role: $ROLE" "$API_URL/api/shipments"
-curl -sf -H "x-tenant-id: $TENANT_ID" -H "x-user-role: $ROLE" "$API_URL/api/drivers"
+curl -sf -H "Authorization: Bearer $TOKEN" "$API_URL/api/loads"
+curl -sf -H "Authorization: Bearer $TOKEN" "$API_URL/api/shipments"
+curl -sf -H "Authorization: Bearer $TOKEN" "$API_URL/api/drivers"
 ```
+
+> **Note:** `x-tenant-id` and `x-user-role` headers are no longer accepted.
+> All tenant and role information must come from the verified JWT claims.
 
 ## 3) Uptime monitoring (UptimeRobot)
 

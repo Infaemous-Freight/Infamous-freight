@@ -1,15 +1,13 @@
 import request from 'supertest';
 import { createApp } from '../src/app';
+import { authHeaders, TEST_JWT_SECRET } from './helpers';
 
 describe('MVP quote-to-load workflow', () => {
   const tenantId = 'carrier-test-quote-to-load';
-  const headers = {
-    'x-tenant-id': tenantId,
-    'x-user-role': 'dispatcher',
-  };
 
   beforeAll(() => {
     process.env.NODE_ENV = 'test';
+    process.env.JWT_SECRET = TEST_JWT_SECRET;
   });
 
   it('creates an approved quote request and converts it into a load', async () => {
@@ -17,7 +15,7 @@ describe('MVP quote-to-load workflow', () => {
 
     const quoteResponse = await request(app)
       .post('/api/freight-operations/quoteRequests')
-      .set(headers)
+      .set(authHeaders(tenantId, 'dispatcher'))
       .send({
         brokerName: 'Infamous Freight Test Shipper',
         originCity: 'Dallas',
@@ -45,7 +43,7 @@ describe('MVP quote-to-load workflow', () => {
 
     const conversionResponse = await request(app)
       .post(`/api/workflows/quotes/${quoteId}/convert-to-load`)
-      .set(headers)
+      .set(authHeaders(tenantId, 'dispatcher'))
       .send({
         quoteStatus: 'converted',
         load: {

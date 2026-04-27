@@ -1,10 +1,8 @@
 import request from 'supertest';
 import { createApp } from '../src/app';
+import { authHeaders, TEST_JWT_SECRET } from './helpers';
 
-const headers = {
-  'x-tenant-id': 'carrier_phase4',
-  'x-user-role': 'dispatcher',
-};
+const TENANT = 'carrier_phase4';
 
 const loadPayload = {
   brokerName: 'Phase 4 Broker',
@@ -27,6 +25,7 @@ const loadPayload = {
 describe('freight workflow API', () => {
   beforeEach(() => {
     process.env.NODE_ENV = 'test';
+    process.env.JWT_SECRET = TEST_JWT_SECRET;
   });
 
   it('converts a quote request into a load', async () => {
@@ -34,7 +33,7 @@ describe('freight workflow API', () => {
 
     const quote = await request(app)
       .post('/api/freight-operations/quoteRequests')
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({
         brokerName: 'Acme Broker',
         originCity: 'Dallas',
@@ -51,7 +50,7 @@ describe('freight workflow API', () => {
 
     const response = await request(app)
       .post(`/api/workflows/quotes/${quote.body.data.id}/convert-to-load`)
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({ load: loadPayload })
       .expect(201);
 
@@ -60,7 +59,7 @@ describe('freight workflow API', () => {
       status: 'converted',
     });
     expect(response.body.data.load).toMatchObject({
-      tenantId: 'carrier_phase4',
+      tenantId: TENANT,
       brokerName: 'Phase 4 Broker',
       status: 'booked',
     });
@@ -71,20 +70,20 @@ describe('freight workflow API', () => {
 
     const load = await request(app)
       .post('/api/loads')
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send(loadPayload)
       .expect(201);
     const loadId = load.body.data.id;
 
     const assignment = await request(app)
       .post('/api/freight-operations/loadAssignments')
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({ loadId, rateConfirmed: 2500, status: 'pending' })
       .expect(201);
 
     const assignmentResponse = await request(app)
       .post(`/api/workflows/load-assignments/${assignment.body.data.id}/accepted`)
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({})
       .expect(200);
 
@@ -93,13 +92,13 @@ describe('freight workflow API', () => {
 
     const dispatch = await request(app)
       .post('/api/freight-operations/loadDispatches')
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({ loadId, status: 'pending', pickupContactName: 'Dock One' })
       .expect(201);
 
     const dispatchResponse = await request(app)
       .post(`/api/workflows/dispatches/${dispatch.body.data.id}/confirm`)
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({})
       .expect(200);
 
@@ -108,7 +107,7 @@ describe('freight workflow API', () => {
 
     const trackingResponse = await request(app)
       .post(`/api/workflows/loads/${loadId}/tracking-updates`)
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({ latitude: 33.1, longitude: -96.9, status: 'in_transit' })
       .expect(201);
 
@@ -116,7 +115,7 @@ describe('freight workflow API', () => {
 
     const deliveryResponse = await request(app)
       .post(`/api/workflows/loads/${loadId}/verify-delivery`)
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({ podSignature: 'Jane Receiver', deliveryTime: '2026-05-03T10:00:00.000Z' })
       .expect(201);
 
@@ -133,13 +132,13 @@ describe('freight workflow API', () => {
 
     const payment = await request(app)
       .post('/api/freight-operations/carrierPayments')
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({ loadId, amount: 2200, status: 'pending' })
       .expect(201);
 
     const paymentResponse = await request(app)
       .post(`/api/workflows/carrier-payments/${payment.body.data.id}/status`)
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({ status: 'paid' })
       .expect(200);
 
@@ -148,12 +147,12 @@ describe('freight workflow API', () => {
 
     const metricsResponse = await request(app)
       .post('/api/workflows/operational-metrics/rollup')
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({ period: 'daily', loadsBooked: 1, grossMargin: 400 })
       .expect(201);
 
     expect(metricsResponse.body.data).toMatchObject({
-      tenantId: 'carrier_phase4',
+      tenantId: TENANT,
       period: 'daily',
       loadsBooked: 1,
       grossMargin: 400,
@@ -161,13 +160,13 @@ describe('freight workflow API', () => {
 
     const post = await request(app)
       .post('/api/freight-operations/loadBoardPosts')
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({ loadId, board: 'DAT', boardPostId: 'dat_123', status: 'posted' })
       .expect(201);
 
     const postResponse = await request(app)
       .post(`/api/workflows/load-board-posts/${post.body.data.id}/status`)
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({ status: 'expired' })
       .expect(200);
 
@@ -179,7 +178,7 @@ describe('freight workflow API', () => {
 
     const response = await request(app)
       .post('/api/workflows/load-assignments/assignment_123/maybe')
-      .set(headers)
+      .set(authHeaders(TENANT, 'dispatcher'))
       .send({})
       .expect(400);
 

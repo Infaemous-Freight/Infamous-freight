@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import request from 'supertest';
 import { createApp } from '../src/app';
+import { authHeaders, TEST_JWT_SECRET } from './helpers';
 
 function createStripeSignature(payload: string, secret: string): string {
   const timestamp = Math.floor(Date.now() / 1000);
@@ -15,6 +16,7 @@ function createStripeSignature(payload: string, secret: string): string {
 describe('Stripe billing endpoints', () => {
   beforeEach(() => {
     process.env.NODE_ENV = 'test';
+    process.env.JWT_SECRET = TEST_JWT_SECRET;
     process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
     delete process.env.STRIPE_SECRET_KEY;
   });
@@ -55,8 +57,7 @@ describe('Stripe billing endpoints', () => {
 
     const statusResponse = await request(app)
       .get('/api/billing/status')
-      .set('x-tenant-id', 'carrier_billing_123')
-      .set('x-user-role', 'owner')
+      .set(authHeaders('carrier_billing_123', 'owner'))
       .expect(200);
 
     expect(statusResponse.body.data).toMatchObject({
@@ -66,8 +67,7 @@ describe('Stripe billing endpoints', () => {
 
     const response = await request(app)
       .post('/api/billing/customer-portal')
-      .set('x-tenant-id', 'carrier_billing_123')
-      .set('x-user-role', 'owner')
+      .set(authHeaders('carrier_billing_123', 'owner'))
       .send({})
       .expect(500);
 
@@ -99,8 +99,7 @@ describe('Stripe billing endpoints', () => {
 
     const response = await request(app)
       .post('/api/billing/checkout-session')
-      .set('x-tenant-id', 'carrier_duplicate_guard')
-      .set('x-user-role', 'owner')
+      .set(authHeaders('carrier_duplicate_guard', 'owner'))
       .send({ plan: 'professional', billingInterval: 'month' })
       .expect(409);
 
@@ -112,8 +111,7 @@ describe('Stripe billing endpoints', () => {
 
     const portalResponse = await request(app)
       .post('/api/billing/customer-portal')
-      .set('x-tenant-id', 'carrier_billing_123')
-      .set('x-user-role', 'dispatcher')
+      .set(authHeaders('carrier_billing_123', 'dispatcher'))
       .send({})
       .expect(403);
 
@@ -121,8 +119,7 @@ describe('Stripe billing endpoints', () => {
 
     const checkoutResponse = await request(app)
       .post('/api/billing/checkout-session')
-      .set('x-tenant-id', 'carrier_billing_123')
-      .set('x-user-role', 'dispatcher')
+      .set(authHeaders('carrier_billing_123', 'dispatcher'))
       .send({ plan: 'professional', billingInterval: 'month' })
       .expect(403);
 
@@ -134,8 +131,7 @@ describe('Stripe billing endpoints', () => {
 
     const invalidPlanResponse = await request(app)
       .post('/api/billing/checkout-session')
-      .set('x-tenant-id', 'carrier_billing_123')
-      .set('x-user-role', 'owner')
+      .set(authHeaders('carrier_billing_123', 'owner'))
       .send({ plan: 'free', billingInterval: 'month' })
       .expect(400);
 
@@ -143,8 +139,7 @@ describe('Stripe billing endpoints', () => {
 
     const invalidIntervalResponse = await request(app)
       .post('/api/billing/checkout-session')
-      .set('x-tenant-id', 'carrier_billing_123')
-      .set('x-user-role', 'owner')
+      .set(authHeaders('carrier_billing_123', 'owner'))
       .send({ plan: 'professional', billingInterval: 'weekly' })
       .expect(400);
 
@@ -156,8 +151,7 @@ describe('Stripe billing endpoints', () => {
 
     const response = await request(app)
       .post('/api/billing/customer-portal')
-      .set('x-tenant-id', 'carrier_without_customer')
-      .set('x-user-role', 'admin')
+      .set(authHeaders('carrier_without_customer', 'admin'))
       .send({})
       .expect(404);
 
@@ -169,8 +163,7 @@ describe('Stripe billing endpoints', () => {
 
     await request(app)
       .post('/api/ai-usage/events')
-      .set('x-tenant-id', 'carrier_ai_123')
-      .set('x-user-role', 'dispatcher')
+      .set(authHeaders('carrier_ai_123', 'dispatcher'))
       .send({
         feature: 'dispatch-assistant',
         actionCount: 2,
@@ -184,8 +177,7 @@ describe('Stripe billing endpoints', () => {
 
     await request(app)
       .post('/api/ai-usage/events')
-      .set('x-tenant-id', 'carrier_ai_123')
-      .set('x-user-role', 'dispatcher')
+      .set(authHeaders('carrier_ai_123', 'dispatcher'))
       .send({
         feature: 'dispatch-assistant',
         actionCount: 2,
@@ -199,8 +191,7 @@ describe('Stripe billing endpoints', () => {
 
     const summary = await request(app)
       .get('/api/ai-usage/summary')
-      .set('x-tenant-id', 'carrier_ai_123')
-      .set('x-user-role', 'owner')
+      .set(authHeaders('carrier_ai_123', 'owner'))
       .expect(200);
 
     expect(summary.body.data).toMatchObject({
@@ -218,8 +209,7 @@ describe('Stripe billing endpoints', () => {
 
     const response = await request(app)
       .post('/api/ai-usage/events')
-      .set('x-tenant-id', 'carrier_ai_123')
-      .set('x-user-role', 'dispatcher')
+      .set(authHeaders('carrier_ai_123', 'dispatcher'))
       .send({ actionCount: 1 })
       .expect(400);
 

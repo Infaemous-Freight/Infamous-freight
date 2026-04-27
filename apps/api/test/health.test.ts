@@ -1,5 +1,7 @@
 import request from 'supertest';
 import { createApp } from '../src/app';
+import { authHeaders, makeToken, TEST_JWT_SECRET } from './helpers';
+import jwt from 'jsonwebtoken';
 
 describe('health endpoint', () => {
   it('returns 200 and ok status on /health', async () => {
@@ -20,26 +22,74 @@ describe('health endpoint', () => {
   });
 });
 
-describe('tenant-protected resource routes', () => {
-  it('rejects /api/loads without tenant id', async () => {
-    const response = await request(createApp())
-      .get('/api/loads')
-      .set('x-user-role', 'dispatcher');
-
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBe('tenant_id_required');
+describe('authentication middleware', () => {
+  beforeEach(() => {
+    process.env.NODE_ENV = 'test';
+    process.env.JWT_SECRET = TEST_JWT_SECRET;
   });
 
-  it('rejects /api/loads without valid role', async () => {
+  it('rejects /api/loads without a Bearer token', async () => {
+    const response = await request(createApp()).get('/api/loads');
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe('unauthorized');
+  });
+
+  it('rejects /api/loads with an invalid token', async () => {
     const response = await request(createApp())
       .get('/api/loads')
-      .set('x-tenant-id', 'tenant-1');
+      .set('Authorization', 'Bearer not.a.valid.jwt');
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe('unauthorized');
+  });
+
+  it('rejects a token signed with the wrong secret', async () => {
+    const badToken = jwt.sign({ sub: 'user-1', tenantId: 'tenant-1', role: 'dispatcher' }, 'wrong-secret');
+    const response = await request(createApp())
+      .get('/api/loads')
+      .set('Authorization', `Bearer ${badToken}`);
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe('unauthorized');
+  });
+
+  it('rejects a token that is missing tenantId', async () => {
+    const token = jwt.sign({ sub: 'user-1', role: 'dispatcher' }, TEST_JWT_SECRET);
+    const response = await request(createApp())
+      .get('/api/loads')
+      .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(403);
     expect(response.body.error).toBe('forbidden');
   });
 
-  it('creates and lists records only for same tenant', async () => {
+  it('rejects a token with an invalid role', async () => {
+    const token = jwt.sign({ sub: 'user-1', tenantId: 'tenant-1', role: 'hacker' }, TEST_JWT_SECRET);
+    const response = await request(createApp())
+      .get('/api/loads')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe('forbidden');
+  });
+
+  it('accepts a valid Bearer token and returns data', async () => {
+    const response = await request(createApp())
+      .get('/api/loads')
+      .set(authHeaders('tenant-1', 'dispatcher'));
+
+    expect(response.status).toBe(200);
+  });
+});
+
+describe('tenant isolation', () => {
+  beforeEach(() => {
+    process.env.NODE_ENV = 'test';
+    process.env.JWT_SECRET = TEST_JWT_SECRET;
+  });
+
+  it('creates and lists records only for the authenticated tenant', async () => {
     const app = createApp();
     const shipmentForTenant1 = {
       reference: 'REF-1',
@@ -60,8 +110,7 @@ describe('tenant-protected resource routes', () => {
 
     const createForT1 = await request(app)
       .post('/api/shipments')
-      .set('x-tenant-id', 'tenant-1')
-      .set('x-user-role', 'dispatcher')
+      .set(authHeaders('tenant-1', 'dispatcher'))
       .send(shipmentForTenant1);
 
     expect(createForT1.status).toBe(201);
@@ -69,20 +118,73 @@ describe('tenant-protected resource routes', () => {
 
     const createForT2 = await request(app)
       .post('/api/shipments')
-      .set('x-tenant-id', 'tenant-2')
-      .set('x-user-role', 'dispatcher')
+      .set(authHeaders('tenant-2', 'dispatcher'))
       .send(shipmentForTenant2);
 
     expect(createForT2.status).toBe(201);
     expect(createForT2.body.data.tenantId).toBe('tenant-2');
+
     const listT1 = await request(app)
       .get('/api/shipments')
-      .set('x-tenant-id', 'tenant-1')
-      .set('x-user-role', 'dispatcher');
+      .set(authHeaders('tenant-1', 'dispatcher'));
 
     expect(listT1.status).toBe(200);
     expect(listT1.body.count).toBe(1);
     expect(listT1.body.data[0].reference).toBe('REF-1');
+  });
+
+  it('blocks cross-tenant access: tenant-2 cannot see tenant-1 data', async () => {
+    const app = createApp();
+
+    await request(app)
+      .post('/api/shipments')
+      .set(authHeaders('tenant-cross-1', 'dispatcher'))
+      .send({
+        reference: 'CROSS-1',
+        brokerName: 'Broker Cross',
+        origin: 'Dallas, TX',
+        dest: 'Austin, TX',
+        pickupDate: '2024-01-10',
+        deliveryDate: '2024-01-11',
+      })
+      .expect(201);
+
+    // Tenant-2 tries to access tenant-1's data using its own valid token
+    const crossTenantList = await request(app)
+      .get('/api/shipments')
+      .set(authHeaders('tenant-cross-2', 'dispatcher'));
+
+    expect(crossTenantList.status).toBe(200);
+    expect(crossTenantList.body.count).toBe(0);
+    expect(crossTenantList.body.data).toEqual([]);
+  });
+
+  it('blocks role escalation: a dispatcher token cannot access billing admin endpoints', async () => {
+    const app = createApp();
+
+    const response = await request(app)
+      .post('/api/billing/customer-portal')
+      .set(authHeaders('tenant-esc', 'dispatcher'))
+      .send({});
+
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe('billing_forbidden');
+  });
+
+  it('blocks role escalation: x-user-role header is ignored — only the JWT role is used', async () => {
+    const app = createApp();
+
+    // Attacker provides a dispatcher JWT but tries to override with an owner role header
+    const dispatcherToken = makeToken('tenant-esc', 'dispatcher');
+    const response = await request(app)
+      .post('/api/billing/customer-portal')
+      .set('Authorization', `Bearer ${dispatcherToken}`)
+      .set('x-user-role', 'owner')
+      .send({});
+
+    // Should still be forbidden because the JWT says dispatcher
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe('billing_forbidden');
   });
 });
 

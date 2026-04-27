@@ -2,6 +2,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import express, { NextFunction, Request, Response } from 'express';
 import * as Sentry from '@sentry/node';
+import jwt from 'jsonwebtoken';
 import {
   createDataStore,
   DataStore,
@@ -40,6 +41,12 @@ const FREIGHT_OPERATION_RESOURCES: FreightOperationResource[] = [
 ];
 const LOAD_ASSIGNMENT_DECISIONS: LoadAssignmentDecision[] = ['accepted', 'rejected'];
 
+export type AuthClaims = {
+  sub: string;
+  tenantId: string;
+  role: Role;
+};
+
 class HttpError extends Error {
   statusCode: number;
   code: string;
@@ -51,39 +58,57 @@ class HttpError extends Error {
   }
 }
 
-function getTenantId(req: Request): string | null {
-  const tenantHeader = req.header('x-tenant-id')?.trim();
-  const tenantBody = typeof req.body?.tenantId === 'string' ? req.body.tenantId.trim() : null;
-  const tenantQuery = typeof req.query?.tenantId === 'string' ? req.query.tenantId.trim() : null;
-
-  return tenantHeader || tenantBody || tenantQuery || null;
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is required.');
+  }
+  return secret;
 }
 
-function requireTenant(req: Request, res: Response, next: NextFunction) {
-  const tenantId = getTenantId(req);
-
-  if (!tenantId) {
-    return res.status(400).json({
-      error: 'tenant_id_required',
-      message: 'Provide tenantId via x-tenant-id header, query, or body.',
+/**
+ * Verifies the Bearer JWT in the Authorization header.
+ * On success, attaches tenantId and userRole to the request from the token claims.
+ * These values are derived server-side from a cryptographically verified token,
+ * not from caller-controlled headers.
+ */
+function requireAuth(req: Request, res: Response, next: NextFunction) {
+  const authHeader = req.header('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      error: 'unauthorized',
+      message: 'A valid Bearer token is required.',
     });
   }
 
-  req.tenantId = tenantId;
-  next();
-}
+  const token = authHeader.slice(7);
 
-function requireRole(req: Request, res: Response, next: NextFunction) {
-  const role = req.header('x-user-role');
+  let claims: AuthClaims;
+  try {
+    claims = jwt.verify(token, getJwtSecret()) as AuthClaims;
+  } catch {
+    return res.status(401).json({
+      error: 'unauthorized',
+      message: 'Token is invalid or expired.',
+    });
+  }
 
-  if (!role || !ALLOWED_ROLES.includes(role as Role)) {
+  if (!claims.tenantId || typeof claims.tenantId !== 'string') {
     return res.status(403).json({
       error: 'forbidden',
-      message: 'A valid x-user-role is required for this endpoint.',
+      message: 'Token is missing required tenantId claim.',
     });
   }
 
-  req.userRole = role as Role;
+  if (!claims.role || !ALLOWED_ROLES.includes(claims.role)) {
+    return res.status(403).json({
+      error: 'forbidden',
+      message: 'Token is missing a valid role claim.',
+    });
+  }
+
+  req.tenantId = claims.tenantId;
+  req.userRole = claims.role;
   next();
 }
 
@@ -130,9 +155,9 @@ function wrapAsync(
 function getRequiredTenantId(req: Request): string {
   if (!req.tenantId) {
     throw new HttpError(
-      400,
-      'tenant_id_required',
-      'Provide tenantId via x-tenant-id header, query, or body.',
+      401,
+      'unauthorized',
+      'No authenticated identity found on the request.',
     );
   }
 
@@ -252,7 +277,7 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
 function registerRoutes(app: express.Express, dataStore: DataStore) {
   const aiUsageStore = createAiUsageStore();
 
-  app.get('/api/billing/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/billing/status', requireAuth, wrapAsync(async (req, res) => {
     const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(getRequiredTenantId(req));
     res.status(200).json({
       data: {
@@ -262,7 +287,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     });
   }));
 
-  app.post('/api/billing/checkout-session', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
+  app.post('/api/billing/checkout-session', requireAuth, requireBillingRole, wrapAsync(async (req, res) => {
     const carrierId = getRequiredTenantId(req);
     const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(carrierId);
 
@@ -284,7 +309,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data: { url } });
   }));
 
-  app.post('/api/billing/customer-portal', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
+  app.post('/api/billing/customer-portal', requireAuth, requireBillingRole, wrapAsync(async (req, res) => {
     const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(getRequiredTenantId(req));
 
     if (!stripeCustomerId) {
@@ -299,7 +324,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data: { url } });
   }));
 
-  app.post('/api/ai-usage/events', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/ai-usage/events', requireAuth, wrapAsync(async (req, res) => {
     if (!req.body?.feature || typeof req.body.feature !== 'string') {
       throw new HttpError(400, 'ai_usage_feature_required', 'AI usage events require a feature string.');
     }
@@ -312,54 +337,54 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(201).json({ data });
   }));
 
-  app.get('/api/ai-usage/summary', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/ai-usage/summary', requireAuth, wrapAsync(async (req, res) => {
     const data = await aiUsageStore.summarize(getRequiredTenantId(req));
     res.status(200).json({ data });
   }));
 
-  app.get('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/loads', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.listLoads(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/loads', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.createLoad(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.get('/api/drivers', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/drivers', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.listDrivers(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/drivers', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/drivers', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.createDriver(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.get('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/shipments', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.listShipments(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/shipments', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.createShipment(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.get('/api/freight-operations/:resource', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/freight-operations/:resource', requireAuth, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.listFreightOperations(resource, getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/freight-operations/:resource', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/freight-operations/:resource', requireAuth, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.createFreightOperation(resource, getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.patch('/api/freight-operations/:resource/:id', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.patch('/api/freight-operations/:resource/:id', requireAuth, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.updateFreightOperation(
       resource,
@@ -370,12 +395,12 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data });
   }));
 
-  app.post('/api/workflows/quotes/:id/convert-to-load', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/quotes/:id/convert-to-load', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.convertQuoteToLoad(getRequiredTenantId(req), req.params.id, req.body);
     res.status(201).json({ data });
   }));
 
-  app.post('/api/workflows/load-assignments/:id/:decision', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/load-assignments/:id/:decision', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.respondToLoadAssignment(
       getRequiredTenantId(req),
       req.params.id,
@@ -385,32 +410,32 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data });
   }));
 
-  app.post('/api/workflows/dispatches/:id/confirm', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/dispatches/:id/confirm', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.confirmDispatch(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
 
-  app.post('/api/workflows/loads/:loadId/tracking-updates', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/loads/:loadId/tracking-updates', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.recordTrackingUpdate(getRequiredTenantId(req), req.params.loadId, req.body);
     res.status(201).json({ data });
   }));
 
-  app.post('/api/workflows/loads/:loadId/verify-delivery', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/loads/:loadId/verify-delivery', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.verifyDelivery(getRequiredTenantId(req), req.params.loadId, req.body);
     res.status(201).json({ data });
   }));
 
-  app.post('/api/workflows/carrier-payments/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/carrier-payments/:id/status', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.updateCarrierPaymentStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
 
-  app.post('/api/workflows/operational-metrics/rollup', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/operational-metrics/rollup', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.rollupOperationalMetrics(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.post('/api/workflows/load-board-posts/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/workflows/load-board-posts/:id/status', requireAuth, wrapAsync(async (req, res) => {
     const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
