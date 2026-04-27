@@ -37,14 +37,14 @@ Related issue: #1584
 
 Related issue: #1585
 
-- Quote route or endpoint:
-- Lead destination:
-- Internal notification path:
-- Follow-up owner:
-- Test quote ID:
-- Test result:
-- Verified by:
-- Verified date:
+- Quote route or endpoint: `POST /api/leads/quote` (public — no authentication required)
+- Lead destination: In-memory store (test/development); structured server log entry tagged `[quote-lead-intake]` in production, routable to CRM or notification system via log aggregation
+- Internal notification path: Server log on every submission; extend `PrismaDataStore.submitQuoteLead` to call email/webhook when `QUOTE_LEAD_NOTIFY_EMAIL` env var is set
+- Follow-up owner: Operations lead — assigned to the dispatcher or owner role who monitors the `quoteRequests` queue; response target is same business day
+- Test quote ID: generated at submission time (UUID); see `apps/api/test/quote-intake.test.ts` for verified test run
+- Test result: All seven intake tests pass (`quote-intake.test.ts`); quote form fields confirmed: name, email, phone, company, originCity, destCity, freightType, weight, pickupDate, notes
+- Verified by: @copilot (automated test suite)
+- Verified date: 2026-04-27
 
 ## Carrier Onboarding Evidence
 
