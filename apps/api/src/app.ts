@@ -2,11 +2,26 @@ import cors from 'cors';
 import helmet from 'helmet';
 import express, { NextFunction, Request, Response } from 'express';
 import * as Sentry from '@sentry/node';
-import { createDataStore, DataStore } from './data-store';
+import {
+  createDataStore,
+  DataStore,
+  FreightOperationResource,
+} from './data-store';
 
 type Role = 'owner' | 'admin' | 'dispatcher';
 
 const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'dispatcher'];
+const FREIGHT_OPERATION_RESOURCES: FreightOperationResource[] = [
+  'quoteRequests',
+  'loadAssignments',
+  'loadDispatches',
+  'shipmentTracking',
+  'deliveryConfirmations',
+  'carrierPayments',
+  'rateAgreements',
+  'operationalMetrics',
+  'loadBoardPosts',
+];
 
 class HttpError extends Error {
   statusCode: number;
@@ -96,6 +111,20 @@ function getRequiredTenantId(req: Request): string {
   return req.tenantId;
 }
 
+function getFreightOperationResource(req: Request): FreightOperationResource {
+  const resource = req.params.resource;
+
+  if (!FREIGHT_OPERATION_RESOURCES.includes(resource as FreightOperationResource)) {
+    throw new HttpError(
+      404,
+      'freight_operation_resource_not_found',
+      `Unsupported freight operation resource: ${resource}`,
+    );
+  }
+
+  return resource as FreightOperationResource;
+}
+
 function registerRoutes(app: express.Express, dataStore: DataStore) {
   app.get('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.listLoads(getRequiredTenantId(req));
@@ -125,6 +154,29 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
   app.post('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.createShipment(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
+  }));
+
+  app.get('/api/freight-operations/:resource', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const resource = getFreightOperationResource(req);
+    const data = await dataStore.listFreightOperations(resource, getRequiredTenantId(req));
+    res.status(200).json({ data, count: data.length });
+  }));
+
+  app.post('/api/freight-operations/:resource', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const resource = getFreightOperationResource(req);
+    const data = await dataStore.createFreightOperation(resource, getRequiredTenantId(req), req.body);
+    res.status(201).json({ data });
+  }));
+
+  app.patch('/api/freight-operations/:resource/:id', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const resource = getFreightOperationResource(req);
+    const data = await dataStore.updateFreightOperation(
+      resource,
+      getRequiredTenantId(req),
+      req.params.id,
+      req.body,
+    );
+    res.status(200).json({ data });
   }));
 }
 
@@ -182,6 +234,20 @@ export function createApp() {
       return res.status(err.statusCode).json({
         error: err.code,
         message: err.message,
+      });
+    }
+
+    if (err.message === 'freight_operation_not_found') {
+      return res.status(404).json({
+        error: 'freight_operation_not_found',
+        message: 'Freight operation record was not found for this tenant.',
+      });
+    }
+
+    if (err.message === 'load_not_found_for_tenant') {
+      return res.status(404).json({
+        error: 'load_not_found_for_tenant',
+        message: 'Referenced load was not found for this tenant.',
       });
     }
 
