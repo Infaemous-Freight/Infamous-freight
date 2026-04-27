@@ -20,6 +20,7 @@ import {
 } from './billing';
 import { createAiUsageStore } from './ai-usage';
 import { createStripeWebhookEventStore } from './stripe-webhook-events';
+import { FreightWorkflowRuleError } from './freight-workflow-rules';
 
 type Role = 'owner' | 'admin' | 'dispatcher';
 
@@ -470,6 +471,13 @@ export function createApp() {
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof HttpError) {
       return res.status(err.statusCode).json({
+        error: err.code,
+        message: err.message,
+      });
+    }
+
+    if (err instanceof FreightWorkflowRuleError) {
+      return res.status(409).json({
         error: err.code,
         message: err.message,
       });

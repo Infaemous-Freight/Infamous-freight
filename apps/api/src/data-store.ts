@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import { BillingSyncPayload } from './billing';
+import { assertQuoteCanConvertToLoad } from './freight-workflow-rules';
 
 type BaseRecord = {
   id: string;
@@ -366,6 +367,15 @@ class MemoryDataStore implements DataStore {
     quoteRequestId: string,
     payload: Record<string, unknown>,
   ): Promise<FreightWorkflowResult> {
+    const records = this.freightOperations['quoteRequests'];
+    const existing = records.find((item) => item.id === quoteRequestId && item.tenantId === tenantId);
+
+    if (!existing) {
+      throw new Error('quote_request_not_found');
+    }
+
+    assertQuoteCanConvertToLoad({ status: existing.status });
+
     const quoteRequest = await this.updateFreightOperation(
       'quoteRequests',
       tenantId,
