@@ -20,6 +20,7 @@ import {
 } from './billing';
 import { createAiUsageStore } from './ai-usage';
 import { createStripeWebhookEventStore } from './stripe-webhook-events';
+import { createFreightWorkflowRouter } from './freight-workflow-routes';
 
 type Role = 'owner' | 'admin' | 'dispatcher';
 
@@ -369,6 +370,8 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     );
     res.status(200).json({ data });
   }));
+
+  app.use('/api/workflows', requireTenant, requireRole, createFreightWorkflowRouter(dataStore));
 
   app.post('/api/workflows/quotes/:id/convert-to-load', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.convertQuoteToLoad(getRequiredTenantId(req), req.params.id, req.body);
