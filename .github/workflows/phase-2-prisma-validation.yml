@@ -78,3 +78,5 @@ jobs:
 
       - name: Test API
         run: npm --prefix apps/api run test
+
+# Pull-request trigger marker: Phase 2 validation smoke check.
