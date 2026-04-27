@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import request from 'supertest';
 import { createApp } from '../src/app';
+import { createStripeCheckoutSession } from '../src/billing';
 
 function createStripeSignature(payload: string, secret: string): string {
   const timestamp = Math.floor(Date.now() / 1000);
@@ -11,6 +12,46 @@ function createStripeSignature(payload: string, secret: string): string {
 
   return `t=${timestamp},v1=${digest}`;
 }
+
+describe('Stripe billing helpers', () => {
+  const originalFetch = global.fetch;
+
+  beforeEach(() => {
+    process.env.NODE_ENV = 'test';
+    process.env.STRIPE_SECRET_KEY = 'sk_test_mock';
+    process.env.STRIPE_PAYMENT_METHOD_CONFIGURATION = 'pmc_1TAr80KCNuZqDozYrFe3HeP1';
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    delete process.env.STRIPE_SECRET_KEY;
+    delete process.env.STRIPE_PAYMENT_METHOD_CONFIGURATION;
+  });
+
+  it('adds payment_method_configuration to Checkout Sessions when configured', async () => {
+    let requestBody: URLSearchParams | null = null;
+
+    global.fetch = jest.fn(async (_url: RequestInfo | URL, init?: RequestInit) => {
+      requestBody = init?.body as URLSearchParams;
+
+      return {
+        ok: true,
+        json: async () => ({ url: 'https://checkout.stripe.com/c/session_mock' }),
+      } as Response;
+    });
+
+    const url = await createStripeCheckoutSession({
+      carrierId: 'carrier_test_123',
+      plan: 'professional',
+      billingInterval: 'month',
+    });
+
+    expect(url).toBe('https://checkout.stripe.com/c/session_mock');
+    expect(requestBody?.get('payment_method_configuration')).toBe('pmc_1TAr80KCNuZqDozYrFe3HeP1');
+    expect(requestBody?.get('line_items[0][price]')).toBe('price_1TBnZ3KCNuZqDozY2FISQT98');
+    expect(requestBody?.get('client_reference_id')).toBe('carrier_test_123');
+  });
+});
 
 describe('Stripe billing endpoints', () => {
   beforeEach(() => {
