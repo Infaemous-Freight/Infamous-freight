@@ -1,5 +1,13 @@
 import request from 'supertest';
 import { createApp } from '../src/app';
+import { resetRateLimitBucketsForTests } from '../src/rate-limit';
+
+afterEach(() => {
+  resetRateLimitBucketsForTests();
+  delete process.env.RATE_LIMIT_ENABLED;
+  delete process.env.RATE_LIMIT_WINDOW_MS;
+  delete process.env.RATE_LIMIT_MAX_REQUESTS;
+});
 
 describe('health endpoint', () => {
   it('returns 200 and ok status on /health', async () => {
@@ -17,6 +25,36 @@ describe('health endpoint', () => {
     expect(response.status).toBe(200);
     expect(response.body.status).toBe('ok');
     expect(typeof response.body.timestamp).toBe('string');
+  });
+});
+
+describe('rate limiting', () => {
+  it('returns 429 after the configured API request limit is exceeded', async () => {
+    process.env.RATE_LIMIT_WINDOW_MS = '60000';
+    process.env.RATE_LIMIT_MAX_REQUESTS = '1';
+
+    const app = createApp();
+
+    const allowed = await request(app).get('/api/health');
+    expect(allowed.status).toBe(200);
+
+    const limited = await request(app).get('/api/health');
+    expect(limited.status).toBe(429);
+    expect(limited.header['retry-after']).toBeDefined();
+    expect(limited.body.error).toBe('rate_limit_exceeded');
+  });
+
+  it('allows API requests when rate limiting is explicitly disabled', async () => {
+    process.env.RATE_LIMIT_ENABLED = 'false';
+    process.env.RATE_LIMIT_MAX_REQUESTS = '1';
+
+    const app = createApp();
+
+    const first = await request(app).get('/api/health');
+    const second = await request(app).get('/api/health');
+
+    expect(first.status).toBe(200);
+    expect(second.status).toBe(200);
   });
 });
 
