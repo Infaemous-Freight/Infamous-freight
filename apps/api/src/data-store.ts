@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { PrismaClient } from '@prisma/client';
+import { BillingSyncPayload } from './billing';
 
 type BaseRecord = {
   id: string;
@@ -193,6 +194,8 @@ export interface DataStore {
     postId: string,
     payload: Record<string, unknown>,
   ): Promise<FreightOperationRecord>;
+  syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean>;
+  getCarrierStripeCustomerId(tenantId: string): Promise<string | null>;
   healthCheck(): Promise<'connected' | 'disconnected'>;
 }
 
@@ -277,6 +280,11 @@ class MemoryDataStore implements DataStore {
   private loads: LoadRecord[] = [];
   private drivers: DriverRecord[] = [];
   private shipments: ShipmentRecord[] = [];
+  private carrierBilling = new Map<string, {
+    stripeCustomerId: string | null;
+    subscriptionTier: string;
+    status: string;
+  }>();
   private freightOperations: Record<FreightOperationResource, FreightOperationRecord[]> = {
     quoteRequests: [],
     loadAssignments: [],
@@ -472,6 +480,31 @@ class MemoryDataStore implements DataStore {
       ...payload,
       status: payload.status ?? 'expired',
     });
+  }
+
+  async syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean> {
+    const carrierId = payload.carrierId;
+    if (!carrierId) {
+      return false;
+    }
+
+    const current = this.carrierBilling.get(carrierId) ?? {
+      stripeCustomerId: null,
+      subscriptionTier: 'starter',
+      status: 'trial',
+    };
+
+    this.carrierBilling.set(carrierId, {
+      stripeCustomerId: payload.stripeCustomerId ?? current.stripeCustomerId,
+      subscriptionTier: payload.subscriptionTier ?? current.subscriptionTier,
+      status: payload.status ?? current.status,
+    });
+
+    return true;
+  }
+
+  async getCarrierStripeCustomerId(tenantId: string): Promise<string | null> {
+    return this.carrierBilling.get(tenantId)?.stripeCustomerId ?? null;
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
@@ -847,6 +880,40 @@ class PrismaDataStore implements DataStore {
       ...payload,
       status: payload.status ?? 'expired',
     });
+  }
+
+  async syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean> {
+    if (!payload.carrierId && !payload.stripeCustomerId) {
+      return false;
+    }
+
+    const existing = payload.carrierId
+      ? await this.prisma.carrier.findUnique({ where: { id: payload.carrierId } })
+      : await this.prisma.carrier.findFirst({ where: { stripeCustomerId: payload.stripeCustomerId } });
+
+    if (!existing) {
+      return false;
+    }
+
+    await this.prisma.carrier.update({
+      where: { id: existing.id },
+      data: {
+        stripeCustomerId: payload.stripeCustomerId ?? existing.stripeCustomerId,
+        subscriptionTier: payload.subscriptionTier ?? existing.subscriptionTier,
+        status: payload.status ?? existing.status,
+      },
+    });
+
+    return true;
+  }
+
+  async getCarrierStripeCustomerId(tenantId: string): Promise<string | null> {
+    const carrier = await this.prisma.carrier.findUnique({
+      where: { id: tenantId },
+      select: { stripeCustomerId: true },
+    });
+
+    return carrier?.stripeCustomerId ?? null;
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
