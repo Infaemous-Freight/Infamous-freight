@@ -10,7 +10,7 @@ Main tracking issue: #1589
 
 Related issue: #1592 (Run end-to-end freight workflow test)
 
-All 13 test IDs below are defined in `apps/api/test/mvp-e2e-freight-workflow.test.ts`.
+All 13 test IDs below are defined in `apps/api/test/mvp-e2e-freight-workflow.test.ts` (12 test cases; E2E-010 and E2E-011 are verified together in one test).
 Run with: `npx jest --runInBand --testPathPattern=mvp-e2e-freight-workflow`
 
 | Test ID  | Description                                       | Result  |

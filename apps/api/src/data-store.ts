@@ -526,7 +526,7 @@ class MemoryDataStore implements DataStore {
     const carrierRate = Number(payload.carrierRate ?? 0);
     const grossMargin = shipperRate - carrierRate;
     const grossMarginPct = shipperRate > 0 ? Number(((grossMargin / shipperRate) * 100).toFixed(2)) : 0;
-    const invoiceNumber = `INF-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 9999).toString().padStart(4, '0')}`;
+    const invoiceNumber = `INF-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${randomUUID().slice(0, 8).toUpperCase()}`;
 
     const invoice = await this.createFreightOperation('invoices', tenantId, {
       ...payload,
@@ -975,7 +975,7 @@ class PrismaDataStore implements DataStore {
       data: { status: 'approved' },
     }) as Record<string, unknown>;
 
-    return normalizeOperationRecord(updated, tenantId);
+    return normalizeOperationRecord({ ...updated, approvedAt: new Date().toISOString() }, tenantId);
   }
 
   async generateInvoice(
@@ -987,7 +987,7 @@ class PrismaDataStore implements DataStore {
     const carrierRate = Number(payload.carrierRate ?? 0);
     const grossMargin = shipperRate - carrierRate;
     const grossMarginPct = shipperRate > 0 ? Number(((grossMargin / shipperRate) * 100).toFixed(2)) : 0;
-    const invoiceNumber = `INF-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 9999).toString().padStart(4, '0')}`;
+    const invoiceNumber = `INF-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${randomUUID().slice(0, 8).toUpperCase()}`;
 
     const brokerName = typeof payload.brokerName === 'string' ? payload.brokerName : 'Unknown';
     const invoice = await this.prisma.invoice.create({

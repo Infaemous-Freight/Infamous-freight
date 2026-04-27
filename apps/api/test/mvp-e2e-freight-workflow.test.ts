@@ -330,7 +330,7 @@ describe('MVP end-to-end freight workflow', () => {
       shipperRate: SHIPPER_RATE,
       carrierRate: CARRIER_RATE,
     });
-    expect(invoice.invoiceNumber).toMatch(/^INF-\d{8}-\d{4}$/);
+    expect(invoice.invoiceNumber).toMatch(/^INF-\d{8}-[0-9A-F]{8}$/);
 
     // E2E-011: Gross margin verified
     expect(grossMargin).toBe(EXPECTED_GROSS_MARGIN);
