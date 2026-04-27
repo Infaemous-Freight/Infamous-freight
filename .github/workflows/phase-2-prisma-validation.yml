@@ -1,0 +1,77 @@
+name: Phase 2 — Prisma Validation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/api/prisma/**'
+      - 'apps/api/src/**'
+      - 'apps/api/package.json'
+      - 'apps/api/tsconfig.json'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/phase-2-prisma-validation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'apps/api/prisma/**'
+      - '.github/workflows/phase-2-prisma-validation.yml'
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous_freight_phase2?schema=public
+
+jobs:
+  prisma-validation:
+    name: Prisma migrate, generate, build, and test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: infamous_freight_phase2
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d infamous_freight_phase2"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Format-check Prisma schema
+        run: npm --prefix apps/api exec prisma format --schema prisma/schema.prisma --check
+
+      - name: Validate Prisma schema
+        run: npm --prefix apps/api exec prisma validate --schema prisma/schema.prisma
+
+      - name: Apply Prisma migrations to clean PostgreSQL database
+        run: npm --prefix apps/api exec prisma migrate deploy --schema prisma/schema.prisma
+
+      - name: Generate Prisma client
+        run: npm run prisma:generate
+
+      - name: Build API
+        run: npm --prefix apps/api run build
+
+      - name: Test API
+        run: npm --prefix apps/api run test
