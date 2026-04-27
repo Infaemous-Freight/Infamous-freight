@@ -25,6 +25,23 @@ export type DriverRecord = BaseRecord & Record<string, unknown>;
 export type ShipmentRecord = BaseRecord & Record<string, unknown>;
 export type FreightOperationRecord = BaseRecord & Record<string, unknown>;
 
+export type QuoteLeadRecord = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  originCity: string;
+  destCity: string;
+  freightType: string;
+  weight: number;
+  pickupDate: string;
+  notes: string;
+  source: string;
+  status: string;
+  receivedAt: string;
+};
+
 type PrismaLoadRecord = {
   id: string;
   carrierId: string;
@@ -194,6 +211,7 @@ export interface DataStore {
     postId: string,
     payload: Record<string, unknown>,
   ): Promise<FreightOperationRecord>;
+  submitQuoteLead(payload: Record<string, unknown>): Promise<QuoteLeadRecord>;
   syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean>;
   getCarrierStripeCustomerId(tenantId: string): Promise<string | null>;
   healthCheck(): Promise<'connected' | 'disconnected'>;
@@ -280,6 +298,7 @@ class MemoryDataStore implements DataStore {
   private loads: LoadRecord[] = [];
   private drivers: DriverRecord[] = [];
   private shipments: ShipmentRecord[] = [];
+  private leads: QuoteLeadRecord[] = [];
   private carrierBilling = new Map<string, {
     stripeCustomerId: string | null;
     subscriptionTier: string;
@@ -480,6 +499,28 @@ class MemoryDataStore implements DataStore {
       ...payload,
       status: payload.status ?? 'expired',
     });
+  }
+
+  async submitQuoteLead(payload: Record<string, unknown>): Promise<QuoteLeadRecord> {
+    const rawWeight = parseFloat(String(payload.weight ?? '0'));
+    const record: QuoteLeadRecord = {
+      id: randomUUID(),
+      name: String(payload.name ?? ''),
+      email: String(payload.email ?? ''),
+      phone: String(payload.phone ?? ''),
+      company: String(payload.company ?? ''),
+      originCity: String(payload.originCity ?? ''),
+      destCity: String(payload.destCity ?? ''),
+      freightType: String(payload.freightType ?? ''),
+      weight: isFinite(rawWeight) ? rawWeight : 0,
+      pickupDate: String(payload.pickupDate ?? ''),
+      notes: String(payload.notes ?? ''),
+      source: String(payload.source ?? 'web-form'),
+      status: 'new',
+      receivedAt: new Date().toISOString(),
+    };
+    this.leads.push(record);
+    return record;
   }
 
   async syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean> {
@@ -880,6 +921,30 @@ class PrismaDataStore implements DataStore {
       ...payload,
       status: payload.status ?? 'expired',
     });
+  }
+
+  async submitQuoteLead(payload: Record<string, unknown>): Promise<QuoteLeadRecord> {
+    const rawWeight = parseFloat(String(payload.weight ?? '0'));
+    const record: QuoteLeadRecord = {
+      id: randomUUID(),
+      name: String(payload.name ?? ''),
+      email: String(payload.email ?? ''),
+      phone: String(payload.phone ?? ''),
+      company: String(payload.company ?? ''),
+      originCity: String(payload.originCity ?? ''),
+      destCity: String(payload.destCity ?? ''),
+      freightType: String(payload.freightType ?? ''),
+      weight: isFinite(rawWeight) ? rawWeight : 0,
+      pickupDate: String(payload.pickupDate ?? ''),
+      notes: String(payload.notes ?? ''),
+      source: String(payload.source ?? 'web-form'),
+      status: 'new',
+      receivedAt: new Date().toISOString(),
+    };
+    // Log the incoming lead so it appears in server logs and can be routed
+    // to a CRM or notification system via log aggregation (e.g. Datadog, Papertrail).
+    console.log('[quote-lead-intake]', JSON.stringify(record));
+    return record;
   }
 
   async syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean> {
