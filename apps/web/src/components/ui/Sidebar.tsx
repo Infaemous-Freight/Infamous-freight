@@ -4,10 +4,17 @@ import { canAccessLaunchValidation } from '@/lib/launchValidationAccess';
 import {
   LayoutDashboard, Truck, Radio, Users, FileText, MessageSquare,
   TrendingUp, ShieldCheck, Settings, ChevronLeft, ChevronRight,
-  Zap, LogOut, ClipboardCheck
+  Zap, LogOut, ClipboardCheck, type LucideIcon
 } from 'lucide-react';
 
-const baseNavItems = [
+type NavItem = {
+  path: string;
+  label: string;
+  icon: LucideIcon;
+  badge?: string;
+};
+
+const baseNavItems: NavItem[] = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/loads', label: 'Loads', icon: Truck },
   { path: '/dispatch', label: 'Dispatch Board', icon: Radio },
@@ -18,18 +25,18 @@ const baseNavItems = [
   { path: '/compliance', label: 'Compliance', icon: ShieldCheck },
 ];
 
-const launchValidationNavItem = {
+const launchValidationNavItem: NavItem = {
   path: '/launch-validation',
   label: 'Launch Validation',
   icon: ClipboardCheck,
 };
 
-const settingsNavItem = { path: '/settings', label: 'Settings', icon: Settings };
+const settingsNavItem: NavItem = { path: '/settings', label: 'Settings', icon: Settings };
 
 const Sidebar: React.FC = () => {
   const { sidebarOpen, toggleSidebar, logout, user } = useAppStore();
   const location = useLocation();
-  const navItems = canAccessLaunchValidation(user?.role)
+  const navItems: NavItem[] = canAccessLaunchValidation(user?.role)
     ? [...baseNavItems, launchValidationNavItem, settingsNavItem]
     : [...baseNavItems, settingsNavItem];
 
@@ -78,14 +85,14 @@ const Sidebar: React.FC = () => {
               {sidebarOpen && (
                 <>
                   <span className="text-sm font-medium flex-1">{item.label}</span>
-                  {'badge' in item && item.badge && (
+                  {item.badge && (
                     <span className="bg-infamous-orange text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
                       {item.badge}
                     </span>
                   )}
                 </>
               )}
-              {!sidebarOpen && 'badge' in item && item.badge && (
+              {!sidebarOpen && item.badge && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-infamous-orange rounded-full text-[9px] font-bold text-white flex items-center justify-center">
                   {item.badge}
                 </span>
