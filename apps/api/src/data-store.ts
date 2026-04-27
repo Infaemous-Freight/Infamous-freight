@@ -17,6 +17,8 @@ export type FreightOperationResource =
   | 'operationalMetrics'
   | 'loadBoardPosts';
 
+export type LoadAssignmentDecision = 'accepted' | 'rejected';
+export type FreightWorkflowResult = Record<string, unknown>;
 export type LoadRecord = BaseRecord & Record<string, unknown>;
 export type DriverRecord = BaseRecord & Record<string, unknown>;
 export type ShipmentRecord = BaseRecord & Record<string, unknown>;
@@ -151,7 +153,51 @@ export interface DataStore {
     id: string,
     payload: Record<string, unknown>,
   ): Promise<FreightOperationRecord>;
+  convertQuoteToLoad(
+    tenantId: string,
+    quoteRequestId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightWorkflowResult>;
+  respondToLoadAssignment(
+    tenantId: string,
+    assignmentId: string,
+    decision: LoadAssignmentDecision,
+    payload?: Record<string, unknown>,
+  ): Promise<FreightOperationRecord>;
+  confirmDispatch(
+    tenantId: string,
+    dispatchId: string,
+    payload?: Record<string, unknown>,
+  ): Promise<FreightOperationRecord>;
+  recordTrackingUpdate(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord>;
+  verifyDelivery(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightWorkflowResult>;
+  updateCarrierPaymentStatus(
+    tenantId: string,
+    paymentId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord>;
+  rollupOperationalMetrics(
+    tenantId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord>;
+  updateLoadBoardPostStatus(
+    tenantId: string,
+    postId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord>;
   healthCheck(): Promise<'connected' | 'disconnected'>;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function normalizePayload(
@@ -199,6 +245,13 @@ function buildTenantWhere(config: OperationConfig, tenantId: string): Record<str
   }
 
   return {};
+}
+
+function getNestedPayload(
+  payload: Record<string, unknown>,
+  key: string,
+): Record<string, unknown> {
+  return isRecord(payload[key]) ? payload[key] as Record<string, unknown> : payload;
 }
 
 async function assertLoadBelongsToTenant(
@@ -298,6 +351,127 @@ class MemoryDataStore implements DataStore {
 
     records[index] = { ...records[index], ...payload, id, tenantId };
     return records[index];
+  }
+
+  async convertQuoteToLoad(
+    tenantId: string,
+    quoteRequestId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightWorkflowResult> {
+    const quoteRequest = await this.updateFreightOperation(
+      'quoteRequests',
+      tenantId,
+      quoteRequestId,
+      { status: payload.quoteStatus ?? 'converted' },
+    );
+    const loadPayload = getNestedPayload(payload, 'load');
+    const load = await this.createLoad(tenantId, {
+      ...loadPayload,
+      quoteRequestId,
+      brokerName: loadPayload.brokerName ?? quoteRequest.brokerName,
+      originCity: loadPayload.originCity ?? quoteRequest.originCity,
+      destCity: loadPayload.destCity ?? quoteRequest.destCity,
+      status: loadPayload.status ?? 'booked',
+    });
+
+    return { quoteRequest, load };
+  }
+
+  async respondToLoadAssignment(
+    tenantId: string,
+    assignmentId: string,
+    decision: LoadAssignmentDecision,
+    payload: Record<string, unknown> = {},
+  ): Promise<FreightOperationRecord> {
+    const timestampField = decision === 'accepted' ? 'acceptedAt' : 'rejectedAt';
+    return this.updateFreightOperation('loadAssignments', tenantId, assignmentId, {
+      ...payload,
+      status: decision,
+      [timestampField]: payload[timestampField] ?? new Date().toISOString(),
+    });
+  }
+
+  async confirmDispatch(
+    tenantId: string,
+    dispatchId: string,
+    payload: Record<string, unknown> = {},
+  ): Promise<FreightOperationRecord> {
+    return this.updateFreightOperation('loadDispatches', tenantId, dispatchId, {
+      ...payload,
+      status: payload.status ?? 'confirmed',
+      confirmedAt: payload.confirmedAt ?? new Date().toISOString(),
+    });
+  }
+
+  async recordTrackingUpdate(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    return this.createFreightOperation('shipmentTracking', tenantId, {
+      ...payload,
+      loadId,
+      status: payload.status ?? 'in_transit',
+    });
+  }
+
+  async verifyDelivery(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightWorkflowResult> {
+    const deliveryConfirmation = await this.createFreightOperation('deliveryConfirmations', tenantId, {
+      ...payload,
+      loadId,
+      verifiedAt: payload.verifiedAt ?? new Date().toISOString(),
+    });
+    const tracking = await this.createFreightOperation('shipmentTracking', tenantId, {
+      loadId,
+      status: 'delivered',
+      deliveredAt: payload.deliveryTime ?? new Date().toISOString(),
+      podReceived: true,
+      podVerified: true,
+    });
+
+    return { deliveryConfirmation, tracking };
+  }
+
+  async updateCarrierPaymentStatus(
+    tenantId: string,
+    paymentId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    return this.updateFreightOperation('carrierPayments', tenantId, paymentId, {
+      ...payload,
+      status: payload.status ?? 'paid',
+      paymentDate: payload.paymentDate ?? new Date().toISOString(),
+    });
+  }
+
+  async rollupOperationalMetrics(
+    tenantId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    return this.createFreightOperation('operationalMetrics', tenantId, {
+      date: payload.date ?? new Date().toISOString(),
+      period: payload.period ?? 'daily',
+      loadsBooked: payload.loadsBooked ?? 0,
+      grossMargin: payload.grossMargin ?? 0,
+      onTimePickup: payload.onTimePickup ?? 0,
+      onTimeDelivery: payload.onTimeDelivery ?? 0,
+      daysOutstanding: payload.daysOutstanding ?? 0,
+    });
+  }
+
+  async updateLoadBoardPostStatus(
+    tenantId: string,
+    postId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    return this.updateFreightOperation('loadBoardPosts', tenantId, postId, {
+      ...payload,
+      status: payload.status ?? 'expired',
+    });
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
@@ -543,6 +717,136 @@ class PrismaDataStore implements DataStore {
     }) as Record<string, unknown>;
 
     return normalizeOperationRecord(record, tenantId);
+  }
+
+  async convertQuoteToLoad(
+    tenantId: string,
+    quoteRequestId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightWorkflowResult> {
+    const quoteRequest = await this.prisma.quoteRequest.findFirst({
+      where: { id: quoteRequestId, carrierId: tenantId },
+    }) as Record<string, unknown> | null;
+
+    if (!quoteRequest) {
+      throw new Error('quote_request_not_found');
+    }
+
+    const loadPayload = getNestedPayload(payload, 'load');
+    const load = await this.createLoad(tenantId, {
+      ...loadPayload,
+      brokerName: loadPayload.brokerName ?? quoteRequest.brokerName,
+      originCity: loadPayload.originCity ?? quoteRequest.originCity,
+      destCity: loadPayload.destCity ?? quoteRequest.destCity,
+      pickupDate: loadPayload.pickupDate ?? quoteRequest.pickupDate,
+      status: loadPayload.status ?? 'booked',
+    });
+    const updatedQuote = await this.prisma.quoteRequest.update({
+      where: { id: quoteRequestId },
+      data: { status: String(payload.quoteStatus ?? 'converted') },
+    }) as Record<string, unknown>;
+
+    return {
+      quoteRequest: normalizeOperationRecord(updatedQuote, tenantId),
+      load,
+    };
+  }
+
+  async respondToLoadAssignment(
+    tenantId: string,
+    assignmentId: string,
+    decision: LoadAssignmentDecision,
+    payload: Record<string, unknown> = {},
+  ): Promise<FreightOperationRecord> {
+    const timestampField = decision === 'accepted' ? 'acceptedAt' : 'rejectedAt';
+    return this.updateFreightOperation('loadAssignments', tenantId, assignmentId, {
+      ...payload,
+      status: decision,
+      [timestampField]: payload[timestampField] ?? new Date().toISOString(),
+    });
+  }
+
+  async confirmDispatch(
+    tenantId: string,
+    dispatchId: string,
+    payload: Record<string, unknown> = {},
+  ): Promise<FreightOperationRecord> {
+    return this.updateFreightOperation('loadDispatches', tenantId, dispatchId, {
+      ...payload,
+      status: payload.status ?? 'confirmed',
+      confirmedAt: payload.confirmedAt ?? new Date().toISOString(),
+    });
+  }
+
+  async recordTrackingUpdate(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    return this.createFreightOperation('shipmentTracking', tenantId, {
+      ...payload,
+      loadId,
+      status: payload.status ?? 'in_transit',
+    });
+  }
+
+  async verifyDelivery(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightWorkflowResult> {
+    const deliveryConfirmation = await this.createFreightOperation('deliveryConfirmations', tenantId, {
+      ...payload,
+      loadId,
+      verifiedAt: payload.verifiedAt ?? new Date().toISOString(),
+    });
+    const tracking = await this.createFreightOperation('shipmentTracking', tenantId, {
+      loadId,
+      status: 'delivered',
+      deliveredAt: payload.deliveryTime ?? new Date().toISOString(),
+      podReceived: true,
+      podVerified: true,
+    });
+
+    return { deliveryConfirmation, tracking };
+  }
+
+  async updateCarrierPaymentStatus(
+    tenantId: string,
+    paymentId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    return this.updateFreightOperation('carrierPayments', tenantId, paymentId, {
+      ...payload,
+      status: payload.status ?? 'paid',
+      paymentDate: payload.paymentDate ?? new Date().toISOString(),
+    });
+  }
+
+  async rollupOperationalMetrics(
+    tenantId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    return this.createFreightOperation('operationalMetrics', tenantId, {
+      date: payload.date ?? new Date().toISOString(),
+      period: payload.period ?? 'daily',
+      loadsBooked: payload.loadsBooked ?? 0,
+      grossMargin: payload.grossMargin ?? 0,
+      onTimePickup: payload.onTimePickup ?? 0,
+      onTimeDelivery: payload.onTimeDelivery ?? 0,
+      daysOutstanding: payload.daysOutstanding ?? 0,
+    });
+  }
+
+  async updateLoadBoardPostStatus(
+    tenantId: string,
+    postId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    return this.updateFreightOperation('loadBoardPosts', tenantId, postId, {
+      ...payload,
+      status: payload.status ?? 'expired',
+    });
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
