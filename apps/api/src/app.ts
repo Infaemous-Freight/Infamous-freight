@@ -19,6 +19,7 @@ import {
   verifyStripeWebhookSignature,
 } from './billing';
 import { createAiUsageStore } from './ai-usage';
+import { createStripeWebhookEventStore } from './stripe-webhook-events';
 
 type Role = 'owner' | 'admin' | 'dispatcher';
 
@@ -186,7 +187,13 @@ function getCheckoutInterval(req: Request): BillingInterval {
   return billingInterval;
 }
 
+function getCarrierIdFromBillingSync(billingSync: ReturnType<typeof getBillingSyncFromStripeEvent>): string | null {
+  return billingSync?.carrierId ?? null;
+}
+
 function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
+  const webhookEvents = createStripeWebhookEventStore();
+
   app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), wrapAsync(async (req, res) => {
     const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(JSON.stringify(req.body ?? {}));
     const signature = req.header('stripe-signature');
@@ -198,9 +205,44 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
 
     const event = JSON.parse(rawBody.toString('utf8')) as StripeEvent;
     const billingSync = getBillingSyncFromStripeEvent(event);
+    const carrierId = getCarrierIdFromBillingSync(billingSync);
 
-    if (billingSync) {
-      await dataStore.syncCarrierBilling(billingSync);
+    await webhookEvents.upsert({
+      eventId: event.id,
+      eventType: event.type,
+      carrierId,
+      status: 'received',
+    });
+
+    try {
+      if (billingSync) {
+        const synced = await dataStore.syncCarrierBilling(billingSync);
+        await webhookEvents.upsert({
+          eventId: event.id,
+          eventType: event.type,
+          carrierId,
+          status: synced ? 'processed' : 'ignored',
+          processedAt: new Date(),
+        });
+      } else {
+        await webhookEvents.upsert({
+          eventId: event.id,
+          eventType: event.type,
+          carrierId,
+          status: 'ignored',
+          processedAt: new Date(),
+        });
+      }
+    } catch (error) {
+      await webhookEvents.upsert({
+        eventId: event.id,
+        eventType: event.type,
+        carrierId,
+        status: 'failed',
+        errorMessage: error instanceof Error ? error.message : 'Unknown webhook processing error',
+        processedAt: new Date(),
+      });
+      throw error;
     }
 
     res.status(200).json({ received: true });
@@ -223,6 +265,15 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
   app.post('/api/billing/checkout-session', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
     const carrierId = getRequiredTenantId(req);
     const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(carrierId);
+
+    if (stripeCustomerId) {
+      throw new HttpError(
+        409,
+        'stripe_customer_already_linked',
+        'This carrier already has a Stripe customer. Use the Customer Portal to change billing.',
+      );
+    }
+
     const url = await createStripeCheckoutSession({
       carrierId,
       stripeCustomerId,

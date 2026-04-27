@@ -74,6 +74,39 @@ describe('Stripe billing endpoints', () => {
     expect(response.body.error).toBe('stripe_secret_key_required');
   });
 
+  it('blocks duplicate checkout when a carrier already has a Stripe customer', async () => {
+    const app = createApp();
+    const payload = JSON.stringify({
+      id: 'evt_checkout_duplicate_guard',
+      type: 'checkout.session.completed',
+      data: {
+        object: {
+          customer: 'cus_duplicate_guard',
+          metadata: {
+            carrierId: 'carrier_duplicate_guard',
+            plan: 'starter',
+          },
+        },
+      },
+    });
+
+    await request(app)
+      .post('/api/billing/webhook')
+      .set('stripe-signature', createStripeSignature(payload, 'whsec_test_secret'))
+      .set('Content-Type', 'application/json')
+      .send(payload)
+      .expect(200, { received: true });
+
+    const response = await request(app)
+      .post('/api/billing/checkout-session')
+      .set('x-tenant-id', 'carrier_duplicate_guard')
+      .set('x-user-role', 'owner')
+      .send({ plan: 'professional', billingInterval: 'month' })
+      .expect(409);
+
+    expect(response.body.error).toBe('stripe_customer_already_linked');
+  });
+
   it('requires owner or admin access for customer portal and checkout sessions', async () => {
     const app = createApp();
 
