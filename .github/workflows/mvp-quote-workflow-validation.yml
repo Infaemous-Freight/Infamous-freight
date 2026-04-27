@@ -1,5 +1,8 @@
 name: MVP Quote Workflow Validation
 
+# Validates the MVP quote-to-load guard and route behavior.
+# Use workflow_dispatch for manual evidence runs tracked by issue #1651.
+
 on:
   workflow_dispatch:
   pull_request:
