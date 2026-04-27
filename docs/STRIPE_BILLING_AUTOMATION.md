@@ -1,7 +1,7 @@
 # Stripe Billing Automation
 
 Date: April 27, 2026
-Status: Checkout, webhook sync, customer portal, and AI usage ledger foundation added
+Status: Checkout, webhook sync, customer portal, webhook logging, duplicate checkout guard, and AI usage ledger foundation added
 
 ## Purpose
 
@@ -11,7 +11,9 @@ The implementation adds:
 
 - Backend-created Stripe Checkout Sessions
 - Stripe webhook verification
+- Stripe webhook event logging
 - Subscription/customer sync to `Carrier`
+- Duplicate checkout protection
 - Owner/admin customer portal endpoint
 - AI usage ledger API and database table
 - Billing UI in Settings
@@ -26,6 +28,15 @@ POST /api/billing/webhook
 ```
 
 This endpoint expects Stripe's raw request body and validates the `stripe-signature` header with `STRIPE_WEBHOOK_SECRET`.
+
+Verified events are logged to `StripeWebhookEvent` with status:
+
+```text
+received
+processed
+failed
+ignored
+```
 
 ### Checkout Session
 
@@ -63,6 +74,8 @@ Supported billing intervals:
 month
 year
 ```
+
+If a carrier already has a linked Stripe customer, checkout creation returns a conflict. Use the Customer Portal for billing changes after first checkout.
 
 ### Customer portal
 
@@ -138,21 +151,21 @@ API:
 ```env
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
-STRIPE_PORTAL_RETURN_URL=https://app.infamousfreight.com/settings
-STRIPE_CHECKOUT_SUCCESS_URL=https://app.infamousfreight.com/settings?checkout=success
-STRIPE_CHECKOUT_CANCEL_URL=https://app.infamousfreight.com/settings?checkout=canceled
+STRIPE_PORTAL_RETURN_URL=https://www.infamousfreight.com/settings
+STRIPE_CHECKOUT_SUCCESS_URL=https://www.infamousfreight.com/settings?checkout=success
+STRIPE_CHECKOUT_CANCEL_URL=https://www.infamousfreight.com/settings?checkout=canceled
 ```
 
 Optional fallback:
 
 ```env
-WEB_APP_URL=https://app.infamousfreight.com
+WEB_APP_URL=https://www.infamousfreight.com
 ```
 
 Web:
 
 ```env
-VITE_API_URL=https://<api-domain>
+VITE_API_URL=/api
 ```
 
 ## Required Stripe webhook events
@@ -203,6 +216,24 @@ unpaid
 incomplete
 inactive
 ```
+
+## Webhook event logs
+
+`StripeWebhookEvent` is used for operational debugging.
+
+Track:
+
+```text
+eventId
+eventType
+carrierId
+status
+errorMessage
+receivedAt
+processedAt
+```
+
+Use this table when Stripe shows an event was delivered but the app billing state did not change.
 
 ## Checkout metadata
 
@@ -262,8 +293,9 @@ After deployment:
    - `stripeCustomerId`
    - correct `subscriptionTier`
    - correct `status`
-8. Open customer portal from Settings as owner/admin.
-9. Record one AI usage event and confirm it appears in Settings → Billing & Plans.
+8. Confirm `StripeWebhookEvent` logged the webhook as `processed`.
+9. Open customer portal from Settings as owner/admin.
+10. Record one AI usage event and confirm it appears in Settings → Billing & Plans.
 
 ## Notes
 
