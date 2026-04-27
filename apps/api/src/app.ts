@@ -479,6 +479,16 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
+
+  app.post('/api/carriers/:id/approve', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.approveCarrier(req.params.id);
+    res.status(200).json({ data });
+  }));
+
+  app.post('/api/carriers/:id/reject', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.rejectCarrier(req.params.id);
+    res.status(200).json({ data });
+  }));
 }
 
 export function createApp() {
@@ -558,6 +568,13 @@ export function createApp() {
       return res.status(404).json({
         error: 'quote_request_not_found',
         message: 'Quote request was not found for this tenant.',
+      });
+    }
+
+    if (err.message === 'carrier_not_approved') {
+      return res.status(422).json({
+        error: 'carrier_not_approved',
+        message: 'Carrier must be approved before being assigned to a load.',
       });
     }
 

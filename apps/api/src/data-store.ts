@@ -24,6 +24,7 @@ export type LoadRecord = BaseRecord & Record<string, unknown>;
 export type DriverRecord = BaseRecord & Record<string, unknown>;
 export type ShipmentRecord = BaseRecord & Record<string, unknown>;
 export type FreightOperationRecord = BaseRecord & Record<string, unknown>;
+export type CarrierRecord = BaseRecord & { approvalStatus: string } & Record<string, unknown>;
 
 export type QuoteLeadRecord = {
   id: string;
@@ -212,6 +213,8 @@ export interface DataStore {
     payload: Record<string, unknown>,
   ): Promise<FreightOperationRecord>;
   submitQuoteLead(payload: Record<string, unknown>): Promise<QuoteLeadRecord>;
+  approveCarrier(carrierId: string): Promise<CarrierRecord>;
+  rejectCarrier(carrierId: string): Promise<CarrierRecord>;
   syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean>;
   getCarrierStripeCustomerId(tenantId: string): Promise<string | null>;
   healthCheck(): Promise<'connected' | 'disconnected'>;
@@ -304,6 +307,7 @@ class MemoryDataStore implements DataStore {
     subscriptionTier: string;
     status: string;
   }>();
+  private carrierApprovalStatus = new Map<string, string>();
   private freightOperations: Record<FreightOperationResource, FreightOperationRecord[]> = {
     quoteRequests: [],
     loadAssignments: [],
@@ -358,6 +362,13 @@ class MemoryDataStore implements DataStore {
     tenantId: string,
     payload: Record<string, unknown>,
   ): Promise<FreightOperationRecord> {
+    if (resource === 'loadAssignments') {
+      const approvalStatus = this.carrierApprovalStatus.get(tenantId) ?? 'PENDING';
+      if (approvalStatus !== 'APPROVED') {
+        throw new Error('carrier_not_approved');
+      }
+    }
+
     const record = { id: randomUUID(), tenantId, ...payload };
     this.freightOperations[resource].push(record);
     return record;
@@ -521,6 +532,16 @@ class MemoryDataStore implements DataStore {
     };
     this.leads.push(record);
     return record;
+  }
+
+  async approveCarrier(carrierId: string): Promise<CarrierRecord> {
+    this.carrierApprovalStatus.set(carrierId, 'APPROVED');
+    return { id: carrierId, tenantId: carrierId, approvalStatus: 'APPROVED' };
+  }
+
+  async rejectCarrier(carrierId: string): Promise<CarrierRecord> {
+    this.carrierApprovalStatus.set(carrierId, 'REJECTED');
+    return { id: carrierId, tenantId: carrierId, approvalStatus: 'REJECTED' };
   }
 
   async syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean> {
@@ -743,6 +764,17 @@ class PrismaDataStore implements DataStore {
   ): Promise<FreightOperationRecord> {
     const config = OPERATION_CONFIG[resource];
     const data = normalizePayload(payload, config);
+
+    if (resource === 'loadAssignments') {
+      const carrier = await this.prisma.carrier.findUnique({
+        where: { id: tenantId },
+        select: { approvalStatus: true },
+      });
+      const approvalStatus = (carrier as { approvalStatus: string } | null)?.approvalStatus ?? 'PENDING';
+      if (approvalStatus !== 'APPROVED') {
+        throw new Error('carrier_not_approved');
+      }
+    }
 
     if (config.tenantField) {
       data[config.tenantField] = tenantId;
@@ -970,6 +1002,22 @@ class PrismaDataStore implements DataStore {
     });
 
     return true;
+  }
+
+  async approveCarrier(carrierId: string): Promise<CarrierRecord> {
+    const carrier = await this.prisma.carrier.update({
+      where: { id: carrierId },
+      data: { approvalStatus: 'APPROVED' },
+    }) as Record<string, unknown>;
+    return { ...carrier, id: carrierId, tenantId: carrierId, approvalStatus: 'APPROVED' };
+  }
+
+  async rejectCarrier(carrierId: string): Promise<CarrierRecord> {
+    const carrier = await this.prisma.carrier.update({
+      where: { id: carrierId },
+      data: { approvalStatus: 'REJECTED' },
+    }) as Record<string, unknown>;
+    return { ...carrier, id: carrierId, tenantId: carrierId, approvalStatus: 'REJECTED' };
   }
 
   async getCarrierStripeCustomerId(tenantId: string): Promise<string | null> {

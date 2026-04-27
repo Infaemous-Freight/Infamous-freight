@@ -76,6 +76,12 @@ describe('freight workflow API', () => {
       .expect(201);
     const loadId = load.body.data.id;
 
+    await request(app)
+      .post(`/api/carriers/${headers['x-tenant-id']}/approve`)
+      .set(headers)
+      .send({})
+      .expect(200);
+
     const assignment = await request(app)
       .post('/api/freight-operations/loadAssignments')
       .set(headers)

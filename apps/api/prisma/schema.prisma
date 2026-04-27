@@ -16,6 +16,7 @@ model Carrier {
   phone            String?
   address          String?
   status           String   @default("trial")
+  approvalStatus   String   @default("PENDING")
   subscriptionTier String   @default("starter")
   stripeCustomerId String?
   createdAt        DateTime @default(now())

@@ -50,14 +50,14 @@ Related issue: #1585
 
 Related issue: #1586
 
-- Application route or endpoint:
-- Document upload path:
-- Carrier record destination:
-- Approval workflow:
-- Test application ID:
-- Test result:
-- Verified by:
-- Verified date:
+- Application route or endpoint: `POST /api/carriers/:id/approve`, `POST /api/carriers/:id/reject`
+- Document upload path: Document model (`apps/api/prisma/schema.prisma` — `Document` with `type`, `fileUrl`, `status`, `expiryDate` fields associated to `Carrier`)
+- Carrier record destination: `Carrier` model with `approvalStatus` field (PENDING / APPROVED / REJECTED)
+- Approval workflow: Carrier defaults to `approvalStatus: PENDING`. Admin/dispatcher calls `POST /api/carriers/:id/approve` to set `approvalStatus: APPROVED`. Only approved carriers can be assigned to loads — attempting assignment for a non-approved carrier returns HTTP 422 `carrier_not_approved`.
+- Test application ID: See `apps/api/test/mvp-carrier-approval.test.ts`
+- Test result: All 4 carrier approval tests pass — blocked assignment (PENDING), approve carrier, allow assignment after approval, reject and re-block; plus updated `freight-workflows.test.ts` to approve carrier before load assignment (34 total tests passing)
+- Verified by: @copilot (automated test suite)
+- Verified date: 2026-04-27
 
 ## Tracking Evidence
 
