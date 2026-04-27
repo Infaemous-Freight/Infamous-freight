@@ -164,19 +164,22 @@ const AccountingDashboardPage: React.FC = () => {
         <div className="space-y-4">
           {/* Invoice Filters */}
           <div className="flex gap-2 flex-wrap">
-            {(['all', 'draft', 'sent', 'overdue', 'paid'] as const).map((f) => (
-              <button
-                key={f}
-                onClick={() => setInvoiceFilter(f)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium capitalize transition-all ${
-                  invoiceFilter === f ? 'bg-infamous-orange text-white' : 'bg-infamous-card text-gray-400 hover:text-white border border-infamous-border'
-                }`}
-              >
-                {f} {f !== 'all' && invoiceCounts[f] !== undefined && (
-                  <span className="opacity-70">({invoiceCounts[f as InvoiceStatus]})</span>
-                )}
-              </button>
-            ))}
+            {(['all', 'draft', 'sent', 'overdue', 'paid'] as const).map((f) => {
+              const count = f !== 'all' ? invoiceCounts[f] : undefined;
+              return (
+                <button
+                  key={f}
+                  onClick={() => setInvoiceFilter(f)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-medium capitalize transition-all ${
+                    invoiceFilter === f ? 'bg-infamous-orange text-white' : 'bg-infamous-card text-gray-400 hover:text-white border border-infamous-border'
+                  }`}
+                >
+                  {f} {count !== undefined && (
+                    <span className="opacity-70">({count})</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           {/* Invoice Table */}
