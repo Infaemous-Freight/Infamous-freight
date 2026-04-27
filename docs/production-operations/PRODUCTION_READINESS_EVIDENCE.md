@@ -23,12 +23,12 @@ Related issue: #1583
 
 Related issue: #1584
 
-- Storage location:
-- Broker-carrier agreement source:
-- W-9 process:
-- Insurance process:
-- Approval owner:
-- Carrier statuses:
+- Storage location: `documents/carrier-packets/` (full packet and signed agreement), `documents/w9/` (W-9 forms), `documents/coi/` (certificates of insurance). Naming conventions and retention rules documented in `CARRIER_VETTING_SOP.md`.
+- Broker-carrier agreement source: `templates/broker-carrier-agreement/` — signed copy stored at `documents/carrier-packets/<MC_NUMBER>_agreement.pdf`.
+- W-9 process: Collected during carrier onboarding; stored at `documents/w9/<EIN>.pdf`; must be on file before first dispatch. See `CARRIER_VETTING_SOP.md` — W-9 Collection Process.
+- Insurance process: COI required naming Infamous Freight LLC as certificate holder; minimum auto liability $1,000,000 and cargo $100,000; stored at `documents/coi/<MC_NUMBER>_coi.pdf`; 30-day renewal reminder required. See `CARRIER_VETTING_SOP.md` — Insurance Collection Process.
+- Approval owner: Operations Manager — final sign-off required to move carrier from Pending to Approved.
+- Carrier statuses: Pending, Approved, Rejected, Expired — defined in `CARRIER_VETTING_SOP.md` — Carrier Statuses.
 - Test carrier record:
 - Verified by:
 - Verified date:
