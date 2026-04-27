@@ -17,7 +17,7 @@ Use this file during production readiness verification. Do not mark the launch r
 | Launch Owner | @MrMiless44 |
 | Rollback Owner | @MrMiless44 |
 | Support Owner | @MrMiless44 |
-| Technical Owner | @copilot |
+| Technical Owner | @MrMiless44 |
 
 ## Result Summary
 
@@ -87,7 +87,7 @@ Phase 0 - Execution Controls
 2026-04-27 08:51 UTC
 
 ## Owner
-@MrMiless44 / @copilot
+@MrMiless44
 
 ## Command or Action
 Confirm launch owner, rollback owner, support owner, environment, current deploy versions, database migration version, Stripe mode, and evidence log location.
@@ -99,7 +99,7 @@ All owners and deployment identifiers are recorded before testing starts.
 - Launch Owner: @MrMiless44
 - Rollback Owner: @MrMiless44
 - Support Owner: @MrMiless44
-- Technical Owner: @copilot
+- Technical Owner: @MrMiless44
 - Environment: Production
 - Commit: 03ea498
 - Web Deploy: Vercel preview — infamous-freight-api-git-copilot-complet-962757-infamousfreight.vercel.app
@@ -127,7 +127,7 @@ Phase 1 - `npm run production:preflight`
 2026-04-27 08:49 UTC
 
 ## Owner
-@copilot
+@MrMiless44
 
 ## Command or Action
 
@@ -186,7 +186,7 @@ Phase 1 - `npm run production:smoke-test`
 2026-04-27 08:49 UTC
 
 ## Owner
-@copilot
+@MrMiless44
 
 ## Command or Action
 
@@ -244,7 +244,7 @@ Phase 1 - Frontend Loads
 2026-04-27 08:49 UTC
 
 ## Owner
-@copilot
+@MrMiless44
 
 ## Command or Action
 
@@ -292,7 +292,7 @@ Phase 1 - Proxied API Health Check
 2026-04-27 08:51 UTC
 
 ## Owner
-@copilot
+@MrMiless44
 
 ## Command or Action
 
@@ -330,7 +330,7 @@ Phase 6 - HTTPS Active
 2026-04-27 08:49 UTC
 
 ## Owner
-@copilot
+@MrMiless44
 
 ## Command or Action
 
@@ -544,4 +544,4 @@ All automated checks that could be executed from the sandboxed CI environment ha
 | Launch Owner | @MrMiless44 | Pending | Pending |
 | Rollback Owner | @MrMiless44 | Pending | Pending |
 | Support Owner | @MrMiless44 | Pending | Pending |
-| Technical Owner | @copilot | 2026-04-27 08:51 UTC | Private beta only — pending B-001/B-002/B-003 resolution and manual Phase 2–5 tests |
+| Technical Owner | @MrMiless44 | Pending | Private beta only — pending B-001/B-002/B-003 resolution and manual Phase 2–5 tests |
