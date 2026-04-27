@@ -25,6 +25,20 @@ export type DriverRecord = BaseRecord & Record<string, unknown>;
 export type ShipmentRecord = BaseRecord & Record<string, unknown>;
 export type FreightOperationRecord = BaseRecord & Record<string, unknown>;
 
+export type InvoiceRecord = BaseRecord & {
+  loadId: string;
+  invoiceNumber: string;
+  shipperRate: number;
+  carrierRate: number;
+  grossMargin: number;
+  grossMarginPercentage: number;
+  podAttached: boolean;
+  status: string;
+  dueDate: string;
+  createdAt: string;
+  [key: string]: unknown;
+};
+
 export type QuoteLeadRecord = {
   id: string;
   name: string;
@@ -211,6 +225,18 @@ export interface DataStore {
     postId: string,
     payload: Record<string, unknown>,
   ): Promise<FreightOperationRecord>;
+  uploadPod(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord>;
+  closeLoad(tenantId: string, loadId: string): Promise<LoadRecord>;
+  createLoadInvoice(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<InvoiceRecord>;
+  sendInvoice(tenantId: string, invoiceId: string): Promise<InvoiceRecord>;
   submitQuoteLead(payload: Record<string, unknown>): Promise<QuoteLeadRecord>;
   syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean>;
   getCarrierStripeCustomerId(tenantId: string): Promise<string | null>;
@@ -256,6 +282,14 @@ function normalizeOperationRecord(
   return { ...record, id: String(record.id), tenantId };
 }
 
+const INVOICE_DUE_DAYS = 30;
+
+function generateInvoiceNumber(): string {
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const suffix = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `INF-${date}-${suffix}`;
+}
+
 function buildTenantWhere(config: OperationConfig, tenantId: string): Record<string, unknown> {
   if (config.tenantField) {
     return { [config.tenantField]: tenantId };
@@ -299,6 +333,7 @@ class MemoryDataStore implements DataStore {
   private drivers: DriverRecord[] = [];
   private shipments: ShipmentRecord[] = [];
   private leads: QuoteLeadRecord[] = [];
+  private invoiceRecords: InvoiceRecord[] = [];
   private carrierBilling = new Map<string, {
     stripeCustomerId: string | null;
     subscriptionTier: string;
@@ -499,6 +534,95 @@ class MemoryDataStore implements DataStore {
       ...payload,
       status: payload.status ?? 'expired',
     });
+  }
+
+  private hasPod(tenantId: string, loadId: string): boolean {
+    return this.freightOperations.deliveryConfirmations.some(
+      (d) => d.loadId === loadId && d.tenantId === tenantId,
+    );
+  }
+
+  async uploadPod(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    return this.createFreightOperation('deliveryConfirmations', tenantId, {
+      ...payload,
+      loadId,
+      verifiedAt: payload.verifiedAt ?? new Date().toISOString(),
+    });
+  }
+
+  async closeLoad(tenantId: string, loadId: string): Promise<LoadRecord> {
+    if (!this.hasPod(tenantId, loadId)) {
+      throw new Error('pod_required_to_close_load');
+    }
+
+    const load = this.loads.find((l) => l.id === loadId && l.tenantId === tenantId);
+    if (!load) {
+      throw new Error('load_not_found_for_tenant');
+    }
+
+    load.status = 'closed';
+    return load;
+  }
+
+  async createLoadInvoice(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<InvoiceRecord> {
+    if (!this.hasPod(tenantId, loadId)) {
+      throw new Error('pod_required_to_create_invoice');
+    }
+
+    const load = this.loads.find((l) => l.id === loadId && l.tenantId === tenantId);
+    if (!load) {
+      throw new Error('load_not_found_for_tenant');
+    }
+
+    const shipperRate = Number(payload.shipperRate ?? 0);
+    const carrierRate = Number(payload.carrierRate ?? 0);
+    const grossMargin = shipperRate - carrierRate;
+    const grossMarginPercentage = shipperRate > 0 ? (grossMargin / shipperRate) * 100 : 0;
+    const now = new Date();
+    const dueDate = new Date(now.getTime() + INVOICE_DUE_DAYS * 24 * 60 * 60 * 1000);
+
+    const invoice: InvoiceRecord = {
+      id: randomUUID(),
+      tenantId,
+      loadId,
+      invoiceNumber: generateInvoiceNumber(),
+      shipperRate,
+      carrierRate,
+      grossMargin,
+      grossMarginPercentage,
+      podAttached: true,
+      status: 'draft',
+      dueDate: dueDate.toISOString(),
+      createdAt: now.toISOString(),
+      brokerName: String(payload.brokerName ?? ''),
+      brokerEmail: String(payload.brokerEmail ?? ''),
+    };
+    this.invoiceRecords.push(invoice);
+    return invoice;
+  }
+
+  async sendInvoice(tenantId: string, invoiceId: string): Promise<InvoiceRecord> {
+    const invoice = this.invoiceRecords.find(
+      (i) => i.id === invoiceId && i.tenantId === tenantId,
+    );
+    if (!invoice) {
+      throw new Error('freight_operation_not_found');
+    }
+
+    if (!invoice.podAttached) {
+      throw new Error('pod_required_to_send_invoice');
+    }
+
+    invoice.status = 'sent';
+    return invoice;
   }
 
   async submitQuoteLead(payload: Record<string, unknown>): Promise<QuoteLeadRecord> {
@@ -979,6 +1103,114 @@ class PrismaDataStore implements DataStore {
     });
 
     return carrier?.stripeCustomerId ?? null;
+  }
+
+  async uploadPod(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    await assertLoadBelongsToTenant(this.prisma, tenantId, loadId);
+
+    const data: Record<string, unknown> = {
+      loadId,
+      verifiedAt: payload.verifiedAt ?? new Date().toISOString(),
+    };
+    if (payload.podSignature !== undefined) data.podSignature = String(payload.podSignature);
+    if (payload.deliveryTime !== undefined) data.deliveryTime = new Date(String(payload.deliveryTime));
+    if (payload.podDate !== undefined) data.podDate = new Date(String(payload.podDate));
+
+    const record = await (this.prisma as unknown as Record<string, any>).deliveryConfirmation.upsert({
+      where: { loadId },
+      create: data,
+      update: data,
+    }) as Record<string, unknown>;
+
+    return normalizeOperationRecord(record, tenantId);
+  }
+
+  async closeLoad(tenantId: string, loadId: string): Promise<LoadRecord> {
+    await assertLoadBelongsToTenant(this.prisma, tenantId, loadId);
+
+    const pod = await this.prisma.deliveryConfirmation.findFirst({
+      where: { loadId },
+      select: { id: true },
+    });
+    if (!pod) {
+      throw new Error('pod_required_to_close_load');
+    }
+
+    const load = await this.prisma.load.update({
+      where: { id: loadId },
+      data: { status: 'closed' },
+    }) as PrismaLoadRecord;
+    return { ...load, tenantId: load.carrierId };
+  }
+
+  async createLoadInvoice(
+    tenantId: string,
+    loadId: string,
+    payload: Record<string, unknown>,
+  ): Promise<InvoiceRecord> {
+    await assertLoadBelongsToTenant(this.prisma, tenantId, loadId);
+
+    const pod = await this.prisma.deliveryConfirmation.findFirst({
+      where: { loadId },
+      select: { id: true },
+    });
+    if (!pod) {
+      throw new Error('pod_required_to_create_invoice');
+    }
+
+    const shipperRate = Number(payload.shipperRate ?? 0);
+    const carrierRate = Number(payload.carrierRate ?? 0);
+    const grossMargin = shipperRate - carrierRate;
+    const grossMarginPercentage = shipperRate > 0 ? (grossMargin / shipperRate) * 100 : 0;
+    const dueDate = new Date(Date.now() + INVOICE_DUE_DAYS * 24 * 60 * 60 * 1000);
+
+    const invoice = await this.prisma.invoice.create({
+      data: {
+        carrierId: tenantId,
+        loadId,
+        invoiceNumber: generateInvoiceNumber(),
+        brokerName: String(payload.brokerName ?? ''),
+        brokerEmail: String(payload.brokerEmail ?? ''),
+        amount: shipperRate,
+        shipperRate,
+        carrierRate,
+        grossMargin,
+        grossMarginPercentage,
+        podAttached: true,
+        status: 'draft',
+        dueDate,
+      },
+    }) as Record<string, unknown>;
+
+    return { ...invoice, tenantId } as InvoiceRecord;
+  }
+
+  async sendInvoice(tenantId: string, invoiceId: string): Promise<InvoiceRecord> {
+    const invoice = await this.prisma.invoice.findFirst({
+      where: { id: invoiceId, carrierId: tenantId },
+    }) as Record<string, unknown> | null;
+    if (!invoice) {
+      throw new Error('freight_operation_not_found');
+    }
+
+    const loadId = String(invoice.loadId ?? '');
+    const pod = loadId
+      ? await this.prisma.deliveryConfirmation.findFirst({ where: { loadId }, select: { id: true } })
+      : null;
+    if (!pod) {
+      throw new Error('pod_required_to_send_invoice');
+    }
+
+    const updated = await this.prisma.invoice.update({
+      where: { id: invoiceId },
+      data: { status: 'sent' },
+    }) as Record<string, unknown>;
+
+    return { ...updated, tenantId, podAttached: true } as InvoiceRecord;
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {

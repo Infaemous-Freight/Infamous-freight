@@ -85,6 +85,22 @@ Related issue: #1588
 - Verified by:
 - Verified date:
 
+## POD Upload and Invoice Generation Evidence
+
+Related issue: #1593
+
+- POD upload endpoint: `POST /api/workflows/loads/:loadId/upload-pod` (requires `x-tenant-id` and `x-user-role` dispatcher or higher)
+- POD source: Creates a `deliveryConfirmation` record linked to the load; also accepted from `POST /api/workflows/loads/:loadId/verify-delivery`
+- Load close endpoint: `POST /api/workflows/loads/:loadId/close` — returns 422 `pod_required_to_close_load` if no POD exists
+- Invoice creation endpoint: `POST /api/workflows/loads/:loadId/invoices` — returns 422 `pod_required_to_create_invoice` if no POD exists
+- Invoice send endpoint: `POST /api/workflows/invoices/:id/send` — returns 422 `pod_required_to_send_invoice` if POD is not attached
+- Gross margin calculation: `grossMargin = shipperRate - carrierRate`; `grossMarginPercentage = (grossMargin / shipperRate) * 100`
+- Invoice fields: `shipperRate`, `carrierRate`, `grossMargin`, `grossMarginPercentage`, `podAttached`, `status`, `invoiceNumber`, `dueDate`
+- Test file: `apps/api/test/pod-invoice.test.ts`
+- Test result: All 8 POD/invoice tests pass — POD gate on load close, POD gate on invoice create, POD gate on invoice send, gross margin calculation verified (e.g., shipperRate=2800, carrierRate=2250 → grossMargin=550, grossMarginPct≈19.64%), full end-to-end flow from POD upload through invoice send to load close verified
+- Verified by: @copilot (automated test suite)
+- Verified date: 2026-04-27
+
 ## Closure Rule
 
 Do not close #1589 until #1583 through #1588 have documented evidence and are closed.

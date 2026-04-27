@@ -99,6 +99,11 @@ model Invoice {
   brokerName    String
   brokerEmail   String?
   amount        Float
+  shipperRate   Float?
+  carrierRate   Float?
+  grossMargin   Float?
+  grossMarginPercentage Float?
+  podAttached   Boolean   @default(false)
   status        String    @default("draft")
   dueDate       DateTime?
   paidAt        DateTime?

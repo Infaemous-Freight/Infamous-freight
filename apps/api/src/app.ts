@@ -479,6 +479,26 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
+
+  app.post('/api/workflows/loads/:loadId/upload-pod', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.uploadPod(getRequiredTenantId(req), req.params.loadId, req.body);
+    res.status(201).json({ data });
+  }));
+
+  app.post('/api/workflows/loads/:loadId/close', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.closeLoad(getRequiredTenantId(req), req.params.loadId);
+    res.status(200).json({ data });
+  }));
+
+  app.post('/api/workflows/loads/:loadId/invoices', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.createLoadInvoice(getRequiredTenantId(req), req.params.loadId, req.body);
+    res.status(201).json({ data });
+  }));
+
+  app.post('/api/workflows/invoices/:id/send', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.sendInvoice(getRequiredTenantId(req), req.params.id);
+    res.status(200).json({ data });
+  }));
 }
 
 export function createApp() {
@@ -565,6 +585,27 @@ export function createApp() {
       return res.status(500).json({
         error: 'stripe_secret_key_required',
         message: 'STRIPE_SECRET_KEY is required for billing actions.',
+      });
+    }
+
+    if (err.message === 'pod_required_to_close_load') {
+      return res.status(422).json({
+        error: 'pod_required_to_close_load',
+        message: 'A load cannot be closed without a POD.',
+      });
+    }
+
+    if (err.message === 'pod_required_to_create_invoice') {
+      return res.status(422).json({
+        error: 'pod_required_to_create_invoice',
+        message: 'An invoice cannot be created without a POD.',
+      });
+    }
+
+    if (err.message === 'pod_required_to_send_invoice') {
+      return res.status(422).json({
+        error: 'pod_required_to_send_invoice',
+        message: 'An invoice cannot be sent without a POD.',
       });
     }
 
