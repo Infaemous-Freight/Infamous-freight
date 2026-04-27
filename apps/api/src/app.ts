@@ -18,6 +18,7 @@ import {
   verifyStripeWebhookSignature,
 } from './billing';
 import { createAiUsageStore } from './ai-usage';
+import { createRateLimitMiddleware } from './rate-limit';
 import { createStripeWebhookEventStore } from './stripe-webhook-events';
 import { createFreightWorkflowRouter } from './freight-workflow-routes';
 
@@ -449,6 +450,7 @@ export function createApp() {
     }),
   );
 
+  app.use('/api', createRateLimitMiddleware('api'));
   registerWebhookRoute(app, dataStore);
   app.use(express.json());
 
