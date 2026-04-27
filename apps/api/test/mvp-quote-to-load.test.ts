@@ -107,7 +107,7 @@ describe('MVP quote-to-load workflow', () => {
 
     const quoteId = quoteResponse.body.data.id;
 
-    await request(app)
+    const conversionResponse = await request(app)
       .post(`/api/workflows/quotes/${quoteId}/convert-to-load`)
       .set(headers)
       .send({
@@ -133,6 +133,8 @@ describe('MVP quote-to-load workflow', () => {
       })
       .expect(409);
 
+    expect(conversionResponse.body.error).toBe('quote_request_not_approved');
+
     const loadsResponse = await request(app)
       .get('/api/loads')
       .set(headers)
@@ -142,6 +144,19 @@ describe('MVP quote-to-load workflow', () => {
       expect.arrayContaining([
         expect.objectContaining({ quoteRequestId: quoteId }),
       ]),
+    );
+
+    const quoteRequestsResponse = await request(app)
+      .get('/api/freight-operations/quoteRequests')
+      .set(headers)
+      .expect(200);
+
+    const updatedQuote = quoteRequestsResponse.body.data.find(
+      (quote: { id: string; status: string }) => quote.id === quoteId,
+    );
+
+    expect(updatedQuote).toEqual(
+      expect.objectContaining({ id: quoteId, status: 'pending' }),
     );
   });
 });
