@@ -6,9 +6,21 @@ type BaseRecord = {
   tenantId: string;
 };
 
+export type FreightOperationResource =
+  | 'quoteRequests'
+  | 'loadAssignments'
+  | 'loadDispatches'
+  | 'shipmentTracking'
+  | 'deliveryConfirmations'
+  | 'carrierPayments'
+  | 'rateAgreements'
+  | 'operationalMetrics'
+  | 'loadBoardPosts';
+
 export type LoadRecord = BaseRecord & Record<string, unknown>;
 export type DriverRecord = BaseRecord & Record<string, unknown>;
 export type ShipmentRecord = BaseRecord & Record<string, unknown>;
+export type FreightOperationRecord = BaseRecord & Record<string, unknown>;
 
 type PrismaLoadRecord = {
   id: string;
@@ -54,6 +66,69 @@ type PrismaDriverRecord = {
   createdAt: Date;
 };
 
+type OperationConfig = {
+  delegate: string;
+  tenantField?: string;
+  tenantRelation?: string;
+  numberFields?: string[];
+  booleanFields?: string[];
+  dateFields?: string[];
+};
+
+const OPERATION_CONFIG: Record<FreightOperationResource, OperationConfig> = {
+  quoteRequests: {
+    delegate: 'quoteRequest',
+    tenantField: 'carrierId',
+    numberFields: ['weight', 'shipperRate', 'carrierCost', 'profitMargin'],
+    dateFields: ['pickupDate', 'deliveryDeadline', 'expiresAt'],
+  },
+  loadAssignments: {
+    delegate: 'loadAssignment',
+    tenantField: 'carrierId',
+    numberFields: ['rateConfirmed'],
+    dateFields: ['acceptedAt', 'rejectedAt'],
+  },
+  loadDispatches: {
+    delegate: 'loadDispatch',
+    tenantField: 'carrierId',
+    dateFields: ['pickupAppointment', 'deliveryAppointment', 'dispatchedAt', 'confirmedAt'],
+  },
+  shipmentTracking: {
+    delegate: 'shipmentTracking',
+    tenantRelation: 'load',
+    numberFields: ['latitude', 'longitude'],
+    booleanFields: ['podReceived', 'podVerified'],
+    dateFields: ['pickupConfirmedAt', 'deliveryETA', 'deliveredAt'],
+  },
+  deliveryConfirmations: {
+    delegate: 'deliveryConfirmation',
+    tenantRelation: 'load',
+    dateFields: ['podDate', 'deliveryTime', 'verifiedAt'],
+  },
+  carrierPayments: {
+    delegate: 'carrierPayment',
+    tenantField: 'carrierId',
+    numberFields: ['amount'],
+    dateFields: ['paymentDate'],
+  },
+  rateAgreements: {
+    delegate: 'rateAgreement',
+    tenantField: 'carrierId',
+    numberFields: ['baseRate', 'fuelSurcharge'],
+    dateFields: ['effectiveDate', 'expiryDate'],
+  },
+  operationalMetrics: {
+    delegate: 'operationalMetric',
+    numberFields: ['loadsBooked', 'grossMargin', 'onTimePickup', 'onTimeDelivery', 'daysOutstanding'],
+    dateFields: ['date'],
+  },
+  loadBoardPosts: {
+    delegate: 'loadBoardPost',
+    tenantRelation: 'load',
+    dateFields: ['postedAt', 'expiresAt'],
+  },
+};
+
 export interface DataStore {
   listLoads(tenantId: string): Promise<LoadRecord[]>;
   createLoad(tenantId: string, payload: Record<string, unknown>): Promise<LoadRecord>;
@@ -61,13 +136,105 @@ export interface DataStore {
   createDriver(tenantId: string, payload: Record<string, unknown>): Promise<DriverRecord>;
   listShipments(tenantId: string): Promise<ShipmentRecord[]>;
   createShipment(tenantId: string, payload: Record<string, unknown>): Promise<ShipmentRecord>;
+  listFreightOperations(
+    resource: FreightOperationResource,
+    tenantId: string,
+  ): Promise<FreightOperationRecord[]>;
+  createFreightOperation(
+    resource: FreightOperationResource,
+    tenantId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord>;
+  updateFreightOperation(
+    resource: FreightOperationResource,
+    tenantId: string,
+    id: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord>;
   healthCheck(): Promise<'connected' | 'disconnected'>;
+}
+
+function normalizePayload(
+  payload: Record<string, unknown>,
+  config: OperationConfig,
+): Record<string, unknown> {
+  const data = { ...payload };
+
+  for (const field of config.numberFields ?? []) {
+    if (data[field] !== undefined && data[field] !== null) {
+      data[field] = Number(data[field]);
+    }
+  }
+
+  for (const field of config.booleanFields ?? []) {
+    if (data[field] !== undefined && data[field] !== null) {
+      data[field] = Boolean(data[field]);
+    }
+  }
+
+  for (const field of config.dateFields ?? []) {
+    if (data[field] !== undefined && data[field] !== null) {
+      data[field] = new Date(String(data[field]));
+    }
+  }
+
+  delete data.tenantId;
+  return data;
+}
+
+function normalizeOperationRecord(
+  record: Record<string, unknown>,
+  tenantId: string,
+): FreightOperationRecord {
+  return { ...record, id: String(record.id), tenantId };
+}
+
+function buildTenantWhere(config: OperationConfig, tenantId: string): Record<string, unknown> {
+  if (config.tenantField) {
+    return { [config.tenantField]: tenantId };
+  }
+
+  if (config.tenantRelation) {
+    return { [config.tenantRelation]: { carrierId: tenantId } };
+  }
+
+  return {};
+}
+
+async function assertLoadBelongsToTenant(
+  prisma: PrismaClient,
+  tenantId: string,
+  loadId: unknown,
+): Promise<void> {
+  if (typeof loadId !== 'string' || !loadId.trim()) {
+    return;
+  }
+
+  const load = await prisma.load.findFirst({
+    where: { id: loadId, carrierId: tenantId },
+    select: { id: true },
+  });
+
+  if (!load) {
+    throw new Error('load_not_found_for_tenant');
+  }
 }
 
 class MemoryDataStore implements DataStore {
   private loads: LoadRecord[] = [];
   private drivers: DriverRecord[] = [];
   private shipments: ShipmentRecord[] = [];
+  private freightOperations: Record<FreightOperationResource, FreightOperationRecord[]> = {
+    quoteRequests: [],
+    loadAssignments: [],
+    loadDispatches: [],
+    shipmentTracking: [],
+    deliveryConfirmations: [],
+    carrierPayments: [],
+    rateAgreements: [],
+    operationalMetrics: [],
+    loadBoardPosts: [],
+  };
 
   async listLoads(tenantId: string): Promise<LoadRecord[]> {
     return this.loads.filter((item) => item.tenantId === tenantId);
@@ -97,6 +264,40 @@ class MemoryDataStore implements DataStore {
     const record = { id: randomUUID(), tenantId, ...payload };
     this.shipments.push(record);
     return record;
+  }
+
+  async listFreightOperations(
+    resource: FreightOperationResource,
+    tenantId: string,
+  ): Promise<FreightOperationRecord[]> {
+    return this.freightOperations[resource].filter((item) => item.tenantId === tenantId);
+  }
+
+  async createFreightOperation(
+    resource: FreightOperationResource,
+    tenantId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    const record = { id: randomUUID(), tenantId, ...payload };
+    this.freightOperations[resource].push(record);
+    return record;
+  }
+
+  async updateFreightOperation(
+    resource: FreightOperationResource,
+    tenantId: string,
+    id: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    const records = this.freightOperations[resource];
+    const index = records.findIndex((item) => item.id === id && item.tenantId === tenantId);
+
+    if (index === -1) {
+      throw new Error('freight_operation_not_found');
+    }
+
+    records[index] = { ...records[index], ...payload, id, tenantId };
+    return records[index];
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
@@ -271,6 +472,77 @@ class PrismaDataStore implements DataStore {
       deliveryDate: load.deliveryDate ?? null,
       rate: load.rate,
     };
+  }
+
+  async listFreightOperations(
+    resource: FreightOperationResource,
+    tenantId: string,
+  ): Promise<FreightOperationRecord[]> {
+    const config = OPERATION_CONFIG[resource];
+    const delegate = (this.prisma as unknown as Record<string, any>)[config.delegate];
+    const records = await delegate.findMany({
+      where: buildTenantWhere(config, tenantId),
+      orderBy: { createdAt: 'desc' },
+    }) as Array<Record<string, unknown>>;
+
+    return records.map((record) => normalizeOperationRecord(record, tenantId));
+  }
+
+  async createFreightOperation(
+    resource: FreightOperationResource,
+    tenantId: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    const config = OPERATION_CONFIG[resource];
+    const data = normalizePayload(payload, config);
+
+    if (config.tenantField) {
+      data[config.tenantField] = tenantId;
+    }
+
+    if (config.tenantRelation === 'load') {
+      await assertLoadBelongsToTenant(this.prisma, tenantId, data.loadId);
+    }
+
+    const delegate = (this.prisma as unknown as Record<string, any>)[config.delegate];
+    const record = await delegate.create({ data }) as Record<string, unknown>;
+    return normalizeOperationRecord(record, tenantId);
+  }
+
+  async updateFreightOperation(
+    resource: FreightOperationResource,
+    tenantId: string,
+    id: string,
+    payload: Record<string, unknown>,
+  ): Promise<FreightOperationRecord> {
+    const config = OPERATION_CONFIG[resource];
+    const delegate = (this.prisma as unknown as Record<string, any>)[config.delegate];
+    const existing = await delegate.findFirst({
+      where: { id, ...buildTenantWhere(config, tenantId) },
+      select: { id: true },
+    });
+
+    if (!existing) {
+      throw new Error('freight_operation_not_found');
+    }
+
+    const data = normalizePayload(payload, config);
+    delete data.id;
+
+    if (config.tenantField) {
+      delete data[config.tenantField];
+    }
+
+    if (config.tenantRelation === 'load' && data.loadId !== undefined) {
+      await assertLoadBelongsToTenant(this.prisma, tenantId, data.loadId);
+    }
+
+    const record = await delegate.update({
+      where: { id },
+      data,
+    }) as Record<string, unknown>;
+
+    return normalizeOperationRecord(record, tenantId);
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
