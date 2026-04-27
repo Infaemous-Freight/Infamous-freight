@@ -30,6 +30,7 @@ model Carrier {
   loadAssignments LoadAssignment[]
   loadDispatches  LoadDispatch[]
   carrierPayments CarrierPayment[]
+  aiUsageEvents   AiUsageEvent[]
   rateAgreement   RateAgreement?
 }
 
@@ -293,6 +294,27 @@ model LoadBoardPost {
 
   @@index([board])
   @@index([status])
+}
+
+model AiUsageEvent {
+  id             String   @id @default(cuid())
+  carrierId      String
+  feature        String
+  actionCount    Int      @default(1)
+  documentScans  Int      @default(0)
+  voiceMinutes   Int      @default(0)
+  inputTokens    Int      @default(0)
+  outputTokens   Int      @default(0)
+  estimatedCost  Float    @default(0)
+  idempotencyKey String?
+  metadata       String?
+  createdAt      DateTime @default(now())
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+
+  @@unique([carrierId, idempotencyKey])
+  @@index([carrierId, createdAt])
+  @@index([feature])
 }
 
 model AuditLog {
