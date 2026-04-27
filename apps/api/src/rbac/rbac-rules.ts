@@ -194,6 +194,9 @@ export function hasAnyPermission(member: TeamMember, permissions: Permission[]):
   return permissions.some(p => member.permissions.includes(p));
 }
 
+/** Type alias for data with all sensitive financial / internal fields removed. */
+export type SanitizedData<T> = Omit<T, typeof SENSITIVE_FINANCIAL_FIELDS[number]>;
+
 /**
  * Strip sensitive financial and internal fields from a data object before
  * returning it to an external user (shipper / carrier / driver).
@@ -201,12 +204,12 @@ export function hasAnyPermission(member: TeamMember, permissions: Permission[]):
  */
 export function filterSensitiveFields<T extends Record<string, unknown>>(
   data: T,
-): Omit<T, typeof SENSITIVE_FINANCIAL_FIELDS[number]> {
+): SanitizedData<T> {
   const result = { ...data };
   for (const field of SENSITIVE_FINANCIAL_FIELDS) {
     delete (result as Record<string, unknown>)[field];
   }
-  return result as Omit<T, typeof SENSITIVE_FINANCIAL_FIELDS[number]>;
+  return result as SanitizedData<T>;
 }
 
 /**
@@ -214,6 +217,9 @@ export function filterSensitiveFields<T extends Record<string, unknown>>(
  *   - shipper: only loads where shipperId matches member.ownerId
  *   - carrier: only loads where carrierId matches member.ownerId
  *   - driver:  only loads where driverName matches member.ownerId
+ *
+ * Note: `driverName` is used as the driver identifier in the current data model.
+ * Set `member.ownerId` to the driver's name as it appears on assigned loads.
  * Internal roles always return true.
  */
 export function canAccessLoad(

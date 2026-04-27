@@ -6,6 +6,7 @@ import {
   ROLE_PERMISSIONS,
   SENSITIVE_FINANCIAL_FIELDS,
   EXTERNAL_ROLES,
+  SanitizedData,
   isExternalRole,
   hasPermission,
   hasAnyPermission,
@@ -23,6 +24,7 @@ export {
   ROLE_PERMISSIONS,
   SENSITIVE_FINANCIAL_FIELDS,
   EXTERNAL_ROLES,
+  SanitizedData,
   isExternalRole,
   hasPermission,
   hasAnyPermission,
@@ -123,9 +125,7 @@ export class RBACService {
    * Strip sensitive financial and internal fields from a data object before
    * returning it to an external user (shipper / carrier / driver).
    */
-  filterSensitiveFields<T extends Record<string, unknown>>(
-    data: T,
-  ): Omit<T, typeof SENSITIVE_FINANCIAL_FIELDS[number]> {
+  filterSensitiveFields<T extends Record<string, unknown>>(data: T): SanitizedData<T> {
     return filterSensitiveFields(data);
   }
 
