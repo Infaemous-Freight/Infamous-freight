@@ -18,6 +18,9 @@ import LaunchValidationPage from '@/pages/LaunchValidationPage';
 import { PayPerLoadPricing } from '@/components/PayPerLoadPricing';
 import { ReferralProgram } from '@/components/ReferralProgram';
 import LoginPage from '@/pages/LoginPage';
+import CarriersPage from '@/pages/CarriersPage';
+import AccountingDashboardPage from '@/pages/AccountingDashboardPage';
+import QuoteRequestsPage from '@/pages/QuoteRequestsPage';
 
 function App() {
   return (
@@ -39,6 +42,9 @@ function App() {
           <Route path="/product-hunt" element={<ProductHunt />} />
           <Route path="/gdpr" element={<GDPR />} />
           <Route path="/launch-validation" element={<LaunchValidationPage />} />
+          <Route path="/carriers" element={<CarriersPage />} />
+          <Route path="/accounting" element={<AccountingDashboardPage />} />
+          <Route path="/quotes" element={<QuoteRequestsPage />} />
         </Route>
 
         {/* Public routes (no layout) */}
