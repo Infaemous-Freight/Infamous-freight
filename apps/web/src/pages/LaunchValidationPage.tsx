@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import {
+  AlertTriangle,
   CheckCircle2,
   ClipboardCheck,
   FileCheck2,
@@ -12,6 +13,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { useAppStore } from '@/store/app-store';
+import { canAccessLaunchValidation, isLaunchValidationEnabled } from '@/lib/launchValidationAccess';
 import {
   confirmDispatch,
   convertQuoteToLoad,
@@ -67,6 +69,8 @@ const LaunchValidationPage: React.FC = () => {
     tenantId: user?.carrierId ?? 'carrier_default',
     role: user?.role ?? 'dispatcher',
   }), [user?.carrierId, user?.role]);
+  const launchValidationEnabled = isLaunchValidationEnabled();
+  const canAccess = canAccessLaunchValidation(user?.role);
 
   const setRunning = (name: string) => {
     setChecks((current) => updateCheck(current, name, { status: 'running', detail: undefined }));
@@ -81,6 +85,11 @@ const LaunchValidationPage: React.FC = () => {
   };
 
   const runValidation = async () => {
+    if (!canAccess) {
+      toast.error('Launch validation is restricted to owner/admin users when enabled.');
+      return;
+    }
+
     setIsRunning(true);
     setChecks(initialChecks);
 
@@ -199,6 +208,27 @@ const LaunchValidationPage: React.FC = () => {
 
   const passedCount = checks.filter((check) => check.status === 'passed').length;
   const failedCount = checks.filter((check) => check.status === 'failed').length;
+
+  if (!canAccess) {
+    return (
+      <div className="flex min-h-[70vh] items-center justify-center">
+        <div className="max-w-xl rounded-2xl border border-infamous-border bg-infamous-card p-8 text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
+            <AlertTriangle className="text-red-400" size={24} />
+          </div>
+          <h1 className="text-2xl font-bold text-white">Launch validation restricted</h1>
+          <p className="mt-3 text-sm text-gray-400">
+            This tool creates real workflow records. Access is limited to owner/admin users and requires
+            <span className="font-mono text-gray-200"> VITE_LAUNCH_VALIDATION_ENABLED=true</span> in production.
+          </p>
+          <div className="mt-5 rounded-xl border border-infamous-border bg-black/20 p-4 text-left text-sm text-gray-400">
+            <p>Feature flag: <span className="font-mono text-white">{String(launchValidationEnabled)}</span></p>
+            <p>Current role: <span className="font-mono text-white">{context.role}</span></p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

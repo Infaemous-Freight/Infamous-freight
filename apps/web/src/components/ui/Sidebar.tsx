@@ -1,12 +1,20 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAppStore } from '@/store/app-store';
+import { canAccessLaunchValidation } from '@/lib/launchValidationAccess';
 import {
   LayoutDashboard, Truck, Radio, Users, FileText, MessageSquare,
   TrendingUp, ShieldCheck, Settings, ChevronLeft, ChevronRight,
-  Zap, LogOut, ClipboardCheck
+  Zap, LogOut, ClipboardCheck, type LucideIcon
 } from 'lucide-react';
 
-const navItems = [
+type NavItem = {
+  path: string;
+  label: string;
+  icon: LucideIcon;
+  badge?: string;
+};
+
+const baseNavItems: NavItem[] = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/loads', label: 'Loads', icon: Truck },
   { path: '/dispatch', label: 'Dispatch Board', icon: Radio },
@@ -15,13 +23,22 @@ const navItems = [
   { path: '/chat', label: 'Messages', icon: MessageSquare, badge: '3' },
   { path: '/analytics', label: 'Analytics', icon: TrendingUp },
   { path: '/compliance', label: 'Compliance', icon: ShieldCheck },
-  { path: '/launch-validation', label: 'Launch Validation', icon: ClipboardCheck },
-  { path: '/settings', label: 'Settings', icon: Settings },
 ];
 
+const launchValidationNavItem: NavItem = {
+  path: '/launch-validation',
+  label: 'Launch Validation',
+  icon: ClipboardCheck,
+};
+
+const settingsNavItem: NavItem = { path: '/settings', label: 'Settings', icon: Settings };
+
 const Sidebar: React.FC = () => {
-  const { sidebarOpen, toggleSidebar, logout } = useAppStore();
+  const { sidebarOpen, toggleSidebar, logout, user } = useAppStore();
   const location = useLocation();
+  const navItems: NavItem[] = canAccessLaunchValidation(user?.role)
+    ? [...baseNavItems, launchValidationNavItem, settingsNavItem]
+    : [...baseNavItems, settingsNavItem];
 
   return (
     <aside

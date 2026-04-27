@@ -1,7 +1,7 @@
 # Infamous Freight — Phase 5 Launch Validation
 
 Date: April 26, 2026
-Status: Phase 5 UI and launch validation path added
+Status: Phase 5 UI and launch validation path added; production access now gated
 
 ## Purpose
 
@@ -42,6 +42,27 @@ The API must have production database access configured through:
 DATABASE_URL=postgresql://...
 ```
 
+## Launch validation access control
+
+The validation page creates real workflow records, so it is restricted.
+
+Access requires:
+
+1. User role is `owner` or `admin`.
+2. In production, the web environment variable below is explicitly enabled:
+
+```env
+VITE_LAUNCH_VALIDATION_ENABLED=true
+```
+
+If the flag is unset in production, the route remains blocked and the sidebar item is hidden. Local and non-production environments remain enabled by default to support staging validation.
+
+Recommended production setting after validation:
+
+```env
+VITE_LAUNCH_VALIDATION_ENABLED=false
+```
+
 ## Production migration readiness
 
 Do not run the launch validation page against production until the production migration plan is confirmed.
@@ -63,20 +84,12 @@ npm --prefix apps/api exec prisma migrate deploy --schema prisma/schema.prisma
 1. Confirm CI is green on `main`.
 2. Confirm production environment variables are present.
 3. Apply database migration to staging first.
-4. Run `/launch-validation` against staging.
+4. Run `/launch-validation` against staging with an owner/admin internal test account.
 5. Apply production migration.
-6. Run `/launch-validation` against production with an internal carrier account.
-7. Review generated validation records in the dashboard/API.
-8. Disable or restrict access to launch validation if the page should not remain available to all dispatcher/admin users.
-
-## Access control note
-
-The page uses the existing app auth/session context. It calls API endpoints with:
-
-- `x-tenant-id`
-- `x-user-role`
-
-For stricter production control, restrict the route to owner/admin users or hide it behind a feature flag before broad rollout.
+6. Temporarily set `VITE_LAUNCH_VALIDATION_ENABLED=true` in production web env.
+7. Run `/launch-validation` against production with an internal owner/admin carrier account.
+8. Review generated validation records in the dashboard/API.
+9. Set `VITE_LAUNCH_VALIDATION_ENABLED=false` again unless active validation access is still needed.
 
 ## Operational note
 
