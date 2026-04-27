@@ -500,8 +500,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
   }));
 
   app.get('/api/tracking/:loadId', wrapAsync(async (req, res) => {
-    const records = await dataStore.getCustomerTracking(req.params.loadId);
-    const data = records.map(({ tenantId: _tenantId, ...rest }) => rest);
+    const data = await dataStore.getCustomerTracking(req.params.loadId);
     res.status(200).json({ data, count: data.length });
   }));
 }

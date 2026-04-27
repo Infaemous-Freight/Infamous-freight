@@ -30,7 +30,7 @@ describe('MVP dispatch board and shipment tracking', () => {
     process.env.NODE_ENV = 'test';
   });
 
-  it('progressses a load through MVP dispatch stages', async () => {
+  it('progresses a load through MVP dispatch stages', async () => {
     const app = createApp();
 
     const loadRes = await request(app)

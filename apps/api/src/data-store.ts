@@ -215,7 +215,7 @@ export interface DataStore {
     tenantId: string,
     loadId: string,
   ): Promise<FreightOperationRecord[]>;
-  getCustomerTracking(loadId: string): Promise<FreightOperationRecord[]>;
+  getCustomerTracking(loadId: string): Promise<Array<Record<string, unknown>>>;
   verifyDelivery(
     tenantId: string,
     loadId: string,
@@ -294,8 +294,8 @@ function buildTenantWhere(config: OperationConfig, tenantId: string): Record<str
 
 function filterCustomerTrackingFields(
   record: FreightOperationRecord,
-): FreightOperationRecord {
-  const safe: FreightOperationRecord = { id: record.id, tenantId: record.tenantId };
+): Record<string, unknown> {
+  const safe: Record<string, unknown> = { id: record.id };
   const allowed = ['loadId', 'status', 'latitude', 'longitude', 'deliveryETA', 'deliveredAt', 'pickupConfirmedAt', 'createdAt', 'updatedAt'];
   for (const key of allowed) {
     if (record[key] !== undefined) {
@@ -497,7 +497,7 @@ class MemoryDataStore implements DataStore {
     );
   }
 
-  async getCustomerTracking(loadId: string): Promise<FreightOperationRecord[]> {
+  async getCustomerTracking(loadId: string): Promise<Array<Record<string, unknown>>> {
     return this.freightOperations.shipmentTracking
       .filter((r) => r.loadId === loadId && r.visibilityLevel !== 'internal')
       .map(filterCustomerTrackingFields);
@@ -955,7 +955,11 @@ class PrismaDataStore implements DataStore {
     return records.map((r) => normalizeOperationRecord(r, tenantId));
   }
 
-  async getCustomerTracking(loadId: string): Promise<FreightOperationRecord[]> {
+  async getCustomerTracking(loadId: string): Promise<Array<Record<string, unknown>>> {
+    // The ShipmentTracking model does not have a visibilityLevel column in the current schema.
+    // All fields returned by the select are already customer-safe (internal notes and carrier
+    // private data are not selected). Once a migration adds visibilityLevel, add it to the
+    // select and filter here: where: { loadId, visibilityLevel: { not: 'internal' } }.
     const records = await this.prisma.shipmentTracking.findMany({
       where: { loadId },
       orderBy: { createdAt: 'desc' },
@@ -972,12 +976,7 @@ class PrismaDataStore implements DataStore {
         updatedAt: true,
       },
     }) as Array<Record<string, unknown>>;
-    const load = await this.prisma.load.findFirst({
-      where: { id: loadId },
-      select: { carrierId: true },
-    });
-    const tenantId = load?.carrierId ?? '';
-    return records.map((r) => normalizeOperationRecord(r, tenantId));
+    return records;
   }
 
   async verifyDelivery(
