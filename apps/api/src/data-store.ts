@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import { BillingSyncPayload } from './billing';
+import { buildWorkflowAlerts, WorkflowAlert } from './alerts';
 
 type BaseRecord = {
   id: string;
@@ -196,6 +197,7 @@ export interface DataStore {
   ): Promise<FreightOperationRecord>;
   syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean>;
   getCarrierStripeCustomerId(tenantId: string): Promise<string | null>;
+  listWorkflowAlerts(tenantId: string): Promise<WorkflowAlert[]>;
   healthCheck(): Promise<'connected' | 'disconnected'>;
 }
 
@@ -505,6 +507,17 @@ class MemoryDataStore implements DataStore {
 
   async getCarrierStripeCustomerId(tenantId: string): Promise<string | null> {
     return this.carrierBilling.get(tenantId)?.stripeCustomerId ?? null;
+  }
+
+  async listWorkflowAlerts(tenantId: string): Promise<WorkflowAlert[]> {
+    return buildWorkflowAlerts(
+      tenantId,
+      this.freightOperations.quoteRequests.filter((r) => r.tenantId === tenantId),
+      this.loads.filter((r) => r.tenantId === tenantId),
+      this.freightOperations.shipmentTracking.filter((r) => r.tenantId === tenantId),
+      this.freightOperations.carrierPayments.filter((r) => r.tenantId === tenantId),
+      this.freightOperations.rateAgreements.filter((r) => r.tenantId === tenantId),
+    );
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
@@ -914,6 +927,124 @@ class PrismaDataStore implements DataStore {
     });
 
     return carrier?.stripeCustomerId ?? null;
+  }
+
+  async listWorkflowAlerts(tenantId: string): Promise<WorkflowAlert[]> {
+    const now = new Date();
+    const windowEnd = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+    const [quoteRequests, loads, shipmentTracking, carrierPayments, rateAgreements, documents, invoices] =
+      await Promise.all([
+        this.prisma.quoteRequest.findMany({
+          where: { carrierId: tenantId, status: { in: ['pending', 'new'] } },
+          select: { id: true, brokerName: true, status: true },
+        }),
+        this.prisma.load.findMany({
+          where: {
+            carrierId: tenantId,
+            status: { in: ['booked', 'in_transit', 'dispatched', 'at_pickup', 'loaded', 'carrier_assigned', 'exception'] },
+          },
+          select: { id: true, status: true },
+        }),
+        this.prisma.shipmentTracking.findMany({
+          where: {
+            load: { carrierId: tenantId },
+            status: { in: ['delivered', 'exception'] },
+          },
+          select: { id: true, loadId: true, status: true, podReceived: true },
+        }),
+        this.prisma.carrierPayment.findMany({
+          where: { carrierId: tenantId, status: 'pending' },
+          select: { id: true, status: true },
+        }),
+        this.prisma.rateAgreement.findMany({
+          where: {
+            carrierId: tenantId,
+            expiryDate: { gt: now, lte: windowEnd },
+          },
+          select: { id: true, expiryDate: true },
+        }),
+        this.prisma.document.findMany({
+          where: { carrierId: tenantId, status: { in: ['pending', 'missing', 'expired'] } },
+          select: { id: true, type: true, status: true, expiryDate: true },
+        }),
+        this.prisma.invoice.findMany({
+          where: { carrierId: tenantId, status: { in: ['overdue', 'sent'] }, dueDate: { lt: now } },
+          select: { id: true, status: true, dueDate: true },
+        }),
+      ]);
+
+    // Normalize for alert builder
+    const normalizedQuotes = quoteRequests.map((q: { id: string; brokerName: string; status: string }) => ({
+      id: q.id,
+      tenantId,
+      brokerName: q.brokerName,
+      status: q.status,
+    }));
+
+    const normalizedLoads = loads.map((l: { id: string; status: string }) => ({ id: l.id, tenantId, status: l.status }));
+
+    const normalizedTracking = shipmentTracking.map((t: { id: string; loadId: string; status: string; podReceived: boolean }) => ({
+      id: t.id,
+      tenantId,
+      loadId: t.loadId,
+      status: t.status,
+      podReceived: t.podReceived,
+    }));
+
+    const normalizedPayments = carrierPayments.map((p: { id: string; status: string }) => ({
+      id: p.id,
+      tenantId,
+      status: p.status,
+    }));
+
+    // Map rate agreements expiring soon → insurance_expiration_reminder via buildWorkflowAlerts
+    const normalizedAgreements = rateAgreements.map((a: { id: string; expiryDate: Date | null }) => ({
+      id: a.id,
+      tenantId,
+      expiryDate: a.expiryDate?.toISOString(),
+    }));
+
+    const alerts = buildWorkflowAlerts(
+      tenantId,
+      normalizedQuotes,
+      normalizedLoads,
+      normalizedTracking,
+      normalizedPayments,
+      normalizedAgreements,
+    );
+
+    // Carrier document reminders from Document model
+    for (const doc of documents) {
+      alerts.push({
+        id: doc.id + '-doc-alert',
+        type: 'carrier_document_reminder',
+        severity: 'warning',
+        title: 'Carrier Document Reminder',
+        message: `Carrier document of type "${doc.type}" has status "${doc.status}" and requires attention.`,
+        entityType: 'document',
+        entityId: doc.id,
+        tenantId,
+        createdAt: now.toISOString(),
+      });
+    }
+
+    // Overdue invoices from Invoice model
+    for (const invoice of invoices) {
+      alerts.push({
+        id: invoice.id + '-invoice-alert',
+        type: 'overdue_invoice',
+        severity: 'critical',
+        title: 'Overdue Invoice',
+        message: `Invoice is past its due date and has not been paid.`,
+        entityType: 'invoice',
+        entityId: invoice.id,
+        tenantId,
+        createdAt: now.toISOString(),
+      });
+    }
+
+    return alerts;
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {

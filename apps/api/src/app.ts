@@ -414,6 +414,11 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
+
+  app.get('/api/workflows/alerts', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.listWorkflowAlerts(getRequiredTenantId(req));
+    res.status(200).json({ data, count: data.length });
+  }));
 }
 
 export function createApp() {

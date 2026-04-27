@@ -88,3 +88,40 @@ Related issue: #1588
 ## Closure Rule
 
 Do not close #1589 until #1583 through #1588 have documented evidence and are closed.
+
+## Workflow Alerts Evidence
+
+Related issue: [MVP]: Add workflow alerts after core flow works
+
+Alert types implemented:
+
+- `quote_request_received` — triggered when a `QuoteRequest` record has `status: pending` or `status: new`.
+- `carrier_document_reminder` — triggered when a `RateAgreement` (memory store) or `Document` (Prisma store) has `status: pending`, `status: missing`, or `status: expired`.
+- `insurance_expiration_reminder` — triggered when a `RateAgreement` has an `expiryDate` within the next 30 days.
+- `stale_load_update` — triggered when a `Load` has an active status (`booked`, `in_transit`, `dispatched`, `at_pickup`, `loaded`, `carrier_assigned`) and no associated `ShipmentTracking` entries.
+- `missing_pod_reminder` — triggered when a `ShipmentTracking` entry has `status: delivered` and `podReceived: false`.
+- `overdue_invoice` — triggered when a `CarrierPayment` has `status: pending` (memory store) or an `Invoice` is past its `dueDate` without being paid (Prisma store).
+- `exception_alert` — triggered when a `Load` or `ShipmentTracking` entry has `status: exception`.
+
+Endpoint: `GET /api/workflows/alerts` (requires `x-tenant-id` and valid `x-user-role` headers).
+
+Test file: `apps/api/test/workflow-alerts.test.ts`
+
+Test results (all passed):
+
+- ✓ returns an empty alerts list when there is no alertable data
+- ✓ raises a quote_request_received alert for a pending quote request
+- ✓ raises a carrier_document_reminder alert for a rate agreement with pending status
+- ✓ raises an insurance_expiration_reminder alert for a rate agreement expiring within 30 days
+- ✓ raises a stale_load_update alert for an active load with no tracking updates
+- ✓ raises a missing_pod_reminder alert for a delivered shipment without POD
+- ✓ raises an overdue_invoice alert for a carrier payment still in pending status
+- ✓ raises an exception_alert for a load with exception status
+- ✓ raises an exception_alert for a tracking entry with exception status
+- ✓ returns alerts with required shape fields
+- ✓ requires a valid tenant ID
+- ✓ requires a valid role
+
+Verified by: automated test suite (12/12 passed)
+Verified date: 2026-04-27
+
