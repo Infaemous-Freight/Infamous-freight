@@ -6,7 +6,7 @@ This plan converts the readiness audit into executable repo work.
 
 ### 1. Replace header-trusted authorization
 
-Current prototype-friendly behavior accepts tenant and role values from request headers on protected routes. Production must not trust caller-controlled role or tenant headers.
+Current prototype-friendly behavior accepts tenant and role values from request headers. Production must not trust caller-controlled role or tenant headers.
 
 Required outcome:
 
@@ -15,6 +15,8 @@ Required outcome:
 - Resolve tenant membership from database or trusted claims.
 - Resolve role from server-side source.
 - Add tests for role escalation and cross-tenant access.
+
+Execution doc: `docs/AUTHORIZATION_MIGRATION_PLAN.md`
 
 Tracking issue: #1616
 
@@ -45,7 +47,7 @@ Required outcome:
 
 ### 1. Rate limiting
 
-The API now has a configurable in-memory rate-limit middleware scaffold. Production should upgrade to Redis or platform-backed rate limits before higher traffic.
+The API has configurable in-memory rate limiting mounted on `/api/*` routes. Production should upgrade to Redis or platform-backed rate limits before higher traffic or multiple API instances.
 
 Environment variables:
 
@@ -65,7 +67,10 @@ Tracking issue: #1618
 
 ### 3. Architecture documentation alignment
 
-Use `docs/ARCHITECTURE_SOURCE_OF_TRUTH.md` as the source of truth until the README and API docs are fully corrected.
+Use these docs as the source of truth until all README/API references are fully corrected:
+
+- `docs/ARCHITECTURE_SOURCE_OF_TRUTH.md`
+- `docs/API_ROUTE_MAP.md`
 
 Tracking issue: #1619
 
@@ -80,6 +85,13 @@ npm run test
 npm run build
 npm run production:preflight
 npm run production:smoke-test
+```
+
+Docker verification:
+
+```bash
+docker-compose up -d --build
+curl -i http://localhost:3001/health
 ```
 
 ## Launch Rule
