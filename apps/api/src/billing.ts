@@ -58,6 +58,10 @@ export function getStripeWebhookSecret(): string | null {
   return process.env.STRIPE_WEBHOOK_SECRET?.trim() || null;
 }
 
+export function getStripePaymentMethodConfiguration(): string | null {
+  return process.env.STRIPE_PAYMENT_METHOD_CONFIGURATION?.trim() || null;
+}
+
 export function getBillingPortalReturnUrl(): string {
   return process.env.STRIPE_PORTAL_RETURN_URL?.trim()
     || process.env.WEB_APP_URL?.trim()
@@ -266,6 +270,11 @@ export async function createStripeCheckoutSession(input: CheckoutSessionInput): 
     'subscription_data[metadata][plan]': input.plan,
     'subscription_data[metadata][billingInterval]': input.billingInterval,
   });
+
+  const paymentMethodConfiguration = getStripePaymentMethodConfiguration();
+  if (paymentMethodConfiguration) {
+    body.set('payment_method_configuration', paymentMethodConfiguration);
+  }
 
   if (input.stripeCustomerId) {
     body.set('customer', input.stripeCustomerId);
