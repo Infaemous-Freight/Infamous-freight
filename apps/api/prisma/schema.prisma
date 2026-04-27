@@ -317,6 +317,22 @@ model AiUsageEvent {
   @@index([feature])
 }
 
+model StripeWebhookEvent {
+  id           String    @id @default(cuid())
+  eventId      String    @unique
+  eventType    String
+  carrierId    String?
+  status       String
+  errorMessage String?
+  receivedAt   DateTime  @default(now())
+  processedAt  DateTime?
+
+  @@index([eventType])
+  @@index([status])
+  @@index([carrierId])
+  @@index([receivedAt])
+}
+
 model AuditLog {
   id         String   @id @default(cuid())
   entityType String // load, driver, invoice, etc.
