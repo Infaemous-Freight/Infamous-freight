@@ -7,6 +7,7 @@ import {
   DataStore,
   FreightOperationResource,
   LoadAssignmentDecision,
+  MVP_LOAD_STATUSES,
 } from './data-store';
 import {
   BillingInterval,
@@ -327,6 +328,24 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(201).json({ data });
   }));
 
+  app.post('/api/loads/:loadId/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const { status } = req.body;
+    if (typeof status !== 'string' || !MVP_LOAD_STATUSES.includes(status as typeof MVP_LOAD_STATUSES[number])) {
+      throw new HttpError(
+        400,
+        'invalid_load_status',
+        `Load status must be one of: ${MVP_LOAD_STATUSES.join(', ')}.`,
+      );
+    }
+    const data = await dataStore.updateLoadStatus(getRequiredTenantId(req), req.params.loadId, status);
+    res.status(200).json({ data });
+  }));
+
+  app.get('/api/loads/:loadId/tracking-updates', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.listTrackingUpdates(getRequiredTenantId(req), req.params.loadId);
+    res.status(200).json({ data, count: data.length });
+  }));
+
   app.get('/api/drivers', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.listDrivers(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
@@ -413,6 +432,12 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
   app.post('/api/workflows/load-board-posts/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
+  }));
+
+  app.get('/api/tracking/:loadId', wrapAsync(async (req, res) => {
+    const records = await dataStore.getCustomerTracking(req.params.loadId);
+    const data = records.map(({ tenantId: _tenantId, ...rest }) => rest);
+    res.status(200).json({ data, count: data.length });
   }));
 }
 

@@ -132,9 +132,28 @@ const OPERATION_CONFIG: Record<FreightOperationResource, OperationConfig> = {
   },
 };
 
+export const MVP_LOAD_STATUSES = [
+  'pending',
+  'carrier_assigned',
+  'dispatched',
+  'at_pickup',
+  'loaded',
+  'in_transit',
+  'at_delivery',
+  'delivered',
+  'pod_received',
+  'invoiced',
+  'paid',
+  'closed',
+  'exception',
+] as const;
+
+export type MvpLoadStatus = (typeof MVP_LOAD_STATUSES)[number];
+
 export interface DataStore {
   listLoads(tenantId: string): Promise<LoadRecord[]>;
   createLoad(tenantId: string, payload: Record<string, unknown>): Promise<LoadRecord>;
+  updateLoadStatus(tenantId: string, loadId: string, status: string): Promise<LoadRecord>;
   listDrivers(tenantId: string): Promise<DriverRecord[]>;
   createDriver(tenantId: string, payload: Record<string, unknown>): Promise<DriverRecord>;
   listShipments(tenantId: string): Promise<ShipmentRecord[]>;
@@ -175,6 +194,11 @@ export interface DataStore {
     loadId: string,
     payload: Record<string, unknown>,
   ): Promise<FreightOperationRecord>;
+  listTrackingUpdates(
+    tenantId: string,
+    loadId: string,
+  ): Promise<FreightOperationRecord[]>;
+  getCustomerTracking(loadId: string): Promise<FreightOperationRecord[]>;
   verifyDelivery(
     tenantId: string,
     loadId: string,
@@ -250,6 +274,19 @@ function buildTenantWhere(config: OperationConfig, tenantId: string): Record<str
   return {};
 }
 
+function filterCustomerTrackingFields(
+  record: FreightOperationRecord,
+): FreightOperationRecord {
+  const safe: FreightOperationRecord = { id: record.id, tenantId: record.tenantId };
+  const allowed = ['loadId', 'status', 'latitude', 'longitude', 'deliveryETA', 'deliveredAt', 'pickupConfirmedAt', 'createdAt', 'updatedAt'];
+  for (const key of allowed) {
+    if (record[key] !== undefined) {
+      safe[key] = record[key];
+    }
+  }
+  return safe;
+}
+
 function getNestedPayload(
   payload: Record<string, unknown>,
   key: string,
@@ -305,6 +342,15 @@ class MemoryDataStore implements DataStore {
     const record = { id: randomUUID(), tenantId, ...payload };
     this.loads.push(record);
     return record;
+  }
+
+  async updateLoadStatus(tenantId: string, loadId: string, status: string): Promise<LoadRecord> {
+    const index = this.loads.findIndex((l) => l.id === loadId && l.tenantId === tenantId);
+    if (index === -1) {
+      throw new Error('load_not_found_for_tenant');
+    }
+    this.loads[index] = { ...this.loads[index], status, updatedAt: new Date().toISOString() };
+    return this.loads[index];
   }
 
   async listDrivers(tenantId: string): Promise<DriverRecord[]> {
@@ -421,6 +467,21 @@ class MemoryDataStore implements DataStore {
       loadId,
       status: payload.status ?? 'in_transit',
     });
+  }
+
+  async listTrackingUpdates(
+    tenantId: string,
+    loadId: string,
+  ): Promise<FreightOperationRecord[]> {
+    return this.freightOperations.shipmentTracking.filter(
+      (r) => r.tenantId === tenantId && r.loadId === loadId,
+    );
+  }
+
+  async getCustomerTracking(loadId: string): Promise<FreightOperationRecord[]> {
+    return this.freightOperations.shipmentTracking
+      .filter((r) => r.loadId === loadId && r.visibilityLevel !== 'internal')
+      .map(filterCustomerTrackingFields);
   }
 
   async verifyDelivery(
@@ -573,6 +634,24 @@ class PrismaDataStore implements DataStore {
       },
     }) as PrismaLoadRecord;
     return { ...load, tenantId: load.carrierId };
+  }
+
+  async updateLoadStatus(tenantId: string, loadId: string, status: string): Promise<LoadRecord> {
+    const existing = await this.prisma.load.findFirst({
+      where: { id: loadId, carrierId: tenantId },
+      select: { id: true },
+    });
+
+    if (!existing) {
+      throw new Error('load_not_found_for_tenant');
+    }
+
+    const updated = await this.prisma.load.update({
+      where: { id: loadId },
+      data: { status },
+    }) as PrismaLoadRecord;
+
+    return { ...updated, tenantId: updated.carrierId };
   }
 
   async listDrivers(tenantId: string): Promise<DriverRecord[]> {
@@ -821,6 +900,43 @@ class PrismaDataStore implements DataStore {
       loadId,
       status: payload.status ?? 'in_transit',
     });
+  }
+
+  async listTrackingUpdates(
+    tenantId: string,
+    loadId: string,
+  ): Promise<FreightOperationRecord[]> {
+    await assertLoadBelongsToTenant(this.prisma, tenantId, loadId);
+    const records = await this.prisma.shipmentTracking.findMany({
+      where: { loadId },
+      orderBy: { createdAt: 'desc' },
+    }) as Array<Record<string, unknown>>;
+    return records.map((r) => normalizeOperationRecord(r, tenantId));
+  }
+
+  async getCustomerTracking(loadId: string): Promise<FreightOperationRecord[]> {
+    const records = await this.prisma.shipmentTracking.findMany({
+      where: { loadId },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        loadId: true,
+        status: true,
+        latitude: true,
+        longitude: true,
+        deliveryETA: true,
+        deliveredAt: true,
+        pickupConfirmedAt: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    }) as Array<Record<string, unknown>>;
+    const load = await this.prisma.load.findFirst({
+      where: { id: loadId },
+      select: { carrierId: true },
+    });
+    const tenantId = load?.carrierId ?? '';
+    return records.map((r) => normalizeOperationRecord(r, tenantId));
   }
 
   async verifyDelivery(

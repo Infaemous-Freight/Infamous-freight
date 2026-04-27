@@ -131,6 +131,37 @@ export async function recordTrackingUpdate<T>(
   return response.data.data;
 }
 
+export async function updateLoadStatus<T>(
+  context: RequestContext,
+  loadId: string,
+  status: string,
+): Promise<T> {
+  const response = await api.post<ApiEnvelope<T>>(
+    `/api/loads/${loadId}/status`,
+    { status },
+    { headers: getHeaders(context) },
+  );
+
+  return response.data.data;
+}
+
+export async function listTrackingUpdates<T>(
+  context: RequestContext,
+  loadId: string,
+): Promise<T[]> {
+  const response = await api.get<ApiEnvelope<T[]>>(
+    `/api/loads/${loadId}/tracking-updates`,
+    { headers: getHeaders(context) },
+  );
+
+  return response.data.data;
+}
+
+export async function getCustomerTracking<T>(loadId: string): Promise<T[]> {
+  const response = await api.get<ApiEnvelope<T[]>>(`/api/tracking/${loadId}`);
+  return response.data.data;
+}
+
 export async function verifyDelivery<T>(
   context: RequestContext,
   loadId: string,

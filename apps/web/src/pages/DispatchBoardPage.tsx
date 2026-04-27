@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Sparkles, Zap, Truck, Users, ArrowRight, Mic, Phone, Target, Clock } from 'lucide-react';
+import { Sparkles, Zap, Users, ArrowRight, Mic, Clock, AlertTriangle } from 'lucide-react';
 
 interface DispatchLoad {
   id: string;
   ref: string;
   origin: string;
   dest: string;
-  status: 'available' | 'matching' | 'assigned' | 'in_transit' | 'delivered';
+  status: 'pending' | 'dispatched' | 'at_pickup' | 'in_transit' | 'at_delivery' | 'delivered' | 'exception';
   driver?: string;
   driverHOS?: number;
   rate: number;
@@ -15,23 +15,26 @@ interface DispatchLoad {
 }
 
 const mockLoads: DispatchLoad[] = [
-  { id: '1', ref: 'LD-4821', origin: 'Chicago, IL', dest: 'Dallas, TX', status: 'available', rate: 3200, equipment: 'Dry Van' },
-  { id: '2', ref: 'LD-4822', origin: 'Atlanta, GA', dest: 'Charlotte, NC', status: 'matching', rate: 1850, equipment: 'Dry Van' },
-  { id: '3', ref: 'LD-4823', origin: 'Houston, TX', dest: 'Phoenix, AZ', status: 'assigned', driver: 'Marcus T.', driverHOS: 6.2, rate: 4100, eta: '11:30 PM', equipment: 'Reefer' },
+  { id: '1', ref: 'LD-4821', origin: 'Chicago, IL', dest: 'Dallas, TX', status: 'pending', rate: 3200, equipment: 'Dry Van' },
+  { id: '2', ref: 'LD-4822', origin: 'Atlanta, GA', dest: 'Charlotte, NC', status: 'dispatched', driver: 'Carlos M.', rate: 1850, equipment: 'Dry Van' },
+  { id: '3', ref: 'LD-4823', origin: 'Houston, TX', dest: 'Phoenix, AZ', status: 'at_pickup', driver: 'Marcus T.', driverHOS: 6.2, rate: 4100, eta: '11:30 PM', equipment: 'Reefer' },
   { id: '4', ref: 'LD-4824', origin: 'Memphis, TN', dest: 'Indianapolis, IN', status: 'in_transit', driver: 'James R.', driverHOS: 4.1, rate: 2400, eta: '4:00 PM', equipment: 'Flatbed' },
-  { id: '5', ref: 'LD-4825', origin: 'Denver, CO', dest: 'Kansas City, MO', status: 'delivered', driver: 'David K.', rate: 1950, equipment: 'Dry Van' },
-  { id: '6', ref: 'LD-4826', origin: 'Seattle, WA', dest: 'Portland, OR', status: 'available', rate: 1200, equipment: 'Dry Van' },
+  { id: '5', ref: 'LD-4825', origin: 'Denver, CO', dest: 'Kansas City, MO', status: 'at_delivery', driver: 'David K.', driverHOS: 2.5, rate: 1950, eta: '2:15 PM', equipment: 'Dry Van' },
+  { id: '6', ref: 'LD-4826', origin: 'Seattle, WA', dest: 'Portland, OR', status: 'delivered', driver: 'Sarah L.', rate: 1200, equipment: 'Dry Van' },
+  { id: '7', ref: 'LD-4827', origin: 'Phoenix, AZ', dest: 'Las Vegas, NV', status: 'exception', driver: 'Tony R.', rate: 900, equipment: 'Dry Van' },
 ];
 
 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
-  available: { label: 'Available', color: 'text-green-400', bg: 'bg-green-500/10 border-green-500/20' },
-  matching: { label: 'AI Matching', color: 'text-infamous-orange', bg: 'bg-infamous-orange/10 border-infamous-orange/20' },
-  assigned: { label: 'Assigned', color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
-  in_transit: { label: 'In Transit', color: 'text-purple-400', bg: 'bg-purple-500/10 border-purple-500/20' },
-  delivered: { label: 'Delivered', color: 'text-gray-400', bg: 'bg-gray-500/10 border-gray-500/20' },
+  pending: { label: 'Pending', color: 'text-gray-400', bg: 'bg-gray-500/10 border-gray-500/20' },
+  dispatched: { label: 'Dispatched', color: 'text-infamous-orange', bg: 'bg-infamous-orange/10 border-infamous-orange/20' },
+  at_pickup: { label: 'At Pickup', color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/20' },
+  in_transit: { label: 'In Transit', color: 'text-blue-400', bg: 'bg-blue-500/10 border-blue-500/20' },
+  at_delivery: { label: 'At Delivery', color: 'text-purple-400', bg: 'bg-purple-500/10 border-purple-500/20' },
+  delivered: { label: 'Delivered', color: 'text-green-400', bg: 'bg-green-500/10 border-green-500/20' },
+  exception: { label: 'Exception', color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20' },
 };
 
-const statusColumns = ['available', 'matching', 'assigned', 'in_transit', 'delivered'];
+const statusColumns = ['pending', 'dispatched', 'at_pickup', 'in_transit', 'at_delivery', 'delivered'];
 
 const DispatchBoardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'board' | 'voice'>('board');
@@ -81,57 +84,68 @@ const DispatchBoardPage: React.FC = () => {
 
       {activeTab === 'board' ? (
         /* Kanban Board */
-        <div className="grid grid-cols-5 gap-4 overflow-x-auto pb-2">
-          {statusColumns.map((status) => {
-            const colLoads = mockLoads.filter((l) => l.status === status);
-            const cfg = statusConfig[status];
-            return (
-              <div key={status} className="min-w-[220px]">
-                <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border mb-3 ${cfg.bg}`}>
-                  <span className={`text-xs font-semibold ${cfg.color}`}>{cfg.label}</span>
-                  <span className="text-xs text-gray-600 ml-auto">{colLoads.length}</span>
-                </div>
-                <div className="space-y-3">
-                  {colLoads.map((load) => (
-                    <div key={load.id} className="card p-4 cursor-grab hover:border-infamous-orange/30 transition-all">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-mono text-gray-600">{load.ref}</span>
-                        <span className="text-[10px] text-gray-600 ml-auto">{load.equipment}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm mb-2">
-                        <span className="font-medium">{load.origin.split(',')[0]}</span>
-                        <ArrowRight size={12} className="text-gray-600" />
-                        <span className="font-medium">{load.dest.split(',')[0]}</span>
-                      </div>
-                      {load.driver && (
-                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                          <Users size={10} />
-                          <span>{load.driver}</span>
-                          {load.driverHOS && (
-                            <span className={`ml-auto ${load.driverHOS < 2 ? 'text-red-400' : load.driverHOS < 4 ? 'text-yellow-400' : 'text-green-400'}`}>
-                              {load.driverHOS}h HOS
+        <>
+          {/* Exception banner */}
+          {mockLoads.some((l) => l.status === 'exception') && (
+            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 flex items-center gap-3">
+              <AlertTriangle size={16} className="text-red-400 shrink-0" />
+              <p className="text-sm text-red-400">
+                {mockLoads.filter((l) => l.status === 'exception').length} load(s) require attention
+              </p>
+            </div>
+          )}
+          <div className="grid grid-cols-6 gap-4 overflow-x-auto pb-2">
+            {statusColumns.map((status) => {
+              const colLoads = mockLoads.filter((l) => l.status === status);
+              const cfg = statusConfig[status];
+              return (
+                <div key={status} className="min-w-[200px]">
+                  <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border mb-3 ${cfg.bg}`}>
+                    <span className={`text-xs font-semibold ${cfg.color}`}>{cfg.label}</span>
+                    <span className="text-xs text-gray-600 ml-auto">{colLoads.length}</span>
+                  </div>
+                  <div className="space-y-3">
+                    {colLoads.map((load) => (
+                      <div key={load.id} className="card p-4 cursor-grab hover:border-infamous-orange/30 transition-all">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs font-mono text-gray-600">{load.ref}</span>
+                          <span className="text-[10px] text-gray-600 ml-auto">{load.equipment}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm mb-2">
+                          <span className="font-medium">{load.origin.split(',')[0]}</span>
+                          <ArrowRight size={12} className="text-gray-600" />
+                          <span className="font-medium">{load.dest.split(',')[0]}</span>
+                        </div>
+                        {load.driver && (
+                          <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                            <Users size={10} />
+                            <span>{load.driver}</span>
+                            {load.driverHOS && (
+                              <span className={`ml-auto ${load.driverHOS < 2 ? 'text-red-400' : load.driverHOS < 4 ? 'text-yellow-400' : 'text-green-400'}`}>
+                                {load.driverHOS}h HOS
+                              </span>
+                            )}
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between pt-2 border-t border-infamous-border">
+                          <span className="font-bold text-infamous-orange">${load.rate.toLocaleString()}</span>
+                          {load.eta && (
+                            <span className="text-xs text-gray-500 flex items-center gap-1">
+                              <Clock size={10} /> {load.eta}
                             </span>
                           )}
                         </div>
-                      )}
-                      <div className="flex items-center justify-between pt-2 border-t border-infamous-border">
-                        <span className="font-bold text-infamous-orange">${load.rate.toLocaleString()}</span>
-                        {load.eta && (
-                          <span className="text-xs text-gray-500 flex items-center gap-1">
-                            <Clock size={10} /> {load.eta}
-                          </span>
-                        )}
                       </div>
-                    </div>
-                  ))}
-                  {colLoads.length === 0 && (
-                    <div className="text-center py-8 text-gray-600 text-xs">No loads</div>
-                  )}
+                    ))}
+                    {colLoads.length === 0 && (
+                      <div className="text-center py-8 text-gray-600 text-xs">No loads</div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </>
       ) : (
         /* Voice Booking */
         <div className="max-w-lg mx-auto text-center py-12">
