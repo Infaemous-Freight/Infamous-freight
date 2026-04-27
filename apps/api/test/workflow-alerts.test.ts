@@ -7,6 +7,7 @@ describe('workflow alerts API', () => {
     'x-tenant-id': tenantId,
     'x-user-role': 'dispatcher',
   };
+  const EXPIRY_DAYS_AHEAD = 10;
 
   beforeEach(() => {
     process.env.NODE_ENV = 'test';
@@ -95,7 +96,7 @@ describe('workflow alerts API', () => {
   it('raises an insurance_expiration_reminder alert for a rate agreement expiring within 30 days', async () => {
     const app = createApp();
 
-    const soonExpiry = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString();
+    const soonExpiry = new Date(Date.now() + EXPIRY_DAYS_AHEAD * 24 * 60 * 60 * 1000).toISOString();
 
     await request(app)
       .post('/api/freight-operations/rateAgreements')

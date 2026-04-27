@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import { BillingSyncPayload } from './billing';
-import { buildWorkflowAlerts, WorkflowAlert } from './alerts';
+import { buildWorkflowAlerts, WorkflowAlert, ALERT_WINDOW_DAYS } from './alerts';
 
 type BaseRecord = {
   id: string;
@@ -931,7 +931,7 @@ class PrismaDataStore implements DataStore {
 
   async listWorkflowAlerts(tenantId: string): Promise<WorkflowAlert[]> {
     const now = new Date();
-    const windowEnd = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const windowEnd = new Date(now.getTime() + ALERT_WINDOW_DAYS * 24 * 60 * 60 * 1000);
 
     const [quoteRequests, loads, shipmentTracking, carrierPayments, rateAgreements, documents, invoices] =
       await Promise.all([
@@ -1017,7 +1017,7 @@ class PrismaDataStore implements DataStore {
     // Carrier document reminders from Document model
     for (const doc of documents) {
       alerts.push({
-        id: doc.id + '-doc-alert',
+        id: randomUUID(),
         type: 'carrier_document_reminder',
         severity: 'warning',
         title: 'Carrier Document Reminder',
@@ -1032,7 +1032,7 @@ class PrismaDataStore implements DataStore {
     // Overdue invoices from Invoice model
     for (const invoice of invoices) {
       alerts.push({
-        id: invoice.id + '-invoice-alert',
+        id: randomUUID(),
         type: 'overdue_invoice',
         severity: 'critical',
         title: 'Overdue Invoice',

@@ -24,7 +24,7 @@ export type WorkflowAlert = {
   createdAt: string;
 };
 
-const ALERT_WINDOW_DAYS = 30;
+export const ALERT_WINDOW_DAYS = 30;
 const ACTIVE_LOAD_STATUSES = new Set(['booked', 'in_transit', 'dispatched', 'at_pickup', 'loaded', 'carrier_assigned']);
 
 export function buildWorkflowAlerts(
