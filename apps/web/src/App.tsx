@@ -14,6 +14,7 @@ import MetricsDashboard from '@/pages/MetricsDashboard';
 import CaseStudies from '@/pages/CaseStudies';
 import ProductHunt from '@/pages/ProductHunt';
 import GDPR from '@/pages/GDPR';
+import LaunchValidationPage from '@/pages/LaunchValidationPage';
 import { PayPerLoadPricing } from '@/components/PayPerLoadPricing';
 import { ReferralProgram } from '@/components/ReferralProgram';
 import LoginPage from '@/pages/LoginPage';
@@ -37,6 +38,7 @@ function App() {
           <Route path="/case-studies" element={<CaseStudies />} />
           <Route path="/product-hunt" element={<ProductHunt />} />
           <Route path="/gdpr" element={<GDPR />} />
+          <Route path="/launch-validation" element={<LaunchValidationPage />} />
         </Route>
 
         {/* Public routes (no layout) */}

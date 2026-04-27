@@ -3,7 +3,7 @@ import { useAppStore } from '@/store/app-store';
 import {
   LayoutDashboard, Truck, Radio, Users, FileText, MessageSquare,
   TrendingUp, ShieldCheck, Settings, ChevronLeft, ChevronRight,
-  Zap, LogOut
+  Zap, LogOut, ClipboardCheck
 } from 'lucide-react';
 
 const navItems = [
@@ -15,6 +15,7 @@ const navItems = [
   { path: '/chat', label: 'Messages', icon: MessageSquare, badge: '3' },
   { path: '/analytics', label: 'Analytics', icon: TrendingUp },
   { path: '/compliance', label: 'Compliance', icon: ShieldCheck },
+  { path: '/launch-validation', label: 'Launch Validation', icon: ClipboardCheck },
   { path: '/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -50,7 +51,7 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 py-4 space-y-1 px-2">
+      <nav className="flex-1 py-4 space-y-1 px-2 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
