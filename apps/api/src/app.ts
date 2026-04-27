@@ -479,6 +479,12 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
+
+  app.delete('/api/workflows/validation-records/:loadId', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
+    const quoteRequestId = typeof req.body?.quoteRequestId === 'string' ? req.body.quoteRequestId : undefined;
+    const result = await dataStore.purgeValidationRecords(getRequiredTenantId(req), req.params.loadId, quoteRequestId);
+    res.status(200).json({ data: result });
+  }));
 }
 
 export function createApp() {

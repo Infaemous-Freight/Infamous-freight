@@ -186,6 +186,22 @@ export async function updateLoadBoardPostStatus<T>(
   return response.data.data;
 }
 
+export async function purgeValidationRecords(
+  context: RequestContext,
+  loadId: string,
+  quoteRequestId?: string,
+): Promise<{ deleted: number }> {
+  const response = await api.delete<ApiEnvelope<{ deleted: number }>>(
+    `/api/workflows/validation-records/${loadId}`,
+    {
+      headers: getHeaders(context),
+      data: quoteRequestId ? { quoteRequestId } : undefined,
+    },
+  );
+
+  return response.data.data;
+}
+
 export function getApiErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
     const message = error.response?.data?.message;

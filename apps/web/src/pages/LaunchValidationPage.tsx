@@ -20,6 +20,7 @@ import {
   createFreightOperation,
   getApiErrorMessage,
   LaunchValidationResult,
+  purgeValidationRecords,
   recordTrackingUpdate,
   respondToLoadAssignment,
   rollupOperationalMetrics,
@@ -64,6 +65,8 @@ const LaunchValidationPage: React.FC = () => {
   const [checks, setChecks] = useState<LaunchValidationResult[]>(initialChecks);
   const [isRunning, setIsRunning] = useState(false);
   const [lastLoadId, setLastLoadId] = useState<string | null>(null);
+  const [lastQuoteRequestId, setLastQuoteRequestId] = useState<string | null>(null);
+  const [isCleaning, setIsCleaning] = useState(false);
 
   const context = useMemo(() => ({
     tenantId: user?.carrierId ?? 'carrier_default',
@@ -92,6 +95,8 @@ const LaunchValidationPage: React.FC = () => {
 
     setIsRunning(true);
     setChecks(initialChecks);
+    setLastLoadId(null);
+    setLastQuoteRequestId(null);
 
     try {
       setRunning('Quote to load conversion');
@@ -128,6 +133,7 @@ const LaunchValidationPage: React.FC = () => {
       });
       const loadId = quoteConversion.load.id;
       setLastLoadId(loadId);
+      setLastQuoteRequestId(quote.id);
       setPassed('Quote to load conversion', `Created load ${loadId}`);
 
       setRunning('Assignment acceptance');
@@ -203,6 +209,24 @@ const LaunchValidationPage: React.FC = () => {
       toast.error(message);
     } finally {
       setIsRunning(false);
+    }
+  };
+
+  const cleanUpTestRecords = async () => {
+    if (!lastLoadId) {
+      return;
+    }
+
+    setIsCleaning(true);
+    try {
+      const result = await purgeValidationRecords(context, lastLoadId, lastQuoteRequestId ?? undefined);
+      setLastLoadId(null);
+      setLastQuoteRequestId(null);
+      toast.success(`Cleaned up ${result.deleted} test record(s)`);
+    } catch (error) {
+      toast.error(getApiErrorMessage(error));
+    } finally {
+      setIsCleaning(false);
     }
   };
 
@@ -320,9 +344,19 @@ const LaunchValidationPage: React.FC = () => {
           </div>
         </div>
         {lastLoadId && (
-          <p className="mt-5 rounded-xl border border-infamous-border bg-black/20 px-4 py-3 text-sm text-gray-400">
-            Last validation load: <span className="font-mono text-white">{lastLoadId}</span>
-          </p>
+          <div className="mt-5 flex flex-col gap-3 rounded-xl border border-infamous-border bg-black/20 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-gray-400">
+              Last validation load: <span className="font-mono text-white">{lastLoadId}</span>
+            </p>
+            <button
+              onClick={cleanUpTestRecords}
+              disabled={isCleaning}
+              className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-400 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isCleaning ? <Loader2 size={14} className="animate-spin" /> : null}
+              {isCleaning ? 'Cleaning up…' : 'Clean up test records'}
+            </button>
+          </div>
         )}
       </div>
     </div>

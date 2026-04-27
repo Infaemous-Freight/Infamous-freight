@@ -215,6 +215,11 @@ export interface DataStore {
   syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean>;
   getCarrierStripeCustomerId(tenantId: string): Promise<string | null>;
   healthCheck(): Promise<'connected' | 'disconnected'>;
+  purgeValidationRecords(
+    tenantId: string,
+    loadId: string,
+    quoteRequestId?: string,
+  ): Promise<{ deleted: number }>;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -550,6 +555,45 @@ class MemoryDataStore implements DataStore {
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
     return 'connected';
+  }
+
+  async purgeValidationRecords(
+    tenantId: string,
+    loadId: string,
+    quoteRequestId?: string,
+  ): Promise<{ deleted: number }> {
+    let deleted = 0;
+
+    const loadsBefore = this.loads.length;
+    this.loads = this.loads.filter((item) => !(item.id === loadId && item.tenantId === tenantId));
+    deleted += loadsBefore - this.loads.length;
+
+    const loadRelated: FreightOperationResource[] = [
+      'loadAssignments',
+      'loadDispatches',
+      'shipmentTracking',
+      'deliveryConfirmations',
+      'carrierPayments',
+      'loadBoardPosts',
+    ];
+
+    for (const resource of loadRelated) {
+      const before = this.freightOperations[resource].length;
+      this.freightOperations[resource] = this.freightOperations[resource].filter(
+        (item) => !(item.loadId === loadId && item.tenantId === tenantId),
+      );
+      deleted += before - this.freightOperations[resource].length;
+    }
+
+    if (quoteRequestId) {
+      const before = this.freightOperations.quoteRequests.length;
+      this.freightOperations.quoteRequests = this.freightOperations.quoteRequests.filter(
+        (item) => !(item.id === quoteRequestId && item.tenantId === tenantId),
+      );
+      deleted += before - this.freightOperations.quoteRequests.length;
+    }
+
+    return { deleted };
   }
 }
 
@@ -988,6 +1032,53 @@ class PrismaDataStore implements DataStore {
     } catch {
       return 'disconnected';
     }
+  }
+
+  async purgeValidationRecords(
+    tenantId: string,
+    loadId: string,
+    quoteRequestId?: string,
+  ): Promise<{ deleted: number }> {
+    const load = await this.prisma.load.findFirst({
+      where: { id: loadId, carrierId: tenantId },
+      select: { id: true },
+    });
+
+    if (!load) {
+      return { deleted: 0 };
+    }
+
+    let deleted = 0;
+
+    const boardResult = await this.prisma.loadBoardPost.deleteMany({ where: { loadId } });
+    deleted += boardResult.count;
+
+    const deliveryResult = await this.prisma.deliveryConfirmation.deleteMany({ where: { loadId } });
+    deleted += deliveryResult.count;
+
+    const trackingResult = await this.prisma.shipmentTracking.deleteMany({ where: { loadId } });
+    deleted += trackingResult.count;
+
+    const paymentResult = await this.prisma.carrierPayment.deleteMany({ where: { loadId } });
+    deleted += paymentResult.count;
+
+    const assignmentResult = await this.prisma.loadAssignment.deleteMany({ where: { loadId } });
+    deleted += assignmentResult.count;
+
+    const dispatchResult = await this.prisma.loadDispatch.deleteMany({ where: { loadId } });
+    deleted += dispatchResult.count;
+
+    await this.prisma.load.delete({ where: { id: loadId } });
+    deleted += 1;
+
+    if (quoteRequestId) {
+      const quoteResult = await this.prisma.quoteRequest.deleteMany({
+        where: { id: quoteRequestId, carrierId: tenantId },
+      });
+      deleted += quoteResult.count;
+    }
+
+    return { deleted };
   }
 }
 
