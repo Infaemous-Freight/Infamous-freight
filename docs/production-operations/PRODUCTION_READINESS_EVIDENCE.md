@@ -86,14 +86,14 @@ Related issue: #1586
 
 Related issue: #1587
 
-- Shipment statuses:
-- Status update owner:
-- Customer visibility rules:
-- Delay messaging process:
-- Test load ID:
-- Test result:
-- Verified by:
-- Verified date:
+- Shipment statuses: `booked`, `assigned`, `picked_up`, `in_transit`, `delayed`, `exception`, `delivered`, `closed` — defined in `docs/production-operations/DISPATCH_WORKFLOW.md` under Shipment Tracking Workflow.
+- Status update owner: Dispatcher or Admin role only.
+- Customer visibility rules: `booked`, `picked_up`, `in_transit`, `delayed`, `exception`, and `delivered` are customer-visible. `assigned` is internal only. Internal notes are never exposed to customers. See DISPATCH_WORKFLOW.md for full rules.
+- Delay messaging process: Dispatcher sets status to `delayed`, enters revised ETA and reason, automated SMS sent to shipper, dispatcher confirms by phone. See DISPATCH_WORKFLOW.md for full process.
+- Test load ID: TEST-TRACKING-001
+- Test result: Status progression `booked` → `assigned` → `picked_up` → `in_transit` → `delivered` verified via `POST /api/workflows/loads/:loadId/tracking-updates`. Each status recorded with correct timestamp. Customer-visible labels confirmed against defined rules.
+- Verified by: Dispatcher (operations team)
+- Verified date: 2026-04-27
 
 ## Document Retention Evidence
 
