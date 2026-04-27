@@ -13,8 +13,13 @@ Related issue: #1583
 - Legal entity status:
 - EIN status:
 - FMCSA broker authority status:
+- FMCSA MC number:
 - BOC-3 status:
+- BOC-3 provider:
 - BMC-84 or BMC-85 status:
+- BMC-84 or BMC-85 provider:
+- BMC-84 bond expiration date (if applicable):
+- Internal compliance owner:
 - Evidence location:
 - Verified by:
 - Verified date:
