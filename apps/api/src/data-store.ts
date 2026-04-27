@@ -1050,22 +1050,34 @@ class PrismaDataStore implements DataStore {
 
     let deleted = 0;
 
-    const boardResult = await this.prisma.loadBoardPost.deleteMany({ where: { loadId } });
+    const boardResult = await this.prisma.loadBoardPost.deleteMany({
+      where: { loadId, load: { carrierId: tenantId } },
+    });
     deleted += boardResult.count;
 
-    const deliveryResult = await this.prisma.deliveryConfirmation.deleteMany({ where: { loadId } });
+    const deliveryResult = await this.prisma.deliveryConfirmation.deleteMany({
+      where: { loadId, load: { carrierId: tenantId } },
+    });
     deleted += deliveryResult.count;
 
-    const trackingResult = await this.prisma.shipmentTracking.deleteMany({ where: { loadId } });
+    const trackingResult = await this.prisma.shipmentTracking.deleteMany({
+      where: { loadId, load: { carrierId: tenantId } },
+    });
     deleted += trackingResult.count;
 
-    const paymentResult = await this.prisma.carrierPayment.deleteMany({ where: { loadId } });
+    const paymentResult = await this.prisma.carrierPayment.deleteMany({
+      where: { loadId, carrierId: tenantId },
+    });
     deleted += paymentResult.count;
 
-    const assignmentResult = await this.prisma.loadAssignment.deleteMany({ where: { loadId } });
+    const assignmentResult = await this.prisma.loadAssignment.deleteMany({
+      where: { loadId, carrierId: tenantId },
+    });
     deleted += assignmentResult.count;
 
-    const dispatchResult = await this.prisma.loadDispatch.deleteMany({ where: { loadId } });
+    const dispatchResult = await this.prisma.loadDispatch.deleteMany({
+      where: { loadId, carrierId: tenantId },
+    });
     deleted += dispatchResult.count;
 
     await this.prisma.load.delete({ where: { id: loadId } });
