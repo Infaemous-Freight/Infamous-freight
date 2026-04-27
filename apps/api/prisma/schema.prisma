@@ -21,11 +21,16 @@ model Carrier {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  drivers   Driver[]
-  loads     Load[]
-  invoices  Invoice[]
-  documents Document[]
-  teamMembers TeamMember[]
+  drivers          Driver[]
+  loads            Load[]
+  invoices         Invoice[]
+  documents        Document[]
+  teamMembers      TeamMember[]
+  quoteRequests    QuoteRequest[]
+  loadAssignments  LoadAssignment[]
+  loadDispatches   LoadDispatch[]
+  carrierPayments  CarrierPayment[]
+  rateAgreement    RateAgreement?
 }
 
 model Driver {
@@ -74,9 +79,15 @@ model Load {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-  carrier  Carrier   @relation(fields: [carrierId], references: [id])
-  driver   Driver?   @relation(fields: [driverId], references: [id])
-  invoice  Invoice?
+  carrier              Carrier               @relation(fields: [carrierId], references: [id])
+  driver               Driver?               @relation(fields: [driverId], references: [id])
+  invoice              Invoice?
+  loadAssignment       LoadAssignment?
+  loadDispatch         LoadDispatch?
+  shipmentTracking     ShipmentTracking[]
+  deliveryConfirmation DeliveryConfirmation?
+  carrierPayments      CarrierPayment[]
+  loadBoardPost        LoadBoardPost?
 }
 
 model Invoice {
@@ -119,6 +130,169 @@ model TeamMember {
   acceptedAt  DateTime?
 
   carrier Carrier @relation(fields: [carrierId], references: [id])
+}
+
+model QuoteRequest {
+  id               String    @id @default(cuid())
+  carrierId        String
+  brokerName       String
+  originCity       String
+  destCity         String
+  freightType      String
+  weight           Int
+  pickupDate       DateTime
+  deliveryDeadline DateTime?
+  shipperRate      Float
+  carrierCost      Float
+  profitMargin     Float
+  status           String    @default("pending")
+  expiresAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+
+  @@index([carrierId])
+  @@index([status])
+}
+
+model LoadAssignment {
+  id            String    @id @default(cuid())
+  loadId        String    @unique
+  carrierId     String
+  rateConfirmed Float
+  acceptedAt    DateTime?
+  rejectedAt    DateTime?
+  status        String    @default("pending")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+  load    Load    @relation(fields: [loadId], references: [id])
+
+  @@index([carrierId])
+  @@index([status])
+}
+
+model LoadDispatch {
+  id                   String    @id @default(cuid())
+  loadId               String    @unique
+  carrierId            String
+  pickupContactName    String?
+  pickupContactPhone   String?
+  pickupAppointment    DateTime?
+  deliveryContactName  String?
+  deliveryContactPhone String?
+  deliveryAppointment  DateTime?
+  commodityInfo        String?
+  status               String    @default("pending")
+  dispatchedAt         DateTime?
+  confirmedAt          DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+  load    Load    @relation(fields: [loadId], references: [id])
+
+  @@index([carrierId])
+  @@index([status])
+}
+
+model ShipmentTracking {
+  id                String    @id @default(cuid())
+  loadId            String
+  status            String    @default("in_transit")
+  latitude          Float?
+  longitude         Float?
+  pickupConfirmedAt DateTime?
+  deliveryETA       DateTime?
+  deliveredAt       DateTime?
+  podReceived       Boolean   @default(false)
+  podVerified       Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  load Load @relation(fields: [loadId], references: [id])
+
+  @@index([loadId])
+  @@index([status])
+}
+
+model DeliveryConfirmation {
+  id           String    @id @default(cuid())
+  loadId       String    @unique
+  podSignature String?
+  podDate      DateTime?
+  deliveryTime DateTime?
+  verifiedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  load Load @relation(fields: [loadId], references: [id])
+}
+
+model CarrierPayment {
+  id            String    @id @default(cuid())
+  loadId        String
+  carrierId     String
+  amount        Float
+  paymentMethod String?
+  status        String    @default("pending")
+  paymentDate   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+  load    Load    @relation(fields: [loadId], references: [id])
+
+  @@index([carrierId])
+  @@index([status])
+}
+
+model RateAgreement {
+  id            String    @id @default(cuid())
+  carrierId     String    @unique
+  baseRate      Float
+  fuelSurcharge Float?
+  effectiveDate DateTime
+  expiryDate    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+}
+
+model OperationalMetric {
+  id              String   @id @default(cuid())
+  date            DateTime
+  period          String
+  loadsBooked     Int      @default(0)
+  grossMargin     Float    @default(0)
+  onTimePickup    Float    @default(0)
+  onTimeDelivery  Float    @default(0)
+  daysOutstanding Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([date])
+  @@index([period])
+}
+
+model LoadBoardPost {
+  id          String    @id @default(cuid())
+  loadId      String    @unique
+  board       String
+  boardPostId String
+  postedAt    DateTime  @default(now())
+  expiresAt   DateTime?
+  status      String    @default("posted")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  load Load @relation(fields: [loadId], references: [id])
+
+  @@index([board])
+  @@index([status])
 }
 
 model AuditLog {
