@@ -1,7 +1,7 @@
 # Infamous Freight — Phase 1 Database Schema Completion
 
 Date: April 26, 2026
-Status: Phase 1 schema committed; Phase 2 migration file committed; runtime validation still required
+Status: Phase 1 schema committed; Phase 2 migration/CI validation path committed
 
 ## Summary
 
@@ -12,10 +12,20 @@ Committed schema update:
 - `apps/api/prisma/schema.prisma`
 - Commit: `d61d76d088aa619907b14bc15157437e4b0509f4`
 
-Committed migration file:
+Committed baseline migration:
+
+- `apps/api/prisma/migrations/20260425000000_baseline_schema/migration.sql`
+- Commit: `57e3d35bcb4678728022edc508594a0c70f7e05b`
+
+Committed freight operations migration:
 
 - `apps/api/prisma/migrations/20260426000000_add_freight_operations_schema/migration.sql`
 - Commit: `090f7fedb3e2d4af221570882f0469985e93505f`
+
+Committed Phase 2 validation workflow:
+
+- `.github/workflows/phase-2-prisma-validation.yml`
+- Commit: `81ce0381a2ce9ef505b19c6a5654445f671b8cf7`
 
 ## Added Prisma models
 
@@ -214,42 +224,37 @@ Added relations:
 ### Completed repo-side
 
 - Schema committed.
-- Migration SQL committed.
+- Baseline migration committed for clean database replay.
+- Freight operations migration committed.
+- GitHub Actions validation workflow committed.
 
-### Still required in an environment with database/runtime access
+### GitHub Actions validation
 
-1. Format Prisma schema:
+The workflow `.github/workflows/phase-2-prisma-validation.yml` runs with a PostgreSQL 16 service and executes:
 
-   ```bash
-   npm --prefix apps/api exec prisma format --schema prisma/schema.prisma
-   ```
+```bash
+npm --prefix apps/api exec prisma format --schema prisma/schema.prisma --check
+npm --prefix apps/api exec prisma validate --schema prisma/schema.prisma
+npm --prefix apps/api exec prisma migrate deploy --schema prisma/schema.prisma
+npm run prisma:generate
+npm --prefix apps/api run build
+npm --prefix apps/api run test
+```
 
-2. Validate Prisma schema:
+It can be triggered manually from GitHub Actions through `workflow_dispatch`.
 
-   ```bash
-   npm --prefix apps/api exec prisma validate --schema prisma/schema.prisma
-   ```
+### Production migration warning
 
-3. Apply migration to a non-production database first:
+For an existing production database that already has the baseline tables, do not replay the baseline migration against production. Mark the baseline as applied first, then deploy the freight operations migration.
 
-   ```bash
-   npm --prefix apps/api exec prisma migrate deploy --schema prisma/schema.prisma
-   ```
+Production-safe sequence:
 
-4. Regenerate Prisma client:
+```bash
+npm --prefix apps/api exec prisma migrate resolve --applied 20260425000000_baseline_schema --schema prisma/schema.prisma
+npm --prefix apps/api exec prisma migrate deploy --schema prisma/schema.prisma
+```
 
-   ```bash
-   npm run prisma:generate
-   ```
-
-5. Run backend build and tests:
-
-   ```bash
-   npm --prefix apps/api run build
-   npm --prefix apps/api run test
-   ```
-
-6. Review generated/committed SQL before production migration.
+Run this only after staging validation passes.
 
 ## Phase 3 — API service layer
 
@@ -291,4 +296,4 @@ Expose the new workflows in the web app and validate:
 
 ## Notes
 
-The schema and migration are committed. The production database should not be migrated until the migration has been applied successfully to a staging or development database and the backend build/test suite passes.
+The schema, baseline migration, freight operations migration, and validation workflow are committed. Production database migration remains gated on a passing staging/CI validation run.
