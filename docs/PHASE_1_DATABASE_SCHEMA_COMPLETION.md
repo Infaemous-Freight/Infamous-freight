@@ -1,7 +1,7 @@
 # Infamous Freight — Phase 1 Database Schema Completion
 
 Date: April 26, 2026
-Status: Phase 1 complete — ready for Phases 2–5
+Status: Phase 1 schema committed; Phase 2 migration file committed; runtime validation still required
 
 ## Summary
 
@@ -11,6 +11,11 @@ Committed schema update:
 
 - `apps/api/prisma/schema.prisma`
 - Commit: `d61d76d088aa619907b14bc15157437e4b0509f4`
+
+Committed migration file:
+
+- `apps/api/prisma/migrations/20260426000000_add_freight_operations_schema/migration.sql`
+- Commit: `090f7fedb3e2d4af221570882f0469985e93505f`
 
 ## Added Prisma models
 
@@ -204,36 +209,49 @@ Added relations:
 - `carrierPayments`
 - `loadBoardPost`
 
-## Required next steps
+## Phase 2 — Migration and validation
 
-### Phase 2 — Migration and validation
+### Completed repo-side
 
-1. Run Prisma format:
+- Schema committed.
+- Migration SQL committed.
+
+### Still required in an environment with database/runtime access
+
+1. Format Prisma schema:
 
    ```bash
    npm --prefix apps/api exec prisma format --schema prisma/schema.prisma
    ```
 
-2. Generate migration locally or in CI:
+2. Validate Prisma schema:
 
    ```bash
-   npm --prefix apps/api exec prisma migrate dev --name add-freight-operations-schema --schema prisma/schema.prisma
+   npm --prefix apps/api exec prisma validate --schema prisma/schema.prisma
    ```
 
-3. Regenerate Prisma client:
+3. Apply migration to a non-production database first:
+
+   ```bash
+   npm --prefix apps/api exec prisma migrate deploy --schema prisma/schema.prisma
+   ```
+
+4. Regenerate Prisma client:
 
    ```bash
    npm run prisma:generate
    ```
 
-4. Run backend type checks and tests:
+5. Run backend build and tests:
 
    ```bash
    npm --prefix apps/api run build
    npm --prefix apps/api run test
    ```
 
-### Phase 3 — API service layer
+6. Review generated/committed SQL before production migration.
+
+## Phase 3 — API service layer
 
 Implement CRUD/service modules for:
 
@@ -247,7 +265,7 @@ Implement CRUD/service modules for:
 - Operational metrics
 - Load board posts
 
-### Phase 4 — Workflow integration
+## Phase 4 — Workflow integration
 
 Wire models into operating flows:
 
@@ -260,7 +278,7 @@ Wire models into operating flows:
 - KPI rollups
 - Load board post lifecycle
 
-### Phase 5 — UI and launch validation
+## Phase 5 — UI and launch validation
 
 Expose the new workflows in the web app and validate:
 
@@ -273,4 +291,4 @@ Expose the new workflows in the web app and validate:
 
 ## Notes
 
-The schema update is committed, but the migration file still needs to be generated against the target database environment. Do not apply production migration until the generated SQL is reviewed.
+The schema and migration are committed. The production database should not be migrated until the migration has been applied successfully to a staging or development database and the backend build/test suite passes.
