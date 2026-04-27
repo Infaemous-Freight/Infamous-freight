@@ -1,5 +1,6 @@
 export type QuoteLike = {
   status?: unknown;
+  [key: string]: unknown;
 };
 
 export class FreightWorkflowRuleError extends Error {
