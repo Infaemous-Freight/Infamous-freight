@@ -8,10 +8,18 @@ import {
   FreightOperationResource,
   LoadAssignmentDecision,
 } from './data-store';
+import {
+  createStripeBillingPortalSession,
+  getBillingSyncFromStripeEvent,
+  getStripeWebhookSecret,
+  StripeEvent,
+  verifyStripeWebhookSignature,
+} from './billing';
 
 type Role = 'owner' | 'admin' | 'dispatcher';
 
 const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'dispatcher'];
+const BILLING_ROLES: Role[] = ['owner', 'admin'];
 const FREIGHT_OPERATION_RESOURCES: FreightOperationResource[] = [
   'quoteRequests',
   'loadAssignments',
@@ -69,6 +77,17 @@ function requireRole(req: Request, res: Response, next: NextFunction) {
   }
 
   req.userRole = role as Role;
+  next();
+}
+
+function requireBillingRole(req: Request, res: Response, next: NextFunction) {
+  if (!req.userRole || !BILLING_ROLES.includes(req.userRole)) {
+    return res.status(403).json({
+      error: 'billing_forbidden',
+      message: 'Billing actions require owner or admin access.',
+    });
+  }
+
   next();
 }
 
@@ -141,7 +160,43 @@ function getLoadAssignmentDecision(req: Request): LoadAssignmentDecision {
   return decision as LoadAssignmentDecision;
 }
 
+function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
+  app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), wrapAsync(async (req, res) => {
+    const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(JSON.stringify(req.body ?? {}));
+    const signature = req.header('stripe-signature');
+
+    if (!verifyStripeWebhookSignature(rawBody, signature, getStripeWebhookSecret())) {
+      res.status(400).json({ error: 'invalid_stripe_signature' });
+      return;
+    }
+
+    const event = JSON.parse(rawBody.toString('utf8')) as StripeEvent;
+    const billingSync = getBillingSyncFromStripeEvent(event);
+
+    if (billingSync) {
+      await dataStore.syncCarrierBilling(billingSync);
+    }
+
+    res.status(200).json({ received: true });
+  }));
+}
+
 function registerRoutes(app: express.Express, dataStore: DataStore) {
+  app.post('/api/billing/customer-portal', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
+    const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(getRequiredTenantId(req));
+
+    if (!stripeCustomerId) {
+      throw new HttpError(
+        404,
+        'stripe_customer_not_found',
+        'No Stripe customer is linked to this carrier yet.',
+      );
+    }
+
+    const url = await createStripeBillingPortalSession(stripeCustomerId);
+    res.status(200).json({ data: { url } });
+  }));
+
   app.get('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.listLoads(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
@@ -266,6 +321,8 @@ export function createApp() {
       credentials: true,
     }),
   );
+
+  registerWebhookRoute(app, dataStore);
   app.use(express.json());
 
   app.get('/health', wrapAsync(async (_req, res) => {
@@ -316,6 +373,13 @@ export function createApp() {
       return res.status(404).json({
         error: 'quote_request_not_found',
         message: 'Quote request was not found for this tenant.',
+      });
+    }
+
+    if (err.message === 'stripe_secret_key_required') {
+      return res.status(500).json({
+        error: 'stripe_secret_key_required',
+        message: 'STRIPE_SECRET_KEY is required for billing portal sessions.',
       });
     }
 
