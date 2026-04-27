@@ -6,7 +6,6 @@ import {
   createDataStore,
   DataStore,
   FreightOperationResource,
-  LoadAssignmentDecision,
 } from './data-store';
 import {
   BillingInterval,
@@ -39,7 +38,6 @@ const FREIGHT_OPERATION_RESOURCES: FreightOperationResource[] = [
   'operationalMetrics',
   'loadBoardPosts',
 ];
-const LOAD_ASSIGNMENT_DECISIONS: LoadAssignmentDecision[] = ['accepted', 'rejected'];
 
 class HttpError extends Error {
   statusCode: number;
@@ -152,20 +150,6 @@ function getFreightOperationResource(req: Request): FreightOperationResource {
   }
 
   return resource as FreightOperationResource;
-}
-
-function getLoadAssignmentDecision(req: Request): LoadAssignmentDecision {
-  const decision = req.params.decision;
-
-  if (!LOAD_ASSIGNMENT_DECISIONS.includes(decision as LoadAssignmentDecision)) {
-    throw new HttpError(
-      400,
-      'invalid_load_assignment_decision',
-      'Load assignment decision must be accepted or rejected.',
-    );
-  }
-
-  return decision as LoadAssignmentDecision;
 }
 
 function getCheckoutPlan(req: Request): BillingPlan {
@@ -437,51 +421,6 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
   }));
 
   app.use('/api/workflows', requireTenant, requireRole, createFreightWorkflowRouter(dataStore));
-
-  app.post('/api/workflows/quotes/:id/convert-to-load', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.convertQuoteToLoad(getRequiredTenantId(req), req.params.id, req.body);
-    res.status(201).json({ data });
-  }));
-
-  app.post('/api/workflows/load-assignments/:id/:decision', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.respondToLoadAssignment(
-      getRequiredTenantId(req),
-      req.params.id,
-      getLoadAssignmentDecision(req),
-      req.body,
-    );
-    res.status(200).json({ data });
-  }));
-
-  app.post('/api/workflows/dispatches/:id/confirm', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.confirmDispatch(getRequiredTenantId(req), req.params.id, req.body);
-    res.status(200).json({ data });
-  }));
-
-  app.post('/api/workflows/loads/:loadId/tracking-updates', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.recordTrackingUpdate(getRequiredTenantId(req), req.params.loadId, req.body);
-    res.status(201).json({ data });
-  }));
-
-  app.post('/api/workflows/loads/:loadId/verify-delivery', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.verifyDelivery(getRequiredTenantId(req), req.params.loadId, req.body);
-    res.status(201).json({ data });
-  }));
-
-  app.post('/api/workflows/carrier-payments/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.updateCarrierPaymentStatus(getRequiredTenantId(req), req.params.id, req.body);
-    res.status(200).json({ data });
-  }));
-
-  app.post('/api/workflows/operational-metrics/rollup', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.rollupOperationalMetrics(getRequiredTenantId(req), req.body);
-    res.status(201).json({ data });
-  }));
-
-  app.post('/api/workflows/load-board-posts/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
-    res.status(200).json({ data });
-  }));
 }
 
 export function createApp() {
