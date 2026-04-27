@@ -21,7 +21,7 @@
 ## Platform
 
 - [ ] Public landing page reviewed
-- [ ] Quote intake tested
+- [x] Quote intake tested
 - [ ] Carrier application tested
 - [ ] Tracking workflow defined
 - [ ] Contact workflow tested
