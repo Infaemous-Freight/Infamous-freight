@@ -258,6 +258,71 @@ function registerRoutes(
 ) {
   const aiUsageStore = createAiUsageStore();
 
+  // Public lead intake endpoints — no authentication required
+  app.post('/api/leads/quote', wrapAsync(async (req, res) => {
+    const { name, email, originCity, destCity, freightType, weight, pickupDate } = req.body ?? {};
+
+    const missing: string[] = [];
+    if (!name || typeof name !== 'string') missing.push('name');
+    if (!email || typeof email !== 'string') missing.push('email');
+    if (!originCity || typeof originCity !== 'string') missing.push('originCity');
+    if (!destCity || typeof destCity !== 'string') missing.push('destCity');
+    if (!freightType || typeof freightType !== 'string') missing.push('freightType');
+    if (weight === undefined || weight === null || isNaN(parseFloat(String(weight)))) missing.push('weight');
+    if (!pickupDate || typeof pickupDate !== 'string') missing.push('pickupDate');
+
+    if (missing.length > 0) {
+      throw new HttpError(
+        400,
+        'quote_lead_missing_fields',
+        `Missing required fields: ${missing.join(', ')}.`,
+      );
+    }
+
+    const data = await dataStore.submitQuoteLead({ ...req.body, source: 'quote-form' });
+    res.status(201).json({ data });
+  }));
+
+  app.post('/api/leads/demo', wrapAsync(async (req, res) => {
+    const { name, email } = req.body ?? {};
+
+    if (!email || typeof email !== 'string') {
+      throw new HttpError(400, 'demo_lead_missing_email', 'email is required.');
+    }
+
+    const data = await dataStore.submitQuoteLead({
+      ...req.body,
+      name: name ?? '',
+      originCity: '',
+      destCity: '',
+      freightType: '',
+      weight: 0,
+      pickupDate: '',
+      source: 'demo-request',
+    });
+    res.status(201).json({ data });
+  }));
+
+  app.post('/api/leads/discount', wrapAsync(async (req, res) => {
+    const { email } = req.body ?? {};
+
+    if (!email || typeof email !== 'string') {
+      throw new HttpError(400, 'discount_lead_missing_email', 'email is required.');
+    }
+
+    const data = await dataStore.submitQuoteLead({
+      ...req.body,
+      name: '',
+      originCity: '',
+      destCity: '',
+      freightType: '',
+      weight: 0,
+      pickupDate: '',
+      source: req.body?.source ?? 'exit-intent',
+    });
+    res.status(201).json({ data });
+  }));
+
   app.get('/api/billing/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(getRequiredTenantId(req));
     res.status(200).json({
