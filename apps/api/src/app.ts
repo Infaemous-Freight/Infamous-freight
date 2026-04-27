@@ -8,6 +8,7 @@ import {
   FreightOperationResource,
   LoadAssignmentDecision,
 } from './data-store';
+import { FreightWorkflowRuleError } from './freight-workflow-rules';
 import {
   BillingInterval,
   BillingPlan,
@@ -470,6 +471,13 @@ export function createApp() {
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof HttpError) {
       return res.status(err.statusCode).json({
+        error: err.code,
+        message: err.message,
+      });
+    }
+
+    if (err instanceof FreightWorkflowRuleError) {
+      return res.status(409).json({
         error: err.code,
         message: err.message,
       });
