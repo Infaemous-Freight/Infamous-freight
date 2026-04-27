@@ -1,5 +1,16 @@
 # Carrier Vetting SOP
 
+## Onboarding Workflow
+
+Carrier applications are submitted via `POST /api/carrier-applications` and progress through the following approval statuses:
+
+1. `pending` — Application received, awaiting review.
+2. `under_review` — Vetting steps in progress (see checklist below).
+3. `approved` — All vetting steps passed; carrier cleared for dispatch.
+4. `rejected` — Application denied; reason recorded in `reviewNotes`.
+
+Status is updated via `PATCH /api/carrier-applications/:id/status` with an optional `reviewNotes` field.
+
 ## Vetting Steps
 
 1. Confirm MC and DOT numbers.

@@ -50,14 +50,14 @@ Related issue: #1585
 
 Related issue: #1586
 
-- Application route or endpoint:
-- Document upload path:
-- Carrier record destination:
-- Approval workflow:
-- Test application ID:
-- Test result:
-- Verified by:
-- Verified date:
+- Application route or endpoint: `POST /api/carrier-applications` (requires `x-tenant-id` and `x-user-role` headers)
+- Document upload path: `carriers/{carrierId}/onboarding/{documentType}/{uuid}-{fileName}` in the `documents` Supabase storage bucket. Supported document types: `w9`, `broker_carrier_agreement`, `insurance_auto`, `insurance_cargo`, `other`. Implemented in `apps/api/src/uploads/upload.service.ts` (`uploadCarrierDocument`).
+- Carrier record destination: In-memory store (`MemoryDataStore`) in test/development; Prisma-backed `PrismaDataStore` in production. Application fields stored: company name, MC number, DOT number, EIN, contact info, address, equipment types, fleet size, factoring company, status, timestamps, and attached documents.
+- Approval workflow: `PATCH /api/carrier-applications/:id/status` — status transitions: `pending` → `under_review` → `approved` (or `rejected`). Each transition records timestamps (`reviewedAt`, `approvedAt`, `rejectedAt`) and optional `reviewNotes`. Vetting checklist: `docs/production-operations/CARRIER_VETTING_SOP.md`.
+- Test application ID: Generated at runtime (UUID). Verified via `test/carrier-onboarding.test.ts` — 10 tests covering submission, field validation, list/get, full approval workflow, rejection, tenant isolation, and auth enforcement.
+- Test result: All 10 carrier onboarding tests pass (`npm test` in `apps/api`).
+- Verified by: @copilot
+- Verified date: 2026-04-27
 
 ## Tracking Evidence
 

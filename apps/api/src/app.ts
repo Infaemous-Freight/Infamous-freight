@@ -7,6 +7,7 @@ import {
   DataStore,
   FreightOperationResource,
   LoadAssignmentDecision,
+  CarrierApplicationStatus,
 } from './data-store';
 import {
   BillingInterval,
@@ -39,6 +40,12 @@ const FREIGHT_OPERATION_RESOURCES: FreightOperationResource[] = [
   'loadBoardPosts',
 ];
 const LOAD_ASSIGNMENT_DECISIONS: LoadAssignmentDecision[] = ['accepted', 'rejected'];
+const CARRIER_APPLICATION_STATUSES: CarrierApplicationStatus[] = [
+  'pending',
+  'under_review',
+  'approved',
+  'rejected',
+];
 
 class HttpError extends Error {
   statusCode: number;
@@ -165,6 +172,20 @@ function getLoadAssignmentDecision(req: Request): LoadAssignmentDecision {
   }
 
   return decision as LoadAssignmentDecision;
+}
+
+function getCarrierApplicationStatus(req: Request): CarrierApplicationStatus {
+  const status = req.body?.status;
+
+  if (!CARRIER_APPLICATION_STATUSES.includes(status as CarrierApplicationStatus)) {
+    throw new HttpError(
+      400,
+      'invalid_carrier_application_status',
+      'Status must be pending, under_review, approved, or rejected.',
+    );
+  }
+
+  return status as CarrierApplicationStatus;
 }
 
 function getCheckoutPlan(req: Request): BillingPlan {
@@ -414,6 +435,44 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
     res.status(200).json({ data });
   }));
+
+  app.post('/api/carrier-applications', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const body = req.body ?? {};
+    const required = ['companyName', 'mcNumber', 'dotNumber', 'ein', 'contactName', 'contactEmail', 'contactPhone'];
+    const missing = required.filter((field) => !body[field] || typeof body[field] !== 'string');
+
+    if (missing.length > 0) {
+      throw new HttpError(
+        400,
+        'carrier_application_missing_fields',
+        `Missing required fields: ${missing.join(', ')}.`,
+      );
+    }
+
+    const data = await dataStore.submitCarrierApplication(getRequiredTenantId(req), body);
+    res.status(201).json({ data });
+  }));
+
+  app.get('/api/carrier-applications', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.listCarrierApplications(getRequiredTenantId(req));
+    res.status(200).json({ data, count: data.length });
+  }));
+
+  app.get('/api/carrier-applications/:id', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await dataStore.getCarrierApplication(getRequiredTenantId(req), req.params.id);
+    res.status(200).json({ data });
+  }));
+
+  app.patch('/api/carrier-applications/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const status = getCarrierApplicationStatus(req);
+    const data = await dataStore.updateCarrierApplicationStatus(
+      getRequiredTenantId(req),
+      req.params.id,
+      status,
+      typeof req.body?.reviewNotes === 'string' ? req.body.reviewNotes : undefined,
+    );
+    res.status(200).json({ data });
+  }));
 }
 
 export function createApp() {
@@ -479,6 +538,13 @@ export function createApp() {
       return res.status(404).json({
         error: 'freight_operation_not_found',
         message: 'Freight operation record was not found for this tenant.',
+      });
+    }
+
+    if (err.message === 'carrier_application_not_found') {
+      return res.status(404).json({
+        error: 'carrier_application_not_found',
+        message: 'Carrier application was not found for this tenant.',
       });
     }
 

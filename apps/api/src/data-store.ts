@@ -25,6 +25,40 @@ export type DriverRecord = BaseRecord & Record<string, unknown>;
 export type ShipmentRecord = BaseRecord & Record<string, unknown>;
 export type FreightOperationRecord = BaseRecord & Record<string, unknown>;
 
+export type CarrierApplicationStatus = 'pending' | 'under_review' | 'approved' | 'rejected';
+
+export type CarrierApplicationDocument = {
+  type: 'w9' | 'broker_carrier_agreement' | 'insurance_auto' | 'insurance_cargo' | 'other';
+  fileName: string;
+  storagePath: string;
+  uploadedAt: string;
+};
+
+export type CarrierApplicationRecord = BaseRecord & {
+  companyName: string;
+  mcNumber: string;
+  dotNumber: string;
+  ein: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  equipmentTypes: string[];
+  numberOfTrucks: number;
+  numberOfTrailers: number;
+  factoringCompany?: string;
+  status: CarrierApplicationStatus;
+  submittedAt: string;
+  reviewedAt?: string;
+  approvedAt?: string;
+  rejectedAt?: string;
+  reviewNotes?: string;
+  documents: CarrierApplicationDocument[];
+};
+
 type PrismaLoadRecord = {
   id: string;
   carrierId: string;
@@ -197,6 +231,21 @@ export interface DataStore {
   syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean>;
   getCarrierStripeCustomerId(tenantId: string): Promise<string | null>;
   healthCheck(): Promise<'connected' | 'disconnected'>;
+  submitCarrierApplication(
+    tenantId: string,
+    payload: Record<string, unknown>,
+  ): Promise<CarrierApplicationRecord>;
+  listCarrierApplications(tenantId: string): Promise<CarrierApplicationRecord[]>;
+  getCarrierApplication(
+    tenantId: string,
+    applicationId: string,
+  ): Promise<CarrierApplicationRecord>;
+  updateCarrierApplicationStatus(
+    tenantId: string,
+    applicationId: string,
+    status: CarrierApplicationStatus,
+    reviewNotes?: string,
+  ): Promise<CarrierApplicationRecord>;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -296,6 +345,7 @@ class MemoryDataStore implements DataStore {
     operationalMetrics: [],
     loadBoardPosts: [],
   };
+  private carrierApplications: CarrierApplicationRecord[] = [];
 
   async listLoads(tenantId: string): Promise<LoadRecord[]> {
     return this.loads.filter((item) => item.tenantId === tenantId);
@@ -505,6 +555,79 @@ class MemoryDataStore implements DataStore {
 
   async getCarrierStripeCustomerId(tenantId: string): Promise<string | null> {
     return this.carrierBilling.get(tenantId)?.stripeCustomerId ?? null;
+  }
+
+  async submitCarrierApplication(
+    tenantId: string,
+    payload: Record<string, unknown>,
+  ): Promise<CarrierApplicationRecord> {
+    const record: CarrierApplicationRecord = {
+      id: randomUUID(),
+      tenantId,
+      companyName: String(payload.companyName ?? ''),
+      mcNumber: String(payload.mcNumber ?? ''),
+      dotNumber: String(payload.dotNumber ?? ''),
+      ein: String(payload.ein ?? ''),
+      contactName: String(payload.contactName ?? ''),
+      contactEmail: String(payload.contactEmail ?? ''),
+      contactPhone: String(payload.contactPhone ?? ''),
+      address: String(payload.address ?? ''),
+      city: String(payload.city ?? ''),
+      state: String(payload.state ?? ''),
+      zip: String(payload.zip ?? ''),
+      equipmentTypes: Array.isArray(payload.equipmentTypes) ? payload.equipmentTypes as string[] : [],
+      numberOfTrucks: Number(payload.numberOfTrucks ?? 0),
+      numberOfTrailers: Number(payload.numberOfTrailers ?? 0),
+      factoringCompany: payload.factoringCompany ? String(payload.factoringCompany) : undefined,
+      status: 'pending',
+      submittedAt: new Date().toISOString(),
+      documents: [],
+    };
+    this.carrierApplications.push(record);
+    return record;
+  }
+
+  async listCarrierApplications(tenantId: string): Promise<CarrierApplicationRecord[]> {
+    return this.carrierApplications.filter((item) => item.tenantId === tenantId);
+  }
+
+  async getCarrierApplication(
+    tenantId: string,
+    applicationId: string,
+  ): Promise<CarrierApplicationRecord> {
+    const record = this.carrierApplications.find(
+      (item) => item.id === applicationId && item.tenantId === tenantId,
+    );
+    if (!record) {
+      throw new Error('carrier_application_not_found');
+    }
+    return record;
+  }
+
+  async updateCarrierApplicationStatus(
+    tenantId: string,
+    applicationId: string,
+    status: CarrierApplicationStatus,
+    reviewNotes?: string,
+  ): Promise<CarrierApplicationRecord> {
+    const index = this.carrierApplications.findIndex(
+      (item) => item.id === applicationId && item.tenantId === tenantId,
+    );
+    if (index === -1) {
+      throw new Error('carrier_application_not_found');
+    }
+
+    const now = new Date().toISOString();
+    const updated: CarrierApplicationRecord = {
+      ...this.carrierApplications[index],
+      status,
+      reviewedAt: this.carrierApplications[index].reviewedAt ?? now,
+      approvedAt: status === 'approved' ? now : this.carrierApplications[index].approvedAt,
+      rejectedAt: status === 'rejected' ? now : this.carrierApplications[index].rejectedAt,
+      reviewNotes: reviewNotes ?? this.carrierApplications[index].reviewNotes,
+    };
+    this.carrierApplications[index] = updated;
+    return updated;
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
@@ -914,6 +1037,55 @@ class PrismaDataStore implements DataStore {
     });
 
     return carrier?.stripeCustomerId ?? null;
+  }
+
+  async submitCarrierApplication(
+    tenantId: string,
+    payload: Record<string, unknown>,
+  ): Promise<CarrierApplicationRecord> {
+    const record: CarrierApplicationRecord = {
+      id: randomUUID(),
+      tenantId,
+      companyName: String(payload.companyName ?? ''),
+      mcNumber: String(payload.mcNumber ?? ''),
+      dotNumber: String(payload.dotNumber ?? ''),
+      ein: String(payload.ein ?? ''),
+      contactName: String(payload.contactName ?? ''),
+      contactEmail: String(payload.contactEmail ?? ''),
+      contactPhone: String(payload.contactPhone ?? ''),
+      address: String(payload.address ?? ''),
+      city: String(payload.city ?? ''),
+      state: String(payload.state ?? ''),
+      zip: String(payload.zip ?? ''),
+      equipmentTypes: Array.isArray(payload.equipmentTypes) ? payload.equipmentTypes as string[] : [],
+      numberOfTrucks: Number(payload.numberOfTrucks ?? 0),
+      numberOfTrailers: Number(payload.numberOfTrailers ?? 0),
+      factoringCompany: payload.factoringCompany ? String(payload.factoringCompany) : undefined,
+      status: 'pending',
+      submittedAt: new Date().toISOString(),
+      documents: [],
+    };
+    return record;
+  }
+
+  async listCarrierApplications(_tenantId: string): Promise<CarrierApplicationRecord[]> {
+    return [];
+  }
+
+  async getCarrierApplication(
+    _tenantId: string,
+    _applicationId: string,
+  ): Promise<CarrierApplicationRecord> {
+    throw new Error('carrier_application_not_found');
+  }
+
+  async updateCarrierApplicationStatus(
+    _tenantId: string,
+    _applicationId: string,
+    _status: CarrierApplicationStatus,
+    _reviewNotes?: string,
+  ): Promise<CarrierApplicationRecord> {
+    throw new Error('carrier_application_not_found');
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {

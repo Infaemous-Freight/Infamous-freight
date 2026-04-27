@@ -139,6 +139,39 @@ export class UploadService {
     return { success: true };
   }
 
+  // Upload carrier onboarding document (W-9, insurance, broker-carrier agreement)
+  async uploadCarrierDocument(
+    file: Buffer,
+    fileName: string,
+    carrierId: string,
+    documentType: 'w9' | 'broker_carrier_agreement' | 'insurance_auto' | 'insurance_cargo' | 'other',
+    mimeType: string,
+  ) {
+    const key = `carriers/${carrierId}/onboarding/${documentType}/${uuidv4()}-${fileName}`;
+
+    const { data, error } = await this.supabase.storage
+      .from('documents')
+      .upload(key, file, {
+        contentType: mimeType,
+        upsert: false,
+      });
+
+    if (error) throw error;
+
+    const { data: urlData } = await this.supabase.storage
+      .from('documents')
+      .createSignedUrl(key, 60 * 60 * 24 * 7); // 7 days
+
+    return {
+      id: data.path,
+      storagePath: key,
+      url: urlData?.signedUrl,
+      type: documentType,
+      carrierId,
+      uploadedAt: new Date().toISOString(),
+    };
+  }
+
   // Get signed URL for document
   async getSignedUrl(path: string, expiresIn: number = 3600) {
     const { data, error } = await this.supabase.storage
