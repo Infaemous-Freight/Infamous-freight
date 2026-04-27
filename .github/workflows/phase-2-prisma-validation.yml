@@ -24,6 +24,7 @@ permissions:
 env:
   NODE_VERSION: '22'
   DATABASE_URL: postgresql://postgres:postgres@localhost:5432/infamous_freight_phase2?schema=public
+  PRISMA_SCHEMA_PATH: apps/api/prisma/schema.prisma
 
 jobs:
   prisma-validation:
@@ -59,22 +60,24 @@ jobs:
         run: npm ci
 
       - name: Format Prisma schema
-        run: npm --prefix apps/api exec prisma format --schema prisma/schema.prisma
+        run: npx prisma format --schema "$PRISMA_SCHEMA_PATH"
 
       - name: Fail if Prisma format changed committed schema
-        run: git diff --exit-code apps/api/prisma/schema.prisma
+        run: git diff --exit-code "$PRISMA_SCHEMA_PATH"
 
       - name: Validate Prisma schema
-        run: npm --prefix apps/api exec prisma validate --schema prisma/schema.prisma
+        run: npx prisma validate --schema "$PRISMA_SCHEMA_PATH"
 
       - name: Apply Prisma migrations to clean PostgreSQL database
-        run: npm --prefix apps/api exec prisma migrate deploy --schema prisma/schema.prisma
+        run: npx prisma migrate deploy --schema "$PRISMA_SCHEMA_PATH"
 
       - name: Generate Prisma client
-        run: npm run prisma:generate
+        run: npx prisma generate --schema "$PRISMA_SCHEMA_PATH"
 
       - name: Build API
         run: npm --prefix apps/api run build
 
       - name: Test API
         run: npm --prefix apps/api run test
+
+# Pull-request trigger marker: Phase 2 validation smoke check.
