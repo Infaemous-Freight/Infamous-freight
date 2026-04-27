@@ -8,7 +8,7 @@
 
 Infamous Freight is an AI-powered freight and logistics automation platform for dispatch operations, real-time shipment tracking, carrier networks, compliance workflows, and intelligent load orchestration.
 
-Built as a monorepo, the platform combines a NestJS backend, React web application, real-time communications, financial workflows, compliance tooling, and operational automation for modern freight teams.
+Built as a monorepo, the platform combines an Express 4 backend, React web application, real-time communications, financial workflows, compliance tooling, and operational automation for modern freight teams.
 
 ---
 
@@ -219,7 +219,7 @@ netlify deploy --prod --dir=apps/web/dist
 | Layer | Technology |
 |---|---|
 | 🎨 Frontend | React 18, TypeScript, Vite, Tailwind CSS, Zustand, Socket.io |
-| 🧠 Backend | NestJS, TypeScript, Prisma ORM |
+| 🧠 Backend | Express 4, TypeScript, Prisma ORM |
 | 🗄️ Database | PostgreSQL 16 |
 | ⚡ Cache | Redis 7 |
 | 📡 Realtime | Socket.io WebSockets |
@@ -233,8 +233,12 @@ netlify deploy --prod --dir=apps/web/dist
 
 ```text
 apps/
-├── api/                    # NestJS backend
+├── api/                    # Express 4 backend
 │   └── src/
+│       ├── app.ts          # Express app factory (routes, middleware)
+│       ├── server.ts       # Entry point — starts the HTTP server
+│       ├── data-store.ts   # Data access layer (Prisma)
+│       ├── billing.ts      # Stripe billing helpers
 │       ├── dispatch/       # Auto-dispatch AI, backhaul, rate negotiation
 │       ├── loads/          # Load board aggregation
 │       ├── invoice/        # BOL/POD + invoicing
@@ -335,6 +339,8 @@ Infamous Freight is built to centralize dispatch, tracking, compliance, communic
 
 For operational ownership, deployment runbooks, integration provenance, and SBOM review standards, use these docs:
 
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — canonical backend architecture, framework, ports, entry points, and migration notes
+- [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md) — complete list of implemented API routes with request headers and response shapes
 - [`docs/INTEGRATIONS-AND-SECRETS.md`](docs/INTEGRATIONS-AND-SECRETS.md) — external integrations, secret ownership, deploy failure runbooks, and rotation guidance
 - [`docs/NETLIFY-BUILDHOOKS.md`](docs/NETLIFY-BUILDHOOKS.md) — provenance, integrity, and maintenance guidance for Netlify URL-hosted buildhook packages
 - [`docs/SBOM-POLICY.md`](docs/SBOM-POLICY.md) — runtime-vs-build SBOM policy, review cadence, classification rules, and triage standards

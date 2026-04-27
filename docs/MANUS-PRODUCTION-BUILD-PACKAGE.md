@@ -148,6 +148,22 @@ Build the MVP in the most practical production-ready order, not as a mockup.
 
 ## 2) Recommended Production Architecture
 
+> **⚠️ Note — architecture drift:** This section describes the original planning-phase target architecture. The **actual implemented architecture** differs in several areas. Before building against these recommendations, review the canonical reference:
+>
+> - [`docs/ARCHITECTURE.md`](ARCHITECTURE.md) — canonical backend framework, ports, entry points
+> - [`docs/API-REFERENCE.md`](API-REFERENCE.md) — implemented API routes
+>
+> Key differences between this document and the live repo:
+>
+> | This document | Actual repo |
+> |---|---|
+> | Next.js frontend | React 18 + Vite SPA (not Next.js) |
+> | Next.js API routes or separate Node backend | Express 4 (`apps/api/src/server.ts`) |
+> | Express 5 assumed in some sections | Express 4 in use |
+> | tRPC-style type-safe RPC | Standard REST over HTTP |
+> | `/api/freight/...` route prefix | Routes use `/api/loads`, `/api/shipments`, `/api/freight-operations/:resource`, `/api/workflows/...` |
+> | Webhook endpoint `POST /api/webhooks/stripe` | Implemented as `POST /api/billing/webhook` |
+
 ### Stack
 
 Use this structure:
