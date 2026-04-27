@@ -9,17 +9,23 @@ import {
   LoadAssignmentDecision,
 } from './data-store';
 import {
+  BillingInterval,
+  BillingPlan,
   createStripeBillingPortalSession,
+  createStripeCheckoutSession,
   getBillingSyncFromStripeEvent,
   getStripeWebhookSecret,
   StripeEvent,
   verifyStripeWebhookSignature,
 } from './billing';
+import { createAiUsageStore } from './ai-usage';
 
 type Role = 'owner' | 'admin' | 'dispatcher';
 
 const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'dispatcher'];
 const BILLING_ROLES: Role[] = ['owner', 'admin'];
+const BILLING_PLANS: BillingPlan[] = ['starter', 'professional', 'enterprise'];
+const BILLING_INTERVALS: BillingInterval[] = ['month', 'year'];
 const FREIGHT_OPERATION_RESOURCES: FreightOperationResource[] = [
   'quoteRequests',
   'loadAssignments',
@@ -160,6 +166,26 @@ function getLoadAssignmentDecision(req: Request): LoadAssignmentDecision {
   return decision as LoadAssignmentDecision;
 }
 
+function getCheckoutPlan(req: Request): BillingPlan {
+  const plan = req.body?.plan;
+
+  if (!BILLING_PLANS.includes(plan)) {
+    throw new HttpError(400, 'invalid_billing_plan', 'Billing plan must be starter, professional, or enterprise.');
+  }
+
+  return plan;
+}
+
+function getCheckoutInterval(req: Request): BillingInterval {
+  const billingInterval = req.body?.billingInterval ?? 'month';
+
+  if (!BILLING_INTERVALS.includes(billingInterval)) {
+    throw new HttpError(400, 'invalid_billing_interval', 'Billing interval must be month or year.');
+  }
+
+  return billingInterval;
+}
+
 function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
   app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), wrapAsync(async (req, res) => {
     const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(JSON.stringify(req.body ?? {}));
@@ -182,6 +208,31 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
 }
 
 function registerRoutes(app: express.Express, dataStore: DataStore) {
+  const aiUsageStore = createAiUsageStore();
+
+  app.get('/api/billing/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(getRequiredTenantId(req));
+    res.status(200).json({
+      data: {
+        stripeCustomerId,
+        hasStripeCustomer: Boolean(stripeCustomerId),
+      },
+    });
+  }));
+
+  app.post('/api/billing/checkout-session', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
+    const carrierId = getRequiredTenantId(req);
+    const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(carrierId);
+    const url = await createStripeCheckoutSession({
+      carrierId,
+      stripeCustomerId,
+      plan: getCheckoutPlan(req),
+      billingInterval: getCheckoutInterval(req),
+    });
+
+    res.status(200).json({ data: { url } });
+  }));
+
   app.post('/api/billing/customer-portal', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
     const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(getRequiredTenantId(req));
 
@@ -195,6 +246,24 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
 
     const url = await createStripeBillingPortalSession(stripeCustomerId);
     res.status(200).json({ data: { url } });
+  }));
+
+  app.post('/api/ai-usage/events', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    if (!req.body?.feature || typeof req.body.feature !== 'string') {
+      throw new HttpError(400, 'ai_usage_feature_required', 'AI usage events require a feature string.');
+    }
+
+    const data = await aiUsageStore.record({
+      ...req.body,
+      carrierId: getRequiredTenantId(req),
+    });
+
+    res.status(201).json({ data });
+  }));
+
+  app.get('/api/ai-usage/summary', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const data = await aiUsageStore.summarize(getRequiredTenantId(req));
+    res.status(200).json({ data });
   }));
 
   app.get('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
@@ -379,7 +448,7 @@ export function createApp() {
     if (err.message === 'stripe_secret_key_required') {
       return res.status(500).json({
         error: 'stripe_secret_key_required',
-        message: 'STRIPE_SECRET_KEY is required for billing portal sessions.',
+        message: 'STRIPE_SECRET_KEY is required for billing actions.',
       });
     }
 

@@ -11,6 +11,13 @@ export type BillingSyncPayload = {
   status?: BillingStatus;
 };
 
+export type CheckoutSessionInput = {
+  carrierId: string;
+  plan: BillingPlan;
+  billingInterval: BillingInterval;
+  stripeCustomerId?: string | null;
+};
+
 export type StripeEvent = {
   id: string;
   type: string;
@@ -19,14 +26,29 @@ export type StripeEvent = {
   };
 };
 
-const PLAN_BY_PRICE_ID: Record<string, BillingPlan> = {
-  price_1TBnZ2KCNuZqDozYEcW5j4xM: 'starter',
-  price_1TBnZ3KCNuZqDozYvHBLW9L3: 'starter',
-  price_1TBnZ3KCNuZqDozY2FISQT98: 'professional',
-  price_1TBnZ4KCNuZqDozYO9YCSWIr: 'professional',
-  price_1TBnZ3KCNuZqDozYUG5nsCHt: 'enterprise',
-  price_1TBnZ4KCNuZqDozYy4qS3Kvy: 'enterprise',
+const PRICE_BY_PLAN_INTERVAL: Record<BillingPlan, Record<BillingInterval, string>> = {
+  starter: {
+    month: 'price_1TBnZ2KCNuZqDozYEcW5j4xM',
+    year: 'price_1TBnZ3KCNuZqDozYvHBLW9L3',
+  },
+  professional: {
+    month: 'price_1TBnZ3KCNuZqDozY2FISQT98',
+    year: 'price_1TBnZ4KCNuZqDozYO9YCSWIr',
+  },
+  enterprise: {
+    month: 'price_1TBnZ3KCNuZqDozYUG5nsCHt',
+    year: 'price_1TBnZ4KCNuZqDozYy4qS3Kvy',
+  },
 };
+
+const PLAN_BY_PRICE_ID: Record<string, BillingPlan> = Object.entries(PRICE_BY_PLAN_INTERVAL).reduce(
+  (acc, [plan, intervals]) => ({
+    ...acc,
+    [intervals.month]: plan as BillingPlan,
+    [intervals.year]: plan as BillingPlan,
+  }),
+  {} as Record<string, BillingPlan>,
+);
 
 export function getStripeSecretKey(): string | null {
   return process.env.STRIPE_SECRET_KEY?.trim() || null;
@@ -40,6 +62,16 @@ export function getBillingPortalReturnUrl(): string {
   return process.env.STRIPE_PORTAL_RETURN_URL?.trim()
     || process.env.WEB_APP_URL?.trim()
     || 'http://localhost:5173/settings';
+}
+
+function getCheckoutSuccessUrl(): string {
+  return process.env.STRIPE_CHECKOUT_SUCCESS_URL?.trim()
+    || `${process.env.WEB_APP_URL?.trim() || 'http://localhost:5173'}/settings?checkout=success`;
+}
+
+function getCheckoutCancelUrl(): string {
+  return process.env.STRIPE_CHECKOUT_CANCEL_URL?.trim()
+    || `${process.env.WEB_APP_URL?.trim() || 'http://localhost:5173'}/settings?checkout=canceled`;
 }
 
 export function verifyStripeWebhookSignature(
@@ -189,19 +221,14 @@ export function getBillingSyncFromStripeEvent(event: StripeEvent): BillingSyncPa
   }
 }
 
-export async function createStripeBillingPortalSession(customerId: string): Promise<string> {
+async function postStripeForm<T>(path: string, body: URLSearchParams): Promise<T> {
   const secretKey = getStripeSecretKey();
 
   if (!secretKey) {
     throw new Error('stripe_secret_key_required');
   }
 
-  const body = new URLSearchParams({
-    customer: customerId,
-    return_url: getBillingPortalReturnUrl(),
-  });
-
-  const response = await fetch('https://api.stripe.com/v1/billing_portal/sessions', {
+  const response = await fetch(`https://api.stripe.com/v1${path}`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${secretKey}`,
@@ -210,11 +237,60 @@ export async function createStripeBillingPortalSession(customerId: string): Prom
     body,
   });
 
-  const json = await response.json() as { url?: string; error?: { message?: string } };
+  const json = await response.json() as T & { error?: { message?: string } };
 
-  if (!response.ok || !json.url) {
-    throw new Error(json.error?.message ?? 'stripe_portal_session_failed');
+  if (!response.ok) {
+    throw new Error(json.error?.message ?? 'stripe_request_failed');
   }
 
-  return json.url;
+  return json;
+}
+
+export async function createStripeCheckoutSession(input: CheckoutSessionInput): Promise<string> {
+  const price = PRICE_BY_PLAN_INTERVAL[input.plan]?.[input.billingInterval];
+
+  if (!price) {
+    throw new Error('invalid_checkout_plan');
+  }
+
+  const body = new URLSearchParams({
+    mode: 'subscription',
+    success_url: getCheckoutSuccessUrl(),
+    cancel_url: getCheckoutCancelUrl(),
+    'line_items[0][price]': price,
+    'line_items[0][quantity]': '1',
+    'metadata[carrierId]': input.carrierId,
+    'metadata[plan]': input.plan,
+    'metadata[billingInterval]': input.billingInterval,
+    'subscription_data[metadata][carrierId]': input.carrierId,
+    'subscription_data[metadata][plan]': input.plan,
+    'subscription_data[metadata][billingInterval]': input.billingInterval,
+  });
+
+  if (input.stripeCustomerId) {
+    body.set('customer', input.stripeCustomerId);
+  } else {
+    body.set('client_reference_id', input.carrierId);
+  }
+
+  const session = await postStripeForm<{ url?: string }>('/checkout/sessions', body);
+
+  if (!session.url) {
+    throw new Error('stripe_checkout_session_failed');
+  }
+
+  return session.url;
+}
+
+export async function createStripeBillingPortalSession(customerId: string): Promise<string> {
+  const session = await postStripeForm<{ url?: string }>('/billing_portal/sessions', new URLSearchParams({
+    customer: customerId,
+    return_url: getBillingPortalReturnUrl(),
+  }));
+
+  if (!session.url) {
+    throw new Error('stripe_portal_session_failed');
+  }
+
+  return session.url;
 }

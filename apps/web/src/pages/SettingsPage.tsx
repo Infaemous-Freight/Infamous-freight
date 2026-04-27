@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { User, CreditCard, Radio, Bell, Shield, Users, FileText, Zap } from 'lucide-react';
+import BillingSettingsPanel from '@/components/billing/BillingSettingsPanel';
 
 const SettingsPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState('profile');
@@ -77,37 +78,7 @@ const SettingsPage: React.FC = () => {
             </div>
           )}
 
-          {activeSection === 'billing' && (
-            <div className="space-y-4">
-              <div className="card">
-                <h2 className="text-lg font-semibold mb-4">Current Plan</h2>
-                <div className="bg-gradient-to-r from-infamous-orange/20 to-infamous-orange/5 border border-infamous-orange/30 rounded-xl p-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-lg font-bold">Growth Plan</p>
-                      <p className="text-sm text-gray-400">$99/month · Renews May 1, 2025</p>
-                    </div>
-                    <p className="text-2xl font-bold text-infamous-orange">$99<span className="text-sm text-gray-400">/mo</span></p>
-                  </div>
-                  <div className="mt-4 flex gap-3">
-                    <button className="btn-primary text-sm">Upgrade Plan</button>
-                    <button className="btn-secondary text-sm">View Invoices</button>
-                  </div>
-                </div>
-              </div>
-              <div className="card">
-                <h2 className="text-lg font-semibold mb-4">Payment Method</h2>
-                <div className="flex items-center gap-3 p-3 bg-infamous-dark rounded-xl">
-                  <div className="w-10 h-7 bg-gradient-to-r from-blue-600 to-blue-800 rounded" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Visa ending in 4242</p>
-                    <p className="text-xs text-gray-500">Expires 12/26</p>
-                  </div>
-                  <button className="text-sm text-infamous-orange hover:underline">Update</button>
-                </div>
-              </div>
-            </div>
-          )}
+          {activeSection === 'billing' && <BillingSettingsPanel />}
 
           {activeSection === 'eld' && (
             <div className="card space-y-4">
