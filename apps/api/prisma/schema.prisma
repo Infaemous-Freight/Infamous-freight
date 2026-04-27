@@ -347,3 +347,36 @@ model AuditLog {
   @@index([userId])
   @@index([createdAt])
 }
+
+model CarrierApplication {
+  id               String    @id @default(cuid())
+  tenantId         String
+  companyName      String
+  mcNumber         String
+  dotNumber        String
+  ein              String
+  contactName      String
+  contactEmail     String
+  contactPhone     String
+  address          String    @default("")
+  city             String    @default("")
+  state            String    @default("")
+  zip              String    @default("")
+  equipmentTypes   String    @default("[]") // JSON array
+  numberOfTrucks   Int       @default(0)
+  numberOfTrailers Int       @default(0)
+  factoringCompany String?
+  status           String    @default("pending")
+  submittedAt      DateTime  @default(now())
+  reviewedAt       DateTime?
+  approvedAt       DateTime?
+  rejectedAt       DateTime?
+  reviewNotes      String?
+  documents        String    @default("[]") // JSON array of CarrierApplicationDocument
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([tenantId])
+  @@index([status])
+  @@index([mcNumber])
+}

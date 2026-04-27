@@ -635,6 +635,53 @@ class MemoryDataStore implements DataStore {
   }
 }
 
+function prismaCarrierApplicationToRecord(record: Record<string, unknown>): CarrierApplicationRecord {
+  const parseJsonArray = (value: unknown): string[] => {
+    if (Array.isArray(value)) return value as string[];
+    if (typeof value === 'string') {
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  };
+
+  const toIsoOrUndefined = (value: unknown): string | undefined =>
+    value instanceof Date ? value.toISOString() : (value ? String(value) : undefined);
+
+  return {
+    id: String(record.id),
+    tenantId: String(record.tenantId),
+    companyName: String(record.companyName ?? ''),
+    mcNumber: String(record.mcNumber ?? ''),
+    dotNumber: String(record.dotNumber ?? ''),
+    ein: String(record.ein ?? ''),
+    contactName: String(record.contactName ?? ''),
+    contactEmail: String(record.contactEmail ?? ''),
+    contactPhone: String(record.contactPhone ?? ''),
+    address: String(record.address ?? ''),
+    city: String(record.city ?? ''),
+    state: String(record.state ?? ''),
+    zip: String(record.zip ?? ''),
+    equipmentTypes: parseJsonArray(record.equipmentTypes),
+    numberOfTrucks: Number(record.numberOfTrucks ?? 0),
+    numberOfTrailers: Number(record.numberOfTrailers ?? 0),
+    factoringCompany: record.factoringCompany ? String(record.factoringCompany) : undefined,
+    status: String(record.status ?? 'pending') as CarrierApplicationStatus,
+    submittedAt: record.submittedAt instanceof Date
+      ? record.submittedAt.toISOString()
+      : String(record.submittedAt),
+    reviewedAt: toIsoOrUndefined(record.reviewedAt),
+    approvedAt: toIsoOrUndefined(record.approvedAt),
+    rejectedAt: toIsoOrUndefined(record.rejectedAt),
+    reviewNotes: record.reviewNotes ? String(record.reviewNotes) : undefined,
+    documents: parseJsonArray(record.documents) as unknown as CarrierApplicationDocument[],
+  };
+}
+
 class PrismaDataStore implements DataStore {
   constructor(private readonly prisma: PrismaClient) {}
 
@@ -1043,49 +1090,78 @@ class PrismaDataStore implements DataStore {
     tenantId: string,
     payload: Record<string, unknown>,
   ): Promise<CarrierApplicationRecord> {
-    const record: CarrierApplicationRecord = {
-      id: randomUUID(),
-      tenantId,
-      companyName: String(payload.companyName ?? ''),
-      mcNumber: String(payload.mcNumber ?? ''),
-      dotNumber: String(payload.dotNumber ?? ''),
-      ein: String(payload.ein ?? ''),
-      contactName: String(payload.contactName ?? ''),
-      contactEmail: String(payload.contactEmail ?? ''),
-      contactPhone: String(payload.contactPhone ?? ''),
-      address: String(payload.address ?? ''),
-      city: String(payload.city ?? ''),
-      state: String(payload.state ?? ''),
-      zip: String(payload.zip ?? ''),
-      equipmentTypes: Array.isArray(payload.equipmentTypes) ? payload.equipmentTypes as string[] : [],
-      numberOfTrucks: Number(payload.numberOfTrucks ?? 0),
-      numberOfTrailers: Number(payload.numberOfTrailers ?? 0),
-      factoringCompany: payload.factoringCompany ? String(payload.factoringCompany) : undefined,
-      status: 'pending',
-      submittedAt: new Date().toISOString(),
-      documents: [],
-    };
-    return record;
+    const equipmentTypes = Array.isArray(payload.equipmentTypes) ? payload.equipmentTypes as string[] : [];
+    const record = await (this.prisma as any).carrierApplication.create({
+      data: {
+        tenantId,
+        companyName: String(payload.companyName ?? ''),
+        mcNumber: String(payload.mcNumber ?? ''),
+        dotNumber: String(payload.dotNumber ?? ''),
+        ein: String(payload.ein ?? ''),
+        contactName: String(payload.contactName ?? ''),
+        contactEmail: String(payload.contactEmail ?? ''),
+        contactPhone: String(payload.contactPhone ?? ''),
+        address: String(payload.address ?? ''),
+        city: String(payload.city ?? ''),
+        state: String(payload.state ?? ''),
+        zip: String(payload.zip ?? ''),
+        equipmentTypes: JSON.stringify(equipmentTypes),
+        numberOfTrucks: Number(payload.numberOfTrucks ?? 0),
+        numberOfTrailers: Number(payload.numberOfTrailers ?? 0),
+        factoringCompany: payload.factoringCompany ? String(payload.factoringCompany) : null,
+        status: 'pending',
+        documents: '[]',
+      },
+    });
+    return prismaCarrierApplicationToRecord(record);
   }
 
-  async listCarrierApplications(_tenantId: string): Promise<CarrierApplicationRecord[]> {
-    return [];
+  async listCarrierApplications(tenantId: string): Promise<CarrierApplicationRecord[]> {
+    const records = await (this.prisma as any).carrierApplication.findMany({
+      where: { tenantId },
+      orderBy: { submittedAt: 'desc' },
+    });
+    return records.map(prismaCarrierApplicationToRecord);
   }
 
   async getCarrierApplication(
-    _tenantId: string,
-    _applicationId: string,
+    tenantId: string,
+    applicationId: string,
   ): Promise<CarrierApplicationRecord> {
-    throw new Error('carrier_application_not_found');
+    const record = await (this.prisma as any).carrierApplication.findFirst({
+      where: { id: applicationId, tenantId },
+    });
+    if (!record) {
+      throw new Error('carrier_application_not_found');
+    }
+    return prismaCarrierApplicationToRecord(record);
   }
 
   async updateCarrierApplicationStatus(
-    _tenantId: string,
-    _applicationId: string,
-    _status: CarrierApplicationStatus,
-    _reviewNotes?: string,
+    tenantId: string,
+    applicationId: string,
+    status: CarrierApplicationStatus,
+    reviewNotes?: string,
   ): Promise<CarrierApplicationRecord> {
-    throw new Error('carrier_application_not_found');
+    const existing = await (this.prisma as any).carrierApplication.findFirst({
+      where: { id: applicationId, tenantId },
+    });
+    if (!existing) {
+      throw new Error('carrier_application_not_found');
+    }
+
+    const now = new Date();
+    const record = await (this.prisma as any).carrierApplication.update({
+      where: { id: applicationId },
+      data: {
+        status,
+        reviewedAt: existing.reviewedAt ?? now,
+        approvedAt: status === 'approved' ? now : existing.approvedAt,
+        rejectedAt: status === 'rejected' ? now : existing.rejectedAt,
+        reviewNotes: reviewNotes ?? existing.reviewNotes,
+      },
+    });
+    return prismaCarrierApplicationToRecord(record);
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
