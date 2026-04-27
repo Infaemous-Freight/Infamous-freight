@@ -58,8 +58,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Format-check Prisma schema
-        run: npm --prefix apps/api exec prisma format --schema prisma/schema.prisma --check
+      - name: Format Prisma schema
+        run: npm --prefix apps/api exec prisma format --schema prisma/schema.prisma
+
+      - name: Fail if Prisma format changed committed schema
+        run: git diff --exit-code apps/api/prisma/schema.prisma
 
       - name: Validate Prisma schema
         run: npm --prefix apps/api exec prisma validate --schema prisma/schema.prisma
