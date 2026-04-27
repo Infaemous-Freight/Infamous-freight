@@ -123,7 +123,7 @@ describe('MVP carrier approval and load assignment workflow', () => {
     expect(response.body.error).toBe('carrier_not_approved');
   });
 
-  it('documents are associated with carrier (required docs tracked via Document model)', async () => {
+  it('verifies carrier approval workflow with load assignment enforcement', async () => {
     const app = createApp();
 
     const docResponse = await request(app)
