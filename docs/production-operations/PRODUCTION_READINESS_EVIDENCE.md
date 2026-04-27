@@ -46,6 +46,29 @@ Related issue: #1585
 - Verified by: @copilot (automated test suite)
 - Verified date: 2026-04-27
 
+## Quote-to-Load MVP Validation Evidence
+
+Related issues: #1592, #1647, #1651
+
+- Guard implementation PR: #1614
+- Cleanup PR: #1649
+- Validation workflow PR: #1650
+- Workflow file: `.github/workflows/mvp-quote-workflow-validation.yml`
+- Workflow trigger: `workflow_dispatch` on `main`; also runs on matching pull requests and pushes to `main`
+- Expected workflow tests:
+  - `freight-workflow-rules.test.ts`
+  - `freight-workflow-routes.test.ts`
+  - `mvp-quote-to-load.test.ts`
+- Production deployment project: `infamous-freight-api`
+- Production deployment ID: `dpl_Hp91h9TSGNpJyKioDV9k5CzosUQW`
+- Production deployment state: `READY`
+- Deployed commit: `6c242dadea7b182f8943f482d4a06d6f66aefef5`
+- Deployed behavior: approved quote conversion guard deployed to Vercel production
+- Workflow run URL: Pending manual GitHub Actions run from #1651
+- Test result: Pending workflow run evidence
+- Verified by: Pending
+- Verified date: Pending
+
 ## Carrier Onboarding Evidence
 
 Related issue: #1586
