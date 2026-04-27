@@ -12,7 +12,7 @@
 - W-9
 - Business bank account
 - Accounting system
-- Document retention process
+- Document retention process — confirmed, see `docs/production-operations/DOCUMENT_RETENTION_POLICY.md`
 
 ## Do Not Dispatch Until
 
