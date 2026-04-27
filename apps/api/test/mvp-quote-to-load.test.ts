@@ -84,4 +84,64 @@ describe('MVP quote-to-load workflow', () => {
       status: 'booked',
     });
   });
+
+  it('does not convert a pending quote request into a load', async () => {
+    const app = createApp();
+
+    const quoteResponse = await request(app)
+      .post('/api/freight-operations/quoteRequests')
+      .set(headers)
+      .send({
+        brokerName: 'Infamous Freight Pending Shipper',
+        originCity: 'Houston',
+        destCity: 'Memphis',
+        freightType: 'Reefer',
+        weight: 36000,
+        pickupDate: '2026-05-05T10:00:00.000Z',
+        shipperRate: 1900,
+        carrierCost: 1600,
+        profitMargin: 300,
+        status: 'pending',
+      })
+      .expect(201);
+
+    const quoteId = quoteResponse.body.data.id;
+
+    await request(app)
+      .post(`/api/workflows/quotes/${quoteId}/convert-to-load`)
+      .set(headers)
+      .send({
+        quoteStatus: 'converted',
+        load: {
+          brokerName: 'Infamous Freight Pending Shipper',
+          originCity: 'Houston',
+          originState: 'TX',
+          originLat: 29.7604,
+          originLng: -95.3698,
+          destCity: 'Memphis',
+          destState: 'TN',
+          destLat: 35.1495,
+          destLng: -90.049,
+          distance: 567,
+          rate: 1900,
+          ratePerMile: 3.35,
+          equipmentType: 'Reefer',
+          weight: 36000,
+          pickupDate: '2026-05-05T10:00:00.000Z',
+          status: 'booked',
+        },
+      })
+      .expect(409);
+
+    const loadsResponse = await request(app)
+      .get('/api/loads')
+      .set(headers)
+      .expect(200);
+
+    expect(loadsResponse.body.data).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ quoteRequestId: quoteId }),
+      ]),
+    );
+  });
 });
