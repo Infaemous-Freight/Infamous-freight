@@ -1080,7 +1080,7 @@ class PrismaDataStore implements DataStore {
     });
     deleted += dispatchResult.count;
 
-    await this.prisma.load.delete({ where: { id: loadId } });
+    await this.prisma.load.deleteMany({ where: { id: loadId, carrierId: tenantId } });
     deleted += 1;
 
     if (quoteRequestId) {

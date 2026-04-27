@@ -219,7 +219,7 @@ const LaunchValidationPage: React.FC = () => {
 
     setIsCleaning(true);
     try {
-      const result = await purgeValidationRecords(context, lastLoadId, lastQuoteRequestId ?? undefined);
+      const result = await purgeValidationRecords(context, lastLoadId, lastQuoteRequestId || undefined);
       setLastLoadId(null);
       setLastQuoteRequestId(null);
       toast.success(`Cleaned up ${result.deleted} test record(s)`);
