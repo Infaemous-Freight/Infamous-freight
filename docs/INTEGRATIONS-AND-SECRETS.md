@@ -1,7 +1,7 @@
 # Infamous Freight — Integrations & Secrets Inventory
 
 Centralized reference for every external service and CI/CD secret used by this
-repository.  Update this document whenever a new integration is added or a
+repository. Update this document whenever a new integration is added or a
 secret is rotated.
 
 ---
@@ -13,7 +13,7 @@ secret is rotated.
 | **Fly.io** | Hosting | Runs the Node/Express API container in production | Platform team | https://fly.io/docs |
 | **Netlify** | Hosting | Builds and serves the React web app in production via native Git integration | Platform team | https://docs.netlify.com |
 | **GitHub Container Registry (GHCR)** | Container registry | Stores tagged API Docker images produced by the `build-api` CI job | Platform team | https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry |
-| **Sentry** | Observability | Captures runtime errors and uploads source-maps during web builds | Platform team | https://docs.sentry.io |
+| **Sentry** | Observability | Captures runtime web errors and uploads source maps during Netlify web builds | Platform team | https://docs.sentry.io |
 | **Stripe** | Payments | Processes freight invoices and carrier pay-outs; web SDK loaded at runtime | Payments team | https://stripe.com/docs |
 | **Supabase** | Auth + Database | Provides user auth (JWT) and the PostgreSQL database via the Supabase client SDK | Platform team | https://supabase.com/docs |
 | **Socket.IO** | Real-time | Pushes live shipment-status updates from the API to the web client | Platform team | https://socket.io/docs |
@@ -21,28 +21,47 @@ secret is rotated.
 
 ---
 
-## 2. Secrets Inventory
+## 2. Secrets and Environment Inventory
 
-All secrets are stored as **GitHub Actions repository secrets** at
-`https://github.com/Infamous-Freight/Infamous-freight/settings/secrets/actions`
-unless otherwise noted.
+Store secrets and deployment environment variables in the platform that actually
+uses them:
 
-### 2.1 Workflow secrets (referenced in `ci-cd.yml`)
+- **API deployment:** GitHub Actions repository secrets and Fly.io app secrets.
+- **Web deployment:** Netlify site environment variables because Netlify builds
+  `apps/web` through native Git integration.
+
+Never commit real secret tokens. Public client-side values such as a Sentry DSN
+or Stripe publishable key may appear in examples, but the production source of
+truth should still be the deployment environment.
+
+### 2.1 GitHub Actions / API deployment secrets
 
 | Secret | Owner | Storage | Jobs that use it | Purpose |
 |--------|-------|---------|------------------|---------|
 | `GITHUB_TOKEN` | GitHub (auto-provisioned) | GitHub Actions (built-in) | `build-api` (GHCR push) | Authenticates Docker pushes to GitHub Container Registry; never needs to be set manually |
 | `FLY_API_TOKEN` | Platform team | GitHub Actions repo secret | `deploy-api` | Authorises `flyctl deploy` to push the API container to Fly.io |
-| `VITE_API_URL` | Platform team | GitHub Actions repo secret | _(unused in CI; set in Netlify environment)_ | Sets the production API base URL used by the React app |
-| `VITE_STRIPE_PUBLIC_KEY` | Payments team | GitHub Actions repo secret | _(unused in CI; set in Netlify environment)_ | Used by `@stripe/stripe-js` to initialise the Stripe payment element |
-| `SENTRY_AUTH_TOKEN` | Platform team | GitHub Actions repo secret | _(follow-up: API source-maps)_ | Allows Sentry tooling to upload source-maps and create releases in Sentry |
-| `SENTRY_ORG` | Platform team | GitHub Actions repo secret | _(follow-up)_ | Sentry organization slug (e.g. `infamous`) |
-| `SENTRY_PROJECT` | Platform team | GitHub Actions repo secret | _(follow-up)_ | Sentry project slug (e.g. `infamous-freight`) |
 
-### 2.2 Runtime secrets (application layer, not in `ci-cd.yml`)
+### 2.2 Netlify web environment variables
+
+Set these in **Netlify → Site settings → Environment variables** for the web app.
+
+| Variable | Owner | Value / Format | Purpose |
+|----------|-------|----------------|---------|
+| `VITE_API_URL` | Platform team | `https://api.infamousfreight.com` | Sets the production API base URL used by the React app |
+| `VITE_STRIPE_PUBLIC_KEY` | Payments team | Stripe publishable key, `pk_live_...` | Used by `@stripe/stripe-js` to initialise the Stripe payment element |
+| `VITE_SUPABASE_URL` | Platform team | Supabase project URL | Used by the web client for Supabase auth and client calls |
+| `VITE_SUPABASE_ANON_KEY` | Platform team | Supabase anon key | Public Supabase client key used by the browser app |
+| `VITE_SENTRY_DSN` | Platform team | `https://6bfe6c333544c976cbba3633aad08ad4@o4511126931963904.ingest.us.sentry.io/4511126932226048` | Connects the React web app to the `infamous-freight` Sentry project |
+| `VITE_SENTRY_ENABLED` | Platform team | `true` | Enables Sentry in production when the DSN is present; set to `false` for emergency disable |
+| `SENTRY_AUTH_TOKEN` | Platform team | Sentry auth token with release/source-map permissions | Allows the Sentry Vite plugin to upload production source maps during Netlify builds |
+| `SENTRY_ORG` | Platform team | `infmous` | Sentry organization slug |
+| `SENTRY_PROJECT` | Platform team | `infamous-freight` | Sentry project slug |
+| `SENTRY_SOURCEMAPS` | Platform team | Optional: `1` | Forces source-map generation without upload; normally leave unset |
+
+### 2.3 Runtime secrets (application layer, not in `ci-cd.yml`)
 
 These are used at application runtime and should be set as Fly.io app secrets
-(`fly secrets set`) and/or as Supabase environment variables.  They are listed
+(`fly secrets set`) and/or as Supabase environment variables. They are listed
 here for ownership awareness.
 
 | Secret | Owner | Notes |
@@ -75,14 +94,14 @@ here for ownership awareness.
    Rotate `FLY_API_TOKEN` (see §3.3) and re-run the workflow.
 
 3. **No machines / capacity error:** Log in to the Fly.io dashboard and check
-   the `infamous-freight` app health.  Scale or restart:
+   the `infamous-freight` app health. Scale or restart:
    ```bash
    fly status --app infamous-freight
    fly machines restart --app infamous-freight
    ```
 
 4. **Build failed before deploy:** The `build-api` job must succeed before
-   `deploy-api` runs.  Fix the build error first, then re-push to `main`.
+   `deploy-api` runs. Fix the build error first, then re-push to `main`.
 
 5. **Manual deploy:**
    ```bash
@@ -103,7 +122,7 @@ here for ownership awareness.
 **Symptom:** The web app is unreachable at `https://www.infamousfreight.com`.
 
 Web deploys are handled automatically by **Netlify's native Git integration** on
-push to `main`.  GitHub Actions does not deploy the web app.
+push to `main`. GitHub Actions does not deploy the web app.
 
 **Steps:**
 
@@ -115,13 +134,32 @@ push to `main`.  GitHub Actions does not deploy the web app.
    ```bash
    VITE_API_URL=https://api.infamousfreight.com \
    VITE_STRIPE_PUBLIC_KEY=pk_live_... \
+   VITE_SENTRY_DSN=https://6bfe6c333544c976cbba3633aad08ad4@o4511126931963904.ingest.us.sentry.io/4511126932226048 \
+   VITE_SENTRY_ENABLED=true \
    npm run build:web
    ```
 
 3. **Missing environment variable:**
    Add or correct the variable in Netlify → Site settings → Environment variables.
+   For Sentry, set:
+   ```env
+   VITE_SENTRY_DSN=https://6bfe6c333544c976cbba3633aad08ad4@o4511126931963904.ingest.us.sentry.io/4511126932226048
+   VITE_SENTRY_ENABLED=true
+   SENTRY_ORG=infmous
+   SENTRY_PROJECT=infamous-freight
+   SENTRY_AUTH_TOKEN=<store only in Netlify; never commit>
+   ```
 
-4. **Rollback to previous deployment:**
+4. **Sentry source maps not uploading:**
+   Confirm all three build-time variables exist in Netlify:
+   ```env
+   SENTRY_AUTH_TOKEN=<secret>
+   SENTRY_ORG=infmous
+   SENTRY_PROJECT=infamous-freight
+   ```
+   Then trigger a fresh Netlify deploy from the latest `main` commit.
+
+5. **Rollback to previous deployment:**
    In the Netlify dashboard, navigate to the site → Deploys → select the last
    successful build → Publish deploy.
 
@@ -135,7 +173,7 @@ in public logs) or on the schedule below.
 | Secret | Rotation frequency | Steps |
 |--------|--------------------|-------|
 | `FLY_API_TOKEN` | On exposure / annually | 1. Log in to Fly.io → Personal Access Tokens → revoke old token, create new one. 2. Update GitHub Actions secret `FLY_API_TOKEN`. 3. Trigger a test deploy to confirm. |
-| `SENTRY_AUTH_TOKEN` | On exposure | 1. Sentry → Settings → Auth Tokens → revoke, create new with `project:releases` scope. 2. Update `SENTRY_AUTH_TOKEN` in GitHub Actions. |
+| `SENTRY_AUTH_TOKEN` | On exposure | 1. Sentry → Settings → Auth Tokens → revoke, create new with release/source-map permissions. 2. Update `SENTRY_AUTH_TOKEN` in Netlify environment variables. 3. Trigger a clean Netlify deploy and verify source-map upload in Sentry. |
 | `STRIPE_SECRET_KEY` | On exposure | 1. Stripe Dashboard → API Keys → roll key. 2. Update the Fly.io app secret (`fly secrets set STRIPE_SECRET_KEY=...`). 3. Verify webhook signing still works. |
 | `STRIPE_WEBHOOK_SECRET` | On endpoint change / exposure | 1. Stripe Dashboard → Webhooks → regenerate signing secret. 2. Update `STRIPE_WEBHOOK_SECRET` on the Fly.io app. |
 | `SUPABASE_SERVICE_KEY` | On exposure | 1. Supabase dashboard → Project Settings → API → regenerate `service_role` key. 2. Update all references (Fly.io secrets, any CI secrets). |
@@ -145,6 +183,12 @@ in public logs) or on the schedule below.
 ```bash
 gh secret set SECRET_NAME --body "new-value" \
   -R Infamous-Freight/Infamous-freight
+```
+
+**How to update Netlify environment variables:**
+Use Netlify dashboard → Site settings → Environment variables, or run:
+```bash
+netlify env:set VARIABLE_NAME "value"
 ```
 
 ---
@@ -186,9 +230,8 @@ gh secret set SECRET_NAME --body "new-value" \
 
 #### Sentry outage (Observability gap)
 
-Sentry is non-critical for uptime.  Deploys continue without source-map
-uploads.  Monitor https://status.sentry.io and resume normal operations once
-resolved.
+Sentry is non-critical for uptime. Deploys continue without source-map uploads.
+Monitor https://status.sentry.io and resume normal operations once resolved.
 
 ---
 
@@ -197,6 +240,6 @@ resolved.
 When a new external service is wired in:
 
 1. Add a row to the **External Integrations** table in §1.
-2. Add each new secret to the **Secrets Inventory** table in §2.
+2. Add each new secret or environment variable to the inventory in §2.
 3. Document rotation steps in the **Secret rotation** table in §3.3.
-4. Add the secret to the appropriate CI job in `.github/workflows/ci-cd.yml`.
+4. Add the secret to the appropriate deployment platform or CI job.
