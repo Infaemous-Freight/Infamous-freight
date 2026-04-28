@@ -113,6 +113,75 @@ Related issue: #1588
 - Verified by:
 - Verified date:
 
+## Stripe Link Payment Readiness Evidence
+
+Related issue: #1644
+
+### Stripe Account
+
+- Active Stripe account confirmed as correct Infamous Freight production account:
+- Account ID:
+- Dashboard URL: https://dashboard.stripe.com
+- Confirmed by:
+- Confirmed date:
+
+### Payment Method Configuration
+
+- Link enabled in Stripe Dashboard: (yes / no)
+- Financial Connections enabled intentionally: (yes / no)
+- Connect Onboarding enabled intentionally: (yes / no)
+- All other enabled payment methods reviewed and confirmed intentional: (yes / no)
+- Confirmed by:
+- Confirmed date:
+
+### Production Domain Registration
+
+- Domain registered with Stripe for Link: (yes / no — if required by the payment method configuration)
+- Domain registered:
+- Registration URL: https://dashboard.stripe.com/settings/payment_method_domains
+- Confirmed by:
+- Confirmed date:
+
+### Checkout Flow
+
+- Link tested in the app checkout flow (`POST /api/billing/checkout-session`): (yes / no)
+- Checkout, Elements, Link Authentication Element, and Payment Request Button requirements confirmed: (yes / no)
+- Confirmed by:
+- Confirmed date:
+
+### Webhook Endpoint
+
+- Webhook endpoint configured in Stripe Dashboard: (yes / no)
+- Endpoint URL:
+- Events registered: `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`
+- Webhook signature verification enabled: (yes / no)
+- Confirmed by:
+- Confirmed date:
+
+### Environment Variables
+
+- `STRIPE_SECRET_KEY` deployed: (yes / no)
+- `STRIPE_WEBHOOK_SECRET` deployed: (yes / no)
+- `VITE_STRIPE_PUBLIC_KEY` deployed: (yes / no)
+- Verified in deployment environment:
+- Confirmed by:
+- Confirmed date:
+
+### Test Checkout (Test Mode)
+
+- Test checkout run in Stripe test mode: (yes / no)
+- Test card used: `4242 4242 4242 4242`
+- Checkout session created: (yes / no)
+- `checkout.session.completed` webhook received and processed: (yes / no)
+- Carrier billing status updated correctly: (yes / no)
+- Test event ID:
+- Verified by:
+- Verified date:
+
+### Rule
+
+Do not treat payments as production-ready until all fields above are populated and verified.
+
 ## Closure Rule
 
 Do not close #1589 until #1583 through #1588 have documented evidence and are closed.
