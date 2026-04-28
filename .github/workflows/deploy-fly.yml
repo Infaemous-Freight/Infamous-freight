@@ -77,4 +77,4 @@ jobs:
           echo "Fly API health check failed"
           exit 1
 
-# Deployment retrigger after FLY_API_TOKEN rotation.
+# Deployment retrigger after workflow route TypeScript fix.

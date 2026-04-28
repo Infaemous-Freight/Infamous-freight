@@ -45,7 +45,7 @@ describe('freight workflow API', () => {
         shipperRate: 2600,
         carrierCost: 2100,
         profitMargin: 500,
-        status: 'pending',
+        status: 'approved',
       })
       .expect(201);
 
