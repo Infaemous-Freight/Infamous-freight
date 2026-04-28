@@ -40,7 +40,9 @@
     "concurrently": "^9.0.0"
   },
   "overrides": {
-    "react-is": "^18.3.1"
+    "react-is": "^18.3.1",
+    "@sentry/core": "^10.50.0",
+    "@sentry/browser": "^10.50.0"
   },
   "workspaces": [
     "apps/*"

@@ -17,6 +17,22 @@ These require access to Fly.io, GitHub repository secrets, and Netlify.
 - [ ] Trigger a Netlify production redeploy.
 - [ ] Run the `Smoke Test` workflow.
 
+Netlify tracking markers should reflect the current decision state:
+
+```text
+NETLIFY_SECRET_ROTATION_STATUS=skipped
+NETLIFY_SECRET_ROTATION_REQUIRED=false
+NETLIFY_REDEPLOY_REQUIRED_AFTER_SECRET_ROTATION=false
+NETLIFY_TEAM_MFA_ENFORCEMENT_REQUIRED=true
+NETLIFY_PREVIEW_ACCESS_REVIEW_REQUIRED=true
+```
+
+Recommended execution order:
+
+1. Update Netlify markers to skipped/not-required.
+2. Merge safe PRs first: `#1654`, `#1655`, `#1656`.
+3. Run and record production smoke test evidence before closing launch-readiness issues.
+
 ## Required production health checks
 
 Run these after deployment:
