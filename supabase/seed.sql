@@ -1,0 +1,2 @@
+-- Seed data for local Supabase development.
+-- Intentionally empty.

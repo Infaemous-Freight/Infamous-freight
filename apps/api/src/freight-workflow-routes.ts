@@ -70,7 +70,7 @@ export function createFreightWorkflowRouter(dataStore: DataStore): Router {
       );
     }
 
-    assertQuoteCanConvertToLoad(quoteRequest);
+    assertQuoteCanConvertToLoad({ status: quoteRequest.status });
 
     const data = await dataStore.convertQuoteToLoad(tenantId, req.params.id, req.body);
     res.status(201).json({ data });
