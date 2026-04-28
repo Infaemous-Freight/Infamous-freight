@@ -32,6 +32,7 @@ PUBLIC_SITE_URL=https://www.infamousfreight.com
 VITE_SITE_URL=https://www.infamousfreight.com
 NEXT_PUBLIC_SITE_URL=https://www.infamousfreight.com
 VITE_API_URL=/api
+NEXT_PUBLIC_API_URL=/api
 ```
 
 ## Netlify production environment
@@ -41,6 +42,43 @@ NEXT_PUBLIC_SITE_URL=https://www.infamousfreight.com
 VITE_SITE_URL=https://www.infamousfreight.com
 PUBLIC_SITE_URL=https://www.infamousfreight.com
 VITE_API_URL=/api
+```
+
+## Netlify operational markers
+
+Keep these status markers aligned with the current security decision state:
+
+```text
+NETLIFY_SECRET_ROTATION_STATUS=skipped
+NETLIFY_SECRET_ROTATION_REQUIRED=false
+NETLIFY_REDEPLOY_REQUIRED_AFTER_SECRET_ROTATION=false
+NETLIFY_TEAM_MFA_ENFORCEMENT_REQUIRED=true
+NETLIFY_PREVIEW_ACCESS_REVIEW_REQUIRED=true
+```
+
+## Netlify hardening tasks (still required)
+
+- Enforce team MFA in Netlify (Team settings → Security / Members → Require MFA).
+- Review preview deployment access policy and keep private previews restricted.
+- Ensure backend-sensitive values are stored as secret/hidden variables where supported.
+
+Prioritize secret visibility hardening for:
+
+```text
+SUPABASE_SERVICE_ROLE_KEY
+SUPABASE_JWT_SECRET
+LAUNCHDARKLY_SHARED_SECRET
+LAUNCHDARKLY_SDK_KEY
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+DATABASE_URL
+PRISMA_DATABASE_URL
+JWT_SECRET
+SESSION_SECRET
+SMTP_PASS
+SENDGRID_API_KEY
+RESEND_API_KEY
+SAMSARA_API_KEY
 ```
 
 ## Fly.io API runtime secrets

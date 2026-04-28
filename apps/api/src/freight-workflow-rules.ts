@@ -1,6 +1,6 @@
 export type QuoteLike = {
   status?: unknown;
-};
+} & Record<string, unknown>;
 
 export class FreightWorkflowRuleError extends Error {
   constructor(
