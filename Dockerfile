@@ -36,6 +36,7 @@ ENV PORT=3000
 RUN apk add --no-cache openssl
 
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
 COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/package.json
 
