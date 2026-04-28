@@ -30,7 +30,7 @@
     "react-dropzone": "^15.0.0",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.20.0",
-    "recharts": "^2.10.3",
+    "recharts": "^3.8.1",
     "socket.io-client": "^4.7.4",
     "tailwind-merge": "^2.1.0",
     "zustand": "^4.4.7"
