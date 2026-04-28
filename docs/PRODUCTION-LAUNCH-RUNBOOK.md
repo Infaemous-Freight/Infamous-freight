@@ -59,7 +59,6 @@ NEXT_PUBLIC_SITE_URL=https://www.infamousfreight.com
 VITE_SITE_URL=https://www.infamousfreight.com
 PUBLIC_SITE_URL=https://www.infamousfreight.com
 VITE_API_URL=/api
-NEXT_PUBLIC_API_URL=/api
 ```
 
 Netlify status markers:
