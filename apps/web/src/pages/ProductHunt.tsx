@@ -4,7 +4,7 @@
  */
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpRight, MessageSquare, Twitter, Linkedin, Users, TrendingUp, Zap } from 'lucide-react';
+import { ArrowUpRight, MessageSquare, Send, Share2, Users, TrendingUp, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function ProductHunt() {
@@ -161,7 +161,7 @@ export default function ProductHunt() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 hover:bg-zinc-800 transition-colors"
             >
-              <Twitter className="h-4 w-4" />
+              <Send className="h-4 w-4" />
               <span className="text-sm">Tweet</span>
             </a>
             <a 
@@ -170,7 +170,7 @@ export default function ProductHunt() {
               rel="noopener noreferrer"
               className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 hover:bg-zinc-800 transition-colors"
             >
-              <Linkedin className="h-4 w-4" />
+              <Share2 className="h-4 w-4" />
               <span className="text-sm">Share</span>
             </a>
           </div>

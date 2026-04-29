@@ -144,18 +144,65 @@ export function useSupabaseStorage() {
   return { uploadFile, getPublicUrl, deleteFile };
 }
 
-export function useSupabaseRealtime(channel: string, event: string, callback: (payload: unknown) => void) {
+type RealtimeDbEvent = 'INSERT' | 'UPDATE' | 'DELETE' | '*';
+
+type SupabaseRealtimeOptions = {
+  channel: string;
+  table: string;
+  callback: (payload: unknown) => void;
+  schema?: string;
+  event?: RealtimeDbEvent;
+  /**
+   * Supabase Postgres changes filter expression, e.g. `tenantId=eq.<tenant-id>`.
+   * Prefer tenant-scoped filters to avoid cross-tenant realtime events.
+   */
+  filter?: string;
+};
+
+function normalizeRealtimeOptions(
+  optionsOrChannel: SupabaseRealtimeOptions | string,
+  tableOrEvent?: string,
+  callback?: (payload: unknown) => void
+): SupabaseRealtimeOptions {
+  if (typeof optionsOrChannel === 'string') {
+    if (!tableOrEvent || !callback) {
+      throw new Error('useSupabaseRealtime legacy signature requires channel, table, and callback.');
+    }
+
+    return {
+      channel: optionsOrChannel,
+      table: tableOrEvent,
+      callback,
+    };
+  }
+
+  return optionsOrChannel;
+}
+
+export function useSupabaseRealtime(options: SupabaseRealtimeOptions): void;
+export function useSupabaseRealtime(channel: string, table: string, callback: (payload: unknown) => void): void;
+export function useSupabaseRealtime(
+  optionsOrChannel: SupabaseRealtimeOptions | string,
+  tableOrEvent?: string,
+  callbackArg?: (payload: unknown) => void
+) {
+  const { channel, table, callback, schema = 'public', event = '*', filter } = normalizeRealtimeOptions(
+    optionsOrChannel,
+    tableOrEvent,
+    callbackArg
+  );
+
   useEffect(() => {
     const supabase = getSupabase();
     const sub = supabase
       .channel(channel)
-      .on('postgres_changes', { event: '*', schema: 'public', table: event }, callback)
+      .on('postgres_changes', { event, schema, table, filter }, callback)
       .subscribe();
 
     return () => {
-      sub.unsubscribe();
+      void sub.unsubscribe();
     };
-  }, [channel, event, callback]);
+  }, [callback, channel, event, filter, schema, table]);
 }
 
 export { getSupabase };
