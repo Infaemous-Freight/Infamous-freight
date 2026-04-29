@@ -10,10 +10,32 @@ const sentryEnabledEnv: string = import.meta.env.VITE_SENTRY_ENABLED ?? '';
 const sentryEnvironment: string = import.meta.env.MODE;
 const isProd = sentryEnvironment === 'production';
 
+const isValidSentryDsn = (dsn: string): boolean => {
+  if (!dsn || /<[^>]+>/.test(dsn)) {
+    return false;
+  }
+
+  try {
+    const parsed = new URL(dsn);
+    const hasValidHost = /^o\d+\.ingest(?:\.[a-z0-9-]+)?\.sentry\.io$/.test(parsed.hostname);
+    const hasProjectId = /^\/\d+$/.test(parsed.pathname);
+    const hasPublicKey = parsed.username.length > 0;
+
+    return parsed.protocol === 'https:' && hasValidHost && hasProjectId && hasPublicKey;
+  } catch {
+    return false;
+  }
+};
+
+
+if (!isValidSentryDsn(sentryDsn) && sentryDsn.length > 0 && sentryEnabledEnv !== 'false') {
+  console.warn('Sentry is disabled because VITE_SENTRY_DSN is not a valid ingest DSN.');
+}
+
 // Sentry is active when a DSN is present and not explicitly disabled.
 // Set VITE_SENTRY_ENABLED=false to opt out even if a DSN is configured.
 const sentryEnabled =
-  sentryDsn.length > 0 &&
+  isValidSentryDsn(sentryDsn) &&
   sentryEnabledEnv !== 'false' &&
   (isProd || sentryEnabledEnv === 'true');
 

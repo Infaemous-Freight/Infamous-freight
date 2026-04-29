@@ -51,7 +51,7 @@ Set these in **Netlify → Site settings → Environment variables** for the web
 | `VITE_STRIPE_PUBLIC_KEY` | Payments team | Stripe publishable key, `pk_live_...` | Used by `@stripe/stripe-js` to initialise the Stripe payment element |
 | `VITE_SUPABASE_URL` | Platform team | Supabase project URL | Used by the web client for Supabase auth and client calls |
 | `VITE_SUPABASE_ANON_KEY` | Platform team | Supabase anon key | Public Supabase client key used by the browser app |
-| `VITE_SENTRY_DSN` | Platform team | `https://6bfe6c333544c976cbba3633aad08ad4@o4511126931963904.ingest.us.sentry.io/4511126932226048` | Connects the React web app to the `infamous-freight` Sentry project |
+| `VITE_SENTRY_DSN` | Platform team | `https://<public-key>@o<org-id>.ingest.us.sentry.io/<project-id>` | Connects the React web app to the `infamous-freight` Sentry project |
 | `VITE_SENTRY_ENABLED` | Platform team | `true` | Enables Sentry in production when the DSN is present; set to `false` for emergency disable |
 | `SENTRY_AUTH_TOKEN` | Platform team | Sentry auth token with release/source-map permissions | Allows the Sentry Vite plugin to upload production source maps during Netlify builds |
 | `SENTRY_ORG` | Platform team | `infmous` | Sentry organization slug |
@@ -167,7 +167,7 @@ push to `main`. GitHub Actions does not deploy the web app.
    ```bash
    VITE_API_URL=https://api.infamousfreight.com \
    VITE_STRIPE_PUBLIC_KEY=pk_live_... \
-   VITE_SENTRY_DSN=https://6bfe6c333544c976cbba3633aad08ad4@o4511126931963904.ingest.us.sentry.io/4511126932226048 \
+   VITE_SENTRY_DSN=https://<public-key>@o<org-id>.ingest.us.sentry.io/<project-id> \
    VITE_SENTRY_ENABLED=true \
    npm run build:web
    ```
@@ -176,7 +176,7 @@ push to `main`. GitHub Actions does not deploy the web app.
    Add or correct the variable in Netlify → Site settings → Environment variables.
    For Sentry, set:
    ```env
-   VITE_SENTRY_DSN=https://6bfe6c333544c976cbba3633aad08ad4@o4511126931963904.ingest.us.sentry.io/4511126932226048
+   VITE_SENTRY_DSN=https://<public-key>@o<org-id>.ingest.us.sentry.io/<project-id>
    VITE_SENTRY_ENABLED=true
    SENTRY_ORG=infmous
    SENTRY_PROJECT=infamous-freight
