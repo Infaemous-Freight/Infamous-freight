@@ -85,3 +85,10 @@
 # UI-configured installation that was missing the manifest.
 [[plugins]]
   package = "@netlify/plugin-sitemap"
+
+# Prevent deploy failures when Netlify UI has @sentry/netlify-build-plugin
+# enabled but SENTRY_AUTH_TOKEN is missing or stale (401 on release creation).
+[[plugins]]
+  package = "@sentry/netlify-build-plugin"
+  [plugins.inputs]
+    disable = true
