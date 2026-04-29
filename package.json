@@ -2,7 +2,7 @@
   "name": "infamous-freight",
   "version": "1.0.0",
   "private": true,
-  "description": "Infamous Freight — The freight dispatch platform built by truckers, for truckers",
+  "description": "Infamous Freight \u2014 The freight dispatch platform built by truckers, for truckers",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Infamous-Freight/Infamous-freight.git"
@@ -16,7 +16,7 @@
     "build:web": "cd apps/web && npm run build",
     "start": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run start:prod",
     "lint": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run lint && npm --prefix apps/web run lint",
-    "test": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run test",
+    "test": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run test --",
     "test:coverage": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run test:coverage",
     "prisma:generate": "node scripts/ensure-api-workspace.js && npm --prefix apps/api run prisma:generate",
     "prisma:migrate": "node scripts/ensure-api-workspace.js && npm --prefix apps/api exec prisma migrate dev --schema prisma/schema.prisma",
@@ -49,8 +49,8 @@
       "@sentry/core": "10.50.0",
       "@sentry/browser": "10.50.0"
     },
-    "prisma": "6.15.0",
-    "@prisma/client": "6.15.0"
+    "prisma": "6.19.3",
+    "@prisma/client": "6.19.3"
   },
   "workspaces": [
     "apps/*"
