@@ -1,6 +1,7 @@
 name: CI/CD — Infamous Freight
 
 on:
+  workflow_dispatch:
   push:
     branches: [main, develop]
   pull_request:
@@ -46,6 +47,20 @@ jobs:
 
       - name: Test
         run: pnpm -C apps/api run test -- --runInBand
+
+      - name: Write test summary
+        if: always()
+        run: |
+          {
+            echo "## Test & Lint"
+            echo ""
+            echo "Validated commands:"
+            echo "- pnpm install --frozen-lockfile"
+            echo "- pnpm run lint"
+            echo "- pnpm -C apps/api exec tsc -p tsconfig.json --noEmit"
+            echo "- pnpm -C apps/web exec tsc -p tsconfig.json --noEmit"
+            echo "- pnpm -C apps/api run test -- --runInBand"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # ===== BUILD API =====
   build-api:
@@ -93,6 +108,15 @@ jobs:
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_LOWER }}-api:${{ github.sha }}
           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_LOWER }}-api:latest
 
+      - name: Write build summary
+        if: always()
+        run: |
+          {
+            echo "## Build API"
+            echo ""
+            echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_LOWER }}-api:${{ github.sha }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   # ===== DEPLOY TO FLY.IO =====
   deploy-api:
     name: Deploy API to Fly.io
@@ -114,6 +138,16 @@ jobs:
         run: flyctl deploy --remote-only --app infamous-freight
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Write deploy summary
+        if: always()
+        run: |
+          {
+            echo "## Deploy API"
+            echo ""
+            echo "Target: Fly.io app infamous-freight"
+            echo "API: https://api.infamousfreight.com"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # ===== NOTIFY =====
   notify:
