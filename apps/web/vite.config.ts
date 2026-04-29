@@ -69,8 +69,8 @@ export default defineConfig({
           if (!id.includes('node_modules')) return;
           if (id.includes('recharts')) return 'charts';
           if (id.includes('@stripe/stripe-js') || id.includes('@stripe/react-stripe-js')) return 'stripe';
-          if (id.includes('react')) return 'vendor-react';
           if (id.includes('react-router-dom')) return 'vendor-router';
+          if (id.includes('react')) return 'vendor-react';
           if (id.includes('framer-motion')) return 'vendor-motion';
           if (id.includes('@sentry/')) return 'vendor-sentry';
           if (id.includes('@supabase/')) return 'vendor-supabase';
