@@ -2,7 +2,16 @@
 set -euo pipefail
 
 # Codex environment diagnostics for Infamous Freight.
-# This script checks whether required environment variables are present without printing secret values.
+# Checks whether expected environment variables are present without printing secret values.
+# Usage:
+#   bash scripts/codex-env-check.sh
+#   bash scripts/codex-env-check.sh --strict
+#   CODEX_ENV_CHECK_STRICT=1 bash scripts/codex-env-check.sh
+
+strict="${CODEX_ENV_CHECK_STRICT:-0}"
+if [[ "${1:-}" == "--strict" ]]; then
+  strict="1"
+fi
 
 printf '\n== Codex Environment Check ==\n\n'
 
@@ -22,6 +31,11 @@ required_vars=(
 
 optional_vars=(
   PORT
+  CORS_ORIGINS
+  WEB_APP_URL
+  STRIPE_CHECKOUT_SUCCESS_URL
+  STRIPE_CHECKOUT_CANCEL_URL
+  STRIPE_PORTAL_RETURN_URL
   REDIS_HOST
   REDIS_PORT
   REDIS_PASSWORD
@@ -53,26 +67,49 @@ optional_vars=(
   APEX_API_KEY
 )
 
+missing_required=0
+missing_optional=0
+
 check_var() {
   local name="$1"
+  local required="$2"
+
   if [[ -n "${!name:-}" ]]; then
     echo "✅ ${name} is set"
-  else
+    return 0
+  fi
+
+  if [[ "${required}" == "true" ]]; then
     echo "❌ ${name} is NOT set"
+    missing_required=$((missing_required + 1))
+  else
+    echo "⚠️  ${name} is not set"
+    missing_optional=$((missing_optional + 1))
   fi
 }
 
 echo "Required / core variables:"
 for var in "${required_vars[@]}"; do
-  check_var "$var"
+  check_var "$var" "true"
 done
 
 printf '\nOptional integration variables:\n'
 for var in "${optional_vars[@]}"; do
-  check_var "$var"
+  check_var "$var" "false"
 done
 
 printf '\nSafe environment inventory — names only, no values:\n'
 printenv | cut -d= -f1 | sort
+
+printf '\nSummary:\n'
+echo "Required missing: ${missing_required}"
+echo "Optional missing: ${missing_optional}"
+
+if [[ "${missing_required}" -gt 0 ]]; then
+  echo "Required variables are missing. Add them to Codex Environment variables, save the environment, then rerun this check."
+  if [[ "${strict}" == "1" ]]; then
+    exit 1
+  fi
+fi
 
 printf '\nDone. No secret values were printed.\n'
