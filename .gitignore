@@ -61,3 +61,6 @@ prisma/migrations/
 reports/validation-status.txt
 /tmp/docker-build.log
 apps/api/coverage/
+
+# Local Netlify folder
+.netlify
