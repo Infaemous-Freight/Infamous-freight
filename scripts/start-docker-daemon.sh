@@ -18,22 +18,24 @@ RESTRICTED_SOCK="${DOCKERD_RESTRICTED_SOCK:-/tmp/docker-restricted.sock}"
 RESTRICTED_DATA_ROOT="${DOCKERD_RESTRICTED_DATA_ROOT:-/tmp/docker-data}"
 RESTRICTED_EXEC_ROOT="${DOCKERD_RESTRICTED_EXEC_ROOT:-/tmp/docker-exec}"
 
-cleanup_stale_pid() {
-  if [[ -f "${PID_FILE}" ]]; then
+cleanup_pid_file() {
+  local pid_file="$1"
+
+  if [[ -f "${pid_file}" ]]; then
     local pid
-    pid="$(cat "${PID_FILE}")"
+    pid="$(cat "${pid_file}")"
     if [[ -n "${pid}" ]] && ps -p "${pid}" >/dev/null 2>&1; then
       kill "${pid}" >/dev/null 2>&1 || true
       sleep 1
       kill -9 "${pid}" >/dev/null 2>&1 || true
     fi
-    rm -f "${PID_FILE}" || true
+    rm -f "${pid_file}" || true
   fi
-  if pgrep -x containerd >/dev/null 2>&1; then
-    pkill -x containerd || true
-    sleep 1
-    pkill -9 -x containerd || true
-  fi
+}
+
+cleanup_stale_pid() {
+  cleanup_pid_file "${PID_FILE}"
+  cleanup_pid_file "${RESTRICTED_PID_FILE}"
   rm -f /var/run/docker/containerd/containerd.sock /var/run/docker/containerd/containerd.sock.ttrpc || true
 }
 
