@@ -26,6 +26,7 @@
     "docker:down": "docker-compose down",
     "docker:build": "docker-compose build",
     "docker:install-cli": "bash scripts/install-docker-cli.sh",
+    "deploy:install-clis": "sh -c 'if [ \"$(id -u)\" -eq 0 ]; then bash scripts/install-dev-clis.sh; elif command -v sudo >/dev/null 2>&1; then sudo bash scripts/install-dev-clis.sh; else echo \"Error: scripts/install-dev-clis.sh requires root. Re-run with sudo: sudo npm run deploy:install-clis\" >&2; exit 1; fi'",
     "ai:check": "bash scripts/check-ai-runtime.sh",
     "env:bootstrap": "bash scripts/bootstrap-environment.sh",
     "env:check": "bash scripts/codex-env-check.sh",

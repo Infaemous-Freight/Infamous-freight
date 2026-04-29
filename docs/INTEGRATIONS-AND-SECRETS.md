@@ -77,6 +77,27 @@ here for ownership awareness.
 
 ## 3. Runbooks
 
+### 3.0 Bootstrap deployment CLIs (local/dev container)
+
+Install the baseline deployment CLIs used by this repository (Docker, Fly.io,
+and `jq`) with:
+
+```bash
+sudo bash scripts/install-dev-clis.sh
+```
+
+If Docker is installed but not running in your environment, start it before
+attempting image builds:
+
+```bash
+sudo systemctl start docker
+docker info
+```
+
+In restricted containers/CI, the Docker CLI may be installed while the daemon
+socket remains unavailable; in that case `docker info` will fail until a daemon
+is provided.
+
 ### 3.1 Deploy failure — API (Fly.io)
 
 **Symptom:** The `deploy-api` job fails or the API is unreachable at
@@ -98,6 +119,18 @@ here for ownership awareness.
    ```bash
    fly status --app infamous-freight
    fly machines restart --app infamous-freight
+   ```
+   If a single machine needs a targeted runtime update, first list machines and
+   then update by machine ID:
+   ```bash
+   fly machines list --app infamous-freight
+   fly machine update <machine_id> --app infamous-freight --vm-size shared-cpu-1x
+   ```
+   Use machine-level updates for controlled incident remediation; prefer full
+   app deploys for routine releases. After any machine-level update, verify the
+   API is healthy:
+   ```bash
+   curl -fsS https://api.infamousfreight.com/health
    ```
 
 4. **Build failed before deploy:** The `build-api` job must succeed before
