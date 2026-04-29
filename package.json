@@ -30,6 +30,7 @@
     "docker:smoke": "bash scripts/docker-smoke-check.sh",
     "ssh:install-key": "bash scripts/install-ssh-key.sh",
     "deploy:install-clis": "bash scripts/install-dev-clis.sh",
+    "premerge:check": "bash scripts/premerge-check.sh",
     "ai:check": "bash scripts/check-ai-runtime.sh",
     "env:bootstrap": "bash scripts/bootstrap-environment.sh",
     "env:check": "bash scripts/codex-env-check.sh",

@@ -89,6 +89,7 @@ npm run docker:smoke
 npm run ssh:install-key
 # strict mode (fail instead of skip when daemon/build is blocked)
 DOCKER_SMOKE_STRICT=true npm run docker:smoke
+npm run premerge:check
 ```
 
 If Docker is installed but not running in your environment, start it before
