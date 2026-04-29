@@ -12,12 +12,15 @@ if should_install_workspace_dependencies "$PACKAGE_MANAGER"; then
   install_workspace_dependencies "$PACKAGE_MANAGER"
 fi
 
-echo "==> Ensuring Docker CLI/Buildx"
-bash scripts/install-docker-cli.sh || true
-
-echo "==> Ensuring flyctl"
-if ! command -v flyctl >/dev/null 2>&1; then
-  curl -L https://fly.io/install.sh | sh
+echo "==> Ensuring deployment CLIs (Docker, flyctl, jq)"
+if [[ "${EUID}" -eq 0 ]]; then
+  bash scripts/install-dev-clis.sh
+else
+  bash scripts/install-docker-cli.sh || true
+  if ! command -v flyctl >/dev/null 2>&1; then
+    echo "flyctl is not installed. Run with sudo/root:"
+    echo "  sudo bash scripts/install-dev-clis.sh"
+  fi
 fi
 
 echo "==> Ensuring AI SDK runtime"
