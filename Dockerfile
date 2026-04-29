@@ -20,8 +20,7 @@ COPY apps/api ./apps/api
 ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 
 RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
-
-RUN npm run build --workspace apps/api
+RUN npx tsc -p apps/api/tsconfig.json
 
 
 FROM node:22-alpine AS runtime
@@ -34,6 +33,7 @@ ENV HOST=0.0.0.0
 RUN apk add --no-cache openssl
 
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
 COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/package.json
 
