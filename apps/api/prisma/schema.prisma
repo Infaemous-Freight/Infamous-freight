@@ -52,6 +52,9 @@ model Driver {
 
   carrier Carrier @relation(fields: [carrierId], references: [id])
   loads   Load[]
+
+  @@index([carrierId, createdAt])
+  @@index([carrierId, status])
 }
 
 model Load {
@@ -89,6 +92,9 @@ model Load {
   deliveryConfirmation DeliveryConfirmation?
   carrierPayments      CarrierPayment[]
   loadBoardPost        LoadBoardPost?
+
+  @@index([carrierId, createdAt])
+  @@index([carrierId, status])
 }
 
 model Invoice {
