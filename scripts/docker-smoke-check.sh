@@ -25,7 +25,8 @@ build_rc=$?
 set -e
 
 if [[ $build_rc -ne 0 ]]; then
-  if rg -n "unshare: operation not permitted|operation not permitted" "${BUILD_LOG}" >/dev/null 2>&1; then
+  if { command -v rg >/dev/null 2>&1 && rg -n "unshare: operation not permitted|operation not permitted" "${BUILD_LOG}" >/dev/null 2>&1; } || \
+     { ! command -v rg >/dev/null 2>&1 && grep -E "unshare: operation not permitted|operation not permitted" "${BUILD_LOG}" >/dev/null 2>&1; }; then
     echo "Docker build blocked by container runtime permissions; skipping smoke check."
     if [[ "${STRICT_MODE}" == "true" ]]; then
       cat "${BUILD_LOG}" >&2
