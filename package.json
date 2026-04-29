@@ -26,6 +26,7 @@
     "docker:down": "docker-compose down",
     "docker:build": "docker-compose build",
     "docker:install-cli": "bash scripts/install-docker-cli.sh",
+    "deploy:install-clis": "bash scripts/install-dev-clis.sh",
     "ai:check": "bash scripts/check-ai-runtime.sh",
     "env:bootstrap": "bash scripts/bootstrap-environment.sh",
     "env:check": "bash scripts/codex-env-check.sh",
