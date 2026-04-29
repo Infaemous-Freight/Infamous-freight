@@ -94,7 +94,12 @@ const DynamicPricing: React.FC<DynamicPricingProps> = ({ origin = 'Chicago, IL',
             <YAxis domain={['auto', 'auto']} stroke="#555" fontSize={12} tickFormatter={(v) => `$${v}`} />
             <Tooltip
               contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', fontSize: '12px' }}
-              formatter={(value: number) => [`$${value.toFixed(2)}`, 'Rate/Mile']}
+              formatter={(value) => {
+                const parsedValue = Array.isArray(value) ? value[0] : value;
+                const numericValue = typeof parsedValue === 'number' ? parsedValue : Number(parsedValue ?? 0);
+                const safeValue = Number.isFinite(numericValue) ? numericValue : 0;
+                return [`$${safeValue.toFixed(2)}`, 'Rate/Mile'];
+              }}
             />
             <ReferenceLine y={marketAvg} stroke="#555" strokeDasharray="3 3" label={{ value: 'Avg', fill: '#888', fontSize: 10 }} />
             <Line type="monotone" dataKey="rate" stroke="#ff3d00" strokeWidth={2} dot={{ fill: '#ff3d00', r: 4 }} activeDot={{ r: 6 }} />
