@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+const { spawnSync } = require('node:child_process');
+
+const rawArgs = process.argv.slice(2);
+const filteredArgs = rawArgs.filter((arg) => arg !== '--');
+
+const hasRunInBand = filteredArgs.includes('--runInBand');
+const jestArgs = hasRunInBand ? filteredArgs : ['--runInBand', ...filteredArgs];
+
+const jestBin = require.resolve('jest/bin/jest');
+const result = spawnSync(process.execPath, [jestBin, ...jestArgs], {
+  stdio: 'inherit',
+});
+
+if (typeof result.status === 'number') {
+  process.exit(result.status);
+}
+
+process.exit(1);
