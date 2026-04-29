@@ -15,8 +15,15 @@ else
 fi
 
 FLY_INSTALL_DIR="${FLY_INSTALL_DIR:-/root/.fly}"
+ALLOW_FLYCTL_REMOTE_INSTALL="${ALLOW_FLYCTL_REMOTE_INSTALL:-0}"
 if [[ ! -x "${FLY_INSTALL_DIR}/bin/flyctl" ]]; then
-  FLYCTL_INSTALL="${FLY_INSTALL_DIR}" curl -fsSL https://fly.io/install.sh | sh
+  if [[ "${ALLOW_FLYCTL_REMOTE_INSTALL}" == "1" || "${ALLOW_FLYCTL_REMOTE_INSTALL}" == "true" ]]; then
+    FLYCTL_INSTALL="${FLY_INSTALL_DIR}" curl -fsSL https://fly.io/install.sh | sh
+  else
+    echo "flyctl is not installed; skipping remote installer by default." >&2
+    echo "Set ALLOW_FLYCTL_REMOTE_INSTALL=1 to allow automatic installation," >&2
+    echo "or install flyctl manually from https://fly.io/docs/flyctl/install/." >&2
+  fi
 fi
 
 if [[ -x "${FLY_INSTALL_DIR}/bin/flyctl" ]]; then
