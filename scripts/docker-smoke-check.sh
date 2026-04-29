@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+STRICT_MODE="${DOCKER_SMOKE_STRICT:-false}"
 
 bash scripts/start-docker-daemon.sh || true
 
@@ -9,6 +10,9 @@ fi
 
 if ! docker info >/dev/null 2>&1; then
   echo "Docker daemon is unavailable; skipping docker smoke check in this environment."
+  if [[ "${STRICT_MODE}" == "true" ]]; then
+    exit 1
+  fi
   exit 0
 fi
 
@@ -23,6 +27,10 @@ set -e
 if [[ $build_rc -ne 0 ]]; then
   if rg -n "unshare: operation not permitted|operation not permitted" "${BUILD_LOG}" >/dev/null 2>&1; then
     echo "Docker build blocked by container runtime permissions; skipping smoke check."
+    if [[ "${STRICT_MODE}" == "true" ]]; then
+      cat "${BUILD_LOG}" >&2
+      exit 1
+    fi
     exit 0
   fi
   cat "${BUILD_LOG}" >&2

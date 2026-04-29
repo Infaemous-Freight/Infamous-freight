@@ -86,6 +86,8 @@ and `jq`) with:
 sudo bash scripts/install-dev-clis.sh
 sudo bash scripts/start-docker-daemon.sh
 npm run docker:smoke
+# strict mode (fail instead of skip when daemon/build is blocked)
+DOCKER_SMOKE_STRICT=true npm run docker:smoke
 ```
 
 If Docker is installed but not running in your environment, start it before
