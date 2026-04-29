@@ -166,6 +166,7 @@ Public requests for `*.map` files are blocked (`404`). Sourcemaps are still uplo
 
 | Variable | Purpose | Required |
 |---|---|---|
+| `SENTRY_DSN` | Sentry DSN for the API runtime (`apps/api`) | No |
 | `VITE_SENTRY_DSN` | Sentry DSN for the web app | No |
 | `VITE_SENTRY_ENABLED` | Set to `false` to disable even when DSN is set | No |
 | `SENTRY_AUTH_TOKEN` | CI secret for sourcemap upload | No |
