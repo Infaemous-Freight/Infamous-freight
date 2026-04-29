@@ -1,4 +1,4 @@
-name: Deploy Fly API
+name: Deploy Infamous Freight
 
 on:
   workflow_dispatch:
@@ -8,7 +8,13 @@ on:
       - Dockerfile
       - fly.toml
       - apps/api/**
+      - prisma/**
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
       - .github/workflows/deploy-fly.yml
+  schedule:
+    - cron: '0 0 * * *'
 
 concurrency:
   group: fly-api-production
@@ -19,62 +25,65 @@ permissions:
 
 jobs:
   deploy:
-    name: Deploy API to Fly.io
+    name: Build and deploy API to Fly.io
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    permissions:
-      contents: read
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 22
+          cache: pnpm
 
       - name: Validate required secrets
         run: |
           set -euo pipefail
           if [ -z "${FLY_API_TOKEN:-}" ]; then
             echo "ERROR: GitHub Actions secret FLY_API_TOKEN is missing."
-            echo "Add the rotated Fly deploy token at: Repository Settings -> Secrets and variables -> Actions."
             exit 1
           fi
-          echo "Required Fly deploy secret is present."
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: Set up flyctl
-        uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1  # master (2026-04-08)
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Deploy API
+      - name: Prisma Generate
+        run: pnpm --filter @infamous-freight/api prisma:generate
+
+      - name: Build API
+        run: pnpm --filter @infamous-freight/api build
+
+      - name: Build Docker image
+        run: docker build -f Dockerfile -t infamous-freight:ci .
+
+      - name: Setup Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # master (2026-04-08)
+
+      - name: Deploy to Fly
         run: flyctl deploy --remote-only --app infamous-freight
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      - name: Verify Fly root health endpoint
-        run: |
-          set -euo pipefail
-          for attempt in {1..18}; do
-            if curl --fail --show-error --silent https://infamous-freight.fly.dev/health; then
-              echo "Fly root health check passed"
-              exit 0
-            fi
-            echo "Root health check attempt ${attempt} failed; retrying in 10 seconds..."
-            sleep 10
-          done
-          echo "Fly root health check failed"
-          exit 1
-
-      - name: Verify Fly API health endpoint
+      - name: Verify deployment health
         run: |
           set -euo pipefail
           for attempt in {1..18}; do
             if curl --fail --show-error --silent https://infamous-freight.fly.dev/api/health; then
-              echo "Fly API health check passed"
+              echo "Health check passed"
               exit 0
             fi
-            echo "API health check attempt ${attempt} failed; retrying in 10 seconds..."
+            echo "Health check attempt ${attempt} failed; retrying in 10 seconds..."
             sleep 10
           done
-          echo "Fly API health check failed"
+          echo "Health check failed"
           exit 1
-
-# Deployment retrigger after workflow route TypeScript fix.
