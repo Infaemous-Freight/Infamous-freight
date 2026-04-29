@@ -1,0 +1,74 @@
+name: Deploy Fly API
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - '.github/ISSUE_TEMPLATE/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fly-api-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Ensure deploy secret exists
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FLY_API_TOKEN:-}" ]; then
+            echo "::error::Missing required secret FLY_API_TOKEN"
+            exit 1
+          fi
+
+      - name: Notify Sentry monitor (start)
+        if: ${{ secrets.SENTRY_FLY_DEPLOY_MONITOR_URL != '' }}
+        run: |
+          curl --fail --show-error --silent \
+            --request POST \
+            -H 'Content-Type: application/json' \
+            --data '{"status":"in_progress"}' \
+            "${{ secrets.SENTRY_FLY_DEPLOY_MONITOR_URL }}" || true
+
+      - name: Setup Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # pinned commit
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only --app infamous-freight
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Verify API health endpoint
+        run: curl --fail --show-error --silent --retry 5 --retry-delay 10 --retry-connrefused https://infamous-freight.fly.dev/api/health
+
+      - name: Notify Sentry monitor (success)
+        if: ${{ success() && secrets.SENTRY_FLY_DEPLOY_MONITOR_URL != '' }}
+        run: |
+          curl --fail --show-error --silent \
+            --request POST \
+            -H 'Content-Type: application/json' \
+            --data '{"status":"ok"}' \
+            "${{ secrets.SENTRY_FLY_DEPLOY_MONITOR_URL }}" || true
+
+      - name: Notify Sentry monitor (failure)
+        if: ${{ failure() && secrets.SENTRY_FLY_DEPLOY_MONITOR_URL != '' }}
+        run: |
+          curl --fail --show-error --silent \
+            --request POST \
+            -H 'Content-Type: application/json' \
+            --data '{"status":"error"}' \
+            "${{ secrets.SENTRY_FLY_DEPLOY_MONITOR_URL }}" || true

@@ -39,6 +39,10 @@ jobs:
       - name: Lint
         run: pnpm run lint
 
+      - name: Validate ops scripts
+        run: |
+          bash -n scripts/fly-launch-new-app.sh
+
       - name: Build
         run: pnpm run build
 
@@ -54,6 +58,7 @@ jobs:
             echo "Validated commands:"
             echo "- pnpm install --frozen-lockfile"
             echo "- pnpm run lint"
+            echo "- bash -n scripts/fly-launch-new-app.sh"
             echo "- pnpm run build"
             echo "- pnpm run test -- --runInBand"
             echo ""
