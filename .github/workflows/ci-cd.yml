@@ -45,7 +45,7 @@ jobs:
           pnpm -C apps/web exec tsc -p tsconfig.json --noEmit
 
       - name: Test
-        run: pnpm -C apps/api run test:coverage
+        run: pnpm -C apps/api run test -- --runInBand
 
   # ===== BUILD API =====
   build-api:
