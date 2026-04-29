@@ -24,12 +24,15 @@ cleanup_pid_file() {
   if [[ -f "${pid_file}" ]]; then
     local pid
     pid="$(cat "${pid_file}")"
-    if [[ -n "${pid}" ]] && ps -p "${pid}" >/dev/null 2>&1; then
-      kill "${pid}" >/dev/null 2>&1 || true
-      sleep 1
-      kill -9 "${pid}" >/dev/null 2>&1 || true
+
+    if [[ -z "${pid}" ]] || ! [[ "${pid}" =~ ^[0-9]+$ ]]; then
+      rm -f "${pid_file}" || true
+      return
     fi
-    rm -f "${pid_file}" || true
+
+    if ! ps -p "${pid}" >/dev/null 2>&1; then
+      rm -f "${pid_file}" || true
+    fi
   fi
 }
 
