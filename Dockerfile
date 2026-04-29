@@ -1,33 +1,30 @@
 FROM node:22-alpine AS deps
-
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/package.json
+
 RUN npm ci --omit=dev --workspace apps/api --include-workspace-root=false
 
 
 FROM node:22-alpine AS build
-
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/package.json
+
 RUN npm ci --workspace apps/api
 
 COPY apps/api ./apps/api
 
-WORKDIR /app/apps/api
+ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 
-# Use Prisma 6 to match @prisma/client and the current schema.prisma format.
-# Prisma 7 rejects datasource.url in schema.prisma during generate.
-RUN npx prisma@6.7.0 generate
+RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
 
-RUN npm run build
+RUN npm run build --workspace apps/api
 
 
 FROM node:22-alpine AS runtime
-
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -36,17 +33,13 @@ ENV PORT=3000
 RUN apk add --no-cache openssl
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
-COPY --from=build /app/apps/api/node_modules/.prisma ./apps/api/node_modules/.prisma
 COPY package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/package.json
 
 COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY --from=build /app/apps/api/prisma ./apps/api/prisma
 
-RUN addgroup -g 1001 -S nodejs \
-  && adduser -S nodejs -u 1001
-
+RUN addgroup -S nodejs && adduser -S nodejs -G nodejs
 USER nodejs
 
 WORKDIR /app/apps/api

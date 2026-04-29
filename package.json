@@ -44,7 +44,9 @@
     "@sentry/react": {
       "@sentry/core": "10.50.0",
       "@sentry/browser": "10.50.0"
-    }
+    },
+    "prisma": "6.15.0",
+    "@prisma/client": "6.15.0"
   },
   "workspaces": [
     "apps/*"
