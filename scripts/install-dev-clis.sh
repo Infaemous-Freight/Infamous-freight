@@ -12,7 +12,7 @@ apt-get install -y curl jq docker.io
 
 FLY_INSTALL_DIR="${FLY_INSTALL_DIR:-/root/.fly}"
 if [[ ! -x "${FLY_INSTALL_DIR}/bin/flyctl" ]]; then
-  FLYCTL_INSTALL="${FLY_INSTALL_DIR}" curl -fsSL https://fly.io/install.sh | sh
+  curl -fsSL https://fly.io/install.sh | FLYCTL_INSTALL="${FLY_INSTALL_DIR}" sh
 fi
 
 if [[ -x "${FLY_INSTALL_DIR}/bin/flyctl" ]]; then
