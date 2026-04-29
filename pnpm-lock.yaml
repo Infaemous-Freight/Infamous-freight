@@ -55,7 +55,7 @@ importers:
         specifier: ^29.7.0
         version: 29.7.0(@types/node@25.6.0)
       prisma:
-        specifier: ^6.19.3
+        specifier: 6.19.3
         version: 6.19.3(typescript@5.9.3)
       supertest:
         specifier: ^7.1.1
