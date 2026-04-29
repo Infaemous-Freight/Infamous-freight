@@ -153,6 +153,14 @@ function getFreightOperationResource(req: Request): FreightOperationResource {
   return resource as FreightOperationResource;
 }
 
+function getRequiredRouteParam(req: Request, key: string): string {
+  const value = req.params[key];
+  if (Array.isArray(value) || typeof value !== 'string') {
+    throw new HttpError(400, 'invalid_route_param', `Route parameter "${key}" is invalid.`);
+  }
+  return value;
+}
+
 function getCheckoutPlan(req: Request): BillingPlan {
   const plan = req.body?.plan;
 
@@ -415,7 +423,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     const data = await dataStore.updateFreightOperation(
       resource,
       getRequiredTenantId(req),
-      req.params.id,
+      getRequiredRouteParam(req, 'id'),
       req.body,
     );
     res.status(200).json({ data });

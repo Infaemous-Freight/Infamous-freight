@@ -37,7 +37,7 @@
     "production:smoke-test": "bash scripts/production-smoke-test.sh"
   },
   "devDependencies": {
-    "concurrently": "^9.0.0"
+    "concurrently": "^9.2.1"
   },
   "overrides": {
     "react-is": "^18.3.1",

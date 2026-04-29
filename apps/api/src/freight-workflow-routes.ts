@@ -42,6 +42,14 @@ function getRequiredTenantId(req: TenantRequest): string {
   return req.tenantId;
 }
 
+function getRequiredRouteParam(req: Request, key: string): string {
+  const value = req.params[key];
+  if (Array.isArray(value) || typeof value !== 'string') {
+    throw new FreightWorkflowHttpError(400, 'invalid_route_param', `Route parameter "${key}" is invalid.`);
+  }
+  return value;
+}
+
 function getLoadAssignmentDecision(req: Request): LoadAssignmentDecision {
   if (req.params.decision !== 'accepted' && req.params.decision !== 'rejected') {
     throw new FreightWorkflowHttpError(
@@ -60,7 +68,7 @@ export function createFreightWorkflowRouter(dataStore: DataStore): Router {
   router.post('/quotes/:id/convert-to-load', wrapAsync(async (req: TenantRequest, res) => {
     const tenantId = getRequiredTenantId(req);
     const quoteRequests = await dataStore.listFreightOperations('quoteRequests', tenantId);
-    const quoteRequest = quoteRequests.find((item) => item.id === req.params.id);
+    const quoteRequest = quoteRequests.find((item) => item.id === getRequiredRouteParam(req, 'id'));
 
     if (!quoteRequest) {
       throw new FreightWorkflowHttpError(
@@ -72,14 +80,14 @@ export function createFreightWorkflowRouter(dataStore: DataStore): Router {
 
     assertQuoteCanConvertToLoad({ status: quoteRequest.status });
 
-    const data = await dataStore.convertQuoteToLoad(tenantId, req.params.id, req.body);
+    const data = await dataStore.convertQuoteToLoad(tenantId, getRequiredRouteParam(req, 'id'), req.body);
     res.status(201).json({ data });
   }));
 
   router.post('/load-assignments/:id/:decision', wrapAsync(async (req: TenantRequest, res) => {
     const data = await dataStore.respondToLoadAssignment(
       getRequiredTenantId(req),
-      req.params.id,
+      getRequiredRouteParam(req, 'id'),
       getLoadAssignmentDecision(req),
       req.body,
     );
@@ -87,22 +95,22 @@ export function createFreightWorkflowRouter(dataStore: DataStore): Router {
   }));
 
   router.post('/dispatches/:id/confirm', wrapAsync(async (req: TenantRequest, res) => {
-    const data = await dataStore.confirmDispatch(getRequiredTenantId(req), req.params.id, req.body);
+    const data = await dataStore.confirmDispatch(getRequiredTenantId(req), getRequiredRouteParam(req, 'id'), req.body);
     res.status(200).json({ data });
   }));
 
   router.post('/loads/:loadId/tracking-updates', wrapAsync(async (req: TenantRequest, res) => {
-    const data = await dataStore.recordTrackingUpdate(getRequiredTenantId(req), req.params.loadId, req.body);
+    const data = await dataStore.recordTrackingUpdate(getRequiredTenantId(req), getRequiredRouteParam(req, 'loadId'), req.body);
     res.status(201).json({ data });
   }));
 
   router.post('/loads/:loadId/verify-delivery', wrapAsync(async (req: TenantRequest, res) => {
-    const data = await dataStore.verifyDelivery(getRequiredTenantId(req), req.params.loadId, req.body);
+    const data = await dataStore.verifyDelivery(getRequiredTenantId(req), getRequiredRouteParam(req, 'loadId'), req.body);
     res.status(201).json({ data });
   }));
 
   router.post('/carrier-payments/:id/status', wrapAsync(async (req: TenantRequest, res) => {
-    const data = await dataStore.updateCarrierPaymentStatus(getRequiredTenantId(req), req.params.id, req.body);
+    const data = await dataStore.updateCarrierPaymentStatus(getRequiredTenantId(req), getRequiredRouteParam(req, 'id'), req.body);
     res.status(200).json({ data });
   }));
 
@@ -112,7 +120,7 @@ export function createFreightWorkflowRouter(dataStore: DataStore): Router {
   }));
 
   router.post('/load-board-posts/:id/status', wrapAsync(async (req: TenantRequest, res) => {
-    const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
+    const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), getRequiredRouteParam(req, 'id'), req.body);
     res.status(200).json({ data });
   }));
 
