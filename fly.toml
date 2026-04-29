@@ -1,4 +1,7 @@
-# fly.toml app configuration file for infamous-freight
+# fly.toml app configuration file generated for infamous-freight on 2026-04-29T13:21:15Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
 app = 'infamous-freight'
 primary_region = 'dfw'
@@ -7,9 +10,9 @@ primary_region = 'dfw'
   dockerfile = 'Dockerfile'
 
 [env]
+  HOST = '0.0.0.0'
   NODE_ENV = 'production'
   PORT = '8080'
-  HOST = '0.0.0.0'
 
 [http_service]
   internal_port = 8080
