@@ -38,11 +38,17 @@ if [[ $build_rc -ne 0 ]]; then
   exit $build_rc
 fi
 
-CID="$(docker run -d -e PORT=3000 -p 3000:3000 "${IMAGE_TAG}")"
+CID="$(docker run -d -e PORT=3000 -p 0:3000 "${IMAGE_TAG}")"
 trap 'docker rm -f "${CID}" >/dev/null 2>&1 || true' EXIT
 
+HOST_PORT="$(docker inspect --format '{{(index (index .NetworkSettings.Ports "3000/tcp") 0).HostPort}}' "${CID}")"
+if [[ -z "${HOST_PORT}" ]]; then
+  echo "Container started but mapped host port for container port 3000 could not be determined." >&2
+  exit 1
+fi
+
 for _ in {1..20}; do
-  if curl -fsS "http://127.0.0.1:3000/api/health" >/dev/null 2>&1; then
+  if curl -fsS "http://127.0.0.1:${HOST_PORT}/api/health" >/dev/null 2>&1; then
     echo "Docker smoke check passed."
     exit 0
   fi
