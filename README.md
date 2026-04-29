@@ -122,13 +122,15 @@ npm run build
 npm run test
 ```
 
+---
+
 ## 🔐 Environment References
 
 For deployment-ready variable setup, use:
 
-- `docs/environment/ENVIRONMENT_VARIABLES_COMPLETE.md` (full reference + verification)
-- `docs/environment/CODEX_ENV_VARIABLES.txt` (quick copy/paste template)
-- `docs/environment/README.md` (usage notes)
+- [`docs/environment/ENVIRONMENT_VARIABLES_COMPLETE.md`](docs/environment/ENVIRONMENT_VARIABLES_COMPLETE.md) — full reference and verification
+- [`docs/environment/CODEX_ENV_VARIABLES.txt`](docs/environment/CODEX_ENV_VARIABLES.txt) — quick copy/paste template
+- [`docs/environment/README.md`](docs/environment/README.md) — usage notes
 
 ---
 
