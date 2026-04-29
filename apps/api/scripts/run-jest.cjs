@@ -24,5 +24,6 @@ if (result.error) {
 
 if (result.signal) {
   process.kill(process.pid, result.signal);
+  return;
 }
 process.exit(1);
