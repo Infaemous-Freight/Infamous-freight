@@ -8,7 +8,11 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
-apt-get install -y curl jq docker.io
+if apt-cache show docker-buildx-plugin >/dev/null 2>&1; then
+  apt-get install -y curl jq docker.io docker-buildx-plugin
+else
+  apt-get install -y curl jq docker.io
+fi
 
 FLY_INSTALL_DIR="${FLY_INSTALL_DIR:-/root/.fly}"
 if [[ ! -x "${FLY_INSTALL_DIR}/bin/flyctl" ]]; then
