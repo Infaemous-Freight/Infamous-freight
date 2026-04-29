@@ -122,6 +122,14 @@ npm run build
 npm run test
 ```
 
+## 🔐 Environment References
+
+For deployment-ready variable setup, use:
+
+- `docs/environment/ENVIRONMENT_VARIABLES_COMPLETE.md` (full reference + verification)
+- `docs/environment/CODEX_ENV_VARIABLES.txt` (quick copy/paste template)
+- `docs/environment/README.md` (usage notes)
+
 ---
 
 ## 🧰 Git Remote Troubleshooting
@@ -181,6 +189,8 @@ Public requests for `*.map` files are blocked (`404`). Sourcemaps are still uplo
 ## 🚀 Deployment
 
 ### GitHub Actions CI/CD
+
+CI uses pnpm workspace-native commands (`pnpm install --frozen-lockfile`, `pnpm -C apps/api run test:coverage`, `pnpm run build:api`) to keep lockfile behavior and workspace execution consistent across local and GitHub environments.
 
 Add these secrets to your GitHub repository:
 

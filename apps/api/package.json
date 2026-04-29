@@ -9,13 +9,13 @@
   },
   "type": "commonjs",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "pnpm run prisma:generate && tsc -p tsconfig.json",
     "start:dev": "tsx watch src/server.ts",
     "start:prod": "node dist/src/server.js",
-    "test": "jest --runInBand",
-    "test:coverage": "jest --coverage --runInBand",
+    "test": "node scripts/run-jest.cjs",
+    "test:coverage": "node scripts/run-jest.cjs --coverage",
     "lint": "tsc -p tsconfig.json --noEmit",
-    "prisma:generate": "npx prisma generate"
+    "prisma:generate": "pnpm exec prisma generate"
   },
   "dependencies": {
     "@prisma/client": "6.15.0",
