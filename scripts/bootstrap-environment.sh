@@ -21,6 +21,10 @@ else
     echo "flyctl is not installed. Run with sudo/root:"
     echo "  sudo bash scripts/install-dev-clis.sh"
   fi
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "jq is not installed. Run with sudo/root:"
+    echo "  sudo bash scripts/install-dev-clis.sh"
+  fi
 fi
 
 echo "==> Ensuring AI SDK runtime"
