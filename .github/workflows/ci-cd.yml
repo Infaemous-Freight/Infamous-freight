@@ -51,6 +51,9 @@ jobs:
       - name: Test
         run: pnpm -C apps/api run test -- --runInBand
 
+      - name: Test Coverage (in-band)
+        run: pnpm -C apps/api run test:coverage -- --runInBand
+
   # ===== BUILD API =====
   build-api:
     name: Build API

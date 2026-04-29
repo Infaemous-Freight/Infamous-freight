@@ -83,4 +83,7 @@ jobs:
       - name: Test API
         run: npm --prefix apps/api run test -- --runInBand
 
+      - name: Test API Coverage
+        run: npm --prefix apps/api run test:coverage -- --runInBand
+
 # Pull-request trigger marker: Phase 2 validation smoke check.
