@@ -6,17 +6,19 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 const sentryOrg = process.env.SENTRY_ORG;
 const sentryProject = process.env.SENTRY_PROJECT;
-// Enable sourcemap generation and upload only when all Sentry CI vars are present,
-// or when explicitly requested via SENTRY_SOURCEMAPS=1.
-const enableSentryPlugin =
+// Enable Sentry uploads when credentials exist, but allow CI to opt out
+// and avoid hard build failures on auth issues.
+const hasSentryCredentials =
   Boolean(sentryAuthToken) && Boolean(sentryOrg) && Boolean(sentryProject);
+const disableSentryUpload = process.env.SENTRY_DISABLE_UPLOAD === '1';
+const enableSentryUpload = hasSentryCredentials && !disableSentryUpload;
 const uploadSourcemaps =
-  enableSentryPlugin || process.env.SENTRY_SOURCEMAPS === '1';
+  enableSentryUpload || process.env.SENTRY_SOURCEMAPS === '1';
 
 export default defineConfig({
   plugins: [
     react(),
-    ...(enableSentryPlugin
+    ...(enableSentryUpload
       ? [
           sentryVitePlugin({
             org: sentryOrg as string,
