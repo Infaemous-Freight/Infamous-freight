@@ -3,15 +3,15 @@ name: Full Validation
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 permissions:
   contents: read
 
 concurrency:
-  group: full-validation-${{ github.ref }}
+  group: full-validation-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -44,3 +44,19 @@ jobs:
 
       - name: Test
         run: pnpm run test -- --runInBand
+
+      - name: Write validation summary
+        if: always()
+        run: |
+          {
+            echo "## Full Validation"
+            echo ""
+            echo "Validated commands:"
+            echo "- pnpm install --frozen-lockfile"
+            echo "- pnpm run lint"
+            echo "- pnpm run build"
+            echo "- pnpm run test -- --runInBand"
+            echo ""
+            echo "Ref: ${{ github.ref }}"
+            echo "SHA: ${{ github.sha }}"
+          } >> "$GITHUB_STEP_SUMMARY"
