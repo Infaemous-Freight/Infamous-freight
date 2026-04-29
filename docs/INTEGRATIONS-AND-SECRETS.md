@@ -235,6 +235,50 @@ Monitor https://status.sentry.io and resume normal operations once resolved.
 
 ---
 
+### 3.5 Vercel build-rate-limit blocking PR checks
+
+**Symptom:** A PR check labelled "Vercel" or "Vercel Preview Deployment" shows
+a failing or pending status with a link that redirects to a Vercel
+build-rate-limit page instead of a normal build result.
+
+**Root cause:** The Vercel account has hit its concurrent-build quota or monthly
+build-minute limit. This is an account/provider constraint, not a code failure.
+
+**Merge policy exception:** Vercel preview deployments are **not** a required
+merge gate for this repository. The required deploy signal is the Netlify build
+(triggered by the native Netlify Git integration). A PR may be merged as long as
+the following checks pass regardless of the Vercel status:
+
+- `CI/CD — Infamous Freight / Test & Lint` — passes
+- Netlify deploy preview (shows on the PR timeline) — passes or is skipped for
+  API-only changes
+
+**Immediate workarounds:**
+
+1. **Disable Vercel's automatic GitHub integration** (already applied):
+   `apps/web/vercel.json` sets `"github": {"enabled": false, "autoAlias": false}`
+   which prevents the Vercel bot from posting its own check status on pull
+   requests.
+
+2. **The `vercel-preview.yml` GitHub Actions workflow** runs with
+   `continue-on-error: true` and retries up to three times with exponential
+   back-off, so a transient rate-limit will not cause a hard workflow failure.
+
+3. **Re-run after the rate limit clears:** If the Vercel account quota resets
+   (typically at the start of the next billing period), re-trigger the workflow
+   from the Actions tab on the PR. The `vercel-preview.yml` workflow will run
+   automatically on the next push to the branch.
+
+**Long-term resolution:**
+
+- If Vercel preview deploys are needed, upgrade the Vercel account plan or
+  reduce concurrent build triggers by limiting the `paths` filter in
+  `vercel-preview.yml`.
+- If Vercel is no longer needed (Netlify is the sole web host), remove
+  `apps/web/vercel.json` and delete the `vercel-preview.yml` workflow.
+
+---
+
 ## 4. Adding a new integration
 
 When a new external service is wired in:
