@@ -21,6 +21,12 @@ import LoginPage from '@/pages/LoginPage';
 import CarriersPage from '@/pages/CarriersPage';
 import AccountingDashboardPage from '@/pages/AccountingDashboardPage';
 import QuoteRequestsPage from '@/pages/QuoteRequestsPage';
+import LandingPage from '@/pages/LandingPage';
+import PublicQuoteRequestPage from '@/pages/PublicQuoteRequestPage';
+import ShipmentTrackingPage from '@/pages/ShipmentTrackingPage';
+import CustomerPortalPage from '@/pages/CustomerPortalPage';
+import CarrierPortalPage from '@/pages/CarrierPortalPage';
+import FreightAssistantPage from '@/pages/FreightAssistantPage';
 
 function App() {
   return (
@@ -28,6 +34,7 @@ function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
+          <Route path="/ops" element={<DashboardPage />} />
           <Route path="/loads" element={<LoadsPage />} />
           <Route path="/dispatch" element={<DispatchBoardPage />} />
           <Route path="/drivers" element={<DriversPage />} />
@@ -48,6 +55,12 @@ function App() {
         </Route>
 
         {/* Public routes (no layout) */}
+        <Route path="/home" element={<LandingPage />} />
+        <Route path="/request-quote" element={<PublicQuoteRequestPage />} />
+        <Route path="/track-shipment" element={<ShipmentTrackingPage />} />
+        <Route path="/customer-portal" element={<CustomerPortalPage />} />
+        <Route path="/carrier-portal" element={<CarrierPortalPage />} />
+        <Route path="/freight-assistant" element={<FreightAssistantPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/onboarding" element={<OnboardingWizard />} />
       </Routes>
