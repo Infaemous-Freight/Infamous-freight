@@ -67,10 +67,13 @@ jobs:
           npm ci
           npm run build:api
 
+      - name: Set lowercase image name
+        run: echo "IMAGE_LOWER=$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build Docker Image
         run: |
-          docker build -f Dockerfile -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${{ github.sha }} .
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:latest
+          docker build -f Dockerfile -t ${{ env.REGISTRY }}/${{ env.IMAGE_LOWER }}-api:${{ github.sha }} .
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_LOWER }}-api:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.IMAGE_LOWER }}-api:latest
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121  # v4.1.0
@@ -81,8 +84,8 @@ jobs:
 
       - name: Push API Image
         run: |
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${{ github.sha }}
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:latest
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_LOWER }}-api:${{ github.sha }}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_LOWER }}-api:latest
 
   # ===== DEPLOY TO FLY.IO =====
   deploy-api:
