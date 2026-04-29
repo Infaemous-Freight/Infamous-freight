@@ -28,6 +28,8 @@
     "docker:install-cli": "bash scripts/install-docker-cli.sh",
     "ai:check": "bash scripts/check-ai-runtime.sh",
     "env:bootstrap": "bash scripts/bootstrap-environment.sh",
+    "env:check": "bash scripts/codex-env-check.sh",
+    "codex:env-check": "bash scripts/codex-env-check.sh",
     "validate": "bash scripts/validate-repo.sh",
     "deploy:full": "bash scripts/deploy-entire-repo.sh",
     "setup": "npm run env:setup && npm run db:setup",
