@@ -18,4 +18,11 @@ if (typeof result.status === 'number') {
   process.exit(result.status);
 }
 
+if (result.error) {
+  throw result.error;
+}
+
+if (result.signal) {
+  process.kill(process.pid, result.signal);
+}
 process.exit(1);
