@@ -67,6 +67,9 @@ jobs:
           npm ci
           npm run build:api
 
+      - name: Lowercase image name
+        run: echo "IMAGE_NAME=$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build Docker Image
         run: |
           docker build -f Dockerfile -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-api:${{ github.sha }} .
