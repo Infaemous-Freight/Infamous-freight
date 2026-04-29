@@ -10,6 +10,7 @@ on:
       - apps/api/**
       - prisma/**
       - package.json
+      - package-lock.json
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .github/workflows/deploy-fly.yml
