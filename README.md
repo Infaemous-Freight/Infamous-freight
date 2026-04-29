@@ -29,17 +29,32 @@ It brings together:
 
 ---
 
+## 🎯 Why It Matters
+
+Freight teams often operate across too many disconnected systems: calls, texts, spreadsheets, load boards, paperwork, compliance checklists, and delayed status updates.
+
+Infamous Freight is built to reduce that operational drag by centralizing:
+
+- dispatch execution
+- shipment visibility
+- driver coordination
+- paperwork and invoicing
+- compliance workflows
+- operational reporting
+
+---
+
 ## ⚙️ Core Features
 
-- 🤖 **Auto-Dispatch AI** — Matches loads to drivers in as little as 90 seconds
-- 💰 **Rate Negotiation Bot** — Counters lowball offers to improve load revenue
+- 🤖 **Auto-Dispatch AI** — Supports load-to-driver matching workflows and dispatch automation
+- 💰 **Rate Negotiation Bot** — Supports negotiation workflows and margin protection
 - 🎤 **Voice Booking** — Natural-language load search and booking workflows
 - 🔌 **Multi-ELD Sync** — Samsara, Motive, Omnitracs, and Geotab integrations
 - 🔎 **Load Board Aggregation** — Unified search across DAT, Truckstop, and 123Loadboard
 - 📄 **Digital BOL / POD** — Upload, sign, and invoice in one workflow
 - 🧾 **Driver Payroll** — Per-mile, percentage, flat-rate, or hourly settlement models
 - 🏦 **Factoring Integration** — RTS, OTR, Apex, Bluevine, and eCapital support
-- 🛡️ **CSA Score Monitor** — Tracks all 7 BASIC categories
+- 🛡️ **CSA Score Monitor** — Supports CSA and compliance monitoring workflows
 - 🏢 **Broker Credit Checks** — Ratings, payment history, and risk visibility
 - 📡 **Geofencing & ETA** — Smart alerts and customer tracking links
 - ⛽ **IFTA Auto-Reporting** — Quarterly fuel tax calculations
@@ -47,11 +62,41 @@ It brings together:
 - 📈 **Rate Analytics** — Historical trends and market comparisons
 - 🧩 **Chrome Extension** — Book loads directly from load boards
 - 💬 **Real-Time Chat** — Driver-dispatch messaging with voice notes
-- 🔁 **Backhaul Finder** — Minimizes deadhead after delivery
+- 🔁 **Backhaul Finder** — Deadhead reduction workflows after delivery
 - 📑 **Rate Confirmation Generator** — Professional PDF confirmations
 - 🗂️ **Carrier Packet Generator** — W-9, COI, and insurance certificate workflows
 - 💳 **Stripe Payments** — Subscription and pay-per-load billing
 - 📚 **QuickBooks / Xero Sync** — Automated invoice sync
+
+---
+
+## 📌 Current Working Scope
+
+### ✅ Working now
+
+- health endpoints and API runtime
+- tenant-aware API request handling
+- role-based access guards
+- load, driver, and shipment API surfaces
+- Prisma-backed data access patterns
+- Docker-based local startup
+- CI/CD and deploy support docs
+- environment bootstrap and validation scripts
+
+### 🚧 In active build
+
+- deeper dispatch decision automation
+- richer shipment lifecycle workflows
+- expanded analytics and reporting
+- broader integrations and monitoring coverage
+- production operations hardening
+
+### 🗺️ Roadmap
+
+- broader mobile operations support
+- deeper AI orchestration
+- expanded carrier network intelligence
+- more complete automation around billing, notifications, and brokerage workflows
 
 ---
 
@@ -188,11 +233,55 @@ Public requests for `*.map` files are blocked (`404`). Sourcemaps are still uplo
 
 ---
 
+## 🏗️ Architecture Overview
+
+```text
+Web App (React + Vite)
+        │
+        ▼
+API (Express 4 + TypeScript)
+        │
+        ├── Prisma ORM
+        │      │
+        │      ▼
+        │  PostgreSQL
+        │
+        ├── Redis / caching workflows
+        ├── Billing / Stripe
+        ├── Notifications / messaging
+        └── Analytics / operations logic
+```
+
+---
+
+## 🔌 API Example
+
+### Health check
+
+```bash
+curl -X GET http://localhost:3000/api/health
+```
+
+### Tenant-scoped loads request
+
+```bash
+curl -X GET http://localhost:3000/api/loads \
+  -H "x-tenant-id: demo-tenant" \
+  -H "x-user-role: dispatcher"
+```
+
+Expected request headers for protected operational routes:
+
+- `x-tenant-id`
+- `x-user-role`
+
+---
+
 ## 🚀 Deployment
 
 ### GitHub Actions CI/CD
 
-CI uses pnpm workspace-native commands (`pnpm install --frozen-lockfile`, `pnpm -C apps/api run test:coverage`, `pnpm run build:api`) to keep lockfile behavior and workspace execution consistent across local and GitHub environments.
+CI should use a single package-manager path end to end. This repository is currently documented and scripted around **npm workspaces**, and build, test, and deploy flows should stay aligned to that to avoid lockfile and install drift.
 
 Add these secrets to your GitHub repository:
 
@@ -224,6 +313,22 @@ Netlify auto-deploys from the `main` branch via its native Git integration. For 
 npm install -g netlify-cli
 netlify deploy --prod --dir=apps/web/dist
 ```
+
+### Deploy verification
+
+After deployment, verify:
+
+```bash
+curl -X GET https://infamousfreight.com/api/health
+```
+
+Also confirm:
+
+- API returns `200`
+- database connectivity is healthy
+- required env vars are present
+- Fly app is listening on the expected internal port
+- Netlify build points to the correct API URL
 
 ---
 
@@ -286,6 +391,7 @@ apps/
 compliance/                 # Canadian HOS rules
 templates/                  # Cold emails + LinkedIn calendar
 docs/                       # Sales playbook, launch checklists
+scripts/                    # Setup, validation, and deployment helpers
 Dockerfile.api
 docker-compose.yml
 nginx.conf
