@@ -17,7 +17,7 @@ describe('createPrismaClient', () => {
       return { PrismaClient };
     });
 
-    jest.doMock('@prisma/extension-accelerate', () => ({ withAccelerate: undefined }));
+    jest.doMock('@prisma/extension-accelerate', () => ({ withAccelerate: undefined }), { virtual: true });
 
     const { createPrismaClient } = require('../src/prisma-client') as typeof import('../src/prisma-client');
 
@@ -40,7 +40,7 @@ describe('createPrismaClient', () => {
     });
 
     const withAccelerate = jest.fn(() => ({ name: 'accelerate-extension' }));
-    jest.doMock('@prisma/extension-accelerate', () => ({ withAccelerate }));
+    jest.doMock('@prisma/extension-accelerate', () => ({ withAccelerate }), { virtual: true });
 
     const { createPrismaClient } = require('../src/prisma-client') as typeof import('../src/prisma-client');
 
