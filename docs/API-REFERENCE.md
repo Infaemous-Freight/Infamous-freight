@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://infamousfreight.com" target="_blank" rel="noopener noreferrer">
+    <img src="/docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
+  </a>
+</p>
+
 # Infamous Freight — API Reference
 
 _Last updated: April 2026_
