@@ -278,6 +278,31 @@ npx @sentry/wizard@latest -i react
 
 > ⚠️ Do not use `-i nextjs` — `apps/web` is not a Next.js app.
 
+### Sentry MCP server
+
+For Sentry issue triage via MCP-compatible clients, configure the Sentry MCP endpoint with environment-based auth (never hardcode or commit tokens):
+
+```json
+{
+  "mcpServers": {
+    "sentry": {
+      "url": "https://mcp.sentry.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${SENTRY_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+Use a short-lived token with the minimum scopes required for issue triage, store it in a local secret manager, and rotate immediately if exposed.
+
+Example local setup (do not commit):
+
+```bash
+export SENTRY_ACCESS_TOKEN="<sentry-token>"
+```
+
 ### Netlify sourcemap policy
 
 Public requests for `*.map` files are blocked (`404`). Sourcemaps are still uploaded to Sentry during builds when `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` are configured.
