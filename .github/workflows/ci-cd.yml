@@ -48,6 +48,9 @@ jobs:
       - name: Test
         run: pnpm -C apps/api run test -- --runInBand
 
+      - name: Lint docs
+        run: pnpm run docs:lint
+
       - name: Write test summary
         if: always()
         run: |
@@ -60,6 +63,7 @@ jobs:
             echo "- pnpm -C apps/api exec tsc -p tsconfig.json --noEmit"
             echo "- pnpm -C apps/web exec tsc -p tsconfig.json --noEmit"
             echo "- pnpm -C apps/api run test -- --runInBand"
+            echo "- pnpm run docs:lint"
           } >> "$GITHUB_STEP_SUMMARY"
 
   # ===== BUILD API =====

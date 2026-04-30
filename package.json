@@ -17,7 +17,10 @@
     "build:web": "pnpm -C apps/web run build",
     "start": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run start:prod",
     "lint": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run lint && pnpm -C apps/web run lint",
+    "docs:lint": "markdownlint docs/CUSTOM-DOMAIN.md",
     "test": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run test --",
+    "test:runInBand": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run test -- --runInBand",
+    "test:ci": "pnpm run test:runInBand && pnpm run docs:lint",
     "test:coverage": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run test:coverage",
     "prisma:generate": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run prisma:generate",
     "prisma:migrate": "node scripts/ensure-api-workspace.js && pnpm -C apps/api exec prisma migrate dev --schema prisma/schema.prisma",
@@ -47,7 +50,8 @@
     "setup:deps-docker": "bash scripts/bootstrap-deps-docker.sh"
   },
   "devDependencies": {
-    "concurrently": "^9.0.0"
+    "concurrently": "^9.0.0",
+    "markdownlint-cli": "^0.48.0"
   },
   "overrides": {
     "react-is": "^18.3.1",

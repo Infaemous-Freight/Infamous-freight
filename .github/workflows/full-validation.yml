@@ -45,6 +45,9 @@ jobs:
       - name: Test
         run: pnpm run test -- --runInBand
 
+      - name: Lint docs
+        run: pnpm run docs:lint
+
       - name: Write validation summary
         if: always()
         run: |
@@ -56,6 +59,7 @@ jobs:
             echo "- pnpm run lint"
             echo "- pnpm run build"
             echo "- pnpm run test -- --runInBand"
+            echo "- pnpm run docs:lint"
             echo ""
             echo "Ref: ${{ github.ref }}"
             echo "SHA: ${{ github.sha }}"
