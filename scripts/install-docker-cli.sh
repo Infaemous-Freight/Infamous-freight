@@ -37,18 +37,21 @@ install_buildx_plugin() {
   fi
 
   release_tag="$(printf '%s' "$release_json" | node -e "const fs=require('fs');try{const v=JSON.parse(fs.readFileSync(0,'utf8')).tag_name||'';process.stdout.write(v);}catch{process.stdout.write('');}")"
-  if [ -z "$release_tag" ]; then
-    echo "Unable to determine latest Docker Buildx release tag."
+  if [ -n "$release_tag" ]; then
+    buildx_url="https://github.com/docker/buildx/releases/download/${release_tag}/buildx-${release_tag}.linux-${arch}"
+    if curl -fsSL "$buildx_url" -o "${plugin_dir}/docker-buildx"; then
+      chmod +x "${plugin_dir}/docker-buildx"
+      return 0
+    fi
+  fi
+
+  buildx_url="https://github.com/docker/buildx/releases/latest/download/buildx-latest.linux-${arch}"
+  if curl -fsSL "$buildx_url" -o "${plugin_dir}/docker-buildx"; then
+    chmod +x "${plugin_dir}/docker-buildx"
     return 0
   fi
 
-  buildx_url="https://github.com/docker/buildx/releases/download/${release_tag}/buildx-${release_tag}.linux-${arch}"
-
-  if curl -fsSL "$buildx_url" -o "${plugin_dir}/docker-buildx"; then
-    chmod +x "${plugin_dir}/docker-buildx"
-  else
-    echo "Unable to download Docker Buildx plugin from GitHub release asset."
-  fi
+  echo "Unable to download Docker Buildx plugin from GitHub release assets."
 }
 
 install_compose_plugin() {
