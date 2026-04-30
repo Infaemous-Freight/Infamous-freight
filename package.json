@@ -6,7 +6,7 @@
   "packageManager": "pnpm@10.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Infamous-Freight/Infamous-freight.git"
+    "url": "git+https://github.com/Infaemous-Freight/Infamous-freight.git"
   },
   "scripts": {
     "dev": "concurrently \"pnpm run dev:api\" \"pnpm run dev:web\"",
