@@ -25,18 +25,11 @@ export default defineConfig({
             project: sentryProject as string,
             authToken: sentryAuthToken as string,
             errorHandler: (error) => {
+              // Source-map upload is a non-critical post-build step; never fail
+              // the build because of it. Auth/network/CLI errors all surface
+              // here — log and continue so the deploy can proceed.
               const message = error.message ?? String(error);
-              const isAuthFailure =
-                message.includes('Invalid token') ||
-                message.includes('http status: 401') ||
-                message.includes('HTTP 401');
-
-              if (isAuthFailure) {
-                console.warn('[sentry-vite-plugin] source-map upload skipped:', message);
-                return;
-              }
-
-              throw error;
+              console.warn('[sentry-vite-plugin] source-map upload skipped:', message);
             },
           }),
         ]
