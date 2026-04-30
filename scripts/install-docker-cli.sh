@@ -29,8 +29,25 @@ install_buildx_plugin() {
 
   plugin_dir="${HOME}/.docker/cli-plugins"
   mkdir -p "$plugin_dir"
-  curl -fsSL "https://github.com/docker/buildx/releases/latest/download/buildx-v0.24.1.linux-${arch}"     -o "${plugin_dir}/docker-buildx"
-  chmod +x "${plugin_dir}/docker-buildx"
+  if curl -fsSL "https://github.com/docker/buildx/releases/latest/download/buildx-v0.24.1.linux-${arch}" -o "${plugin_dir}/docker-buildx"; then
+    chmod +x "${plugin_dir}/docker-buildx"
+  else
+    echo "Unable to download Docker Buildx plugin from GitHub release asset."
+  fi
+}
+
+install_compose_plugin() {
+  if docker compose version >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if command -v docker-compose >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if command -v apt-get >/dev/null 2>&1; then
+    apt-get install -y docker-compose-v2 docker-compose >/dev/null 2>&1 || true
+  fi
 }
 
 ensure_docker_daemon() {
@@ -63,6 +80,7 @@ if command -v docker >/dev/null 2>&1; then
   docker --version
 
   install_buildx_plugin
+  install_compose_plugin
   if docker buildx version >/dev/null 2>&1; then
     docker buildx version
   else
@@ -85,9 +103,9 @@ if command -v apt-get >/dev/null 2>&1; then
   echo "Installing Docker CLI packages..."
   if apt-get update && {
     if apt-cache show docker-buildx-plugin >/dev/null 2>&1; then
-      apt-get install -y docker.io docker-buildx-plugin
+      apt-get install -y docker.io docker-buildx-plugin docker-compose-v2 docker-compose
     else
-      apt-get install -y docker.io
+      apt-get install -y docker.io docker-compose
     fi
   }; then
     :
@@ -108,6 +126,7 @@ fi
 docker --version
 
 install_buildx_plugin
+install_compose_plugin
 if docker buildx version >/dev/null 2>&1; then
   docker buildx version
 else
