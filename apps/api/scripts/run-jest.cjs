@@ -1,29 +1,44 @@
 #!/usr/bin/env node
 const { spawnSync } = require('node:child_process');
 
-const rawArgs = process.argv.slice(2);
-const filteredArgs = rawArgs.filter((arg) => arg !== '--');
+function buildJestArgs(rawArgs) {
+  const filteredArgs = rawArgs.filter((arg) => arg !== '--');
 
-const hasRunInBand = filteredArgs.some((arg) =>
-  ['-i', '--runInBand', '--runInBand=true'].includes(arg)
-);
-const jestArgs = hasRunInBand ? filteredArgs : ['--runInBand', ...filteredArgs];
+  // Default to in-band execution for CI/local stability, while still allowing explicit override flags.
+  const hasExplicitRunInBandSetting = filteredArgs.some((arg) =>
+    ['-i', '--runInBand', '--runInBand=true', '--runInBand=false'].includes(arg)
+  );
 
-const jestBin = require.resolve('jest/bin/jest');
-const result = spawnSync(process.execPath, [jestBin, ...jestArgs], {
-  stdio: 'inherit',
-});
-
-if (typeof result.status === 'number') {
-  process.exit(result.status);
+  return hasExplicitRunInBandSetting ? filteredArgs : ['--runInBand', ...filteredArgs];
 }
 
-if (result.error) {
-  throw result.error;
+function run() {
+  const rawArgs = process.argv.slice(2);
+  const jestArgs = buildJestArgs(rawArgs);
+
+  const jestBin = require.resolve('jest/bin/jest');
+  const result = spawnSync(process.execPath, [jestBin, ...jestArgs], {
+    stdio: 'inherit',
+  });
+
+  if (typeof result.status === 'number') {
+    process.exit(result.status);
+  }
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  if (result.signal) {
+    process.kill(process.pid, result.signal);
+    return;
+  }
+
+  process.exit(1);
 }
 
-if (result.signal) {
-  process.kill(process.pid, result.signal);
-  return;
+if (require.main === module) {
+  run();
 }
-process.exit(1);
+
+module.exports = { buildJestArgs };
