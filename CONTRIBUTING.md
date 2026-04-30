@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://infamousfreight.com" target="_blank" rel="noopener noreferrer">
+    <img src="/docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
+  </a>
+</p>
+
 # Contributing
 
 This repository uses a small, strict workflow so production work stays clean and traceable.

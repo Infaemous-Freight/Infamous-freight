@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://infamousfreight.com" target="_blank" rel="noopener noreferrer">
+    <img src="/docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
+  </a>
+</p>
+
 # Production Readiness Verification Guide
 
 Status: Ready for verification. Not approved for public launch until all critical checks pass.
