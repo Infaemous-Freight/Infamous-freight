@@ -64,3 +64,6 @@ apps/api/coverage/
 
 # Local Netlify folder
 .netlify
+
+# Local CLI bootstrap artifacts
+.tools/
