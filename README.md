@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/screenshots/infamousfreight-banner.svg" alt="Infamous Freight" width="100%">
+  <img src="docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
 </p>
 
 # 🚛 Infamous Freight
