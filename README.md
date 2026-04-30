@@ -6,9 +6,27 @@
 
 > **The freight dispatch platform built by truckers, for truckers.**
 
-Infamous Freight is an AI-powered freight and logistics automation platform for dispatch operations, real-time shipment tracking, carrier networks, compliance workflows, and intelligent load orchestration.
+Infamous Freight is an AI-powered freight operations platform for dispatch execution, shipment visibility, driver coordination, compliance workflows, and logistics automation.
 
-Built as a monorepo, the platform combines an Express 4 backend, React web application, real-time communications, financial workflows, compliance tooling, and operational automation for modern freight teams.
+Built as a monorepo, the platform combines an Express 4 backend, React web application, Prisma/PostgreSQL data workflows, real-time communications, billing flows, and operational tooling for modern freight teams.
+
+If you want one system for dispatch, tracking, paperwork, and operations control, this is the platform.
+
+---
+
+## 🔗 Quick Links
+
+- [Quick Start](#-quick-start)
+- [Current Working Scope](#-current-working-scope)
+- [Architecture Overview](#️-architecture-overview)
+- [API Example](#-api-example)
+- [Deployment](#-deployment)
+- [Environment References](#-environment-references)
+- [Docs by Goal](#-docs-by-goal)
+- [Operations & Supply Chain Reference](#-operations--supply-chain-reference)
+- [Launch Readiness](#-launch-readiness)
+- [Production Operations](#-production-operations)
+- [Contributing](#-contributing)
 
 ---
 
@@ -165,6 +183,39 @@ npm run db:setup
 npm run dev
 npm run build
 npm run test
+```
+
+---
+
+## 🧭 Operator Quick Reference
+
+### Local setup
+
+```bash
+npm run env:setup
+npm run db:setup
+npm run dev
+```
+
+### Build and validate
+
+```bash
+npm run build
+npm run test
+npm run validate
+```
+
+### Deploy
+
+```bash
+flyctl deploy --app infamous-freight
+```
+
+### Verify
+
+```bash
+curl -X GET http://localhost:3000/api/health
+curl -X GET https://infamousfreight.com/api/health
 ```
 
 ---
@@ -400,6 +451,37 @@ nginx.conf
 
 ---
 
+## 📚 Docs by Goal
+
+### New here
+- [Quick Start](#-quick-start)
+- [Development Workflow](#-development-workflow)
+- [Environment References](#-environment-references)
+
+### Understand the system
+- [Architecture Overview](#️-architecture-overview)
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md)
+
+### Deploy and operate
+- [Deployment](#-deployment)
+- [`docs/INTEGRATIONS-AND-SECRETS.md`](docs/INTEGRATIONS-AND-SECRETS.md)
+- [`docs/NETLIFY-BUILDHOOKS.md`](docs/NETLIFY-BUILDHOOKS.md)
+- [`docs/SBOM-POLICY.md`](docs/SBOM-POLICY.md)
+
+### Launch readiness
+- [Launch Readiness](#-launch-readiness)
+- [`docs/PRODUCTION_READINESS_VERIFICATION.md`](docs/PRODUCTION_READINESS_VERIFICATION.md)
+- [`docs/ROLLBACK_PLAN.md`](docs/ROLLBACK_PLAN.md)
+
+### Freight operations
+- [Production Operations](#-production-operations)
+- [`docs/production-operations/OPERATING_MODEL.md`](docs/production-operations/OPERATING_MODEL.md)
+- [`docs/production-operations/DISPATCH_WORKFLOW.md`](docs/production-operations/DISPATCH_WORKFLOW.md)
+- [`docs/production-operations/DAILY_OPERATIONS_SOP.md`](docs/production-operations/DAILY_OPERATIONS_SOP.md)
+
+---
+
 ## 🧩 Platform Areas
 
 ### 🚚 Dispatch Operations
@@ -556,13 +638,13 @@ Examples:
 
 Copyright 2025 Infamous Freight. All rights reserved.
 
+---
 
 ## Operations Shortcuts
 
-Use these root-level scripts for consistent local/CI operations:
+Use these root-level scripts for consistent local and CI operations:
 
-- `pnpm run setup:deps-docker` — install workspace dependencies, run Prisma client generation, and validate Docker CLI availability.
-- `pnpm run setup:clis` — install required deployment CLIs (`flyctl`, `supabase`, `stripe`) into `.tools/bin`.
-- `pnpm run smoke:api:health` — boot the compiled API on `PORT` (default `3000`) and verify `/health`.
-- `pnpm run snapshot:prod` — run production-readiness snapshot checks (Prisma generate, build, tests, smoke health, optional Docker build).
-
+- `pnpm run setup:deps-docker` — install workspace dependencies, run Prisma client generation, and validate Docker CLI availability
+- `pnpm run setup:clis` — install required deployment CLIs (`flyctl`, `supabase`, `stripe`) into `.tools/bin`
+- `pnpm run smoke:api:health` — boot the compiled API on `PORT` (default `3000`) and verify `/health`
+- `pnpm run snapshot:prod` — run production-readiness snapshot checks (Prisma generate, build, tests, smoke health, optional Docker build)
