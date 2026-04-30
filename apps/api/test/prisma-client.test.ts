@@ -1,5 +1,8 @@
 describe('createPrismaClient', () => {
   const originalDatabaseUrl = process.env.DATABASE_URL;
+  const mockAccelerateModule = (withAccelerate: unknown) => {
+    jest.doMock('@prisma/extension-accelerate', () => ({ withAccelerate }), { virtual: true });
+  };
 
   afterEach(() => {
     process.env.DATABASE_URL = originalDatabaseUrl;
@@ -17,7 +20,7 @@ describe('createPrismaClient', () => {
       return { PrismaClient };
     });
 
-    jest.doMock('@prisma/extension-accelerate', () => ({ withAccelerate: undefined }));
+    mockAccelerateModule(undefined);
 
     const { createPrismaClient } = require('../src/prisma-client') as typeof import('../src/prisma-client');
 
@@ -40,7 +43,7 @@ describe('createPrismaClient', () => {
     });
 
     const withAccelerate = jest.fn(() => ({ name: 'accelerate-extension' }));
-    jest.doMock('@prisma/extension-accelerate', () => ({ withAccelerate }));
+    mockAccelerateModule(withAccelerate);
 
     const { createPrismaClient } = require('../src/prisma-client') as typeof import('../src/prisma-client');
 
