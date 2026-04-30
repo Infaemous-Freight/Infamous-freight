@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
+  <a href="https://infamousfreight.com" target="_blank" rel="noopener noreferrer">
+    <img src="docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
+  </a>
 </p>
 
 # 🚛 Infamous Freight
@@ -129,6 +131,18 @@ Infamous Freight is built to reduce that operational drag by centralizing:
 
 ### 📊 Platform Overview
 ![Infamous Freight Platform Overview](docs/screenshots/infamousfreight-platform-overview.svg)
+
+### 🖼️ Social Preview
+
+The GitHub social preview image lives at [`docs/screenshots/infamousfreight-social-preview.png`](docs/screenshots/infamousfreight-social-preview.png) (1280×640 PNG, generated from `infamousfreight-header.svg`).
+
+To regenerate after updating the header SVG:
+
+```bash
+npm run social-preview:generate
+```
+
+Maintainers must upload the resulting PNG via **Settings → General → Social preview** (GitHub does not accept SVG there and does not expose an API for this setting).
 
 ---
 

@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://infamousfreight.com" target="_blank" rel="noopener noreferrer">
+    <img src="/docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
+  </a>
+</p>
+
 # Infamous Freight — Integrations & Secrets Inventory
 
 Centralized reference for every external service and CI/CD secret used by this
