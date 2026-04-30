@@ -88,8 +88,10 @@ if command -v docker >/dev/null 2>&1; then
     echo "Docker Buildx is not available."
   fi
 
-  ensure_docker_daemon
-  exit $?
+  if ! ensure_docker_daemon; then
+    echo "Continuing without daemon access; Docker CLI and Buildx checks completed." >&2
+  fi
+  exit 0
 fi
 
 if [ "$INSTALL_DOCKER" != "true" ]; then
@@ -133,4 +135,6 @@ else
   echo "Docker Buildx is not available from installed packages."
 fi
 
-ensure_docker_daemon
+if ! ensure_docker_daemon; then
+  echo "Continuing without daemon access; Docker CLI and Buildx checks completed." >&2
+fi
