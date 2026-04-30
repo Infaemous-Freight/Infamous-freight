@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://infamousfreight.com" target="_blank" rel="noopener noreferrer">
+    <img src="/docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
+  </a>
+</p>
+
 # Launch Readiness Index
 
 This is the entry point for production readiness, beta approval, paid launch approval, rollback, and operational recovery.
