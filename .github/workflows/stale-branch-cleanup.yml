@@ -1,0 +1,92 @@
+name: One-time stale branch cleanup
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/stale-branch-cleanup.yml'
+
+permissions:
+  contents: write
+  pull-requests: read
+
+env:
+  # Delete only automation-generated branches. Keep product/human branches such as
+  # main, develop, feat/*, fix/*, docs/*, chore/*, billing/*, update-toolchain, etc.
+  STALE_BRANCH_REGEX: '^(codex/|copilot/|agent-|claude/|coderabbitai/|github-advanced-security/|conflict_)'
+
+jobs:
+  cleanup:
+    name: Delete stale automation branches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Delete stale automation branches without open PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git fetch origin '+refs/heads/*:refs/remotes/origin/*' --prune
+
+          mapfile -t open_pr_branches < <(
+            gh pr list --state open --limit 500 --json headRefName --jq '.[].headRefName'
+          )
+
+          is_open_pr_branch() {
+            local branch="$1"
+            local open_branch
+            for open_branch in "${open_pr_branches[@]:-}"; do
+              if [[ "$open_branch" == "$branch" ]]; then
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          deleted=0
+          skipped=0
+
+          while IFS= read -r remote_ref; do
+            branch="${remote_ref#origin/}"
+
+            case "$branch" in
+              main|develop|release/*|feat/*|fix/*|docs/*|chore/*|billing/*|update-toolchain|local-infra-smoke|infamous-reliability-agents|vercel/*)
+                echo "skip protected/human branch: $branch"
+                skipped=$((skipped + 1))
+                continue
+                ;;
+            esac
+
+            if ! [[ "$branch" =~ $STALE_BRANCH_REGEX ]]; then
+              echo "skip non-matching branch: $branch"
+              skipped=$((skipped + 1))
+              continue
+            fi
+
+            if is_open_pr_branch "$branch"; then
+              echo "skip open PR branch: $branch"
+              skipped=$((skipped + 1))
+              continue
+            fi
+
+            echo "delete stale branch: $branch"
+            gh api \
+              --method DELETE \
+              -H "Accept: application/vnd.github+json" \
+              "/repos/${GITHUB_REPOSITORY}/git/refs/heads/${branch}"
+            deleted=$((deleted + 1))
+          done < <(git branch -r | sed 's/^ *//' | grep '^origin/' | grep -v '^origin/HEAD')
+
+          {
+            echo "## Stale Branch Cleanup"
+            echo ""
+            echo "Deleted stale automation branches: ${deleted}"
+            echo "Skipped protected/non-matching/open-PR branches: ${skipped}"
+          } >> "$GITHUB_STEP_SUMMARY"
