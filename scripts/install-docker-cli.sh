@@ -29,8 +29,27 @@ install_buildx_plugin() {
 
   plugin_dir="${HOME}/.docker/cli-plugins"
   mkdir -p "$plugin_dir"
-  curl -fsSL "https://github.com/docker/buildx/releases/latest/download/buildx-v0.24.1.linux-${arch}"     -o "${plugin_dir}/docker-buildx"
-  chmod +x "${plugin_dir}/docker-buildx"
+
+  local latest_tag
+  latest_tag="$(curl -fsSL https://api.github.com/repos/docker/buildx/releases/latest | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p' | head -n1 || true)"
+
+  local candidate_urls=(
+    "https://github.com/docker/buildx/releases/latest/download/buildx-latest.linux-${arch}"
+  )
+
+  if [ -n "$latest_tag" ]; then
+    candidate_urls+=("https://github.com/docker/buildx/releases/download/${latest_tag}/buildx-${latest_tag}.linux-${arch}")
+  fi
+
+  local url
+  for url in "${candidate_urls[@]}"; do
+    if curl -fsSL "$url" -o "${plugin_dir}/docker-buildx"; then
+      chmod +x "${plugin_dir}/docker-buildx"
+      return 0
+    fi
+  done
+
+  echo "Unable to download Docker Buildx plugin binary for linux-${arch}; continuing without buildx plugin." >&2
 }
 
 ensure_docker_daemon() {
@@ -69,8 +88,10 @@ if command -v docker >/dev/null 2>&1; then
     echo "Docker Buildx is not available."
   fi
 
-  ensure_docker_daemon
-  exit $?
+  if ! ensure_docker_daemon; then
+    echo "Continuing without daemon access; Docker CLI and Buildx checks completed." >&2
+  fi
+  exit 0
 fi
 
 if [ "$INSTALL_DOCKER" != "true" ]; then
@@ -114,4 +135,6 @@ else
   echo "Docker Buildx is not available from installed packages."
 fi
 
-ensure_docker_daemon
+if ! ensure_docker_daemon; then
+  echo "Continuing without daemon access; Docker CLI and Buildx checks completed." >&2
+fi
