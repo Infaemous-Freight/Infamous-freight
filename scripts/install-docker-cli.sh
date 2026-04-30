@@ -2,6 +2,7 @@
 set -euo pipefail
 
 INSTALL_DOCKER="${INSTALL_DOCKER:-false}"
+REQUIRE_DOCKER_DAEMON="${REQUIRE_DOCKER_DAEMON:-false}"
 
 install_via_static_binary() {
   local arch tmp
@@ -29,8 +30,35 @@ install_buildx_plugin() {
 
   plugin_dir="${HOME}/.docker/cli-plugins"
   mkdir -p "$plugin_dir"
-  curl -fsSL "https://github.com/docker/buildx/releases/latest/download/buildx-v0.24.1.linux-${arch}"     -o "${plugin_dir}/docker-buildx"
-  chmod +x "${plugin_dir}/docker-buildx"
+  local release_tag buildx_url release_json
+  if ! release_json="$(curl -fsSL -H 'Accept: application/vnd.github+json' https://api.github.com/repos/docker/buildx/releases/latest)"; then
+    echo "Unable to fetch Docker Buildx release metadata from GitHub API."
+    return 0
+  fi
+
+  release_tag="$(printf '%s' "$release_json" | node -e "const fs=require('fs');try{const v=JSON.parse(fs.readFileSync(0,'utf8')).tag_name||'';process.stdout.write(v);}catch{process.stdout.write('');}")"
+  if [ -z "$release_tag" ]; then
+    echo "Unable to determine latest Docker Buildx release tag."
+    return 0
+  fi
+
+  buildx_url="https://github.com/docker/buildx/releases/download/${release_tag}/buildx-${release_tag}.linux-${arch}"
+
+  if curl -fsSL "$buildx_url" -o "${plugin_dir}/docker-buildx"; then
+    chmod +x "${plugin_dir}/docker-buildx"
+  else
+    echo "Unable to download Docker Buildx plugin from GitHub release asset."
+  fi
+}
+
+install_compose_plugin() {
+  if docker compose version >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if command -v apt-get >/dev/null 2>&1; then
+    apt-get install -y docker-compose-v2 >/dev/null 2>&1 || true
+  fi
 }
 
 ensure_docker_daemon() {
@@ -54,8 +82,11 @@ ensure_docker_daemon() {
   fi
 
   echo "Docker daemon is still not reachable."
-  echo "If this is a restricted container, daemon access may be unavailable." 
-  return 1
+  echo "If this is a restricted container, daemon access may be unavailable."
+  if [ "$REQUIRE_DOCKER_DAEMON" = "true" ]; then
+    return 1
+  fi
+  return 0
 }
 
 if command -v docker >/dev/null 2>&1; then
@@ -63,6 +94,7 @@ if command -v docker >/dev/null 2>&1; then
   docker --version
 
   install_buildx_plugin
+  install_compose_plugin
   if docker buildx version >/dev/null 2>&1; then
     docker buildx version
   else
@@ -85,9 +117,9 @@ if command -v apt-get >/dev/null 2>&1; then
   echo "Installing Docker CLI packages..."
   if apt-get update && {
     if apt-cache show docker-buildx-plugin >/dev/null 2>&1; then
-      apt-get install -y docker.io docker-buildx-plugin
+      apt-get install -y docker.io docker-buildx-plugin docker-compose-v2
     else
-      apt-get install -y docker.io
+      apt-get install -y docker.io docker-compose-v2
     fi
   }; then
     :
@@ -108,6 +140,7 @@ fi
 docker --version
 
 install_buildx_plugin
+install_compose_plugin
 if docker buildx version >/dev/null 2>&1; then
   docker buildx version
 else
