@@ -18,8 +18,8 @@ sbom/
 .env.*
 !.env.example
 !**/.env.example
-!.env.production
-!**/.env.production
+!.env.production.example
+!**/.env.production.example
 
 # Logs
 logs/
