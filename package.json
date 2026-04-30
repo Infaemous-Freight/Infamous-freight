@@ -47,9 +47,11 @@
     "setup:clis": "bash scripts/install-required-clis.sh",
     "smoke:api:health": "bash scripts/smoke-api-health.sh",
     "snapshot:prod": "bash scripts/production-snapshot.sh",
-    "setup:deps-docker": "bash scripts/bootstrap-deps-docker.sh"
+    "setup:deps-docker": "bash scripts/bootstrap-deps-docker.sh",
+    "social-preview:generate": "node scripts/generate-social-preview.mjs"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "concurrently": "^9.0.0",
     "markdownlint-cli": "^0.48.0"
   },
