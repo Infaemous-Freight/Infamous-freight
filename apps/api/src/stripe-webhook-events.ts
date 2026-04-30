@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { createPrismaClient } from './prisma-client';
 
 export type StripeWebhookEventStatus = 'received' | 'processed' | 'failed' | 'ignored';
 
@@ -65,6 +66,6 @@ export function createStripeWebhookEventStore(): StripeWebhookEventStore {
     throw new Error('DATABASE_URL is required outside of test mode.');
   }
 
-  prismaClient ??= new PrismaClient();
+  prismaClient ??= createPrismaClient();
   return new PrismaStripeWebhookEventStore(prismaClient);
 }

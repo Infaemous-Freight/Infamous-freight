@@ -3,9 +3,9 @@
  * Creates sample data for first carrier onboarding
  */
 
-import { PrismaClient } from '@prisma/client';
+import { createPrismaClient } from '../src/prisma-client';
 
-const prisma = new PrismaClient();
+const prisma = createPrismaClient();
 
 async function main() {
   console.log('🌱 Seeding database...');

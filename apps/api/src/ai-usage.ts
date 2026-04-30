@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { PrismaClient } from '@prisma/client';
+import { createPrismaClient } from './prisma-client';
 
 export type AiUsageInput = {
   carrierId: string;
@@ -184,6 +185,6 @@ export function createAiUsageStore(): AiUsageStore {
     throw new Error('DATABASE_URL is required outside of test mode.');
   }
 
-  prismaClient ??= new PrismaClient();
+  prismaClient ??= createPrismaClient();
   return new PrismaAiUsageStore(prismaClient);
 }
