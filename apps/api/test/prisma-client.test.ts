@@ -26,6 +26,26 @@ describe('createPrismaClient', () => {
     );
   });
 
+  test('throws when accelerate URL is configured but extension module cannot be required', () => {
+    process.env.DATABASE_URL = 'prisma+postgres://example';
+
+    jest.doMock('@prisma/client', () => {
+      class PrismaClient {
+        $extends = jest.fn();
+      }
+      return { PrismaClient };
+    });
+
+    jest.doMock('@prisma/extension-accelerate', () => {
+      throw new Error("Cannot find module '@prisma/extension-accelerate'");
+    });
+
+    const { createPrismaClient } = require('../src/prisma-client') as typeof import('../src/prisma-client');
+
+    expect(() => createPrismaClient()).toThrow(
+      'DATABASE_URL is configured for Prisma Accelerate, but @prisma/extension-accelerate is not installed.',
+    );
+  });
   test('uses accelerate extension when accelerate URL is configured and extension exists', () => {
     process.env.DATABASE_URL = 'prisma+postgres://example';
 
