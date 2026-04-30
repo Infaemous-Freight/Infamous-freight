@@ -94,7 +94,15 @@ const AppLayout: React.FC = () => {
   if (publicPaths.some((p) => location.pathname.startsWith(p))) {
     return (
       <>
-        <Outlet />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-infamous-orange focus:px-3 focus:py-2 focus:text-white"
+        >
+          Skip to main content
+        </a>
+        <main id="main-content" tabIndex={-1}>
+          <Outlet />
+        </main>
         <Toaster position="top-right" toastOptions={{
           style: { background: '#1a1a1a', color: '#fff', border: '1px solid #333' },
         }} />
@@ -104,10 +112,16 @@ const AppLayout: React.FC = () => {
 
   return (
     <div className="flex h-screen w-screen bg-infamous-dark overflow-hidden">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-infamous-orange focus:px-3 focus:py-2 focus:text-white"
+      >
+        Skip to main content
+      </a>
       <Sidebar />
       <div className={`flex flex-col flex-1 transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
         <TopBar />
-        <main className="flex-1 overflow-y-auto p-6">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
       </div>

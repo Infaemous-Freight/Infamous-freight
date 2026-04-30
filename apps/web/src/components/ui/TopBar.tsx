@@ -2,20 +2,22 @@ import { Bell, Search, Command, CircleDot } from 'lucide-react';
 import { useAppStore } from '@/store/app-store';
 
 const TopBar: React.FC = () => {
-  const { user, sidebarOpen, notifications, unreadCount } = useAppStore();
+  const { user, sidebarOpen, unreadCount } = useAppStore();
 
   return (
-    <header className={`h-16 bg-infamous-card/80 backdrop-blur-xl border-b border-infamous-border flex items-center justify-between px-6 transition-all duration-300 ${sidebarOpen ? '' : ''}`}>
+    <header role="banner" className={`h-16 bg-infamous-card/80 backdrop-blur-xl border-b border-infamous-border flex items-center justify-between px-6 transition-all duration-300 ${sidebarOpen ? '' : ''}`}>
       {/* Search */}
-      <div className="flex items-center gap-3 flex-1 max-w-xl">
+      <div role="search" aria-label="Global" className="flex items-center gap-3 flex-1 max-w-xl">
         <div className="relative flex-1">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
+          <label htmlFor="global-search" className="sr-only">Search loads, drivers, brokers</label>
           <input
+            id="global-search"
             type="text"
             placeholder="Search loads, drivers, brokers..."
-            className="w-full bg-[#1a1a1a] border border-infamous-border rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-gray-600 focus:border-infamous-orange focus:outline-none transition-colors"
+            className="w-full bg-[#1a1a1a] border border-infamous-border rounded-xl pl-10 pr-4 py-2 text-sm text-white placeholder-gray-600 focus:border-infamous-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange transition-colors"
           />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-gray-600">
+          <div aria-hidden="true" className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 text-gray-600">
             <Command size={12} />
             <span className="text-[10px]">K</span>
           </div>
@@ -25,10 +27,10 @@ const TopBar: React.FC = () => {
       {/* Actions */}
       <div className="flex items-center gap-3">
         {/* Notifications */}
-        <button className="relative p-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-infamous-border transition-all">
+        <button aria-label={`Open notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`} className="relative p-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-infamous-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange transition-all">
           <Bell size={18} />
           {unreadCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-infamous-orange rounded-full text-[9px] font-bold text-white flex items-center justify-center">
+            <span aria-hidden="true" className="absolute top-1.5 right-1.5 w-4 h-4 bg-infamous-orange rounded-full text-[9px] font-bold text-white flex items-center justify-center">
               {unreadCount}
             </span>
           )}

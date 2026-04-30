@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { PrismaClient } from '@prisma/client';
+import { createPrismaClient } from './prisma-client';
 import { BillingSyncPayload } from './billing';
 
 type BaseRecord = {
@@ -1002,6 +1003,6 @@ export function createDataStore(): DataStore {
     throw new Error('DATABASE_URL is required outside of test mode.');
   }
 
-  prismaClient ??= new PrismaClient();
+  prismaClient ??= createPrismaClient();
   return new PrismaDataStore(prismaClient);
 }
