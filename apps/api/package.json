@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@prisma/client": "6.19.3",
+    "@prisma/extension-accelerate": "3.0.1",
     "@sentry/node": "^8.55.1",
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
