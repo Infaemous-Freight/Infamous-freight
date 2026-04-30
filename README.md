@@ -287,6 +287,7 @@ Public requests for `*.map` files are blocked (`404`). Sourcemaps are still uplo
 | Variable | Purpose | Required |
 |---|---|---|
 | `SENTRY_DSN` | Sentry DSN for the API runtime (`apps/api`) | No |
+| `SENTRY_ENABLED` | Set to `false` to disable API Sentry even when DSN is set | No |
 | `VITE_SENTRY_DSN` | Sentry DSN for the web app | No |
 | `VITE_SENTRY_ENABLED` | Set to `false` to disable even when DSN is set | No |
 | `SENTRY_AUTH_TOKEN` | CI secret for sourcemap upload | No |
@@ -354,6 +355,8 @@ Add these secrets to your GitHub repository:
 - 🔐 `VITE_API_URL` — Production API URL
 - 🔐 `VITE_STRIPE_PUBLIC_KEY` — Stripe publishable key
 - 🔐 `SENTRY_AUTH_TOKEN` — optional Sentry auth token for sourcemap upload
+- ⚙️ `SENTRY_DSN` — optional API runtime DSN (set in Fly secrets if preferred)
+- ⚙️ `SENTRY_ENABLED` — optional API runtime toggle (`true`/`false`)
 - ⚙️ `SENTRY_ORG` — optional Sentry org slug
 - ⚙️ `SENTRY_PROJECT` — optional Sentry project slug
 
@@ -370,6 +373,17 @@ Push to `main` and the pipeline deploys:
 flyctl deploy --app infamous-freight
 ```
 
+Set API runtime variables in Fly before deploying (examples):
+
+```bash
+flyctl secrets set \
+  DATABASE_URL=... \
+  STRIPE_SECRET_KEY=... \
+  STRIPE_WEBHOOK_SECRET=... \
+  SENTRY_DSN=https://<public-key>@o<org>.ingest.us.sentry.io/<project-id> \
+  SENTRY_ENABLED=true
+```
+
 #### Web (Netlify)
 
 Netlify auto-deploys from the `main` branch via its native Git integration. For manual deploys:
@@ -378,6 +392,15 @@ Netlify auto-deploys from the `main` branch via its native Git integration. For 
 npm install -g netlify-cli
 netlify deploy --prod --dir=apps/web/dist
 ```
+
+Netlify environment variables to set for web monitoring/builds:
+
+- `VITE_API_URL`
+- `VITE_SENTRY_DSN` (optional)
+- `VITE_SENTRY_ENABLED` (`true`/`false`, optional)
+- `SENTRY_AUTH_TOKEN` (optional, for sourcemap upload)
+- `SENTRY_ORG` (optional)
+- `SENTRY_PROJECT` (optional)
 
 ### Deploy verification
 

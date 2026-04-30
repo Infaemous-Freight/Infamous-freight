@@ -98,10 +98,40 @@ function requireBillingRole(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
+function isValidSentryIngestDsn(dsn: string): boolean {
+  if (!dsn || /<[^>]+>/.test(dsn)) {
+    return false;
+  }
+
+  try {
+    const parsed = new URL(dsn);
+    const hasIngestHost = /\.ingest(?:\.[a-z0-9-]+)?\.sentry\.io$/i.test(parsed.hostname);
+    const hasPublicKey = parsed.username.length > 0;
+    const hasProjectId = /^\/[0-9]+$/.test(parsed.pathname);
+
+    return hasIngestHost && hasPublicKey && hasProjectId;
+  } catch {
+    return false;
+  }
+}
+
 function initializeSentry() {
-  const dsn = process.env.SENTRY_DSN;
+  if (process.env.SENTRY_ENABLED === 'false') {
+    return;
+  }
+
+  const dsn = process.env.SENTRY_DSN ?? '';
 
   if (!dsn) {
+    return;
+  }
+
+  if (!isValidSentryIngestDsn(dsn)) {
+    console.warn('Sentry is disabled because SENTRY_DSN is not a valid ingest DSN URL.');
+    return;
+  }
+
+  if (Sentry.getClient()) {
     return;
   }
 
@@ -110,6 +140,7 @@ function initializeSentry() {
     environment: process.env.NODE_ENV ?? 'development',
     tracesSampleRate: 0,
   });
+
 }
 
 function getAllowedCorsOrigins(): string[] {

@@ -25,6 +25,7 @@
 | LOADBOARD_API_KEY | Yes | Alternate/general loadboard API key. |
 | SAMSARA_API_TOKEN | Yes | Samsara API token. |
 | SENTRY_DSN | Optional | Backend Sentry DSN. |
+| SENTRY_ENABLED | Optional | Set to `false` to disable backend Sentry initialization. Defaults to enabled when DSN is valid. |
 | RATE_LIMIT_ENABLED | Yes | Enables API rate limiting (`true`/`false`). |
 
 ## Frontend (apps/web)
@@ -68,13 +69,14 @@ DAT_API_KEY=YOUR_KEY
 TRUCKSTOP_API_KEY=YOUR_KEY
 LOADBOARD_API_KEY=YOUR_KEY
 SAMSARA_API_TOKEN=YOUR_TOKEN
-SENTRY_DSN=https://YOUR_KEY@sentry.io/ID
+SENTRY_DSN=https://<public-key>@o<org>.ingest.us.sentry.io/<project-id>
+SENTRY_ENABLED=true
 RATE_LIMIT_ENABLED=true
 VITE_API_URL=https://api.infamousfreight.com
 VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
 VITE_SUPABASE_ANON_KEY=YOUR_ANON_KEY
-VITE_SENTRY_DSN=https://YOUR_KEY@sentry.io/ID
+VITE_SENTRY_DSN=https://<public-key>@o<org>.ingest.us.sentry.io/<project-id>
 ```
 
 ## Verification commands
