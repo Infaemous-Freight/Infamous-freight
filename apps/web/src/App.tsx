@@ -1,36 +1,47 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 import AppLayout from '@/layouts/AppLayout';
-import DashboardPage from '@/pages/DashboardPage';
-import LoadsPage from '@/pages/LoadsPage';
-import DispatchBoardPage from '@/pages/DispatchBoardPage';
-import DriversPage from '@/pages/DriversPage';
-import InvoicesPage from '@/pages/InvoicesPage';
-import CompliancePage from '@/pages/CompliancePage';
-import SettingsPage from '@/pages/SettingsPage';
-import RateComparisonTool from '@/components/RateComparisonTool';
-import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
-import MetricsDashboard from '@/pages/MetricsDashboard';
-import CaseStudies from '@/pages/CaseStudies';
-import ProductHunt from '@/pages/ProductHunt';
-import GDPR from '@/pages/GDPR';
-import LaunchValidationPage from '@/pages/LaunchValidationPage';
-import { PayPerLoadPricing } from '@/components/PayPerLoadPricing';
-import { ReferralProgram } from '@/components/ReferralProgram';
-import LoginPage from '@/pages/LoginPage';
-import CarriersPage from '@/pages/CarriersPage';
-import AccountingDashboardPage from '@/pages/AccountingDashboardPage';
-import QuoteRequestsPage from '@/pages/QuoteRequestsPage';
-import LandingPage from '@/pages/LandingPage';
-import PublicQuoteRequestPage from '@/pages/PublicQuoteRequestPage';
-import ShipmentTrackingPage from '@/pages/ShipmentTrackingPage';
-import CustomerPortalPage from '@/pages/CustomerPortalPage';
-import CarrierPortalPage from '@/pages/CarrierPortalPage';
-import FreightAssistantPage from '@/pages/FreightAssistantPage';
+
+const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
+const LoadsPage = lazy(() => import('@/pages/LoadsPage'));
+const DispatchBoardPage = lazy(() => import('@/pages/DispatchBoardPage'));
+const DriversPage = lazy(() => import('@/pages/DriversPage'));
+const InvoicesPage = lazy(() => import('@/pages/InvoicesPage'));
+const CompliancePage = lazy(() => import('@/pages/CompliancePage'));
+const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
+const RateComparisonTool = lazy(() => import('@/components/RateComparisonTool'));
+const OnboardingWizard = lazy(() => import('@/components/onboarding/OnboardingWizard'));
+const MetricsDashboard = lazy(() => import('@/pages/MetricsDashboard'));
+const CaseStudies = lazy(() => import('@/pages/CaseStudies'));
+const ProductHunt = lazy(() => import('@/pages/ProductHunt'));
+const GDPR = lazy(() => import('@/pages/GDPR'));
+const LaunchValidationPage = lazy(() => import('@/pages/LaunchValidationPage'));
+const PayPerLoadPricing = lazy(() =>
+  import('@/components/PayPerLoadPricing').then((m) => ({ default: m.PayPerLoadPricing }))
+);
+const ReferralProgram = lazy(() =>
+  import('@/components/ReferralProgram').then((m) => ({ default: m.ReferralProgram }))
+);
+const LoginPage = lazy(() => import('@/pages/LoginPage'));
+const CarriersPage = lazy(() => import('@/pages/CarriersPage'));
+const AccountingDashboardPage = lazy(() => import('@/pages/AccountingDashboardPage'));
+const QuoteRequestsPage = lazy(() => import('@/pages/QuoteRequestsPage'));
+const LandingPage = lazy(() => import('@/pages/LandingPage'));
+const PublicQuoteRequestPage = lazy(() => import('@/pages/PublicQuoteRequestPage'));
+const ShipmentTrackingPage = lazy(() => import('@/pages/ShipmentTrackingPage'));
+const CustomerPortalPage = lazy(() => import('@/pages/CustomerPortalPage'));
+const CarrierPortalPage = lazy(() => import('@/pages/CarrierPortalPage'));
+const FreightAssistantPage = lazy(() => import('@/pages/FreightAssistantPage'));
+
+const RouteFallback = () => (
+  <div className="h-full w-full flex items-center justify-center p-6">
+    <div className="w-8 h-8 border-2 border-infamous-orange border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 function App() {
   return (
-    <>
+    <Suspense fallback={<RouteFallback />}>
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
@@ -54,7 +65,7 @@ function App() {
           <Route path="/quotes" element={<QuoteRequestsPage />} />
         </Route>
 
-        {/* Public routes (no layout) */}
+        {/* Public routes (no layout) — see src/lib/routes.ts */}
         <Route path="/home" element={<LandingPage />} />
         <Route path="/request-quote" element={<PublicQuoteRequestPage />} />
         <Route path="/track-shipment" element={<ShipmentTrackingPage />} />
@@ -64,8 +75,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/onboarding" element={<OnboardingWizard />} />
       </Routes>
-      <SpeedInsights />
-    </>
+    </Suspense>
   );
 }
 

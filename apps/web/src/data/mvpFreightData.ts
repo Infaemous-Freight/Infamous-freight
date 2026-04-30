@@ -1,4 +1,9 @@
-export const demoShipments = [
+// Seed/demo data shipped to clients. Production builds set
+// VITE_ENABLE_DEMO_DATA=false to drop these arrays from the bundle.
+// Consumers should fall back to live API responses when the flag is off.
+const demoEnabled = import.meta.env.VITE_ENABLE_DEMO_DATA !== 'false';
+
+const _demoShipments = [
   {
     trackingNumber: 'IF-20491',
     customer: 'Summit Retail Group',
@@ -46,7 +51,7 @@ export const demoShipments = [
   },
 ];
 
-export const demoQuotes = [
+const _demoQuotes = [
   {
     id: 'QR-1182',
     shipper: 'Summit Retail Group',
@@ -79,7 +84,7 @@ export const demoQuotes = [
   },
 ];
 
-export const demoCarrierLoads = [
+const _demoCarrierLoads = [
   {
     id: 'AVL-3021',
     lane: 'Memphis, TN → Indianapolis, IN',
@@ -108,3 +113,7 @@ export const demoCarrierLoads = [
     miles: '690 mi',
   },
 ];
+
+export const demoShipments = demoEnabled ? _demoShipments : [];
+export const demoQuotes = demoEnabled ? _demoQuotes : [];
+export const demoCarrierLoads = demoEnabled ? _demoCarrierLoads : [];

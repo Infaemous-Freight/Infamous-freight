@@ -39,13 +39,19 @@ const LoginPage: React.FC = () => {
         return;
       }
 
+      const carrierId = authUser.user_metadata?.carrierId;
+      if (!carrierId) {
+        toast.error('Account is missing a carrier assignment. Contact support.');
+        return;
+      }
+
       localStorage.setItem('infamous_token', authSession.access_token);
       setUser({
         id: authUser.id,
         email: authUser.email ?? email,
         name: authUser.user_metadata?.full_name ?? authUser.email?.split('@')[0] ?? 'User',
-        role: authUser.user_metadata?.role ?? 'owner',
-        carrierId: authUser.user_metadata?.carrierId ?? 'carrier_default',
+        role: authUser.user_metadata?.role ?? 'driver',
+        carrierId,
       });
 
       toast.success(isRegister ? 'Account created!' : 'Welcome back!');
@@ -86,6 +92,10 @@ const LoginPage: React.FC = () => {
                 placeholder="dispatch@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                inputMode="email"
+                autoComplete="email"
+                autoCapitalize="none"
+                spellCheck={false}
                 required
               />
             </div>
@@ -113,6 +123,7 @@ const LoginPage: React.FC = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  autoComplete={isRegister ? 'new-password' : 'current-password'}
                   required
                 />
                 <button
