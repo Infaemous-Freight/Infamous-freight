@@ -6,7 +6,7 @@ function buildJestArgs(rawArgs) {
 
   // Default to in-band execution for CI/local stability, while still allowing explicit override flags.
   const hasExplicitRunInBandSetting = filteredArgs.some((arg) =>
-    ['-i', '--runInBand', '--runInBand=true', '--runInBand=false'].includes(arg)
+    arg === '-i' || /^--runInBand(?:=(?:true|false))?$/i.test(arg)
   );
 
   return hasExplicitRunInBandSetting ? filteredArgs : ['--runInBand', ...filteredArgs];
