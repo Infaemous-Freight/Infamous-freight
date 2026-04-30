@@ -555,3 +555,14 @@ Examples:
 ## 📄 License
 
 Copyright 2025 Infamous Freight. All rights reserved.
+
+
+## Operations Shortcuts
+
+Use these root-level scripts for consistent local/CI operations:
+
+- `pnpm run setup:deps-docker` — install workspace dependencies, run Prisma client generation, and validate Docker CLI availability.
+- `pnpm run setup:clis` — install required deployment CLIs (`flyctl`, `supabase`, `stripe`) into `.tools/bin`.
+- `pnpm run smoke:api:health` — boot the compiled API on `PORT` (default `3000`) and verify `/health`.
+- `pnpm run snapshot:prod` — run production-readiness snapshot checks (Prisma generate, build, tests, smoke health, optional Docker build).
+

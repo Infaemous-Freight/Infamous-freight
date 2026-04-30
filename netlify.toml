@@ -12,7 +12,7 @@
   # Skip the UI-installed @netlify/plugin-nextjs — this is a Vite app, not Next.js.
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
   # Keep Netlify builds green when Sentry auth token is missing/stale.
-  SENTRY_DISABLE_UPLOAD = "1"
+  SENTRY_DISABLE_UPLOAD = "true"
 
 # Canonical host: redirect every alternate hostname to https://www.infamousfreight.com
 [[redirects]]
@@ -90,5 +90,3 @@
 # enabled but SENTRY_AUTH_TOKEN is missing or stale (401 on release creation).
 [[plugins]]
   package = "@sentry/netlify-build-plugin"
-  [plugins.inputs]
-    disable = true
