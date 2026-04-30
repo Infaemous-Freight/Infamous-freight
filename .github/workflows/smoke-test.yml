@@ -4,12 +4,16 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows:
-      - Deploy Fly API
+      - CI/CD — Infamous Freight
     types:
       - completed
 
 permissions:
   contents: read
+
+concurrency:
+  group: smoke-test-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   smoke-test:
