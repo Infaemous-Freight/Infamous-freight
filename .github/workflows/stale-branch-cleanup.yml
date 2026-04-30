@@ -12,6 +12,7 @@ permissions:
   pull-requests: read
 
 env:
+  # Cleanup trigger: 2026-04-30T00:00:00Z
   # Delete only automation-generated branches. Keep product/human branches such as
   # main, develop, feat/*, fix/*, docs/*, chore/*, billing/*, update-toolchain, etc.
   STALE_BRANCH_REGEX: '^(codex/|copilot/|agent-|claude/|coderabbitai/|github-advanced-security/|conflict_)'
