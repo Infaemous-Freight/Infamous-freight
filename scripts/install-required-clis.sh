@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TOOLS_DIR="${PWD}/.tools/bin"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+TOOLS_DIR="${REPO_ROOT}/.tools/bin"
 mkdir -p "${TOOLS_DIR}"
 
 install_flyctl() {
@@ -9,7 +11,7 @@ install_flyctl() {
     echo "flyctl already installed"
     return
   fi
-  curl -fsSL https://fly.io/install.sh | FLYCTL_INSTALL="${PWD}/.tools" sh
+  curl -fsSL https://fly.io/install.sh | FLYCTL_INSTALL="${REPO_ROOT}/.tools" sh
 }
 
 install_supabase() {
@@ -57,3 +59,5 @@ install_stripe
 
 echo "Required CLIs are available in ${TOOLS_DIR}."
 echo "Add to PATH: export PATH=\"${TOOLS_DIR}:\$PATH\""
+
+bash "${SCRIPT_DIR}/verify-required-clis.sh"

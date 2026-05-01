@@ -148,6 +148,20 @@ Maintainers must upload the resulting PNG via **Settings → General → Social 
 
 ## ⚡ Quick Start
 
+### 0️⃣ Install Infamous Freight tools
+
+```bash
+pnpm run tools:install
+```
+
+This installs required local CLIs used by deployment, validation, and operational scripts.
+
+```bash
+pnpm run tools:verify
+```
+
+Use this to confirm `flyctl`, `supabase`, and `stripe` CLIs are available before running deployment flows.
+
 ### 1️⃣ Install dependencies + bootstrap environment files
 
 ```bash

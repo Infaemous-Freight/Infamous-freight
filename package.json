@@ -45,7 +45,9 @@
     "smoke:api:health": "bash scripts/smoke-api-health.sh",
     "snapshot:prod": "bash scripts/production-snapshot.sh",
     "setup:deps-docker": "bash scripts/bootstrap-deps-docker.sh",
-    "social-preview:generate": "node scripts/generate-social-preview.mjs"
+    "social-preview:generate": "node scripts/generate-social-preview.mjs",
+    "tools:install": "bash scripts/install-required-clis.sh",
+    "tools:verify": "bash scripts/verify-required-clis.sh"
   },
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",
