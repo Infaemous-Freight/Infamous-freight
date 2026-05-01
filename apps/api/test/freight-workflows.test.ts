@@ -4,6 +4,7 @@ import { createApp } from '../src/app';
 const headers = {
   'x-tenant-id': 'carrier_phase4',
   'x-user-role': 'dispatcher',
+  'x-subscription-status': 'active',
 };
 
 const loadPayload = {

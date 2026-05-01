@@ -4,6 +4,7 @@ import { createApp } from '../src/app';
 const headers = {
   'x-tenant-id': 'carrier_123',
   'x-user-role': 'dispatcher',
+  'x-subscription-status': 'active',
 };
 
 describe('freight operations API', () => {

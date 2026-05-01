@@ -62,7 +62,8 @@ describe('tenant-protected resource routes', () => {
   it('rejects /api/loads without tenant id', async () => {
     const response = await request(createApp())
       .get('/api/loads')
-      .set('x-user-role', 'dispatcher');
+      .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active');
 
     expect(response.status).toBe(400);
     expect(response.body.error).toBe('tenant_id_required');
@@ -100,6 +101,7 @@ describe('tenant-protected resource routes', () => {
       .post('/api/shipments')
       .set('x-tenant-id', 'tenant-1')
       .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active')
       .send(shipmentForTenant1);
 
     expect(createForT1.status).toBe(201);
@@ -109,6 +111,7 @@ describe('tenant-protected resource routes', () => {
       .post('/api/shipments')
       .set('x-tenant-id', 'tenant-2')
       .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active')
       .send(shipmentForTenant2);
 
     expect(createForT2.status).toBe(201);
@@ -116,7 +119,8 @@ describe('tenant-protected resource routes', () => {
     const listT1 = await request(app)
       .get('/api/shipments')
       .set('x-tenant-id', 'tenant-1')
-      .set('x-user-role', 'dispatcher');
+      .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active');
 
     expect(listT1.status).toBe(200);
     expect(listT1.body.count).toBe(1);

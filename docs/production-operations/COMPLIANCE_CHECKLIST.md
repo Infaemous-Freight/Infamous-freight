@@ -111,8 +111,8 @@ The compliance owner is responsible for confirming, maintaining, and updating al
 
 If any regulatory requirement changes (new bond minimum, new filing process, authority lapse, or bond cancellation):
 
-1. Update this checklist immediately.
-2. Update `PRODUCTION_READINESS_EVIDENCE.md` with new status.
-3. Update `LAUNCH_CHECKLIST.md` if the change affects launch gate criteria.
-4. Notify the compliance owner and document the change with a date.
-5. Do not resume brokerage activity until the updated requirement is re-validated.
+- [ ] Update this checklist immediately.
+- [ ] Update `PRODUCTION_READINESS_EVIDENCE.md` with new status.
+- [ ] Update `LAUNCH_CHECKLIST.md` if the change affects launch gate criteria.
+- [ ] Notify the compliance owner and document the change with a date.
+- [ ] Do not resume brokerage activity until the updated requirement is re-validated.

@@ -6,6 +6,7 @@ describe('MVP quote-to-load workflow', () => {
   const headers = {
     'x-tenant-id': tenantId,
     'x-user-role': 'dispatcher',
+    'x-subscription-status': 'active',
   };
 
   beforeAll(() => {
