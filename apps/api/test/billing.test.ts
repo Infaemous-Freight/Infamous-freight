@@ -57,6 +57,7 @@ describe('Stripe billing endpoints', () => {
       .get('/api/billing/status')
       .set('x-tenant-id', 'carrier_billing_123')
       .set('x-user-role', 'owner')
+      .set('x-subscription-status', 'active')
       .expect(200);
 
     expect(statusResponse.body.data).toMatchObject({
@@ -68,6 +69,7 @@ describe('Stripe billing endpoints', () => {
       .post('/api/billing/customer-portal')
       .set('x-tenant-id', 'carrier_billing_123')
       .set('x-user-role', 'owner')
+      .set('x-subscription-status', 'active')
       .send({})
       .expect(500);
 
@@ -101,6 +103,7 @@ describe('Stripe billing endpoints', () => {
       .post('/api/billing/checkout-session')
       .set('x-tenant-id', 'carrier_duplicate_guard')
       .set('x-user-role', 'owner')
+      .set('x-subscription-status', 'active')
       .send({ plan: 'professional', billingInterval: 'month' })
       .expect(409);
 
@@ -114,6 +117,7 @@ describe('Stripe billing endpoints', () => {
       .post('/api/billing/customer-portal')
       .set('x-tenant-id', 'carrier_billing_123')
       .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active')
       .send({})
       .expect(403);
 
@@ -123,6 +127,7 @@ describe('Stripe billing endpoints', () => {
       .post('/api/billing/checkout-session')
       .set('x-tenant-id', 'carrier_billing_123')
       .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active')
       .send({ plan: 'professional', billingInterval: 'month' })
       .expect(403);
 
@@ -136,6 +141,7 @@ describe('Stripe billing endpoints', () => {
       .post('/api/billing/checkout-session')
       .set('x-tenant-id', 'carrier_billing_123')
       .set('x-user-role', 'owner')
+      .set('x-subscription-status', 'active')
       .send({ plan: 'free', billingInterval: 'month' })
       .expect(400);
 
@@ -145,6 +151,7 @@ describe('Stripe billing endpoints', () => {
       .post('/api/billing/checkout-session')
       .set('x-tenant-id', 'carrier_billing_123')
       .set('x-user-role', 'owner')
+      .set('x-subscription-status', 'active')
       .send({ plan: 'professional', billingInterval: 'weekly' })
       .expect(400);
 
@@ -158,6 +165,7 @@ describe('Stripe billing endpoints', () => {
       .post('/api/billing/customer-portal')
       .set('x-tenant-id', 'carrier_without_customer')
       .set('x-user-role', 'admin')
+      .set('x-subscription-status', 'active')
       .send({})
       .expect(404);
 
@@ -171,6 +179,7 @@ describe('Stripe billing endpoints', () => {
       .post('/api/ai-usage/events')
       .set('x-tenant-id', 'carrier_ai_123')
       .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active')
       .send({
         feature: 'dispatch-assistant',
         actionCount: 2,
@@ -186,6 +195,7 @@ describe('Stripe billing endpoints', () => {
       .post('/api/ai-usage/events')
       .set('x-tenant-id', 'carrier_ai_123')
       .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active')
       .send({
         feature: 'dispatch-assistant',
         actionCount: 2,
@@ -201,6 +211,7 @@ describe('Stripe billing endpoints', () => {
       .get('/api/ai-usage/summary')
       .set('x-tenant-id', 'carrier_ai_123')
       .set('x-user-role', 'owner')
+      .set('x-subscription-status', 'active')
       .expect(200);
 
     expect(summary.body.data).toMatchObject({
@@ -220,6 +231,7 @@ describe('Stripe billing endpoints', () => {
       .post('/api/ai-usage/events')
       .set('x-tenant-id', 'carrier_ai_123')
       .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active')
       .send({ actionCount: 1 })
       .expect(400);
 

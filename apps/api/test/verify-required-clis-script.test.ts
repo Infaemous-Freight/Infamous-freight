@@ -15,10 +15,10 @@ describe('verify-required-clis.sh', () => {
     fs.copyFileSync(sourceScript, scriptPath);
     fs.chmodSync(scriptPath, 0o755);
 
-    const result = spawnSync('bash', [scriptPath], {
+    const result = spawnSync('/usr/bin/bash', [scriptPath], {
       cwd: tmp,
       encoding: 'utf8',
-      env: { ...process.env, PATH: '/usr/bin:/bin' },
+      env: { ...process.env, PATH: '/bin' },
     });
 
     expect(result.status).toBe(1);
@@ -34,7 +34,7 @@ describe('verify-required-clis.sh', () => {
     fs.mkdirSync(toolsDir, { recursive: true });
     fs.mkdirSync(scriptDir, { recursive: true });
 
-    for (const tool of ['flyctl', 'supabase', 'stripe']) {
+    for (const tool of ['flyctl', 'supabase', 'stripe', 'docker']) {
       const toolPath = path.join(toolsDir, tool);
       fs.writeFileSync(toolPath, '#!/usr/bin/env bash\nexit 0\n');
       fs.chmodSync(toolPath, 0o755);
@@ -44,7 +44,7 @@ describe('verify-required-clis.sh', () => {
     fs.copyFileSync(sourceScript, scriptPath);
     fs.chmodSync(scriptPath, 0o755);
 
-    const result = spawnSync('bash', [scriptPath], {
+    const result = spawnSync('/usr/bin/bash', [scriptPath], {
       cwd: tmp,
       encoding: 'utf8',
       env: { ...process.env, PATH: '/usr/bin:/bin' },
