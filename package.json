@@ -17,7 +17,7 @@
     "build:web": "pnpm -C apps/web run build",
     "start": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run start:prod",
     "lint": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run lint && pnpm -C apps/web run lint",
-    "test": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run test --",
+    "test": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run test",
     "test:coverage": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run test:coverage",
     "prisma:generate": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run prisma:generate",
     "prisma:migrate": "node scripts/ensure-api-workspace.js && pnpm -C apps/api exec prisma migrate dev --schema prisma/schema.prisma",
@@ -67,5 +67,14 @@
   "engines": {
     "node": ">=22.0.0 <23.0.0",
     "pnpm": ">=10.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "@sentry/cli",
+      "esbuild",
+      "prisma"
+    ]
   }
 }

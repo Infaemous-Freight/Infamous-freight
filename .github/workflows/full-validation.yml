@@ -43,7 +43,7 @@ jobs:
         run: pnpm run build
 
       - name: Test
-        run: pnpm run test -- --runInBand
+        run: pnpm -C apps/api run test
 
       - name: Write validation summary
         if: always()
@@ -55,7 +55,7 @@ jobs:
             echo "- pnpm install --frozen-lockfile"
             echo "- pnpm run lint"
             echo "- pnpm run build"
-            echo "- pnpm run test -- --runInBand"
+            echo "- pnpm -C apps/api run test"
             echo ""
             echo "Ref: ${{ github.ref }}"
             echo "SHA: ${{ github.sha }}"
