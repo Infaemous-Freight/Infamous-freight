@@ -33,6 +33,12 @@ echo "==> Generating Prisma client"
 run_workspace_script "$PACKAGE_MANAGER" prisma:generate
 record_pass "Prisma client generation"
 
+if [ "$PACKAGE_MANAGER" = "pnpm" ]; then
+  echo "==> Verifying root-level Prisma generate command"
+  pnpm -w prisma generate
+  record_pass "Root-level pnpm workspace Prisma generation"
+fi
+
 echo "==> Running API tests"
 run_workspace_script "$PACKAGE_MANAGER" test
 record_pass "API tests"

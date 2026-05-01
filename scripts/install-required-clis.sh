@@ -31,6 +31,15 @@ install_supabase() {
   rm -f "$tmp"
 }
 
+
+install_docker_cli() {
+  if command -v docker >/dev/null 2>&1 || [[ -x "${TOOLS_DIR}/docker" ]]; then
+    echo "docker already installed"
+    return
+  fi
+  bash "${SCRIPT_DIR}/bootstrap-docker-cli.sh"
+}
+
 install_stripe() {
   if command -v stripe >/dev/null 2>&1 || [[ -x "${TOOLS_DIR}/stripe" ]]; then
     echo "stripe already installed"
@@ -56,6 +65,7 @@ install_stripe() {
 install_flyctl
 install_supabase
 install_stripe
+install_docker_cli
 
 echo "Required CLIs are available in ${TOOLS_DIR}."
 echo "Add to PATH: export PATH=\"${TOOLS_DIR}:\$PATH\""

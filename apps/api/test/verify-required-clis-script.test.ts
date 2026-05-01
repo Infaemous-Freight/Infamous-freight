@@ -25,6 +25,7 @@ describe('verify-required-clis.sh', () => {
     expect(result.stderr).toContain('flyctl missing');
     expect(result.stderr).toContain('supabase missing');
     expect(result.stderr).toContain('stripe missing');
+    expect(result.stderr).toContain('docker missing');
   });
 
   it('passes when required CLIs exist in .tools/bin', () => {
@@ -34,7 +35,7 @@ describe('verify-required-clis.sh', () => {
     fs.mkdirSync(toolsDir, { recursive: true });
     fs.mkdirSync(scriptDir, { recursive: true });
 
-    for (const tool of ['flyctl', 'supabase', 'stripe']) {
+    for (const tool of ['flyctl', 'supabase', 'stripe', 'docker']) {
       const toolPath = path.join(toolsDir, tool);
       fs.writeFileSync(toolPath, '#!/usr/bin/env bash\nexit 0\n');
       fs.chmodSync(toolPath, 0o755);

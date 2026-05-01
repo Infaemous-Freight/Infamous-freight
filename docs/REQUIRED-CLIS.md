@@ -5,6 +5,7 @@ Infamous Freight deployment, validation, and operations scripts expect these CLI
 - `flyctl`
 - `supabase`
 - `stripe`
+- `docker` (CLI only; daemon required for local image builds)
 
 ## Install
 
@@ -58,4 +59,20 @@ If any tool is missing, rerun:
 
 ```bash
 pnpm run tools:install
+```
+
+
+### Docker CLI bootstrap
+
+If `docker` is missing in constrained environments, install a local CLI binary into `.tools/bin`:
+
+```bash
+bash scripts/bootstrap-docker-cli.sh
+```
+
+Then re-run:
+
+```bash
+export PATH=".tools/bin:$PATH"
+docker --version
 ```

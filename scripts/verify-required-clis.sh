@@ -19,6 +19,7 @@ check_cli() {
 check_cli flyctl
 check_cli supabase
 check_cli stripe
+check_cli docker
 
 if [[ "$missing" -ne 0 ]]; then
   exit 1
