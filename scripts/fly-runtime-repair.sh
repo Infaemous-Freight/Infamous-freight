@@ -16,8 +16,13 @@ require_cmd() {
 require_cmd flyctl
 require_cmd curl
 
+if [[ -z "${FLY_API_TOKEN:-}" ]]; then
+  echo "Error: FLY_API_TOKEN is not set. Add it to GitHub Secrets or export it locally." >&2
+  exit 1
+fi
+
 echo "==> Checking Fly authentication"
-flyctl auth whoami >/dev/null
+flyctl auth whoami
 
 echo "==> Current Fly app status"
 flyctl status -a "$APP_NAME" || true
@@ -27,26 +32,32 @@ flyctl secrets list -a "$APP_NAME" || true
 
 if [[ -n "$POSTGRES_APP_NAME" ]]; then
   echo "==> Attaching Postgres app '$POSTGRES_APP_NAME' to '$APP_NAME'"
-  flyctl postgres attach "$POSTGRES_APP_NAME" -a "$APP_NAME"
+  # postgres attach is idempotent enough for this repair flow; if DATABASE_URL
+  # already exists, continue so CORS/scale/restart/health verification still run.
+  flyctl postgres attach "$POSTGRES_APP_NAME" -a "$APP_NAME" --yes || true
 else
   echo "==> POSTGRES_APP_NAME not set; skipping postgres attach."
   echo "    To attach Postgres, run: POSTGRES_APP_NAME=<postgres-app> bash scripts/fly-runtime-repair.sh"
 fi
 
 echo "==> Setting non-sensitive runtime CORS secret"
-flyctl secrets set "CORS_ORIGINS=$CORS_ORIGINS" -a "$APP_NAME"
+flyctl secrets set "CORS_ORIGINS=$CORS_ORIGINS" -a "$APP_NAME" --stage || flyctl secrets set "CORS_ORIGINS=$CORS_ORIGINS" -a "$APP_NAME"
 
-echo "==> Deploying secrets"
-flyctl secrets deploy -a "$APP_NAME" || true
+echo "==> Deploying app with current config so staged secrets and scale settings apply"
+flyctl deploy -a "$APP_NAME" --config fly.toml --remote-only
 
 echo "==> Ensuring one warm machine in $PRIMARY_REGION"
-flyctl scale count 1 --region "$PRIMARY_REGION" -a "$APP_NAME"
+flyctl scale count 1 --region "$PRIMARY_REGION" -a "$APP_NAME" --yes || flyctl scale count 1 --region "$PRIMARY_REGION" -a "$APP_NAME"
 
-echo "==> Restarting app machines"
-flyctl machine restart -a "$APP_NAME" || true
+echo "==> Starting stopped machines, if any"
+mapfile -t machine_ids < <(flyctl machine list -a "$APP_NAME" --json | node -e "let data=''; process.stdin.on('data', c => data += c); process.stdin.on('end', () => { try { for (const m of JSON.parse(data)) console.log(m.id); } catch (_) {} });")
+for machine_id in "${machine_ids[@]:-}"; do
+  [[ -z "$machine_id" ]] && continue
+  flyctl machine start "$machine_id" -a "$APP_NAME" || true
+done
 
 echo "==> Waiting for API health"
-for attempt in {1..20}; do
+for attempt in {1..30}; do
   if curl --fail --silent --show-error "https://$APP_NAME.fly.dev/api/health" >/tmp/fly-health.json; then
     echo "Health check passed:"
     cat /tmp/fly-health.json
@@ -54,7 +65,7 @@ for attempt in {1..20}; do
     break
   fi
 
-  if [[ "$attempt" == "20" ]]; then
+  if [[ "$attempt" == "30" ]]; then
     echo "Health check did not pass after $attempt attempts." >&2
     echo "==> Current checks"
     flyctl checks list -a "$APP_NAME" || true
@@ -63,9 +74,12 @@ for attempt in {1..20}; do
     exit 1
   fi
 
-  echo "Health not ready yet; retrying ($attempt/20)..."
+  echo "Health not ready yet; retrying ($attempt/30)..."
   sleep 10
 done
+
+echo "==> Final secrets"
+flyctl secrets list -a "$APP_NAME" || true
 
 echo "==> Final checks"
 flyctl status -a "$APP_NAME" || true
