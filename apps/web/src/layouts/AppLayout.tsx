@@ -3,12 +3,17 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store/app-store';
 import { getSupabase } from '@/hooks/useSupabase';
 import { isPublicPath } from '@/lib/routes';
+import {
+  isBillingAllowedPath,
+  isPaidSubscription,
+  normalizeSubscriptionStatus,
+} from '@/lib/paywall';
 import Sidebar from '@/components/ui/Sidebar';
 import TopBar from '@/components/ui/TopBar';
 import { Toaster } from 'react-hot-toast';
 
 const AppLayout: React.FC = () => {
-  const { sidebarOpen, isLoading, setUser, setLoading, logout } = useAppStore();
+  const { sidebarOpen, isLoading, user, setUser, setLoading, logout } = useAppStore();
   const location = useLocation();
   const navigate = useNavigate();
   const [isOffline, setIsOffline] = useState(
@@ -60,6 +65,15 @@ const AppLayout: React.FC = () => {
         return;
       }
 
+      const subscriptionStatus = normalizeSubscriptionStatus(
+        session.user.app_metadata?.subscription_status ??
+          session.user.user_metadata?.subscriptionStatus ??
+          session.user.user_metadata?.subscription_status ??
+          session.user.user_metadata?.billingStatus ??
+          session.user.user_metadata?.billing_status ??
+          'none'
+      );
+
       localStorage.setItem('infamous_token', session.access_token);
       setUser({
         id: session.user.id,
@@ -68,6 +82,7 @@ const AppLayout: React.FC = () => {
         // Default to least-privilege role; elevate via verified user_metadata only.
         role: session.user.user_metadata?.role ?? 'driver',
         carrierId,
+        subscriptionStatus,
       });
       setLoading(false);
     };
@@ -80,6 +95,16 @@ const AppLayout: React.FC = () => {
 
     return () => subscription.unsubscribe();
   }, [location.pathname, navigate, setLoading, setUser, logout]);
+
+  useEffect(() => {
+    if (isLoading || isPublicPath(location.pathname) || isBillingAllowedPath(location.pathname)) {
+      return;
+    }
+
+    if (user && !isPaidSubscription(user.subscriptionStatus)) {
+      navigate('/billing', { replace: true, state: { from: location.pathname } });
+    }
+  }, [isLoading, location.pathname, navigate, user]);
 
   if (isLoading) {
     return (
