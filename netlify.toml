@@ -7,7 +7,7 @@
   command = "npm run build"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
   NPM_FLAGS = "--legacy-peer-deps"
   # Skip the UI-installed @netlify/plugin-nextjs — this is a Vite app, not Next.js.
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
@@ -85,4 +85,3 @@
 # UI-configured installation that was missing the manifest.
 [[plugins]]
   package = "@netlify/plugin-sitemap"
-
