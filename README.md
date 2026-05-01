@@ -506,6 +506,7 @@ nginx.conf
 - [Deployment](#-deployment)
 - [`docs/INTEGRATIONS-AND-SECRETS.md`](docs/INTEGRATIONS-AND-SECRETS.md)
 - [`docs/NETLIFY-BUILDHOOKS.md`](docs/NETLIFY-BUILDHOOKS.md)
+- [`docs/REQUIRED-CLIS.md`](docs/REQUIRED-CLIS.md)
 - [`docs/SBOM-POLICY.md`](docs/SBOM-POLICY.md)
 
 ### Launch readiness
@@ -583,6 +584,7 @@ For operational ownership, deployment runbooks, integration provenance, and SBOM
 - [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md) — complete list of implemented API routes with request headers and response shapes
 - [`docs/INTEGRATIONS-AND-SECRETS.md`](docs/INTEGRATIONS-AND-SECRETS.md) — external integrations, secret ownership, deploy failure runbooks, and rotation guidance
 - [`docs/NETLIFY-BUILDHOOKS.md`](docs/NETLIFY-BUILDHOOKS.md) — provenance, integrity, and maintenance guidance for Netlify URL-hosted buildhook packages
+- [`docs/REQUIRED-CLIS.md`](docs/REQUIRED-CLIS.md) — required local CLI installation, PATH setup, and verification
 - [`docs/SBOM-POLICY.md`](docs/SBOM-POLICY.md) — runtime-vs-build SBOM policy, review cadence, classification rules, and triage standards
 
 ---
@@ -685,5 +687,9 @@ Use these root-level scripts for consistent local and CI operations:
 
 - `pnpm run setup:deps-docker` — install workspace dependencies, run Prisma client generation, and validate Docker CLI availability
 - `pnpm run setup:clis` — install required deployment CLIs (`flyctl`, `supabase`, `stripe`) into `.tools/bin`
+- `pnpm run tools:install` — alias for `pnpm run setup:clis`
+- `pnpm run tools:verify` — verify required deployment CLIs are available globally or in `.tools/bin`
 - `pnpm run smoke:api:health` — boot the compiled API on `PORT` (default `3000`) and verify `/health`
 - `pnpm run snapshot:prod` — run production-readiness snapshot checks (Prisma generate, build, tests, smoke health, optional Docker build)
+
+For PATH setup and CLI troubleshooting, see [`docs/REQUIRED-CLIS.md`](docs/REQUIRED-CLIS.md).
