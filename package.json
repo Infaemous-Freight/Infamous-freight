@@ -42,6 +42,8 @@
     "production:canonical-env": "bash scripts/production-canonical-env.sh",
     "production:smoke-test": "bash scripts/production-smoke-test.sh",
     "setup:clis": "bash scripts/install-required-clis.sh",
+    "tools:install": "pnpm run setup:clis",
+    "tools:verify": "bash scripts/verify-required-clis.sh",
     "smoke:api:health": "bash scripts/smoke-api-health.sh",
     "snapshot:prod": "bash scripts/production-snapshot.sh",
     "setup:deps-docker": "bash scripts/bootstrap-deps-docker.sh",
