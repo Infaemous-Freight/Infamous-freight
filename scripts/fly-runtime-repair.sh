@@ -4,6 +4,7 @@ set -euo pipefail
 APP_NAME="${APP_NAME:-infamous-freight}"
 PRIMARY_REGION="${PRIMARY_REGION:-dfw}"
 POSTGRES_APP_NAME="${POSTGRES_APP_NAME:-}"
+MPG_CLUSTER_ID="${MPG_CLUSTER_ID:-}"
 CORS_ORIGINS="${CORS_ORIGINS:-https://www.infamousfreight.com,https://infamousfreight.com}"
 
 require_cmd() {
@@ -34,14 +35,21 @@ flyctl secrets list -a "$APP_NAME" || true
 if [[ -n "${DATABASE_URL:-}" ]]; then
   echo "==> Staging DATABASE_URL from environment secret"
   flyctl secrets set "DATABASE_URL=$DATABASE_URL" -a "$APP_NAME" --stage || flyctl secrets set "DATABASE_URL=$DATABASE_URL" -a "$APP_NAME"
+elif [[ -n "$MPG_CLUSTER_ID" ]]; then
+  echo "==> Attaching Fly Managed Postgres cluster '$MPG_CLUSTER_ID' to '$APP_NAME'"
+  # mpg attach is idempotent enough for this repair flow; if DATABASE_URL
+  # already exists, continue so CORS/scale/restart/health verification still run.
+  flyctl mpg attach "$MPG_CLUSTER_ID" --app "$APP_NAME" || true
 elif [[ -n "$POSTGRES_APP_NAME" ]]; then
-  echo "==> Attaching Postgres app '$POSTGRES_APP_NAME' to '$APP_NAME'"
+  echo "==> Attaching legacy Postgres app '$POSTGRES_APP_NAME' to '$APP_NAME'"
   # postgres attach is idempotent enough for this repair flow; if DATABASE_URL
   # already exists, continue so CORS/scale/restart/health verification still run.
   flyctl postgres attach "$POSTGRES_APP_NAME" -a "$APP_NAME" --yes || true
 else
-  echo "==> DATABASE_URL and POSTGRES_APP_NAME not set; skipping database secret repair."
-  echo "    Preferred: add DATABASE_URL as a GitHub Secret or run:"
+  echo "==> DATABASE_URL, MPG_CLUSTER_ID, and POSTGRES_APP_NAME not set; skipping database secret repair."
+  echo "    Preferred: add DATABASE_URL as a GitHub Secret, or run with a Fly Managed Postgres cluster:"
+  echo "    MPG_CLUSTER_ID=<cluster-id> bash scripts/fly-runtime-repair.sh"
+  echo "    Legacy unmanaged Fly Postgres:"
   echo "    POSTGRES_APP_NAME=<postgres-app> bash scripts/fly-runtime-repair.sh"
 fi
 

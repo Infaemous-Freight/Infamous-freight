@@ -4,9 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       postgres_app_name:
-        description: 'Optional Fly Postgres app name to attach and create DATABASE_URL'
+        description: 'Optional legacy (unmanaged) Fly Postgres app name to attach and create DATABASE_URL'
         required: false
         default: 'infamous'
+        type: string
+      mpg_cluster_id:
+        description: 'Optional Fly Managed Postgres cluster ID to attach and create DATABASE_URL (preferred over postgres_app_name)'
+        required: false
+        default: ''
         type: string
       primary_region:
         description: 'Region to keep one warm machine running'
@@ -50,6 +55,7 @@ jobs:
           APP_NAME: infamous-freight
           PRIMARY_REGION: ${{ inputs.primary_region || 'dfw' }}
           POSTGRES_APP_NAME: ${{ inputs.postgres_app_name || 'infamous' }}
+          MPG_CLUSTER_ID: ${{ inputs.mpg_cluster_id || '' }}
           CORS_ORIGINS: ${{ inputs.cors_origins || 'https://www.infamousfreight.com,https://infamousfreight.com' }}
           REPAIR_TRIGGER: '2026-05-01T00:10:00Z'
         run: bash scripts/fly-runtime-repair.sh
