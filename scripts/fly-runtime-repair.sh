@@ -15,6 +15,7 @@ require_cmd() {
 
 require_cmd flyctl
 require_cmd curl
+require_cmd node
 
 if [[ -z "${FLY_API_TOKEN:-}" ]]; then
   echo "Error: FLY_API_TOKEN is not set. Add it to GitHub Secrets or export it locally." >&2
@@ -30,14 +31,18 @@ flyctl status -a "$APP_NAME" || true
 echo "==> Current Fly secrets"
 flyctl secrets list -a "$APP_NAME" || true
 
-if [[ -n "$POSTGRES_APP_NAME" ]]; then
+if [[ -n "${DATABASE_URL:-}" ]]; then
+  echo "==> Staging DATABASE_URL from environment secret"
+  flyctl secrets set "DATABASE_URL=$DATABASE_URL" -a "$APP_NAME" --stage || flyctl secrets set "DATABASE_URL=$DATABASE_URL" -a "$APP_NAME"
+elif [[ -n "$POSTGRES_APP_NAME" ]]; then
   echo "==> Attaching Postgres app '$POSTGRES_APP_NAME' to '$APP_NAME'"
   # postgres attach is idempotent enough for this repair flow; if DATABASE_URL
   # already exists, continue so CORS/scale/restart/health verification still run.
   flyctl postgres attach "$POSTGRES_APP_NAME" -a "$APP_NAME" --yes || true
 else
-  echo "==> POSTGRES_APP_NAME not set; skipping postgres attach."
-  echo "    To attach Postgres, run: POSTGRES_APP_NAME=<postgres-app> bash scripts/fly-runtime-repair.sh"
+  echo "==> DATABASE_URL and POSTGRES_APP_NAME not set; skipping database secret repair."
+  echo "    Preferred: add DATABASE_URL as a GitHub Secret or run:"
+  echo "    POSTGRES_APP_NAME=<postgres-app> bash scripts/fly-runtime-repair.sh"
 fi
 
 echo "==> Setting non-sensitive runtime CORS secret"
