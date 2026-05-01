@@ -32,6 +32,8 @@ const ShipmentTrackingPage = lazy(() => import('@/pages/ShipmentTrackingPage'));
 const CustomerPortalPage = lazy(() => import('@/pages/CustomerPortalPage'));
 const CarrierPortalPage = lazy(() => import('@/pages/CarrierPortalPage'));
 const FreightAssistantPage = lazy(() => import('@/pages/FreightAssistantPage'));
+const PayrollPage = lazy(() => import('@/pages/PayrollPage'));
+const PaywallPage = lazy(() => import('@/pages/PaywallPage'));
 
 const RouteFallback = () => (
   <div className="h-full w-full flex items-center justify-center p-6">
@@ -63,6 +65,8 @@ function App() {
           <Route path="/carriers" element={<CarriersPage />} />
           <Route path="/accounting" element={<AccountingDashboardPage />} />
           <Route path="/quotes" element={<QuoteRequestsPage />} />
+          <Route path="/payroll" element={<PayrollPage />} />
+          <Route path="/paywall" element={<PaywallPage />} />
         </Route>
 
         {/* Public routes (no layout) — see src/lib/routes.ts */}

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { CreditCard, ExternalLink, Loader2, ShieldCheck, Sparkles } from 'lucide-react';
 import { useAppStore } from '@/store/app-store';
+import PayPalCheckoutButton from '@/components/PayPalCheckoutButton';
 import {
   BillingInterval,
   BillingPlan,
@@ -177,6 +178,17 @@ const BillingSettingsPanel: React.FC = () => {
               {usageSummary?.actionCount ?? 0} logged
             </p>
           </div>
+        </div>
+      </div>
+
+
+      <div className="card">
+        <h3 className="text-lg font-semibold">Alternative Checkout</h3>
+        <p className="mt-1 text-sm text-gray-400">
+          Optional PayPal checkout for one-off payments while Stripe remains the primary subscription processor.
+        </p>
+        <div className="mt-4 max-w-sm">
+          <PayPalCheckoutButton amountUsd="99.00" disabled={!canManageBilling} />
         </div>
       </div>
 

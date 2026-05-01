@@ -4,7 +4,7 @@ import { canAccessLaunchValidation } from '@/lib/launchValidationAccess';
 import {
   LayoutDashboard, Truck, Radio, Users, FileText, MessageSquare,
   TrendingUp, ShieldCheck, Settings, ChevronLeft, ChevronRight,
-  Zap, LogOut, ClipboardCheck, ClipboardList, DollarSign, type LucideIcon
+  Zap, LogOut, ClipboardCheck, ClipboardList, DollarSign, Lock, Wallet, type LucideIcon
 } from 'lucide-react';
 
 type NavItem = {
@@ -23,6 +23,8 @@ const baseNavItems: NavItem[] = [
   { path: '/carriers', label: 'Carriers', icon: Users },
   { path: '/drivers', label: 'Drivers', icon: Users },
   { path: '/accounting', label: 'Accounting', icon: DollarSign },
+  { path: '/payroll', label: 'Payroll', icon: Wallet },
+  { path: '/paywall', label: 'Paywall', icon: Lock },
   { path: '/invoices', label: 'Invoices', icon: FileText },
   { path: '/chat', label: 'Messages', icon: MessageSquare, badge: '3' },
   { path: '/analytics', label: 'Analytics', icon: TrendingUp },

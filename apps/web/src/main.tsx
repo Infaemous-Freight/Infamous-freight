@@ -9,6 +9,17 @@ const sentryEnabledEnv: string = import.meta.env.VITE_SENTRY_ENABLED ?? '';
 const sentryEnvironment: string = import.meta.env.MODE;
 const isProd = import.meta.env.PROD;
 
+const adsenseClient = import.meta.env.VITE_ADSENSE_CLIENT ?? '';
+
+if (adsenseClient) {
+  const adsScript = document.createElement('script');
+  adsScript.async = true;
+  adsScript.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`;
+  adsScript.crossOrigin = 'anonymous';
+  document.head.appendChild(adsScript);
+}
+
+
 const isValidSentryDsn = (dsn: string): boolean => {
   if (!dsn || /<[^>]+>/.test(dsn)) {
     return false;

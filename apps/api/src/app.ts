@@ -1,6 +1,7 @@
 import cors from 'cors';
 import helmet from 'helmet';
 import express, { NextFunction, Request, Response } from 'express';
+import crypto from 'crypto';
 import * as Sentry from '@sentry/node';
 import {
   createDataStore,
@@ -23,6 +24,19 @@ import { createStripeWebhookEventStore } from './stripe-webhook-events';
 import { createFreightWorkflowRouter } from './freight-workflow-routes';
 
 type Role = 'owner' | 'admin' | 'dispatcher';
+type PayrollPaymentMethod = 'ach' | 'paypal' | 'check';
+
+type PayrollSettlementRecord = {
+  id: string;
+  tenantId: string;
+  driverId: string;
+  weekStart: string;
+  weekEnd: string;
+  status: 'pending' | 'approved' | 'paid';
+  netPay: number;
+  paymentMethod?: PayrollPaymentMethod;
+  paymentReference?: string;
+};
 
 const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'dispatcher'];
 const BILLING_ROLES: Role[] = ['owner', 'admin'];
@@ -237,6 +251,7 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
 
 function registerRoutes(app: express.Express, dataStore: DataStore) {
   const aiUsageStore = createAiUsageStore();
+  const payrollSettlements = new Map<string, PayrollSettlementRecord[]>();
 
   // Public lead intake endpoints — no authentication required
   app.post('/api/leads/quote', wrapAsync(async (req, res) => {
@@ -396,6 +411,50 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
   app.post('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const data = await dataStore.createShipment(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
+  }));
+
+  app.get('/api/payroll/settlements/:driverId', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const tenantId = getRequiredTenantId(req);
+    const driverId = req.params.driverId;
+    const records = payrollSettlements.get(tenantId) ?? [];
+    const settlements = records
+      .filter((record) => record.driverId === driverId)
+      .sort((a, b) => (a.weekStart < b.weekStart ? 1 : -1));
+    res.json(settlements);
+  }));
+
+  app.get('/api/payroll/earnings/:driverId', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const tenantId = getRequiredTenantId(req);
+    const driverId = req.params.driverId;
+    const records = payrollSettlements.get(tenantId) ?? [];
+    const settlements = records.filter((record) => record.driverId === driverId);
+    const totalNetPay = settlements.reduce((sum, record) => sum + record.netPay, 0);
+    res.json({
+      driverId,
+      tenantId,
+      settlementCount: settlements.length,
+      totalNetPay,
+    });
+  }));
+
+  app.post('/api/payroll/settlements', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const tenantId = getRequiredTenantId(req);
+    const { driverId, weekStart, weekEnd, netPay } = req.body ?? {};
+    if (!driverId || !weekStart || !weekEnd || typeof netPay !== 'number') {
+      throw new HttpError(400, 'invalid_payroll_settlement_payload', 'driverId, weekStart, weekEnd, and netPay are required.');
+    }
+    const record: PayrollSettlementRecord = {
+      id: crypto.randomUUID(),
+      tenantId,
+      driverId: String(driverId),
+      weekStart: String(weekStart),
+      weekEnd: String(weekEnd),
+      status: 'pending',
+      netPay,
+    };
+    const current = payrollSettlements.get(tenantId) ?? [];
+    payrollSettlements.set(tenantId, [...current, record]);
+    res.status(201).json(record);
   }));
 
   app.get('/api/freight-operations/:resource', requireTenant, requireRole, wrapAsync(async (req, res) => {

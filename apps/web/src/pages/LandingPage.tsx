@@ -11,6 +11,7 @@ import {
   Truck,
   Users,
 } from 'lucide-react';
+import AdsSlot from '@/components/AdsSlot';
 
 const services = [
   {
@@ -131,6 +132,11 @@ const LandingPage: React.FC = () => {
             </div>
           ))}
         </div>
+      </section>
+
+
+      <section className="mx-auto max-w-7xl px-6 pb-4">
+        <AdsSlot slot={import.meta.env.VITE_ADSENSE_LANDING_SLOT ?? ''} className="mx-auto" />
       </section>
 
       <section className="border-y border-infamous-border bg-[#0f0f0f]">
