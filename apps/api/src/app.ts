@@ -249,9 +249,22 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
   }));
 }
 
+function createPayrollSettlementsStore() {
+  const allowInMemoryPayrollSettlements = process.env.ALLOW_IN_MEMORY_PAYROLL_SETTLEMENTS === 'true';
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  if (isProduction && !allowInMemoryPayrollSettlements) {
+    throw new Error(
+      'In-memory payroll settlements are disabled in production. Persist settlements via DataStore or explicitly enable demo-only mode with ALLOW_IN_MEMORY_PAYROLL_SETTLEMENTS=true.',
+    );
+  }
+
+  return new Map<string, PayrollSettlementRecord[]>();
+}
+
 function registerRoutes(app: express.Express, dataStore: DataStore) {
   const aiUsageStore = createAiUsageStore();
-  const payrollSettlements = new Map<string, PayrollSettlementRecord[]>();
+  const payrollSettlements = createPayrollSettlementsStore();
 
   // Public lead intake endpoints — no authentication required
   app.post('/api/leads/quote', wrapAsync(async (req, res) => {
