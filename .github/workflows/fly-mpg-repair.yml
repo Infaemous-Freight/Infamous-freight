@@ -1,0 +1,53 @@
+name: Fly Managed Postgres Repair
+
+on:
+  workflow_dispatch:
+    inputs:
+      mpg_cluster_id:
+        description: 'Fly Managed Postgres cluster ID'
+        required: false
+        default: 'kyzl60xmlk6opj9g'
+        type: string
+      primary_region:
+        description: 'Region to keep one warm API machine running'
+        required: false
+        default: 'dfw'
+        type: string
+      cors_origins:
+        description: 'Allowed production CORS origins'
+        required: false
+        default: 'https://www.infamousfreight.com,https://infamousfreight.com'
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fly-mpg-repair.yml'
+      - 'scripts/fly-mpg-repair.sh'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fly-mpg-repair
+  cancel-in-progress: true
+
+jobs:
+  repair:
+    name: Attach MPG and verify API health
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # master (2026-04-08)
+
+      - name: Attach Managed Postgres and verify health
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          APP_NAME: infamous-freight
+          MPG_CLUSTER_ID: ${{ inputs.mpg_cluster_id || 'kyzl60xmlk6opj9g' }}
+          PRIMARY_REGION: ${{ inputs.primary_region || 'dfw' }}
+          CORS_ORIGINS: ${{ inputs.cors_origins || 'https://www.infamousfreight.com,https://infamousfreight.com' }}
+        run: bash scripts/fly-mpg-repair.sh
