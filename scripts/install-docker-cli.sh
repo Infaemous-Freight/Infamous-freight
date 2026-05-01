@@ -17,7 +17,6 @@ install_via_static_binary() {
   docker --version
 }
 
-
 install_buildx_plugin() {
   if docker buildx version >/dev/null 2>&1; then
     return 0
@@ -73,8 +72,32 @@ ensure_docker_daemon() {
   fi
 
   echo "Docker daemon is still not reachable."
-  echo "If this is a restricted container, daemon access may be unavailable." 
+  echo "If this is a restricted container, daemon access may be unavailable."
   return 1
+}
+
+install_via_docker_apt_repo() {
+  local arch codename
+  arch="$(dpkg --print-architecture)"
+  codename="$(. /etc/os-release && echo "${VERSION_CODENAME:-}")"
+
+  if [ -z "$codename" ]; then
+    echo "Unable to detect Ubuntu/Debian codename; skipping Docker apt repo setup." >&2
+    return 1
+  fi
+
+  apt-get update
+  apt-get install -y --no-install-recommends ca-certificates curl gnupg
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  chmod a+r /etc/apt/keyrings/docker.gpg
+
+  cat >/etc/apt/sources.list.d/docker.list <<APT
+ deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu ${codename} stable
+APT
+
+  apt-get update
+  apt-get install -y --no-install-recommends docker-ce-cli docker-buildx-plugin docker-compose-plugin
 }
 
 if command -v docker >/dev/null 2>&1; then
@@ -104,14 +127,10 @@ fi
 
 if command -v apt-get >/dev/null 2>&1; then
   echo "Installing Docker CLI packages..."
-  if apt-get update && {
-    if apt-cache show docker-buildx-plugin >/dev/null 2>&1; then
-      apt-get install -y docker.io docker-buildx-plugin
-    else
-      apt-get install -y docker.io
-    fi
-  }; then
+  if install_via_docker_apt_repo; then
     :
+  elif apt-get update && apt-get install -y --no-install-recommends docker.io; then
+    echo "Installed Docker via distro packages."
   else
     echo "APT install failed, falling back to static Docker CLI binary install..."
     install_via_static_binary
@@ -128,11 +147,15 @@ fi
 
 docker --version
 
-install_buildx_plugin
 if docker buildx version >/dev/null 2>&1; then
   docker buildx version
 else
-  echo "Docker Buildx is not available from installed packages."
+  install_buildx_plugin
+  if docker buildx version >/dev/null 2>&1; then
+    docker buildx version
+  else
+    echo "Docker Buildx is not available from installed packages."
+  fi
 fi
 
 if ! ensure_docker_daemon; then

@@ -12,15 +12,12 @@ if should_install_workspace_dependencies "$PACKAGE_MANAGER"; then
   install_workspace_dependencies "$PACKAGE_MANAGER"
 fi
 
-echo "==> Ensuring deployment CLIs (Docker, flyctl, jq)"
-if [[ "${EUID}" -eq 0 ]]; then
-  bash scripts/install-dev-clis.sh
-else
-  bash scripts/install-docker-cli.sh || true
-  if ! command -v flyctl >/dev/null 2>&1; then
-    echo "flyctl is not installed. Run with sudo/root:"
-    echo "  sudo bash scripts/install-dev-clis.sh"
-  fi
+echo "==> Ensuring required CLIs (flyctl, supabase, stripe, docker)"
+bash scripts/install-required-clis.sh
+
+if ! command -v docker >/dev/null 2>&1; then
+  echo "docker is not installed. Install with sudo/root:"
+  echo "  sudo INSTALL_DOCKER=true bash scripts/install-docker-cli.sh"
 fi
 
 echo "==> Ensuring AI SDK runtime"

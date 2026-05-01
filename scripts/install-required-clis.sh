@@ -53,9 +53,32 @@ install_stripe() {
   rm -f "$tmp"
 }
 
+install_docker() {
+  if command -v docker >/dev/null 2>&1; then
+    echo "docker already installed"
+    return
+  fi
+
+  if [[ "$(id -u)" -eq 0 ]]; then
+    INSTALL_DOCKER=true bash "${SCRIPT_DIR}/install-docker-cli.sh"
+    return
+  fi
+
+  if command -v sudo >/dev/null 2>&1; then
+    sudo INSTALL_DOCKER=true bash "${SCRIPT_DIR}/install-docker-cli.sh"
+    return
+  fi
+
+  echo "Docker CLI requires root privileges to install. Re-run with sudo or as root:" >&2
+  echo "  sudo INSTALL_DOCKER=true bash ${SCRIPT_DIR}/install-docker-cli.sh" >&2
+  return 1
+}
+
+
 install_flyctl
 install_supabase
 install_stripe
+install_docker
 
 echo "Required CLIs are available in ${TOOLS_DIR}."
 echo "Add to PATH: export PATH=\"${TOOLS_DIR}:\$PATH\""

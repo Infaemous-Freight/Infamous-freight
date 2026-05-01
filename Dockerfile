@@ -1,16 +1,16 @@
-FROM node:22-alpine AS deps
+FROM node:22-noble AS deps
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-COPY apps/api/package.json ./apps/api/package.json
+COPY --chown=1001:1001 package.json package-lock.json ./
+COPY --chown=1001:1001 apps/api/package.json ./apps/api/package.json
 
 RUN npm ci --omit=dev --workspace apps/api --include-workspace-root=false
 
 
-FROM node:22-alpine AS build
+FROM node:22-noble AS build
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY --chown=1001:1001 package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/package.json
 
 RUN npm ci --workspace apps/api
@@ -24,23 +24,23 @@ RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
 RUN npm run build --workspace apps/api
 
 
-FROM node:22-alpine AS runtime
+FROM node:22-noble AS runtime
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOST=0.0.0.0
 
-RUN apk add --no-cache openssl
+RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY package.json package-lock.json ./
+COPY --from=deps --chown=1001:1001 /app/node_modules ./node_modules
+COPY --chown=1001:1001 package.json package-lock.json ./
 COPY apps/api/package.json ./apps/api/package.json
 
-COPY --from=build /app/apps/api/dist ./apps/api/dist
-COPY --from=build /app/apps/api/prisma ./apps/api/prisma
+COPY --from=build --chown=1001:1001 /app/apps/api/dist ./apps/api/dist
+COPY --from=build --chown=1001:1001 /app/apps/api/prisma ./apps/api/prisma
 
-RUN addgroup -S nodejs && adduser -S nodejs -G nodejs
+RUN groupadd --system --gid 1001 nodejs && useradd --system --uid 1001 --gid 1001 nodejs
 USER nodejs
 
 WORKDIR /app/apps/api
