@@ -23,11 +23,13 @@ import { createStripeWebhookEventStore } from './stripe-webhook-events';
 import { createFreightWorkflowRouter } from './freight-workflow-routes';
 
 type Role = 'owner' | 'admin' | 'dispatcher';
+type SubscriptionStatus = 'active' | 'trialing' | 'past_due' | 'unpaid' | 'canceled' | 'incomplete' | 'none';
 
 const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'dispatcher'];
 const BILLING_ROLES: Role[] = ['owner', 'admin'];
 const BILLING_PLANS: BillingPlan[] = ['starter', 'professional', 'enterprise'];
 const BILLING_INTERVALS: BillingInterval[] = ['month', 'year'];
+const PAID_SUBSCRIPTION_STATUSES: SubscriptionStatus[] = ['active', 'trialing'];
 const FREIGHT_OPERATION_RESOURCES: FreightOperationResource[] = [
   'quoteRequests',
   'loadAssignments',
@@ -95,6 +97,45 @@ function requireBillingRole(req: Request, res: Response, next: NextFunction) {
     });
   }
 
+  next();
+}
+
+function getSubscriptionStatus(req: Request): SubscriptionStatus {
+  const status = (
+    req.header('x-subscription-status') ??
+    req.header('x-billing-status') ??
+    req.header('x-carrier-subscription-status') ??
+    'none'
+  ).trim().toLowerCase();
+
+  if (
+    status === 'active' ||
+    status === 'trialing' ||
+    status === 'past_due' ||
+    status === 'unpaid' ||
+    status === 'canceled' ||
+    status === 'incomplete' ||
+    status === 'none'
+  ) {
+    return status;
+  }
+
+  return 'none';
+}
+
+function requirePaidSubscription(req: Request, res: Response, next: NextFunction) {
+  const subscriptionStatus = getSubscriptionStatus(req);
+
+  if (!PAID_SUBSCRIPTION_STATUSES.includes(subscriptionStatus)) {
+    return res.status(402).json({
+      error: 'payment_required',
+      message: 'An active subscription or trial is required to access this resource.',
+      billingUrl: '/billing',
+      subscriptionStatus,
+    });
+  }
+
+  req.subscriptionStatus = subscriptionStatus;
   next();
 }
 
@@ -350,7 +391,9 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data: { url } });
   }));
 
-  app.post('/api/ai-usage/events', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  const protectedApi = [requireTenant, requireRole, requirePaidSubscription];
+
+  app.post('/api/ai-usage/events', ...protectedApi, wrapAsync(async (req, res) => {
     if (!req.body?.feature || typeof req.body.feature !== 'string') {
       throw new HttpError(400, 'ai_usage_feature_required', 'AI usage events require a feature string.');
     }
@@ -363,54 +406,54 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(201).json({ data });
   }));
 
-  app.get('/api/ai-usage/summary', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/ai-usage/summary', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await aiUsageStore.summarize(getRequiredTenantId(req));
     res.status(200).json({ data });
   }));
 
-  app.get('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/loads', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.listLoads(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/loads', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.createLoad(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.get('/api/drivers', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/drivers', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.listDrivers(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/drivers', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/drivers', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.createDriver(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.get('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/shipments', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.listShipments(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/shipments', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.createShipment(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.get('/api/freight-operations/:resource', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/freight-operations/:resource', ...protectedApi, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.listFreightOperations(resource, getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/freight-operations/:resource', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/freight-operations/:resource', ...protectedApi, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.createFreightOperation(resource, getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.patch('/api/freight-operations/:resource/:id', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.patch('/api/freight-operations/:resource/:id', ...protectedApi, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.updateFreightOperation(
       resource,
@@ -421,7 +464,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data });
   }));
 
-  app.use('/api/workflows', requireTenant, requireRole, createFreightWorkflowRouter(dataStore));
+  app.use('/api/workflows', ...protectedApi, createFreightWorkflowRouter(dataStore));
 }
 
 export function createApp() {
@@ -528,6 +571,7 @@ declare global {
     interface Request {
       tenantId?: string;
       userRole?: Role;
+      subscriptionStatus?: SubscriptionStatus;
     }
   }
 }
