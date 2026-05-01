@@ -9,6 +9,7 @@ const DriversPage = lazy(() => import('@/pages/DriversPage'));
 const InvoicesPage = lazy(() => import('@/pages/InvoicesPage'));
 const CompliancePage = lazy(() => import('@/pages/CompliancePage'));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
+const BillingRequiredPage = lazy(() => import('@/pages/BillingRequiredPage'));
 const RateComparisonTool = lazy(() => import('@/components/RateComparisonTool'));
 const OnboardingWizard = lazy(() => import('@/components/onboarding/OnboardingWizard'));
 const MetricsDashboard = lazy(() => import('@/pages/MetricsDashboard'));
@@ -53,6 +54,7 @@ function App() {
           <Route path="/analytics" element={<MetricsDashboard />} />
           <Route path="/compliance" element={<CompliancePage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/billing" element={<BillingRequiredPage />} />
           <Route path="/rate-comparison" element={<RateComparisonTool />} />
           <Route path="/pay-per-load" element={<PayPerLoadPricing />} />
           <Route path="/referrals" element={<ReferralProgram />} />
