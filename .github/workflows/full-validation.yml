@@ -69,6 +69,7 @@ jobs:
     env:
       IMAGE_NAME: infamous-freight-local-check
       CONTAINER_NAME: infamous-freight-runtime-check-${{ github.run_id }}-${{ github.run_attempt }}
+      DATABASE_URL: postgresql://user:pass@127.0.0.1:5432/db
 
     steps:
       - name: Checkout
@@ -81,33 +82,52 @@ jobs:
         run: docker build --pull -t "$IMAGE_NAME" .
 
       - name: Start runtime container
-        run: docker run -d --name "$CONTAINER_NAME" -p 3000:3000 "$IMAGE_NAME"
-
-      - name: Probe health endpoint
         run: |
-          for i in {1..30}; do
+          docker run -d \
+            --name "$CONTAINER_NAME" \
+            -e DATABASE_URL="$DATABASE_URL" \
+            -e NODE_ENV=production \
+            -e PORT=3000 \
+            -e HOST=0.0.0.0 \
+            -p 3000:3000 \
+            "$IMAGE_NAME"
+
+      - name: Probe Docker healthcheck
+        run: |
+          for i in {1..60}; do
             if ! docker ps --format '{{.Names}}' | grep -qx "$CONTAINER_NAME"; then
               echo "Container is not running." >&2
               docker logs "$CONTAINER_NAME" || true
               exit 1
             fi
+
             health_status="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}' "$CONTAINER_NAME")"
-            if [ "$health_status" = "healthy" ]; then
-              echo "Container healthcheck is healthy."
-              exit 0
-            fi
-            if [ "$health_status" = "unhealthy" ]; then
-              echo "Container healthcheck is unhealthy." >&2
-              docker logs "$CONTAINER_NAME" || true
-              exit 1
-            fi
-            if curl -fsS http://127.0.0.1:3000/api/health >/dev/null; then
-              echo "Health endpoint is ready."
-              exit 0
-            fi
-            sleep 2
+            echo "Docker health status: $health_status"
+
+            case "$health_status" in
+              healthy)
+                curl -fsS http://127.0.0.1:3000/api/health >/dev/null
+                echo "Container healthcheck is healthy and /api/health responds."
+                exit 0
+                ;;
+              unhealthy)
+                echo "Container healthcheck is unhealthy." >&2
+                docker logs "$CONTAINER_NAME" || true
+                exit 1
+                ;;
+              none)
+                if curl -fsS http://127.0.0.1:3000/api/health >/dev/null; then
+                  echo "No Docker HEALTHCHECK present, but /api/health responds."
+                  exit 0
+                fi
+                ;;
+            esac
+
+            sleep 5
           done
-          echo "Health endpoint did not become ready in time." >&2
+
+          echo "Docker healthcheck did not become healthy in time." >&2
+          docker inspect "$CONTAINER_NAME" || true
           docker logs "$CONTAINER_NAME" || true
           exit 1
 
