@@ -10,8 +10,22 @@ const sentryEnvironment: string = import.meta.env.MODE;
 const isProd = import.meta.env.PROD;
 
 const adsenseClient = import.meta.env.VITE_ADSENSE_CLIENT ?? '';
+const PUBLIC_ADSENSE_PATHS = new Set(['/']);
 
-if (adsenseClient) {
+const shouldInjectAdsenseScript = (client: string): boolean => {
+  if (!client) {
+    return false;
+  }
+
+  const pathname = window.location.pathname;
+
+  // Only inject AdSense on explicit public marketing routes. Expanding this
+  // allowlist also requires the production CSP to allow the relevant Google
+  // AdSense domains for script/frame/img requests.
+  return PUBLIC_ADSENSE_PATHS.has(pathname);
+};
+
+if (shouldInjectAdsenseScript(adsenseClient)) {
   const adsScript = document.createElement('script');
   adsScript.async = true;
   adsScript.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`;
