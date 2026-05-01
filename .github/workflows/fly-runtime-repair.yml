@@ -51,5 +51,5 @@ jobs:
           PRIMARY_REGION: ${{ inputs.primary_region || 'dfw' }}
           POSTGRES_APP_NAME: ${{ inputs.postgres_app_name || 'infamous' }}
           CORS_ORIGINS: ${{ inputs.cors_origins || 'https://www.infamousfreight.com,https://infamousfreight.com' }}
-          REPAIR_TRIGGER: '2026-05-01T00:00:00Z'
+          REPAIR_TRIGGER: '2026-05-01T00:10:00Z'
         run: bash scripts/fly-runtime-repair.sh
