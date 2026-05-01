@@ -22,15 +22,19 @@ primary_region = 'dfw'
   min_machines_running = 1
   processes = ['app']
 
-  [[http_service.checks]]
-    interval = '30s'
-    timeout = '10s'
-    grace_period = '60s'
-    method = 'GET'
-    path = '/api/health'
+[[http_service.checks]]
+  interval = '30s'
+  timeout = '15s'
+  grace_period = '90s'
+  method = 'GET'
+  path = '/api/health'
+
+[http_service.concurrency]
+  type = 'requests'
+  soft_limit = 25
+  hard_limit = 40
 
 [[vm]]
-  memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
   memory_mb = 512
