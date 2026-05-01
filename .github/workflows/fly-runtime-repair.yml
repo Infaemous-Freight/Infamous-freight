@@ -6,6 +6,7 @@ on:
       postgres_app_name:
         description: 'Optional Fly Postgres app name to attach and create DATABASE_URL'
         required: false
+        default: 'infamous'
         type: string
       primary_region:
         description: 'Region to keep one warm machine running'
@@ -17,6 +18,10 @@ on:
         required: false
         default: 'https://www.infamousfreight.com,https://infamousfreight.com'
         type: string
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fly-runtime-repair.yml'
 
 permissions:
   contents: read
@@ -41,7 +46,7 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           APP_NAME: infamous-freight
-          PRIMARY_REGION: ${{ inputs.primary_region }}
-          POSTGRES_APP_NAME: ${{ inputs.postgres_app_name }}
-          CORS_ORIGINS: ${{ inputs.cors_origins }}
+          PRIMARY_REGION: ${{ inputs.primary_region || 'dfw' }}
+          POSTGRES_APP_NAME: ${{ inputs.postgres_app_name || 'infamous' }}
+          CORS_ORIGINS: ${{ inputs.cors_origins || 'https://www.infamousfreight.com,https://infamousfreight.com' }}
         run: bash scripts/fly-runtime-repair.sh
