@@ -1,4 +1,4 @@
-FROM node:20-alpine AS build
+FROM node:20-noble AS build
 
 WORKDIR /app/apps/api
 
@@ -8,7 +8,7 @@ RUN npm install
 COPY apps/api ./
 RUN npx tsc -p tsconfig.build.json
 
-FROM node:20-alpine AS runtime
+FROM node:20-noble AS runtime
 
 WORKDIR /app/apps/api
 ENV NODE_ENV=production
@@ -19,8 +19,8 @@ RUN npm install --omit=dev
 
 COPY --from=build /app/apps/api/dist ./dist
 
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
+RUN groupadd --system --gid 1001 nodejs
+RUN useradd --system --uid 1001 --gid 1001 nodejs
 USER nodejs
 
 EXPOSE 3000
