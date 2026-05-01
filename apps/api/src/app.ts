@@ -1,7 +1,7 @@
 import cors from 'cors';
 import helmet from 'helmet';
 import express, { NextFunction, Request, Response } from 'express';
-import crypto from 'crypto';
+import { randomUUID } from 'crypto';
 import * as Sentry from '@sentry/node';
 import {
   createDataStore,
