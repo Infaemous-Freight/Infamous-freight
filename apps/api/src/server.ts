@@ -21,17 +21,23 @@ try {
   console.error(`API startup failed: ${startupError}`);
 
   const fallback = express();
-  const payload = {
-    status: 'degraded',
-    timestamp: new Date().toISOString(),
-  };
 
   fallback.get('/health', (_req, res) => {
-    res.status(200).json(payload);
+    res.status(503).json({
+      status: 'degraded',
+      error: 'api_startup_failed',
+      message: startupError,
+      timestamp: new Date().toISOString(),
+    });
   });
 
   fallback.get('/api/health', (_req, res) => {
-    res.status(200).json(payload);
+    res.status(503).json({
+      status: 'degraded',
+      error: 'api_startup_failed',
+      message: startupError,
+      timestamp: new Date().toISOString(),
+    });
   });
 
   fallback.listen(port, host, () => {
