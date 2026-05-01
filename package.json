@@ -48,7 +48,7 @@
     "social-preview:generate": "node scripts/generate-social-preview.mjs"
   },
   "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2",
+    "@resvg/resvg-js": "2.6.2",
     "concurrently": "^9.0.0"
   },
   "overrides": {
@@ -67,5 +67,14 @@
   "engines": {
     "node": ">=22.0.0 <23.0.0",
     "pnpm": ">=10.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "@sentry/cli",
+      "esbuild",
+      "prisma"
+    ]
   }
 }
