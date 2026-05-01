@@ -419,7 +419,16 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     const records = payrollSettlements.get(tenantId) ?? [];
     const settlements = records
       .filter((record) => record.driverId === driverId)
-      .sort((a, b) => (a.weekStart < b.weekStart ? 1 : -1));
+      .sort((a, b) => {
+        const aWeekStart = Date.parse(a.weekStart);
+        const bWeekStart = Date.parse(b.weekStart);
+
+        if (aWeekStart === bWeekStart) {
+          return 0;
+        }
+
+        return bWeekStart - aWeekStart;
+      });
     res.json(settlements);
   }));
 
