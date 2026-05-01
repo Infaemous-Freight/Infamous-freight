@@ -25,17 +25,26 @@ required_vars=(
   SUPABASE_URL
   SUPABASE_SERVICE_KEY
   SUPABASE_ANON_KEY
+  SUPABASE_SERVICE_ROLE_KEY
+  SUPABASE_JWT_SECRET
   VITE_SUPABASE_URL
+  VITE_SUPABASE_DATABASE_URL
   VITE_SUPABASE_PUBLISHABLE_KEY
+  VITE_SUPABASE_ANON_KEY
+  NEXT_PUBLIC_SUPABASE_URL
 )
 
 optional_vars=(
   PORT
   CORS_ORIGINS
+  SITE_URL
+  PUBLIC_SITE_URL
+  FRONTEND_URL
   WEB_APP_URL
   STRIPE_CHECKOUT_SUCCESS_URL
   STRIPE_CHECKOUT_CANCEL_URL
   STRIPE_PORTAL_RETURN_URL
+  REDIS_URL
   REDIS_HOST
   REDIS_PORT
   REDIS_PASSWORD
@@ -44,8 +53,10 @@ optional_vars=(
   API_RATE_LIMIT_ENABLED
   SENTRY_DSN
   VITE_API_URL
+  API_PUBLIC_URL
   VITE_SOCKET_URL
   VITE_SENTRY_DSN
+  NEXT_PUBLIC_SENTRY_DSN
   VITE_SENTRY_ENABLED
   SENTRY_ORG
   SENTRY_PROJECT
@@ -60,6 +71,7 @@ optional_vars=(
   QBO_CLIENT_SECRET
   XERO_CLIENT_ID
   XERO_CLIENT_SECRET
+  FLY_API_TOKEN
   SENDGRID_API_KEY
   FROM_EMAIL
   RTS_API_KEY
@@ -69,6 +81,50 @@ optional_vars=(
 
 missing_required=0
 missing_optional=0
+placeholder_values=0
+
+placeholder_patterns=(
+  "placeholder"
+  "changeme"
+  "your-"
+  "your_"
+  "example"
+  "<"
+)
+
+placeholder_overrides=(
+  "NODE_ENV"
+  "PORT"
+  "REDIS_PORT"
+  "REDIS_DB"
+  "API_RATE_LIMIT_ENABLED"
+  "VITE_SENTRY_ENABLED"
+  "FROM_EMAIL"
+)
+
+contains_placeholder() {
+  local value="$1"
+  local lowered
+  lowered="$(printf '%s' "$value" | tr '[:upper:]' '[:lower:]')"
+
+  for pattern in "${placeholder_patterns[@]}"; do
+    if [[ "$lowered" == *"$pattern"* ]]; then
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+is_placeholder_override() {
+  local name="$1"
+  for allowed_name in "${placeholder_overrides[@]}"; do
+    if [[ "$allowed_name" == "$name" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
 
 check_var() {
   local name="$1"
@@ -76,6 +132,16 @@ check_var() {
 
   if [[ -n "${!name:-}" ]]; then
     echo "✅ ${name} is set"
+
+    if ! is_placeholder_override "$name" && contains_placeholder "${!name}"; then
+      echo "❌ ${name} appears to still use a placeholder value"
+      placeholder_values=$((placeholder_values + 1))
+    fi
+
+    if [[ "$name" == "REDIS_HOST" && "${!name}" == "localhost" ]]; then
+      echo "⚠️  REDIS_HOST is localhost. This only works when Redis runs in the same runtime/container."
+    fi
+
     return 0
   fi
 
@@ -104,9 +170,17 @@ printenv | cut -d= -f1 | sort
 printf '\nSummary:\n'
 echo "Required missing: ${missing_required}"
 echo "Optional missing: ${missing_optional}"
+echo "Placeholder-looking values: ${placeholder_values}"
 
 if [[ "${missing_required}" -gt 0 ]]; then
   echo "Required variables are missing. Add them to Codex Environment variables, save the environment, then rerun this check."
+  if [[ "${strict}" == "1" ]]; then
+    exit 1
+  fi
+fi
+
+if [[ "${placeholder_values}" -gt 0 ]]; then
+  echo "One or more configured values still look like placeholders. Replace them with real production values."
   if [[ "${strict}" == "1" ]]; then
     exit 1
   fi
