@@ -437,18 +437,32 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     });
   }));
 
+  const isValidIsoDateString = (value: unknown): value is string => {
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return false;
+    }
+    const date = new Date(`${value}T00:00:00.000Z`);
+    return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+  };
+
   app.post('/api/payroll/settlements', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const tenantId = getRequiredTenantId(req);
     const { driverId, weekStart, weekEnd, netPay } = req.body ?? {};
-    if (!driverId || !weekStart || !weekEnd || typeof netPay !== 'number') {
-      throw new HttpError(400, 'invalid_payroll_settlement_payload', 'driverId, weekStart, weekEnd, and netPay are required.');
+    if (
+      !driverId ||
+      !isValidIsoDateString(weekStart) ||
+      !isValidIsoDateString(weekEnd) ||
+      !Number.isFinite(netPay) ||
+      weekStart > weekEnd
+    ) {
+      throw new HttpError(400, 'invalid_payroll_settlement_payload', 'driverId, weekStart, weekEnd, and netPay are required, dates must be valid ISO dates, netPay must be finite, and weekStart must be on or before weekEnd.');
     }
     const record: PayrollSettlementRecord = {
       id: crypto.randomUUID(),
       tenantId,
       driverId: String(driverId),
-      weekStart: String(weekStart),
-      weekEnd: String(weekEnd),
+      weekStart,
+      weekEnd,
       status: 'pending',
       netPay,
     };
