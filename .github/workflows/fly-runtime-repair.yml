@@ -22,6 +22,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/fly-runtime-repair.yml'
+      - 'scripts/fly-runtime-repair.sh'
 
 permissions:
   contents: read
@@ -45,9 +46,10 @@ jobs:
       - name: Repair runtime settings and verify health
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           APP_NAME: infamous-freight
           PRIMARY_REGION: ${{ inputs.primary_region || 'dfw' }}
           POSTGRES_APP_NAME: ${{ inputs.postgres_app_name || 'infamous' }}
           CORS_ORIGINS: ${{ inputs.cors_origins || 'https://www.infamousfreight.com,https://infamousfreight.com' }}
-          REPAIR_TRIGGER: '2026-04-30T23:59:30Z'
+          REPAIR_TRIGGER: '2026-05-01T00:00:00Z'
         run: bash scripts/fly-runtime-repair.sh
