@@ -26,11 +26,12 @@ required_vars=(
 
 optional_vars=(
   PORT
-  CORS_ORIGINS
-  WEB_APP_URL
   STRIPE_CHECKOUT_SUCCESS_URL
   STRIPE_CHECKOUT_CANCEL_URL
   STRIPE_PORTAL_RETURN_URL
+  STRIPE_PUBLISHABLE_KEY
+  VITE_STRIPE_PUBLIC_KEY
+  SUPABASE_ANON_KEY
   REDIS_HOST
   REDIS_PORT
   REDIS_PASSWORD
@@ -110,19 +111,25 @@ check_one_of() {
   fi
 }
 
+production_required="false"
+if [[ "${strict}" == "1" || "${NODE_ENV:-}" == "production" ]]; then
+  production_required="true"
+fi
+
 echo "Required / core variables:"
 for var in "${required_vars[@]}"; do
   check_var "$var" "true"
 done
-check_one_of "true" STRIPE_PUBLISHABLE_KEY VITE_STRIPE_PUBLIC_KEY
+check_var "WEB_APP_URL" "${production_required}"
+check_one_of "${production_required}" CORS_ORIGINS CORS_ORIGIN
 check_one_of "true" SUPABASE_SERVICE_KEY SUPABASE_SERVICE_ROLE_KEY
-check_one_of "true" SUPABASE_ANON_KEY VITE_SUPABASE_ANON_KEY VITE_SUPABASE_PUBLISHABLE_KEY
+check_one_of "true" VITE_SUPABASE_PUBLISHABLE_KEY VITE_SUPABASE_ANON_KEY
 
 printf '\nOptional integration variables:\n'
 for var in "${optional_vars[@]}"; do
   check_var "$var" "false"
 done
-check_one_of "false" CORS_ORIGINS CORS_ORIGIN
+check_one_of "false" STRIPE_PUBLISHABLE_KEY VITE_STRIPE_PUBLIC_KEY
 
 printf '\nSafe environment inventory — names only, no values:\n'
 printenv | cut -d= -f1 | sort
