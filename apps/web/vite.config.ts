@@ -60,17 +60,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (!id.includes('node_modules')) return;
-          if (id.includes('recharts')) return 'charts';
-          if (id.includes('@stripe/stripe-js') || id.includes('@stripe/react-stripe-js')) return 'stripe';
-          if (id.includes('@sentry/')) return 'vendor-sentry';
-          if (id.includes('@supabase/')) return 'vendor-supabase';
-          if (id.includes('framer-motion')) return 'vendor-motion';
-          if (id.includes('socket.io-client')) return 'vendor-socket';
-          // Order matters: react-router-dom must be matched before the broad
-          // 'react' substring so it lands in its own chunk instead of vendor-react.
-          if (id.includes('react-router')) return 'vendor-router';
-          if (id.includes('/react/') || id.includes('/react-dom/')) return 'vendor-react';
+          if (!id.includes('node_modules')) return undefined;
+          if (id.includes('/recharts/')) return 'charts';
+          if (id.includes('/@stripe/')) return 'stripe';
+          if (id.includes('/@sentry/')) return 'vendor-sentry';
+          if (id.includes('/@supabase/')) return 'vendor-supabase';
+          if (id.includes('/framer-motion/')) return 'vendor-motion';
+          if (id.includes('/socket.io-client/') || id.includes('/engine.io-client/')) return 'vendor-socket';
+          if (id.includes('/react-router-dom/') || id.includes('/react-router/')) return 'vendor-router';
+          if (id.includes('/react-dom/') || id.includes('/react/') || id.includes('/scheduler/')) return 'vendor-react';
+          return undefined;
         },
       },
     },
