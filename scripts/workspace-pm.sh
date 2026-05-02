@@ -48,6 +48,8 @@ install_workspace_dependencies() {
     return
   fi
 
+  # Keep npm invocation direct here. Proxy-related npm warnings should be fixed
+  # by correcting user/CI npm env configuration rather than mutating runtime env.
   npm ci || npm install
 }
 
@@ -61,5 +63,6 @@ run_workspace_script() {
     return
   fi
 
+  # Keep npm invocation direct for parity with local shells and CI behavior.
   npm run "$script_name" "$@"
 }
