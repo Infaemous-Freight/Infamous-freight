@@ -22,17 +22,52 @@ Required:
 
 ```text
 FLY_API_TOKEN=<rotated Fly deploy token>
+DATABASE_URL=<production postgres connection string>
 ```
 
 Recommended repository variables or secrets where needed by builds:
 
 ```text
+NODE_ENV=production
+PORT=3000
 SITE_URL=https://www.infamousfreight.com
 PUBLIC_SITE_URL=https://www.infamousfreight.com
+FRONTEND_URL=https://www.infamousfreight.com
+WEB_APP_URL=https://www.infamousfreight.com
+CORS_ORIGIN=https://www.infamousfreight.com
+CORS_ORIGINS=https://www.infamousfreight.com,https://app.infamousfreight.com
 VITE_SITE_URL=https://www.infamousfreight.com
 NEXT_PUBLIC_SITE_URL=https://www.infamousfreight.com
+API_PUBLIC_URL=https://api.infamousfreight.com
 VITE_API_URL=/api
 NEXT_PUBLIC_API_URL=/api
+VITE_SOCKET_URL=wss://www.infamousfreight.com/socket.io
+REDIS_URL=<managed redis url>
+REDIS_HOST=<managed redis host>
+REDIS_PORT=6379
+REDIS_PASSWORD=<managed redis password>
+REDIS_DB=0
+SUPABASE_URL=https://<project>.supabase.co
+SUPABASE_SERVICE_KEY=<supabase service key>
+SUPABASE_SERVICE_ROLE_KEY=<supabase service role key>
+SUPABASE_ANON_KEY=<supabase anon key>
+SUPABASE_JWT_SECRET=<supabase jwt secret>
+VITE_SUPABASE_URL=https://<project>.supabase.co
+VITE_SUPABASE_DATABASE_URL=https://<project>.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=<supabase publishable key>
+VITE_SUPABASE_ANON_KEY=<supabase anon key>
+NEXT_PUBLIC_SUPABASE_URL=https://<project>.supabase.co
+SENTRY_DSN=<backend sentry dsn>
+VITE_SENTRY_DSN=<frontend sentry dsn>
+NEXT_PUBLIC_SENTRY_DSN=<frontend sentry dsn>
+STRIPE_SECRET_KEY=<stripe secret key>
+STRIPE_WEBHOOK_SECRET=<stripe webhook signing secret>
+STRIPE_PUBLISHABLE_KEY=<stripe publishable key>
+VITE_STRIPE_PUBLIC_KEY=<stripe publishable key>
+DAT_API_KEY=<dat api key>
+TRUCKSTOP_API_KEY=<truckstop api key>
+LOADBOARD_API_KEY=<loadboard api key>
+SAMSARA_API_TOKEN=<samsara api token>
 ```
 
 ## Netlify production environment

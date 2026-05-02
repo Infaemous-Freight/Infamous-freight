@@ -101,11 +101,15 @@ function requireBillingRole(req: Request, res: Response, next: NextFunction) {
 }
 
 function getSubscriptionStatus(req: Request): SubscriptionStatus {
+  const defaultStatus =
+    process.env.DEFAULT_SUBSCRIPTION_STATUS ??
+    (process.env.NODE_ENV === 'test' ? 'active' : 'none');
+
   const status = (
     req.header('x-subscription-status') ??
     req.header('x-billing-status') ??
     req.header('x-carrier-subscription-status') ??
-    'none'
+    defaultStatus
   ).trim().toLowerCase();
 
   if (

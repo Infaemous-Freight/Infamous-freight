@@ -5,6 +5,15 @@ Infamous Freight deployment, validation, and operations scripts expect these CLI
 - `flyctl`
 - `supabase`
 - `stripe`
+- `gh` (GitHub CLI)
+- `netlify`
+- `docker`
+
+Recommended (installed by bootstrap when missing):
+
+- `jq`
+
+> Note: automatic `jq` bootstrap install currently targets Linux runners/workstations.
 
 ## Install
 
@@ -40,7 +49,7 @@ For a persistent setup, add the absolute repo path to your shell profile, for ex
 export PATH="/path/to/Infamous-freight/.tools/bin:$PATH"
 ```
 
-Other repo scripts use `command -v` to locate `flyctl`, `supabase`, and `stripe`, so the binaries must either be globally installed or available in `.tools/bin`.
+Other repo scripts use `command -v` to locate these tools, so the binaries must either be globally installed or available in `.tools/bin`.
 
 ## Verify
 

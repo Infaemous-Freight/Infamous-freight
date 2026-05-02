@@ -45,6 +45,9 @@ jobs:
       - name: Test API workspace
         run: pnpm -C apps/api run test -- --runInBand
 
+      - name: Environment diagnostics (non-strict)
+        run: pnpm run codex:env-check
+
       - name: Write validation summary
         if: always()
         run: |
@@ -56,6 +59,7 @@ jobs:
             echo "- pnpm run lint"
             echo "- pnpm run build"
             echo "- pnpm -C apps/api run test -- --runInBand"
+            echo "- pnpm run codex:env-check"
             echo ""
             echo "Ref: ${{ github.ref }}"
             echo "SHA: ${{ github.sha }}"

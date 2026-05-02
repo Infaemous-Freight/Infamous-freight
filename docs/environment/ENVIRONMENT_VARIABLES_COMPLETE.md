@@ -49,7 +49,7 @@ This is the production-oriented setup guide for every environment variable curre
 26. `VITE_API_URL`
 27. `VITE_SENTRY_DSN`
 
-> Note: Runtime checks use `RATE_LIMIT_ENABLED`. Template files now include both `RATE_LIMIT_ENABLED` and legacy aliases where needed for compatibility.
+> Note: Runtime checks use `RATE_LIMIT_ENABLED`. Template files now include both `RATE_LIMIT_ENABLED` and legacy `API_RATE_LIMIT_ENABLED` aliases for compatibility. Set `RATE_LIMIT_ENABLED=true` in production to avoid ambiguity.
 
 ---
 

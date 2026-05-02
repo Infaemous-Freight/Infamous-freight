@@ -53,6 +53,16 @@ fly apps list
 |-------------|-------|------------|
 | `SUPABASE_URL` | `https://your-project.supabase.co` | Supabase Project Settings > API |
 | `SUPABASE_SERVICE_KEY` | `your-service-key` | Supabase Project Settings > API > service_role key |
+| `SUPABASE_SERVICE_ROLE_KEY` | `your-service-role-key` | Supabase Project Settings > API > service_role key |
+| `SUPABASE_JWT_SECRET` | `your-jwt-secret` | Supabase Project Settings > API |
+| `SUPABASE_ANON_KEY` | `your-anon-key` | Supabase Project Settings > API |
+
+### Sentry (Recommended for production)
+| Secret Name | Value | How to Get |
+|-------------|-------|------------|
+| `SENTRY_DSN` | `https://...` | Sentry project settings |
+| `VITE_SENTRY_DSN` | `https://...` | Sentry project settings |
+| `NEXT_PUBLIC_SENTRY_DSN` | `https://...` | Sentry project settings |
 
 ### Load Board APIs (Optional — enables live load data)
 | Secret Name | Value | How to Get |
@@ -90,14 +100,29 @@ After adding all secrets, your GitHub Actions page should show:
 ```
 Repository secrets:
 - FLY_API_TOKEN
+- DATABASE_URL
 - NETLIFY_AUTH_TOKEN
 - NETLIFY_SITE_ID
 - STRIPE_SECRET_KEY
 - STRIPE_WEBHOOK_SECRET
 - SUPABASE_URL
 - SUPABASE_SERVICE_KEY
+- SUPABASE_SERVICE_ROLE_KEY
+- SUPABASE_JWT_SECRET
+- SUPABASE_ANON_KEY
 - VITE_API_URL
 - VITE_STRIPE_PUBLIC_KEY
+```
+
+Repository variables/secrets should also include runtime values documented in:
+
+- `docs/PRODUCTION-SECRETS-CHECKLIST.md`
+- `scripts/codex-env-check.sh` required and optional lists
+
+Use this for a quick CI validation pass after saving values:
+
+```bash
+pnpm run codex:env-check:strict
 ```
 
 ---
