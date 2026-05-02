@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import AppLayout from '@/layouts/AppLayout';
 import SeoManager from '@/components/SeoManager';
+import { AppErrorBoundary } from '@/components/SentryErrorBoundary';
 
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 const LoadsPage = lazy(() => import('@/pages/LoadsPage'));
@@ -43,9 +44,10 @@ const RouteFallback = () => (
 
 function App() {
   return (
-    <Suspense fallback={<RouteFallback />}>
-      <SeoManager />
-      <Routes>
+    <AppErrorBoundary>
+      <Suspense fallback={<RouteFallback />}>
+        <SeoManager />
+        <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/ops" element={<DashboardPage />} />
@@ -80,6 +82,7 @@ function App() {
         <Route path="/onboarding" element={<OnboardingWizard />} />
       </Routes>
     </Suspense>
+    </AppErrorBoundary>
   );
 }
 
