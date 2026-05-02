@@ -45,7 +45,8 @@ export function createRateLimitMiddleware(keyPrefix = 'api') {
   const options = getRateLimitOptions(keyPrefix);
 
   return (req: Request, res: Response, next: NextFunction) => {
-    if (process.env.RATE_LIMIT_ENABLED === 'false') {
+    const rateLimitEnabled = process.env.RATE_LIMIT_ENABLED ?? process.env.API_RATE_LIMIT_ENABLED;
+    if (rateLimitEnabled === 'false') {
       next();
       return;
     }

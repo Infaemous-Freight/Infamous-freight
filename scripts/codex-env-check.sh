@@ -20,13 +20,8 @@ required_vars=(
   DATABASE_URL
   STRIPE_SECRET_KEY
   STRIPE_WEBHOOK_SECRET
-  STRIPE_PUBLISHABLE_KEY
-  VITE_STRIPE_PUBLIC_KEY
   SUPABASE_URL
-  SUPABASE_SERVICE_KEY
-  SUPABASE_ANON_KEY
   VITE_SUPABASE_URL
-  VITE_SUPABASE_PUBLISHABLE_KEY
 )
 
 optional_vars=(
@@ -41,6 +36,7 @@ optional_vars=(
   REDIS_PASSWORD
   REDIS_DB
   JWT_SECRET
+  RATE_LIMIT_ENABLED
   API_RATE_LIMIT_ENABLED
   SENTRY_DSN
   VITE_API_URL
@@ -88,15 +84,45 @@ check_var() {
   fi
 }
 
+check_one_of() {
+  local required="$1"
+  shift
+  local names=("$@")
+  local found=()
+
+  for name in "${names[@]}"; do
+    if [[ -n "${!name:-}" ]]; then
+      found+=("${name}")
+    fi
+  done
+
+  if [[ "${#found[@]}" -gt 0 ]]; then
+    echo "✅ one-of [${names[*]}] is set (${found[*]})"
+    return 0
+  fi
+
+  if [[ "${required}" == "true" ]]; then
+    echo "❌ one-of [${names[*]}] is NOT set"
+    missing_required=$((missing_required + 1))
+  else
+    echo "⚠️  one-of [${names[*]}] is not set"
+    missing_optional=$((missing_optional + 1))
+  fi
+}
+
 echo "Required / core variables:"
 for var in "${required_vars[@]}"; do
   check_var "$var" "true"
 done
+check_one_of "true" STRIPE_PUBLISHABLE_KEY VITE_STRIPE_PUBLIC_KEY
+check_one_of "true" SUPABASE_SERVICE_KEY SUPABASE_SERVICE_ROLE_KEY
+check_one_of "true" SUPABASE_ANON_KEY VITE_SUPABASE_ANON_KEY VITE_SUPABASE_PUBLISHABLE_KEY
 
 printf '\nOptional integration variables:\n'
 for var in "${optional_vars[@]}"; do
   check_var "$var" "false"
 done
+check_one_of "false" CORS_ORIGINS CORS_ORIGIN
 
 printf '\nSafe environment inventory — names only, no values:\n'
 printenv | cut -d= -f1 | sort

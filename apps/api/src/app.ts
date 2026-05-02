@@ -154,7 +154,7 @@ function initializeSentry() {
 }
 
 function getAllowedCorsOrigins(): string[] {
-  return (process.env.CORS_ORIGINS ?? '')
+  return (process.env.CORS_ORIGINS ?? process.env.CORS_ORIGIN ?? '')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
