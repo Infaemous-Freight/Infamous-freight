@@ -72,9 +72,9 @@ export function ExitIntentPopup() {
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-600/10 mb-4">
                     <Gift className="h-8 w-8 text-red-500" />
                   </div>
-                  <h2 className="text-2xl font-bold text-white">Wait! Don't Leave Empty-Handed</h2>
+                  <h2 className="text-2xl font-bold text-white">One more thing — 10% off your first 3 months</h2>
                   <p className="text-zinc-400 mt-2">
-                    Get <span className="text-red-400 font-bold">10% off</span> your first 3 months + a free onboarding call
+                    Plus a free onboarding call to get your fleet dispatching from day one.
                   </p>
                 </div>
 
@@ -95,7 +95,7 @@ export function ExitIntentPopup() {
                     {loading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
-                      'Claim My 10% Discount'
+                      'Email me the discount code'
                     )}
                   </Button>
                   <p className="text-xs text-zinc-500 text-center">

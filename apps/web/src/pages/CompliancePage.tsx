@@ -52,12 +52,12 @@ const CompliancePage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Compliance</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Stay ahead of expirations and violations</p>
+          <p className="text-sm text-gray-500 mt-0.5">Track document expiries, CSA scores, and renewal alerts.</p>
         </div>
         <div className="flex items-center gap-2">
           {expiredCount > 0 && (
             <div className="badge-red flex items-center gap-1">
-              <Ban size={12} /> {expiredCount} expired — dispatch blocked
+              <Ban size={12} /> {expiredCount} expired — renew before dispatching
             </div>
           )}
         </div>
@@ -199,7 +199,7 @@ const CompliancePage: React.FC = () => {
             <div className="card text-center py-12">
               <FileCheck size={32} className="text-green-400 mx-auto mb-3" />
               <p className="text-lg font-semibold">All Clear</p>
-              <p className="text-sm text-gray-500">No critical compliance alerts</p>
+              <p className="text-sm text-gray-500">Every document is current.</p>
             </div>
           )}
         </div>

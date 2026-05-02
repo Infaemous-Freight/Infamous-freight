@@ -48,7 +48,7 @@ const LoadsPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Load Board</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Aggregated from DAT, Truckstop & 123Loadboard</p>
+          <p className="text-sm text-gray-500 mt-0.5">Live loads from DAT, Truckstop, and 123Loadboard — searched in one place.</p>
         </div>
         <button onClick={() => navigate('/rate-comparison')} className="btn-secondary flex items-center gap-2">
           <DollarSign size={16} /> Rate Tool

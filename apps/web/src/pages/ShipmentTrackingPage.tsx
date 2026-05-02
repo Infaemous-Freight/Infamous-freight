@@ -95,7 +95,7 @@ const ShipmentTrackingPage: React.FC = () => {
           ) : (
             <div className="mt-8 rounded-2xl border border-red-500/30 bg-red-500/10 p-6">
               <h2 className="text-xl font-bold">Tracking number not found</h2>
-              <p className="mt-2 text-gray-300">Try one of the demo tracking numbers: IF-20491, IF-20492, or IF-20493.</p>
+              <p className="mt-2 text-gray-300">We couldn't find that tracking number. Double-check the format (e.g., IF-20491) or contact dispatch if it should be active.</p>
             </div>
           )}
         </section>

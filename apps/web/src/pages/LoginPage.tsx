@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
       const authSession = authResponse.session;
 
       if (!authUser) {
-        toast.error('Authentication failed. Please try again.');
+        toast.error("Email or password didn't match. Try again or reset your password.");
         return;
       }
 
@@ -41,7 +41,7 @@ const LoginPage: React.FC = () => {
 
       const carrierId = authUser.user_metadata?.carrierId;
       if (!carrierId) {
-        toast.error('Account is missing a carrier assignment. Contact support.');
+        toast.error("Your account isn't linked to a carrier yet. Email support@infamousfreight.com so we can finish setting it up.");
         return;
       }
 
@@ -57,7 +57,7 @@ const LoginPage: React.FC = () => {
       toast.success(isRegister ? 'Account created!' : 'Welcome back!');
       navigate('/');
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unable to authenticate right now.';
+      const message = error instanceof Error ? error.message : "We couldn't sign you in. Check your connection and try again.";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -141,7 +141,7 @@ const LoginPage: React.FC = () => {
               disabled={loading}
               className="w-full btn-primary py-3"
             >
-              {loading ? '...' : isRegister ? 'Create Account & Start Trial' : 'Sign In'}
+              {loading ? (isRegister ? 'Creating account...' : 'Signing in...') : isRegister ? 'Create Account & Start Trial' : 'Sign In'}
             </button>
           </form>
 

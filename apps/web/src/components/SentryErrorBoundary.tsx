@@ -7,11 +7,11 @@ const DefaultFallback = (): ReactElement => (
     className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50 text-center"
   >
     <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-      Something went wrong.
+      This page didn't load.
     </h1>
     <p className="text-gray-600 max-w-md mb-6">
-      The page hit an unexpected error. The team has been notified. You can try
-      reloading the page or returning to the dashboard.
+      Your data is safe. We've alerted the team — try reloading, or head back
+      to the dashboard.
     </p>
     <div className="flex gap-3">
       <button

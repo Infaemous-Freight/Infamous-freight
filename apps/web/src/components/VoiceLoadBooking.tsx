@@ -85,7 +85,7 @@ const VoiceLoadBooking: React.FC = () => {
 
       {!browserSupported && (
         <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4 mb-4 text-sm text-yellow-400">
-          Your browser doesn't support speech recognition. Try Chrome for the best experience.
+          Voice booking needs Chrome or Edge. Switch browsers, or type your search instead.
         </div>
       )}
 

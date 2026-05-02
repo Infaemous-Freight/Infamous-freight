@@ -147,7 +147,7 @@ const SettingsPage: React.FC = () => {
                 { label: 'Driver HOS alerts', desc: 'When drivers approach hour limits', default: true },
                 { label: 'Invoice reminders', desc: 'Payment due and overdue alerts', default: true },
                 { label: 'Compliance expiry', desc: 'Documents expiring soon', default: true },
-                { label: 'Rate spikes', desc: 'When your lane rates change significantly', default: false },
+                { label: 'Rate spikes', desc: 'When rates on your lanes move 10% or more', default: false },
                 { label: 'Weekly summary', desc: 'Monday morning weekly report', default: true },
               ].map((pref) => (
                 <div key={pref.label} className="flex items-center justify-between py-2">

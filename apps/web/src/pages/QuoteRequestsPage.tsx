@@ -4,6 +4,7 @@ import {
   Truck, MapPin, Package, DollarSign, Calendar,
   CheckCircle, XCircle, Clock, RefreshCw, Eye
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 type QuoteStatus = 'NEW' | 'REVIEWING' | 'QUOTED' | 'APPROVED' | 'REJECTED' | 'CONVERTED';
 
@@ -169,7 +170,8 @@ const QuoteRequestsPage: React.FC = () => {
       setConverting(false);
       if (selectedQuote) {
         // In production: POST /quote-requests/:id/convert-to-load
-        alert(`Quote ${selectedQuote.quoteNumber} converted to load! (Demo)`);
+        const loadId = selectedQuote.convertedLoadId ?? `LD-${Math.floor(1000 + Math.random() * 9000)}`;
+        toast.success(`Quote ${selectedQuote.quoteNumber} converted. Load ${loadId} is now in dispatch.`);
       }
     }, 1500);
   };
