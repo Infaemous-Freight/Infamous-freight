@@ -1,30 +1,36 @@
-FROM node:22-noble AS deps
+FROM node:22-bookworm-slim AS deps
 WORKDIR /app
 
-COPY --chown=1001:1001 package.json package-lock.json ./
+ARG PNPM_VERSION=10.0.0
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
+
+COPY --chown=1001:1001 package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY --chown=1001:1001 apps/api/package.json ./apps/api/package.json
 
-RUN npm ci --omit=dev --workspace apps/api --include-workspace-root=false
+RUN pnpm install --frozen-lockfile --prod --filter @infamous-freight/api...
 
 
-FROM node:22-noble AS build
+FROM node:22-bookworm-slim AS build
 WORKDIR /app
 
-COPY --chown=1001:1001 package.json package-lock.json ./
-COPY apps/api/package.json ./apps/api/package.json
+ARG PNPM_VERSION=10.0.0
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
-RUN npm ci --workspace apps/api
+COPY --chown=1001:1001 package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY --chown=1001:1001 apps/api/package.json ./apps/api/package.json
+
+RUN pnpm install --frozen-lockfile --filter @infamous-freight/api...
 
 COPY apps/api ./apps/api
 
 ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 
-RUN npx prisma generate --schema=apps/api/prisma/schema.prisma
+RUN pnpm -C apps/api prisma:generate
 
-RUN npm run build --workspace apps/api
+RUN pnpm -C apps/api build
 
 
-FROM node:22-noble AS runtime
+FROM node:22-bookworm-slim AS runtime
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -34,7 +40,7 @@ ENV HOST=0.0.0.0
 RUN apt-get update && apt-get install -y --no-install-recommends openssl && rm -rf /var/lib/apt/lists/*
 
 COPY --from=deps --chown=1001:1001 /app/node_modules ./node_modules
-COPY --chown=1001:1001 package.json package-lock.json ./
+COPY --chown=1001:1001 package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/api/package.json ./apps/api/package.json
 
 COPY --from=build --chown=1001:1001 /app/apps/api/dist ./apps/api/dist

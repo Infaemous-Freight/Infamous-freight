@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 TOOLS_DIR="${REPO_ROOT}/.tools/bin"
 mkdir -p "${TOOLS_DIR}"
+export PATH="${TOOLS_DIR}:$PATH"
 
 install_flyctl() {
   if command -v flyctl >/dev/null 2>&1 || [[ -x "${TOOLS_DIR}/flyctl" ]]; then
