@@ -48,8 +48,9 @@ install_workspace_dependencies() {
     return
   fi
 
-  # Keep npm invocation direct here. Proxy-related npm warnings should be fixed
-  # by correcting user/CI npm env configuration rather than mutating runtime env.
+  # Keep npm invocation direct in this helper. Proxy-related npm warnings are
+  # normally handled by user/CI npm configuration; other repository scripts may
+  # still sanitize env explicitly before calling this helper.
   npm ci || npm install
 }
 
