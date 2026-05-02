@@ -2,7 +2,7 @@
   "name": "infamous-freight",
   "version": "1.0.0",
   "private": true,
-  "description": "Infamous Freight — The freight dispatch platform built by truckers, for truckers",
+  "description": "Infamous Freight \u2014 The freight dispatch platform built by truckers, for truckers",
   "packageManager": "pnpm@10.0.0",
   "repository": {
     "type": "git",
@@ -48,7 +48,8 @@
     "snapshot:prod": "bash scripts/production-snapshot.sh",
     "setup:deps-docker": "bash scripts/bootstrap-deps-docker.sh",
     "social-preview:generate": "node scripts/generate-social-preview.mjs",
-    "bootstrap": "bash scripts/bootstrap.sh"
+    "bootstrap": "bash scripts/bootstrap.sh",
+    "netlify:production:readiness": "bash scripts/netlify-production-readiness.sh"
   },
   "devDependencies": {
     "@resvg/resvg-js": "2.6.2",

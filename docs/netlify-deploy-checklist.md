@@ -1,0 +1,123 @@
+# Netlify Production Deploy Checklist
+
+Use this checklist for every production deploy of `infamousfreight`.
+
+## 1) Confirm web environment variables in Netlify
+
+In Netlify Dashboard → **Site configuration** → **Environment variables**, confirm these are present for the web build/runtime:
+
+### Required for web build/runtime
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+- `VITE_API_URL`
+
+### Required only for CLI-triggered deploys
+- `NETLIFY_AUTH_TOKEN`
+- `NETLIFY_SITE_ID`
+
+### Recommended compatibility fallback
+- `VITE_SUPABASE_ANON_KEY`
+
+Do not add backend-only secrets such as `DATABASE_URL`, `SUPABASE_SERVICE_KEY`, `STRIPE_SECRET_KEY`, or `STRIPE_WEBHOOK_SECRET` to Netlify. Netlify serves the web app and proxies `/api/*` to the Fly API origin, so backend secrets belong in the API runtime.
+
+## 2) Confirm backend/API environment variables in Fly and provider dashboards
+
+In the Fly API app and relevant provider dashboards, confirm these backend variables are configured:
+
+- `DATABASE_URL`
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `CORS_ORIGINS`
+- `WEB_APP_URL`
+- `RATE_LIMIT_ENABLED` with value `true`
+
+## 3) Validate locally (or in CI)
+
+Run the one-command automation (recommended):
+
+```bash
+pnpm netlify:production:readiness
+```
+
+Or run the commands manually:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm prisma:generate
+pnpm lint
+pnpm -w test --runInBand
+pnpm env:check:strict
+pnpm -C apps/web run build
+pnpm docker:build
+```
+
+If you intentionally need to refresh the lockfile during readiness validation, opt in explicitly:
+
+```bash
+ALLOW_LOCKFILE_UPDATE=true pnpm netlify:production:readiness
+```
+
+## 4) Keep lockfile stable
+
+```bash
+pnpm install
+git add pnpm-lock.yaml
+git commit -m "Update pnpm lockfile"
+git push
+```
+
+If set previously, remove temporary Netlify workaround:
+
+- `NPM_FLAGS=--no-frozen-lockfile`
+
+The committed Netlify config currently uses `NPM_FLAGS=--legacy-peer-deps` for npm-based builds.
+
+## 5) Trigger production deploy
+
+Netlify UI path:
+
+1. `Netlify`
+2. `infamousfreight`
+3. `Deploys`
+4. `Trigger deploy`
+5. `Deploy site`
+
+CLI deploys should rely on the `NETLIFY_AUTH_TOKEN` environment variable instead of passing secrets through command-line flags:
+
+```bash
+NETLIFY_AUTH_TOKEN=... NETLIFY_SITE_ID=... pnpm netlify:production:readiness
+```
+
+## 6) Post-deploy production verification
+
+Run the canonical checks first:
+
+```bash
+curl --fail --show-error --location --head --retry 5 --retry-delay 10 --retry-connrefused https://www.infamousfreight.com
+curl --fail --show-error --silent --location --retry 5 --retry-delay 10 --retry-connrefused https://www.infamousfreight.com/api/health
+```
+
+Then confirm the bare domain redirects to the canonical www host:
+
+```bash
+final_url=$(curl --silent --location --head --retry 5 --retry-delay 10 --retry-connrefused --output /dev/null --write-out '%{url_effective}' https://infamousfreight.com)
+test "$final_url" = "https://www.infamousfreight.com/"
+```
+
+Optional direct API domain checks (if `api.infamousfreight.com` is configured to the API origin):
+
+```bash
+curl --fail --show-error --silent --location --retry 5 --retry-delay 10 --retry-connrefused https://api.infamousfreight.com/health
+curl --fail --show-error --silent --location --retry 5 --retry-delay 10 --retry-connrefused https://api.infamousfreight.com/api/health
+```
+
+If direct API-domain checks return `404`, validate DNS/routing for `api.infamousfreight.com` and keep production smoke checks pointed at `https://www.infamousfreight.com/api/health` until fixed.
+
+Also verify in browser:
+- Homepage loads.
+- No Supabase key error in console.
+- API requests are not blocked by CORS.
+- Forms still work.
+- Billing/auth flows load (if enabled).
