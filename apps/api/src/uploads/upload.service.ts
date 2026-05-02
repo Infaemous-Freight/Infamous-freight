@@ -1,8 +1,3 @@
-/**
- * RECOMMENDATION: File Upload System
- * BOL (Bill of Lading) and POD (Proof of Delivery) document management
- * Uses Supabase Storage or S3-compatible storage
- */
 import { Injectable } from '@nestjs/common';
 import { createClient } from '@supabase/supabase-js';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,11 +9,10 @@ export class UploadService {
   constructor() {
     this.supabase = createClient(
       process.env.SUPABASE_URL || '',
-      process.env.SUPABASE_SERVICE_KEY || ''
+      process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || ''
     );
   }
 
-  // Upload BOL (Bill of Lading)
   async uploadBOL(
     file: Buffer,
     fileName: string,
@@ -26,7 +20,7 @@ export class UploadService {
     mimeType: string
   ) {
     const key = `loads/${loadId}/bols/${uuidv4()}-${fileName}`;
-    
+
     const { data, error } = await this.supabase.storage
       .from('documents')
       .upload(key, file, {
@@ -38,7 +32,7 @@ export class UploadService {
 
     const { data: urlData } = await this.supabase.storage
       .from('documents')
-      .createSignedUrl(key, 60 * 60 * 24 * 7); // 7 days
+      .createSignedUrl(key, 60 * 60 * 24 * 7);
 
     return {
       id: data.path,
@@ -49,7 +43,6 @@ export class UploadService {
     };
   }
 
-  // Upload POD (Proof of Delivery)
   async uploadPOD(
     file: Buffer,
     fileName: string,
@@ -64,7 +57,7 @@ export class UploadService {
     }
   ) {
     const key = `loads/${loadId}/pods/${uuidv4()}-${fileName}`;
-    
+
     const { data, error } = await this.supabase.storage
       .from('documents')
       .upload(key, file, {
@@ -88,7 +81,6 @@ export class UploadService {
     };
   }
 
-  // Upload rate confirmation
   async uploadRateConfirmation(
     file: Buffer,
     fileName: string,
@@ -96,7 +88,7 @@ export class UploadService {
     mimeType: string
   ) {
     const key = `loads/${loadId}/rate-confirmations/${uuidv4()}-${fileName}`;
-    
+
     const { data, error } = await this.supabase.storage
       .from('documents')
       .upload(key, file, {
@@ -119,7 +111,6 @@ export class UploadService {
     };
   }
 
-  // Get documents for a load
   async getLoadDocuments(loadId: string) {
     const { data, error } = await this.supabase.storage
       .from('documents')
@@ -129,7 +120,6 @@ export class UploadService {
     return data;
   }
 
-  // Delete document
   async deleteDocument(path: string) {
     const { error } = await this.supabase.storage
       .from('documents')
@@ -139,7 +129,6 @@ export class UploadService {
     return { success: true };
   }
 
-  // Get signed URL for document
   async getSignedUrl(path: string, expiresIn: number = 3600) {
     const { data, error } = await this.supabase.storage
       .from('documents')
