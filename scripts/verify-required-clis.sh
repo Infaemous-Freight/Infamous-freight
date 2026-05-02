@@ -19,7 +19,15 @@ check_cli() {
 check_cli flyctl
 check_cli supabase
 check_cli stripe
+check_cli gh
+check_cli netlify
 check_cli docker
+
+if command -v jq >/dev/null 2>&1 || [[ -x "${TOOLS_DIR}/jq" ]]; then
+  echo "✅ jq found (recommended)"
+else
+  echo "⚠️ jq missing (recommended for scripts/install-dev-clis.sh and operational tooling)" >&2
+fi
 
 if [[ "$missing" -ne 0 ]]; then
   exit 1

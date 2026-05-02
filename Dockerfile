@@ -39,6 +39,8 @@ COPY apps/api/package.json ./apps/api/package.json
 
 COPY --from=build --chown=1001:1001 /app/apps/api/dist ./apps/api/dist
 COPY --from=build --chown=1001:1001 /app/apps/api/prisma ./apps/api/prisma
+COPY --from=build --chown=1001:1001 /app/node_modules/.prisma /app/node_modules/.prisma
+COPY --from=build --chown=1001:1001 /app/node_modules/@prisma /app/node_modules/@prisma
 
 RUN groupadd --system --gid 1001 nodejs && useradd --system --uid 1001 --gid 1001 nodejs
 USER nodejs
