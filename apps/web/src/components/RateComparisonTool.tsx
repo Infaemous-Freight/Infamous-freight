@@ -54,28 +54,30 @@ const RateComparisonTool: React.FC = () => {
         <div className="bg-[#141414] border border-[#222] rounded-2xl p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Origin State</label>
+              <label htmlFor="rate-origin" className="block text-sm text-gray-400 mb-1">Origin State</label>
               <div className="relative">
-                <MapPin size={16} className="absolute left-3 top-3.5 text-gray-500" />
+                <MapPin size={16} aria-hidden="true" className="absolute left-3 top-3.5 text-gray-500" />
                 <input
+                  id="rate-origin"
                   type="text"
                   placeholder="IL"
                   value={origin}
                   onChange={e => setOrigin(e.target.value.toUpperCase())}
-                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white focus:border-[#ff3d00] focus:outline-none"
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white focus:border-[#ff3d00] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff3d00]"
                 />
               </div>
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Dest State</label>
+              <label htmlFor="rate-dest" className="block text-sm text-gray-400 mb-1">Dest State</label>
               <div className="relative">
-                <MapPin size={16} className="absolute left-3 top-3.5 text-gray-500" />
+                <MapPin size={16} aria-hidden="true" className="absolute left-3 top-3.5 text-gray-500" />
                 <input
+                  id="rate-dest"
                   type="text"
                   placeholder="TX"
                   value={dest}
                   onChange={e => setDest(e.target.value.toUpperCase())}
-                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white focus:border-[#ff3d00] focus:outline-none"
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white focus:border-[#ff3d00] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff3d00]"
                 />
               </div>
             </div>
@@ -83,13 +85,14 @@ const RateComparisonTool: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Equipment Type</label>
+              <label htmlFor="rate-equipment" className="block text-sm text-gray-400 mb-1">Equipment Type</label>
               <div className="relative">
-                <Truck size={16} className="absolute left-3 top-3.5 text-gray-500" />
+                <Truck size={16} aria-hidden="true" className="absolute left-3 top-3.5 text-gray-500" />
                 <select
+                  id="rate-equipment"
                   value={equipment}
                   onChange={e => setEquipment(e.target.value)}
-                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white focus:border-[#ff3d00] focus:outline-none appearance-none"
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white focus:border-[#ff3d00] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff3d00] appearance-none"
                 >
                   <option>Dry Van</option>
                   <option>Reefer</option>
@@ -100,16 +103,17 @@ const RateComparisonTool: React.FC = () => {
               </div>
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Broker's Offer ($/mile)</label>
+              <label htmlFor="rate-broker-offer" className="block text-sm text-gray-400 mb-1">Broker's Offer ($/mile)</label>
               <div className="relative">
-                <DollarSign size={16} className="absolute left-3 top-3.5 text-gray-500" />
+                <DollarSign size={16} aria-hidden="true" className="absolute left-3 top-3.5 text-gray-500" />
                 <input
+                  id="rate-broker-offer"
                   type="number"
                   step="0.01"
                   placeholder="2.50"
                   value={brokerRate}
                   onChange={e => setBrokerRate(e.target.value)}
-                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white focus:border-[#ff3d00] focus:outline-none"
+                  className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg pl-10 pr-4 py-3 text-white focus:border-[#ff3d00] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff3d00]"
                 />
               </div>
             </div>

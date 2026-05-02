@@ -85,8 +85,9 @@ const LoginPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Email</label>
+              <label htmlFor="login-email" className="block text-sm text-gray-400 mb-1">Email</label>
               <input
+                id="login-email"
                 type="email"
                 className="input-field"
                 placeholder="dispatch@company.com"
@@ -102,8 +103,9 @@ const LoginPage: React.FC = () => {
 
             {isRegister && (
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Company Name</label>
+                <label htmlFor="login-company" className="block text-sm text-gray-400 mb-1">Company Name</label>
                 <input
+                  id="login-company"
                   type="text"
                   className="input-field"
                   placeholder="Acme Trucking LLC"
@@ -115,9 +117,10 @@ const LoginPage: React.FC = () => {
             )}
 
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Password</label>
+              <label htmlFor="login-password" className="block text-sm text-gray-400 mb-1">Password</label>
               <div className="relative">
                 <input
+                  id="login-password"
                   type={showPassword ? 'text' : 'password'}
                   className="input-field pr-10"
                   placeholder="••••••••"
@@ -129,9 +132,11 @@ const LoginPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-pressed={showPassword}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange rounded"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
                 </button>
               </div>
             </div>
