@@ -20,23 +20,12 @@ required_vars=(
   DATABASE_URL
   STRIPE_SECRET_KEY
   STRIPE_WEBHOOK_SECRET
-  STRIPE_PUBLISHABLE_KEY
-  VITE_STRIPE_PUBLIC_KEY
   SUPABASE_URL
-  SUPABASE_SERVICE_KEY
-  SUPABASE_ANON_KEY
-  SUPABASE_SERVICE_ROLE_KEY
-  SUPABASE_JWT_SECRET
   VITE_SUPABASE_URL
-  VITE_SUPABASE_DATABASE_URL
-  VITE_SUPABASE_PUBLISHABLE_KEY
-  VITE_SUPABASE_ANON_KEY
-  NEXT_PUBLIC_SUPABASE_URL
 )
 
 optional_vars=(
   PORT
-  CORS_ORIGINS
   SITE_URL
   PUBLIC_SITE_URL
   FRONTEND_URL
@@ -44,12 +33,19 @@ optional_vars=(
   STRIPE_CHECKOUT_SUCCESS_URL
   STRIPE_CHECKOUT_CANCEL_URL
   STRIPE_PORTAL_RETURN_URL
+  STRIPE_PUBLISHABLE_KEY
+  VITE_STRIPE_PUBLIC_KEY
+  SUPABASE_ANON_KEY
+  SUPABASE_JWT_SECRET
+  VITE_SUPABASE_DATABASE_URL
+  NEXT_PUBLIC_SUPABASE_URL
   REDIS_URL
   REDIS_HOST
   REDIS_PORT
   REDIS_PASSWORD
   REDIS_DB
   JWT_SECRET
+  RATE_LIMIT_ENABLED
   API_RATE_LIMIT_ENABLED
   SENTRY_DSN
   VITE_API_URL
@@ -97,6 +93,7 @@ placeholder_overrides=(
   "PORT"
   "REDIS_PORT"
   "REDIS_DB"
+  "RATE_LIMIT_ENABLED"
   "API_RATE_LIMIT_ENABLED"
   "VITE_SENTRY_ENABLED"
   "FROM_EMAIL"
@@ -154,15 +151,51 @@ check_var() {
   fi
 }
 
+check_one_of() {
+  local required="$1"
+  shift
+  local names=("$@")
+  local found=()
+
+  for name in "${names[@]}"; do
+    if [[ -n "${!name:-}" ]]; then
+      found+=("${name}")
+    fi
+  done
+
+  if [[ "${#found[@]}" -gt 0 ]]; then
+    echo "✅ one-of [${names[*]}] is set (${found[*]})"
+    return 0
+  fi
+
+  if [[ "${required}" == "true" ]]; then
+    echo "❌ one-of [${names[*]}] is NOT set"
+    missing_required=$((missing_required + 1))
+  else
+    echo "⚠️  one-of [${names[*]}] is not set"
+    missing_optional=$((missing_optional + 1))
+  fi
+}
+
+production_required="false"
+if [[ "${strict}" == "1" || "${NODE_ENV:-}" == "production" ]]; then
+  production_required="true"
+fi
+
 echo "Required / core variables:"
 for var in "${required_vars[@]}"; do
   check_var "$var" "true"
 done
+check_var "WEB_APP_URL" "${production_required}"
+check_one_of "${production_required}" CORS_ORIGINS CORS_ORIGIN
+check_one_of "true" SUPABASE_SERVICE_KEY SUPABASE_SERVICE_ROLE_KEY
+check_one_of "true" VITE_SUPABASE_PUBLISHABLE_KEY VITE_SUPABASE_ANON_KEY
 
 printf '\nOptional integration variables:\n'
 for var in "${optional_vars[@]}"; do
   check_var "$var" "false"
 done
+check_one_of "false" STRIPE_PUBLISHABLE_KEY VITE_STRIPE_PUBLIC_KEY
 
 printf '\nSafe environment inventory — names only, no values:\n'
 printenv | cut -d= -f1 | sort
