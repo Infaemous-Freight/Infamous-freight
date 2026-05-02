@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+WEB_HEALTH_URL="${WEB_HEALTH_URL:-https://www.infamousfreight.com/api/health}"
+SITE_URL="${SITE_URL:-https://infamousfreight.com}"
+API_HEALTH_URL="${API_HEALTH_URL:-https://api.infamousfreight.com/health}"
+API_HEALTH_FALLBACK_URL="${API_HEALTH_FALLBACK_URL:-https://api.infamousfreight.com/api/health}"
+
+run_step() {
+  local title="$1"
+  shift
+  echo ""
+  echo "==> ${title}"
+  "$@"
+}
+
+run_step "Install workspace deps (no frozen lockfile)" pnpm install --no-frozen-lockfile
+run_step "Prisma client generation" pnpm prisma:generate
+run_step "Type/lint checks" pnpm lint
+run_step "API tests (runInBand)" pnpm -w test --runInBand
+run_step "Strict environment checks" pnpm env:check:strict
+run_step "Web production build" pnpm -C apps/web run build
+run_step "Docker build validation" pnpm docker:build
+
+run_step "Site HEAD check" curl -I "$SITE_URL"
+run_step "Canonical API health check" curl -fsS "$WEB_HEALTH_URL"
+
+echo ""
+echo "==> Optional direct API domain checks"
+if curl -fsS "$API_HEALTH_URL"; then
+  echo "Direct API health URL succeeded: $API_HEALTH_URL"
+elif curl -fsS "$API_HEALTH_FALLBACK_URL"; then
+  echo "Direct API fallback health URL succeeded: $API_HEALTH_FALLBACK_URL"
+else
+  echo "WARNING: Direct API domain health checks failed (both endpoints)." >&2
+  echo "Keep smoke checks pointed at ${WEB_HEALTH_URL} and verify DNS/origin routing for api.infamousfreight.com." >&2
+fi
+
+echo ""
+echo "==> Optional Netlify production deploy trigger"
+if [[ -n "${NETLIFY_AUTH_TOKEN:-}" && -n "${NETLIFY_SITE_ID:-}" ]]; then
+  echo "Triggering deploy for site ${NETLIFY_SITE_ID} via Netlify CLI..."
+  pnpm dlx netlify-cli deploy --prod --dir apps/web/dist --site "$NETLIFY_SITE_ID" --auth "$NETLIFY_AUTH_TOKEN"
+else
+  echo "Skipped: set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID to trigger deploy from CLI."
+fi
