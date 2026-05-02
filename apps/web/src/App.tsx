@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import AppLayout from '@/layouts/AppLayout';
+import SeoManager from '@/components/SeoManager';
 
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
 const LoadsPage = lazy(() => import('@/pages/LoadsPage'));
@@ -43,6 +44,7 @@ const RouteFallback = () => (
 function App() {
   return (
     <Suspense fallback={<RouteFallback />}>
+      <SeoManager />
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
