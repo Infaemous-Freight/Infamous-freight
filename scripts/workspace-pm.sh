@@ -48,6 +48,9 @@ install_workspace_dependencies() {
     return
   fi
 
+  # Keep npm invocation direct in this helper. Proxy-related npm warnings are
+  # normally handled by user/CI npm configuration; other repository scripts may
+  # still sanitize env explicitly before calling this helper.
   npm ci || npm install
 }
 
@@ -61,5 +64,6 @@ run_workspace_script() {
     return
   fi
 
+  # Keep npm invocation direct for parity with local shells and CI behavior.
   npm run "$script_name" "$@"
 }
