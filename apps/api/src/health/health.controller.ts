@@ -6,9 +6,9 @@ interface HealthCheck {
   version: string;
   uptime: number;
   services: {
-    database: 'connected' | 'disconnected';
-    redis: 'connected' | 'disconnected';
-    stripe: 'connected' | 'disconnected';
+    database: 'connected' | 'disconnected' | 'unknown';
+    redis: 'connected' | 'disconnected' | 'unknown';
+    stripe: 'connected' | 'disconnected' | 'unknown';
   };
 }
 
@@ -18,15 +18,20 @@ export class HealthController {
 
   @Get()
   check(): HealthCheck {
+    // This NestJS controller is not wired into the production Express
+    // runtime (see apps/api/src/app.ts for the live /api/health handler,
+    // which performs a real database probe). Until per-dependency probes
+    // are implemented here, report 'unknown' instead of falsely claiming
+    // each dependency is connected.
     return {
       status: 'ok',
       timestamp: new Date().toISOString(),
       version: '1.0.0',
       uptime: Math.floor((Date.now() - this.startTime) / 1000),
       services: {
-        database: 'connected',
-        redis: 'connected',
-        stripe: 'connected',
+        database: 'unknown',
+        redis: 'unknown',
+        stripe: 'unknown',
       },
     };
   }

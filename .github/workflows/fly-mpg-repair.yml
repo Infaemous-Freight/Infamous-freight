@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       mpg_cluster_id:
-        description: 'Fly Managed Postgres cluster ID'
+        description: 'Fly Managed Postgres cluster ID (defaults to FLY_MPG_CLUSTER_ID secret if unset)'
         required: false
-        default: 'kyzl60xmlk6opj9g'
+        default: ''
         type: string
       primary_region:
         description: 'Region to keep one warm API machine running'
@@ -47,7 +47,7 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           APP_NAME: infamous-freight
-          MPG_CLUSTER_ID: ${{ inputs.mpg_cluster_id || 'kyzl60xmlk6opj9g' }}
+          MPG_CLUSTER_ID: ${{ inputs.mpg_cluster_id || secrets.FLY_MPG_CLUSTER_ID }}
           PRIMARY_REGION: ${{ inputs.primary_region || 'dfw' }}
           CORS_ORIGINS: ${{ inputs.cors_origins || 'https://www.infamousfreight.com,https://infamousfreight.com' }}
         run: bash scripts/fly-mpg-repair.sh

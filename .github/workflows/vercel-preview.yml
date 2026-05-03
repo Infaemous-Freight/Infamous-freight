@@ -51,7 +51,9 @@ jobs:
 
       - name: Install Vercel CLI
         if: steps.token-check.outputs.available == 'true'
-        run: npm install --global vercel@latest
+        # Pinned to a specific version to prevent supply-chain risk from
+        # silently installing a newer Vercel CLI release at job runtime.
+        run: npm install --global vercel@53.1.0
 
       - name: Deploy preview to Vercel (with retry)
         if: steps.token-check.outputs.available == 'true'
