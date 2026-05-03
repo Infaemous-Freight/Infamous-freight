@@ -1,15 +1,15 @@
-  bversion: 2
+version: 2
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: daily
-      day: everyday
       time: "09:00"
       timezone: America/Chicago
     open-pull-requests-limit: 5
     labels:
       - dependencies
+      - security
     groups:
       npm-minor-and-patch:
         update-types:
@@ -27,3 +27,17 @@ updates:
     labels:
       - dependencies
       - github-actions
+      - security
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "10:00"
+      timezone: America/Chicago
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - infrastructure
+      - security
