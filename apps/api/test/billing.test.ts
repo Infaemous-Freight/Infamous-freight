@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 import request from 'supertest';
 import { createApp } from '../src/app';
+import { createStripeCheckoutSession, verifyStripeWebhookSignature } from '../src/billing';
 
-function createStripeSignature(payload: string, secret: string): string {
-  const timestamp = Math.floor(Date.now() / 1000);
+function createStripeSignature(payload: string, secret: string, timestamp = Math.floor(Date.now() / 1000)): string {
   const digest = crypto
     .createHmac('sha256', secret)
     .update(`${timestamp}.${payload}`, 'utf8')
@@ -17,6 +17,10 @@ describe('Stripe billing endpoints', () => {
     process.env.NODE_ENV = 'test';
     process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
     delete process.env.STRIPE_SECRET_KEY;
+    delete process.env.STRIPE_CHECKOUT_SUCCESS_URL;
+    delete process.env.STRIPE_CHECKOUT_CANCEL_URL;
+    delete process.env.WEB_APP_URL;
+    jest.restoreAllMocks();
   });
 
   it('rejects webhook requests with invalid Stripe signatures', async () => {
@@ -28,6 +32,13 @@ describe('Stripe billing endpoints', () => {
       .set('Content-Type', 'application/json')
       .send(JSON.stringify({ id: 'evt_bad', type: 'invoice.payment_failed', data: { object: {} } }))
       .expect(400);
+  });
+
+  it('rejects otherwise valid Stripe signatures outside the replay tolerance window', () => {
+    const payload = Buffer.from(JSON.stringify({ id: 'evt_old', type: 'invoice.payment_failed', data: { object: {} } }));
+    const signature = createStripeSignature(payload.toString('utf8'), 'whsec_test_secret', 1_000);
+
+    expect(verifyStripeWebhookSignature(payload, signature, 'whsec_test_secret', 1_301)).toBe(false);
   });
 
   it('accepts signed checkout webhook events and syncs billing in memory store', async () => {
@@ -74,6 +85,39 @@ describe('Stripe billing endpoints', () => {
       .expect(500);
 
     expect(response.body.error).toBe('stripe_secret_key_required');
+  });
+
+  it('creates Checkout Sessions with server-side prices, metadata, and session id success redirects', async () => {
+    process.env.STRIPE_SECRET_KEY = 'sk_test_checkout';
+    process.env.WEB_APP_URL = 'https://www.infamousfreight.com';
+
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({ url: 'https://checkout.stripe.com/c/pay/cs_test_123' }),
+    } as Response);
+
+    const url = await createStripeCheckoutSession({
+      carrierId: 'carrier_checkout_123',
+      plan: 'professional',
+      billingInterval: 'month',
+    });
+
+    expect(url).toBe('https://checkout.stripe.com/c/pay/cs_test_123');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    const [, requestInit] = fetchMock.mock.calls[0];
+    const body = requestInit?.body as URLSearchParams;
+
+    expect(body.get('mode')).toBe('subscription');
+    expect(body.get('line_items[0][price]')).toBe('price_1TBnZ3KCNuZqDozY2FISQT98');
+    expect(body.get('line_items[0][quantity]')).toBe('1');
+    expect(body.get('metadata[carrierId]')).toBe('carrier_checkout_123');
+    expect(body.get('metadata[plan]')).toBe('professional');
+    expect(body.get('metadata[billingInterval]')).toBe('month');
+    expect(body.get('client_reference_id')).toBe('carrier_checkout_123');
+    expect(body.get('success_url')).toBe(
+      'https://www.infamousfreight.com/settings?checkout=success&session_id={CHECKOUT_SESSION_ID}',
+    );
   });
 
   it('blocks duplicate checkout when a carrier already has a Stripe customer', async () => {
