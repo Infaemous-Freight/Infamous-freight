@@ -10,8 +10,8 @@ const DefaultFallback = (): ReactElement => (
       This page didn't load.
     </h1>
     <p className="text-gray-600 max-w-md mb-6">
-      Your data is safe. We've alerted the team — try reloading, or head back
-      to the dashboard.
+      We've alerted the team. Try reloading or head back to the dashboard —
+      and double-check any recent unsaved changes.
     </p>
     <div className="flex gap-3">
       <button

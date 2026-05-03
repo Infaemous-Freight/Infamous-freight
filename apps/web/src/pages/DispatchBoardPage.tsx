@@ -72,18 +72,24 @@ const DispatchBoardPage: React.FC = () => {
           <h1 className="text-2xl font-bold">Dispatch Board</h1>
           <p className="text-sm text-gray-500 mt-0.5">Full load lifecycle — from pending to POD received</p>
         </div>
-        <div className="flex gap-2">
+        <div role="tablist" aria-label="Dispatch view" className="flex gap-2">
           <button
+            role="tab"
+            aria-selected={activeTab === 'board'}
+            aria-controls="dispatch-panel"
             onClick={() => setActiveTab('board')}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${activeTab === 'board' ? 'bg-infamous-orange text-white' : 'bg-infamous-card text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange ${activeTab === 'board' ? 'bg-infamous-orange text-white' : 'bg-infamous-card text-gray-400 hover:text-white'}`}
           >
             Board
           </button>
           <button
+            role="tab"
+            aria-selected={activeTab === 'voice'}
+            aria-controls="dispatch-panel"
             onClick={() => setActiveTab('voice')}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${activeTab === 'voice' ? 'bg-infamous-orange text-white' : 'bg-infamous-card text-gray-400 hover:text-white'}`}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange ${activeTab === 'voice' ? 'bg-infamous-orange text-white' : 'bg-infamous-card text-gray-400 hover:text-white'}`}
           >
-            <Mic size={14} /> Voice
+            <Mic size={14} aria-hidden="true" /> Voice
           </button>
         </div>
       </div>
@@ -104,7 +110,7 @@ const DispatchBoardPage: React.FC = () => {
 
       {activeTab === 'board' ? (
         /* Kanban Board — full lifecycle */
-        <div className="overflow-x-auto pb-4">
+        <div id="dispatch-panel" role="tabpanel" className="overflow-x-auto pb-4">
           <div className="flex gap-4" style={{ minWidth: `${statusColumns.length * 220}px` }}>
             {statusColumns.map((status) => {
               const colLoads = mockLoads.filter((l) => l.status === status);
@@ -158,7 +164,7 @@ const DispatchBoardPage: React.FC = () => {
         </div>
       ) : (
         /* Voice Booking */
-        <div className="max-w-lg mx-auto text-center py-12">
+        <div id="dispatch-panel" role="tabpanel" className="max-w-lg mx-auto text-center py-12">
           <button
             onClick={() => setIsListening(!isListening)}
             className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 transition-all ${

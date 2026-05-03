@@ -101,14 +101,17 @@ export function DocumentUpload({ loadId, documentType, onUploadComplete }: Docum
       {/* Drop Zone */}
       <div
         {...getRootProps()}
-        className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
+        role="button"
+        tabIndex={0}
+        aria-label={`Upload ${typeLabels[documentType]} — drag and drop or press Enter to browse files`}
+        className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 ${
           isDragActive
             ? 'border-red-600 bg-red-600/5'
             : 'border-zinc-700 bg-zinc-900/50 hover:border-zinc-500'
         }`}
       >
         <input {...getInputProps()} />
-        <Upload className="h-10 w-10 text-zinc-500 mx-auto mb-3" />
+        <Upload aria-hidden="true" className="h-10 w-10 text-zinc-500 mx-auto mb-3" />
         <p className="text-white font-medium">
           {isDragActive ? 'Drop files here' : `Upload ${typeLabels[documentType]}`}
         </p>
@@ -159,9 +162,10 @@ export function DocumentUpload({ loadId, documentType, onUploadComplete }: Docum
 
             <button
               onClick={() => removeFile(index)}
-              className="text-zinc-500 hover:text-white"
+              aria-label={`Remove ${file.file.name}`}
+              className="text-zinc-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded"
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" aria-hidden="true" />
             </button>
           </motion.div>
         ))}

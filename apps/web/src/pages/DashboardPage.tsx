@@ -87,12 +87,13 @@ const DashboardPage: React.FC = () => {
           <button
             key={metric.label}
             onClick={() => navigate(metric.path)}
-            className={`card text-left group transition-all hover:border-infamous-orange/40 ${metric.urgent && metric.value > 0 ? 'border-red-500/30' : ''}`}
+            aria-label={`${metric.label}: ${metric.value}${metric.urgent && metric.value > 0 ? ' — urgent' : ''}`}
+            className={`card text-left group transition-all hover:border-infamous-orange/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange ${metric.urgent && metric.value > 0 ? 'border-red-500/30' : ''}`}
           >
             <div className="flex items-center justify-between mb-3">
-              <span className={metric.color}>{metric.icon}</span>
+              <span aria-hidden="true" className={metric.color}>{metric.icon}</span>
               {metric.urgent && metric.value > 0 && (
-                <ShieldAlert size={12} className="text-red-400" />
+                <ShieldAlert size={12} aria-hidden="true" className="text-red-400" />
               )}
             </div>
             <p className="text-2xl font-bold">{metric.value}</p>
@@ -106,12 +107,13 @@ const DashboardPage: React.FC = () => {
         <div className="lg:col-span-2 card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Active Loads</h2>
-            <div className="flex items-center gap-2">
+            <div role="group" aria-label="Filter active loads" className="flex items-center gap-2">
               {(['all', 'exceptions', 'missing_pod'] as const).map((f) => (
                 <button
                   key={f}
                   onClick={() => setActiveLoadFilter(f)}
-                  className={`text-xs px-2.5 py-1 rounded-lg transition-all capitalize ${
+                  aria-pressed={activeLoadFilter === f}
+                  className={`text-xs px-2.5 py-1 rounded-lg transition-all capitalize focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange ${
                     activeLoadFilter === f ? 'bg-infamous-orange text-white' : 'text-gray-500 hover:text-white'
                   }`}
                 >
@@ -125,14 +127,16 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className="space-y-3">
             {filteredLoads.map((load) => (
-              <div
+              <button
                 key={load.ref}
-                className={`flex items-center gap-4 p-3 rounded-xl bg-[#1a1a1a] border transition-all cursor-pointer hover:border-infamous-border-light ${
+                type="button"
+                onClick={() => navigate('/dispatch')}
+                aria-label={`${load.ref} ${load.route}, ${load.status.replace('_', ' ')}, ${load.rate}${load.hasException ? ', exception' : ''}${load.missingPod ? ', missing POD' : ''}`}
+                className={`w-full text-left flex items-center gap-4 p-3 rounded-xl bg-[#1a1a1a] border transition-all cursor-pointer hover:border-infamous-border-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange ${
                   load.hasException ? 'border-red-500/30' : load.missingPod ? 'border-yellow-500/30' : 'border-infamous-border'
                 }`}
-                onClick={() => navigate('/dispatch')}
               >
-                <div className={`w-2 h-12 rounded-full ${
+                <div aria-hidden="true" className={`w-2 h-12 rounded-full ${
                   load.status === 'in_transit' ? 'bg-blue-400' :
                   load.status === 'at_pickup' ? 'bg-yellow-400' :
                   load.status === 'exception' ? 'bg-red-400' :
@@ -153,7 +157,7 @@ const DashboardPage: React.FC = () => {
                 <div className="text-right">
                   <p className="text-sm font-semibold">{load.rate}</p>
                 </div>
-              </div>
+              </button>
             ))}
             {filteredLoads.length === 0 && (
               <div className="text-center py-8 text-gray-600 text-sm">No loads matching filter</div>

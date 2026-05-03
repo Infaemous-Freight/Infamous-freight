@@ -6,8 +6,10 @@ type SeoConfig = {
   description: string;
 };
 
-const SITE_URL = (import.meta.env.VITE_SITE_URL ?? 'https://infamousfreight.com').replace(/\/$/, '');
-const OG_IMAGE = `${SITE_URL}/og-image.svg`;
+const SITE_URL = (import.meta.env.VITE_SITE_URL ?? 'https://www.infamousfreight.com').replace(/\/$/, '');
+// Source asset is /public/og-image.svg; rendered as PNG via Netlify Image CDN
+// so social platforms that don't support SVG previews still get a 1200x630 image.
+const OG_IMAGE = `${SITE_URL}/.netlify/images?url=/og-image.svg&w=1200&h=630&fit=cover&fm=png`;
 
 const DEFAULT_SEO: SeoConfig = {
   title: 'Infamous Freight — AI Freight Command Center',
@@ -60,14 +62,21 @@ const SeoManager = () => {
       <meta name="robots" content={isIndexable ? 'index,follow' : 'noindex,nofollow'} />
       <link rel="canonical" href={canonicalUrl} />
       <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="Infamous Freight" />
+      <meta property="og:locale" content="en_US" />
       <meta property="og:title" content={seo.title} />
       <meta property="og:description" content={seo.description} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:image" content={OG_IMAGE} />
+      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content="Infamous Freight AI Freight Command Center" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={seo.title} />
       <meta name="twitter:description" content={seo.description} />
       <meta name="twitter:image" content={OG_IMAGE} />
+      <meta name="twitter:image:alt" content="Infamous Freight AI Freight Command Center" />
     </Helmet>
   );
 };
