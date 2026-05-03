@@ -6,6 +6,13 @@ import { spawnSync } from 'node:child_process';
 describe('verify-required-clis.sh', () => {
   const sourceScript = path.resolve(__dirname, '..', '..', '..', 'scripts', 'verify-required-clis.sh');
 
+  function createMinimalPath(tmp: string): string {
+    const binDir = path.join(tmp, 'bin');
+    fs.mkdirSync(binDir, { recursive: true });
+    fs.symlinkSync('/usr/bin/dirname', path.join(binDir, 'dirname'));
+    return binDir;
+  }
+
   it('fails when required CLIs are missing', () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'verify-clis-missing-'));
     const scriptDir = path.join(tmp, 'scripts');
@@ -18,7 +25,7 @@ describe('verify-required-clis.sh', () => {
     const result = spawnSync('/usr/bin/bash', [scriptPath], {
       cwd: tmp,
       encoding: 'utf8',
-      env: { ...process.env, PATH: '/bin' },
+      env: { ...process.env, PATH: createMinimalPath(tmp) },
     });
 
     expect(result.status).toBe(1);
@@ -27,6 +34,7 @@ describe('verify-required-clis.sh', () => {
     expect(result.stderr).toContain('stripe missing');
     expect(result.stderr).toContain('gh missing');
     expect(result.stderr).toContain('netlify missing');
+    expect(result.stderr).toContain('docker missing');
   });
 
   it('passes when required CLIs exist in .tools/bin', () => {
@@ -49,7 +57,7 @@ describe('verify-required-clis.sh', () => {
     const result = spawnSync('/usr/bin/bash', [scriptPath], {
       cwd: tmp,
       encoding: 'utf8',
-      env: { ...process.env, PATH: '/bin' },
+      env: { ...process.env, PATH: createMinimalPath(tmp) },
     });
 
     expect(result.status).toBe(0);
