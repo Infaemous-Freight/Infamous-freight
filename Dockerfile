@@ -1,45 +1,35 @@
-# Stage 1: Build the Application
-# We use node:22 as the base for building and installing dependencies.
 FROM node:22 AS build
 
-# Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json first to leverage Docker caching.
-# If these files don't change, subsequent builds can skip 'npm install'.
-COPY package*.json ./
-COPY tsconfig.json ./
+RUN corepack enable
 
-# Install dependencies including TypeScript
-RUN npm install
-RUN npm install --save-dev typescript @types/node
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/api/package.json apps/api/package.json
+COPY apps/web/package.json apps/web/package.json
 
-# Copy the rest of the application source code
-COPY . .
+RUN pnpm install --frozen-lockfile
 
-# Build TypeScript
-RUN npm run build || npx tsc
+COPY scripts scripts
+COPY apps/api apps/api
 
-# Stage 2: Create the Final Production Image
-# We use node:22-slim as a minimal runtime image.
+RUN pnpm run build:api
+
 FROM node:22-slim
 
-# Set the working directory
 WORKDIR /usr/src/app
 
-# Copy only production dependencies
-COPY --from=build /usr/src/app/package*.json ./
-RUN npm install --only=production
-
-# Copy the built application files from the 'build' stage
-COPY --from=build /usr/src/app/dist ./dist
-
-# Expose the port your app runs on
+ENV NODE_ENV=production
 ENV PORT=8080
-EXPOSE $PORT
 
-# Run the application using the non-root user (recommended for security)
+COPY --from=build /usr/src/app/package.json ./package.json
+COPY --from=build /usr/src/app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=build /usr/src/app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/apps/api ./apps/api
+
+EXPOSE 8080
+
 USER node
 
-# Define the command to start your application
-CMD [ "node", "dist/index.js" ]
+CMD ["node", "apps/api/dist/src/server.js"]
