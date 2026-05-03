@@ -12,7 +12,9 @@ import {
   BillingPlan,
   createStripeBillingPortalSession,
   createStripeCheckoutSession,
+  createStripeOneTimeCheckoutSession,
   getBillingSyncFromStripeEvent,
+  getStripeOneTimePaymentFromStripeEvent,
   getStripeWebhookSecret,
   StripeEvent,
   verifyStripeWebhookSignature,
@@ -20,6 +22,7 @@ import {
 import { createAiUsageStore } from './ai-usage';
 import { createRateLimitMiddleware } from './rate-limit';
 import { createStripeWebhookEventStore } from './stripe-webhook-events';
+import { createStripeOneTimePaymentStore } from './stripe-one-time-payments';
 import { createFreightWorkflowRouter } from './freight-workflow-routes';
 
 type Role = 'owner' | 'admin' | 'dispatcher';
@@ -218,12 +221,18 @@ function getCheckoutInterval(req: Request): BillingInterval {
   return billingInterval;
 }
 
+function getOneTimePurchaseType(req: Request): string | undefined {
+  const purchaseType = req.body?.purchaseType;
+  return typeof purchaseType === 'string' && purchaseType.trim() ? purchaseType.trim() : undefined;
+}
+
 function getCarrierIdFromBillingSync(billingSync: ReturnType<typeof getBillingSyncFromStripeEvent>): string | null {
   return billingSync?.carrierId ?? null;
 }
 
 function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
   const webhookEvents = createStripeWebhookEventStore();
+  const oneTimePayments = createStripeOneTimePaymentStore();
 
   app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), wrapAsync(async (req, res) => {
     const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(JSON.stringify(req.body ?? {}));
@@ -236,7 +245,8 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
 
     const event = JSON.parse(rawBody.toString('utf8')) as StripeEvent;
     const billingSync = getBillingSyncFromStripeEvent(event);
-    const carrierId = getCarrierIdFromBillingSync(billingSync);
+    const oneTimePayment = getStripeOneTimePaymentFromStripeEvent(event);
+    const carrierId = getCarrierIdFromBillingSync(billingSync) ?? oneTimePayment?.carrierId ?? null;
 
     await webhookEvents.upsert({
       eventId: event.id,
@@ -246,6 +256,10 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
     });
 
     try {
+      if (oneTimePayment) {
+        await oneTimePayments.upsert(oneTimePayment);
+      }
+
       if (billingSync) {
         const synced = await dataStore.syncCarrierBilling(billingSync);
         await webhookEvents.upsert({
@@ -253,6 +267,14 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
           eventType: event.type,
           carrierId,
           status: synced ? 'processed' : 'ignored',
+          processedAt: new Date(),
+        });
+      } else if (oneTimePayment) {
+        await webhookEvents.upsert({
+          eventId: event.id,
+          eventType: event.type,
+          carrierId,
+          status: 'processed',
           processedAt: new Date(),
         });
       } else {
@@ -375,6 +397,27 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
       stripeCustomerId,
       plan: getCheckoutPlan(req),
       billingInterval: getCheckoutInterval(req),
+    });
+
+    res.status(200).json({ data: { url } });
+  }));
+
+  app.post('/api/billing/one-time-checkout-session', requireTenant, requireRole, requireBillingRole, wrapAsync(async (req, res) => {
+    const carrierId = getRequiredTenantId(req);
+    const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(carrierId);
+
+    if (!stripeCustomerId) {
+      throw new HttpError(
+        404,
+        'stripe_customer_not_found',
+        'A linked Stripe customer is required before purchasing one-time add-ons.',
+      );
+    }
+
+    const url = await createStripeOneTimeCheckoutSession({
+      carrierId,
+      stripeCustomerId,
+      purchaseType: getOneTimePurchaseType(req),
     });
 
     res.status(200).json({ data: { url } });
@@ -556,6 +599,13 @@ export function createApp() {
       return res.status(500).json({
         error: 'stripe_secret_key_required',
         message: 'STRIPE_SECRET_KEY is required for billing actions.',
+      });
+    }
+
+    if (err.message === 'stripe_one_time_price_required') {
+      return res.status(500).json({
+        error: 'stripe_one_time_price_required',
+        message: 'STRIPE_PRICE_ONE_TIME or STRIPE_PRICE_AI_ADDON_PACK is required for one-time purchases.',
       });
     }
 

@@ -21,17 +21,18 @@ model Carrier {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  drivers         Driver[]
-  loads           Load[]
-  invoices        Invoice[]
-  documents       Document[]
-  teamMembers     TeamMember[]
-  quoteRequests   QuoteRequest[]
-  loadAssignments LoadAssignment[]
-  loadDispatches  LoadDispatch[]
-  carrierPayments CarrierPayment[]
-  aiUsageEvents   AiUsageEvent[]
-  rateAgreement   RateAgreement?
+  drivers               Driver[]
+  loads                 Load[]
+  invoices              Invoice[]
+  documents             Document[]
+  teamMembers           TeamMember[]
+  quoteRequests         QuoteRequest[]
+  loadAssignments       LoadAssignment[]
+  loadDispatches        LoadDispatch[]
+  carrierPayments       CarrierPayment[]
+  aiUsageEvents         AiUsageEvent[]
+  stripeOneTimePayments StripeOneTimePayment[]
+  rateAgreement         RateAgreement?
 }
 
 model Driver {
@@ -337,6 +338,29 @@ model StripeWebhookEvent {
   @@index([status])
   @@index([carrierId])
   @@index([receivedAt])
+}
+
+model StripeOneTimePayment {
+  id                      String   @id @default(cuid())
+  eventId                 String
+  carrierId               String
+  stripeCustomerId        String?
+  stripeCheckoutSessionId String   @unique
+  stripePaymentIntentId   String?
+  amountTotal             Int
+  currency                String
+  status                  String
+  purchaseType            String
+  priceId                 String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+
+  @@index([carrierId, createdAt])
+  @@index([purchaseType])
+  @@index([status])
+  @@index([eventId])
 }
 
 model AuditLog {

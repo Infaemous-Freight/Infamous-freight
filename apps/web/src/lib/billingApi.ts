@@ -60,6 +60,19 @@ export async function createCheckoutSession(
   return response.data.data.url;
 }
 
+export async function createOneTimeCheckoutSession(
+  context: RequestContext,
+  purchaseType = 'ai_addon_pack',
+): Promise<string> {
+  const response = await api.post<ApiEnvelope<{ url: string }>>(
+    '/api/billing/one-time-checkout-session',
+    { purchaseType },
+    { headers: getHeaders(context) },
+  );
+
+  return response.data.data.url;
+}
+
 export async function createCustomerPortalSession(context: RequestContext): Promise<string> {
   const response = await api.post<ApiEnvelope<{ url: string }>>(
     '/api/billing/customer-portal',

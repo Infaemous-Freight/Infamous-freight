@@ -1,0 +1,272 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Building2,
+  Check,
+  CheckCircle2,
+  Handshake,
+  Send,
+  Sparkles,
+} from 'lucide-react';
+
+type Tier = {
+  name: string;
+  price: string;
+  cadence: string;
+  tagline: string;
+  features: string[];
+  highlighted?: boolean;
+};
+
+const tiers: Tier[] = [
+  {
+    name: 'Basic listing',
+    price: '$99',
+    cadence: '/month',
+    tagline: 'Be discoverable in the partner directory.',
+    features: [
+      'Listed in the partner directory',
+      'Logo, blurb, and one CTA link',
+      'Single category placement',
+      'Monthly performance summary',
+    ],
+  },
+  {
+    name: 'Featured partner',
+    price: '$299',
+    cadence: '/month',
+    tagline: 'Stand out where shippers and drivers actually look.',
+    features: [
+      'Everything in Basic listing',
+      'Featured slot in the directory',
+      'Placement inside relevant dashboards',
+      'Inclusion in monthly partner email',
+      'Click and lead reporting',
+    ],
+    highlighted: true,
+  },
+  {
+    name: 'Sponsored category',
+    price: '$750',
+    cadence: '/month',
+    tagline: 'Own a single category across the network.',
+    features: [
+      'Everything in Featured partner',
+      'Top-of-category sponsorship (e.g. fuel cards, factoring)',
+      'Co-branded resource in the help center',
+      'Priority response on partnership questions',
+    ],
+  },
+  {
+    name: 'Regional exclusive',
+    price: '$1,500+',
+    cadence: '/month',
+    tagline: 'Be the only partner in your category for a region.',
+    features: [
+      'Everything in Sponsored category',
+      'Exclusive placement in a defined region',
+      'Featured in regional driver and shipper comms',
+      'Quarterly partnership review',
+    ],
+  },
+];
+
+const targetPartners = [
+  'Fuel card providers',
+  'Truck insurance brokers',
+  'Factoring companies',
+  'Tire shops',
+  'Repair and maintenance shops',
+  'Fleet maintenance providers',
+  'Equipment leasing companies',
+  'Warehousing providers',
+  'ELD and GPS providers',
+  'Business lending providers',
+];
+
+const initialForm = {
+  company: '',
+  contact: '',
+  email: '',
+  phone: '',
+  category: '',
+  region: '',
+  notes: '',
+};
+
+const PartnersPage: React.FC = () => {
+  const [form, setForm] = useState(initialForm);
+  const [submitted, setSubmitted] = useState(false);
+
+  const update = (key: keyof typeof initialForm, value: string) =>
+    setForm((current) => ({ ...current, [key]: value }));
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setSubmitted(true);
+  };
+
+  return (
+    <main className="min-h-screen bg-[#090909] px-6 py-10 text-white">
+      <div className="mx-auto max-w-6xl">
+        <Link to="/home" className="mb-8 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white">
+          <ArrowLeft size={16} /> Back to Infamous Freight
+        </Link>
+
+        <header className="mb-10 max-w-3xl">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-infamous-orange/30 bg-infamous-orange/10 px-4 py-2 text-sm text-infamous-orange">
+            <Handshake size={16} /> Infamous Freight Partner Network
+          </div>
+          <h1 className="text-4xl font-black tracking-tight sm:text-5xl">
+            Reach shippers, drivers, and carriers who actually move freight.
+          </h1>
+          <p className="mt-4 text-lg leading-8 text-gray-300">
+            The Partner Network connects vetted logistics-adjacent businesses with the people on Infamous Freight
+            every day — no banner ads, no random retargeting, just curated placements where decisions are made.
+          </p>
+        </header>
+
+        <section className="mb-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {tiers.map((tier) => (
+            <div
+              key={tier.name}
+              className={`flex h-full flex-col rounded-3xl border bg-infamous-card p-6 ${
+                tier.highlighted
+                  ? 'border-infamous-orange/60 shadow-[0_0_0_1px_rgba(255,123,0,0.25)]'
+                  : 'border-infamous-border'
+              }`}
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="text-lg font-bold">{tier.name}</h3>
+                {tier.highlighted ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-infamous-orange/10 px-3 py-1 text-xs font-semibold text-infamous-orange">
+                    <Sparkles size={12} /> Most popular
+                  </span>
+                ) : null}
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-black tracking-tight">{tier.price}</span>
+                <span className="text-sm text-gray-500">{tier.cadence}</span>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-gray-400">{tier.tagline}</p>
+              <ul className="mt-5 space-y-3 text-sm">
+                {tier.features.map((feature) => (
+                  <li key={feature} className="flex gap-2 text-gray-300">
+                    <Check size={16} className="mt-0.5 flex-shrink-0 text-infamous-orange" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+
+        <section className="mb-12 rounded-3xl border border-infamous-border bg-[#0f0f0f] p-8">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-infamous-orange">
+                Who fits the network
+              </p>
+              <h2 className="mt-2 text-2xl font-bold">We approve partners by category fit, not by who pays first.</h2>
+              <p className="mt-3 text-gray-400">
+                Placements are filtered to logistics-adjacent businesses our shippers and drivers actually use. That
+                keeps the network valuable to the user — and the leads useful to you.
+              </p>
+            </div>
+            <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {targetPartners.map((partner) => (
+                <li
+                  key={partner}
+                  className="flex items-center gap-2 rounded-xl border border-infamous-border bg-infamous-card px-3 py-2 text-sm text-gray-300"
+                >
+                  <Building2 size={14} className="text-infamous-orange" />
+                  {partner}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-infamous-border bg-infamous-card p-6 lg:p-8">
+          <div className="mb-6">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-infamous-orange">Apply to partner</p>
+            <h2 className="mt-2 text-2xl font-bold">Tell us about your business and where you want to show up.</h2>
+            <p className="mt-2 max-w-2xl text-gray-400">
+              We approve partners by category fit. Submit your details and a partnerships contact will respond with
+              available placements and pricing.
+            </p>
+          </div>
+
+          {submitted ? (
+            <div className="rounded-2xl border border-green-500/30 bg-green-500/10 p-6">
+              <CheckCircle2 className="mb-3 text-green-400" size={32} />
+              <h3 className="text-xl font-bold">Application received</h3>
+              <p className="mt-2 text-gray-300">
+                Thanks — partnerships will review your category and region fit and respond within a few business
+                days.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSubmitted(false);
+                  setForm(initialForm);
+                }}
+                className="mt-5 rounded-xl bg-infamous-orange px-4 py-2 font-semibold text-white"
+              >
+                Submit another application
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid gap-4 md:grid-cols-2">
+                {[
+                  ['company', 'Company name'],
+                  ['contact', 'Contact name'],
+                  ['email', 'Email'],
+                  ['phone', 'Phone'],
+                  ['category', 'Partner category (e.g. fuel cards, insurance)'],
+                  ['region', 'Region or coverage area'],
+                ].map(([key, label]) => (
+                  <label key={key} className="block">
+                    <span className="mb-2 block text-sm font-medium text-gray-300">{label}</span>
+                    <input
+                      value={form[key as keyof typeof initialForm]}
+                      onChange={(event) => update(key as keyof typeof initialForm, event.target.value)}
+                      className="w-full rounded-xl border border-infamous-border bg-[#111] px-4 py-3 text-white outline-none transition focus:border-infamous-orange"
+                      placeholder={label}
+                    />
+                  </label>
+                ))}
+              </div>
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-gray-300">Notes</span>
+                <textarea
+                  value={form.notes}
+                  onChange={(event) => update('notes', event.target.value)}
+                  className="min-h-32 w-full rounded-xl border border-infamous-border bg-[#111] px-4 py-3 text-white outline-none transition focus:border-infamous-orange"
+                  placeholder="Tell us what your business offers and which placement tier you are interested in."
+                />
+              </label>
+              <button
+                type="submit"
+                className="inline-flex items-center gap-2 rounded-xl bg-infamous-orange px-5 py-3 font-semibold text-white transition hover:opacity-90"
+              >
+                Submit application <Send size={17} />
+              </button>
+              <p className="text-xs text-gray-500">
+                Prefer to talk first?{' '}
+                <Link to="/request-quote?partner=true" className="text-infamous-orange hover:underline">
+                  Send a partnerships note <ArrowRight size={12} className="inline" />
+                </Link>
+              </p>
+            </form>
+          )}
+        </section>
+      </div>
+    </main>
+  );
+};
+
+export default PartnersPage;
