@@ -1,7 +1,12 @@
 import crypto from 'crypto';
 import request from 'supertest';
 import { createApp } from '../src/app';
-import { createStripeCheckoutSession, verifyStripeWebhookSignature } from '../src/billing';
+import {
+  createStripeCheckoutSession,
+  createStripeOneTimeCheckoutSession,
+  getStripeOneTimePaymentFromStripeEvent,
+  verifyStripeWebhookSignature,
+} from '../src/billing';
 
 function createStripeSignature(payload: string, secret: string, timestamp = Math.floor(Date.now() / 1000)): string {
   const digest = crypto
@@ -17,6 +22,8 @@ describe('Stripe billing endpoints', () => {
     process.env.NODE_ENV = 'test';
     process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test_secret';
     delete process.env.STRIPE_SECRET_KEY;
+    delete process.env.STRIPE_PRICE_ONE_TIME;
+    delete process.env.STRIPE_PRICE_AI_ADDON_PACK;
     delete process.env.STRIPE_CHECKOUT_SUCCESS_URL;
     delete process.env.STRIPE_CHECKOUT_CANCEL_URL;
     delete process.env.WEB_APP_URL;
@@ -118,6 +125,75 @@ describe('Stripe billing endpoints', () => {
     expect(body.get('success_url')).toBe(
       'https://www.infamousfreight.com/settings?checkout=success&session_id={CHECKOUT_SESSION_ID}',
     );
+  });
+
+  it('creates one-time Checkout Sessions with trusted server-side Price IDs', async () => {
+    process.env.STRIPE_SECRET_KEY = 'sk_test_checkout';
+    process.env.STRIPE_PRICE_ONE_TIME = 'price_one_time_test';
+    process.env.WEB_APP_URL = 'https://www.infamousfreight.com';
+
+    const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({ url: 'https://checkout.stripe.com/c/pay/cs_one_time_123' }),
+    } as Response);
+
+    const url = await createStripeOneTimeCheckoutSession({
+      carrierId: 'carrier_addon_123',
+      stripeCustomerId: 'cus_addon_123',
+      purchaseType: 'ai_addon_pack',
+    });
+
+    expect(url).toBe('https://checkout.stripe.com/c/pay/cs_one_time_123');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+
+    const [, requestInit] = fetchMock.mock.calls[0];
+    const body = requestInit?.body as URLSearchParams;
+
+    expect(body.get('mode')).toBe('payment');
+    expect(body.get('line_items[0][price]')).toBe('price_one_time_test');
+    expect(body.get('customer')).toBe('cus_addon_123');
+    expect(body.get('client_reference_id')).toBe('carrier_addon_123');
+    expect(body.get('metadata[carrierId]')).toBe('carrier_addon_123');
+    expect(body.get('metadata[purchaseType]')).toBe('ai_addon_pack');
+    expect(body.get('metadata[priceId]')).toBe('price_one_time_test');
+    expect(body.get('metadata[mode]')).toBe('payment');
+  });
+
+  it('extracts one-time payment records from completed Checkout webhooks', () => {
+    const payment = getStripeOneTimePaymentFromStripeEvent({
+      id: 'evt_one_time_completed',
+      type: 'checkout.session.completed',
+      data: {
+        object: {
+          id: 'cs_one_time_123',
+          mode: 'payment',
+          customer: 'cus_one_time_123',
+          payment_intent: 'pi_one_time_123',
+          amount_total: 4900,
+          currency: 'usd',
+          payment_status: 'paid',
+          client_reference_id: 'carrier_one_time_123',
+          metadata: {
+            carrierId: 'carrier_one_time_123',
+            purchaseType: 'ai_addon_pack',
+            priceId: 'price_one_time_test',
+          },
+        },
+      },
+    });
+
+    expect(payment).toMatchObject({
+      eventId: 'evt_one_time_completed',
+      carrierId: 'carrier_one_time_123',
+      stripeCustomerId: 'cus_one_time_123',
+      stripeCheckoutSessionId: 'cs_one_time_123',
+      stripePaymentIntentId: 'pi_one_time_123',
+      amountTotal: 4900,
+      currency: 'usd',
+      status: 'paid',
+      purchaseType: 'ai_addon_pack',
+      priceId: 'price_one_time_test',
+    });
   });
 
   it('blocks duplicate checkout when a carrier already has a Stripe customer', async () => {
