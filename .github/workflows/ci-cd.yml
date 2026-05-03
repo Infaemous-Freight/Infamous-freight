@@ -139,7 +139,7 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1  # master (2026-04-08)
 
       - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only --wait-timeout 10m --strategy rolling --app infamous-freight
+        run: flyctl deploy --remote-only --wait-timeout 10m --strategy immediate --app infamous-freight
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
@@ -158,7 +158,7 @@ jobs:
             echo ""
             echo "Target: Fly.io app infamous-freight"
             echo "API: https://api.infamousfreight.com"
-            echo "Deploy command: flyctl deploy --remote-only --wait-timeout 10m --strategy rolling --app infamous-freight"
+            echo "Deploy command: flyctl deploy --remote-only --wait-timeout 10m --strategy immediate --app infamous-freight"
           } >> "$GITHUB_STEP_SUMMARY"
 
   # ===== NOTIFY =====
