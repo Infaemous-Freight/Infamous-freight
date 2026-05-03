@@ -1,7 +1,7 @@
 # Stripe Billing Automation
 
 Date: May 3, 2026
-Status: Checkout, webhook sync, customer portal, webhook logging, duplicate checkout guard, Checkout Session return IDs, webhook replay protection, and AI usage ledger foundation added
+Status: Checkout, webhook sync, customer portal, webhook logging, duplicate checkout guard, Checkout Session return IDs, webhook replay protection, one-time add-on checkout, and AI usage ledger foundation added
 
 ## Purpose
 
@@ -11,11 +11,13 @@ The implementation adds:
 
 - Backend-created Stripe Checkout Sessions
 - Server-side Stripe Price ID selection
+- One-time add-on Checkout Sessions
 - Stripe webhook verification
 - Stripe webhook replay protection with a 5-minute signature timestamp tolerance
 - Stripe webhook event logging
 - Subscription/customer sync to `Carrier`
-- Duplicate checkout protection
+- One-time payment records in `StripeOneTimePayment`
+- Duplicate subscription checkout protection
 - Checkout Session ID return in success redirects
 - Owner/admin customer portal endpoint
 - AI usage ledger API and database table
@@ -37,6 +39,8 @@ Important implementation details:
 - `/api/billing/webhook` is registered before `express.json()` so the raw request body remains available for signature verification.
 - Webhook signatures are rejected when the timestamp is more than 5 minutes outside the server clock to reduce replay risk.
 - The endpoint should be used as the source of truth for fulfillment and billing sync. Do not mark billing state from the success page alone.
+- Subscription Checkout Sessions update carrier billing state.
+- One-time Checkout Sessions are recorded idempotently in `StripeOneTimePayment`.
 
 Verified events are logged to `StripeWebhookEvent` with status:
 
@@ -47,7 +51,7 @@ failed
 ignored
 ```
 
-### Checkout Session
+### Subscription Checkout Session
 
 ```http
 POST /api/billing/checkout-session
@@ -86,7 +90,32 @@ year
 
 The frontend sends only `plan` and `billingInterval`; the API maps those values to trusted server-side Stripe Price IDs. Do not accept raw prices or Price IDs from browser input.
 
-If a carrier already has a linked Stripe customer, checkout creation returns a conflict. Use the Customer Portal for billing changes after first checkout.
+If a carrier already has a linked Stripe customer, subscription checkout creation returns a conflict. Use the Customer Portal for billing changes after first checkout.
+
+### One-time add-on Checkout Session
+
+```http
+POST /api/billing/one-time-checkout-session
+```
+
+Required headers:
+
+```text
+x-tenant-id: <carrier id>
+x-user-role: owner | admin
+```
+
+Request:
+
+```json
+{
+  "purchaseType": "ai_addon_pack"
+}
+```
+
+This endpoint creates a Stripe Checkout Session in `payment` mode using the trusted server-side one-time Price ID from `STRIPE_PRICE_ONE_TIME` or `STRIPE_PRICE_AI_ADDON_PACK`.
+
+A linked Stripe customer is required before one-time add-ons can be purchased. This keeps add-on purchases tied to an existing carrier billing account.
 
 ### Customer portal
 
@@ -160,8 +189,9 @@ Returns aggregate usage totals for the current carrier.
 API:
 
 ```env
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_SECRET_KEY=replace-with-stripe-secret-key
+STRIPE_WEBHOOK_SECRET=replace-with-stripe-webhook-signing-secret
+STRIPE_PRICE_ONE_TIME=replace-with-one-time-price-id
 STRIPE_PORTAL_RETURN_URL=https://www.infamousfreight.com/settings
 STRIPE_CHECKOUT_SUCCESS_URL=https://www.infamousfreight.com/settings?checkout=success&session_id={CHECKOUT_SESSION_ID}
 STRIPE_CHECKOUT_CANCEL_URL=https://www.infamousfreight.com/settings?checkout=canceled
@@ -171,6 +201,7 @@ Optional fallback:
 
 ```env
 WEB_APP_URL=https://www.infamousfreight.com
+STRIPE_PRICE_AI_ADDON_PACK=replace-with-one-time-price-id
 ```
 
 If `STRIPE_CHECKOUT_SUCCESS_URL` does not include `session_id`, the API automatically appends `session_id={CHECKOUT_SESSION_ID}` before creating the Stripe Checkout Session.
@@ -230,6 +261,29 @@ incomplete
 inactive
 ```
 
+## One-time payment records
+
+`StripeOneTimePayment` stores one-time Checkout fulfillment records.
+
+Track:
+
+```text
+eventId
+carrierId
+stripeCustomerId
+stripeCheckoutSessionId
+stripePaymentIntentId
+amountTotal
+currency
+status
+purchaseType
+priceId
+createdAt
+updatedAt
+```
+
+`stripeCheckoutSessionId` is unique, so repeated webhook deliveries update the same payment record instead of duplicating fulfillment.
+
 ## Webhook event logs
 
 `StripeWebhookEvent` is used for operational debugging.
@@ -250,13 +304,24 @@ Use this table when Stripe shows an event was delivered but the app billing stat
 
 ## Checkout metadata
 
-Backend-created Checkout Sessions include metadata:
+Backend-created subscription Checkout Sessions include metadata:
 
 ```ts
 metadata: {
   carrierId,
   plan,
   billingInterval,
+}
+```
+
+One-time add-on Checkout Sessions include metadata:
+
+```ts
+metadata: {
+  carrierId,
+  purchaseType,
+  priceId,
+  mode: 'payment',
 }
 ```
 
@@ -305,19 +370,23 @@ Keep AI add-ons as one-time packs until the ledger has proven accuracy in produc
 After deployment:
 
 1. Add API env vars.
-2. Configure Stripe live webhook endpoint.
-3. Trigger a test event from Stripe Dashboard.
-4. Confirm `/api/billing/webhook` returns `200`.
-5. Start checkout from Settings → Billing & Plans using an internal carrier.
-6. Complete checkout.
-7. Confirm the success redirect includes `session_id`.
-8. Confirm the carrier row has:
+2. Run the Prisma migration for `StripeOneTimePayment`.
+3. Configure Stripe live webhook endpoint.
+4. Trigger a test event from Stripe Dashboard.
+5. Confirm `/api/billing/webhook` returns `200`.
+6. Start subscription checkout from Settings → Billing & Plans using an internal carrier.
+7. Complete subscription checkout.
+8. Confirm the success redirect includes `session_id`.
+9. Confirm the carrier row has:
    - `stripeCustomerId`
    - correct `subscriptionTier`
    - correct `status`
-9. Confirm `StripeWebhookEvent` logged the webhook as `processed`.
-10. Open customer portal from Settings as owner/admin.
-11. Record one AI usage event and confirm it appears in Settings → Billing & Plans.
+10. Start one-time add-on checkout for the same internal carrier.
+11. Complete one-time checkout.
+12. Confirm `StripeOneTimePayment` has a record for the Checkout Session.
+13. Confirm `StripeWebhookEvent` logged both webhooks as `processed`.
+14. Open customer portal from Settings as owner/admin.
+15. Record one AI usage event and confirm it appears in Settings → Billing & Plans.
 
 ## Notes
 
