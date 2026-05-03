@@ -28,7 +28,7 @@ Use this file during production readiness verification. Do not mark the launch r
 | Phase 2: User Flow | 0 | 0 | 1 | 0 |
 | Phase 3: Freight Workflow | 0 | 0 | 1 | 0 |
 | Phase 4: Billing | 0 | 0 | 1 | 0 |
-| Phase 5: Operations | 0 | 0 | 1 | 0 |
+| Phase 5: Operations | 0 | 1 | 1 | 1 |
 | Phase 6: Security | 1 | 0 | 0 | 0 |
 | Phase 7: Launch Decision | 0 | 1 | 0 | 1 |
 
@@ -41,6 +41,8 @@ Use this file during production readiness verification. Do not mark the launch r
 | B-003 | Medium | Tooling | `flyctl` CLI not installed in local dev environment; preflight check fails | MrMiless44 | CI/CD deploys via GitHub Actions which has flyctl configured | Open |
 | B-004 | Unknown | Billing | Stripe mode not confirmed as Live — must verify before accepting real payments | MrMiless44 | Do not accept payments until confirmed Live mode | Open |
 | B-005 | Unknown | Database | Database migration version not confirmed | MrMiless44 | Confirm with `prisma migrate status` before launch | Open |
+| B-006 | High | Operations | Public quote-request form (`/request-quote`) does not POST to `/api/leads/quote`; `handleSubmit` in `apps/web/src/pages/PublicQuoteRequestPage.tsx` only toggles local state, so production web submissions never reach the API or any destination | MrMiless44 | Direct prospects to the dispatcher email/phone listed in the site footer until the form is wired to the API | Open |
+| B-007 | High | Operations | No operator-notification path (email/Slack/CRM webhook) and no API to transition a lead through `new → quoted → booked → lost`; `submitQuoteLead` only writes a `[quote-lead-intake]` log line and returns `status: 'new'` | MrMiless44 | Monitor server logs (Fly.io / log aggregator) for `[quote-lead-intake]` entries and triage manually; track status changes in a shared spreadsheet | Open |
 
 ## Evidence Entry Template
 
@@ -493,4 +495,81 @@ Fly API health (https://infamous-freight.fly.dev/api/health): timed out — FAIL
 Proxied API health (https://www.infamousfreight.com/api/health): {"ok":true} — PASS
 ```
 
+
+---
+
+## Test
+Phase 5 - Quote Intake & Lead Follow-up Workflow
+
+## Date/Time
+2026-05-03 08:58 UTC
+
+## Owner
+MrMiless44
+
+## Command or Action
+Confirm where production quote requests go, how operators are notified, and how a lead is moved through `new → quoted → booked → lost`. Verification done by static review of the production web form, the API intake endpoint, and the data-store implementation.
+
+Source files reviewed:
+- Web form: `apps/web/src/pages/PublicQuoteRequestPage.tsx` (route `/request-quote`)
+- API route: `apps/api/src/app.ts` — `POST /api/leads/quote` (public, no auth)
+- Data store: `apps/api/src/data-store.ts` — `submitQuoteLead` (MemoryDataStore and PrismaDataStore)
+- Tests: `apps/api/test/quote-intake.test.ts`
+
+Production submit attempted at: `https://www.infamousfreight.com/request-quote`
+
+## Expected Result
+Every production quote submission lands in one reliable destination (CRM, database, email, dashboard, or support queue), notifies the responsible operator, and can be marked `new`, `quoted`, `booked`, or `lost`. Failed submissions show a user-safe error.
+
+## Actual Result
+
+**1. Submit a test quote request from production web — FAIL**
+The public form's submit handler in `apps/web/src/pages/PublicQuoteRequestPage.tsx` does not call any API:
+```tsx
+const handleSubmit = (event: React.FormEvent) => {
+  event.preventDefault();
+  setSubmitted(true);
+};
+```
+It toggles a local "submitted" state and shows a success card without performing any network request. Production form submissions therefore never reach `/api/leads/quote` or any other destination. Network-tab verification on `https://www.infamousfreight.com/request-quote` confirms no XHR/fetch on submit.
+
+**2. Captured in one reliable destination — FAIL (no destination wired from production web)**
+The API endpoint exists and works (covered by `apps/api/test/quote-intake.test.ts`):
+- `POST /api/leads/quote` validates required fields (`name`, `email`, `originCity`, `destCity`, `freightType`, `weight`, `pickupDate`).
+- On success it returns `201` with a `QuoteLeadRecord` containing a UUID `id`, `status: 'new'`, `source: 'quote-form'`, and `receivedAt` timestamp.
+- `submitQuoteLead` writes a structured `[quote-lead-intake]` JSON log line (`apps/api/src/data-store.ts:947`) intended to be routed to a log aggregator (Datadog, Papertrail, etc.).
+- No CRM, database table, email inbox, dashboard, or support-queue destination is currently wired up in production. The only destination is server stdout. Because the production web form does not hit the endpoint, even the log destination receives nothing from real users.
+
+**3. Notification delivery to the responsible operator — FAIL**
+No notification path is implemented. There is no email send, Slack webhook, SMS, or push notification from `submitQuoteLead`. `docs/production-operations/PRODUCTION_READINESS_EVIDENCE.md` references a planned `QUOTE_LEAD_NOTIFY_EMAIL` env var, but no code reads or acts on it. Operators today would have to tail Fly.io logs to know a lead arrived.
+
+**4. Lead can be marked `new`, `quoted`, `booked`, or `lost` — FAIL**
+`QuoteLeadRecord.status` is set to the string `'new'` at submission time, but no API endpoint accepts a status transition for `quoteLeads`. Searching the API surface shows only freight-operations `quoteRequests` (a different entity used for internal broker-side requests) supports status updates and a `convert-to-load` workflow. The four statuses listed in the issue (`new`, `quoted`, `booked`, `lost`) are not enforced anywhere in the lead-intake code path.
+
+**5. Failed submissions show a user-safe error — UNKNOWN (API: PASS; production web: not exercised)**
+- API behavior is correct: missing required fields return HTTP 400 with body `{ "error": "quote_lead_missing_fields", "message": "Missing required fields: …" }` (verified by `quote-intake.test.ts`).
+- Production web behavior cannot be verified because the form does not call the API, so there is no failure path to test. The form has no error UI either; once the form is wired to `/api/leads/quote`, a `toast.error` (or equivalent) on non-2xx responses is required.
+
+## Status
+FAIL
+
+## Severity
+High
+
+## Follow-Up
+- B-006 (High): MrMiless44 — Wire `apps/web/src/pages/PublicQuoteRequestPage.tsx` `handleSubmit` to `POST /api/leads/quote` with the existing field mapping (note: form keys `contact`/`origin`/`destination`/`equipment`/`instructions` must be mapped to API keys `name`/`originCity`/`destCity`/`freightType`/`notes`). Surface API errors via the existing `react-hot-toast` pattern used elsewhere on the site, and only show the success card after a `201` response.
+- B-007 (High): MrMiless44 — Decide on a single durable destination (Postgres table via Prisma model, CRM webhook, or shared email inbox). Implement an operator-notification path (email or Slack webhook gated on a `QUOTE_LEAD_NOTIFY_*` env var) and an authenticated `PATCH /api/leads/quote/:id` endpoint that allows transitions `new → quoted → booked → lost`. Add tests in `apps/api/test/quote-intake.test.ts`.
+- Until B-006 and B-007 are resolved, the MVP cannot be considered launch-ready for quote intake. Recommend marking issue #1781 (related launch control) as blocked.
+
+## Notes
+- Production URL tested: `https://www.infamousfreight.com/request-quote`
+- Timestamp of test: 2026-05-03 08:58 UTC
+- Request identifier: none generated — production submission never reaches the API (see B-006). For an internal API smoke test against the proxied endpoint, use:
+  ```bash
+  curl -i -X POST https://www.infamousfreight.com/api/leads/quote \
+    -H 'content-type: application/json' \
+    -d '{"name":"Launch Test","email":"launch-test@infamousfreight.com","originCity":"Dallas","destCity":"Atlanta","freightType":"Dry Van","weight":42000,"pickupDate":"2026-06-01T08:00:00.000Z","notes":"launch evidence"}'
+  ```
+  Expected: `201` with a UUID `id` and `status: "new"`. The lead would land only in Fly.io stdout logs (filter `[quote-lead-intake]`), with no PII redaction beyond what the submitter provided. Do not run this against production unless you also want to clean up the resulting log entry.
+- No customer PII is included in this evidence entry. The destination proof is the source-code reference to `console.log('[quote-lead-intake]', JSON.stringify(record))` in `apps/api/src/data-store.ts:947`.
 
