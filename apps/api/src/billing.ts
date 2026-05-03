@@ -26,6 +26,9 @@ export type StripeEvent = {
   };
 };
 
+const STRIPE_SIGNATURE_TOLERANCE_SECONDS = 300;
+const STRIPE_CHECKOUT_SESSION_TOKEN = '{CHECKOUT_SESSION_ID}';
+
 const PRICE_BY_PLAN_INTERVAL: Record<BillingPlan, Record<BillingInterval, string>> = {
   starter: {
     month: 'price_1TBnZ2KCNuZqDozYEcW5j4xM',
@@ -64,20 +67,41 @@ export function getBillingPortalReturnUrl(): string {
     || 'http://localhost:5173/settings';
 }
 
+function getCheckoutBaseUrl(path: 'success' | 'canceled'): string {
+  const explicitUrl = path === 'success'
+    ? process.env.STRIPE_CHECKOUT_SUCCESS_URL?.trim()
+    : process.env.STRIPE_CHECKOUT_CANCEL_URL?.trim();
+
+  if (explicitUrl) {
+    return explicitUrl;
+  }
+
+  const checkoutStatus = path === 'success' ? 'success' : 'canceled';
+  return `${process.env.WEB_APP_URL?.trim() || 'http://localhost:5173'}/settings?checkout=${checkoutStatus}`;
+}
+
+function appendCheckoutSessionIdToken(url: string): string {
+  if (url.includes(STRIPE_CHECKOUT_SESSION_TOKEN) || url.includes('session_id=')) {
+    return url;
+  }
+
+  const separator = url.includes('?') ? '&' : '?';
+  return `${url}${separator}session_id=${STRIPE_CHECKOUT_SESSION_TOKEN}`;
+}
+
 function getCheckoutSuccessUrl(): string {
-  return process.env.STRIPE_CHECKOUT_SUCCESS_URL?.trim()
-    || `${process.env.WEB_APP_URL?.trim() || 'http://localhost:5173'}/settings?checkout=success`;
+  return appendCheckoutSessionIdToken(getCheckoutBaseUrl('success'));
 }
 
 function getCheckoutCancelUrl(): string {
-  return process.env.STRIPE_CHECKOUT_CANCEL_URL?.trim()
-    || `${process.env.WEB_APP_URL?.trim() || 'http://localhost:5173'}/settings?checkout=canceled`;
+  return getCheckoutBaseUrl('canceled');
 }
 
 export function verifyStripeWebhookSignature(
   rawBody: Buffer,
   signatureHeader: string | undefined,
   webhookSecret: string | null = getStripeWebhookSecret(),
+  nowSeconds: number = Math.floor(Date.now() / 1000),
 ): boolean {
   if (!webhookSecret || !signatureHeader) {
     return false;
@@ -96,6 +120,15 @@ export function verifyStripeWebhookSignature(
   const signatures = parts.v1 ?? [];
 
   if (!timestamp || signatures.length === 0) {
+    return false;
+  }
+
+  const timestampNumber = Number(timestamp);
+  if (!Number.isFinite(timestampNumber)) {
+    return false;
+  }
+
+  if (Math.abs(nowSeconds - timestampNumber) > STRIPE_SIGNATURE_TOLERANCE_SECONDS) {
     return false;
   }
 
