@@ -1,0 +1,4 @@
+# OWASP ZAP baseline rule configuration.
+# Format: rule_id<TAB>ACTION<TAB>Reason
+# ACTION values commonly used by ZAP baseline: IGNORE, WARN, FAIL.
+# Launch stance: no ignored rules without owner, expiry, and issue reference.
