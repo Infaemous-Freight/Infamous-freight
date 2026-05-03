@@ -18,6 +18,25 @@ export type CheckoutSessionInput = {
   stripeCustomerId?: string | null;
 };
 
+export type OneTimeCheckoutSessionInput = {
+  carrierId: string;
+  stripeCustomerId?: string | null;
+  purchaseType?: string;
+};
+
+export type StripeOneTimePaymentPayload = {
+  eventId: string;
+  carrierId: string;
+  stripeCustomerId?: string | null;
+  stripeCheckoutSessionId: string;
+  stripePaymentIntentId?: string | null;
+  amountTotal: number;
+  currency: string;
+  status: string;
+  purchaseType: string;
+  priceId?: string | null;
+};
+
 export type StripeEvent = {
   id: string;
   type: string;
@@ -28,6 +47,7 @@ export type StripeEvent = {
 
 const STRIPE_SIGNATURE_TOLERANCE_SECONDS = 300;
 const STRIPE_CHECKOUT_SESSION_TOKEN = '{CHECKOUT_SESSION_ID}';
+const DEFAULT_ONE_TIME_PURCHASE_TYPE = 'ai_addon_pack';
 
 const PRICE_BY_PLAN_INTERVAL: Record<BillingPlan, Record<BillingInterval, string>> = {
   starter: {
@@ -59,6 +79,12 @@ export function getStripeSecretKey(): string | null {
 
 export function getStripeWebhookSecret(): string | null {
   return process.env.STRIPE_WEBHOOK_SECRET?.trim() || null;
+}
+
+export function getStripeOneTimePriceId(): string | null {
+  return process.env.STRIPE_PRICE_ONE_TIME?.trim()
+    || process.env.STRIPE_PRICE_AI_ADDON_PACK?.trim()
+    || null;
 }
 
 export function getBillingPortalReturnUrl(): string {
@@ -151,6 +177,10 @@ function getString(value: unknown): string | undefined {
   return typeof value === 'string' && value.trim() ? value : undefined;
 }
 
+function getNumber(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined;
+}
+
 function getRecord(value: unknown): Record<string, unknown> | undefined {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
     ? value as Record<string, unknown>
@@ -168,6 +198,15 @@ function getCustomerId(object: Record<string, unknown>): string | undefined {
   }
 
   return getString(getRecord(customer)?.id);
+}
+
+function getPaymentIntentId(object: Record<string, unknown>): string | undefined {
+  const paymentIntent = object.payment_intent;
+  if (typeof paymentIntent === 'string') {
+    return paymentIntent;
+  }
+
+  return getString(getRecord(paymentIntent)?.id);
 }
 
 function mapStripeStatus(status: string | undefined): BillingStatus {
@@ -213,6 +252,10 @@ export function getBillingSyncFromStripeEvent(event: StripeEvent): BillingSyncPa
 
   switch (event.type) {
     case 'checkout.session.completed': {
+      if (getString(object.mode) === 'payment') {
+        return null;
+      }
+
       const plan = getString(metadata.plan) as BillingPlan | undefined;
       return {
         carrierId,
@@ -252,6 +295,38 @@ export function getBillingSyncFromStripeEvent(event: StripeEvent): BillingSyncPa
     default:
       return null;
   }
+}
+
+export function getStripeOneTimePaymentFromStripeEvent(event: StripeEvent): StripeOneTimePaymentPayload | null {
+  if (event.type !== 'checkout.session.completed') {
+    return null;
+  }
+
+  const object = event.data.object;
+  if (getString(object.mode) !== 'payment') {
+    return null;
+  }
+
+  const metadata = getMetadata(object);
+  const carrierId = getString(metadata.carrierId) ?? getString(object.client_reference_id);
+  const sessionId = getString(object.id);
+
+  if (!carrierId || !sessionId) {
+    return null;
+  }
+
+  return {
+    eventId: event.id,
+    carrierId,
+    stripeCustomerId: getCustomerId(object) ?? null,
+    stripeCheckoutSessionId: sessionId,
+    stripePaymentIntentId: getPaymentIntentId(object) ?? null,
+    amountTotal: getNumber(object.amount_total) ?? 0,
+    currency: getString(object.currency) ?? 'usd',
+    status: getString(object.payment_status) ?? getString(object.status) ?? 'unknown',
+    purchaseType: getString(metadata.purchaseType) ?? DEFAULT_ONE_TIME_PURCHASE_TYPE,
+    priceId: getString(metadata.priceId) ?? getStripeOneTimePriceId(),
+  };
 }
 
 async function postStripeForm<T>(path: string, body: URLSearchParams): Promise<T> {
@@ -304,6 +379,40 @@ export async function createStripeCheckoutSession(input: CheckoutSessionInput): 
     body.set('customer', input.stripeCustomerId);
   } else {
     body.set('client_reference_id', input.carrierId);
+  }
+
+  const session = await postStripeForm<{ url?: string }>('/checkout/sessions', body);
+
+  if (!session.url) {
+    throw new Error('stripe_checkout_session_failed');
+  }
+
+  return session.url;
+}
+
+export async function createStripeOneTimeCheckoutSession(input: OneTimeCheckoutSessionInput): Promise<string> {
+  const price = getStripeOneTimePriceId();
+
+  if (!price) {
+    throw new Error('stripe_one_time_price_required');
+  }
+
+  const purchaseType = input.purchaseType?.trim() || DEFAULT_ONE_TIME_PURCHASE_TYPE;
+  const body = new URLSearchParams({
+    mode: 'payment',
+    success_url: getCheckoutSuccessUrl(),
+    cancel_url: getCheckoutCancelUrl(),
+    'line_items[0][price]': price,
+    'line_items[0][quantity]': '1',
+    client_reference_id: input.carrierId,
+    'metadata[carrierId]': input.carrierId,
+    'metadata[purchaseType]': purchaseType,
+    'metadata[priceId]': price,
+    'metadata[mode]': 'payment',
+  });
+
+  if (input.stripeCustomerId) {
+    body.set('customer', input.stripeCustomerId);
   }
 
   const session = await postStripeForm<{ url?: string }>('/checkout/sessions', body);
