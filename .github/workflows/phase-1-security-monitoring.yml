@@ -33,7 +33,7 @@ permissions:
 
 env:
   NODE_VERSION: '22'
-  TARGET_URL: ${{ inputs.target_url || vars.ZAP_TARGET_URL || 'https://www.infamousfreight.com' }}
+  TARGET_URL: ${{ github.event.inputs.target_url || vars.ZAP_TARGET_URL || 'https://www.infamousfreight.com' }}
 
 concurrency:
   group: phase-1-security-monitoring-${{ github.workflow }}-${{ github.ref }}
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
+      pull-requests: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
