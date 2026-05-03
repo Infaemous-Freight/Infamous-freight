@@ -24,7 +24,7 @@ Use this file during production readiness verification. Do not mark the launch r
 | Phase | Pass | Fail | Unknown | Critical Blockers |
 |---|---:|---:|---:|---:|
 | Phase 0: Execution Controls | 1 | 0 | 0 | 0 |
-| Phase 1: Core System | 1 | 1 | 0 | 1 |
+| Phase 1: Core System | 1 | 2 | 0 | 2 |
 | Phase 2: User Flow | 0 | 0 | 1 | 0 |
 | Phase 3: Freight Workflow | 0 | 0 | 1 | 0 |
 | Phase 4: Billing | 0 | 0 | 1 | 0 |
@@ -41,6 +41,7 @@ Use this file during production readiness verification. Do not mark the launch r
 | B-003 | Medium | Tooling | `flyctl` CLI not installed in local dev environment; preflight check fails | MrMiless44 | CI/CD deploys via GitHub Actions which has flyctl configured | Open |
 | B-004 | Unknown | Billing | Stripe mode not confirmed as Live — must verify before accepting real payments | MrMiless44 | Do not accept payments until confirmed Live mode | Open |
 | B-005 | Unknown | Database | Database migration version not confirmed | MrMiless44 | Confirm with `prisma migrate status` before launch | Open |
+| B-006 | Critical | Infrastructure | Production redirect loop: `https://www.infamousfreight.com/` 301→`https://infamousfreight.com/` 301→`https://www.infamousfreight.com/` (observed 2026-05-03 09:00 UTC). `curl --max-redirs 10` exhausts without reaching HTML (final HTTP 301, body 43 bytes). Proxied `/api/health` also returns 301 because requests to `www` bounce before hitting the Netlify `/api/*` rule. `netlify.toml` only declares the apex→www direction, so the reverse www→apex 301 is being injected by an out-of-repo source (domain alias or registrar forwarding). | MrMiless44 | None — site is effectively unreachable through the canonical hostname. Until fixed, the API is reachable only via direct Fly URL (also currently timing out — see B-001). | Open |
 
 ## Evidence Entry Template
 
@@ -493,4 +494,54 @@ Fly API health (https://infamous-freight.fly.dev/api/health): timed out — FAIL
 Proxied API health (https://www.infamousfreight.com/api/health): {"ok":true} — PASS
 ```
 
+
+---
+
+## Test
+Phase 1 - Production Smoke Re-check (Launch Readiness Sprint)
+
+## Date/Time
+2026-05-03 09:00 UTC
+
+## Owner
+MrMiless44
+
+## Command or Action
+Re-run reachability checks against the production hostnames as part of the MVP launch-readiness sprint smoke test.
+
+```bash
+curl -sI --max-time 10 "https://www.infamousfreight.com/"
+curl -sI --max-time 10 "https://infamousfreight.com/"
+curl -s  --max-time 20 -L --max-redirs 10 -o /dev/null \
+  -w "FINAL_URL=%{url_effective} HTTP=%{http_code} REDIRS=%{num_redirects} SIZE=%{size_download}\n" \
+  "https://www.infamousfreight.com/"
+curl -s  --max-time 15 -L "https://www.infamousfreight.com/api/health"
+curl -s  --max-time 12    "https://infamous-freight.fly.dev/api/health"
+```
+
+## Expected Result
+- `https://www.infamousfreight.com/` returns HTTP 200 with HTML.
+- `https://www.infamousfreight.com/api/health` returns `{"ok":true}` (HTTP 200).
+- Direct Fly health endpoint returns HTTP 200.
+
+## Actual Result
+- **Canonical frontend (`https://www.infamousfreight.com/`)**: HTTP/2 **301** → `https://infamousfreight.com/` (server: Netlify; no security headers on this hop).
+- **Apex (`https://infamousfreight.com/`)**: HTTP/2 **301** → `https://www.infamousfreight.com/` (server: Netlify; full security header set, content-length 47).
+- **Follow redirects (`-L --max-redirs 10`)**: `FINAL_URL=https://www.infamousfreight.com/ HTTP=301 REDIRS=10 SIZE=43` — request never reaches HTML, redirect loop exhausts.
+- **Proxied API health (`https://www.infamousfreight.com/api/health`)**: HTTP **301** (request bounced into the same loop before reaching the Netlify `/api/*` proxy rule).
+- **Direct Fly API health (`https://infamous-freight.fly.dev/api/health`)**: HTTP **000** (timed out — still consistent with B-001).
+
+## Status
+FAIL
+
+## Severity
+Critical
+
+## Follow-Up
+- **B-006 (new, Critical)**: Production canonical hostname is in a `www ↔ apex` 301 redirect loop. `netlify.toml` only declares the apex→www direction (lines 17–40), so the reverse www→apex 301 is being injected by an out-of-repo source (Netlify domain alias or DNS/registrar-level forwarding). Owner: MrMiless44. Resolve before any further smoke testing — this masks every other Phase 1 check because no request reaches HTML.
+- **B-001 (still open, High)**: Direct Fly API endpoint still timing out as of 2026-05-03 09:00 UTC. With B-006 active there is no working backup path to the API.
+- Tracked launch-sprint follow-ups: production health verification — Infaemous-Freight/Infamous-freight#1787; production secrets — Infaemous-Freight/Infamous-freight#1788.
+
+## Notes
+This is a regression versus the 2026-04-27 evidence above (which recorded the canonical frontend as HTTP/2 200). Both responses in the loop carry `server: Netlify`, but only the apex→www response includes the documented security header set (`strict-transport-security`, `x-frame-options`, `x-content-type-options`, `permissions-policy`, `referrer-policy`, `content-security-policy`) — strongly suggesting the www→apex hop is being added at a layer above the `apps/web` Netlify site rather than by `netlify.toml`. Do not check off "Web app loads from production domain" in the launch-readiness checklist until B-006 is resolved and a fresh HTTP 200 + HTML response from `https://www.infamousfreight.com/` is captured here.
 
