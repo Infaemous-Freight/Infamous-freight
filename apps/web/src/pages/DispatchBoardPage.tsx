@@ -101,7 +101,7 @@ const DispatchBoardPage: React.FC = () => {
         </div>
         <div className="flex-1">
           <p className="text-sm font-semibold">Auto-Dispatch AI Ready</p>
-          <p className="text-xs text-gray-400">3 loads waiting for carriers — AI can match them in 90 seconds</p>
+          <p className="text-xs text-gray-400">3 loads need carriers. Auto-Dispatch will match them in about 90 seconds.</p>
         </div>
         <button onClick={runAutoDispatch} className="btn-primary flex items-center gap-2">
           <Zap size={16} /> Run Auto-Dispatch

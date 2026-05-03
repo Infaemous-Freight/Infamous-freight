@@ -16,7 +16,7 @@ const BillingRequiredPage = () => {
         </div>
 
         <p className="text-gray-300 text-lg leading-relaxed mb-6">
-          Operational tools are protected until your carrier account has an active subscription or trial. Public pages, login, onboarding, quote requests, shipment tracking, and billing pages remain available.
+          Start a trial or pick a plan to unlock dispatch, loads, drivers, invoices, and analytics. You can still log in, request quotes, and track shipments anytime.
         </p>
 
         <div className="grid md:grid-cols-2 gap-4 mb-8">
@@ -27,8 +27,8 @@ const BillingRequiredPage = () => {
           </div>
           <div className="rounded-xl border border-white/10 bg-black/20 p-5">
             <ShieldCheck className="w-6 h-6 text-infamous-orange mb-3" />
-            <h2 className="text-white font-semibold mb-2">Protected operations</h2>
-            <p className="text-gray-400 text-sm">Dispatch, loads, drivers, invoices, analytics, and compliance stay locked for unpaid accounts.</p>
+            <h2 className="text-white font-semibold mb-2">What's behind the paywall</h2>
+            <p className="text-gray-400 text-sm">Dispatch, loads, drivers, invoices, analytics, and compliance unlock as soon as billing is active.</p>
           </div>
         </div>
 

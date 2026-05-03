@@ -92,7 +92,7 @@ const BillingSettingsPanel: React.FC = () => {
 
   const startCheckout = async (plan: BillingPlan, billingInterval: BillingInterval) => {
     if (!canManageBilling) {
-      toast.error('Billing changes require owner or admin access.');
+      toast.error('Only an owner or admin can update billing. Ask your account owner to make changes.');
       return;
     }
 
@@ -140,9 +140,9 @@ const BillingSettingsPanel: React.FC = () => {
       <div className="card">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-lg font-semibold">Billing Control Center</h2>
+            <h2 className="text-lg font-semibold">Billing & usage</h2>
             <p className="mt-1 text-sm text-gray-400">
-              Manage subscription checkout, Stripe customer portal access, and AI usage visibility.
+              Pick a plan, manage your card and invoices, and review AI usage.
             </p>
           </div>
           <button

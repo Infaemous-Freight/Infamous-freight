@@ -42,7 +42,7 @@ const DriverGamification: React.FC = () => {
             <Trophy size={24} className="text-infamous-orange" />
             Driver Leaderboard
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">Gamified performance tracking — compete, earn, level up</p>
+          <p className="text-sm text-gray-500 mt-0.5">Track loads, on-time rate, and weekly revenue. Earn XP and badges for top performance.</p>
         </div>
       </div>
 

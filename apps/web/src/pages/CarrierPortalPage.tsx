@@ -13,7 +13,7 @@ const CarrierPortalPage: React.FC = () => {
         <header className="mb-8">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-infamous-orange">Carrier workspace</p>
           <h1 className="mt-2 text-3xl font-bold">Available loads, assigned work, documents, and pay status</h1>
-          <p className="mt-2 max-w-2xl text-gray-400">A carrier-facing MVP workflow that reduces dispatcher follow-up and keeps execution details in one place.</p>
+          <p className="mt-2 max-w-2xl text-gray-400">See available loads, your assigned work, document needs, and pay status — without chasing dispatch by phone.</p>
         </header>
 
         <section className="mb-6 grid gap-4 md:grid-cols-4">

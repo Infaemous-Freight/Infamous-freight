@@ -64,7 +64,7 @@ const PublicQuoteRequestPage: React.FC = () => {
                 <CheckCircle2 className="mb-3 text-green-400" size={32} />
                 <h2 className="text-xl font-bold">Quote request received</h2>
                 <p className="mt-2 text-gray-300">
-                  Dispatch should review lane details, confirm equipment, check carrier capacity, and reply with pricing.
+                  Dispatch will review your lane, confirm equipment, check carrier capacity, and reply with pricing — usually within one business day.
                 </p>
                 <button
                   type="button"
@@ -150,9 +150,9 @@ const PublicQuoteRequestPage: React.FC = () => {
             </div>
 
             <div className="rounded-3xl border border-infamous-border bg-[#111] p-6">
-              <h2 className="text-lg font-bold">Dispatch quality check</h2>
+              <h2 className="text-lg font-bold">Tips for a faster quote</h2>
               <p className="mt-3 text-sm leading-6 text-gray-400">
-                Best results come from complete origin/destination, freight type, weight, equipment, pickup date, and special requirements.
+                Fill in origin, destination, freight type, weight, equipment, and pickup date — we can quote sooner with the full picture.
               </p>
             </div>
           </aside>

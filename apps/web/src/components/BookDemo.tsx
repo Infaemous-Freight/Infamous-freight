@@ -193,7 +193,7 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
         {step === 'calendar' && (
           <div className="text-center">
             <h3 className="text-lg font-semibold text-white mb-2">Select a Time</h3>
-            <p className="text-sm text-zinc-400 mb-4">We've received your info! Choose a time below.</p>
+            <p className="text-sm text-zinc-400 mb-4">Thanks{formData.name ? `, ${formData.name}` : ''}. Pick a time that works for you.</p>
             {/* Calendly embed would go here */}
             <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-8">
               <p className="text-zinc-400 mb-4">Calendly Integration</p>
@@ -207,7 +207,7 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
               onClick={() => setStep('confirmed')}
               className="mt-4 bg-red-600 hover:bg-red-700"
             >
-              Simulate Booking
+              Confirm time
             </Button>
           </div>
         )}
@@ -217,7 +217,7 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
             <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">Demo Booked!</h3>
             <p className="text-zinc-400 mb-6">
-              We'll send a confirmation to {formData.email}. See you soon!
+              A confirmation is on its way to {formData.email} with the call link and prep notes.
             </p>
             <Button onClick={onClose} className="bg-red-600 hover:bg-red-700">
               Done

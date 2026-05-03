@@ -44,7 +44,7 @@ const LandingPage: React.FC = () => {
         <div className="mx-auto flex min-h-[76vh] max-w-7xl flex-col px-6 py-10 lg:flex-row lg:items-center lg:gap-12">
           <div className="max-w-3xl flex-1">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-infamous-orange/30 bg-infamous-orange/10 px-4 py-2 text-sm text-infamous-orange">
-              <Clock3 size={16} /> Freight control built for execution
+              <Clock3 size={16} /> Freight ops without the phone tag
             </div>
             <h1 className="text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
               Move freight with fewer calls, cleaner visibility, and tighter dispatch control.
@@ -116,7 +116,7 @@ const LandingPage: React.FC = () => {
         <div className="mb-8 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-infamous-orange">MVP workflow</p>
-            <h2 className="mt-2 text-3xl font-bold">Built around the work that makes or breaks freight operations.</h2>
+            <h2 className="mt-2 text-3xl font-bold">The three workflows that decide whether a load delivers clean.</h2>
           </div>
           <Link to="/freight-assistant" className="inline-flex items-center gap-2 text-infamous-orange hover:underline">
             Try freight assistant <Bot size={17} />
