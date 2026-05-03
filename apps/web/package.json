@@ -10,6 +10,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
+    "build:web": "pnpm run build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit"
