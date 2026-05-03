@@ -1,43 +1,12 @@
-# Buildhook packages in apps/web/.netlify/plugins/package.json are sourced from
-# URL-hosted tarballs installed automatically by Netlify integrations. See
-# docs/NETLIFY-BUILDHOOKS.md for ownership, integrity hashes, and update path.
-
 [build]
   publish = "apps/web/dist"
-  command = "npm run build"
+  command = "pnpm run build:web"
 
 [build.environment]
   NODE_VERSION = "22"
   NPM_FLAGS = "--legacy-peer-deps"
-  # Skip the UI-installed @netlify/plugin-nextjs — this is a Vite app, not Next.js.
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
-  # Keep Netlify builds green when Sentry auth token is missing/stale.
   SENTRY_DISABLE_UPLOAD = "true"
-
-# Canonical host: redirect every alternate hostname to https://www.infamousfreight.com
-[[redirects]]
-  from = "https://infamousfreight.com/*"
-  to = "https://www.infamousfreight.com/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://infamousfreight.com/*"
-  to = "https://www.infamousfreight.com/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "https://infamous-freight.netlify.app/*"
-  to = "https://www.infamousfreight.com/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://www.infamousfreight.com/*"
-  to = "https://www.infamousfreight.com/:splat"
-  status = 301
-  force = true
 
 [[redirects]]
   from = "/api/*"
@@ -68,7 +37,6 @@
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.infamousfreight.com wss://api.infamousfreight.com https://*.supabase.co; frame-src https://js.stripe.com;"
 
 [[headers]]
   for = "*.js"
@@ -80,9 +48,5 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Declaring the sitemap plugin here forces Netlify to install it from npm
-# (which ships the required manifest.yml) instead of relying on a stale
-# UI-configured installation that was missing the manifest.
 [[plugins]]
   package = "@netlify/plugin-sitemap"
-
