@@ -26,6 +26,7 @@ Ready for verification. Not approved for public launch until all critical checks
 | `docs/BACKUP_RESTORE_VERIFICATION.md` | Backup configuration and restore proof procedure |
 | `docs/NOTIFICATION_DELIVERABILITY_VERIFICATION.md` | Email, SMS, in-app, and support inbox deliverability checks |
 | `docs/LAUNCH_BLOCKER_TEMPLATE.md` | Standard format for launch blockers, root cause, workaround, fix plan, and retest evidence |
+| `docs/ADMIN_DASHBOARD_MVP_AUDIT.md` | Verification of admin/operator UI coverage for the MVP scope, with documented routes, gaps, and launch-gate impact |
 
 ## Execution Order
 
