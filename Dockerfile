@@ -19,6 +19,8 @@ FROM node:22-slim
 
 WORKDIR /usr/src/app
 
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
 ENV NODE_ENV=production
 ENV PORT=8080
 
