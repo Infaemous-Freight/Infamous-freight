@@ -11,8 +11,24 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
+function getAllowedNotificationOrigins(): string[] | true {
+  // Restrict WebSocket origins in production. In development, allow all so
+  // that `localhost` and Vite dev-server origins can connect freely.
+  const raw = process.env.CORS_ORIGINS ?? process.env.CORS_ORIGIN ?? '';
+  const list = raw
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  if (list.length > 0) {
+    return list;
+  }
+
+  return process.env.NODE_ENV === 'production' ? [] : true;
+}
+
 @WebSocketGateway({
-  cors: { origin: '*' },
+  cors: { origin: getAllowedNotificationOrigins(), credentials: true },
   namespace: '/notifications',
 })
 export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {

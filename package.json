@@ -60,10 +60,6 @@
   "overrides": {
     "react-is": "^18.3.1",
     "tar-fs": "~2.1.4",
-    "@sentry/react": {
-      "@sentry/core": "10.50.0",
-      "@sentry/browser": "10.50.0"
-    },
     "prisma": "6.19.3",
     "@prisma/client": "6.19.3"
   },

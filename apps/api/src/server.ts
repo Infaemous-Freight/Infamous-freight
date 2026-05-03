@@ -18,26 +18,25 @@ try {
   });
 } catch (error) {
   const startupError = error instanceof Error ? error.message : 'unknown_startup_error';
+  // Log the underlying error server-side only. Do not return it to clients
+  // in the /health response body to avoid leaking config or stack details.
   console.error(`API startup failed: ${startupError}`);
 
   const fallback = express();
 
+  const degradedResponse = () => ({
+    status: 'degraded' as const,
+    error: 'api_startup_failed',
+    message: 'API failed to start. Check server logs for details.',
+    timestamp: new Date().toISOString(),
+  });
+
   fallback.get('/health', (_req, res) => {
-    res.status(503).json({
-      status: 'degraded',
-      error: 'api_startup_failed',
-      message: startupError,
-      timestamp: new Date().toISOString(),
-    });
+    res.status(503).json(degradedResponse());
   });
 
   fallback.get('/api/health', (_req, res) => {
-    res.status(503).json({
-      status: 'degraded',
-      error: 'api_startup_failed',
-      message: startupError,
-      timestamp: new Date().toISOString(),
-    });
+    res.status(503).json(degradedResponse());
   });
 
   fallback.listen(port, host, () => {

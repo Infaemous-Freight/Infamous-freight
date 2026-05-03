@@ -10,7 +10,7 @@ primary_region = 'dfw'
   dockerfile = 'Dockerfile'
 
 [deploy]
-  strategy = 'immediate'
+  strategy = 'rolling'
   wait_timeout = '10m'
 
 [env]
