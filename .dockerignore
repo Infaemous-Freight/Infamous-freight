@@ -1,52 +1,40 @@
-# Dependencies
-node_modules/
-.pnp
-.pnp.js
+# Dependency/Build Directories
+node_modules
+npm-debug.log
+.npm
 
-# Build outputs
-dist/
-build/
-*.tsbuildinfo
+# TypeScript source files (we only need compiled JS in production)
+src
+*.ts
+!*.d.ts
 
-# Environment variables
+# Project Files
+.git
+.gitignore
+.dockerignore
+Dockerfile
+fly.toml # Fly.io configuration file
+tsconfig.json
+tslint.json
+.eslintrc*
+
+# Environment/Configuration Files
 .env
-.env.local
-.env.*.local
-
-# Logs
-logs/
+.DS_Store
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-# Cache
-.cache/
-.parcel-cache/
-.eslintcache
-.stylelintcache
-
-# IDE
-.vscode/*
-!.vscode/extensions.json
-.idea/
-*.swp
-*.swo
+# Development/Testing files and directories
+test
+tests
+__tests__
+docs
+coverage
+.nyc_output
+tmp
 *~
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Testing
-coverage/
-.nyc_output/
-
-# Prisma
-prisma/migrations/
-
-# Temporary files
-*.tmp
-*.temp
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
