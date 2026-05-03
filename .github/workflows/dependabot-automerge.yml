@@ -24,10 +24,15 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Enable auto-merge for safe updates
+        # Auto-merge only application-language semver-minor / semver-patch
+        # updates from Dependabot. GitHub Actions updates are intentionally
+        # excluded so that SHA-pin updates require human review (a malicious
+        # action publisher could push a minor/patch release otherwise).
         if: >-
-          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
-          steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
-          steps.metadata.outputs.package-ecosystem == 'github_actions'
+          steps.metadata.outputs.package-ecosystem != 'github_actions' && (
+            steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+            steps.metadata.outputs.update-type == 'version-update:semver-patch'
+          )
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
