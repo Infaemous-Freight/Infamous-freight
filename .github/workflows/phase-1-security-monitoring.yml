@@ -1,0 +1,146 @@
+name: Phase 1 Security and Monitoring Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'apps/**/package.json'
+      - '.github/workflows/**'
+      - '.zap/**'
+      - 'docs/operations/**'
+  push:
+    branches:
+      - main
+  schedule:
+    # Daily launch-readiness scan at 09:00 UTC.
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: 'Public URL to scan with OWASP ZAP baseline'
+        required: false
+        default: 'https://www.infamousfreight.com'
+
+permissions:
+  contents: read
+  issues: write
+  security-events: write
+  actions: read
+
+env:
+  NODE_VERSION: '22'
+  TARGET_URL: ${{ inputs.target_url || vars.ZAP_TARGET_URL || 'https://www.infamousfreight.com' }}
+
+concurrency:
+  group: phase-1-security-monitoring-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: always
+
+  dependency-audit:
+    name: pnpm dependency audit
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit production dependencies
+        run: pnpm audit --prod --audit-level high
+
+  production-smoke-monitor:
+    name: Production smoke monitor
+    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check production endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          target="${TARGET_URL%/}"
+          declare -a checks=(
+            "frontend|${target}/|200"
+            "proxied_api_health|${target}/api/health|200"
+          )
+
+          echo "## Phase 1 production smoke monitor" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Target: \`${target}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Check | Expected | Actual | Final URL | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---:|---:|---|---|" >> "$GITHUB_STEP_SUMMARY"
+
+          failed=0
+          for check in "${checks[@]}"; do
+            IFS='|' read -r name url expected <<< "$check"
+            output=$(curl --silent --show-error --location --max-time 20 --max-redirs 5 \
+              --output /dev/null \
+              --write-out '%{http_code}|%{url_effective}' \
+              "$url" || true)
+            actual="${output%%|*}"
+            final_url="${output#*|}"
+            result="PASS"
+            if [[ "$actual" != "$expected" ]]; then
+              result="FAIL"
+              failed=1
+            fi
+            echo "| ${name} | ${expected} | ${actual} | \`${final_url}\` | ${result} |" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+          exit "$failed"
+
+  owasp-zap-baseline:
+    name: OWASP ZAP baseline scan
+    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run OWASP ZAP baseline scan
+        uses: zaproxy/action-baseline@v0.15.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: ${{ env.TARGET_URL }}
+          fail_action: true
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a -j'
