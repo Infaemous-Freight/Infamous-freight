@@ -152,27 +152,30 @@ const filterTabs: { key: 'all' | QuoteStatus; label: string }[] = [
 
 const QuoteRequestsPage: React.FC = () => {
   const [filter, setFilter] = useState<'all' | QuoteStatus>('all');
+  const [quotes, setQuotes] = useState<QuoteRequest[]>(mockQuotes);
   const [selectedQuote, setSelectedQuote] = useState<QuoteRequest | null>(null);
   const [converting, setConverting] = useState(false);
 
-  const filtered = filter === 'all' ? mockQuotes : mockQuotes.filter((q) => q.status === filter);
+  const filtered = filter === 'all' ? quotes : quotes.filter((q) => q.status === filter);
 
   const counts = filterTabs.reduce<Record<string, number>>((acc, tab) => {
     acc[tab.key] = tab.key === 'all'
-      ? mockQuotes.length
-      : mockQuotes.filter((q) => q.status === tab.key).length;
+      ? quotes.length
+      : quotes.filter((q) => q.status === tab.key).length;
     return acc;
   }, {});
 
   const handleConvert = () => {
+    if (!selectedQuote || selectedQuote.status === 'CONVERTED') return;
     setConverting(true);
     setTimeout(() => {
       setConverting(false);
-      if (selectedQuote) {
-        // In production: POST /quote-requests/:id/convert-to-load
-        const loadId = selectedQuote.convertedLoadId ?? `LD-${Math.floor(1000 + Math.random() * 9000)}`;
-        toast.success(`Quote ${selectedQuote.quoteNumber} converted. Load ${loadId} is now in dispatch.`);
-      }
+      // In production: POST /quote-requests/:id/convert-to-load
+      const loadId = selectedQuote.convertedLoadId ?? `LD-${Math.floor(1000 + Math.random() * 9000)}`;
+      const updated: QuoteRequest = { ...selectedQuote, status: 'CONVERTED', convertedLoadId: loadId };
+      setQuotes((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
+      setSelectedQuote(updated);
+      toast.success(`Quote ${updated.quoteNumber} converted. Load ${loadId} is now in dispatch.`);
     }, 1500);
   };
 
@@ -196,10 +199,10 @@ const QuoteRequestsPage: React.FC = () => {
       {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Open Quotes', value: mockQuotes.filter((q) => ['NEW','REVIEWING','QUOTED'].includes(q.status)).length, icon: <ClipboardList size={18} />, color: 'text-infamous-orange' },
-          { label: 'Awaiting Approval', value: mockQuotes.filter((q) => q.status === 'APPROVED').length, icon: <CheckCircle size={18} />, color: 'text-green-400' },
-          { label: 'Converted to Loads', value: mockQuotes.filter((q) => q.status === 'CONVERTED').length, icon: <RefreshCw size={18} />, color: 'text-blue-400' },
-          { label: 'Rejected', value: mockQuotes.filter((q) => q.status === 'REJECTED').length, icon: <XCircle size={18} />, color: 'text-red-400' },
+          { label: 'Open Quotes', value: quotes.filter((q) => ['NEW','REVIEWING','QUOTED'].includes(q.status)).length, icon: <ClipboardList size={18} />, color: 'text-infamous-orange' },
+          { label: 'Awaiting Approval', value: quotes.filter((q) => q.status === 'APPROVED').length, icon: <CheckCircle size={18} />, color: 'text-green-400' },
+          { label: 'Converted to Loads', value: quotes.filter((q) => q.status === 'CONVERTED').length, icon: <RefreshCw size={18} />, color: 'text-blue-400' },
+          { label: 'Rejected', value: quotes.filter((q) => q.status === 'REJECTED').length, icon: <XCircle size={18} />, color: 'text-red-400' },
         ].map((stat, i) => (
           <div key={i} className="card flex items-center gap-3">
             <span className={stat.color}>{stat.icon}</span>

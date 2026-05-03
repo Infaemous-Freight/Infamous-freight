@@ -106,7 +106,7 @@ const OnboardingWizard: React.FC = () => {
               <label className="block text-sm text-gray-400 mb-1">Insurance Certificate (COI)</label>
               <div className="border-2 border-dashed border-[#333] rounded-lg p-6 text-center hover:border-[#ff3d00] transition-colors cursor-pointer">
                 <FileText className="mx-auto mb-2 text-gray-500" size={32} />
-                <p className="text-sm text-gray-400">Drop a COI PDF here, or click to browse. We'll auto-fill expiry and limits.</p>
+                <p className="text-sm text-gray-400">Drop a COI PDF here, or click to browse. Our team reviews it before activation.</p>
               </div>
             </div>
           </div>
