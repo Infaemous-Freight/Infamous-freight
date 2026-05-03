@@ -1,7 +1,7 @@
 # Stripe Billing Automation
 
-Date: April 27, 2026
-Status: Checkout, webhook sync, customer portal, webhook logging, duplicate checkout guard, and AI usage ledger foundation added
+Date: May 3, 2026
+Status: Checkout, webhook sync, customer portal, webhook logging, duplicate checkout guard, Checkout Session return IDs, webhook replay protection, and AI usage ledger foundation added
 
 ## Purpose
 
@@ -10,10 +10,13 @@ This runbook documents Stripe billing automation for Infamous Freight after cata
 The implementation adds:
 
 - Backend-created Stripe Checkout Sessions
+- Server-side Stripe Price ID selection
 - Stripe webhook verification
+- Stripe webhook replay protection with a 5-minute signature timestamp tolerance
 - Stripe webhook event logging
 - Subscription/customer sync to `Carrier`
 - Duplicate checkout protection
+- Checkout Session ID return in success redirects
 - Owner/admin customer portal endpoint
 - AI usage ledger API and database table
 - Billing UI in Settings
@@ -28,6 +31,12 @@ POST /api/billing/webhook
 ```
 
 This endpoint expects Stripe's raw request body and validates the `stripe-signature` header with `STRIPE_WEBHOOK_SECRET`.
+
+Important implementation details:
+
+- `/api/billing/webhook` is registered before `express.json()` so the raw request body remains available for signature verification.
+- Webhook signatures are rejected when the timestamp is more than 5 minutes outside the server clock to reduce replay risk.
+- The endpoint should be used as the source of truth for fulfillment and billing sync. Do not mark billing state from the success page alone.
 
 Verified events are logged to `StripeWebhookEvent` with status:
 
@@ -74,6 +83,8 @@ Supported billing intervals:
 month
 year
 ```
+
+The frontend sends only `plan` and `billingInterval`; the API maps those values to trusted server-side Stripe Price IDs. Do not accept raw prices or Price IDs from browser input.
 
 If a carrier already has a linked Stripe customer, checkout creation returns a conflict. Use the Customer Portal for billing changes after first checkout.
 
@@ -152,7 +163,7 @@ API:
 STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 STRIPE_PORTAL_RETURN_URL=https://www.infamousfreight.com/settings
-STRIPE_CHECKOUT_SUCCESS_URL=https://www.infamousfreight.com/settings?checkout=success
+STRIPE_CHECKOUT_SUCCESS_URL=https://www.infamousfreight.com/settings?checkout=success&session_id={CHECKOUT_SESSION_ID}
 STRIPE_CHECKOUT_CANCEL_URL=https://www.infamousfreight.com/settings?checkout=canceled
 ```
 
@@ -161,6 +172,8 @@ Optional fallback:
 ```env
 WEB_APP_URL=https://www.infamousfreight.com
 ```
+
+If `STRIPE_CHECKOUT_SUCCESS_URL` does not include `session_id`, the API automatically appends `session_id={CHECKOUT_SESSION_ID}` before creating the Stripe Checkout Session.
 
 Web:
 
@@ -249,6 +262,14 @@ metadata: {
 
 Subscription metadata also receives the same values so future subscription events can preserve plan mapping.
 
+Checkout Sessions also set:
+
+```ts
+client_reference_id: carrierId
+```
+
+Use `metadata.carrierId` and `client_reference_id` to connect Stripe activity back to the internal carrier/order context.
+
 ## Customer portal setup
 
 In Stripe Dashboard:
@@ -289,13 +310,14 @@ After deployment:
 4. Confirm `/api/billing/webhook` returns `200`.
 5. Start checkout from Settings → Billing & Plans using an internal carrier.
 6. Complete checkout.
-7. Confirm the carrier row has:
+7. Confirm the success redirect includes `session_id`.
+8. Confirm the carrier row has:
    - `stripeCustomerId`
    - correct `subscriptionTier`
    - correct `status`
-8. Confirm `StripeWebhookEvent` logged the webhook as `processed`.
-9. Open customer portal from Settings as owner/admin.
-10. Record one AI usage event and confirm it appears in Settings → Billing & Plans.
+9. Confirm `StripeWebhookEvent` logged the webhook as `processed`.
+10. Open customer portal from Settings as owner/admin.
+11. Record one AI usage event and confirm it appears in Settings → Billing & Plans.
 
 ## Notes
 
