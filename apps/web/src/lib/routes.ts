@@ -12,6 +12,9 @@ export const PUBLIC_PATH_PREFIXES = [
   '/customer-portal',
   '/carrier-portal',
   '/freight-assistant',
+  '/pricing',
+  '/partners',
+  '/drive',
 ] as const;
 
 export const PUBLIC_PATHS: ReadonlySet<string> = new Set([
@@ -24,6 +27,9 @@ export const PUBLIC_PATHS: ReadonlySet<string> = new Set([
   '/customer-portal',
   '/carrier-portal',
   '/freight-assistant',
+  '/pricing',
+  '/partners',
+  '/drive',
 ]);
 
 export function isPublicPath(pathname: string): boolean {
