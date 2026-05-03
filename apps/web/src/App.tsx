@@ -35,6 +35,9 @@ const ShipmentTrackingPage = lazy(() => import('@/pages/ShipmentTrackingPage'));
 const CustomerPortalPage = lazy(() => import('@/pages/CustomerPortalPage'));
 const CarrierPortalPage = lazy(() => import('@/pages/CarrierPortalPage'));
 const FreightAssistantPage = lazy(() => import('@/pages/FreightAssistantPage'));
+const PricingPage = lazy(() => import('@/pages/PricingPage'));
+const PartnersPage = lazy(() => import('@/pages/PartnersPage'));
+const DriversApplyPage = lazy(() => import('@/pages/DriversApplyPage'));
 
 const RouteFallback = () => (
   <div className="h-full w-full flex items-center justify-center p-6">
@@ -78,6 +81,9 @@ function App() {
         <Route path="/customer-portal" element={<CustomerPortalPage />} />
         <Route path="/carrier-portal" element={<CarrierPortalPage />} />
         <Route path="/freight-assistant" element={<FreightAssistantPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/partners" element={<PartnersPage />} />
+        <Route path="/drive" element={<DriversApplyPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/onboarding" element={<OnboardingWizard />} />
       </Routes>
