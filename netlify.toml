@@ -9,6 +9,18 @@
   SENTRY_DISABLE_UPLOAD = "true"
 
 [[redirects]]
+  from = "https://infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://infamous-freight.netlify.app/*"
+  to = "https://www.infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/api/*"
   to = "https://infamous-freight.fly.dev/api/:splat"
   status = 200
