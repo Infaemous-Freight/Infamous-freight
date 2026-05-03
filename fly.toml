@@ -9,6 +9,10 @@ primary_region = 'dfw'
 [build]
   dockerfile = 'Dockerfile'
 
+[deploy]
+  strategy = 'immediate'
+  wait_timeout = '10m'
+
 [env]
   HOST = '0.0.0.0'
   NODE_ENV = 'production'
