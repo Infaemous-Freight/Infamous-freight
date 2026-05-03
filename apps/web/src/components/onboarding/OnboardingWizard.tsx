@@ -106,7 +106,7 @@ const OnboardingWizard: React.FC = () => {
               <label className="block text-sm text-gray-400 mb-1">Insurance Certificate (COI)</label>
               <div className="border-2 border-dashed border-[#333] rounded-lg p-6 text-center hover:border-[#ff3d00] transition-colors cursor-pointer">
                 <FileText className="mx-auto mb-2 text-gray-500" size={32} />
-                <p className="text-sm text-gray-400">Drop COI PDF here or click to upload</p>
+                <p className="text-sm text-gray-400">Drop a COI PDF here, or click to browse. Our team reviews it before activation.</p>
               </div>
             </div>
           </div>
@@ -229,7 +229,7 @@ const OnboardingWizard: React.FC = () => {
       case 'eld':
         return (
           <div className="space-y-4">
-            <p className="text-sm text-gray-400">Connect your ELD provider for HOS-aware dispatch</p>
+            <p className="text-sm text-gray-400">Connect your ELD so dispatch can see drivers' available hours in real time.</p>
             <div className="grid grid-cols-2 gap-3">
               {[
                 { name: 'Samsara', color: '#4CAF50' },
@@ -337,7 +337,7 @@ const OnboardingWizard: React.FC = () => {
               onClick={markComplete}
               className="w-full bg-gradient-to-r from-[#ff3d00] to-[#ff6d00] hover:from-[#ff6d00] hover:to-[#ff8d00] text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-[#ff3d00]/20"
             >
-              Start Free Trial — Book Your First Load
+              Start 14-day free trial
             </button>
           </div>
         );
@@ -353,7 +353,7 @@ const OnboardingWizard: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Welcome to Infamous Freight</h1>
-          <p className="text-gray-400">Let's get your fleet set up in under 10 minutes</p>
+          <p className="text-gray-400">Six quick steps to get your fleet dispatching.</p>
         </div>
 
         {/* Progress */}

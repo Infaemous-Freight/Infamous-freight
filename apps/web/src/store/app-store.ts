@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { SubscriptionStatus } from '@/lib/paywall';
 
 export type AppPage =
   | 'dashboard' | 'loads' | 'dispatch' | 'drivers' | 'invoices'
@@ -11,6 +12,7 @@ interface User {
   role: string;
   carrierId: string;
   avatar?: string;
+  subscriptionStatus?: SubscriptionStatus;
 }
 
 interface Notification {

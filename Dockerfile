@@ -1,45 +1,45 @@
-FROM node:22-alpine AS deps
+# Stage 1: Build the Application
+# We use node:22 as the base for building and installing dependencies.
+FROM node:22 AS build
 
-WORKDIR /app
+# Set the working directory inside the container
+WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
-COPY apps/api/package.json ./apps/api/package.json
-RUN npm ci --omit=dev --workspace apps/api --include-workspace-root=false
+# Copy package.json and package-lock.json first to leverage Docker caching.
+# If these files don't change, subsequent builds can skip 'npm install'.
+COPY package*.json ./
+COPY tsconfig.json ./
 
-FROM node:22-alpine AS build
+# Install dependencies including TypeScript
+RUN npm install
+RUN npm install --save-dev typescript @types/node
 
-WORKDIR /app
+# Copy the rest of the application source code
+COPY . .
 
-COPY package.json package-lock.json ./
-COPY apps/api/package.json ./apps/api/package.json
-RUN npm ci --workspace apps/api
+# Build TypeScript
+RUN npm run build || npx tsc
 
-COPY apps/api ./apps/api
-RUN npm run prisma:generate --workspace apps/api
-RUN npm run build --workspace apps/api
+# Stage 2: Create the Final Production Image
+# We use node:22-slim as a minimal runtime image.
+FROM node:22-slim
 
-FROM node:22-alpine AS runtime
+# Set the working directory
+WORKDIR /usr/src/app
 
-WORKDIR /app
-ENV NODE_ENV=production
+# Copy only production dependencies
+COPY --from=build /usr/src/app/package*.json ./
+RUN npm install --only=production
 
-RUN apk add --no-cache openssl
+# Copy the built application files from the 'build' stage
+COPY --from=build /usr/src/app/dist ./dist
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY package.json package-lock.json ./
-COPY apps/api/package.json ./apps/api/package.json
-COPY --from=build /app/apps/api/dist ./apps/api/dist
-COPY --from=build /app/apps/api/prisma ./apps/api/prisma
+# Expose the port your app runs on
+ENV PORT=8080
+EXPOSE $PORT
 
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
-USER nodejs
+# Run the application using the non-root user (recommended for security)
+USER node
 
-WORKDIR /app/apps/api
-ENV PORT=3000
-EXPOSE 3000
-
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD node -e "const port = process.env.PORT || 3000; const http = require('http'); const req = http.get('http://localhost:' + port + '/api/health', (r) => { let body = ''; r.on('data', (chunk) => { body += chunk; }); r.on('end', () => { try { const health = JSON.parse(body); process.exit(r.statusCode === 200 && health.status === 'ok' ? 0 : 1); } catch (e) { process.exit(1); } }); }); req.on('error', () => process.exit(1));"
-
-CMD ["node", "dist/src/server.js"]
+# Define the command to start your application
+CMD [ "node", "dist/index.js" ]

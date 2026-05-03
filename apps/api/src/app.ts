@@ -6,7 +6,6 @@ import {
   createDataStore,
   DataStore,
   FreightOperationResource,
-  LoadAssignmentDecision,
 } from './data-store';
 import {
   BillingInterval,
@@ -19,14 +18,18 @@ import {
   verifyStripeWebhookSignature,
 } from './billing';
 import { createAiUsageStore } from './ai-usage';
+import { createRateLimitMiddleware } from './rate-limit';
 import { createStripeWebhookEventStore } from './stripe-webhook-events';
+import { createFreightWorkflowRouter } from './freight-workflow-routes';
 
 type Role = 'owner' | 'admin' | 'dispatcher';
+type SubscriptionStatus = 'active' | 'trialing' | 'past_due' | 'unpaid' | 'canceled' | 'incomplete' | 'none';
 
 const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'dispatcher'];
 const BILLING_ROLES: Role[] = ['owner', 'admin'];
 const BILLING_PLANS: BillingPlan[] = ['starter', 'professional', 'enterprise'];
 const BILLING_INTERVALS: BillingInterval[] = ['month', 'year'];
+const PAID_SUBSCRIPTION_STATUSES: SubscriptionStatus[] = ['active', 'trialing'];
 const FREIGHT_OPERATION_RESOURCES: FreightOperationResource[] = [
   'quoteRequests',
   'loadAssignments',
@@ -38,7 +41,6 @@ const FREIGHT_OPERATION_RESOURCES: FreightOperationResource[] = [
   'operationalMetrics',
   'loadBoardPosts',
 ];
-const LOAD_ASSIGNMENT_DECISIONS: LoadAssignmentDecision[] = ['accepted', 'rejected'];
 
 class HttpError extends Error {
   statusCode: number;
@@ -98,6 +100,49 @@ function requireBillingRole(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
+function getSubscriptionStatus(req: Request): SubscriptionStatus {
+  const defaultStatus =
+    process.env.DEFAULT_SUBSCRIPTION_STATUS ??
+    (process.env.NODE_ENV === 'test' ? 'active' : 'none');
+
+  const status = (
+    req.header('x-subscription-status') ??
+    req.header('x-billing-status') ??
+    req.header('x-carrier-subscription-status') ??
+    defaultStatus
+  ).trim().toLowerCase();
+
+  if (
+    status === 'active' ||
+    status === 'trialing' ||
+    status === 'past_due' ||
+    status === 'unpaid' ||
+    status === 'canceled' ||
+    status === 'incomplete' ||
+    status === 'none'
+  ) {
+    return status;
+  }
+
+  return 'none';
+}
+
+function requirePaidSubscription(req: Request, res: Response, next: NextFunction) {
+  const subscriptionStatus = getSubscriptionStatus(req);
+
+  if (!PAID_SUBSCRIPTION_STATUSES.includes(subscriptionStatus)) {
+    return res.status(402).json({
+      error: 'payment_required',
+      message: 'An active subscription or trial is required to access this resource.',
+      billingUrl: '/billing',
+      subscriptionStatus,
+    });
+  }
+
+  req.subscriptionStatus = subscriptionStatus;
+  next();
+}
+
 function initializeSentry() {
   const dsn = process.env.SENTRY_DSN;
 
@@ -113,7 +158,7 @@ function initializeSentry() {
 }
 
 function getAllowedCorsOrigins(): string[] {
-  return (process.env.CORS_ORIGINS ?? '')
+  return (process.env.CORS_ORIGINS ?? process.env.CORS_ORIGIN ?? '')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
@@ -151,20 +196,6 @@ function getFreightOperationResource(req: Request): FreightOperationResource {
   }
 
   return resource as FreightOperationResource;
-}
-
-function getLoadAssignmentDecision(req: Request): LoadAssignmentDecision {
-  const decision = req.params.decision;
-
-  if (!LOAD_ASSIGNMENT_DECISIONS.includes(decision as LoadAssignmentDecision)) {
-    throw new HttpError(
-      400,
-      'invalid_load_assignment_decision',
-      'Load assignment decision must be accepted or rejected.',
-    );
-  }
-
-  return decision as LoadAssignmentDecision;
 }
 
 function getCheckoutPlan(req: Request): BillingPlan {
@@ -252,6 +283,71 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
 function registerRoutes(app: express.Express, dataStore: DataStore) {
   const aiUsageStore = createAiUsageStore();
 
+  // Public lead intake endpoints — no authentication required
+  app.post('/api/leads/quote', wrapAsync(async (req, res) => {
+    const { name, email, originCity, destCity, freightType, weight, pickupDate } = req.body ?? {};
+
+    const missing: string[] = [];
+    if (!name || typeof name !== 'string') missing.push('name');
+    if (!email || typeof email !== 'string') missing.push('email');
+    if (!originCity || typeof originCity !== 'string') missing.push('originCity');
+    if (!destCity || typeof destCity !== 'string') missing.push('destCity');
+    if (!freightType || typeof freightType !== 'string') missing.push('freightType');
+    if (weight === undefined || weight === null || isNaN(parseFloat(String(weight)))) missing.push('weight');
+    if (!pickupDate || typeof pickupDate !== 'string') missing.push('pickupDate');
+
+    if (missing.length > 0) {
+      throw new HttpError(
+        400,
+        'quote_lead_missing_fields',
+        `Missing required fields: ${missing.join(', ')}.`,
+      );
+    }
+
+    const data = await dataStore.submitQuoteLead({ ...req.body, source: 'quote-form' });
+    res.status(201).json({ data });
+  }));
+
+  app.post('/api/leads/demo', wrapAsync(async (req, res) => {
+    const { name, email } = req.body ?? {};
+
+    if (!email || typeof email !== 'string') {
+      throw new HttpError(400, 'demo_lead_missing_email', 'email is required.');
+    }
+
+    const data = await dataStore.submitQuoteLead({
+      ...req.body,
+      name: name ?? '',
+      originCity: '',
+      destCity: '',
+      freightType: '',
+      weight: 0,
+      pickupDate: '',
+      source: 'demo-request',
+    });
+    res.status(201).json({ data });
+  }));
+
+  app.post('/api/leads/discount', wrapAsync(async (req, res) => {
+    const { email } = req.body ?? {};
+
+    if (!email || typeof email !== 'string') {
+      throw new HttpError(400, 'discount_lead_missing_email', 'email is required.');
+    }
+
+    const data = await dataStore.submitQuoteLead({
+      ...req.body,
+      name: '',
+      originCity: '',
+      destCity: '',
+      freightType: '',
+      weight: 0,
+      pickupDate: '',
+      source: req.body?.source ?? 'exit-intent',
+    });
+    res.status(201).json({ data });
+  }));
+
   app.get('/api/billing/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
     const stripeCustomerId = await dataStore.getCarrierStripeCustomerId(getRequiredTenantId(req));
     res.status(200).json({
@@ -299,7 +395,9 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data: { url } });
   }));
 
-  app.post('/api/ai-usage/events', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  const protectedApi = [requireTenant, requireRole, requirePaidSubscription];
+
+  app.post('/api/ai-usage/events', ...protectedApi, wrapAsync(async (req, res) => {
     if (!req.body?.feature || typeof req.body.feature !== 'string') {
       throw new HttpError(400, 'ai_usage_feature_required', 'AI usage events require a feature string.');
     }
@@ -312,54 +410,54 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(201).json({ data });
   }));
 
-  app.get('/api/ai-usage/summary', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/ai-usage/summary', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await aiUsageStore.summarize(getRequiredTenantId(req));
     res.status(200).json({ data });
   }));
 
-  app.get('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/loads', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.listLoads(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/loads', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/loads', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.createLoad(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.get('/api/drivers', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/drivers', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.listDrivers(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/drivers', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/drivers', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.createDriver(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.get('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/shipments', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.listShipments(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/shipments', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/shipments', ...protectedApi, wrapAsync(async (req, res) => {
     const data = await dataStore.createShipment(getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.get('/api/freight-operations/:resource', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.get('/api/freight-operations/:resource', ...protectedApi, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.listFreightOperations(resource, getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.post('/api/freight-operations/:resource', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.post('/api/freight-operations/:resource', ...protectedApi, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.createFreightOperation(resource, getRequiredTenantId(req), req.body);
     res.status(201).json({ data });
   }));
 
-  app.patch('/api/freight-operations/:resource/:id', requireTenant, requireRole, wrapAsync(async (req, res) => {
+  app.patch('/api/freight-operations/:resource/:id', ...protectedApi, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.updateFreightOperation(
       resource,
@@ -370,50 +468,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore) {
     res.status(200).json({ data });
   }));
 
-  app.post('/api/workflows/quotes/:id/convert-to-load', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.convertQuoteToLoad(getRequiredTenantId(req), req.params.id, req.body);
-    res.status(201).json({ data });
-  }));
-
-  app.post('/api/workflows/load-assignments/:id/:decision', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.respondToLoadAssignment(
-      getRequiredTenantId(req),
-      req.params.id,
-      getLoadAssignmentDecision(req),
-      req.body,
-    );
-    res.status(200).json({ data });
-  }));
-
-  app.post('/api/workflows/dispatches/:id/confirm', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.confirmDispatch(getRequiredTenantId(req), req.params.id, req.body);
-    res.status(200).json({ data });
-  }));
-
-  app.post('/api/workflows/loads/:loadId/tracking-updates', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.recordTrackingUpdate(getRequiredTenantId(req), req.params.loadId, req.body);
-    res.status(201).json({ data });
-  }));
-
-  app.post('/api/workflows/loads/:loadId/verify-delivery', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.verifyDelivery(getRequiredTenantId(req), req.params.loadId, req.body);
-    res.status(201).json({ data });
-  }));
-
-  app.post('/api/workflows/carrier-payments/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.updateCarrierPaymentStatus(getRequiredTenantId(req), req.params.id, req.body);
-    res.status(200).json({ data });
-  }));
-
-  app.post('/api/workflows/operational-metrics/rollup', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.rollupOperationalMetrics(getRequiredTenantId(req), req.body);
-    res.status(201).json({ data });
-  }));
-
-  app.post('/api/workflows/load-board-posts/:id/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
-    const data = await dataStore.updateLoadBoardPostStatus(getRequiredTenantId(req), req.params.id, req.body);
-    res.status(200).json({ data });
-  }));
+  app.use('/api/workflows', ...protectedApi, createFreightWorkflowRouter(dataStore));
 }
 
 export function createApp() {
@@ -442,6 +497,7 @@ export function createApp() {
     }),
   );
 
+  app.use('/api', createRateLimitMiddleware('api'));
   registerWebhookRoute(app, dataStore);
   app.use(express.json());
 
@@ -519,6 +575,7 @@ declare global {
     interface Request {
       tenantId?: string;
       userRole?: Role;
+      subscriptionStatus?: SubscriptionStatus;
     }
   }
 }

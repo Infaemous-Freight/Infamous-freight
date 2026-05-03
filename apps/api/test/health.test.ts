@@ -1,5 +1,13 @@
 import request from 'supertest';
 import { createApp } from '../src/app';
+import { resetRateLimitBucketsForTests } from '../src/rate-limit';
+
+afterEach(() => {
+  resetRateLimitBucketsForTests();
+  delete process.env.RATE_LIMIT_ENABLED;
+  delete process.env.RATE_LIMIT_WINDOW_MS;
+  delete process.env.RATE_LIMIT_MAX_REQUESTS;
+});
 
 describe('health endpoint', () => {
   it('returns 200 and ok status on /health', async () => {
@@ -20,11 +28,42 @@ describe('health endpoint', () => {
   });
 });
 
+describe('rate limiting', () => {
+  it('returns 429 after the configured API request limit is exceeded', async () => {
+    process.env.RATE_LIMIT_WINDOW_MS = '60000';
+    process.env.RATE_LIMIT_MAX_REQUESTS = '1';
+
+    const app = createApp();
+
+    const allowed = await request(app).get('/api/health');
+    expect(allowed.status).toBe(200);
+
+    const limited = await request(app).get('/api/health');
+    expect(limited.status).toBe(429);
+    expect(limited.header['retry-after']).toBeDefined();
+    expect(limited.body.error).toBe('rate_limit_exceeded');
+  });
+
+  it('allows API requests when rate limiting is explicitly disabled', async () => {
+    process.env.RATE_LIMIT_ENABLED = 'false';
+    process.env.RATE_LIMIT_MAX_REQUESTS = '1';
+
+    const app = createApp();
+
+    const first = await request(app).get('/api/health');
+    const second = await request(app).get('/api/health');
+
+    expect(first.status).toBe(200);
+    expect(second.status).toBe(200);
+  });
+});
+
 describe('tenant-protected resource routes', () => {
   it('rejects /api/loads without tenant id', async () => {
     const response = await request(createApp())
       .get('/api/loads')
-      .set('x-user-role', 'dispatcher');
+      .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active');
 
     expect(response.status).toBe(400);
     expect(response.body.error).toBe('tenant_id_required');
@@ -62,6 +101,7 @@ describe('tenant-protected resource routes', () => {
       .post('/api/shipments')
       .set('x-tenant-id', 'tenant-1')
       .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active')
       .send(shipmentForTenant1);
 
     expect(createForT1.status).toBe(201);
@@ -71,6 +111,7 @@ describe('tenant-protected resource routes', () => {
       .post('/api/shipments')
       .set('x-tenant-id', 'tenant-2')
       .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active')
       .send(shipmentForTenant2);
 
     expect(createForT2.status).toBe(201);
@@ -78,7 +119,8 @@ describe('tenant-protected resource routes', () => {
     const listT1 = await request(app)
       .get('/api/shipments')
       .set('x-tenant-id', 'tenant-1')
-      .set('x-user-role', 'dispatcher');
+      .set('x-user-role', 'dispatcher')
+      .set('x-subscription-status', 'active');
 
     expect(listT1.status).toBe(200);
     expect(listT1.body.count).toBe(1);

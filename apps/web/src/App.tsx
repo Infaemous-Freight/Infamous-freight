@@ -1,30 +1,56 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 import AppLayout from '@/layouts/AppLayout';
-import DashboardPage from '@/pages/DashboardPage';
-import LoadsPage from '@/pages/LoadsPage';
-import DispatchBoardPage from '@/pages/DispatchBoardPage';
-import DriversPage from '@/pages/DriversPage';
-import InvoicesPage from '@/pages/InvoicesPage';
-import CompliancePage from '@/pages/CompliancePage';
-import SettingsPage from '@/pages/SettingsPage';
-import RateComparisonTool from '@/components/RateComparisonTool';
-import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
-import MetricsDashboard from '@/pages/MetricsDashboard';
-import CaseStudies from '@/pages/CaseStudies';
-import ProductHunt from '@/pages/ProductHunt';
-import GDPR from '@/pages/GDPR';
-import LaunchValidationPage from '@/pages/LaunchValidationPage';
-import { PayPerLoadPricing } from '@/components/PayPerLoadPricing';
-import { ReferralProgram } from '@/components/ReferralProgram';
-import LoginPage from '@/pages/LoginPage';
+import SeoManager from '@/components/SeoManager';
+import { AppErrorBoundary } from '@/components/SentryErrorBoundary';
+
+const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
+const LoadsPage = lazy(() => import('@/pages/LoadsPage'));
+const DispatchBoardPage = lazy(() => import('@/pages/DispatchBoardPage'));
+const DriversPage = lazy(() => import('@/pages/DriversPage'));
+const InvoicesPage = lazy(() => import('@/pages/InvoicesPage'));
+const CompliancePage = lazy(() => import('@/pages/CompliancePage'));
+const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
+const BillingRequiredPage = lazy(() => import('@/pages/BillingRequiredPage'));
+const RateComparisonTool = lazy(() => import('@/components/RateComparisonTool'));
+const OnboardingWizard = lazy(() => import('@/components/onboarding/OnboardingWizard'));
+const MetricsDashboard = lazy(() => import('@/pages/MetricsDashboard'));
+const CaseStudies = lazy(() => import('@/pages/CaseStudies'));
+const ProductHunt = lazy(() => import('@/pages/ProductHunt'));
+const GDPR = lazy(() => import('@/pages/GDPR'));
+const LaunchValidationPage = lazy(() => import('@/pages/LaunchValidationPage'));
+const PayPerLoadPricing = lazy(() =>
+  import('@/components/PayPerLoadPricing').then((m) => ({ default: m.PayPerLoadPricing }))
+);
+const ReferralProgram = lazy(() =>
+  import('@/components/ReferralProgram').then((m) => ({ default: m.ReferralProgram }))
+);
+const LoginPage = lazy(() => import('@/pages/LoginPage'));
+const CarriersPage = lazy(() => import('@/pages/CarriersPage'));
+const AccountingDashboardPage = lazy(() => import('@/pages/AccountingDashboardPage'));
+const QuoteRequestsPage = lazy(() => import('@/pages/QuoteRequestsPage'));
+const LandingPage = lazy(() => import('@/pages/LandingPage'));
+const PublicQuoteRequestPage = lazy(() => import('@/pages/PublicQuoteRequestPage'));
+const ShipmentTrackingPage = lazy(() => import('@/pages/ShipmentTrackingPage'));
+const CustomerPortalPage = lazy(() => import('@/pages/CustomerPortalPage'));
+const CarrierPortalPage = lazy(() => import('@/pages/CarrierPortalPage'));
+const FreightAssistantPage = lazy(() => import('@/pages/FreightAssistantPage'));
+
+const RouteFallback = () => (
+  <div className="h-full w-full flex items-center justify-center p-6">
+    <div className="w-8 h-8 border-2 border-infamous-orange border-t-transparent rounded-full animate-spin" />
+  </div>
+);
 
 function App() {
   return (
-    <>
-      <Routes>
+    <AppErrorBoundary>
+      <Suspense fallback={<RouteFallback />}>
+        <SeoManager />
+        <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
+          <Route path="/ops" element={<DashboardPage />} />
           <Route path="/loads" element={<LoadsPage />} />
           <Route path="/dispatch" element={<DispatchBoardPage />} />
           <Route path="/drivers" element={<DriversPage />} />
@@ -32,6 +58,7 @@ function App() {
           <Route path="/analytics" element={<MetricsDashboard />} />
           <Route path="/compliance" element={<CompliancePage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/billing" element={<BillingRequiredPage />} />
           <Route path="/rate-comparison" element={<RateComparisonTool />} />
           <Route path="/pay-per-load" element={<PayPerLoadPricing />} />
           <Route path="/referrals" element={<ReferralProgram />} />
@@ -39,14 +66,23 @@ function App() {
           <Route path="/product-hunt" element={<ProductHunt />} />
           <Route path="/gdpr" element={<GDPR />} />
           <Route path="/launch-validation" element={<LaunchValidationPage />} />
+          <Route path="/carriers" element={<CarriersPage />} />
+          <Route path="/accounting" element={<AccountingDashboardPage />} />
+          <Route path="/quotes" element={<QuoteRequestsPage />} />
         </Route>
 
-        {/* Public routes (no layout) */}
+        {/* Public routes (no layout) — see src/lib/routes.ts */}
+        <Route path="/home" element={<LandingPage />} />
+        <Route path="/request-quote" element={<PublicQuoteRequestPage />} />
+        <Route path="/track-shipment" element={<ShipmentTrackingPage />} />
+        <Route path="/customer-portal" element={<CustomerPortalPage />} />
+        <Route path="/carrier-portal" element={<CarrierPortalPage />} />
+        <Route path="/freight-assistant" element={<FreightAssistantPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/onboarding" element={<OnboardingWizard />} />
       </Routes>
-      <SpeedInsights />
-    </>
+    </Suspense>
+    </AppErrorBoundary>
   );
 }
 

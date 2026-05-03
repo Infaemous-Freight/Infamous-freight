@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://infamousfreight.com" target="_blank" rel="noopener noreferrer">
+    <img src="/docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
+  </a>
+</p>
+
 # Infamous Freight — Integrations & Secrets Inventory
 
 Centralized reference for every external service and CI/CD secret used by this
@@ -51,7 +57,7 @@ Set these in **Netlify → Site settings → Environment variables** for the web
 | `VITE_STRIPE_PUBLIC_KEY` | Payments team | Stripe publishable key, `pk_live_...` | Used by `@stripe/stripe-js` to initialise the Stripe payment element |
 | `VITE_SUPABASE_URL` | Platform team | Supabase project URL | Used by the web client for Supabase auth and client calls |
 | `VITE_SUPABASE_ANON_KEY` | Platform team | Supabase anon key | Public Supabase client key used by the browser app |
-| `VITE_SENTRY_DSN` | Platform team | `https://6bfe6c333544c976cbba3633aad08ad4@o4511126931963904.ingest.us.sentry.io/4511126932226048` | Connects the React web app to the `infamous-freight` Sentry project |
+| `VITE_SENTRY_DSN` | Platform team | `https://<public-key>@o<org-id>.ingest.us.sentry.io/<project-id>` | Connects the React web app to the `infamous-freight` Sentry project |
 | `VITE_SENTRY_ENABLED` | Platform team | `true` | Enables Sentry in production when the DSN is present; set to `false` for emergency disable |
 | `SENTRY_AUTH_TOKEN` | Platform team | Sentry auth token with release/source-map permissions | Allows the Sentry Vite plugin to upload production source maps during Netlify builds |
 | `SENTRY_ORG` | Platform team | `infmous` | Sentry organization slug |
@@ -77,6 +83,27 @@ here for ownership awareness.
 
 ## 3. Runbooks
 
+### 3.0 Bootstrap deployment CLIs (local/dev container)
+
+Install the baseline deployment CLIs used by this repository (Docker, Fly.io,
+and `jq`) with:
+
+```bash
+sudo bash scripts/install-dev-clis.sh
+```
+
+If Docker is installed but not running in your environment, start it before
+attempting image builds:
+
+```bash
+sudo systemctl start docker
+docker info
+```
+
+In restricted containers/CI, the Docker CLI may be installed while the daemon
+socket remains unavailable; in that case `docker info` will fail until a daemon
+is provided.
+
 ### 3.1 Deploy failure — API (Fly.io)
 
 **Symptom:** The `deploy-api` job fails or the API is unreachable at
@@ -98,6 +125,18 @@ here for ownership awareness.
    ```bash
    fly status --app infamous-freight
    fly machines restart --app infamous-freight
+   ```
+   If a single machine needs a targeted runtime update, first list machines and
+   then update by machine ID:
+   ```bash
+   fly machines list --app infamous-freight
+   fly machine update <machine_id> --app infamous-freight --vm-size shared-cpu-1x
+   ```
+   Use machine-level updates for controlled incident remediation; prefer full
+   app deploys for routine releases. After any machine-level update, verify the
+   API is healthy:
+   ```bash
+   curl -fsS https://api.infamousfreight.com/health
    ```
 
 4. **Build failed before deploy:** The `build-api` job must succeed before
@@ -134,7 +173,7 @@ push to `main`. GitHub Actions does not deploy the web app.
    ```bash
    VITE_API_URL=https://api.infamousfreight.com \
    VITE_STRIPE_PUBLIC_KEY=pk_live_... \
-   VITE_SENTRY_DSN=https://6bfe6c333544c976cbba3633aad08ad4@o4511126931963904.ingest.us.sentry.io/4511126932226048 \
+   VITE_SENTRY_DSN=https://<public-key>@o<org-id>.ingest.us.sentry.io/<project-id> \
    VITE_SENTRY_ENABLED=true \
    npm run build:web
    ```
@@ -143,7 +182,7 @@ push to `main`. GitHub Actions does not deploy the web app.
    Add or correct the variable in Netlify → Site settings → Environment variables.
    For Sentry, set:
    ```env
-   VITE_SENTRY_DSN=https://6bfe6c333544c976cbba3633aad08ad4@o4511126931963904.ingest.us.sentry.io/4511126932226048
+   VITE_SENTRY_DSN=https://<public-key>@o<org-id>.ingest.us.sentry.io/<project-id>
    VITE_SENTRY_ENABLED=true
    SENTRY_ORG=infmous
    SENTRY_PROJECT=infamous-freight
@@ -232,6 +271,50 @@ netlify env:set VARIABLE_NAME "value"
 
 Sentry is non-critical for uptime. Deploys continue without source-map uploads.
 Monitor https://status.sentry.io and resume normal operations once resolved.
+
+---
+
+### 3.5 Vercel build-rate-limit blocking PR checks
+
+**Symptom:** A PR check labelled "Vercel" or "Vercel Preview Deployment" shows
+a failing or pending status with a link that redirects to a Vercel
+build-rate-limit page instead of a normal build result.
+
+**Root cause:** The Vercel account has hit its concurrent-build quota or monthly
+build-minute limit. This is an account/provider constraint, not a code failure.
+
+**Merge policy exception:** Vercel preview deployments are **not** a required
+merge gate for this repository. The required deploy signal is the Netlify build
+(triggered by the native Netlify Git integration). A PR may be merged as long as
+the following checks pass regardless of the Vercel status:
+
+- `CI/CD — Infamous Freight / Test & Lint` — passes
+- Netlify deploy preview (shows on the PR timeline) — passes or is skipped for
+  API-only changes
+
+**Immediate workarounds:**
+
+1. **Disable Vercel's automatic GitHub integration** (already applied):
+   `apps/web/vercel.json` sets `"github": {"enabled": false, "autoAlias": false}`
+   which prevents the Vercel bot from posting its own check status on pull
+   requests.
+
+2. **The `vercel-preview.yml` GitHub Actions workflow** runs with
+   `continue-on-error: true` and retries up to three times with exponential
+   back-off, so a transient rate-limit will not cause a hard workflow failure.
+
+3. **Re-run after the rate limit clears:** If the Vercel account quota resets
+   (typically at the start of the next billing period), re-trigger the workflow
+   from the Actions tab on the PR. The `vercel-preview.yml` workflow will run
+   automatically on the next push to the branch.
+
+**Long-term resolution:**
+
+- If Vercel preview deploys are needed, upgrade the Vercel account plan or
+  reduce concurrent build triggers by limiting the `paths` filter in
+  `vercel-preview.yml`.
+- If Vercel is no longer needed (Netlify is the sole web host), remove
+  `apps/web/vercel.json` and delete the `vercel-preview.yml` workflow.
 
 ---
 

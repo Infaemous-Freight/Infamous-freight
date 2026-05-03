@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
       const authSession = authResponse.session;
 
       if (!authUser) {
-        toast.error('Authentication failed. Please try again.');
+        toast.error("Email or password didn't match. Try again or reset your password.");
         return;
       }
 
@@ -39,19 +39,25 @@ const LoginPage: React.FC = () => {
         return;
       }
 
+      const carrierId = authUser.user_metadata?.carrierId;
+      if (!carrierId) {
+        toast.error("Your account isn't linked to a carrier yet. Email support@infamousfreight.com so we can finish setting it up.");
+        return;
+      }
+
       localStorage.setItem('infamous_token', authSession.access_token);
       setUser({
         id: authUser.id,
         email: authUser.email ?? email,
         name: authUser.user_metadata?.full_name ?? authUser.email?.split('@')[0] ?? 'User',
-        role: authUser.user_metadata?.role ?? 'owner',
-        carrierId: authUser.user_metadata?.carrierId ?? 'carrier_default',
+        role: authUser.user_metadata?.role ?? 'driver',
+        carrierId,
       });
 
       toast.success(isRegister ? 'Account created!' : 'Welcome back!');
       navigate('/');
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unable to authenticate right now.';
+      const message = error instanceof Error ? error.message : "We couldn't sign you in. Check your connection and try again.";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -79,21 +85,27 @@ const LoginPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Email</label>
+              <label htmlFor="login-email" className="block text-sm text-gray-400 mb-1">Email</label>
               <input
+                id="login-email"
                 type="email"
                 className="input-field"
                 placeholder="dispatch@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                inputMode="email"
+                autoComplete="email"
+                autoCapitalize="none"
+                spellCheck={false}
                 required
               />
             </div>
 
             {isRegister && (
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Company Name</label>
+                <label htmlFor="login-company" className="block text-sm text-gray-400 mb-1">Company Name</label>
                 <input
+                  id="login-company"
                   type="text"
                   className="input-field"
                   placeholder="Acme Trucking LLC"
@@ -105,22 +117,26 @@ const LoginPage: React.FC = () => {
             )}
 
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Password</label>
+              <label htmlFor="login-password" className="block text-sm text-gray-400 mb-1">Password</label>
               <div className="relative">
                 <input
+                  id="login-password"
                   type={showPassword ? 'text' : 'password'}
                   className="input-field pr-10"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  autoComplete={isRegister ? 'new-password' : 'current-password'}
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-pressed={showPassword}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange rounded"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
                 </button>
               </div>
             </div>
@@ -130,7 +146,7 @@ const LoginPage: React.FC = () => {
               disabled={loading}
               className="w-full btn-primary py-3"
             >
-              {loading ? '...' : isRegister ? 'Create Account & Start Trial' : 'Sign In'}
+              {loading ? (isRegister ? 'Creating account...' : 'Signing in...') : isRegister ? 'Create Account & Start Trial' : 'Sign In'}
             </button>
           </form>
 

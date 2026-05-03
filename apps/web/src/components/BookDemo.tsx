@@ -59,10 +59,14 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      role="presentation"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
       onClick={onClose}
     >
       <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="book-demo-title"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
@@ -71,18 +75,19 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
       >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-zinc-500 hover:text-white"
+          aria-label="Close book a demo dialog"
+          className="absolute right-4 top-4 text-zinc-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded"
         >
-          <X className="h-5 w-5" />
+          <X className="h-5 w-5" aria-hidden="true" />
         </button>
 
         {step === 'form' && (
           <>
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-red-600/10 mb-3">
-                <Calendar className="h-6 w-6 text-red-500" />
+                <Calendar className="h-6 w-6 text-red-500" aria-hidden="true" />
               </div>
-              <h2 className="text-2xl font-bold text-white">Book a Demo</h2>
+              <h2 id="book-demo-title" className="text-2xl font-bold text-white">Book a Demo</h2>
               <p className="text-sm text-zinc-400 mt-1">
                 See how Infamous Freight can transform your operations
               </p>
@@ -91,10 +96,11 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm text-zinc-400 mb-1 block">Name</label>
+                  <label htmlFor="demo-name" className="text-sm text-zinc-400 mb-1 block">Name</label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                    <User aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                     <Input
+                      id="demo-name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="John Smith"
@@ -104,10 +110,11 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm text-zinc-400 mb-1 block">Company</label>
+                  <label htmlFor="demo-company" className="text-sm text-zinc-400 mb-1 block">Company</label>
                   <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                    <Building2 aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                     <Input
+                      id="demo-company"
                       value={formData.company}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                       placeholder="Acme Trucking"
@@ -119,10 +126,11 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
               </div>
 
               <div>
-                <label className="text-sm text-zinc-400 mb-1 block">Email</label>
+                <label htmlFor="demo-email" className="text-sm text-zinc-400 mb-1 block">Email</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                  <Mail aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                   <Input
+                    id="demo-email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -134,10 +142,11 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
               </div>
 
               <div>
-                <label className="text-sm text-zinc-400 mb-1 block">Phone</label>
+                <label htmlFor="demo-phone" className="text-sm text-zinc-400 mb-1 block">Phone</label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+                  <Phone aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                   <Input
+                    id="demo-phone"
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -148,11 +157,12 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
               </div>
 
               <div>
-                <label className="text-sm text-zinc-400 mb-1 block">Fleet Size</label>
+                <label htmlFor="demo-fleet-size" className="text-sm text-zinc-400 mb-1 block">Fleet Size</label>
                 <select
+                  id="demo-fleet-size"
                   value={formData.fleetSize}
                   onChange={(e) => setFormData({ ...formData, fleetSize: e.target.value })}
-                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white text-sm"
+                  className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-white text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
                   required
                 >
                   <option value="">Select fleet size</option>
@@ -183,7 +193,7 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
         {step === 'calendar' && (
           <div className="text-center">
             <h3 className="text-lg font-semibold text-white mb-2">Select a Time</h3>
-            <p className="text-sm text-zinc-400 mb-4">We've received your info! Choose a time below.</p>
+            <p className="text-sm text-zinc-400 mb-4">Thanks{formData.name ? `, ${formData.name}` : ''}. Pick a time that works for you.</p>
             {/* Calendly embed would go here */}
             <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-8">
               <p className="text-zinc-400 mb-4">Calendly Integration</p>
@@ -197,7 +207,7 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
               onClick={() => setStep('confirmed')}
               className="mt-4 bg-red-600 hover:bg-red-700"
             >
-              Simulate Booking
+              Confirm time
             </Button>
           </div>
         )}
@@ -207,7 +217,7 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
             <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">Demo Booked!</h3>
             <p className="text-zinc-400 mb-6">
-              We'll send a confirmation to {formData.email}. See you soon!
+              A confirmation is on its way to {formData.email} with the call link and prep notes.
             </p>
             <Button onClick={onClose} className="bg-red-600 hover:bg-red-700">
               Done

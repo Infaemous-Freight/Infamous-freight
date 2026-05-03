@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://infamousfreight.com" target="_blank" rel="noopener noreferrer">
+    <img src="/docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
+  </a>
+</p>
+
 # Production Operations Package
 
 This package is GitHub-native and excludes Wix.
@@ -15,6 +21,8 @@ It contains operations, compliance, dispatch, carrier, sales, launch readiness, 
 - [Shipper Sales Script](SHIPPER_SALES_SCRIPT.md)
 - [GitHub Execution Backlog](GITHUB_EXECUTION_BACKLOG.md)
 - [GitHub-Native MVP Build Plan](GITHUB_NATIVE_MVP_BUILD_PLAN.md)
+- [MVP Technical Implementation Spec](MVP_TECHNICAL_IMPLEMENTATION_SPEC.md)
+- [MVP Existing Architecture Alignment](MVP_EXISTING_ARCHITECTURE_ALIGNMENT.md)
 - [Production Readiness Evidence](PRODUCTION_READINESS_EVIDENCE.md)
 
 ## Build Priority
@@ -26,6 +34,10 @@ Quote Request -> Quote Review -> Load Creation -> Carrier Assignment -> Dispatch
 ```
 
 Do not prioritize advanced automation until the core freight lifecycle works end to end.
+
+## Architecture Rule
+
+Extend the existing NestJS modules and Prisma models before creating new ones. Use the MVP architecture alignment document to avoid duplicate domain models and conflicting workflows.
 
 ## Launch Rule
 

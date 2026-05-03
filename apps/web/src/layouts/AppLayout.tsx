@@ -1,103 +1,146 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store/app-store';
 import { getSupabase } from '@/hooks/useSupabase';
+import { isPublicPath } from '@/lib/routes';
+import {
+  isBillingAllowedPath,
+  isPaidSubscription,
+  normalizeSubscriptionStatus,
+} from '@/lib/paywall';
 import Sidebar from '@/components/ui/Sidebar';
 import TopBar from '@/components/ui/TopBar';
 import { Toaster } from 'react-hot-toast';
 
 const AppLayout: React.FC = () => {
-  const { sidebarOpen, isLoading, setUser, setLoading } = useAppStore();
+  const { sidebarOpen, isLoading, user, setUser, setLoading, logout } = useAppStore();
   const location = useLocation();
   const navigate = useNavigate();
+  const [isOffline, setIsOffline] = useState(
+    typeof navigator !== 'undefined' ? !navigator.onLine : false
+  );
 
-  // Auth check on mount
   useEffect(() => {
-    const publicPaths = ['/login', '/register', '/onboarding', '/track'];
+    const goOnline = () => setIsOffline(false);
+    const goOffline = () => setIsOffline(true);
+    window.addEventListener('online', goOnline);
+    window.addEventListener('offline', goOffline);
+    return () => {
+      window.removeEventListener('online', goOnline);
+      window.removeEventListener('offline', goOffline);
+    };
+  }, []);
 
+  useEffect(() => {
     let supabase;
     try {
       supabase = getSupabase();
     } catch {
-      setUser(null);
+      logout();
       setLoading(false);
-      if (!publicPaths.some((p) => location.pathname.startsWith(p))) {
-        navigate('/login');
+      if (!isPublicPath(location.pathname)) {
+        navigate('/login', { replace: true });
       }
       return;
     }
 
-    const syncSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-
+    const applySession = (session: Awaited<ReturnType<typeof supabase.auth.getSession>>['data']['session']) => {
       if (!session) {
-        localStorage.removeItem('infamous_token');
-        setUser(null);
-
-        if (!publicPaths.some((p) => location.pathname.startsWith(p))) {
-          navigate('/login');
+        logout();
+        if (!isPublicPath(location.pathname)) {
+          navigate('/login', { replace: true });
         }
-
         setLoading(false);
         return;
       }
+
+      const carrierId = session.user.user_metadata?.carrierId;
+      if (!carrierId) {
+        // Refuse to mount an authenticated session without a tenant scope.
+        logout();
+        if (!isPublicPath(location.pathname)) {
+          navigate('/login', { replace: true });
+        }
+        setLoading(false);
+        return;
+      }
+
+      const subscriptionStatus = normalizeSubscriptionStatus(
+        session.user.app_metadata?.subscription_status ??
+          session.user.user_metadata?.subscriptionStatus ??
+          session.user.user_metadata?.subscription_status ??
+          session.user.user_metadata?.billingStatus ??
+          session.user.user_metadata?.billing_status ??
+          'none'
+      );
 
       localStorage.setItem('infamous_token', session.access_token);
       setUser({
         id: session.user.id,
         email: session.user.email ?? '',
         name: session.user.user_metadata?.full_name ?? session.user.email?.split('@')[0] ?? 'User',
-        role: session.user.user_metadata?.role ?? 'owner',
-        carrierId: session.user.user_metadata?.carrierId ?? 'carrier_default',
+        // Default to least-privilege role; elevate via verified user_metadata only.
+        role: session.user.user_metadata?.role ?? 'driver',
+        carrierId,
+        subscriptionStatus,
       });
       setLoading(false);
     };
 
-    syncSession();
+    supabase.auth.getSession().then(({ data: { session } }) => applySession(session));
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        localStorage.setItem('infamous_token', session.access_token);
-        setUser({
-          id: session.user.id,
-          email: session.user.email ?? '',
-          name: session.user.user_metadata?.full_name ?? session.user.email?.split('@')[0] ?? 'User',
-          role: session.user.user_metadata?.role ?? 'owner',
-          carrierId: session.user.user_metadata?.carrierId ?? 'carrier_default',
-        });
-      } else {
-        localStorage.removeItem('infamous_token');
-        setUser(null);
-        if (!publicPaths.some((p) => location.pathname.startsWith(p))) {
-          navigate('/login');
-        }
-      }
-      setLoading(false);
+      applySession(session);
     });
 
     return () => subscription.unsubscribe();
-  }, [location.pathname, navigate, setLoading, setUser]);
+  }, [location.pathname, navigate, setLoading, setUser, logout]);
+
+  useEffect(() => {
+    if (isLoading || isPublicPath(location.pathname) || isBillingAllowedPath(location.pathname)) {
+      return;
+    }
+
+    if (user && !isPaidSubscription(user.subscriptionStatus)) {
+      navigate('/billing', { replace: true, state: { from: location.pathname } });
+    }
+  }, [isLoading, location.pathname, navigate, user]);
 
   if (isLoading) {
     return (
       <div className="h-screen w-screen flex items-center justify-center bg-infamous-dark">
         <div className="text-center">
           <div className="w-12 h-12 border-3 border-infamous-orange border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-500 text-sm">Loading Infamous Freight...</p>
+          <p className="text-gray-300 text-sm">Loading Infamous Freight...</p>
         </div>
       </div>
     );
   }
 
-  // Public pages (login/register/onboarding) don't use the layout
-  const publicPaths = ['/login', '/register', '/onboarding', '/track'];
-  if (publicPaths.some((p) => location.pathname.startsWith(p))) {
+  const offlineBanner = isOffline ? (
+    <div
+      role="status"
+      aria-live="polite"
+      className="bg-yellow-600 text-black text-center text-sm py-1 px-3"
+    >
+      You are offline — recent changes may not save until your connection returns.
+    </div>
+  ) : null;
+
+  if (isPublicPath(location.pathname)) {
     return (
       <>
-        <Outlet />
-        <Toaster position="top-right" toastOptions={{
-          style: { background: '#1a1a1a', color: '#fff', border: '1px solid #333' },
-        }} />
+        {offlineBanner}
+        <main id="main-content" tabIndex={-1}>
+          <Outlet />
+        </main>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 6000,
+            style: { background: '#1a1a1a', color: '#fff', border: '1px solid #333' },
+          }}
+        />
       </>
     );
   }
@@ -106,15 +149,16 @@ const AppLayout: React.FC = () => {
     <div className="flex h-screen w-screen bg-infamous-dark overflow-hidden">
       <Sidebar />
       <div className={`flex flex-col flex-1 transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
+        {offlineBanner}
         <TopBar />
-        <main className="flex-1 overflow-y-auto p-6">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
       </div>
       <Toaster
         position="top-right"
         toastOptions={{
-          duration: 4000,
+          duration: 6000,
           style: {
             background: '#1a1a1a',
             color: '#fff',

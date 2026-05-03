@@ -1,5 +1,3 @@
-functionsDirectory = "/opt/build/repo/apps/web/.netlify/functions"
-functionsDirectoryOrigin = "ui"
 headersOrigin = "config"
 redirectsOrigin = "config"
 
@@ -9,14 +7,8 @@ redirectsOrigin = "config"
 
 [[plugins]]
 origin = "ui"
-package = "@netlify/plugin-nextjs"
-
-[plugins.inputs]
-
-[[plugins]]
-origin = "ui"
 package = "@netlify/plugin-lighthouse"
-pinned_version = "6.0.1"
+pinned_version = "6"
 
 [plugins.inputs]
 
@@ -26,22 +18,18 @@ package = "@netlify/plugin-sitemap"
 
 [plugins.inputs]
 
-[[plugins]]
-origin = "ui"
-package = "@sentry/netlify-build-plugin"
-
-[plugins.inputs]
-
 [build]
-publish = "/opt/build/repo/apps/web/dist"
+publish = "/opt/build/repo/apps/web/apps/web/dist"
 publishOrigin = "config"
 commandOrigin = "config"
-command = "npm run build:web"
-functions = "/opt/build/repo/apps/web/.netlify/functions"
+base = "/opt/build/repo/apps/web"
+command = "npm run build"
 
 [build.environment]
-NODE_VERSION = "20"
+NODE_VERSION = "22"
 NPM_FLAGS = "--legacy-peer-deps"
+NETLIFY_NEXT_PLUGIN_SKIP = "true"
+SENTRY_DISABLE_UPLOAD = "true"
 
 [build.processing]
 
@@ -63,7 +51,7 @@ X-Frame-Options = "SAMEORIGIN"
 X-Content-Type-Options = "nosniff"
 X-XSS-Protection = "1; mode=block"
 Referrer-Policy = "strict-origin-when-cross-origin"
-Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.infamousfreight.com wss://api.infamousfreight.com https://*.supabase.co; frame-src https://js.stripe.com;"
+Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.infamousfreight.com wss://api.infamousfreight.com https://*.supabase.co https://*.ingest.sentry.io https://*.ingest.us.sentry.io; frame-src https://js.stripe.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self';"
 
 [[headers]]
 for = "*.js"
@@ -78,32 +66,8 @@ for = "*.css"
 Cache-Control = "public, max-age=31536000, immutable"
 
 [[redirects]]
-from = "https://www.infamousfreight.com/*"
-to = "https://infamousfreight.com/:splat"
-status = 301.0
-force = true
-
-[redirects.query]
-
-[redirects.conditions]
-
-[redirects.headers]
-
-[[redirects]]
-from = "http://www.infamousfreight.com/*"
-to = "https://infamousfreight.com/:splat"
-status = 301.0
-force = true
-
-[redirects.query]
-
-[redirects.conditions]
-
-[redirects.headers]
-
-[[redirects]]
-from = "https://infamous-freight.netlify.app/*"
-to = "https://infamousfreight.com/:splat"
+from = "https://infamousfreight.com/*"
+to = "https://www.infamousfreight.com/:splat"
 status = 301.0
 force = true
 
@@ -115,7 +79,31 @@ force = true
 
 [[redirects]]
 from = "http://infamousfreight.com/*"
-to = "https://infamousfreight.com/:splat"
+to = "https://www.infamousfreight.com/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "https://infamous-freight.netlify.app/*"
+to = "https://www.infamousfreight.com/:splat"
+status = 301.0
+force = true
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "http://www.infamousfreight.com/*"
+to = "https://www.infamousfreight.com/:splat"
 status = 301.0
 force = true
 

@@ -5,16 +5,94 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0a0a" />
-    <meta name="description" content="Infamous Freight — The freight dispatch platform built by truckers, for truckers. Auto-dispatch AI, rate negotiation, voice booking, and ELD sync." />
+    <meta name="color-scheme" content="dark" />
+    <link rel="canonical" href="https://www.infamousfreight.com/" />
+    <link rel="manifest" href="/driver-pwa/manifest.json" />
+    <meta
+      name="description"
+      content="Infamous Freight is an AI-powered freight command center with auto-dispatch, rate negotiation, voice booking, ELD sync, and end-to-end shipment visibility."
+    />
+    <meta
+      name="keywords"
+      content="freight management system, trucking dispatch software, AI dispatch, TMS, rate negotiation, ELD integration"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Infamous Freight" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://www.infamousfreight.com/" />
+    <meta property="og:title" content="Infamous Freight — AI Freight Command Center" />
+    <meta
+      property="og:description"
+      content="Run dispatch, visibility, and carrier operations from one AI-powered operating system built for modern fleets."
+    />
+    <!--
+      Share image is rendered as PNG through Netlify Image CDN so that platforms
+      that do not support SVG previews (Facebook, LinkedIn, Slack, iMessage, X)
+      receive a 1200x630 PNG. Source asset lives at /public/og-image.svg.
+    -->
+    <meta
+      property="og:image"
+      content="https://www.infamousfreight.com/.netlify/images?url=/og-image.svg&w=1200&h=630&fit=cover&fm=png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Infamous Freight AI Freight Command Center" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Infamous Freight — AI Freight Command Center" />
+    <meta
+      name="twitter:description"
+      content="Automate dispatch workflows, improve lane decisions, and keep customers informed in real time."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.infamousfreight.com/.netlify/images?url=/og-image.svg&w=1200&h=630&fit=cover&fm=png"
+    />
+    <meta name="twitter:image:alt" content="Infamous Freight AI Freight Command Center" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <title>Infamous Freight — Freight Command Center</title>
+    <link rel="preconnect" href="https://infamous-freight.fly.dev" crossorigin />
+    <link rel="preconnect" href="https://js.stripe.com" crossorigin />
+    <link rel="dns-prefetch" href="https://api.infamousfreight.com" />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Infamous Freight — AI Freight Command Center</title>
     <style>
-      body { background: #0a0a0a; margin: 0; font-family: 'Inter', system-ui, sans-serif; }
+      body {
+        background: #0a0a0a;
+        margin: 0;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: -9999px;
+      }
+      .skip-link:focus {
+        left: 1rem;
+        top: 1rem;
+        z-index: 100;
+        padding: 0.5rem 0.75rem;
+        background: #ff6a00;
+        color: #fff;
+        border-radius: 6px;
+        text-decoration: none;
+      }
     </style>
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

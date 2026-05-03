@@ -88,7 +88,7 @@ const LoadAuction: React.FC = () => {
             <Gavel size={24} className="text-infamous-orange" />
             Load Auctions
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">Bid on loads — lowest bid wins, carrier keeps the savings</p>
+          <p className="text-sm text-gray-500 mt-0.5">Carriers underbid the broker rate — lowest bid takes the load and pockets the difference.</p>
         </div>
         <div className="badge-orange flex items-center gap-1">
           <Shield size={12} /> {auctions.length} Active Auctions

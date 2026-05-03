@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Disallow: /ops
+Disallow: /loads
+Disallow: /dispatch
+Disallow: /drivers
+Disallow: /invoices
+Disallow: /analytics
+Disallow: /compliance
+Disallow: /settings
+Disallow: /billing
+Disallow: /carriers
+Disallow: /accounting
+Disallow: /quotes
+Disallow: /onboarding
+Disallow: /login
+Disallow: /customer-portal
+Disallow: /carrier-portal
+
+Sitemap: https://infamousfreight.com/sitemap.xml

@@ -53,6 +53,14 @@ echo "==> Building API + Web"
 run_workspace_script "$PACKAGE_MANAGER" build
 record_pass "API and web build"
 
+echo "==> Verifying required CLIs"
+if bash scripts/verify-required-clis.sh; then
+  record_pass "Required CLIs available"
+else
+  record_fail "Required CLIs missing"
+  exit 1
+fi
+
 echo "==> Checking Docker CLI"
 if command -v docker >/dev/null 2>&1; then
   docker --version

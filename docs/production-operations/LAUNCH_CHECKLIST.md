@@ -10,18 +10,23 @@
 
 ## Freight Brokerage Compliance
 
-- [ ] FMCSA broker authority application started
-- [ ] BOC-3 filed
-- [ ] BMC-84 bond or BMC-85 trust secured
+- [ ] Internal compliance owner assigned
+- [ ] FMCSA broker authority application submitted (Form OP-1)
+- [ ] FMCSA MC number received
+- [ ] FMCSA broker authority status confirmed Active on SAFER
+- [ ] BOC-3 process agent filing submitted and confirmed
+- [ ] BMC-84 surety bond or BMC-85 trust fund executed and filed with FMCSA
+- [ ] BMC-84 / BMC-85 status confirmed Active on FMCSA records
 - [ ] Broker-carrier agreement prepared
 - [ ] Shipper agreement prepared
 - [ ] W-9 prepared
 - [ ] Insurance reviewed
+- [ ] All broker authority requirements validated and documented in `COMPLIANCE_CHECKLIST.md`
 
 ## Platform
 
 - [ ] Public landing page reviewed
-- [ ] Quote intake tested
+- [x] Quote intake tested
 - [ ] Carrier application tested
 - [ ] Tracking workflow defined
 - [ ] Contact workflow tested

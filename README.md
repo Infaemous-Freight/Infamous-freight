@@ -1,14 +1,34 @@
 <p align="center">
-  <img src="docs/screenshots/infamousfreight-banner.svg" alt="Infamous Freight" width="100%">
+  <a href="https://infamousfreight.com" target="_blank" rel="noopener noreferrer">
+    <img src="docs/screenshots/infamousfreight-header.svg" alt="Infamous Freight" width="100%">
+  </a>
 </p>
 
 # 🚛 Infamous Freight
 
 > **The freight dispatch platform built by truckers, for truckers.**
 
-Infamous Freight is an AI-powered freight and logistics automation platform for dispatch operations, real-time shipment tracking, carrier networks, compliance workflows, and intelligent load orchestration.
+Infamous Freight is an AI-powered freight operations platform for dispatch execution, shipment visibility, driver coordination, compliance workflows, and logistics automation.
 
-Built as a monorepo, the platform combines a NestJS backend, React web application, real-time communications, financial workflows, compliance tooling, and operational automation for modern freight teams.
+Built as a monorepo, the platform combines an Express 4 backend, React web application, Prisma/PostgreSQL data workflows, real-time communications, billing flows, and operational tooling for modern freight teams.
+
+If you want one system for dispatch, tracking, paperwork, and operations control, this is the platform.
+
+---
+
+## 🔗 Quick Links
+
+- [Quick Start](#-quick-start)
+- [Current Working Scope](#-current-working-scope)
+- [Architecture Overview](#️-architecture-overview)
+- [API Example](#-api-example)
+- [Deployment](#-deployment)
+- [Environment References](#-environment-references)
+- [Docs by Goal](#-docs-by-goal)
+- [Operations & Supply Chain Reference](#-operations--supply-chain-reference)
+- [Launch Readiness](#-launch-readiness)
+- [Production Operations](#-production-operations)
+- [Contributing](#-contributing)
 
 ---
 
@@ -29,17 +49,32 @@ It brings together:
 
 ---
 
+## 🎯 Why It Matters
+
+Freight teams often operate across too many disconnected systems: calls, texts, spreadsheets, load boards, paperwork, compliance checklists, and delayed status updates.
+
+Infamous Freight is built to reduce that operational drag by centralizing:
+
+- dispatch execution
+- shipment visibility
+- driver coordination
+- paperwork and invoicing
+- compliance workflows
+- operational reporting
+
+---
+
 ## ⚙️ Core Features
 
-- 🤖 **Auto-Dispatch AI** — Matches loads to drivers in as little as 90 seconds
-- 💰 **Rate Negotiation Bot** — Counters lowball offers to improve load revenue
+- 🤖 **Auto-Dispatch AI** — Supports load-to-driver matching workflows and dispatch automation
+- 💰 **Rate Negotiation Bot** — Supports negotiation workflows and margin protection
 - 🎤 **Voice Booking** — Natural-language load search and booking workflows
 - 🔌 **Multi-ELD Sync** — Samsara, Motive, Omnitracs, and Geotab integrations
 - 🔎 **Load Board Aggregation** — Unified search across DAT, Truckstop, and 123Loadboard
 - 📄 **Digital BOL / POD** — Upload, sign, and invoice in one workflow
 - 🧾 **Driver Payroll** — Per-mile, percentage, flat-rate, or hourly settlement models
 - 🏦 **Factoring Integration** — RTS, OTR, Apex, Bluevine, and eCapital support
-- 🛡️ **CSA Score Monitor** — Tracks all 7 BASIC categories
+- 🛡️ **CSA Score Monitor** — Supports CSA and compliance monitoring workflows
 - 🏢 **Broker Credit Checks** — Ratings, payment history, and risk visibility
 - 📡 **Geofencing & ETA** — Smart alerts and customer tracking links
 - ⛽ **IFTA Auto-Reporting** — Quarterly fuel tax calculations
@@ -47,11 +82,41 @@ It brings together:
 - 📈 **Rate Analytics** — Historical trends and market comparisons
 - 🧩 **Chrome Extension** — Book loads directly from load boards
 - 💬 **Real-Time Chat** — Driver-dispatch messaging with voice notes
-- 🔁 **Backhaul Finder** — Minimizes deadhead after delivery
+- 🔁 **Backhaul Finder** — Deadhead reduction workflows after delivery
 - 📑 **Rate Confirmation Generator** — Professional PDF confirmations
 - 🗂️ **Carrier Packet Generator** — W-9, COI, and insurance certificate workflows
 - 💳 **Stripe Payments** — Subscription and pay-per-load billing
 - 📚 **QuickBooks / Xero Sync** — Automated invoice sync
+
+---
+
+## 📌 Current Working Scope
+
+### ✅ Working now
+
+- health endpoints and API runtime
+- tenant-aware API request handling
+- role-based access guards
+- load, driver, and shipment API surfaces
+- Prisma-backed data access patterns
+- Docker-based local startup
+- CI/CD and deploy support docs
+- environment bootstrap and validation scripts
+
+### 🚧 In active build
+
+- deeper dispatch decision automation
+- richer shipment lifecycle workflows
+- expanded analytics and reporting
+- broader integrations and monitoring coverage
+- production operations hardening
+
+### 🗺️ Roadmap
+
+- broader mobile operations support
+- deeper AI orchestration
+- expanded carrier network intelligence
+- more complete automation around billing, notifications, and brokerage workflows
 
 ---
 
@@ -66,6 +131,18 @@ It brings together:
 
 ### 📊 Platform Overview
 ![Infamous Freight Platform Overview](docs/screenshots/infamousfreight-platform-overview.svg)
+
+### 🖼️ Social Preview
+
+The GitHub social preview image lives at [`docs/screenshots/infamousfreight-social-preview.png`](docs/screenshots/infamousfreight-social-preview.png) (1280×640 PNG, generated from `infamousfreight-header.svg`).
+
+To regenerate after updating the header SVG:
+
+```bash
+npm run social-preview:generate
+```
+
+Maintainers must upload the resulting PNG via **Settings → General → Social preview** (GitHub does not accept SVG there and does not expose an API for this setting).
 
 ---
 
@@ -124,6 +201,49 @@ npm run test
 
 ---
 
+## 🧭 Operator Quick Reference
+
+### Local setup
+
+```bash
+npm run env:setup
+npm run db:setup
+npm run dev
+```
+
+### Build and validate
+
+```bash
+npm run build
+npm run test
+npm run validate
+```
+
+### Deploy
+
+```bash
+flyctl deploy --app infamous-freight
+```
+
+### Verify
+
+```bash
+curl -X GET http://localhost:3000/api/health
+curl -X GET https://infamousfreight.com/api/health
+```
+
+---
+
+## 🔐 Environment References
+
+For deployment-ready variable setup, use:
+
+- [`docs/environment/ENVIRONMENT_VARIABLES_COMPLETE.md`](docs/environment/ENVIRONMENT_VARIABLES_COMPLETE.md) — full reference and verification
+- [`docs/environment/CODEX_ENV_VARIABLES.txt`](docs/environment/CODEX_ENV_VARIABLES.txt) — quick copy/paste template
+- [`docs/environment/README.md`](docs/environment/README.md) — usage notes
+
+---
+
 ## 🧰 Git Remote Troubleshooting
 
 If `git push` fails with:
@@ -158,6 +278,31 @@ npx @sentry/wizard@latest -i react
 
 > ⚠️ Do not use `-i nextjs` — `apps/web` is not a Next.js app.
 
+### Sentry MCP server
+
+For Sentry issue triage via MCP-compatible clients, configure the Sentry MCP endpoint with environment-based auth (never hardcode or commit tokens):
+
+```json
+{
+  "mcpServers": {
+    "sentry": {
+      "url": "https://mcp.sentry.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${SENTRY_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+Use a short-lived token with the minimum scopes required for issue triage, store it in a local secret manager, and rotate immediately if exposed.
+
+Example local setup (do not commit):
+
+```bash
+export SENTRY_ACCESS_TOKEN="<sentry-token>"
+```
+
 ### Netlify sourcemap policy
 
 Public requests for `*.map` files are blocked (`404`). Sourcemaps are still uploaded to Sentry during builds when `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` are configured.
@@ -166,6 +311,7 @@ Public requests for `*.map` files are blocked (`404`). Sourcemaps are still uplo
 
 | Variable | Purpose | Required |
 |---|---|---|
+| `SENTRY_DSN` | Sentry DSN for the API runtime (`apps/api`) | No |
 | `VITE_SENTRY_DSN` | Sentry DSN for the web app | No |
 | `VITE_SENTRY_ENABLED` | Set to `false` to disable even when DSN is set | No |
 | `SENTRY_AUTH_TOKEN` | CI secret for sourcemap upload | No |
@@ -177,9 +323,55 @@ Public requests for `*.map` files are blocked (`404`). Sourcemaps are still uplo
 
 ---
 
+## 🏗️ Architecture Overview
+
+```text
+Web App (React + Vite)
+        │
+        ▼
+API (Express 4 + TypeScript)
+        │
+        ├── Prisma ORM
+        │      │
+        │      ▼
+        │  PostgreSQL
+        │
+        ├── Redis / caching workflows
+        ├── Billing / Stripe
+        ├── Notifications / messaging
+        └── Analytics / operations logic
+```
+
+---
+
+## 🔌 API Example
+
+### Health check
+
+```bash
+curl -X GET http://localhost:3000/api/health
+```
+
+### Tenant-scoped loads request
+
+```bash
+curl -X GET http://localhost:3000/api/loads \
+  -H "x-tenant-id: demo-tenant" \
+  -H "x-user-role: dispatcher"
+```
+
+Expected request headers for protected operational routes:
+
+- `x-tenant-id`
+- `x-user-role`
+
+---
+
 ## 🚀 Deployment
 
 ### GitHub Actions CI/CD
+
+CI should use a single package-manager path end to end. This repository is currently documented and scripted around **npm workspaces**, and build, test, and deploy flows should stay aligned to that to avoid lockfile and install drift.
 
 Add these secrets to your GitHub repository:
 
@@ -212,6 +404,22 @@ npm install -g netlify-cli
 netlify deploy --prod --dir=apps/web/dist
 ```
 
+### Deploy verification
+
+After deployment, verify:
+
+```bash
+curl -X GET https://infamousfreight.com/api/health
+```
+
+Also confirm:
+
+- API returns `200`
+- database connectivity is healthy
+- required env vars are present
+- Fly app is listening on the expected internal port
+- Netlify build points to the correct API URL
+
 ---
 
 ## 🛠️ Tech Stack
@@ -219,7 +427,7 @@ netlify deploy --prod --dir=apps/web/dist
 | Layer | Technology |
 |---|---|
 | 🎨 Frontend | React 18, TypeScript, Vite, Tailwind CSS, Zustand, Socket.io |
-| 🧠 Backend | NestJS, TypeScript, Prisma ORM |
+| 🧠 Backend | Express 4, TypeScript, Prisma ORM |
 | 🗄️ Database | PostgreSQL 16 |
 | ⚡ Cache | Redis 7 |
 | 📡 Realtime | Socket.io WebSockets |
@@ -233,8 +441,12 @@ netlify deploy --prod --dir=apps/web/dist
 
 ```text
 apps/
-├── api/                    # NestJS backend
+├── api/                    # Express 4 backend
 │   └── src/
+│       ├── app.ts          # Express app factory (routes, middleware)
+│       ├── server.ts       # Entry point — starts the HTTP server
+│       ├── data-store.ts   # Data access layer (Prisma)
+│       ├── billing.ts      # Stripe billing helpers
 │       ├── dispatch/       # Auto-dispatch AI, backhaul, rate negotiation
 │       ├── loads/          # Load board aggregation
 │       ├── invoice/        # BOL/POD + invoicing
@@ -269,11 +481,44 @@ apps/
 compliance/                 # Canadian HOS rules
 templates/                  # Cold emails + LinkedIn calendar
 docs/                       # Sales playbook, launch checklists
+scripts/                    # Setup, validation, and deployment helpers
 Dockerfile.api
 docker-compose.yml
 nginx.conf
 .github/workflows/          # CI/CD pipeline
 ```
+
+---
+
+## 📚 Docs by Goal
+
+### New here
+- [Quick Start](#-quick-start)
+- [Development Workflow](#-development-workflow)
+- [Environment References](#-environment-references)
+
+### Understand the system
+- [Architecture Overview](#️-architecture-overview)
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md)
+
+### Deploy and operate
+- [Deployment](#-deployment)
+- [`docs/INTEGRATIONS-AND-SECRETS.md`](docs/INTEGRATIONS-AND-SECRETS.md)
+- [`docs/NETLIFY-BUILDHOOKS.md`](docs/NETLIFY-BUILDHOOKS.md)
+- [`docs/REQUIRED-CLIS.md`](docs/REQUIRED-CLIS.md)
+- [`docs/SBOM-POLICY.md`](docs/SBOM-POLICY.md)
+
+### Launch readiness
+- [Launch Readiness](#-launch-readiness)
+- [`docs/PRODUCTION_READINESS_VERIFICATION.md`](docs/PRODUCTION_READINESS_VERIFICATION.md)
+- [`docs/ROLLBACK_PLAN.md`](docs/ROLLBACK_PLAN.md)
+
+### Freight operations
+- [Production Operations](#-production-operations)
+- [`docs/production-operations/OPERATING_MODEL.md`](docs/production-operations/OPERATING_MODEL.md)
+- [`docs/production-operations/DISPATCH_WORKFLOW.md`](docs/production-operations/DISPATCH_WORKFLOW.md)
+- [`docs/production-operations/DAILY_OPERATIONS_SOP.md`](docs/production-operations/DAILY_OPERATIONS_SOP.md)
 
 ---
 
@@ -335,8 +580,11 @@ Infamous Freight is built to centralize dispatch, tracking, compliance, communic
 
 For operational ownership, deployment runbooks, integration provenance, and SBOM review standards, use these docs:
 
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — canonical backend architecture, framework, ports, entry points, and migration notes
+- [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md) — complete list of implemented API routes with request headers and response shapes
 - [`docs/INTEGRATIONS-AND-SECRETS.md`](docs/INTEGRATIONS-AND-SECRETS.md) — external integrations, secret ownership, deploy failure runbooks, and rotation guidance
 - [`docs/NETLIFY-BUILDHOOKS.md`](docs/NETLIFY-BUILDHOOKS.md) — provenance, integrity, and maintenance guidance for Netlify URL-hosted buildhook packages
+- [`docs/REQUIRED-CLIS.md`](docs/REQUIRED-CLIS.md) — required local CLI installation, PATH setup, and verification
 - [`docs/SBOM-POLICY.md`](docs/SBOM-POLICY.md) — runtime-vs-build SBOM policy, review cadence, classification rules, and triage standards
 
 ---
@@ -430,3 +678,18 @@ Examples:
 ## 📄 License
 
 Copyright 2025 Infamous Freight. All rights reserved.
+
+---
+
+## Operations Shortcuts
+
+Use these root-level scripts for consistent local and CI operations:
+
+- `pnpm run setup:deps-docker` — install workspace dependencies, run Prisma client generation, and validate Docker CLI availability
+- `pnpm run setup:clis` — install required deployment CLIs (`flyctl`, `supabase`, `stripe`) into `.tools/bin`
+- `pnpm run tools:install` — alias for `pnpm run setup:clis`
+- `pnpm run tools:verify` — verify required deployment CLIs are available globally or in `.tools/bin`
+- `pnpm run smoke:api:health` — boot the compiled API on `PORT` (default `3000`) and verify `/health`
+- `pnpm run snapshot:prod` — run production-readiness snapshot checks (Prisma generate, build, tests, smoke health, optional Docker build)
+
+For PATH setup and CLI troubleshooting, see [`docs/REQUIRED-CLIS.md`](docs/REQUIRED-CLIS.md).

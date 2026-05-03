@@ -4,13 +4,15 @@
 
 [build]
   publish = "apps/web/dist"
-  command = "npm run build:web"
+  command = "npm run build"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
   NPM_FLAGS = "--legacy-peer-deps"
   # Skip the UI-installed @netlify/plugin-nextjs — this is a Vite app, not Next.js.
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
+  # Keep Netlify builds green when Sentry auth token is missing/stale.
+  SENTRY_DISABLE_UPLOAD = "true"
 
 # Canonical host: redirect every alternate hostname to https://www.infamousfreight.com
 [[redirects]]
@@ -83,3 +85,4 @@
 # UI-configured installation that was missing the manifest.
 [[plugins]]
   package = "@netlify/plugin-sitemap"
+

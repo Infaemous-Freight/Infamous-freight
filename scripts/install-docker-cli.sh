@@ -3,24 +3,118 @@ set -euo pipefail
 
 INSTALL_DOCKER="${INSTALL_DOCKER:-false}"
 
+install_via_static_binary() {
+  local arch tmp
+  arch="x86_64"
+  [[ "$(uname -m)" =~ ^(aarch64|arm64)$ ]] && arch="aarch64"
+
+  tmp="$(mktemp -d)"
+  curl -fsSL "https://download.docker.com/linux/static/stable/${arch}/docker-27.5.1.tgz" -o "${tmp}/docker.tgz"
+  tar -xzf "${tmp}/docker.tgz" -C "$tmp"
+  install -m 0755 "${tmp}/docker/docker" /usr/local/bin/docker
+  rm -rf "$tmp"
+
+  docker --version
+}
+
+install_buildx_plugin() {
+  if docker buildx version >/dev/null 2>&1; then
+    return 0
+  fi
+
+  local arch plugin_dir
+  arch="amd64"
+  [[ "$(uname -m)" =~ ^(aarch64|arm64)$ ]] && arch="arm64"
+
+  plugin_dir="${HOME}/.docker/cli-plugins"
+  mkdir -p "$plugin_dir"
+
+  local latest_tag
+  latest_tag="$(curl -fsSL https://api.github.com/repos/docker/buildx/releases/latest | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p' | head -n1 || true)"
+
+  local candidate_urls=(
+    "https://github.com/docker/buildx/releases/latest/download/buildx-latest.linux-${arch}"
+  )
+
+  if [ -n "$latest_tag" ]; then
+    candidate_urls+=("https://github.com/docker/buildx/releases/download/${latest_tag}/buildx-${latest_tag}.linux-${arch}")
+  fi
+
+  local url
+  for url in "${candidate_urls[@]}"; do
+    if curl -fsSL "$url" -o "${plugin_dir}/docker-buildx"; then
+      chmod +x "${plugin_dir}/docker-buildx"
+      return 0
+    fi
+  done
+
+  echo "Unable to download Docker Buildx plugin binary for linux-${arch}; continuing without buildx plugin." >&2
+}
+
+ensure_docker_daemon() {
+  if docker info >/dev/null 2>&1; then
+    echo "Docker daemon is reachable."
+    return 0
+  fi
+
+  echo "Docker daemon not reachable. Attempting to start daemon..."
+
+  if command -v service >/dev/null 2>&1 && service docker start >/dev/null 2>&1; then
+    sleep 2
+  elif command -v dockerd >/dev/null 2>&1; then
+    nohup dockerd >/tmp/dockerd.log 2>&1 &
+    sleep 3
+  fi
+
+  if docker info >/dev/null 2>&1; then
+    echo "Docker daemon is reachable."
+    return 0
+  fi
+
+  echo "Docker daemon is still not reachable."
+  echo "If this is a restricted container, daemon access may be unavailable."
+  return 1
+}
+
+install_via_docker_apt_repo() {
+  local arch codename
+  arch="$(dpkg --print-architecture)"
+  codename="$(. /etc/os-release && echo "${VERSION_CODENAME:-}")"
+
+  if [ -z "$codename" ]; then
+    echo "Unable to detect Ubuntu/Debian codename; skipping Docker apt repo setup." >&2
+    return 1
+  fi
+
+  apt-get update
+  apt-get install -y --no-install-recommends ca-certificates curl gnupg
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  chmod a+r /etc/apt/keyrings/docker.gpg
+
+  cat >/etc/apt/sources.list.d/docker.list <<APT
+ deb [arch=${arch} signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu ${codename} stable
+APT
+
+  apt-get update
+  apt-get install -y --no-install-recommends docker-ce-cli docker-buildx-plugin docker-compose-plugin
+}
+
 if command -v docker >/dev/null 2>&1; then
   echo "Docker client installed:"
   docker --version
 
+  install_buildx_plugin
   if docker buildx version >/dev/null 2>&1; then
     docker buildx version
   else
     echo "Docker Buildx is not available."
   fi
 
-  if docker info >/dev/null 2>&1; then
-    echo "Docker daemon is reachable."
-    exit 0
+  if ! ensure_docker_daemon; then
+    echo "Continuing without daemon access; Docker CLI and Buildx checks completed." >&2
   fi
-
-  echo "Docker daemon is not reachable."
-  echo "Start Docker Desktop or Docker Engine, then retry."
-  exit 1
+  exit 0
 fi
 
 if [ "$INSTALL_DOCKER" != "true" ]; then
@@ -31,18 +125,19 @@ if [ "$INSTALL_DOCKER" != "true" ]; then
   exit 1
 fi
 
-if ! command -v apt-get >/dev/null 2>&1; then
-  echo "Automatic Docker CLI install currently supports Debian/Ubuntu only."
-  exit 1
-fi
-
-echo "Installing Docker CLI packages..."
-apt-get update
-
-if apt-cache show docker-buildx-plugin >/dev/null 2>&1; then
-  apt-get install -y docker.io docker-buildx-plugin
+if command -v apt-get >/dev/null 2>&1; then
+  echo "Installing Docker CLI packages..."
+  if install_via_docker_apt_repo; then
+    :
+  elif apt-get update && apt-get install -y --no-install-recommends docker.io; then
+    echo "Installed Docker via distro packages."
+  else
+    echo "APT install failed, falling back to static Docker CLI binary install..."
+    install_via_static_binary
+  fi
 else
-  apt-get install -y docker.io
+  echo "apt-get not available, falling back to static Docker CLI binary install..."
+  install_via_static_binary
 fi
 
 if ! command -v docker >/dev/null 2>&1; then
@@ -55,13 +150,14 @@ docker --version
 if docker buildx version >/dev/null 2>&1; then
   docker buildx version
 else
-  echo "Docker Buildx is not available from installed packages."
+  install_buildx_plugin
+  if docker buildx version >/dev/null 2>&1; then
+    docker buildx version
+  else
+    echo "Docker Buildx is not available from installed packages."
+  fi
 fi
 
-if docker info >/dev/null 2>&1; then
-  echo "Docker daemon is reachable."
-else
-  echo "Docker CLI installed, but daemon is not reachable."
-  echo "Start Docker service/Desktop and rerun validation."
-  exit 1
+if ! ensure_docker_daemon; then
+  echo "Continuing without daemon access; Docker CLI and Buildx checks completed." >&2
 fi

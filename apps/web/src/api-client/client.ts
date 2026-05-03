@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import toast from 'react-hot-toast';
+import { useAppStore } from '@/store/app-store';
 
 // Empty string means "same origin" — the Netlify /api/* proxy forwards requests
 // to the Fly.io backend. Set VITE_API_URL to an absolute URL (e.g.
@@ -22,7 +23,6 @@ class ApiClient {
   }
 
   private setupInterceptors(): void {
-    // Request interceptor — attach auth token
     this.client.interceptors.request.use(
       (config) => {
         const token = localStorage.getItem('infamous_token');
@@ -34,15 +34,16 @@ class ApiClient {
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor — handle errors
     this.client.interceptors.response.use(
       (response) => response,
       (error: AxiosError<{ message?: string }>) => {
         const message = error.response?.data?.message || error.message || 'Something went wrong';
 
         if (error.response?.status === 401) {
-          localStorage.removeItem('infamous_token');
-          window.location.href = '/login';
+          // Centralize logout so the React tree updates synchronously and
+          // route guards (in AppLayout) handle navigation — avoid a hard
+          // window.location reload that would discard in-progress drafts.
+          useAppStore.getState().logout();
           toast.error('Session expired — please log in again');
         } else if (error.response?.status === 429) {
           toast.error('Rate limit exceeded — please slow down');

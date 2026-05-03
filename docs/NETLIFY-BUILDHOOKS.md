@@ -96,6 +96,12 @@ ID of the integration's own site. Netlify keeps those deploys immutable.
 | **Status** | 🗑️ **Removed** — this plugin failed deploys in `onPostBuild` whenever the site-level Sentry token was missing or invalid (`401 Invalid token`). The Vite build already guards Sentry source-map upload behind `SENTRY_AUTH_TOKEN`/`SENTRY_ORG`/`SENTRY_PROJECT`, so keeping the Netlify plugin introduced an unnecessary second release step and a production deploy risk. |
 | **Update path** | Re-enable only if Netlify-managed Sentry release creation is explicitly required and a valid site-level `SENTRY_AUTH_TOKEN` is maintained. Prefer one release/upload path to avoid duplicate failure points. |
 
+#### Sentry 401 recovery checklist
+
+1. In **Netlify → Site configuration → Environment variables**, replace `SENTRY_AUTH_TOKEN` with a valid token scoped to `project:releases`, `org:read`, and `project:read`.
+2. If release creation is not required, keep `SENTRY_DISABLE_UPLOAD=true` and do not re-add `@sentry/netlify-build-plugin` in `netlify.toml`.
+3. Redeploy and confirm the build no longer executes `onPostBuild` Sentry release creation.
+
 ---
 
 ## Integrity controls

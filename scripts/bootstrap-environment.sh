@@ -12,12 +12,12 @@ if should_install_workspace_dependencies "$PACKAGE_MANAGER"; then
   install_workspace_dependencies "$PACKAGE_MANAGER"
 fi
 
-echo "==> Ensuring Docker CLI/Buildx"
-bash scripts/install-docker-cli.sh || true
+echo "==> Ensuring required CLIs (flyctl, supabase, stripe, docker)"
+bash scripts/install-required-clis.sh
 
-echo "==> Ensuring flyctl"
-if ! command -v flyctl >/dev/null 2>&1; then
-  curl -L https://fly.io/install.sh | sh
+if ! command -v docker >/dev/null 2>&1; then
+  echo "docker is not installed. Install with sudo/root:"
+  echo "  sudo INSTALL_DOCKER=true bash scripts/install-docker-cli.sh"
 fi
 
 echo "==> Ensuring AI SDK runtime"

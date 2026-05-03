@@ -54,6 +54,9 @@ export function ExitIntentPopup() {
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
         >
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="exit-popup-title"
             initial={{ scale: 0.8, y: 50 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.8, y: 50 }}
@@ -61,29 +64,33 @@ export function ExitIntentPopup() {
           >
             <button
               onClick={() => { setShow(false); localStorage.setItem('exit-popup-dismissed', 'true'); }}
-              className="absolute right-4 top-4 text-zinc-500 hover:text-white"
+              aria-label="Close discount offer"
+              className="absolute right-4 top-4 text-zinc-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded"
             >
-              <X className="h-5 w-5" />
+              <X className="h-5 w-5" aria-hidden="true" />
             </button>
 
             {!submitted ? (
               <>
                 <div className="text-center mb-6">
                   <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-600/10 mb-4">
-                    <Gift className="h-8 w-8 text-red-500" />
+                    <Gift className="h-8 w-8 text-red-500" aria-hidden="true" />
                   </div>
-                  <h2 className="text-2xl font-bold text-white">Wait! Don't Leave Empty-Handed</h2>
+                  <h2 id="exit-popup-title" className="text-2xl font-bold text-white">One more thing — 10% off your first 3 months</h2>
                   <p className="text-zinc-400 mt-2">
-                    Get <span className="text-red-400 font-bold">10% off</span> your first 3 months + a free onboarding call
+                    Plus a free onboarding call to get your fleet dispatching from day one.
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <label htmlFor="exit-popup-email" className="sr-only">Email address for discount code</label>
                   <Input
+                    id="exit-popup-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
+                    aria-label="Email address for discount code"
                     className="border-zinc-700 bg-zinc-800 text-white text-center"
                     required
                   />
@@ -95,7 +102,7 @@ export function ExitIntentPopup() {
                     {loading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
-                      'Claim My 10% Discount'
+                      'Email me the discount code'
                     )}
                   </Button>
                   <p className="text-xs text-zinc-500 text-center">

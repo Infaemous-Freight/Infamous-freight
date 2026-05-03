@@ -48,7 +48,7 @@ const LoadsPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Load Board</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Aggregated from DAT, Truckstop & 123Loadboard</p>
+          <p className="text-sm text-gray-500 mt-0.5">Sample loads from DAT, Truckstop, and 123Loadboard — searchable in one place.</p>
         </div>
         <button onClick={() => navigate('/rate-comparison')} className="btn-secondary flex items-center gap-2">
           <DollarSign size={16} /> Rate Tool
@@ -58,8 +58,10 @@ const LoadsPage: React.FC = () => {
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-[240px]">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
+          <Search size={16} aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
+          <label htmlFor="loads-search" className="sr-only">Search loads by origin, destination, or broker</label>
           <input
+            id="loads-search"
             type="text"
             className="input-field pl-10"
             placeholder="Search origin, destination, broker..."
@@ -67,16 +69,18 @@ const LoadsPage: React.FC = () => {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <select className="input-field w-36" value={equipment} onChange={(e) => setEquipment(e.target.value)}>
+        <label htmlFor="loads-equipment" className="sr-only">Equipment type</label>
+        <select id="loads-equipment" className="input-field w-36" value={equipment} onChange={(e) => setEquipment(e.target.value)}>
           <option>All Equipment</option>
           <option>Dry Van</option>
           <option>Reefer</option>
           <option>Flatbed</option>
           <option>Step Deck</option>
         </select>
-        <input type="number" className="input-field w-28" placeholder="Min $/mi" value={minRate} onChange={(e) => setMinRate(e.target.value)} />
+        <label htmlFor="loads-min-rate" className="sr-only">Minimum rate per mile</label>
+        <input id="loads-min-rate" type="number" className="input-field w-28" placeholder="Min $/mi" aria-label="Minimum rate per mile" value={minRate} onChange={(e) => setMinRate(e.target.value)} />
         <button className="btn-secondary flex items-center gap-2">
-          <Filter size={16} /> More Filters
+          <Filter size={16} aria-hidden="true" /> More Filters
         </button>
       </div>
 
@@ -107,9 +111,11 @@ const LoadsPage: React.FC = () => {
                     else next.add(load.id);
                     setSaved(next);
                   }}
-                  className="p-1.5 rounded-lg hover:bg-infamous-border transition-colors"
+                  aria-label={saved.has(load.id) ? `Remove load ${load.id} from saved` : `Save load ${load.id}`}
+                  aria-pressed={saved.has(load.id)}
+                  className="p-1.5 rounded-lg hover:bg-infamous-border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange"
                 >
-                  <Bookmark size={14} className={saved.has(load.id) ? 'text-infamous-orange fill-infamous-orange' : 'text-gray-600'} />
+                  <Bookmark size={14} aria-hidden="true" className={saved.has(load.id) ? 'text-infamous-orange fill-infamous-orange' : 'text-gray-600'} />
                 </button>
               </div>
             </div>
@@ -138,11 +144,14 @@ const LoadsPage: React.FC = () => {
                 <p className="text-xs text-gray-500">${load.ratePerMile.toFixed(2)}/mi</p>
               </div>
               <div className="flex gap-2">
-                <button className="p-2 rounded-lg bg-infamous-border hover:bg-infamous-border-light text-gray-400 hover:text-white transition-colors">
-                  <Phone size={14} />
+                <button
+                  aria-label={`Call broker ${load.broker} about load ${load.id}`}
+                  className="p-2 rounded-lg bg-infamous-border hover:bg-infamous-border-light text-gray-400 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-orange"
+                >
+                  <Phone size={14} aria-hidden="true" />
                 </button>
                 <button className="btn-primary flex items-center gap-2 text-sm">
-                  <Truck size={14} /> Book Load
+                  <Truck size={14} aria-hidden="true" /> Book Load
                 </button>
               </div>
             </div>

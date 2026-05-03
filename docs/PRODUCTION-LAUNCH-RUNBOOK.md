@@ -61,6 +61,16 @@ PUBLIC_SITE_URL=https://www.infamousfreight.com
 VITE_API_URL=/api
 ```
 
+Netlify status markers:
+
+```text
+NETLIFY_SECRET_ROTATION_STATUS=skipped
+NETLIFY_SECRET_ROTATION_REQUIRED=false
+NETLIFY_REDEPLOY_REQUIRED_AFTER_SECRET_ROTATION=false
+NETLIFY_TEAM_MFA_ENFORCEMENT_REQUIRED=true
+NETLIFY_PREVIEW_ACCESS_REVIEW_REQUIRED=true
+```
+
 ### GitHub Actions
 
 ```text
@@ -166,6 +176,13 @@ Go to:
 Netlify -> infamousfreight project -> Deploys -> Trigger deploy -> Deploy site
 ```
 
+To update Netlify marker variables from an authenticated shell:
+
+```bash
+chmod +x scripts/netlify-update-security-markers.sh
+./scripts/netlify-update-security-markers.sh
+```
+
 ## Smoke test
 
 Go to:
@@ -198,6 +215,29 @@ https://www.infamousfreight.com returns HTTP 200.
 https://infamousfreight.com redirects to https://www.infamousfreight.com.
 Fly API health returns HTTP 200.
 Proxied API health returns HTTP 200.
+```
+
+Latest manual check (2026-04-28 UTC):
+
+```bash
+curl -I https://www.infamousfreight.com
+```
+
+Observed status: HTTP 200 OK.
+
+Manual production verification checklist (record this in launch evidence before closing readiness issues):
+
+- Homepage loads (`https://www.infamousfreight.com`).
+- Quote form submits successfully.
+- Login/auth flow works (if enabled for production).
+- API routes respond without errors.
+- No Supabase connection errors in logs.
+- No Netlify function errors in logs.
+
+GitHub issue update note for stale "secret rotation required" tracking:
+
+```text
+Supabase is connected. Secret rotation was intentionally skipped. Netlify markers should be set to skipped/not required. Production verification remains required after any environment marker update.
 ```
 
 ## Launch gate

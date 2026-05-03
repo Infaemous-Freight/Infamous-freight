@@ -1,77 +1,37 @@
 import { Injectable, Logger } from '@nestjs/common';
+import {
+  UserRole,
+  TeamMember,
+  Permission,
+  ROLE_PERMISSIONS,
+  SENSITIVE_FINANCIAL_FIELDS,
+  EXTERNAL_ROLES,
+  SanitizedData,
+  isExternalRole,
+  hasPermission,
+  hasAnyPermission,
+  filterSensitiveFields,
+  canAccessLoad,
+  canSubmitTrackingUpdate,
+  getMenuVisibility,
+} from './rbac-rules';
 
-export type UserRole = 'owner' | 'dispatcher' | 'safety_manager' | 'accountant' | 'driver';
-
-export interface TeamMember {
-  id: string;
-  email: string;
-  name: string;
-  role: UserRole;
-  carrierId: string;
-  invitedBy: string;
-  status: 'active' | 'pending' | 'inactive';
-  permissions: Permission[];
-  createdAt: Date;
-  lastActiveAt?: Date;
-}
-
-export type Permission =
-  // Loads
-  | 'loads:view' | 'loads:create' | 'loads:assign' | 'loads:delete'
-  // Drivers
-  | 'drivers:view' | 'drivers:create' | 'drivers:edit' | 'drivers:delete'
-  // Invoices
-  | 'invoices:view' | 'invoices:create' | 'invoices:send' | 'invoices:delete'
-  // Analytics
-  | 'analytics:view' | 'analytics:export'
-  // Settings
-  | 'settings:view' | 'settings:edit'
-  // Team
-  | 'team:view' | 'team:invite' | 'team:edit' | 'team:remove'
-  // Safety
-  | 'safety:view' | 'safety:hos' | 'safety:violations'
-  // Documents
-  | 'documents:view' | 'documents:upload' | 'documents:delete'
-  // ELD
-  | 'eld:view' | 'eld:connect' | 'eld:disconnect';
-
-const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
-  owner: [
-    'loads:view', 'loads:create', 'loads:assign', 'loads:delete',
-    'drivers:view', 'drivers:create', 'drivers:edit', 'drivers:delete',
-    'invoices:view', 'invoices:create', 'invoices:send', 'invoices:delete',
-    'analytics:view', 'analytics:export',
-    'settings:view', 'settings:edit',
-    'team:view', 'team:invite', 'team:edit', 'team:remove',
-    'safety:view', 'safety:hos', 'safety:violations',
-    'documents:view', 'documents:upload', 'documents:delete',
-    'eld:view', 'eld:connect', 'eld:disconnect',
-  ],
-  dispatcher: [
-    'loads:view', 'loads:create', 'loads:assign',
-    'drivers:view', 'drivers:edit',
-    'invoices:view', 'invoices:create',
-    'analytics:view',
-    'documents:view', 'documents:upload',
-    'eld:view',
-  ],
-  safety_manager: [
-    'drivers:view', 'drivers:edit',
-    'safety:view', 'safety:hos', 'safety:violations',
-    'documents:view', 'documents:upload',
-    'eld:view',
-    'analytics:view',
-  ],
-  accountant: [
-    'invoices:view', 'invoices:create', 'invoices:send',
-    'analytics:view', 'analytics:export',
-    'documents:view', 'documents:upload',
-  ],
-  driver: [
-    'loads:view',
-    'documents:view', 'documents:upload',
-    'eld:view',
-  ],
+// Re-export everything so existing imports continue to work.
+export {
+  UserRole,
+  TeamMember,
+  Permission,
+  ROLE_PERMISSIONS,
+  SENSITIVE_FINANCIAL_FIELDS,
+  EXTERNAL_ROLES,
+  SanitizedData,
+  isExternalRole,
+  hasPermission,
+  hasAnyPermission,
+  filterSensitiveFields,
+  canAccessLoad,
+  canSubmitTrackingUpdate,
+  getMenuVisibility,
 };
 
 @Injectable()
@@ -145,28 +105,53 @@ export class RBACService {
   }
 
   hasPermission(member: TeamMember, permission: Permission): boolean {
-    return member.permissions.includes(permission);
+    return hasPermission(member, permission);
   }
 
   hasAnyPermission(member: TeamMember, permissions: Permission[]): boolean {
-    return permissions.some(p => member.permissions.includes(p));
+    return hasAnyPermission(member, permissions);
   }
 
-  // UI helpers - determine what menus/features to show
+  /**
+   * Returns true for external user roles (shipper, carrier, driver).
+   * External users must never see financial margin, internal notes, or other
+   * customers' / carriers' records.
+   */
+  isExternalRole(role: UserRole): boolean {
+    return isExternalRole(role);
+  }
+
+  /**
+   * Strip sensitive financial and internal fields from a data object before
+   * returning it to an external user (shipper / carrier / driver).
+   */
+  filterSensitiveFields<T extends Record<string, unknown>>(data: T): SanitizedData<T> {
+    return filterSensitiveFields(data);
+  }
+
+  /**
+   * Returns true when an external member is allowed to access a specific load.
+   * Internal roles always return true.
+   */
+  canAccessLoad(
+    member: TeamMember,
+    load: { shipperId?: string | null; carrierId?: string | null; driverName?: string | null },
+  ): boolean {
+    return canAccessLoad(member, load);
+  }
+
+  /**
+   * Returns true when a member is allowed to submit a tracking update for the given load.
+   */
+  canSubmitTrackingUpdate(
+    member: TeamMember,
+    load: { carrierId?: string | null; driverName?: string | null },
+  ): boolean {
+    return canSubmitTrackingUpdate(member, load);
+  }
+
+  /** Returns a map of UI menu items to visibility flags for the given role. */
   getMenuVisibility(role: UserRole): Record<string, boolean> {
-    const perms = ROLE_PERMISSIONS[role];
-    return {
-      dashboard: true,
-      loads: perms.includes('loads:view'),
-      dispatch: perms.includes('loads:assign'),
-      drivers: perms.includes('drivers:view'),
-      invoices: perms.includes('invoices:view'),
-      analytics: perms.includes('analytics:view'),
-      safety: perms.includes('safety:view'),
-      documents: perms.includes('documents:view'),
-      eld: perms.includes('eld:view'),
-      team: perms.includes('team:view'),
-      settings: perms.includes('settings:view'),
-    };
+    return getMenuVisibility(role);
   }
 }
