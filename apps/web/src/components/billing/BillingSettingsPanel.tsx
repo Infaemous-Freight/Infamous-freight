@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import { CreditCard, ExternalLink, Loader2, ShieldCheck, Sparkles } from 'lucide-react';
+import { CreditCard, ExternalLink, Loader2, ShieldCheck, Sparkles, Zap } from 'lucide-react';
 import { useAppStore } from '@/store/app-store';
 import {
   BillingInterval,
   BillingPlan,
   createCheckoutSession,
   createCustomerPortalSession,
+  createOneTimeCheckoutSession,
   getAiUsageSummary,
   getBillingErrorMessage,
   getBillingStatus,
@@ -101,6 +102,29 @@ const BillingSettingsPanel: React.FC = () => {
 
     try {
       const url = await createCheckoutSession(context, plan, billingInterval);
+      window.location.assign(url);
+    } catch (error) {
+      toast.error(getBillingErrorMessage(error));
+    } finally {
+      setBusyAction(null);
+    }
+  };
+
+  const startAiAddonCheckout = async () => {
+    if (!canManageBilling) {
+      toast.error('Only an owner or admin can manage add-ons.');
+      return;
+    }
+
+    if (!billingStatus?.hasStripeCustomer) {
+      toast.error('Start a subscription first so this add-on can be linked to your billing account.');
+      return;
+    }
+
+    setBusyAction('ai-addon-pack');
+
+    try {
+      const url = await createOneTimeCheckoutSession(context, 'ai_addon_pack');
       window.location.assign(url);
     } catch (error) {
       toast.error(getBillingErrorMessage(error));
@@ -220,6 +244,30 @@ const BillingSettingsPanel: React.FC = () => {
         ))}
       </div>
 
+      <div className="card border border-infamous-orange/30 bg-infamous-orange/5">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-infamous-orange/10 text-infamous-orange">
+              <Zap size={20} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold">One-time AI add-on pack</h2>
+              <p className="mt-1 text-sm text-gray-400">
+                Add extra AI capacity without changing your subscription. The webhook records the completed checkout.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={startAiAddonCheckout}
+            disabled={!canManageBilling || !billingStatus?.hasStripeCustomer || busyAction === 'ai-addon-pack'}
+            className="btn-primary inline-flex items-center justify-center gap-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {busyAction === 'ai-addon-pack' && <Loader2 size={16} className="animate-spin" />}
+            Open add-on checkout
+          </button>
+        </div>
+      </div>
+
       <div className="card">
         <h2 className="text-lg font-semibold">AI Usage Ledger</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-3 xl:grid-cols-6">
@@ -235,7 +283,7 @@ const BillingSettingsPanel: React.FC = () => {
   );
 };
 
-function Metric({ label, value }: { label: string; value: string | number }) {
+function Metric({ label, value }: { label: string | number; value: string | number }) {
   return (
     <div className="rounded-xl border border-infamous-border bg-infamous-dark p-4">
       <p className="text-xs uppercase tracking-wide text-gray-500">{label}</p>
