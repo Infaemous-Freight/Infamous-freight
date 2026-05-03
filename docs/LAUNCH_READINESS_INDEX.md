@@ -20,6 +20,7 @@ Ready for verification. Not approved for public launch until all critical checks
 | `docs/LAUNCH_EVIDENCE_LOG.md` | Evidence log template for command output, dashboard checks, blocker notes, and final decision |
 | `docs/ROLLBACK_PLAN.md` | Rollback triggers and recovery process for API, web, database, billing, notifications, and support |
 | `docs/PRODUCTION_TEST_DATA_PLAN.md` | Controlled production test accounts, freight records, documents, billing data, and cleanup rules |
+| `docs/MVP_LAUNCH_DEMO_DATA_SET.md` | MVP launch demo data set for sales demos and smoke tests: sample customers, carriers, shipments, tracking events, quotes, and cleanup |
 | `docs/STRIPE_WEBHOOK_VERIFICATION.md` | Stripe live/test mode verification, webhook edge cases, idempotency, refunds, and failed payments |
 | `docs/ADMIN_RECOVERY_RUNBOOK.md` | Admin recovery procedures for users, roles, shipments, assignments, documents, billing, and notifications |
 | `docs/BACKUP_RESTORE_VERIFICATION.md` | Backup configuration and restore proof procedure |
