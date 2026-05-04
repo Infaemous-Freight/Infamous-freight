@@ -139,10 +139,10 @@ The GitHub social preview image lives at [`docs/screenshots/infamousfreight-soci
 To regenerate after updating the header SVG:
 
 ```bash
-npm run social-preview:generate
+pnpm run social-preview:generate
 ```
 
-Maintainers must upload the resulting PNG via **Settings → General → Social preview** (GitHub does not accept SVG there and does not expose an API for this setting).
+Maintainers must upload the resulting PNG via **Settings → General → Social preview**. GitHub does not accept SVG there and does not expose an API for this setting.
 
 ---
 
@@ -151,7 +151,7 @@ Maintainers must upload the resulting PNG via **Settings → General → Social 
 ### 1️⃣ Install dependencies + bootstrap environment files
 
 ```bash
-npm run env:setup
+pnpm run env:setup
 ```
 
 This installs workspace dependencies and creates local `.env` files from `*.env.example` for:
@@ -162,7 +162,7 @@ This installs workspace dependencies and creates local `.env` files from `*.env.
 
 Edit the generated `.env` files with the required API keys and environment values.
 
-> Prisma commands run from the repo root, such as `npm run prisma:generate`, load environment values from the root `.env` file. API-local overrides such as `apps/api/.env` may also apply depending on how Prisma is invoked. If the same variable is defined in multiple places, verify which `DATABASE_URL` Prisma will use for that command.
+> Prisma commands run from the repo root, such as `pnpm run prisma:generate`, load environment values from the root `.env` file. API-local overrides such as `apps/api/.env` may also apply depending on how Prisma is invoked. If the same variable is defined in multiple places, verify which `DATABASE_URL` Prisma will use for that command.
 
 ### 2️⃣ Start with Docker (recommended)
 
@@ -173,8 +173,8 @@ docker-compose up -d
 ### 3️⃣ Or start manually
 
 ```bash
-npm run db:setup
-npm run dev
+pnpm run db:setup
+pnpm run dev
 ```
 
 ---
@@ -184,19 +184,19 @@ npm run dev
 ### Recommended local flow
 
 ```bash
-npm run env:setup
-npm run db:setup
-npm run dev
+pnpm run env:setup
+pnpm run db:setup
+pnpm run dev
 ```
 
 ### Common commands
 
 ```bash
-npm run env:setup
-npm run db:setup
-npm run dev
-npm run build
-npm run test
+pnpm run env:setup
+pnpm run db:setup
+pnpm run dev
+pnpm run build
+pnpm run test
 ```
 
 ---
@@ -206,17 +206,17 @@ npm run test
 ### Local setup
 
 ```bash
-npm run env:setup
-npm run db:setup
-npm run dev
+pnpm run env:setup
+pnpm run db:setup
+pnpm run dev
 ```
 
 ### Build and validate
 
 ```bash
-npm run build
-npm run test
-npm run validate
+pnpm run build
+pnpm run test
+pnpm run validate
 ```
 
 ### Deploy
@@ -273,14 +273,14 @@ git remote -v
 
 ```bash
 cd apps/web
-npx @sentry/wizard@latest -i react
+pnpm dlx @sentry/wizard@latest -i react
 ```
 
 > ⚠️ Do not use `-i nextjs` — `apps/web` is not a Next.js app.
 
 ### Sentry MCP server
 
-For Sentry issue triage via MCP-compatible clients, configure the Sentry MCP endpoint with environment-based auth (never hardcode or commit tokens):
+For Sentry issue triage via MCP-compatible clients, configure the Sentry MCP endpoint with environment-based auth. Never hardcode or commit tokens.
 
 ```json
 {
@@ -297,7 +297,7 @@ For Sentry issue triage via MCP-compatible clients, configure the Sentry MCP end
 
 Use a short-lived token with the minimum scopes required for issue triage, store it in a local secret manager, and rotate immediately if exposed.
 
-Example local setup (do not commit):
+Example local setup. Do not commit this:
 
 ```bash
 export SENTRY_ACCESS_TOKEN="<sentry-token>"
@@ -371,7 +371,7 @@ Expected request headers for protected operational routes:
 
 ### GitHub Actions CI/CD
 
-CI should use a single package-manager path end to end. This repository is currently documented and scripted around **npm workspaces**, and build, test, and deploy flows should stay aligned to that to avoid lockfile and install drift.
+CI should use a single package-manager path end to end. This repository is standardized on **pnpm workspaces**, and build, test, and deploy flows should stay aligned to that to avoid lockfile and install drift.
 
 Add these secrets to your GitHub repository:
 
@@ -400,7 +400,7 @@ flyctl deploy --app infamous-freight
 Netlify auto-deploys from the `main` branch via its native Git integration. For manual deploys:
 
 ```bash
-npm install -g netlify-cli
+pnpm add -g netlify-cli
 netlify deploy --prod --dir=apps/web/dist
 ```
 
@@ -493,16 +493,19 @@ nginx.conf
 ## 📚 Docs by Goal
 
 ### New here
+
 - [Quick Start](#-quick-start)
 - [Development Workflow](#-development-workflow)
 - [Environment References](#-environment-references)
 
 ### Understand the system
+
 - [Architecture Overview](#️-architecture-overview)
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md)
 
 ### Deploy and operate
+
 - [Deployment](#-deployment)
 - [`docs/INTEGRATIONS-AND-SECRETS.md`](docs/INTEGRATIONS-AND-SECRETS.md)
 - [`docs/NETLIFY-BUILDHOOKS.md`](docs/NETLIFY-BUILDHOOKS.md)
@@ -510,11 +513,13 @@ nginx.conf
 - [`docs/SBOM-POLICY.md`](docs/SBOM-POLICY.md)
 
 ### Launch readiness
+
 - [Launch Readiness](#-launch-readiness)
 - [`docs/PRODUCTION_READINESS_VERIFICATION.md`](docs/PRODUCTION_READINESS_VERIFICATION.md)
 - [`docs/ROLLBACK_PLAN.md`](docs/ROLLBACK_PLAN.md)
 
 ### Freight operations
+
 - [Production Operations](#-production-operations)
 - [`docs/production-operations/OPERATING_MODEL.md`](docs/production-operations/OPERATING_MODEL.md)
 - [`docs/production-operations/DISPATCH_WORKFLOW.md`](docs/production-operations/DISPATCH_WORKFLOW.md)
