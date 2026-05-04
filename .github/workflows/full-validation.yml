@@ -110,8 +110,8 @@ jobs:
 
             case "$health_status" in
               healthy)
-                curl -fsS http://127.0.0.1:3000/api/health >/dev/null
-                echo "Container healthcheck is healthy and /api/health responds."
+                curl -fsS http://127.0.0.1:3000/api/health/ready >/dev/null
+                echo "Container healthcheck is healthy and /api/health/ready responds."
                 exit 0
                 ;;
               unhealthy)
@@ -120,8 +120,8 @@ jobs:
                 exit 1
                 ;;
               none)
-                if curl -fsS http://127.0.0.1:3000/api/health >/dev/null; then
-                  echo "No Docker HEALTHCHECK present, but /api/health responds."
+                if curl -fsS http://127.0.0.1:3000/api/health/ready >/dev/null; then
+                  echo "No Docker HEALTHCHECK present, but /api/health/ready responds."
                   exit 0
                 fi
                 ;;
@@ -134,6 +134,20 @@ jobs:
           docker inspect "$CONTAINER_NAME" || true
           docker logs "$CONTAINER_NAME" || true
           exit 1
+
+      - name: Verify protected-route auth behavior
+        run: |
+          live_status=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/api/health/live)
+          ready_status=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/api/health/ready)
+          unauth_status=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/api/loads)
+          tenant_only_status=$(curl -s -o /dev/null -w '%{http_code}' -H 'x-tenant-id: demo-tenant' http://127.0.0.1:3000/api/loads)
+          tenant_role_status=$(curl -s -o /dev/null -w '%{http_code}' -H 'x-tenant-id: demo-tenant' -H 'x-user-role: dispatcher' http://127.0.0.1:3000/api/loads)
+
+          test "$live_status" = "200"
+          test "$ready_status" = "200"
+          test "$unauth_status" = "400"
+          test "$tenant_only_status" = "403"
+          test "$tenant_role_status" = "402"
 
       - name: Cleanup container
         if: always()
