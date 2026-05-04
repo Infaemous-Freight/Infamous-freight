@@ -228,8 +228,10 @@ flyctl deploy --app infamous-freight
 ### Verify
 
 ```bash
-curl -X GET http://localhost:3000/api/health
-curl -X GET https://infamousfreight.com/api/health
+curl -X GET http://localhost:3000/health/live
+curl -X GET http://localhost:3000/health/ready
+curl -X GET https://infamousfreight.com/api/health/live
+curl -X GET https://infamousfreight.com/api/health/ready
 ```
 
 ---
@@ -346,10 +348,40 @@ API (Express 4 + TypeScript)
 
 ## 🔌 API Example
 
-### Health check
+### Liveness check
 
 ```bash
-curl -X GET http://localhost:3000/api/health
+curl -X GET http://localhost:3000/api/health/live
+```
+
+Example response:
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-01-01T00:00:00.000Z",
+  "services": {
+    "api": "running"
+  }
+}
+```
+
+### Readiness check
+
+```bash
+curl -X GET http://localhost:3000/api/health/ready
+```
+
+Example response:
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-01-01T00:00:00.000Z",
+  "services": {
+    "database": "connected"
+  }
+}
 ```
 
 ### Tenant-scoped loads request
@@ -358,6 +390,21 @@ curl -X GET http://localhost:3000/api/health
 curl -X GET http://localhost:3000/api/loads \
   -H "x-tenant-id: demo-tenant" \
   -H "x-user-role: dispatcher"
+```
+
+Example response:
+
+```json
+{
+  "data": [
+    {
+      "id": "load_123",
+      "tenantId": "demo-tenant",
+      "status": "assigned"
+    }
+  ],
+  "count": 1
+}
 ```
 
 Expected request headers for protected operational routes:
@@ -409,13 +456,14 @@ netlify deploy --prod --dir=apps/web/dist
 After deployment, verify:
 
 ```bash
-curl -X GET https://infamousfreight.com/api/health
+curl -X GET https://infamousfreight.com/api/health/live
+curl -X GET https://infamousfreight.com/api/health/ready
 ```
 
 Also confirm:
 
-- API returns `200`
-- database connectivity is healthy
+- API returns `200` on liveness
+- readiness reports database connectivity as healthy
 - required env vars are present
 - Fly app is listening on the expected internal port
 - Netlify build points to the correct API URL
