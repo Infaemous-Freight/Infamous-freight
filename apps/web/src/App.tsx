@@ -39,6 +39,11 @@ const FreightAssistantPage = lazy(() => import('@/pages/FreightAssistantPage'));
 const PricingPage = lazy(() => import('@/pages/PricingPage'));
 const PartnersPage = lazy(() => import('@/pages/PartnersPage'));
 const DriversApplyPage = lazy(() => import('@/pages/DriversApplyPage'));
+const ContactPage = lazy(() => import('@/pages/ContactPage'));
+const AboutPage = lazy(() => import('@/pages/AboutPage'));
+const ServicesPage = lazy(() => import('@/pages/ServicesPage'));
+const ServiceDetailPage = lazy(() => import('@/pages/ServiceDetailPage'));
+const LegalPage = lazy(() => import('@/pages/LegalPage'));
 
 const RouteFallback = () => (
   <main
@@ -79,6 +84,10 @@ function App() {
           <Route path="/home" element={<LandingPage />} />
 
           <Route element={<PublicLayout />}>
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/services" element={<ServicesPage />} />
+            <Route path="/services/:serviceSlug" element={<ServiceDetailPage />} />
             <Route path="/request-quote" element={<PublicQuoteRequestPage />} />
             <Route path="/track-shipment" element={<ShipmentTrackingPage />} />
             <Route path="/customer-portal" element={<CustomerPortalPage />} />
@@ -87,6 +96,10 @@ function App() {
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/partners" element={<PartnersPage />} />
             <Route path="/drive" element={<DriversApplyPage />} />
+            <Route path="/terms" element={<LegalPage />} />
+            <Route path="/privacy" element={<LegalPage />} />
+            <Route path="/carrier-agreement" element={<LegalPage />} />
+            <Route path="/shipper-agreement" element={<LegalPage />} />
           </Route>
 
           <Route path="/login" element={<LoginPage />} />
