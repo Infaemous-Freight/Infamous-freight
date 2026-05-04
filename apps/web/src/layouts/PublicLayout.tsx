@@ -2,13 +2,44 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { ArrowRight, Truck } from 'lucide-react';
 
 const navLinks = [
+  { label: 'Services', href: '/services' },
   { label: 'Quote', href: '/request-quote' },
   { label: 'Track', href: '/track-shipment' },
   { label: 'Drivers', href: '/drive' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Partners', href: '/partners' },
-  { label: 'Customer Portal', href: '/customer-portal' },
-  { label: 'Carrier Portal', href: '/carrier-portal' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const footerGroups = [
+  {
+    title: 'Freight',
+    links: [
+      { label: 'Request quote', href: '/request-quote' },
+      { label: 'Track shipment', href: '/track-shipment' },
+      { label: 'Services', href: '/services' },
+      { label: 'Freight assistant', href: '/freight-assistant' },
+    ],
+  },
+  {
+    title: 'Network',
+    links: [
+      { label: 'Apply to drive', href: '/drive' },
+      { label: 'Carrier portal', href: '/carrier-portal' },
+      { label: 'Customer portal', href: '/customer-portal' },
+      { label: 'Partners', href: '/partners' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Contact', href: '/contact' },
+      { label: 'Terms', href: '/terms' },
+      { label: 'Privacy', href: '/privacy' },
+    ],
+  },
 ];
 
 const PublicLayout: React.FC = () => {
@@ -30,7 +61,7 @@ const PublicLayout: React.FC = () => {
 
           <nav className="flex flex-wrap items-center gap-2 text-sm text-gray-300" aria-label="Public site navigation">
             {navLinks.map((item) => {
-              const active = pathname === item.href;
+              const active = pathname === item.href || (item.href === '/services' && pathname.startsWith('/services/'));
               return (
                 <Link
                   key={item.href}
@@ -49,10 +80,10 @@ const PublicLayout: React.FC = () => {
 
           <div className="flex flex-wrap items-center gap-3">
             <Link
-              to="/freight-assistant"
+              to="/customer-portal"
               className="rounded-xl border border-infamous-border bg-infamous-card px-4 py-2 text-sm font-semibold text-white transition hover:border-infamous-orange/50"
             >
-              Freight Assistant
+              Portal
             </Link>
             <Link
               to="/login"
@@ -67,13 +98,33 @@ const PublicLayout: React.FC = () => {
       <Outlet />
 
       <footer className="border-t border-infamous-border bg-[#090909] px-6 py-10 text-sm text-gray-400">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Infamous Freight. Built for verified freight operations.</p>
-          <div className="flex flex-wrap gap-4">
-            <Link to="/request-quote" className="hover:text-infamous-orange">Request quote</Link>
-            <Link to="/track-shipment" className="hover:text-infamous-orange">Track shipment</Link>
-            <Link to="/drive" className="hover:text-infamous-orange">Apply to drive</Link>
-            <Link to="/login" className="hover:text-infamous-orange">Login</Link>
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.2fr_2fr]">
+          <div>
+            <Link to="/" className="flex items-center gap-3 text-white" aria-label="Infamous Freight home">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-infamous-orange text-white">
+                <Truck size={20} />
+              </span>
+              <span className="text-lg font-black">Infamous Freight</span>
+            </Link>
+            <p className="mt-4 max-w-md leading-6">
+              Built for verified freight operations: quote intake, dispatch, tracking, proof of delivery, driver onboarding, and partner workflows.
+            </p>
+            <p className="mt-4">© {new Date().getFullYear()} Infamous Freight.</p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-3">
+            {footerGroups.map((group) => (
+              <div key={group.title}>
+                <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.18em] text-gray-200">{group.title}</h2>
+                <div className="space-y-2">
+                  {group.links.map((link) => (
+                    <Link key={link.href} to={link.href} className="block hover:text-infamous-orange">
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </footer>
