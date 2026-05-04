@@ -18,6 +18,15 @@ This repository uses a small, strict workflow so production work stays clean and
 6. Squash merge.
 7. Delete the branch after merge.
 
+## Package manager policy
+
+This repository is standardized on **pnpm**.
+
+- Use `pnpm install`, not `npm install`.
+- Keep `pnpm-lock.yaml` in sync with any dependency or package manifest changes.
+- Do not mix npm and pnpm lockfile workflows.
+- If a PR changes `package.json`, `apps/**/package.json`, or workspace dependency configuration, update the lockfile when required.
+
 ## Branch naming
 
 Use clear prefixes:
@@ -37,17 +46,17 @@ Avoid reviving stale Codex/Copilot branches. Cherry-pick unique work into a fres
 Run from the repository root:
 
 ```bash
-npm ci
-npm run lint
-npx tsc -p apps/api/tsconfig.json --noEmit
-npx tsc -p apps/web/tsconfig.json --noEmit
-npm --prefix apps/api run test:coverage
+pnpm install --frozen-lockfile
+pnpm run lint
+pnpm -C apps/api exec tsc -p tsconfig.json --noEmit
+pnpm -C apps/web exec tsc -p tsconfig.json --noEmit
+pnpm -C apps/api run test:coverage
 ```
 
 If available, run the repo validator:
 
 ```bash
-npm run validate
+pnpm run validate
 ```
 
 ## Pull request requirements
@@ -80,8 +89,8 @@ Use Conventional Commits:
 ```text
 feat: add dispatch workflow
 fix: correct API health check
-chore: update CI runtime
 docs: add launch checklist
+chore: update CI runtime
 security: tighten CORS policy
 ```
 
