@@ -21,12 +21,6 @@
   force = true
 
 [[redirects]]
-  from = "/"
-  to = "/home"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "/api/*"
   to = "https://infamous-freight.fly.dev/api/:splat"
   status = 200
