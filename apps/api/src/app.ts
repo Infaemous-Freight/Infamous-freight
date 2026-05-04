@@ -28,6 +28,15 @@ import { createFreightWorkflowRouter } from './freight-workflow-routes';
 type Role = 'owner' | 'admin' | 'dispatcher';
 type SubscriptionStatus = 'active' | 'trialing' | 'past_due' | 'unpaid' | 'canceled' | 'incomplete' | 'none';
 
+type HealthResponse = {
+  status: 'ok' | 'degraded';
+  timestamp: string;
+  services: {
+    api?: 'running';
+    database?: string;
+  };
+};
+
 const ALLOWED_ROLES: Role[] = ['owner', 'admin', 'dispatcher'];
 const BILLING_ROLES: Role[] = ['owner', 'admin'];
 const BILLING_PLANS: BillingPlan[] = ['starter', 'professional', 'enterprise'];
@@ -228,6 +237,28 @@ function getOneTimePurchaseType(req: Request): string | undefined {
 
 function getCarrierIdFromBillingSync(billingSync: ReturnType<typeof getBillingSyncFromStripeEvent>): string | null {
   return billingSync?.carrierId ?? null;
+}
+
+function createLivenessResponse(): HealthResponse {
+  return {
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    services: { api: 'running' },
+  };
+}
+
+async function createReadinessResponse(dataStore: DataStore): Promise<{ statusCode: number; body: HealthResponse }> {
+  const database = await dataStore.healthCheck();
+  const status = database === 'connected' ? 'ok' : 'degraded';
+
+  return {
+    statusCode: status === 'ok' ? 200 : 503,
+    body: {
+      status,
+      timestamp: new Date().toISOString(),
+      services: { database },
+    },
+  };
 }
 
 function registerWebhookRoute(app: express.Express, dataStore: DataStore) {
@@ -544,24 +575,31 @@ export function createApp() {
   registerWebhookRoute(app, dataStore);
   app.use(express.json());
 
-  app.get('/health', wrapAsync(async (_req, res) => {
-    const database = await dataStore.healthCheck();
+  app.get('/health', (_req, res) => {
+    res.status(200).json(createLivenessResponse());
+  });
 
-    res.status(200).json({
-      status: database === 'connected' ? 'ok' : 'degraded',
-      timestamp: new Date().toISOString(),
-      services: { database },
-    });
+  app.get('/health/live', (_req, res) => {
+    res.status(200).json(createLivenessResponse());
+  });
+
+  app.get('/health/ready', wrapAsync(async (_req, res) => {
+    const readiness = await createReadinessResponse(dataStore);
+    res.status(readiness.statusCode).json(readiness.body);
   }));
 
   app.get('/api/health', wrapAsync(async (_req, res) => {
-    const database = await dataStore.healthCheck();
+    const readiness = await createReadinessResponse(dataStore);
+    res.status(readiness.statusCode).json(readiness.body);
+  }));
 
-    res.status(200).json({
-      status: database === 'connected' ? 'ok' : 'degraded',
-      timestamp: new Date().toISOString(),
-      services: { database },
-    });
+  app.get('/api/health/live', (_req, res) => {
+    res.status(200).json(createLivenessResponse());
+  });
+
+  app.get('/api/health/ready', wrapAsync(async (_req, res) => {
+    const readiness = await createReadinessResponse(dataStore);
+    res.status(readiness.statusCode).json(readiness.body);
   }));
 
   registerRoutes(app, dataStore);
