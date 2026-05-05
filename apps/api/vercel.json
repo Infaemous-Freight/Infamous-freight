@@ -1,1 +1,1 @@
-{"redirects":[{"source":"/(.*)","destination":"https://www.infamousfreight.com/","permanent":true}]}
+{"routes":[{"src":"/(.*)","status":308,"headers":{"Location":"https://www.infamousfreight.com/"}}]}
