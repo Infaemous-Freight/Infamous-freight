@@ -1,142 +1,11 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
-
-type Cta = {
-  label: string;
-  href: string;
-};
-
-type Plan = {
-  name: string;
-  price: string;
-  cadence?: string;
-  tagline: string;
-  features: string[];
-  cta: Cta;
-  secondaryCta?: Cta;
-  highlighted?: boolean;
-};
-
-const stripeSubscriptionPlans: Plan[] = [
-  {
-    name: 'Starter',
-    price: '$99',
-    cadence: '/month',
-    tagline: 'Perfect for small freight operations getting organized fast.',
-    features: [
-      'Up to 10 drivers',
-      'Core dispatch workspace',
-      'Quote, booking, and tracking tools',
-      'Proof-of-delivery workflow',
-      'Standard support',
-    ],
-    cta: {
-      label: 'Start monthly',
-      href: 'https://buy.stripe.com/aFa9AU0qScHh3dH1WLeME0b',
-    },
-    secondaryCta: {
-      label: 'Pay yearly — $1,089/year',
-      href: 'https://buy.stripe.com/4gMaEY4H87mXeWpcBpeME0e',
-    },
-  },
-  {
-    name: 'Professional',
-    price: '$499',
-    cadence: '/month',
-    tagline: 'For growing freight companies that need stronger automation.',
-    features: [
-      'Up to 50 drivers',
-      'Advanced dispatch and operations features',
-      'SMS workflows',
-      'API access',
-      'Priority support',
-    ],
-    cta: {
-      label: 'Start monthly',
-      href: 'https://buy.stripe.com/cNi3cwgpQ8r1cOh58XeME0c',
-    },
-    secondaryCta: {
-      label: 'Pay yearly — $5,389/year',
-      href: 'https://buy.stripe.com/14A8wQ5Lc6iT01v7h5eME0f',
-    },
-    highlighted: true,
-  },
-  {
-    name: 'Enterprise',
-    price: '$2,000',
-    cadence: '/month',
-    tagline: 'For large enterprises running high-volume freight operations.',
-    features: [
-      'Unlimited drivers',
-      'White-label options',
-      'Custom integrations',
-      'Dedicated support',
-      'Enterprise operations setup',
-    ],
-    cta: {
-      label: 'Start monthly',
-      href: 'https://buy.stripe.com/7sY14o0qS8r115z30PeME0d',
-    },
-    secondaryCta: {
-      label: 'Pay yearly — $21,600/year',
-      href: 'https://buy.stripe.com/9B63cw6PgePp01vcBpeME0g',
-    },
-  },
-];
-
-const stripeAddOnPlans: Plan[] = [
-  {
-    name: 'AI Action Pack 2,000',
-    price: '$50',
-    tagline: 'One-time add-on for load recommendations, dispatch drafts, broker summaries, rate checks, and document workflow automation.',
-    features: ['2,000 additional AI actions', 'One-time purchase', 'Works with active platform workflows'],
-    cta: {
-      label: 'Buy add-on',
-      href: 'https://buy.stripe.com/4gMaEY0qSgXxg0t6d1eME0h',
-    },
-  },
-  {
-    name: 'AI Action Pack 10,000',
-    price: '$200',
-    tagline: 'One-time add-on for higher-volume dispatch automation, document workflows, broker checks, and rate intelligence.',
-    features: ['10,000 additional AI actions', 'One-time purchase', 'Built for busier operations'],
-    cta: {
-      label: 'Buy add-on',
-      href: 'https://buy.stripe.com/9B6cN67Tk22D15zdFteME0i',
-    },
-  },
-  {
-    name: 'AI Action Pack 50,000',
-    price: '$750',
-    tagline: 'One-time add-on for enterprise-level freight automation and high-volume AI workflows.',
-    features: ['50,000 additional AI actions', 'One-time purchase', 'Best for high-volume teams'],
-    cta: {
-      label: 'Buy add-on',
-      href: 'https://buy.stripe.com/8x200kddE22DbKd8l9eME0j',
-    },
-    highlighted: true,
-  },
-  {
-    name: 'Document AI Pack 500',
-    price: '$50',
-    tagline: 'One-time add-on for AI document scans, including BOL/POD extraction, invoice field extraction, and paperwork automation.',
-    features: ['500 additional AI document scans', 'BOL/POD extraction', 'Invoice field extraction'],
-    cta: {
-      label: 'Buy add-on',
-      href: 'https://buy.stripe.com/dRm5kEc9Aaz97tX8l9eME0k',
-    },
-  },
-  {
-    name: 'Voice AI Minutes 1,000',
-    price: '$200',
-    tagline: 'One-time add-on for call automation, voice booking workflows, and dispatch phone assistance.',
-    features: ['1,000 Voice AI minutes', 'Call automation', 'Dispatch phone assistance'],
-    cta: {
-      label: 'Buy add-on',
-      href: 'https://buy.stripe.com/6oU8wQ7Tk36H9C50SHeME0l',
-    },
-  },
-];
+import {
+  STRIPE_ADD_ON_PLANS,
+  STRIPE_SUBSCRIPTION_PLANS,
+  StripeCatalogCta,
+  StripeCatalogPlan,
+} from '@/lib/stripeCatalog';
 
 const isExternalHref = (href: string) => href.startsWith('http://') || href.startsWith('https://');
 
@@ -150,7 +19,7 @@ const ctaClassName = (highlighted?: boolean) =>
 const secondaryCtaClassName =
   'inline-flex w-full items-center justify-center gap-2 rounded-xl border border-infamous-border px-5 py-3 text-sm font-semibold text-gray-200 transition hover:border-infamous-orange/50 hover:text-white';
 
-const PlanAction: React.FC<{ cta: Cta; highlighted?: boolean; secondary?: boolean }> = ({
+const PlanAction: React.FC<{ cta: StripeCatalogCta; highlighted?: boolean; secondary?: boolean }> = ({
   cta,
   highlighted,
   secondary,
@@ -172,7 +41,7 @@ const PlanAction: React.FC<{ cta: Cta; highlighted?: boolean; secondary?: boolea
   );
 };
 
-const PlanCard: React.FC<{ plan: Plan }> = ({ plan }) => (
+const PlanCard: React.FC<{ plan: StripeCatalogPlan }> = ({ plan }) => (
   <div
     className={`flex h-full flex-col rounded-3xl border bg-infamous-card p-6 ${
       plan.highlighted
@@ -201,7 +70,7 @@ const PlanCard: React.FC<{ plan: Plan }> = ({ plan }) => (
         </li>
       ))}
     </ul>
-    <div className="mt-auto pt-6 space-y-3">
+    <div className="mt-auto space-y-3 pt-6">
       <PlanAction cta={plan.cta} highlighted={plan.highlighted} />
       {plan.secondaryCta ? <PlanAction cta={plan.secondaryCta} secondary /> : null}
     </div>
@@ -238,7 +107,7 @@ const PricingPage: React.FC = () => {
             </p>
           </div>
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {stripeSubscriptionPlans.map((plan) => (
+            {STRIPE_SUBSCRIPTION_PLANS.map((plan) => (
               <PlanCard key={plan.name} plan={plan} />
             ))}
           </div>
@@ -255,7 +124,7 @@ const PricingPage: React.FC = () => {
             </p>
           </div>
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {stripeAddOnPlans.map((plan) => (
+            {STRIPE_ADD_ON_PLANS.map((plan) => (
               <PlanCard key={plan.name} plan={plan} />
             ))}
           </div>
