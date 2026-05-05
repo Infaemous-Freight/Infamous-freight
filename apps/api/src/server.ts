@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import { createApp } from './app';
 
 dotenv.config();
 
@@ -26,6 +25,11 @@ if (vercelRedirectTarget) {
   });
 } else {
   try {
+    // Load the full application only when it is needed. This keeps Vercel
+    // redirect-only deployments from importing Prisma/database code before the
+    // redirect handler can respond.
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { createApp } = require('./app') as typeof import('./app');
     const app = createApp();
     app.listen(port, host, () => {
       console.log(`Infamous Freight API listening on ${host}:${port}`);
