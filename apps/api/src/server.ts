@@ -18,6 +18,8 @@ try {
   });
 } catch (error) {
   const startupError = error instanceof Error ? error.message : 'unknown_startup_error';
+  // Log the underlying error server-side only. Do not return it to clients
+  // in the /health response body to avoid leaking config or stack details.
   console.error(`API startup failed: ${startupError}`);
 
   const fallback = express();
