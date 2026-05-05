@@ -2,7 +2,7 @@
   "name": "infamous-freight",
   "version": "1.0.0",
   "private": true,
-  "description": "Infamous Freight \u2014 The freight dispatch platform built by truckers, for truckers",
+  "description": "Infamous Freight — The freight dispatch platform built by truckers, for truckers",
   "packageManager": "pnpm@10.0.0",
   "repository": {
     "type": "git",
@@ -68,7 +68,7 @@
     "apps/*"
   ],
   "engines": {
-    "node": ">=22.0.0 <23.0.0",
+    "node": ">=22.0.0 <25.0.0",
     "pnpm": ">=10.0.0"
   },
   "pnpm": {
