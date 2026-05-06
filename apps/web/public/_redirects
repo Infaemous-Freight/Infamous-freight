@@ -1,0 +1,23 @@
+# Netlify Redirect Rules for Infamous Freight
+
+# Redirect all traffic to main domain
+/* https://www.infamousfreight.com/:splat 301!
+
+# Redirect platform subdomains
+https://api.infamousfreight.com/* https://www.infamousfreight.com/ 301!
+https://app.infamousfreight.com/* https://www.infamousfreight.com/ 301!
+https://admin.infamousfreight.com/* https://www.infamousfreight.com/ 301!
+https://dispatch.infamousfreight.com/* https://www.infamousfreight.com/ 301!
+https://driver.infamousfreight.com/* https://www.infamousfreight.com/ 301!
+https://broker.infamousfreight.com/* https://www.infamousfreight.com/ 301!
+https://carrier.infamousfreight.com/* https://www.infamousfreight.com/ 301!
+
+# Redirect www to non-www (if needed)
+https://infamousfreight.com/* https://www.infamousfreight.com/:splat 301!
+
+# Redirect old domain paths
+/old-page /new-page 301!
+/legacy/* /new-path/:splat 301!
+
+# SPA fallback - serve index.html for all routes
+/*    /index.html   200

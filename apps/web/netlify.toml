@@ -1,0 +1,121 @@
+# Netlify Configuration for Infamous Freight Frontend
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "functions"
+
+# Environment variables
+[build.environment]
+  NODE_VERSION = "22.13.0"
+  VITE_API_URL = "https://api.infamousfreight.fly.dev"
+  VITE_SUPABASE_URL = "https://your-project.supabase.co"
+
+# Redirects - All subdomains and paths lead to main site
+[[redirects]]
+  from = "https://api.infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://app.infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://admin.infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://dispatch.infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://driver.infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://broker.infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://carrier.infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://infamousfreight.com/*"
+  to = "https://www.infamousfreight.com/:splat"
+  status = 301
+  force = true
+
+# SPA fallback - serve index.html for all routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Cache control
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Plugins
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[plugins]]
+  package = "netlify-plugin-sitemap"
+  [plugins.inputs]
+    baseUrl = "https://www.infamousfreight.com"
+    buildDir = "dist"
+
+# Context-specific settings
+[context.production]
+  command = "npm run build"
+  environment = { NODE_ENV = "production" }
+
+[context.deploy-preview]
+  command = "npm run build"
+  environment = { NODE_ENV = "development" }
+
+[context.branch-deploy]
+  command = "npm run build"
+  environment = { NODE_ENV = "development" }
