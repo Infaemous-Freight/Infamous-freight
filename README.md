@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="assets/infamous-freight-header.png" alt="Infamous Freight" width="100%">
-</p>
-
-# 🚛 Infamous Freight
+           🚛 Infamous Freight
 
 > **The freight dispatch platform built by truckers, for truckers.**
 
