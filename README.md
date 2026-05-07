@@ -14,14 +14,14 @@ If you want one system for dispatch, tracking, paperwork, and operations control
 
 ---
 
-## Active Stack
+## 🧱 Active Stack
 
-- Web: React 18, Vite, TypeScript, Tailwind CSS, deployed to Netlify from `apps/web`
-- API: Express 4, TypeScript, Prisma, deployed separately to Fly.io from `apps/api`
-- Data/auth: PostgreSQL through Prisma plus Supabase Auth integrations where configured
-- Billing: Stripe Checkout, Customer Portal, and webhook sync through the Express API
+- 🌐 **Web:** React 18, Vite, TypeScript, Tailwind CSS, deployed to Netlify from `apps/web`
+- 🛠️ **API:** Express 4, TypeScript, Prisma, deployed separately to Fly.io from `apps/api`
+- 🗄️ **Data/Auth:** PostgreSQL through Prisma plus Supabase Auth integrations where configured
+- 💳 **Billing:** Stripe Checkout, Customer Portal, and webhook sync through the Express API
 
-`apps/web` is not a Next.js application. Netlify builds only the web app and proxies `/api/*` requests to the Fly.io API origin configured in `netlify.toml`.
+> `apps/web` is **not** a Next.js application. Netlify builds only the web app and proxies `/api/*` requests to the Fly.io API origin configured in `netlify.toml`.
 
 ---
 
@@ -29,7 +29,7 @@ If you want one system for dispatch, tracking, paperwork, and operations control
 
 - [Quick Start](#-quick-start)
 - [Current Working Scope](#-current-working-scope)
-- [Architecture Overview](#️-architecture-overview)
+- [Architecture Overview](#-architecture-overview)
 - [API Example](#-api-example)
 - [Deployment](#-deployment)
 - [Environment References](#-environment-references)
@@ -64,12 +64,12 @@ Freight teams often operate across too many disconnected systems: calls, texts, 
 
 Infamous Freight is built to reduce that operational drag by centralizing:
 
-- dispatch execution
-- shipment visibility
-- driver coordination
-- paperwork and invoicing
-- compliance workflows
-- operational reporting
+- 🚚 dispatch execution
+- 📍 shipment visibility
+- 👨‍✈️ driver coordination
+- 📄 paperwork and invoicing
+- 🛡️ compliance workflows
+- 📊 operational reporting
 
 ---
 
@@ -103,7 +103,7 @@ These areas describe the product direction and repository scope. Keep customer-f
 
 ## 📌 Current Working Scope
 
-### ✅ Working now
+### ✅ Working Now
 
 - health endpoints and API runtime
 - tenant-aware API request handling
@@ -114,7 +114,7 @@ These areas describe the product direction and repository scope. Keep customer-f
 - CI/CD and deploy support docs
 - environment bootstrap and validation scripts
 
-### 🚧 In active build
+### 🚧 In Active Build
 
 - deeper dispatch decision automation
 - richer shipment lifecycle workflows
@@ -143,17 +143,20 @@ These areas describe the product direction and repository scope. Keep customer-f
 ### 📊 Platform Overview
 ![Infamous Freight Platform Overview](docs/screenshots/infamousfreight-platform-overview.svg)
 
+### 🚚 Header Artwork
+![Infamous Freight Header](assets/infamous-freight-header.png)
+
 ### 🖼️ Social Preview
 
-The GitHub social preview image lives at [`.github/social-preview.png`](.github/social-preview.png) (1280×640 PNG, generated from `infamousfreight-header.svg`).
+The GitHub social preview image should live at [`.github/social-preview.png`](.github/social-preview.png).
 
-To regenerate after updating the header SVG:
+To regenerate after updating the header asset:
 
 ```bash
 pnpm run social-preview:generate
 ```
 
-Maintainers must upload the resulting PNG via **Settings → General → Social preview**. GitHub does not accept SVG there and does not expose an API for this setting.
+> Maintainers must upload the resulting PNG via **Settings → General → Social preview**. GitHub does not accept SVG there and does not expose an API for this setting.
 
 ---
 
@@ -291,7 +294,7 @@ pnpm dlx @sentry/wizard@latest -i react
 
 > ⚠️ Do not use `-i nextjs` — `apps/web` is not a Next.js app.
 
-### Sentry MCP server
+### Sentry MCP Server
 
 For Sentry issue triage via MCP-compatible clients, configure the Sentry MCP endpoint with environment-based auth. Never hardcode or commit tokens.
 
@@ -316,11 +319,11 @@ Example local setup. Do not commit this:
 export SENTRY_ACCESS_TOKEN="<sentry-token>"
 ```
 
-### Netlify sourcemap policy
+### Netlify Sourcemap Policy
 
 Public requests for `*.map` files are blocked (`404`). Sourcemaps are still uploaded to Sentry during builds when `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, and `SENTRY_PROJECT` are configured.
 
-### Optional Sentry environment variables
+### Optional Sentry Environment Variables
 
 | Variable | Purpose | Required |
 |---|---|---|
@@ -359,7 +362,7 @@ API (Express 4 + TypeScript)
 
 ## 🔌 API Example
 
-### Liveness check
+### Liveness Check
 
 ```bash
 curl -X GET http://localhost:3000/api/health/live
@@ -377,7 +380,7 @@ Example response:
 }
 ```
 
-### Readiness check
+### Readiness Check
 
 ```bash
 curl -X GET http://localhost:3000/api/health/ready
@@ -395,7 +398,7 @@ Example response:
 }
 ```
 
-### Tenant-scoped loads request
+### Tenant-Scoped Loads Request
 
 ```bash
 curl -X GET http://localhost:3000/api/loads \
@@ -424,7 +427,7 @@ Expected request headers for protected operational routes:
 - `x-tenant-id`
 - `x-user-role`
 
-Tenant IDs are accepted only from `x-tenant-id`; query string and request-body tenant values are rejected. Protected routes prefer the carrier billing status stored in the database from Stripe webhook sync. Client-set subscription headers are limited to tests or transitional environments that explicitly set `ALLOW_CLIENT_SUBSCRIPTION_STATUS_HEADER=true`.
+> Tenant IDs are accepted only from `x-tenant-id`. Query-string and request-body tenant values should not be relied on. Protected routes prefer the carrier billing status stored in the database from Stripe webhook sync. Client-set subscription headers are limited to tests or transitional environments that explicitly set `ALLOW_CLIENT_SUBSCRIPTION_STATUS_HEADER=true`.
 
 ---
 
@@ -448,7 +451,7 @@ Push to `main` and the pipeline deploys:
 - 🚚 API to Fly.io
 - 🌐 Web to Netlify via Netlify’s native Git integration
 
-### Manual deployment
+### Manual Deployment
 
 #### API (Fly.io)
 
@@ -465,7 +468,7 @@ pnpm add -g netlify-cli
 netlify deploy --prod --dir=apps/web/dist
 ```
 
-### Deploy verification
+### Deploy Verification
 
 After deployment, verify:
 
@@ -562,7 +565,7 @@ nginx.conf
 
 ### Understand the system
 
-- [Architecture Overview](#️-architecture-overview)
+- [Architecture Overview](#-architecture-overview)
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md)
 
@@ -748,7 +751,7 @@ Copyright 2025 Infamous Freight. All rights reserved.
 
 ---
 
-## Operations Shortcuts
+## 🧰 Operations Shortcuts
 
 Use these root-level scripts for consistent local and CI operations:
 
@@ -760,3 +763,19 @@ Use these root-level scripts for consistent local and CI operations:
 - `pnpm run snapshot:prod` — run production-readiness snapshot checks (Prisma generate, build, tests, smoke health, optional Docker build)
 
 For PATH setup and CLI troubleshooting, see [`docs/REQUIRED-CLIS.md`](docs/REQUIRED-CLIS.md).
+
+```
+
+Big cleanup decisions I made:
+- standardized the header on **`assets/infamous-freight-header.png`**
+- cleaned repeated wording
+- fixed heading consistency
+- kept the stronger pnpm/deploy/healthcheck guidance
+- kept the emoji use strong but readable
+
+The next best move is to make sure these files actually exist in your repo:
+- `assets/infamous-freight-header.png`
+- `docs/screenshots/infamousfreight-showcase-banner.svg`
+- `docs/screenshots/infamousfreight-landing-page.svg`
+- `docs/screenshots/infamousfreight-platform-overview.svg`
+- `.github/social-preview.png`
