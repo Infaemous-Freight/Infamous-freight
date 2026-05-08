@@ -6,6 +6,8 @@ import {
   FileX, Ban, ArrowDownToLine, ArrowUpFromLine, MapPin, Wallet,
   TrendingUp, Receipt, Banknote
 } from 'lucide-react';
+import WidgetErrorBoundary from '@/components/ui/WidgetErrorBoundary';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface OpsMetric {
   label: string;
@@ -90,11 +92,11 @@ const DashboardPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Operations Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Daily freight control overview</p>
+          <p className="text-sm text-gray-500 mt-0.5">Daily freight control overview · sample data</p>
         </div>
         <div className="flex items-center gap-2 bg-infamous-card border border-infamous-border rounded-xl px-3 py-2">
-          <Activity size={14} className="text-green-400 animate-pulse" />
-          <span className="text-xs text-gray-400">Live</span>
+          <Activity size={14} className="text-gray-500" />
+          <span className="text-xs text-gray-500">Demo data</span>
           {urgentCount > 0 && (
             <span className="ml-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{urgentCount} urgent</span>
           )}
@@ -102,6 +104,7 @@ const DashboardPage: React.FC = () => {
       </div>
 
       {/* Operations Metrics */}
+      <WidgetErrorBoundary label="Operations metrics">
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {opsMetrics.map((metric) => (
           <button
@@ -121,9 +124,11 @@ const DashboardPage: React.FC = () => {
           </button>
         ))}
       </div>
+      </WidgetErrorBoundary>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Today's Flow */}
+        <WidgetErrorBoundary label="Today's flow">
         <div className="card lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Today&apos;s flow</h2>
@@ -146,8 +151,10 @@ const DashboardPage: React.FC = () => {
             ))}
           </div>
         </div>
+        </WidgetErrorBoundary>
 
         {/* Financial Pulse */}
+        <WidgetErrorBoundary label="Financial pulse">
         <div className="card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Financial pulse</h2>
@@ -175,9 +182,11 @@ const DashboardPage: React.FC = () => {
             ))}
           </div>
         </div>
+        </WidgetErrorBoundary>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <WidgetErrorBoundary label="Active loads">
         <div className="lg:col-span-2 card">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Active Loads</h2>
@@ -234,12 +243,18 @@ const DashboardPage: React.FC = () => {
               </button>
             ))}
             {filteredLoads.length === 0 && (
-              <div className="text-center py-8 text-gray-600 text-sm">No loads matching filter</div>
+              <EmptyState
+                icon={<Truck size={36} />}
+                title="No loads matching filter"
+                description="Try selecting a different filter to see active loads."
+              />
             )}
           </div>
         </div>
+        </WidgetErrorBoundary>
 
         {/* Action Required */}
+        <WidgetErrorBoundary label="Action items">
         <div className="card">
           <h2 className="text-lg font-semibold mb-4">Action Required</h2>
           <div className="space-y-3">
@@ -265,6 +280,7 @@ const DashboardPage: React.FC = () => {
             ))}
           </div>
         </div>
+        </WidgetErrorBoundary>
       </div>
     </div>
   );
