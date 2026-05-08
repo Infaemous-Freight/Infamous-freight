@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="assets/infamous-freight-header.svg" alt="Infamous Freight" width="100%">
-</p>
-
-# 🚛 Infamous Freight
+          🚛 Infamous Freight 🚚
 
 > **AI-driven freight operations platform: dispatch, fleet intelligence, driver coordination, and enterprise-ready logistics execution.**
 
