@@ -11,13 +11,13 @@ wait_timeout = "10m0s"
 [env]
 HOST = "0.0.0.0"
 NODE_ENV = "production"
-PORT = "4000"
+PORT = "3000"
 
 [http_service]
 auto_start_machines = true
 auto_stop_machines = false
 force_https = true
-internal_port = 4_000
+internal_port = 3000
 min_machines_running = 1
 processes = [ "app" ]
 
@@ -25,7 +25,7 @@ processes = [ "app" ]
   grace_period = "1m30s"
   interval = "30s"
   method = "GET"
-  path = "/api/health"
+  path = "/api/health/live"
   timeout = "15s"
 
   [http_service.concurrency]
