@@ -154,7 +154,9 @@ const DashboardPage: React.FC = () => {
 
       {/* Metric Cards Row */}
       <WidgetErrorBoundary label="Operations metrics">
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
+        <div>
+          <p className="text-[10px] text-infamous-muted uppercase tracking-wider mb-2">Sample data — connect your account for live metrics</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
           {metrics.map((m) => (
             <div
               key={m.label}
@@ -174,6 +176,7 @@ const DashboardPage: React.FC = () => {
             </div>
           ))}
         </div>
+        </div>
       </WidgetErrorBoundary>
 
       {/* Map + Alerts Row */}
@@ -187,8 +190,7 @@ const DashboardPage: React.FC = () => {
                 <h2 className="text-sm font-bold uppercase tracking-wide font-display">Shipment Tracking</h2>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-infamous-red-light animate-pulse" />
-                <span className="text-[10px] text-infamous-muted">128 active routes</span>
+                <span className="text-[10px] text-infamous-muted">sample data</span>
               </div>
             </div>
             <div className="h-[320px]">

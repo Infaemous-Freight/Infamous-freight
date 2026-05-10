@@ -327,13 +327,16 @@ const LandingPage: React.FC = () => {
           </div>
 
           {/* Metrics bar */}
-          <div className="mt-20 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="mt-20">
+            <p className="text-[10px] text-infamous-muted uppercase tracking-wider mb-3 text-center lg:text-left">Sample workflow data</p>
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {liveMetrics.map((metric) => (
               <div key={metric.label} className="glass-card-subtle rounded-[18px] p-5">
                 <p className="text-xs font-medium uppercase tracking-wider text-infamous-muted">{metric.label}</p>
                 <p className={`mt-2 text-3xl font-black font-display ${metric.color}`}>{metric.value}</p>
               </div>
             ))}
+            </div>
           </div>
         </div>
       </section>
@@ -573,6 +576,7 @@ const LandingPage: React.FC = () => {
                 <p className="mt-3 text-sm leading-7 text-[#B88989]">{feat.description}</p>
               </div>
             ))}
+
           </div>
         </div>
       </section>
