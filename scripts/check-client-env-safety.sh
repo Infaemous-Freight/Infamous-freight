@@ -14,6 +14,8 @@ ALLOWED_NON_VITE_KEYS=(
 DISALLOWED_KEYS=(
   DATABASE_URL
   DIRECT_URL
+  SUPABASE_DATABASE_URL
+  SUPABASE_SERVICE_KEY
   SUPABASE_SERVICE_ROLE_KEY
   STRIPE_SECRET_KEY
   STRIPE_WEBHOOK_SECRET
@@ -38,7 +40,17 @@ while IFS= read -r env_file; do
     fi
   done
 
-  # 2) Allow only VITE_* and known build-time keys.
+  # 2) Disallow public/browser-prefixed direct database URLs.
+  if grep -Eq '^(VITE|PUBLIC|NEXT_PUBLIC|REACT_APP)_.*DATABASE_URL=' "$env_file"; then
+    violations+=("${env_file}: public/browser-prefixed DATABASE_URL variables are not allowed")
+  fi
+
+  # 3) Disallow Postgres URLs under any frontend-public key.
+  if grep -Eq '^(VITE|PUBLIC|NEXT_PUBLIC|REACT_APP)_[A-Za-z0-9_]*=.*postgres(ql)?://' "$env_file"; then
+    violations+=("${env_file}: public/browser-prefixed env value contains a Postgres URL")
+  fi
+
+  # 4) Allow only VITE_* and known build-time keys.
   while IFS= read -r line || [[ -n "$line" ]]; do
     [[ "$line" =~ ^[[:space:]]*# ]] && continue
     [[ "$line" =~ ^[[:space:]]*$ ]] && continue
@@ -74,6 +86,7 @@ if (( ${#violations[@]} > 0 )); then
       echo "- ${violation}"
     done
     echo "Only VITE_* public keys (plus approved Sentry build-time keys) are allowed in apps/web/.env* files."
+    echo "Use VITE_SUPABASE_URL for Supabase browser clients; never use DATABASE_URL or SUPABASE_DATABASE_URL in frontend env files."
   } >&2
   exit 1
 fi
