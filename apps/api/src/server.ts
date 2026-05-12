@@ -24,6 +24,14 @@ try {
 
   const fallback = express();
 
+  const livenessResponse = () => ({
+    status: 'ok' as const,
+    mode: 'fallback' as const,
+    services: { api: 'fallback_server_running' as const },
+    message: 'Fallback health server is running. Check server logs for API startup failure details.',
+    timestamp: new Date().toISOString(),
+  });
+
   const degradedResponse = () => ({
     status: 'degraded' as const,
     error: 'api_startup_failed',
@@ -31,19 +39,19 @@ try {
     timestamp: new Date().toISOString(),
   });
 
+  fallback.get('/health/live', (_req, res) => {
+    res.status(200).json(livenessResponse());
+  });
+
+  fallback.get('/api/health/live', (_req, res) => {
+    res.status(200).json(livenessResponse());
+  });
+
   fallback.get('/health', (_req, res) => {
     res.status(503).json(degradedResponse());
   });
 
-  fallback.get('/health/live', (_req, res) => {
-    res.status(503).json(degradedResponse());
-  });
-
   fallback.get('/api/health', (_req, res) => {
-    res.status(503).json(degradedResponse());
-  });
-
-  fallback.get('/api/health/live', (_req, res) => {
     res.status(503).json(degradedResponse());
   });
 
