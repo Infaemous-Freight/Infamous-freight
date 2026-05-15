@@ -5,6 +5,8 @@ on:
   workflow_run:
     workflows:
       - CI/CD — Infamous Freight
+      - Deploy API
+      - Deploy Fly API
     types:
       - completed
 
@@ -15,6 +17,11 @@ concurrency:
   group: smoke-test-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  WEB_URL: https://www.infamousfreight.com
+  BARE_SITE_URL: https://infamousfreight.com
+  API_URL: https://infamous-freight-api.fly.dev
+
 jobs:
   smoke-test:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
@@ -23,68 +30,38 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Run production smoke checks and capture evidence
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Run production smoke script
         shell: bash
         run: |
-          set -uo pipefail
+          set -euo pipefail
+          bash scripts/production-smoke-test.sh
 
-          TIMESTAMP="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          EVIDENCE_FILE="${RUNNER_TEMP}/smoke-evidence.md"
-          OVERALL_STATUS=0
-
+      - name: Capture production smoke evidence
+        if: always()
+        shell: bash
+        run: |
           {
             echo "# Production Smoke Test Evidence"
             echo ""
-            echo "- Run timestamp: ${TIMESTAMP}"
+            echo "- Run timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             echo "- Triggered by: ${{ github.event_name }}"
             echo "- Workflow run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            echo "- Web URL: ${WEB_URL}"
+            echo "- Bare URL: ${BARE_SITE_URL}"
+            echo "- API URL: ${API_URL}"
+            echo "- Script: scripts/production-smoke-test.sh"
             echo ""
-            echo "| # | Check | URL | Expected HTTP | Actual HTTP | Final URL | Result |"
-            echo "|---|---|---|---|---|---|---|"
-          } > "${EVIDENCE_FILE}"
-
-          run_check() {
-            local idx="$1" name="$2" url="$3" expected_status="$4" expected_final_url="${5:-}"
-            local raw status final_url result="PASS"
-
-            # GET with redirect-following so we record both the upstream status and final URL.
-            # Body is discarded; we only record the HTTP status code and final URL.
-            # `set -e` is intentionally not enabled so curl failures (DNS, timeout) do not abort
-            # remaining checks; %{http_code} is "000" on connection failures.
-            raw=$(curl --silent --location --retry 5 --retry-delay 10 --retry-connrefused --max-time 30 --output /dev/null --write-out '%{http_code}|%{url_effective}' "${url}" 2>/dev/null)
-            status="${raw%%|*}"
-            final_url="${raw#*|}"
-            status="${status:-000}"
-            final_url="${final_url:-n/a}"
-
-            if [[ "${status}" != "${expected_status}" ]]; then
-              result="FAIL (status=${status})"
-              OVERALL_STATUS=1
-            fi
-            if [[ -n "${expected_final_url}" && "${final_url}" != "${expected_final_url}" ]]; then
-              result="FAIL (final_url=${final_url})"
-              OVERALL_STATUS=1
-            fi
-
-            echo "| ${idx} | ${name} | \`${url}\` | ${expected_status} | ${status} | \`${final_url}\` | ${result} |" >> "${EVIDENCE_FILE}"
-            echo "[$idx] ${name}: ${url} -> status=${status} final=${final_url} result=${result}"
-          }
-
-          run_check 1 "Canonical frontend" "https://www.infamousfreight.com" "200"
-          run_check 2 "Bare-domain redirect" "https://infamousfreight.com" "200" "https://www.infamousfreight.com/"
-          run_check 3 "Fly root health" "https://infamous-freight.fly.dev/health" "200"
-          run_check 4 "Fly API health" "https://infamous-freight.fly.dev/api/health" "200"
-          run_check 5 "Proxied API health" "https://www.infamousfreight.com/api/health" "200"
-
-          {
+            echo "## Expected checks"
             echo ""
-            if [[ "${OVERALL_STATUS}" -eq 0 ]]; then
-              echo "**Overall: PASS**"
-            else
-              echo "**Overall: FAIL** — paste this table into \`docs/LAUNCH_EVIDENCE_LOG.md\` and reference the related launch-blocker issue."
-            fi
-          } >> "${EVIDENCE_FILE}"
-
-          cat "${EVIDENCE_FILE}" >> "${GITHUB_STEP_SUMMARY}"
-
-          exit "${OVERALL_STATUS}"
+            echo "- Canonical frontend returns success"
+            echo "- Bare domain redirects to canonical www host"
+            echo "- API liveness passes at ${API_URL}/api/health/live"
+            echo "- API readiness passes at ${API_URL}/api/health/ready"
+            echo ""
+            echo "If this workflow failed, paste the failed step output into docs/LAUNCH_EVIDENCE_LOG.md and keep issue #2212 open."
+          } >> "$GITHUB_STEP_SUMMARY"
