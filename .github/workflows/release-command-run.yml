@@ -1,0 +1,64 @@
+name: Release Command Run
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-command-run.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-command-run-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  release-command-run:
+    name: Run requested release commands
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@8912a9102ac27614460f54aedde9e1e7f9aec20d
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1
+
+      - name: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
+
+      - name: pnpm run build:api
+        run: pnpm run build:api
+
+      - name: pnpm run test:api
+        run: pnpm run test:api
+
+      - name: pnpm run fly:deploy
+        run: pnpm run fly:deploy
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: pnpm run production:smoke-test
+        run: pnpm run production:smoke-test
+
+      - name: Write release command summary
+        if: always()
+        run: |
+          echo "Release Command Run for ${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Commands: install, build:api, test:api, fly:deploy, production:smoke-test" >> "$GITHUB_STEP_SUMMARY"
