@@ -1,77 +1,9 @@
-# Dependencies
 node_modules/
-.pnp
-.pnp.js
-
-# Build outputs
-dist/
-build/
-*.tsbuildinfo
-
-# Generated SBOM artifacts (run scripts/generate-sbom.sh to regenerate)
-sbom/
-
-# Environment variables
 .env
-.env.local
-.env.*.local
-.env.*
-!.env.example
-!**/.env.example
-!.env.production.example
-!**/.env.production.example
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# Cache
-.cache/
-.parcel-cache/
-.eslintcache
-.stylelintcache
-
-# IDE
-.vscode/*
-!.vscode/extensions.json
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Testing
+build/
+dist/
 coverage/
-.nyc_output/
-
-# Prisma
-prisma/migrations/
-
-# Temporary files
-*.tmp
-*.temp
-reports/validation-status.txt
-/tmp/docker-build.log
-apps/api/coverage/
-
-# Local Netlify folders and generated extension/plugin state
-.netlify/
-**/.netlify/
-
-# Local CLI bootstrap artifacts
-.tools/
-
-# This repo is pnpm-managed; do not commit npm lockfiles.
-package-lock.json
-
-# local secrets
-.config/
-fly.env
+.vscode/
+.idea/
+out/
+.DS_Store
