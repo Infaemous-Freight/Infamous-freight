@@ -1,9 +1,9 @@
 [build]
   publish = "apps/web/dist"
   command = "pnpm run build:web"
-  # Keep repo-owned functions out of this deploy. The site currently proxies the
-  # API to Fly.io so oversized site-level env vars do not block function upload.
-  functions = "netlify/disabled-functions"
+  # Event-triggered functions only (submission-created). HTTP API functions in
+  # netlify/functions/ remain disabled — API traffic proxies to Fly.io via redirects.
+  functions = "netlify/event-functions"
 
 [build.environment]
   NODE_VERSION = "22"
