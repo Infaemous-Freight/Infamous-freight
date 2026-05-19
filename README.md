@@ -4,8 +4,6 @@
 
 Dispatch • Fleet intelligence • Driver coordination • Compliance • Billing • Enterprise-ready logistics execution
 
-[![validation](https://img.shields.io/github/actions/workflow/status/Infaemous-Freight/Infamous-freight/full-validation.yml?branch=main&label=validation)](https://github.com/Infaemous-Freight/Infamous-freight/actions/workflows/full-validation.yml)
-[![fly deploy](https://img.shields.io/github/actions/workflow/status/Infaemous-Freight/Infamous-freight/deploy-fly.yml?branch=main&label=fly%20deploy)](https://github.com/Infaemous-Freight/Infamous-freight/actions/workflows/deploy-fly.yml)
 ![license](https://img.shields.io/github/license/Infaemous-Freight/Infamous-freight)
 [![code style: TypeScript](https://img.shields.io/badge/code%20style-TypeScript-3178C6.svg)](https://www.typescriptlang.org/)
 
