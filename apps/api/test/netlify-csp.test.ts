@@ -22,10 +22,10 @@ describe('Netlify CSP policy', () => {
     }
   });
 
-  it('keeps strict worker policy globally in root netlify config', () => {
+  it('keeps the root app worker policy compatible with browser assets and the PWA scoped tightly', () => {
     const rootContent = read(rootNetlify);
     expect(rootContent).toContain("for = \"/*\"");
-    expect(rootContent).toContain("worker-src 'none'");
+    expect(rootContent).toContain("worker-src 'self' blob:");
     expect(rootContent).toContain("for = \"/driver-pwa/*\"");
     expect(rootContent).toContain("worker-src 'self'");
   });
@@ -69,11 +69,12 @@ describe('Netlify production routing', () => {
     expect(rootContent).toContain('from = "/socket.io/*"\n  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"\n  status = 200\n  force = true');
   });
 
-  it('keeps repo-owned Netlify functions out of normal Git deploys', () => {
+  it('keeps normal Git deploys limited to event-triggered Netlify functions', () => {
     const rootContent = read(rootNetlify);
 
     expect(rootContent).toContain('[build]');
-    expect(rootContent).toContain('functions = "netlify/disabled-functions"');
+    expect(rootContent).toContain('functions = "netlify/event-functions"');
+    expect(rootContent).not.toContain('functions = "netlify/functions"');
   });
 
   it('keeps public Netlify function entrypoints present for deploy packaging', () => {
