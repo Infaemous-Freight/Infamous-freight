@@ -61,6 +61,12 @@ const PublicLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-infamous-dark pb-20 text-[#F5E8E8] lg:pb-0">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-infamous-red focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-[#F5E8E8] focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       <header className="sticky top-0 z-50 border-b border-infamous-border bg-infamous-darker/95 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 lg:px-6">
           <Link to="/" className="flex items-center gap-3" aria-label="Infamous Freight home">

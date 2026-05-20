@@ -240,6 +240,22 @@ const ORGANIZATION_JSONLD = JSON.stringify({
   ],
 });
 
+const WEBSITE_JSONLD = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: BRAND.displayName,
+  url: SITE_URL,
+  description: BRAND.description,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${SITE_URL}/track-shipment?tracking={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+});
+
 const FAQ_ITEMS = [
   {
     question: 'How do I get a freight quote from Infamous Freight?',
@@ -376,6 +392,7 @@ const SeoManager = () => {
       <meta name="twitter:image" content={OG_IMAGE} />
       <meta name="twitter:image:alt" content={OG_IMAGE_ALT} />
       <script type="application/ld+json">{ORGANIZATION_JSONLD}</script>
+      {isHome && <script type="application/ld+json">{WEBSITE_JSONLD}</script>}
       {(isHome || isFaq) && <script type="application/ld+json">{FAQ_JSONLD}</script>}
       {breadcrumbJsonLd && <script type="application/ld+json">{breadcrumbJsonLd}</script>}
     </Helmet>
