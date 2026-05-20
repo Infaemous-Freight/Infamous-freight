@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   ArrowRight,
@@ -102,6 +102,7 @@ const PartnersPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const update = (key: keyof typeof initialForm, value: string) =>
     setForm((current) => ({ ...current, [key]: value }));
@@ -114,6 +115,7 @@ const PartnersPage: React.FC = () => {
     try {
       await submitNetlifyForm('partner-application', form);
       setSubmitted(true);
+      navigate('/thank-you/?form=partner-application');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not submit the application.');
     } finally {

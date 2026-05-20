@@ -24,6 +24,15 @@ import {
   Globe,
   Menu,
   X,
+  Bell,
+  MessageSquare,
+  Home,
+  Box,
+  Navigation,
+  UploadCloud,
+  UserRound,
+  AlertTriangle,
+  Settings,
 } from 'lucide-react';
 import { trackPublicEvent, trackFunnelEvent } from '@/lib/analytics';
 import { BRAND } from '@/lib/brand';
@@ -191,6 +200,29 @@ const workflowHighlights = [
   { label: 'Delivery', value: 'Updates documented', color: 'text-infamous-orange' },
 ];
 
+const commandStats = [
+  { label: 'Active Loads', value: '128', delta: '+12%', icon: Package },
+  { label: 'In Transit', value: '87', delta: '+8%', icon: Truck },
+  { label: 'Delivered Today', value: '34', delta: '+15%', icon: CheckCircle2 },
+  { label: 'On Time %', value: '96.2%', delta: '+4.3%', icon: Clock },
+  { label: 'Revenue (MTD)', value: '$2.48M', delta: '+18%', icon: DollarSign },
+];
+
+const commandLoads = [
+  ['IF-77291', 'SteelWorks Co.', 'Los Angeles, CA', 'Chicago, IL', '53 Dry Van', 'RoadKing_88', 'In Transit'],
+  ['IF-77292', 'Summit Retail', 'Dallas, TX', 'Atlanta, GA', '53 Reefer', 'NightHawk_21', 'Out for Delivery'],
+  ['IF-77293', 'Global Industrial', 'Houston, TX', 'Denver, CO', 'Flatbed', 'IronWolf_47', 'Picked Up'],
+  ['IF-77294', 'Precision Auto', 'Detroit, MI', 'Phoenix, AZ', '53 Dry Van', 'Ghost_33', 'Pending'],
+];
+
+const deliveryEvents = [
+  ['Picked Up', 'Los Angeles, CA', 'May 18', '08:15 AM'],
+  ['In Transit', 'Barstow, CA', 'May 18', '11:47 AM'],
+  ['In Transit', 'Flagstaff, AZ', 'May 18', '04:23 PM'],
+  ['Out for Delivery', 'Joliet, IL', 'May 19', '06:33 AM'],
+  ['Delivered', 'Chicago, IL', 'May 19', '09:12 AM'],
+];
+
 const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -282,52 +314,197 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* === HERO === */}
-      <section id="hero-section" className="relative border-b border-infamous-border">
-        <div className="absolute inset-0 redline-bg" />
-        <div className="absolute inset-0 freight-grid" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-infamous-red/5 rounded-full blur-3xl" />
+      <section id="hero-section" className="relative border-b border-infamous-border bg-[#030101]">
+        <div className="absolute inset-0 redline-bg opacity-70" />
+        <div className="absolute inset-0 circuit-texture" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(90deg,transparent,rgba(255,26,26,0.24),transparent)] blur-2xl" />
 
-        <div className="relative mx-auto max-w-7xl px-5 py-24 lg:px-6 lg:py-36">
-          <div className="max-w-3xl">
-            <p className="font-display text-sm font-bold uppercase tracking-[0.25em] text-infamous-red-light mb-6">
-              {BRAND.tagline}
-            </p>
-            <h1 className="font-display text-4xl font-black uppercase tracking-tight sm:text-5xl lg:text-[3.5rem] lg:leading-[1.1]">
-              Freight Quotes, Dispatch Coordination, and{' '}
-              <span className="text-infamous-red-light text-glow">Shipment Visibility.</span>
-            </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-[#B88989]">
-              Infamous Freight helps shippers, carriers, and dispatch teams move freight with clear intake, written confirmations, tracking context, and communication from quote to delivery.
-            </p>
+        <div className="relative mx-auto max-w-[1720px] px-4 py-8 lg:px-6 lg:py-10">
+          <div className="grid gap-7 xl:grid-cols-[minmax(0,1.35fr)_520px]">
+            <div className="overflow-hidden rounded-[12px] border border-infamous-red-light/45 bg-[#090303]/90 shadow-[0_0_42px_rgba(255,26,26,0.22)]">
+              <div className="grid min-h-[680px] lg:grid-cols-[220px_minmax(0,1fr)]">
+                <aside className="hidden border-r border-infamous-red-light/25 bg-[#0c0304]/95 p-6 lg:block">
+                  <Link to="/" className="mb-8 flex flex-col items-center gap-3 text-center" aria-label="Infamous Freight home">
+                    <Infinity size={56} className="text-infamous-red-light text-glow-strong" strokeWidth={2.4} />
+                    <span className="font-display text-2xl font-black uppercase tracking-[0.08em] text-infamous-red-light text-glow">Infamous</span>
+                    <span className="-mt-3 text-xs uppercase tracking-[0.55em] text-[#F5E8E8]">Freight</span>
+                  </Link>
+                  <nav className="space-y-1.5" aria-label="Command center preview">
+                    {([
+                      ['Dashboard', BarChart3],
+                      ['Shipments', Box],
+                      ['Loads', Home],
+                      ['Dispatch', Navigation],
+                      ['Drivers', UserRound],
+                      ['Billing', DollarSign],
+                      ['Alerts', Bell],
+                      ['Settings', Settings],
+                    ] as const).map(([label, Icon], index) => (
+                      <Link
+                        key={String(label)}
+                        to={index === 0 ? '/ops' : index === 1 ? '/track-shipment' : '/request-quote'}
+                        className={`flex items-center gap-3 rounded-md border px-4 py-3 text-sm font-semibold transition ${
+                          index === 0
+                            ? 'border-infamous-red-light/55 bg-infamous-red/18 text-[#F5E8E8] shadow-[0_0_20px_rgba(255,26,26,0.28)]'
+                            : 'border-transparent text-[#B88989] hover:border-infamous-red-light/20 hover:bg-white/5 hover:text-[#F5E8E8]'
+                        }`}
+                      >
+                        <Icon aria-hidden="true" size={17} className="text-infamous-red-light" />
+                        {String(label)}
+                      </Link>
+                    ))}
+                  </nav>
+                  <div className="mt-12 rounded-lg border border-infamous-red-light/20 bg-black/35 p-5 text-center">
+                    <Infinity size={42} className="mx-auto text-infamous-red-light" />
+                    <p className="mt-3 font-display text-xl font-black uppercase tracking-[0.12em] text-infamous-red-light">Infamous</p>
+                    <p className="text-xs uppercase tracking-[0.34em] text-[#F5E8E8]">Freight</p>
+                    <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.22em] text-infamous-red-light">{BRAND.tagline}</p>
+                  </div>
+                </aside>
 
-            <div className="mt-12 flex flex-col gap-4 sm:flex-row">
-              <Link
-                to="/request-quote"
-                onClick={() => trackPublicEvent('quote_cta_click', { source: 'hero' })}
-                className="btn-primary btn-lg inline-flex items-center justify-center gap-2 glow-high"
-              >
-                Get a Freight Quote <ArrowRight size={20} />
-              </Link>
-              <Link
-                to="/track-shipment"
-                onClick={() => trackPublicEvent('tracking_cta_click', { source: 'hero' })}
-                className="btn-secondary btn-lg inline-flex items-center justify-center gap-2"
-              >
-                <Search size={20} /> Track a Shipment
-              </Link>
+                <div className="min-w-0 p-5 lg:p-6">
+                  <div className="mb-5 flex flex-wrap items-center justify-between gap-4 border-b border-infamous-red-light/20 pb-5">
+                    <div className="flex items-center gap-4">
+                      <Menu className="text-[#F5E8E8]" size={22} />
+                      <div>
+                        <p className="font-display text-lg font-black uppercase text-infamous-red-light">Command Center</p>
+                        <p className="text-xs text-[#B88989]">Real-time operations overview</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 text-[#F5E8E8]">
+                      <Search size={20} />
+                      <MessageSquare size={20} />
+                      <span className="relative"><Bell size={20} /><span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-infamous-red text-[10px] font-black">3</span></span>
+                      <Link to="/login" className="hidden items-center gap-3 border-l border-infamous-red-light/20 pl-4 sm:flex">
+                        <span className="grid h-10 w-10 place-items-center rounded-full border border-infamous-red-light/70 bg-black text-infamous-red-light"><UserRound size={18} /></span>
+                        <span>
+                          <span className="block text-sm font-bold">Disruptor_77</span>
+                          <span className="block text-xs text-[#B88989]">Admin</span>
+                        </span>
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                    {commandStats.map((stat) => (
+                      <div key={stat.label} className="rounded-lg border border-infamous-red-light/25 bg-[#130607]/80 p-4 shadow-[inset_0_0_24px_rgba(255,26,26,0.05)]">
+                        <stat.icon size={24} className="mb-3 text-infamous-red-light" />
+                        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#B88989]">{stat.label}</p>
+                        <p className="mt-1 font-display text-3xl font-black text-[#F5E8E8]">{stat.value}</p>
+                        <p className="mt-1 text-xs text-[#36D399]">{stat.delta} vs yesterday</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_270px]">
+                    <div className="rounded-lg border border-infamous-red-light/25 bg-black/50 p-4">
+                      <div className="mb-3 flex items-center justify-between">
+                        <h1 className="font-display text-sm font-black uppercase tracking-[0.12em]">Shipment Tracking <span className="ml-2 text-[10px] text-infamous-red-light">Live</span></h1>
+                        <Link to="/track-shipment" className="rounded border border-infamous-red-light/50 px-3 py-1.5 text-[10px] font-black uppercase text-infamous-red-light">View all shipments</Link>
+                      </div>
+                      <div className="relative h-[285px] overflow-hidden rounded-md border border-infamous-red-light/10 bg-[#080304]">
+                        <div className="absolute inset-0 freight-grid opacity-70" />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_62%,rgba(255,59,48,0.8)_0_4px,transparent_5px),radial-gradient(circle_at_56%_48%,rgba(255,59,48,0.8)_0_4px,transparent_5px),radial-gradient(circle_at_88%_35%,rgba(255,59,48,0.9)_0_4px,transparent_5px)]" />
+                        <svg className="absolute inset-0 h-full w-full" viewBox="0 0 760 285" aria-hidden="true">
+                          <path d="M90 182 C170 150 250 157 330 132 S480 156 560 94 S652 101 706 72" fill="none" stroke="#ff3b30" strokeWidth="4" filter="url(#glowLine)" />
+                          <path d="M90 182 C170 150 250 157 330 132 S480 156 560 94 S652 101 706 72" fill="none" stroke="#ffd5d0" strokeWidth="1.3" />
+                          <defs><filter id="glowLine"><feGaussianBlur stdDeviation="4" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
+                        </svg>
+                        <span className="absolute left-[13%] top-[62%] rounded border border-infamous-red-light/40 bg-black px-2 py-1 text-[10px] font-black uppercase">Los Angeles, CA</span>
+                        <span className="absolute right-[8%] top-[30%] rounded border border-infamous-red-light/40 bg-black px-2 py-1 text-[10px] font-black uppercase">Chicago, IL</span>
+                        <Truck className="absolute left-[43%] top-[45%] text-infamous-red-light" size={26} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="rounded-lg border border-infamous-red-light/25 bg-[#130607]/80 p-4">
+                        <h2 className="mb-4 font-display text-sm font-black uppercase">Delivery Status</h2>
+                        <div className="space-y-4">
+                          {deliveryEvents.map(([status, place, date, time], index) => (
+                            <div key={`${status}-${place}`} className="grid grid-cols-[22px_minmax(0,1fr)_58px] gap-2 text-xs">
+                              <span className={`mt-1 h-4 w-4 rounded-full border ${index === 4 ? 'border-[#3A0D12]' : 'border-infamous-red-light bg-infamous-red/40'}`} />
+                              <span><strong className="block uppercase text-[#F5E8E8]">{status}</strong><span className="text-[#B88989]">{place}</span></span>
+                              <span className="text-right text-[#B88989]">{date}<br />{time}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="rounded-lg border border-infamous-red-light/25 bg-[#130607]/80 p-4">
+                        <div className="mb-3 flex items-center justify-between"><h2 className="font-display text-sm font-black uppercase">Alerts</h2><span className="text-[10px] font-black uppercase text-infamous-red-light">View all</span></div>
+                        {['Delay risk', 'Driver alert', 'Maintenance'].map((item, index) => (
+                          <div key={item} className="flex gap-3 border-t border-infamous-red-light/10 py-3 first:border-0">
+                            <AlertTriangle className={index === 1 ? 'text-infamous-orange' : 'text-infamous-red-light'} size={20} />
+                            <p className="text-xs"><strong className="block uppercase text-infamous-red-light">{item}</strong><span className="text-[#B88989]">Load IF-77291 requires dispatch review.</span></p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 overflow-hidden rounded-lg border border-infamous-red-light/25 bg-[#100405]/85">
+                    <div className="border-b border-infamous-red-light/15 px-4 py-3 font-display text-sm font-black uppercase">Active Loads</div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full min-w-[760px] text-left text-xs">
+                        <thead className="text-infamous-red-light">
+                          <tr>{['Load #', 'Customer', 'Origin', 'Destination', 'Equipment', 'Driver', 'Status'].map((head) => <th key={head} className="px-4 py-3 uppercase">{head}</th>)}</tr>
+                        </thead>
+                        <tbody>
+                          {commandLoads.map((load) => (
+                            <tr key={load[0]} className="border-t border-infamous-red-light/10 text-[#B88989]">
+                              {load.map((cell, index) => <td key={`${load[0]}-${cell}`} className="px-4 py-3"><span className={index === 6 ? 'rounded border border-infamous-red-light/40 px-2 py-1 text-[10px] uppercase text-infamous-red-light' : ''}>{cell}</span></td>)}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-2 xl:items-center">
+              {[0, 1].map((phone) => (
+                <div key={phone} className="mx-auto w-full max-w-[250px] rounded-[36px] border border-infamous-red-light/55 bg-[#050202] p-3 shadow-[0_0_34px_rgba(255,26,26,0.35)]">
+                  <div className="min-h-[560px] rounded-[28px] border border-infamous-red-light/20 bg-[#100405] p-4">
+                    <div className="mb-6 flex items-center justify-between text-xs text-[#F5E8E8]"><span>9:41</span><span>LTE</span></div>
+                    {phone === 0 ? (
+                      <>
+                        <div className="mb-4 flex items-center justify-between"><ArrowRight className="rotate-180 text-infamous-red-light" size={18} /><p className="text-center text-sm font-bold">Load Details<br /><span className="text-[10px] uppercase text-infamous-red-light">Load #IF-77291</span></p><Navigation size={16} /></div>
+                        <div className="rounded-lg border border-infamous-red-light/25 bg-black/40 p-4"><p className="font-display text-xl font-black uppercase text-infamous-red-light">In Transit <span className="float-right text-[#F5E8E8]">96%</span></p><p className="mt-2 text-xs text-[#B88989]">Los Angeles, CA → Chicago, IL</p></div>
+                        <div className="mt-3 rounded-lg border border-infamous-red-light/25 bg-black/40 p-4"><p className="text-[10px] uppercase text-[#B88989]">Estimated delivery</p><p className="mt-1 font-display text-xl font-black uppercase text-infamous-red-light">May 19, 2025</p><p className="text-xs text-[#B88989]">09:30 AM CDT</p></div>
+                        <div className="my-3 h-28 rounded-lg border border-infamous-red-light/15 bg-black/50"><svg viewBox="0 0 220 112" className="h-full w-full"><path d="M18 76 C54 42 88 70 116 49 S168 60 204 28" stroke="#ff3b30" strokeWidth="4" fill="none" /><path d="M18 76 C54 42 88 70 116 49 S168 60 204 28" stroke="#ffd5d0" strokeWidth="1" fill="none" /></svg></div>
+                        <div className="space-y-3">{deliveryEvents.slice(0, 4).map(([status, place, date]) => <p key={`${phone}-${status}-${place}`} className="grid grid-cols-[18px_1fr_46px] gap-2 text-[10px]"><span className="h-3 w-3 rounded-full bg-infamous-red-light" /><span><strong className="block uppercase text-[#F5E8E8]">{status}</strong><span className="text-[#B88989]">{place}</span></span><span className="text-right text-[#B88989]">{date}</span></p>)}</div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="mb-5 flex items-center justify-between"><div className="flex items-center gap-2"><span className="grid h-9 w-9 place-items-center rounded-full border border-infamous-red-light/50"><UserRound size={16} /></span><p className="text-xs text-[#B88989]">Welcome back,<br /><strong className="text-[#F5E8E8]">RoadKing_88</strong></p></div><Bell size={15} /></div>
+                        <div className="rounded-lg border border-infamous-red-light/25 bg-black/40 p-4"><p className="text-[10px] uppercase text-[#B88989]">Current Load</p><p className="mt-1 font-display text-2xl font-black">IF-77291 <span className="float-right rounded border border-infamous-red-light/40 px-2 py-1 text-[9px] text-infamous-red-light">In Transit</span></p><p className="mt-3 text-xs text-[#B88989]">Los Angeles, CA → Chicago, IL</p><p className="mt-2 text-xs text-[#B88989]">53 Dry Van <span className="float-right">42,500 lbs</span></p></div>
+                        {([
+                          ['Accept Load', CheckCircle2],
+                          ['Arrived at Pickup', MapPin],
+                          ['Mark Delivered', Box],
+                          ['Upload POD', UploadCloud],
+                        ] as const).map(([label, Icon]) => (
+                          <Link key={String(label)} to="/driver-app" className="mt-4 flex items-center justify-center gap-3 rounded-lg border border-infamous-red-light/45 bg-infamous-red/15 px-4 py-4 font-display text-sm font-black uppercase text-[#F5E8E8] shadow-[0_0_18px_rgba(255,26,26,0.2)]">
+                            <Icon size={22} className="text-infamous-red-light" /> {String(label)}
+                          </Link>
+                        ))}
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Metrics bar */}
-          <div className="mt-20">
-            <p className="text-[10px] text-infamous-muted uppercase tracking-wider mb-3 text-center lg:text-left">Operating process</p>
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {workflowHighlights.map((metric) => (
-              <div key={metric.label} className="glass-card-subtle rounded-[18px] p-5">
-                <p className="text-xs font-medium uppercase tracking-wider text-infamous-muted">{metric.label}</p>
-                <p className={`mt-2 text-lg font-black font-display ${metric.color}`}>{metric.value}</p>
-              </div>
-            ))}
+          <div className="mt-7 flex flex-col items-center justify-between gap-5 border-t border-infamous-red-light/20 pt-7 text-center lg:flex-row lg:text-left">
+            <div>
+              <h1 className="font-display text-3xl font-black uppercase tracking-[0.32em] text-[#F5E8E8] text-glow-strong sm:text-5xl">Infamous Freight</h1>
+              <p className="mt-3 text-sm font-bold uppercase tracking-[0.48em] text-infamous-red-light">{BRAND.tagline}</p>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link to="/request-quote" onClick={() => trackPublicEvent('quote_cta_click', { source: 'hero_command_center' })} className="btn-primary btn-lg inline-flex items-center justify-center gap-2 glow-high">Get a Freight Quote <ArrowRight size={20} /></Link>
+              <Link to="/track-shipment" onClick={() => trackPublicEvent('tracking_cta_click', { source: 'hero_command_center' })} className="btn-secondary btn-lg inline-flex items-center justify-center gap-2"><Search size={20} /> Track Shipment</Link>
             </div>
           </div>
         </div>

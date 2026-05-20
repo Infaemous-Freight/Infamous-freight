@@ -4,6 +4,7 @@ import {
   resolveRouteReadiness,
   type RouteReadinessState,
 } from '@/lib/routeReadiness';
+import { isPublicPath } from '@/lib/routes';
 
 describe('routeReadiness', () => {
   it('covers audited authenticated routes with explicit readiness states', () => {
@@ -40,5 +41,31 @@ describe('routeReadiness', () => {
   it('returns null for paths outside the readiness map', () => {
     expect(resolveRouteReadiness('/')).toBeNull();
     expect(resolveRouteReadiness('/request-quote')).toBeNull();
+  });
+
+  it('treats all public marketing and form routes as auth-free', () => {
+    [
+      '/',
+      '/about',
+      '/contact',
+      '/services',
+      '/services/flatbed',
+      '/request-quote',
+      '/track-shipment',
+      '/carrier-portal',
+      '/customer-portal',
+      '/load-board',
+      '/partners',
+      '/drive',
+      '/faq',
+      '/resources',
+      '/resources/freight-tracking-explained',
+      '/terms',
+      '/privacy',
+      '/thank-you',
+    ].forEach((path) => expect(isPublicPath(path)).toBe(true));
+
+    expect(isPublicPath('/ops')).toBe(false);
+    expect(isPublicPath('/quotes')).toBe(false);
   });
 });

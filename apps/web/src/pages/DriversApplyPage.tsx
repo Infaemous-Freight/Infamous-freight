@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Send, Truck } from 'lucide-react';
 import { submitNetlifyForm } from '@/lib/netlifyForms';
 
@@ -35,6 +35,7 @@ const DriversApplyPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const update = (key: keyof typeof initialForm, value: string) => {
     setForm((current) => ({ ...current, [key]: value }));
@@ -48,6 +49,7 @@ const DriversApplyPage: React.FC = () => {
     try {
       await submitNetlifyForm('driver-application', form);
       setSubmitted(true);
+      navigate('/thank-you/?form=driver-application');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not submit this application.');
     } finally {

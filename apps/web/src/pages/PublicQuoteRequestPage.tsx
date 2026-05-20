@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   ArrowRight,
@@ -191,6 +191,7 @@ const PublicQuoteRequestPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [attachment, setAttachment] = useState<File | null>(null);
+  const navigate = useNavigate();
 
   const estimate = useMemo(() => computeEstimate(form), [form]);
 
@@ -269,6 +270,9 @@ const PublicQuoteRequestPage: React.FC = () => {
       if (apiError) {
         setError('');
       }
+      const params = new URLSearchParams({ form: 'quote-request' });
+      if (apiTrackingNumber) params.set('tracking', apiTrackingNumber);
+      navigate(`/thank-you/?${params.toString()}`);
     } catch (err) {
       trackPublicEvent('form_submit_error', { form: 'quote-request' });
       setError(

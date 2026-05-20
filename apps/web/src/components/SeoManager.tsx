@@ -142,6 +142,10 @@ const SEO_BY_PATH: Record<string, SeoConfig> = {
     title: `Freight Load Board | ${BRAND.displayName}`,
     description: 'Browse available freight loads with verified lanes, equipment requirements, and real-time status from Infamous Freight dispatch.'
   },
+  '/graphhopper': {
+    title: `Route Planning and Distance Tools | ${BRAND.displayName}`,
+    description: 'Review route planning, distance, ETA, and dispatch mapping workflows for freight operations and shipment visibility.'
+  },
   '/terms': {
     title: `Terms of Service | ${BRAND.displayName}`,
     description: 'Review the terms of service for using the Infamous Freight platform, services, and tools.'
@@ -173,6 +177,10 @@ const SEO_BY_PATH: Record<string, SeoConfig> = {
   '/gdpr': {
     title: `Privacy & Data Protection (GDPR) | ${BRAND.displayName}`,
     description: 'Learn about your GDPR data rights, how Infamous Freight collects and uses data, and how to exercise your privacy rights.'
+  },
+  '/thank-you': {
+    title: `Submission Received | ${BRAND.displayName}`,
+    description: 'Confirmation page for Infamous Freight quote, contact, driver, and partner form submissions.'
   },
   '/resources/ltl-vs-ftl-freight': {
     title: `LTL vs FTL Freight: How to Choose | ${BRAND.displayName}`,
@@ -212,6 +220,7 @@ const INDEXABLE_ROUTES = new Set([
   '/customer-portal',
   '/carrier-portal',
   '/load-board',
+  '/graphhopper',
   '/terms',
   '/privacy',
   '/carrier-agreement',
