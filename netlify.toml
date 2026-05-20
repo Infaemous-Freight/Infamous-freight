@@ -232,6 +232,12 @@
   force = true
 
 [[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/*.map"
   to = "/404"
   status = 404

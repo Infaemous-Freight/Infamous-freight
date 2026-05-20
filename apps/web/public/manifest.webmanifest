@@ -30,6 +30,11 @@
       "url": "/request-quote"
     },
     {
+      "name": "Track shipment",
+      "short_name": "Track",
+      "url": "/track-shipment"
+    },
+    {
       "name": "Apply to drive",
       "short_name": "Drive",
       "url": "/drive"

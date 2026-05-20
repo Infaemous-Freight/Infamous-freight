@@ -4,6 +4,7 @@ export type ResourceArticle = {
   description: string;
   readTime: string;
   category: string;
+  publishedDate: string;
   sections: { heading: string; body: string }[];
   relatedLinks: { label: string; href: string }[];
 };
@@ -16,6 +17,7 @@ export const resourceArticles: ResourceArticle[] = [
       'Understand the differences between less-than-truckload and full truckload freight, when each makes sense, and how to decide based on shipment size, budget, and timeline.',
     readTime: '6 min read',
     category: 'Freight Basics',
+    publishedDate: '2026-05-08',
     sections: [
       {
         heading: 'What is FTL freight?',
@@ -51,6 +53,7 @@ export const resourceArticles: ResourceArticle[] = [
       'Everything shippers need to know about box truck freight: capacity, pricing, best use cases, and how to book reliable box truck delivery for commercial shipments.',
     readTime: '7 min read',
     category: 'Equipment Guides',
+    publishedDate: '2026-05-10',
     sections: [
       {
         heading: 'What is a box truck?',
@@ -86,6 +89,7 @@ export const resourceArticles: ResourceArticle[] = [
       'Learn what freight dispatchers do, how dispatch operations work, the tools and workflows involved, and how dispatch support helps fleets and owner-operators move freight efficiently.',
     readTime: '8 min read',
     category: 'Industry Knowledge',
+    publishedDate: '2026-05-12',
     sections: [
       {
         heading: 'What does a freight dispatcher do?',
@@ -121,6 +125,7 @@ export const resourceArticles: ResourceArticle[] = [
       'Learn how freight tracking technology provides real-time visibility into shipment status, ETAs, proof of delivery, and exception alerts throughout the transportation lifecycle.',
     readTime: '5 min read',
     category: 'Technology',
+    publishedDate: '2026-05-14',
     sections: [
       {
         heading: 'Why freight tracking matters',
@@ -152,6 +157,7 @@ export const resourceArticles: ResourceArticle[] = [
       'Compare cargo van and sprinter van freight options side by side — capacity, cost, speed, and best use cases — to decide which vehicle fits your shipment.',
     readTime: '5 min read',
     category: 'Equipment Guides',
+    publishedDate: '2026-05-15',
     sections: [
       {
         heading: 'Cargo van overview',

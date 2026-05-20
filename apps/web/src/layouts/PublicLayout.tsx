@@ -188,10 +188,10 @@ const PublicLayout: React.FC = () => {
               Freight services with clear quote intake, documented handoffs, tracking context, and delivery follow-up.
             </p>
             <div className="mt-4 space-y-1.5">
-              <a href={BRAND.dispatchPhoneHref} className="flex items-center gap-2 text-sm hover:text-infamous-red-light transition">
+              <a href={BRAND.dispatchPhoneHref} className="flex items-center gap-2 text-sm hover:text-infamous-red-light transition" aria-label={`Call dispatch at ${BRAND.dispatchPhone}`}>
                 <Phone aria-hidden="true" size={14} className="text-infamous-red-light" /> {BRAND.dispatchPhone}
               </a>
-              <a href={`mailto:${BRAND.supportEmail}`} className="flex items-center gap-2 text-sm hover:text-infamous-red-light transition">
+              <a href={`mailto:${BRAND.supportEmail}`} className="flex items-center gap-2 text-sm hover:text-infamous-red-light transition" aria-label={`Email support at ${BRAND.supportEmail}`}>
                 <Mail aria-hidden="true" size={14} className="text-infamous-red-light" /> {BRAND.supportEmail}
               </a>
             </div>

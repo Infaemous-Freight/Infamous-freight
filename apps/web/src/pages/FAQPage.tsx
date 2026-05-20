@@ -150,7 +150,7 @@ const FaqItem: React.FC<{ id: string; question: string; answer: string }> = ({ i
           className={`shrink-0 text-infamous-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
         />
       </button>
-      <div id={panelId} aria-hidden={!open} className={`overflow-hidden transition-all duration-200 ${open ? 'max-h-60 pb-5' : 'max-h-0'}`}>
+      <div id={panelId} aria-hidden={!open} className={`overflow-hidden transition-all duration-200 ${open ? 'max-h-[32rem] pb-5' : 'max-h-0'}`}>
         <p className="text-sm leading-7 text-[#B88989]">{answer}</p>
       </div>
     </div>

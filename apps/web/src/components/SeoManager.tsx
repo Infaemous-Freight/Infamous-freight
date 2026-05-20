@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 import { BRAND } from '@/lib/brand';
+import { findArticle } from '@/data/resourceArticles';
 
 type SeoConfig = {
   title: string;
@@ -224,20 +225,38 @@ const INDEXABLE_ROUTES = new Set([
 
 const ORGANIZATION_JSONLD = JSON.stringify({
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': ['Organization', 'LocalBusiness'],
   name: BRAND.displayName,
   url: SITE_URL,
   logo: `${SITE_URL}/favicon.svg`,
+  image: OG_IMAGE,
   description: BRAND.description,
-  contactPoint: {
-    '@type': 'ContactPoint',
-    email: BRAND.supportEmail,
-    telephone: BRAND.dispatchPhone,
-    contactType: 'customer service',
+  telephone: BRAND.dispatchPhone,
+  email: BRAND.supportEmail,
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
   },
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      email: BRAND.dispatchEmail,
+      telephone: BRAND.dispatchPhone,
+      contactType: 'sales',
+      availableLanguage: 'English',
+    },
+    {
+      '@type': 'ContactPoint',
+      email: BRAND.supportEmail,
+      telephone: BRAND.dispatchPhone,
+      contactType: 'customer service',
+      availableLanguage: 'English',
+    },
+  ],
   sameAs: [
     'https://www.producthunt.com/posts/infamous-freight',
   ],
+  priceRange: '$$',
 });
 
 const FAQ_ITEMS = [
@@ -307,6 +326,9 @@ const SeoManager = () => {
   const isFaq = pathname === '/faq';
   const isServiceDetail = pathname.startsWith('/services/') && pathname !== '/services';
   const isResourceArticle = pathname.startsWith('/resources/') && pathname !== '/resources';
+  const articleSlug = isResourceArticle ? pathname.split('/').pop() : undefined;
+  const articleData = articleSlug ? findArticle(articleSlug) : undefined;
+  const articlePublishedDate = articleData?.publishedDate ? `${articleData.publishedDate}T00:00:00Z` : '2026-05-08T00:00:00Z';
 
   const seo = SEO_BY_PATH[pathname] ?? ((): SeoConfig => {
     const slug = pathname.split('/').pop() ?? '';
@@ -368,7 +390,7 @@ const SeoManager = () => {
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={OG_IMAGE_ALT} />
-      {isArticle && <meta property="article:published_time" content="2026-05-08T00:00:00Z" />}
+      {isArticle && <meta property="article:published_time" content={articlePublishedDate} />}
       {isArticle && <meta property="article:author" content={BRAND.displayName} />}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={seo.title} />

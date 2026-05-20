@@ -177,7 +177,7 @@ const FaqItem: React.FC<{ id: string; question: string; answer: string }> = ({ i
           className={`shrink-0 text-infamous-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
         />
       </button>
-      <div id={panelId} aria-hidden={!open} className={`overflow-hidden transition-all duration-200 ${open ? 'max-h-60 pb-5' : 'max-h-0'}`}>
+      <div id={panelId} aria-hidden={!open} className={`overflow-hidden transition-all duration-200 ${open ? 'max-h-[32rem] pb-5' : 'max-h-0'}`}>
         <p className="text-sm leading-7 text-[#B88989]">{answer}</p>
       </div>
     </div>
@@ -658,10 +658,10 @@ const LandingPage: React.FC = () => {
               Freight services with clear quote intake, documented handoffs, tracking context, and delivery follow-up.
             </p>
             <div className="mt-4 space-y-1.5">
-              <a href={BRAND.dispatchPhoneHref} className="flex items-center gap-2 text-[#B88989] hover:text-infamous-red-light transition">
+              <a href={BRAND.dispatchPhoneHref} className="flex items-center gap-2 text-[#B88989] hover:text-infamous-red-light transition" aria-label={`Call dispatch at ${BRAND.dispatchPhone}`}>
                 <Phone size={14} className="text-infamous-red-light" /> {BRAND.dispatchPhone}
               </a>
-              <a href={`mailto:${BRAND.supportEmail}`} className="flex items-center gap-2 text-[#B88989] hover:text-infamous-red-light transition">
+              <a href={`mailto:${BRAND.supportEmail}`} className="flex items-center gap-2 text-[#B88989] hover:text-infamous-red-light transition" aria-label={`Email support at ${BRAND.supportEmail}`}>
                 <Mail size={14} className="text-infamous-red-light" /> {BRAND.supportEmail}
               </a>
             </div>

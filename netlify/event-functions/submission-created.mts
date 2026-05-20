@@ -21,6 +21,8 @@ export default async (req: Request, _context: Context) => {
   const message =
     data.message || data.notes || data.freightDetails || null;
 
+  const honeypotFilled = !!(data["bot-field"] && data["bot-field"].trim());
+
   await db.insert(formSubmissions).values({
     formName: payload.form_name,
     name,
@@ -29,7 +31,7 @@ export default async (req: Request, _context: Context) => {
     company,
     message,
     formData: data,
-    isSpam: false,
+    isSpam: honeypotFilled,
     createdAt: new Date(payload.created_at),
   });
 

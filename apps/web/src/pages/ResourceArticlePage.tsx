@@ -23,7 +23,7 @@ const ResourceArticlePage: React.FC = () => {
         <h1 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">{article.title}</h1>
         <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-[#B88989]">
           <span className="flex items-center gap-2"><Clock size={14} /> {article.readTime}</span>
-          <span className="flex items-center gap-2"><Calendar size={14} /> Published May 8, 2026</span>
+          <span className="flex items-center gap-2"><Calendar size={14} /> Published {new Date(article.publishedDate + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
         </div>
         <p className="mt-4 text-lg leading-8 text-[#F5E8E8]/80">{article.description}</p>
 
