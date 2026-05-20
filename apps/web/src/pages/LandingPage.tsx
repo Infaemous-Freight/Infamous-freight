@@ -200,6 +200,12 @@ const LandingPage: React.FC = () => {
 
   return (
     <main id="main-content" className="min-h-screen overflow-hidden bg-infamous-dark text-[#F5E8E8]">
+      <a
+        href="#hero-section"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-infamous-red focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-[#F5E8E8] focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       {/* Header */}
       <header className="sticky top-0 z-40 border-b border-infamous-border bg-infamous-darker/95 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 lg:px-6">
@@ -276,7 +282,7 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* === HERO === */}
-      <section className="relative border-b border-infamous-border">
+      <section id="hero-section" className="relative border-b border-infamous-border">
         <div className="absolute inset-0 redline-bg" />
         <div className="absolute inset-0 freight-grid" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-infamous-red/5 rounded-full blur-3xl" />

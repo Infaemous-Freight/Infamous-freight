@@ -18,5 +18,8 @@ Disallow: /rate-comparison
 Disallow: /pay-per-load
 Disallow: /referrals
 Disallow: /launch-validation
+Disallow: /driver-app
+Disallow: /messages
+Disallow: /thank-you
 
 Sitemap: https://www.infamousfreight.com/sitemap.xml
