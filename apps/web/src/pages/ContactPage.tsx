@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Clock3, Mail, MapPin, Phone, Send, Truck } from 'lucide-react';
 import { submitNetlifyForm } from '@/lib/netlifyForms';
 import { BRAND } from '@/lib/brand';
@@ -49,6 +49,7 @@ const ContactPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const update = (key: ContactTextKey, value: string) => {
     setForm((current) => ({ ...current, [key]: value }));
@@ -63,6 +64,7 @@ const ContactPage: React.FC = () => {
       await submitNetlifyForm('contact', { ...form, contactConsent: form.contactConsent ? 'yes' : 'no' });
       setSubmitted(true);
       setForm(initialForm);
+      navigate('/thank-you/?form=contact');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not submit the contact request.');
     } finally {

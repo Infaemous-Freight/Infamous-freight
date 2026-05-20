@@ -32,6 +32,7 @@ const fallback = {
 export default function ThankYouPage() {
   const [params] = useSearchParams();
   const formName = params.get('form') ?? '';
+  const trackingNumber = params.get('tracking') ?? '';
   const { heading, body } = formMessages[formName] ?? fallback;
 
   return (
@@ -41,6 +42,18 @@ export default function ThankYouPage() {
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-infamous-orange">Submission received</p>
         <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">{heading}</h1>
         <p className="mt-4 text-lg leading-8 text-[#F5E8E8]/80">{body}</p>
+        {trackingNumber ? (
+          <div className="mt-6 rounded-2xl border border-infamous-border bg-infamous-panel p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#B88989]">Tracking reference</p>
+            <p className="mt-2 font-mono text-2xl font-black text-[#F5E8E8]">{trackingNumber}</p>
+            <Link
+              to={`/track-shipment?tracking=${encodeURIComponent(trackingNumber)}`}
+              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-infamous-orange hover:underline"
+            >
+              Check shipment status <ArrowRight size={15} />
+            </Link>
+          </div>
+        ) : null}
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link to="/" className="inline-flex items-center justify-center gap-2 rounded-xl bg-infamous-orange px-5 py-3 font-semibold text-[#F5E8E8] transition hover:opacity-90">
             Back to home <ArrowRight size={17} />

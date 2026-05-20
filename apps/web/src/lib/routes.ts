@@ -2,9 +2,14 @@
 // AppLayout reads PUBLIC_PATH_PREFIXES to skip the auth gate; App.tsx mounts these
 // outside of <AppLayout /> so they render with no chrome.
 export const PUBLIC_PATH_PREFIXES = [
+  '/',
+  '/about',
+  '/case-studies',
+  '/carrier-agreement',
   '/login',
   '/register',
   '/onboarding',
+  '/contact',
   '/track',
   '/track-shipment',
   '/home',
@@ -12,12 +17,29 @@ export const PUBLIC_PATH_PREFIXES = [
   '/customer-portal',
   '/carrier-portal',
   '/freight-assistant',
+  '/services',
   '/pricing',
   '/partners',
   '/drive',
+  '/faq',
+  '/gdpr',
+  '/graphhopper',
+  '/load-board',
+  '/privacy',
+  '/product-hunt',
+  '/resources',
+  '/shipment',
+  '/shipper-agreement',
+  '/terms',
+  '/thank-you',
 ] as const;
 
 export const PUBLIC_PATHS: ReadonlySet<string> = new Set([
+  '/',
+  '/about',
+  '/case-studies',
+  '/carrier-agreement',
+  '/contact',
   '/login',
   '/register',
   '/onboarding',
@@ -27,11 +49,23 @@ export const PUBLIC_PATHS: ReadonlySet<string> = new Set([
   '/customer-portal',
   '/carrier-portal',
   '/freight-assistant',
+  '/services',
   '/pricing',
   '/partners',
   '/drive',
+  '/faq',
+  '/gdpr',
+  '/graphhopper',
+  '/load-board',
+  '/privacy',
+  '/product-hunt',
+  '/resources',
+  '/shipper-agreement',
+  '/terms',
+  '/thank-you',
 ]);
 
 export function isPublicPath(pathname: string): boolean {
-  return PUBLIC_PATH_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+  if (pathname === '/') return true;
+  return PUBLIC_PATH_PREFIXES.filter((p) => p !== '/').some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
