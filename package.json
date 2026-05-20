@@ -2,6 +2,7 @@
   "name": "infamous-freight",
   "version": "1.0.0",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
   "description": "Infamous Freight — The freight dispatch platform built by truckers, for truckers",
   "packageManager": "pnpm@10.0.0",
   "repository": {
@@ -71,6 +72,7 @@
     "@netlify/functions": "^5.2.1",
     "@resvg/resvg-js": "2.6.2",
     "concurrently": "^9.0.0",
+    "drizzle-kit": "1.0.0-beta.22",
     "prisma": "7.8.0"
   },
   "overrides": {
@@ -101,8 +103,10 @@
     }
   },
   "dependencies": {
+    "@netlify/database": "^1.0.0",
     "@sentry/node": "^10.53.1",
     "@supabase/supabase-js": "^2.105.4",
+    "drizzle-orm": "1.0.0-beta.22",
     "openai": "^6.38.0"
   }
 }
