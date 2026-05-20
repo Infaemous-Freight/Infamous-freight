@@ -39,6 +39,13 @@ const validateNonNegativeNumber = (label: string, value: string) => {
   }
 };
 
+const validateMinimumLength = (label: string, value: string, minimum: number) => {
+  if (!value) return;
+  if (value.length < minimum) {
+    throw new Error(`${label} must include at least ${minimum} characters.`);
+  }
+};
+
 const validateDateOrder = (pickupDate: string, deliveryDate: string) => {
   if (!pickupDate || !deliveryDate) return;
   if (new Date(deliveryDate).getTime() < new Date(pickupDate).getTime()) {
@@ -69,6 +76,9 @@ const validatePayload = (data: NetlifyFormPayload) => {
   validateNonNegativeNumber('Estimate low', getStringValue(data.estimateLow));
   validateNonNegativeNumber('Estimate mid', getStringValue(data.estimateMid));
   validateNonNegativeNumber('Estimate high', getStringValue(data.estimateHigh));
+  validateMinimumLength('Message', getStringValue(data.message), 12);
+  validateMinimumLength('Special instructions', getStringValue(data.instructions), 8);
+  validateMinimumLength('Notes', getStringValue(data.notes), 8);
   validateDateOrder(getStringValue(data.pickupDate), getStringValue(data.deliveryDate));
 
   Object.values(data).forEach((value) => {

@@ -41,4 +41,31 @@ describe('Netlify form submissions', () => {
 
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  it('rejects short contact messages before posting', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(submitNetlifyForm('contact', {
+      email: 'lead@example.com',
+      message: 'Need help',
+    })).rejects.toThrow('Message must include at least 12 characters.');
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    vi.unstubAllGlobals();
+  });
+
+  it('rejects invalid phone numbers before posting', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(submitNetlifyForm('contact', {
+      email: 'lead@example.com',
+      phone: 'call-me',
+      message: 'Need a freight quote for tomorrow.',
+    })).rejects.toThrow('Enter a valid phone number.');
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    vi.unstubAllGlobals();
+  });
 });
