@@ -194,10 +194,12 @@ export default withSentry(async (req: Request) => {
 
   const url = parseUrl(req);
   const path = url.pathname;
+
+  if (req.method === 'GET' && path === '/api/loads/search') return searchLoads(req);
+
   const auth = await requireAuth(req);
   if (auth instanceof Response) return auth;
 
-  if (req.method === 'GET' && path === '/api/loads/search') return searchLoads(req);
   if (req.method === 'GET' && path === '/api/loads') return listLoads(req, auth);
   if (req.method === 'POST' && path === '/api/loads') return createLoad(req, auth);
 

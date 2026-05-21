@@ -45,8 +45,119 @@ const pickupWindows: LoadBoardLoad['pickupWindow'][] = [
 const formatMoney = (n: number) =>
   n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
+type ApiLoad = {
+  id?: unknown;
+  trackingNumber?: unknown;
+  origin?: unknown;
+  destination?: unknown;
+  pickupAt?: unknown;
+  deliveryAt?: unknown;
+  rate?: unknown;
+  miles?: unknown;
+  equipment?: unknown;
+  weightLbs?: unknown;
+  commodity?: unknown;
+  notes?: unknown;
+  createdAt?: unknown;
+};
+
+const regionFromLocation = (location: string): LoadBoardLoad['originRegion'] => {
+  const state = location.match(/,\s*([A-Z]{2})\b/)?.[1] ?? '';
+  if (['CT', 'DE', 'MA', 'MD', 'ME', 'NH', 'NJ', 'NY', 'PA', 'RI', 'VT'].includes(state)) return 'Northeast';
+  if (['AL', 'FL', 'GA', 'KY', 'MS', 'NC', 'SC', 'TN', 'VA', 'WV'].includes(state)) return 'Southeast';
+  if (['IA', 'IL', 'IN', 'MI', 'MN', 'MO', 'ND', 'NE', 'OH', 'SD', 'WI'].includes(state)) return 'Midwest';
+  if (['AR', 'LA', 'OK', 'TX'].includes(state)) return 'South';
+  if (['AZ', 'CA', 'CO', 'KS', 'NM', 'NV', 'UT', 'WY'].includes(state)) return 'West';
+  if (['AK', 'ID', 'MT', 'OR', 'WA'].includes(state)) return 'Northwest';
+  return 'South';
+};
+
+const normalizeEquipment = (value: unknown): LoadBoardLoad['equipment'] => {
+  const normalized = String(value ?? '').toLowerCase();
+  if (normalized.includes('reefer')) return 'Reefer';
+  if (normalized.includes('flat')) return 'Flatbed';
+  if (normalized.includes('power')) return 'Power only';
+  if (normalized.includes('box')) return 'Box truck';
+  if (normalized.includes('sprinter') || normalized.includes('cargo')) return 'Sprinter van';
+  return 'Dry van';
+};
+
+const pickupWindowFromDate = (value: unknown): LoadBoardLoad['pickupWindow'] => {
+  if (typeof value !== 'string' || !value) return 'This week';
+  const pickup = new Date(value);
+  if (Number.isNaN(pickup.getTime())) return 'This week';
+
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const startOfPickup = new Date(pickup.getFullYear(), pickup.getMonth(), pickup.getDate()).getTime();
+  const days = Math.round((startOfPickup - startOfToday) / 86_400_000);
+
+  if (days <= 0) return 'Today';
+  if (days === 1) return 'Tomorrow';
+  if (days <= 7) return 'This week';
+  return 'Next week';
+};
+
+const formatLoadDate = (value: unknown): string => {
+  if (typeof value !== 'string' || !value) return 'Confirm with dispatch';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(date);
+};
+
+const postedAgo = (value: unknown): string => {
+  if (typeof value !== 'string' || !value) return 'recently';
+  const created = new Date(value).getTime();
+  if (Number.isNaN(created)) return 'recently';
+  const minutes = Math.max(1, Math.round((Date.now() - created) / 60_000));
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  return `${Math.round(hours / 24)}d`;
+};
+
+const mapApiLoadToBoardLoad = (load: ApiLoad): LoadBoardLoad | null => {
+  const id = String(load.trackingNumber || load.id || '').trim();
+  const origin = String(load.origin || '').trim();
+  const destination = String(load.destination || '').trim();
+  if (!id || !origin || !destination) return null;
+
+  const miles = Number(load.miles) > 0 ? Number(load.miles) : 0;
+  const totalPay = Number(load.rate) > 0 ? Number(load.rate) : 0;
+  const ratePerMile = miles > 0 && totalPay > 0 ? totalPay / miles : 0;
+
+  return {
+    id,
+    origin,
+    destination,
+    originRegion: regionFromLocation(origin),
+    destRegion: regionFromLocation(destination),
+    equipment: normalizeEquipment(load.equipment),
+    freightType: String(load.commodity || 'General freight'),
+    weightLbs: Number(load.weightLbs) > 0 ? Number(load.weightLbs) : 0,
+    miles,
+    totalPay,
+    ratePerMile,
+    pickupAt: formatLoadDate(load.pickupAt),
+    pickupWindow: pickupWindowFromDate(load.pickupAt),
+    deliveryAt: formatLoadDate(load.deliveryAt),
+    postedAgo: postedAgo(load.createdAt),
+    isHot: pickupWindowFromDate(load.pickupAt) === 'Today',
+    quickPay: totalPay > 0,
+    notes: typeof load.notes === 'string' ? load.notes : undefined,
+  };
+};
+
 const PublicLoadBoardPage: React.FC = () => {
   const navigate = useNavigate();
+  const [liveLoads, setLiveLoads] = useState<LoadBoardLoad[]>(demoLoadBoardLoads);
+  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [search, setSearch] = useState('');
   const [originRegion, setOriginRegion] = useState<'All' | LoadBoardLoad['originRegion']>('All');
   const [destRegion, setDestRegion] = useState<'All' | LoadBoardLoad['destRegion']>('All');
@@ -70,8 +181,35 @@ const PublicLoadBoardPage: React.FC = () => {
     trackPublicEvent('load_board_view', { source: 'public_load_board' });
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    const loadAvailableFreight = async () => {
+      try {
+        const response = await fetch('/api/loads/search');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = (await response.json()) as { loads?: ApiLoad[] };
+        const mapped = (data.loads ?? []).map(mapApiLoadToBoardLoad).filter((load): load is LoadBoardLoad => Boolean(load));
+
+        if (!active) return;
+        setLiveLoads(mapped.length > 0 ? mapped : demoLoadBoardLoads);
+        setLoadState('ready');
+      } catch {
+        if (!active) return;
+        setLiveLoads(demoLoadBoardLoads);
+        setLoadState(demoLoadBoardLoads.length > 0 ? 'ready' : 'error');
+      }
+    };
+
+    void loadAvailableFreight();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const filtered = useMemo(() => {
-    return demoLoadBoardLoads.filter((load) => {
+    return liveLoads.filter((load) => {
       if (search) {
         const q = search.toLowerCase();
         const haystack = `${load.id} ${load.origin} ${load.destination} ${load.equipment} ${load.freightType}`.toLowerCase();
@@ -86,7 +224,7 @@ const PublicLoadBoardPage: React.FC = () => {
       if (quickPayOnly && !load.quickPay) return false;
       return true;
     });
-  }, [search, originRegion, destRegion, equipment, pickupWindow, minRpm, minPay, quickPayOnly]);
+  }, [liveLoads, search, originRegion, destRegion, equipment, pickupWindow, minRpm, minPay, quickPayOnly]);
 
   const totals = useMemo(() => {
     const count = filtered.length;
@@ -435,6 +573,18 @@ const PublicLoadBoardPage: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {loadState === 'loading' ? (
+          <div className="mb-4 rounded-lg border border-infamous-orange/20 bg-infamous-orange/10 px-4 py-3 text-sm text-[#F5E8E8]/80">
+            Loading current available freight...
+          </div>
+        ) : null}
+
+        {loadState === 'error' ? (
+          <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+            The live load board is temporarily unavailable. Contact dispatch for current availability.
+          </div>
+        ) : null}
 
         {filtered.length === 0 ? (
           <div className="rounded-2xl border border-white/10 bg-[#101010] p-10 text-center">
