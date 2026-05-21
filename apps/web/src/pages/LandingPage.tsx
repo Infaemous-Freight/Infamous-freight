@@ -201,11 +201,11 @@ const workflowHighlights = [
 ];
 
 const commandStats = [
-  { label: 'Active Loads', value: '128', delta: '+12%', icon: Package },
-  { label: 'In Transit', value: '87', delta: '+8%', icon: Truck },
-  { label: 'Delivered Today', value: '34', delta: '+15%', icon: CheckCircle2 },
-  { label: 'On Time %', value: '96.2%', delta: '+4.3%', icon: Clock },
-  { label: 'Revenue (MTD)', value: '$2.48M', delta: '+18%', icon: DollarSign },
+  { label: 'Quote Intake', value: '4', delta: 'sample queue', icon: Package },
+  { label: 'In Transit', value: '3', delta: 'sample loads', icon: Truck },
+  { label: 'Delivered', value: '2', delta: 'sample PODs', icon: CheckCircle2 },
+  { label: 'Exception Review', value: '1', delta: 'needs follow-up', icon: Clock },
+  { label: 'Billing Review', value: '2', delta: 'sample invoices', icon: DollarSign },
 ];
 
 const commandLoads = [
@@ -368,7 +368,7 @@ const LandingPage: React.FC = () => {
                       <Menu className="text-[#F5E8E8]" size={22} />
                       <div>
                         <p className="font-display text-lg font-black uppercase text-infamous-red-light">Command Center</p>
-                        <p className="text-xs text-[#B88989]">Real-time operations overview</p>
+                        <p className="text-xs text-[#B88989]">Sample freight workflow preview</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4 text-[#F5E8E8]">
@@ -391,7 +391,7 @@ const LandingPage: React.FC = () => {
                         <stat.icon size={24} className="mb-3 text-infamous-red-light" />
                         <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#B88989]">{stat.label}</p>
                         <p className="mt-1 font-display text-3xl font-black text-[#F5E8E8]">{stat.value}</p>
-                        <p className="mt-1 text-xs text-[#36D399]">{stat.delta} vs yesterday</p>
+                        <p className="mt-1 text-xs text-[#36D399]">{stat.delta}</p>
                       </div>
                     ))}
                   </div>
@@ -399,7 +399,7 @@ const LandingPage: React.FC = () => {
                   <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_270px]">
                     <div className="rounded-lg border border-infamous-red-light/25 bg-black/50 p-4">
                       <div className="mb-3 flex items-center justify-between">
-                        <h1 className="font-display text-sm font-black uppercase tracking-[0.12em]">Shipment Tracking <span className="ml-2 text-[10px] text-infamous-red-light">Live</span></h1>
+                        <h1 className="font-display text-sm font-black uppercase tracking-[0.12em]">Shipment Tracking <span className="ml-2 text-[10px] text-infamous-red-light">Sample</span></h1>
                         <Link to="/track-shipment" className="rounded border border-infamous-red-light/50 px-3 py-1.5 text-[10px] font-black uppercase text-infamous-red-light">View all shipments</Link>
                       </div>
                       <div className="relative h-[285px] overflow-hidden rounded-md border border-infamous-red-light/10 bg-[#080304]">
@@ -478,7 +478,7 @@ const LandingPage: React.FC = () => {
                     ) : (
                       <>
                         <div className="mb-5 flex items-center justify-between"><div className="flex items-center gap-2"><span className="grid h-9 w-9 place-items-center rounded-full border border-infamous-red-light/50"><UserRound size={16} /></span><p className="text-xs text-[#B88989]">Welcome back,<br /><strong className="text-[#F5E8E8]">RoadKing_88</strong></p></div><Bell size={15} /></div>
-                        <div className="rounded-lg border border-infamous-red-light/25 bg-black/40 p-4"><p className="text-[10px] uppercase text-[#B88989]">Current Load</p><p className="mt-1 font-display text-2xl font-black">IF-77291 <span className="float-right rounded border border-infamous-red-light/40 px-2 py-1 text-[9px] text-infamous-red-light">In Transit</span></p><p className="mt-3 text-xs text-[#B88989]">Los Angeles, CA → Chicago, IL</p><p className="mt-2 text-xs text-[#B88989]">53 Dry Van <span className="float-right">42,500 lbs</span></p></div>
+                        <div className="rounded-lg border border-infamous-red-light/25 bg-black/40 p-4"><p className="text-[10px] uppercase text-[#B88989]">Sample Load</p><p className="mt-1 font-display text-2xl font-black">IF-77291 <span className="float-right rounded border border-infamous-red-light/40 px-2 py-1 text-[9px] text-infamous-red-light">In Transit</span></p><p className="mt-3 text-xs text-[#B88989]">Los Angeles, CA → Chicago, IL</p><p className="mt-2 text-xs text-[#B88989]">53 Dry Van <span className="float-right">42,500 lbs</span></p></div>
                         {([
                           ['Accept Load', CheckCircle2],
                           ['Arrived at Pickup', MapPin],
