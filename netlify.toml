@@ -1,8 +1,20 @@
 [build]
   publish = "apps/web/dist"
   command = "pnpm run build:web"
-  # Event-triggered functions only (submission-created). HTTP API functions in
-  # netlify/functions/ remain disabled — API traffic proxies to Fly.io via redirects.
+  # Event-triggered functions (submission-created) live in netlify/event-functions/
+  # but are currently disabled (.mts.disabled). The 20 site-level environment
+  # variables with "functions" scope total ~3 KB; combined with Netlify system
+  # vars they exceed the 4 KB per-function deploy limit.
+  #
+  # To re-enable:
+  #   1. In Site settings → Environment variables, remove the "functions" scope
+  #      from vars the function does not need (Firebase, Fly tokens, AWL_API_KEY,
+  #      Sentry, Supabase, Github).  The submission-created function only uses
+  #      @netlify/database (platform-injected, no user env vars required).
+  #   2. Rename submission-created.mts.disabled back to submission-created.mts.
+  #
+  # The functions directive must remain so Netlify does not fall back to
+  # auto-detecting the HTTP API functions in netlify/functions/.
   functions = "netlify/event-functions"
 
 [build.environment]
