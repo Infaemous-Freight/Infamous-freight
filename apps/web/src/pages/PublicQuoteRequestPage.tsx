@@ -75,6 +75,10 @@ const minimumByEquipment: Record<string, number> = {
   'Sprinter van': 150,
 };
 
+const MAX_ATTACHMENT_BYTES = 8 * 1024 * 1024;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_PATTERN = /^[+()\-\s.\d]{7,40}$/;
+
 type Estimate = {
   low: number;
   mid: number;
@@ -199,18 +203,36 @@ const PublicQuoteRequestPage: React.FC = () => {
     setForm((current) => ({ ...current, [key]: value }));
   };
 
-  const canProceed = (s: number): boolean => {
-    switch (s) {
-      case 0: return Boolean(form.origin.trim() && form.destination.trim() && form.equipment.trim() && form.pickupDate && form.contact.trim() && form.phone.trim() && form.email.trim());
-      case 1: return true;
-      case 2: return true;
-      case 3: return Boolean(form.origin.trim() && form.destination.trim() && form.contact.trim() && form.phone.trim() && form.email.trim() && form.contactConsent);
-      default: return true;
+  const validationMessage = (s: number): string => {
+    if (s === 0 || s === 3) {
+      if (!form.origin.trim()) return 'Add the pickup city and state.';
+      if (!form.destination.trim()) return 'Add the delivery city and state.';
+      if (!form.equipment.trim()) return 'Choose the equipment or service type.';
+      if (!form.pickupDate) return 'Add the requested pickup date.';
+      if (!form.contact.trim()) return 'Add the best contact name.';
+      if (!PHONE_PATTERN.test(form.phone.trim())) return 'Add a valid phone number for dispatch follow-up.';
+      if (!EMAIL_PATTERN.test(form.email.trim())) return 'Add a valid email address.';
     }
+
+    if (s === 3 && !form.contactConsent) {
+      return 'Confirm contact consent before submitting.';
+    }
+
+    return '';
+  };
+
+  const canProceed = (s: number): boolean => {
+    return validationMessage(s) === '';
   };
 
   const nextStep = () => {
-    if (step < STEPS.length - 1 && canProceed(step)) setStep(step + 1);
+    const message = validationMessage(step);
+    if (message) {
+      setError(message);
+      return;
+    }
+    setError('');
+    if (step < STEPS.length - 1) setStep(step + 1);
   };
 
   const prevStep = () => {
@@ -219,6 +241,17 @@ const PublicQuoteRequestPage: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const message = validationMessage(3);
+    if (message) {
+      setError(message);
+      return;
+    }
+
+    if (attachment && attachment.size > MAX_ATTACHMENT_BYTES) {
+      setError('Attachment must be 8 MB or smaller.');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -375,7 +408,17 @@ const PublicQuoteRequestPage: React.FC = () => {
                 name="attachment"
                 type="file"
                 accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx,.csv,.txt"
-                onChange={(e) => setAttachment(e.target.files?.[0] ?? null)}
+                onChange={(e) => {
+                  const nextFile = e.target.files?.[0] ?? null;
+                  if (nextFile && nextFile.size > MAX_ATTACHMENT_BYTES) {
+                    setAttachment(null);
+                    setError('Attachment must be 8 MB or smaller.');
+                    e.target.value = '';
+                    return;
+                  }
+                  setError('');
+                  setAttachment(nextFile);
+                }}
                 className="mt-3 block w-full text-sm text-[#F5E8E8]/80 file:mr-4 file:rounded-lg file:border-0 file:bg-infamous-red file:px-4 file:py-2 file:font-semibold file:text-[#F5E8E8]"
               />
               {attachment && <span className="mt-2 block text-xs text-[#B88989]/70">{attachment.name}</span>}
