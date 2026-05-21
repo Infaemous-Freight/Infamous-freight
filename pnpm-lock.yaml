@@ -112,6 +112,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@netlify/identity':
+        specifier: ^1.2.0
+        version: 1.2.0
       '@sentry/react':
         specifier: ^10.53.1
         version: 10.53.1(react@19.2.6)
@@ -1016,6 +1019,10 @@ packages:
 
   '@netlify/functions@5.2.1':
     resolution: {integrity: sha512-F1CCXeWC/4E/mj8La38WwFJ6oyymTBeIWYO87nyjN0L8mvb0tugcMsu+V6QkUllMtnBezdM0ApCaY+eWGmnj+g==}
+    engines: {node: '>=18.0.0'}
+
+  '@netlify/identity@1.2.0':
+    resolution: {integrity: sha512-m1lW+OUsFVkG3Gyz7Z+V7iClvEj77EL8WtlsPjrBAcPCgXVj20xySVerTekJGSoNzrk1vvHPEyxzGY0HhEA6ZA==}
     engines: {node: '>=18.0.0'}
 
   '@netlify/runtime-utils@2.3.0':
@@ -3030,6 +3037,9 @@ packages:
   gopd@1.2.0:
     resolution: {integrity: sha512-ZUKRh6/kUFoAiTAtTYPZJ3hw9wNxx+BIBOijnlG9PnrJsCcSjs1wyyD6vJpaYtgnzDrKYRSqf3OO6Rfa93xsRg==}
     engines: {node: '>= 0.4'}
+
+  gotrue-js@1.0.1:
+    resolution: {integrity: sha512-ZynwwM4bEo2y5yNWO3/Ynbx1AvQz9ONJSM9tB1jpooAvDPevGdvgeFP3NwM59FAlkd0szSkQRAhjINMkJSDfAQ==}
 
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
@@ -5490,6 +5500,10 @@ snapshots:
     dependencies:
       '@netlify/types': 2.6.0
 
+  '@netlify/identity@1.2.0':
+    dependencies:
+      gotrue-js: 1.0.1
+
   '@netlify/runtime-utils@2.3.0': {}
 
   '@netlify/types@2.6.0': {}
@@ -7441,6 +7455,8 @@ snapshots:
       csstype: 3.2.3
 
   gopd@1.2.0: {}
+
+  gotrue-js@1.0.1: {}
 
   graceful-fs@4.2.11: {}
 

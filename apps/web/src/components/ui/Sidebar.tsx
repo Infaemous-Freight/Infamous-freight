@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useAppStore } from '@/store/app-store';
 import { canAccessLaunchValidation } from '@/lib/launchValidationAccess';
+import { logoutNetlifyIdentity } from '@/lib/netlifyIdentityAuth';
 import {
   LayoutDashboard, Truck, Radio, Users, FileText, MessageSquare,
   TrendingUp, ShieldCheck, Settings, ChevronLeft, ChevronRight,
@@ -54,6 +55,9 @@ const Sidebar: React.FC = () => {
     ? [...baseNavItems, launchValidationNavItem, settingsNavItem]
     : [...baseNavItems, settingsNavItem];
   const navItems = allItems.filter((item) => meetsMinRole(user?.role, item.minRole));
+  const handleLogout = () => {
+    logoutNetlifyIdentity().finally(logout);
+  };
 
   return (
     <aside
@@ -123,7 +127,7 @@ const Sidebar: React.FC = () => {
       {/* Bottom */}
       <div className={`border-t border-infamous-border p-3 ${!sidebarOpen && 'flex justify-center'}`}>
         <button
-          onClick={logout}
+          onClick={handleLogout}
           aria-label="Log out"
           className={`flex items-center gap-3 px-3 py-2 rounded-xl text-[#B88989] hover:text-[#FF0033] hover:bg-[#FF0033]/10 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-red ${!sidebarOpen && 'justify-center'}`}
           title="Log Out"

@@ -20,6 +20,7 @@
     "smoke:render": "node scripts/smoke-render.mjs"
   },
   "dependencies": {
+    "@netlify/identity": "^1.2.0",
     "@sentry/react": "^10.53.1",
     "@stripe/react-stripe-js": "^6.3.0",
     "@stripe/stripe-js": "^9.5.0",
