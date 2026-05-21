@@ -18,7 +18,7 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
     state: 'demo',
     message: 'Dispatch board workflows are demo-backed and should not be treated as production dispatch execution.',
   },
-  '/drivers': {
+  '/ops/drivers': {
     state: 'demo',
     message: 'Driver roster and performance widgets are demo-backed while live driver services are being integrated.',
   },
@@ -65,8 +65,8 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
 };
 
 export function resolveRouteReadiness(pathname: string): RouteReadiness | null {
-  const matchedPath = Object.keys(AUTHENTICATED_ROUTE_READINESS).find(
-    (path) => pathname === path || pathname.startsWith(`${path}/`)
-  );
+  const matchedPath = Object.keys(AUTHENTICATED_ROUTE_READINESS)
+    .sort((a, b) => b.length - a.length)
+    .find((path) => pathname === path || pathname.startsWith(`${path}/`));
   return matchedPath ? AUTHENTICATED_ROUTE_READINESS[matchedPath] : null;
 }

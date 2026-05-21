@@ -3,7 +3,6 @@ Allow: /
 Disallow: /ops
 Disallow: /loads
 Disallow: /dispatch
-Disallow: /drivers
 Disallow: /invoices
 Disallow: /analytics
 Disallow: /compliance

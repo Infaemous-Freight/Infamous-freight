@@ -31,7 +31,7 @@ const baseNavItems: NavItem[] = [
   { path: '/ops', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { path: '/loads', label: 'Shipments', icon: Truck },
   { path: '/carriers', label: 'Carriers', icon: Users, minRole: 'admin' },
-  { path: '/drivers', label: 'Drivers', icon: Users, minRole: 'dispatcher' },
+  { path: '/ops/drivers', label: 'Drivers', icon: Users, minRole: 'dispatcher' },
   { path: '/dispatch', label: 'Dispatch', icon: Radio, minRole: 'dispatcher' },
   { path: '/accounting', label: 'Accounting', icon: DollarSign, minRole: 'admin' },
   { path: '/analytics', label: 'Analytics', icon: TrendingUp, minRole: 'admin' },
