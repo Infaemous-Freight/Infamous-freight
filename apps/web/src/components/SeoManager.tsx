@@ -37,6 +37,11 @@ const SEO_BY_PATH: Record<string, SeoConfig> = {
     description:
       'Track shipments in real time with live status updates, ETA visibility, and proactive issue alerts.'
   },
+  '/tracking': {
+    title: `Track Shipment in Real Time | ${BRAND.displayName}`,
+    description:
+      'Track shipments in real time with live status updates, ETA visibility, and proactive issue alerts.'
+  },
   '/freight-assistant': {
     title: `AI Freight Assistant | ${BRAND.displayName}`,
     description:
@@ -130,6 +135,10 @@ const SEO_BY_PATH: Record<string, SeoConfig> = {
     title: `Apply to Drive | ${BRAND.displayName}`,
     description: 'Apply to join the Infamous Freight driver network for verified local and regional freight opportunities.'
   },
+  '/drivers': {
+    title: `Driver and Carrier Opportunities | ${BRAND.displayName}`,
+    description: 'Apply to join the Infamous Freight driver network for verified local and regional freight opportunities.'
+  },
   '/customer-portal': {
     title: `Customer Portal | ${BRAND.displayName}`,
     description: 'Open customer freight tools for quotes, shipment visibility, documents, and support workflows.'
@@ -209,6 +218,7 @@ const INDEXABLE_ROUTES = new Set([
   '/home',
   '/request-quote',
   '/track-shipment',
+  '/tracking',
   '/freight-assistant',
   '/services',
   '/pricing',
@@ -216,6 +226,7 @@ const INDEXABLE_ROUTES = new Set([
   '/contact',
   '/about',
   '/drive',
+  '/drivers',
   '/faq',
   '/customer-portal',
   '/carrier-portal',
@@ -324,7 +335,7 @@ const FAQ_JSONLD = JSON.stringify({
 const SeoManager = () => {
   const location = useLocation();
   const pathname = (location.pathname || '/').replace(/\/$/, '') || '/';
-  const canonicalPath = pathname === '/home' ? '/' : pathname;
+  const canonicalPath = pathname === '/home' ? '/' : pathname === '/track-shipment' ? '/tracking' : pathname === '/drive' ? '/drivers' : pathname;
   const canonicalUrl = `${SITE_URL}${canonicalPath}`;
   const isIndexable = INDEXABLE_ROUTES.has(pathname) || pathname.startsWith('/services/') || pathname.startsWith('/resources/');
   const isArticle = pathname.startsWith('/resources/') && pathname !== '/resources';

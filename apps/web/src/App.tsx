@@ -60,7 +60,7 @@ const ShipmentDetailPage = lazy(() => import('@/pages/ShipmentDetailPage'));
 
 const RouteFallback = () => (
   <main
-    className="min-h-screen w-full flex items-center justify-center p-6 bg-infamous-dark text-[#F5E8E8]"
+    className="min-h-screen w-full bg-infamous-dark p-5 text-[#F5E8E8] sm:p-6"
     style={{
       background:
         'radial-gradient(circle at top, rgba(255, 26, 26, 0.22), transparent 35%), linear-gradient(180deg, #160608 0%, #080204 100%)',
@@ -68,21 +68,28 @@ const RouteFallback = () => (
     aria-live="polite"
     aria-busy="true"
   >
-    <section className="max-w-xl text-center">
-      <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-infamous-red-light">
-        {BRAND.displayName}
-      </p>
-      <h1 className="font-display mt-3 mb-4 text-4xl sm:text-5xl font-bold leading-tight">
-        Loading freight command center...
-      </h1>
-      <p className="text-base leading-relaxed text-[#B88989]">
-        Dispatch, visibility, rate tools, and carrier operations are loading.
-      </p>
-      <div
-        className="mx-auto mt-6 w-8 h-8 border-2 border-infamous-red border-t-transparent rounded-full animate-spin"
-        role="status"
-        aria-label="Loading"
-      />
+    <section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center gap-8 py-10">
+      <div className="h-5 w-44 animate-pulse rounded bg-infamous-red/30" aria-hidden="true" />
+      <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+        <div className="space-y-5">
+          <div className="h-14 max-w-2xl animate-pulse rounded-lg bg-[#F5E8E8]/14 sm:h-20" aria-hidden="true" />
+          <div className="h-14 max-w-xl animate-pulse rounded-lg bg-[#F5E8E8]/10 sm:h-20" aria-hidden="true" />
+          <div className="h-4 max-w-lg animate-pulse rounded bg-[#B88989]/30" aria-hidden="true" />
+          <div className="h-4 max-w-md animate-pulse rounded bg-[#B88989]/20" aria-hidden="true" />
+        </div>
+        <div className="rounded-xl border border-infamous-border bg-infamous-card p-5">
+          <div className="mb-4 h-4 w-32 animate-pulse rounded bg-infamous-red/25" aria-hidden="true" />
+          <div className="space-y-3">
+            {[0, 1, 2, 3].map((item) => (
+              <div key={item} className="flex items-center gap-3">
+                <div className="h-8 w-8 animate-pulse rounded-full bg-[#F5E8E8]/10" aria-hidden="true" />
+                <div className="h-3 flex-1 animate-pulse rounded bg-[#F5E8E8]/10" aria-hidden="true" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <span className="sr-only">{BRAND.displayName} route content is preparing.</span>
     </section>
   </main>
 );
@@ -102,6 +109,7 @@ function App() {
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/services/:serviceSlug" element={<ServiceDetailPage />} />
             <Route path="/request-quote" element={<PublicQuoteRequestPage />} />
+            <Route path="/tracking" element={<ShipmentTrackingPage />} />
             <Route path="/track-shipment" element={<ShipmentTrackingPage />} />
             <Route path="/customer-portal" element={<CustomerPortalPage />} />
             <Route path="/shipment/:trackingId" element={<ShipmentDetailPage />} />
@@ -110,6 +118,7 @@ function App() {
             <Route path="/freight-assistant" element={<FreightAssistantPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/partners" element={<PartnersPage />} />
+            <Route path="/drivers" element={<DriversApplyPage />} />
             <Route path="/drive" element={<DriversApplyPage />} />
             <Route path="/terms" element={<LegalPage />} />
             <Route path="/privacy" element={<LegalPage />} />
@@ -132,7 +141,7 @@ function App() {
             <Route path="/ops" element={<DashboardPage />} />
             <Route path="/loads" element={<LoadsPage />} />
             <Route path="/dispatch" element={<RouteGuard minRole="dispatcher"><DispatchBoardPage /></RouteGuard>} />
-            <Route path="/drivers" element={<RouteGuard minRole="dispatcher"><DriversPage /></RouteGuard>} />
+            <Route path="/ops/drivers" element={<RouteGuard minRole="dispatcher"><DriversPage /></RouteGuard>} />
             <Route path="/invoices" element={<RouteGuard minRole="dispatcher"><InvoicesPage /></RouteGuard>} />
             <Route path="/analytics" element={<RouteGuard minRole="admin"><MetricsDashboard /></RouteGuard>} />
             <Route path="/compliance" element={<RouteGuard minRole="admin"><CompliancePage /></RouteGuard>} />

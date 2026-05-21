@@ -70,30 +70,14 @@
         color: #F5E8E8;
         text-align: center;
       }
-      .app-shell-fallback__card {
-        max-width: 560px;
-      }
-      .app-shell-fallback__eyebrow {
-        color: #FF3B30;
-        font-size: 0.8rem;
-        font-weight: 800;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        margin: 0 0 0.75rem;
-        font-family: "Space Grotesk", system-ui, sans-serif;
-      }
-      .app-shell-fallback__title {
-        font-size: clamp(2rem, 7vw, 4rem);
-        line-height: 0.95;
-        margin: 0 0 1rem;
-        font-family: "Space Grotesk", system-ui, sans-serif;
-      }
-      .app-shell-fallback__copy {
-        color: #B88989;
-        font-size: 1rem;
-        line-height: 1.65;
-        margin: 0;
-      }
+      .app-shell-fallback__card { width: min(100%, 920px); text-align: left; }
+      .shell-line { display: block; height: 18px; border-radius: 999px; background: rgba(245, 232, 232, 0.14); animation: shell-pulse 1.4s ease-in-out infinite; }
+      .shell-line--brand { width: 180px; background: rgba(255, 59, 48, 0.32); margin-bottom: 28px; }
+      .shell-line--hero { width: min(100%, 720px); height: clamp(52px, 8vw, 84px); border-radius: 10px; margin-bottom: 14px; }
+      .shell-line--hero-short { width: min(78%, 540px); height: clamp(52px, 8vw, 84px); border-radius: 10px; margin-bottom: 24px; }
+      .shell-line--copy { width: min(70%, 520px); height: 14px; background: rgba(184, 137, 137, 0.26); margin-bottom: 10px; }
+      .shell-line--copy-short { width: min(52%, 380px); height: 14px; background: rgba(184, 137, 137, 0.2); }
+      @keyframes shell-pulse { 0%, 100% { opacity: 0.54; } 50% { opacity: 1; } }
       .noscript-nav { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
       .noscript-nav a { color: #FF3B30; text-decoration: underline; font-size: 0.95rem; }
     </style>
@@ -103,18 +87,19 @@
     <div id="root">
       <main class="app-shell-fallback" aria-live="polite">
         <section class="app-shell-fallback__card">
-          <p class="app-shell-fallback__eyebrow">INFAMOUS FREIGHT</p>
-          <h1 class="app-shell-fallback__title">Loading freight command center...</h1>
-          <p class="app-shell-fallback__copy">
-            Dispatch, visibility, rate tools, and carrier operations are loading.
-          </p>
+          <span class="shell-line shell-line--brand" aria-hidden="true"></span>
+          <span class="shell-line shell-line--hero" aria-hidden="true"></span>
+          <span class="shell-line shell-line--hero-short" aria-hidden="true"></span>
+          <span class="shell-line shell-line--copy" aria-hidden="true"></span>
+          <span class="shell-line shell-line--copy-short" aria-hidden="true"></span>
+          <span class="skip-link">Infamous Freight route content is preparing.</span>
           <noscript>
             <nav class="noscript-nav" aria-label="Site navigation">
               <a href="/request-quote">Request a Quote</a>
-              <a href="/track-shipment">Track Shipment</a>
+              <a href="/tracking">Track Shipment</a>
               <a href="/services">Services</a>
               <a href="/pricing">Pricing</a>
-              <a href="/drive">Apply to Drive</a>
+              <a href="/drivers">Apply to Drive</a>
               <a href="/load-board">Load Board</a>
               <a href="/resources">Resources</a>
               <a href="/contact">Contact</a>
