@@ -63,6 +63,7 @@
     "social-preview:generate": "node scripts/generate-social-preview.mjs",
     "bootstrap": "bash scripts/bootstrap.sh",
     "netlify:production:readiness": "bash scripts/netlify-production-readiness.sh",
+    "launch:blocker-audit": "bash scripts/launch-blocker-audit.sh",
     "production:secrets:setup": "bash scripts/setup-production-secrets.sh",
     "production:secrets:dry-run": "DRY_RUN=true bash scripts/setup-production-secrets.sh",
     "check:prisma-versions": "node scripts/check-prisma-version-alignment.js"

@@ -240,7 +240,7 @@ if [[ -n "${STRIPE_ACCOUNT_ID:-}" && ! "${STRIPE_ACCOUNT_ID}" =~ ^acct_[A-Za-z0-
 fi
 
 printf '\nSafe environment inventory — names only, no values:\n'
-printenv | cut -d= -f1 | sort
+printenv | cut -d= -f1 | grep -E '^[A-Za-z_][A-Za-z0-9_]*$' | sort
 
 printf '\nSummary:\n'
 echo "Required missing: ${missing_required}"
