@@ -1,13 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store/app-store';
-import { getSupabase } from '@/hooks/useSupabase';
+import { hydrateNetlifyIdentityUser, onAuthChange } from '@/lib/netlifyIdentityAuth';
 import { isPublicPath } from '@/lib/routes';
-import {
-  isBillingAllowedPath,
-  isPaidSubscription,
-  normalizeSubscriptionStatus,
-} from '@/lib/paywall';
+import { isBillingAllowedPath, isPaidSubscription } from '@/lib/paywall';
 import { resolveRouteReadiness } from '@/lib/routeReadiness';
 import Sidebar from '@/components/ui/Sidebar';
 import TopBar from '@/components/ui/TopBar';
@@ -35,20 +31,13 @@ const AppLayout: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    let supabase;
-    try {
-      supabase = getSupabase();
-    } catch {
-      logout();
-      setLoading(false);
-      if (!isPublicPath(location.pathname)) {
-        navigate('/login', { replace: true });
-      }
-      return;
-    }
+    let isMounted = true;
 
-    const applySession = (session: Awaited<ReturnType<typeof supabase.auth.getSession>>['data']['session']) => {
-      if (!session) {
+    const applyIdentitySession = async () => {
+      const identityUser = await hydrateNetlifyIdentityUser();
+      if (!isMounted) return;
+
+      if (!identityUser) {
         logout();
         if (!isPublicPath(location.pathname)) {
           navigate('/login', { replace: true });
@@ -57,44 +46,44 @@ const AppLayout: React.FC = () => {
         return;
       }
 
-      const carrierId = session.user.user_metadata?.carrierId;
-      if (!carrierId) {
-        logout();
-        if (!isPublicPath(location.pathname)) {
-          navigate('/login', { replace: true });
-        }
-        setLoading(false);
-        return;
-      }
-
-      const subscriptionStatus = normalizeSubscriptionStatus(
-        session.user.app_metadata?.subscription_status ??
-          session.user.user_metadata?.subscriptionStatus ??
-          session.user.user_metadata?.subscription_status ??
-          session.user.user_metadata?.billingStatus ??
-          session.user.user_metadata?.billing_status ??
-          'none'
-      );
-
-      localStorage.setItem('infamous_token', session.access_token);
-      setUser({
-        id: session.user.id,
-        email: session.user.email ?? '',
-        name: session.user.user_metadata?.full_name ?? session.user.email?.split('@')[0] ?? 'User',
-        role: session.user.user_metadata?.role ?? 'driver',
-        carrierId,
-        subscriptionStatus,
-      });
+      setUser(identityUser);
       setLoading(false);
     };
 
-    supabase.auth.getSession().then(({ data: { session } }) => applySession(session));
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      applySession(session);
+    applyIdentitySession().catch(() => {
+      if (!isMounted) return;
+      logout();
+      if (!isPublicPath(location.pathname)) {
+        navigate('/login', { replace: true });
+      }
+      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    const unsubscribe = onAuthChange((_event, identityUser) => {
+      if (!isMounted) return;
+
+      if (!identityUser) {
+        logout();
+        if (!isPublicPath(location.pathname)) {
+          navigate('/login', { replace: true });
+        }
+        setLoading(false);
+        return;
+      }
+
+      hydrateNetlifyIdentityUser()
+        .then((mappedUser) => {
+          if (!isMounted || !mappedUser) return;
+          setUser(mappedUser);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, [location.pathname, navigate, setLoading, setUser, logout]);
 
   useEffect(() => {

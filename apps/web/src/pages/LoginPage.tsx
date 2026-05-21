@@ -1,73 +1,135 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Apple, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { AuthError, MissingIdentityError, getSettings, login, oauthLogin, signup, type AuthProvider } from '@netlify/identity';
 import { useAppStore } from '@/store/app-store';
-import { useSupabaseAuth } from '@/hooks/useSupabase';
+import { hydrateNetlifyIdentityUser, isEmailVerified } from '@/lib/netlifyIdentityAuth';
 import BrandMark from '@/components/ui/BrandMark';
 import { BRAND } from '@/lib/brand';
 import toast from 'react-hot-toast';
+
+type SocialProvider = 'google' | 'apple';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { setUser } = useAppStore();
   const user = useAppStore((s) => s.user);
-  const { signIn, signUp } = useSupabaseAuth();
   const [isRegister, setIsRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [companyName, setCompanyName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [oauthProvider, setOauthProvider] = useState<SocialProvider | null>(null);
+  const [providerError, setProviderError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    hydrateNetlifyIdentityUser({ processCallback: true })
+      .then((identityUser) => {
+        if (!isMounted || !identityUser) return;
+        setUser(identityUser);
+        toast.success('Signed in successfully.');
+        navigate('/ops', { replace: true });
+      })
+      .catch((error) => {
+        if (error instanceof MissingIdentityError) {
+          toast.error('Login is not enabled for this Netlify site yet.');
+          return;
+        }
+        if (error instanceof AuthError) {
+          toast.error(error.message);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [navigate, setUser]);
 
   if (user) {
     return <Navigate to="/ops" replace />;
   }
 
+  const persistIdentityUser = async () => {
+    const identityUser = await hydrateNetlifyIdentityUser();
+    if (!identityUser) {
+      toast.error("The account couldn't be loaded. Try signing in again.");
+      return false;
+    }
+    setUser(identityUser);
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setProviderError(null);
     setLoading(true);
 
     try {
-      const authResponse = isRegister
-        ? await signUp(email, password, { companyName })
-        : await signIn(email, password);
-
-      const authUser = authResponse.user;
-      const authSession = authResponse.session;
-
-      if (!authUser) {
-        toast.error("Email or password didn't match. Try again or reset your password.");
-        return;
+      if (isRegister) {
+        const trimmedCompanyName = companyName.trim();
+        const newUser = await signup(email.trim(), password, {
+          companyName: trimmedCompanyName,
+          company_name: trimmedCompanyName,
+        });
+        if (!isEmailVerified(newUser)) {
+          toast.success('Account created. Check your email to verify your account before signing in.');
+          navigate('/login');
+          return;
+        }
+      } else {
+        await login(email.trim(), password);
       }
 
-      if (!authSession) {
-        toast.success('Account created. Check your email to verify your account before signing in.');
+      const ready = await persistIdentityUser();
+      if (!ready) {
         navigate('/login');
         return;
       }
 
-      const carrierId = authUser.user_metadata?.carrierId;
-      if (!carrierId) {
-        toast.error(`Your account isn't linked to a carrier yet. Email ${BRAND.supportEmail} so the setup can be completed.`);
-        return;
-      }
-
-      localStorage.setItem('infamous_token', authSession.access_token);
-      setUser({
-        id: authUser.id,
-        email: authUser.email ?? email,
-        name: authUser.user_metadata?.full_name ?? authUser.email?.split('@')[0] ?? 'User',
-        role: authUser.user_metadata?.role ?? 'driver',
-        carrierId,
-      });
-
       toast.success(isRegister ? 'Account created!' : 'Welcome back!');
-      navigate('/');
+      navigate('/ops');
     } catch (error) {
-      const message = error instanceof Error ? error.message : "We couldn't sign you in. Check your connection and try again.";
+      const message = error instanceof AuthError && error.status === 401
+        ? "Email or password didn't match. Try again."
+        : error instanceof MissingIdentityError
+          ? 'Login is not enabled for this Netlify site yet.'
+          : error instanceof Error
+            ? error.message
+            : "We couldn't sign you in. Check your connection and try again.";
       toast.error(message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleOAuthLogin = async (provider: SocialProvider) => {
+    setOauthProvider(provider);
+    setProviderError(null);
+
+    try {
+      const settings = await getSettings().catch(() => null);
+      const providers = settings?.providers as Record<string, boolean> | undefined;
+      if (providers && providers[provider] === false) {
+        const message = `${provider === 'apple' ? 'Apple' : 'Google'} login needs to be enabled in Netlify Identity settings.`;
+        setProviderError(message);
+        toast.error(message);
+        setOauthProvider(null);
+        return;
+      }
+
+      oauthLogin(provider as AuthProvider);
+    } catch (error) {
+      const message = error instanceof MissingIdentityError
+        ? 'Login is not enabled for this Netlify site yet.'
+        : error instanceof Error
+          ? error.message
+          : `Unable to start ${provider} login.`;
+      setProviderError(message);
+      toast.error(message);
+      setOauthProvider(null);
     }
   };
 
@@ -84,8 +146,41 @@ const LoginPage: React.FC = () => {
         <div className="bg-infamous-card border border-infamous-border rounded-2xl p-6">
           <h2 className="text-lg font-semibold mb-1">{isRegister ? 'Create Account' : 'Sign In'}</h2>
           <p className="text-sm text-[#B88989]/70 mb-6">
-            {isRegister ? 'Start your 14-day free trial' : 'Welcome back — sign in to dispatch'}
+            {isRegister ? 'Start your operations account' : 'Welcome back — sign in to dispatch'}
           </p>
+
+          <div className="grid gap-3 sm:grid-cols-2 mb-5">
+            <button
+              type="button"
+              onClick={() => handleOAuthLogin('google')}
+              disabled={oauthProvider !== null}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-infamous-border bg-[#F5E8E8] px-3 py-2 text-sm font-semibold text-[#160608] transition hover:bg-white disabled:cursor-wait disabled:opacity-70"
+            >
+              <span aria-hidden="true" className="text-base font-bold">G</span>
+              {oauthProvider === 'google' ? 'Opening...' : 'Google'}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOAuthLogin('apple')}
+              disabled={oauthProvider !== null}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-infamous-border bg-[#050505] px-3 py-2 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-wait disabled:opacity-70"
+            >
+              <Apple size={17} aria-hidden="true" />
+              {oauthProvider === 'apple' ? 'Opening...' : 'Apple'}
+            </button>
+          </div>
+
+          {providerError && (
+            <p role="alert" className="mb-5 rounded-lg border border-infamous-orange/30 bg-infamous-orange/10 p-3 text-sm text-infamous-orange-light">
+              {providerError}
+            </p>
+          )}
+
+          <div className="mb-5 flex items-center gap-3 text-xs uppercase tracking-[0.12em] text-[#B88989]/60">
+            <span className="h-px flex-1 bg-infamous-border" />
+            <span>or</span>
+            <span className="h-px flex-1 bg-infamous-border" />
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -150,7 +245,7 @@ const LoginPage: React.FC = () => {
               disabled={loading}
               className="w-full btn-primary py-3"
             >
-              {loading ? (isRegister ? 'Creating account...' : 'Signing in...') : isRegister ? 'Create Account & Start Trial' : 'Sign In'}
+              {loading ? (isRegister ? 'Creating account...' : 'Signing in...') : isRegister ? 'Create Account' : 'Sign In'}
             </button>
           </form>
 
@@ -165,12 +260,12 @@ const LoginPage: React.FC = () => {
         </div>
 
         {/* Trust badges */}
-        <div className="flex items-center justify-center gap-4 mt-6 text-[10px] text-[#B88989]/60">
-          <span>🔒 Bank-level encryption</span>
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-6 text-[10px] text-[#B88989]/60">
+          <span className="inline-flex items-center gap-1"><ShieldCheck size={12} aria-hidden="true" /> Secure Netlify Identity</span>
           <span>•</span>
-          <span>14-day free trial</span>
+          <span>Verified email access</span>
           <span>•</span>
-          <span>No credit card required</span>
+          <span>Role-aware dispatch workspace</span>
         </div>
       </div>
     </div>
