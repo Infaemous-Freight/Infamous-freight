@@ -1,18 +1,16 @@
 [build]
   publish = "apps/web/dist"
   command = "pnpm run build:web"
-  # Only production-critical Netlify functions live in netlify/event-functions.
-  # The public-freight wrapper is active for quote intake and tracking lookup;
-  # submission-created remains disabled (.mts.disabled). The 20 site-level
-  # environment variables with "functions" scope total ~3 KB; combined with
-  # Netlify system vars they exceed the 4 KB per-function deploy limit.
+  # Netlify Functions are intentionally kept out of the Git deploy bundle while
+  # the site's function-scoped environment payload exceeds Netlify's 4 KB
+  # per-function deploy limit. Public API traffic is proxied to the Fly backend
+  # instead of a Netlify function so deploys do not fail during function upload.
   #
   # To re-enable:
   #   1. In Site settings → Environment variables, remove the "functions" scope
   #      from vars the function does not need (Firebase, Fly tokens, AWL_API_KEY,
-  #      Sentry, Supabase, Github).  The submission-created function only uses
-  #      @netlify/database (platform-injected, no user env vars required).
-  #   2. Rename submission-created.mts.disabled back to submission-created.mts.
+  #      Sentry, Supabase, Github).
+  #   2. Add the required function entrypoints under netlify/event-functions.
   #
   # The functions directive must remain so Netlify does not fall back to
   # auto-detecting the HTTP API functions in netlify/functions/.
@@ -100,13 +98,13 @@
 
 [[redirects]]
   from = "/api/public/quote-requests"
-  to = "/.netlify/functions/public-freight"
+  to = "https://infamous-freight-api.fly.dev/api/public/quote-requests"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/public/shipments/:trackingNumber"
-  to = "/.netlify/functions/public-freight?trackingNumber=:trackingNumber"
+  to = "https://infamous-freight-api.fly.dev/api/public/shipments/:trackingNumber"
   status = 200
   force = true
 

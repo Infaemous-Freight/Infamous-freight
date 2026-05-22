@@ -61,8 +61,8 @@ describe('Netlify production routing', () => {
     expect(socketProxy).toBeLessThan(spaFallback);
     expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/api/health"');
     expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/api/load-requests"');
-    expect(rootContent).toContain('to = "/.netlify/functions/public-freight"');
-    expect(rootContent).toContain('to = "/.netlify/functions/public-freight?trackingNumber=:trackingNumber"');
+    expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/api/public/quote-requests"');
+    expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/api/public/shipments/:trackingNumber"');
     expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/api/:splat"');
     expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/socket.io/:splat"');
     expect(rootContent).toContain('from = "/api/*"\n  to = "https://infamous-freight-api.fly.dev/api/:splat"\n  status = 200\n  force = true');
@@ -88,17 +88,15 @@ describe('Netlify production routing', () => {
     expect(rootContent).toContain('4 KB Edge');
   });
 
-  it('keeps public Netlify function entrypoints present for deploy packaging', () => {
+  it('keeps public Netlify function source available but out of deploy packaging', () => {
     const loadRequestsContent = read(path.join(repoRoot, 'netlify/functions/load-requests.ts'));
     const publicFreightContent = read(path.join(repoRoot, 'netlify/functions/public-freight.ts'));
-    const activePublicFreightContent = read(path.join(repoRoot, 'netlify/event-functions/public-freight.ts'));
 
     expect(fs.existsSync(path.join(repoRoot, 'netlify/functions/public-freight.ts'))).toBe(true);
-    expect(fs.existsSync(path.join(repoRoot, 'netlify/event-functions/public-freight.ts'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, 'netlify/event-functions/public-freight.ts'))).toBe(false);
     expect(fs.existsSync(path.join(repoRoot, 'netlify/functions/load-requests.ts'))).toBe(true);
     expect(loadRequestsContent).toContain("path: ['/api/load-requests', '/api/load-requests/:id']");
     expect(publicFreightContent).toContain("path: ['/api/public/quote-requests', '/api/public/shipments/:trackingNumber']");
-    expect(activePublicFreightContent).toContain("export { default, config } from '../functions/public-freight.ts';");
   });
 
   it('keeps _redirects as a placeholder while netlify.toml remains the redirect source of truth', () => {
@@ -112,7 +110,8 @@ describe('Netlify production routing', () => {
   it('keeps CLI production deploys aligned with the normal Netlify function bundle', () => {
     const script = read(path.join(repoRoot, 'scripts/netlify-production-readiness.sh'));
 
-    expect(script).toContain('netlify-cli deploy --prod --dir apps/web/dist --functions netlify/event-functions');
+    expect(script).toContain('netlify-cli deploy --prod --dir apps/web/dist --site "$NETLIFY_SITE_ID"');
+    expect(script).not.toContain('--functions netlify/event-functions');
     expect(script).not.toContain('netlify-cli deploy --prod --dir apps/web/dist --functions netlify/disabled-functions');
   });
 
