@@ -52,7 +52,7 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
   },
   '/quotes': {
     state: 'demo',
-    message: 'Internal quote workflow is demo-backed; use public intake and verified dispatch processes for live commitments.',
+    message: 'Internal quote workflow is demo-backed; use public intake and documented dispatch review for live commitments.',
   },
   '/messages': {
     state: 'not_ready',

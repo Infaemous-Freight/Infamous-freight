@@ -69,13 +69,13 @@ const DriversApplyPage: React.FC = () => {
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-infamous-orange/30 bg-infamous-orange/10 px-4 py-2 text-sm text-infamous-orange">
               <Truck size={16} /> Apply to drive
             </div>
-            <h1 className="text-4xl font-black tracking-tight sm:text-5xl">Get verified and join the network.</h1>
+            <h1 className="text-4xl font-black tracking-tight sm:text-5xl">Start onboarding and join the network.</h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-[#F5E8E8]/80">
               Submit your contact, location, and equipment details. Onboarding will follow up with verification next steps.
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
-              {['Free to start', 'Verified operators first', 'Organized onboarding'].map((item) => (
+              {['Free to start', 'Documented operators first', 'Organized onboarding'].map((item) => (
                 <div key={item} className="rounded-2xl border border-infamous-border bg-infamous-card p-5">
                   <h2 className="font-bold">{item}</h2>
                   <p className="mt-2 text-sm leading-6 text-[#B88989]">Built for cleaner freight handoffs and better communication.</p>

@@ -195,7 +195,7 @@ const FaqItem: React.FC<{ id: string; question: string; answer: string }> = ({ i
 
 const workflowHighlights = [
   { label: 'Quote Intake', value: 'Lane + contact first', color: 'text-infamous-red-light' },
-  { label: 'Booking', value: 'Details verified', color: 'text-[#36D399]' },
+  { label: 'Booking', value: 'Details reviewed', color: 'text-[#36D399]' },
   { label: 'Dispatch', value: 'Documents reviewed', color: 'text-infamous-ember' },
   { label: 'Delivery', value: 'Updates documented', color: 'text-infamous-orange' },
 ];
@@ -205,6 +205,19 @@ const heroProofPoints = [
   'Shipment tracking context',
   'Carrier and driver coordination',
   'Proof-of-delivery workflows',
+];
+
+const urgentQuoteFields = [
+  'Pickup and delivery city',
+  'Equipment or freight type',
+  'Weight, dimensions, and timing',
+  'Best contact for dispatch follow-up',
+];
+
+const laneSignals = [
+  ['FTL / LTL', 'Dry van, reefer, flatbed, box truck, cargo van'],
+  ['Timing', 'Standard, same-day, expedited, recurring lanes'],
+  ['Visibility', 'Status context, documents, delivery notes'],
 ];
 
 const commandStats = [
@@ -327,6 +340,64 @@ const LandingPage: React.FC = () => {
         <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(90deg,transparent,rgba(255,26,26,0.24),transparent)] blur-2xl" />
 
         <div className="relative mx-auto max-w-[1720px] px-4 py-8 lg:px-6 lg:py-10">
+          <div className="mx-auto mb-8 grid max-w-7xl gap-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-stretch">
+            <div className="flex min-h-[520px] flex-col justify-center rounded-xl border border-infamous-red-light/25 bg-[#090303]/82 p-6 shadow-[0_0_32px_rgba(255,26,26,0.18)] sm:p-8 lg:p-10">
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-infamous-red-light">{BRAND.displayName}</p>
+              <h1 className="mt-4 max-w-4xl font-display text-4xl font-black uppercase leading-tight text-[#F5E8E8] text-glow-strong sm:text-5xl lg:text-6xl">
+                Freight quotes, dispatch coordination, and shipment tracking without the runaround.
+              </h1>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[#D3B3B3] sm:text-lg">
+                Send the lane, equipment, freight details, timing, and contact information. Dispatch can review the request, confirm next steps in writing, and keep shipment context organized through delivery.
+              </p>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link to="/request-quote" onClick={() => trackPublicEvent('quote_cta_click', { source: 'hero_primary' })} className="btn-primary btn-lg inline-flex items-center justify-center gap-2 glow-high">Request a Freight Quote <ArrowRight size={20} /></Link>
+                <Link to="/contact" onClick={() => trackPublicEvent('contact_cta_click', { source: 'hero_primary' })} className="btn-secondary btn-lg inline-flex items-center justify-center gap-2"><Phone size={20} /> Talk to Dispatch</Link>
+              </div>
+              <div className="mt-7 flex flex-wrap gap-2" aria-label="Freight workflow highlights">
+                {heroProofPoints.map((point) => (
+                  <span key={point} className="rounded-full border border-infamous-red-light/25 bg-infamous-red/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#F5E8E8]/90">
+                    {point}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-8 grid gap-3 md:grid-cols-3">
+                {laneSignals.map(([label, value]) => (
+                  <div key={label} className="rounded-lg border border-infamous-red-light/18 bg-black/30 p-4">
+                    <p className="text-[10px] font-black uppercase tracking-[0.18em] text-infamous-red-light">{label}</p>
+                    <p className="mt-2 text-sm leading-6 text-[#B88989]">{value}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <aside className="rounded-xl border border-infamous-red-light/30 bg-[#100405]/95 p-5 shadow-[0_0_28px_rgba(255,26,26,0.18)] sm:p-6" aria-labelledby="quick-quote-heading">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.22em] text-infamous-red-light">Fast Intake</p>
+                  <h2 id="quick-quote-heading" className="mt-2 font-display text-2xl font-black uppercase text-[#F5E8E8]">Start with the details dispatch needs.</h2>
+                </div>
+                <FileText aria-hidden="true" className="shrink-0 text-infamous-red-light" size={28} />
+              </div>
+              <div className="mt-6 space-y-3">
+                {urgentQuoteFields.map((field) => (
+                  <div key={field} className="flex items-center gap-3 rounded-lg border border-infamous-red-light/16 bg-black/28 px-4 py-3">
+                    <CheckCircle2 aria-hidden="true" className="shrink-0 text-[#36D399]" size={17} />
+                    <span className="text-sm font-semibold text-[#F5E8E8]/88">{field}</span>
+                  </div>
+                ))}
+              </div>
+              <Link to="/request-quote" onClick={() => trackPublicEvent('quote_cta_click', { source: 'hero_intake_card' })} className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-infamous-red px-5 py-3 text-sm font-bold text-[#F5E8E8] transition hover:bg-infamous-red-light">
+                Open Quote Form <ArrowRight aria-hidden="true" size={16} />
+              </Link>
+              <div className="mt-5 rounded-lg border border-infamous-border/70 bg-black/25 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#B88989]">Need status on an active load?</p>
+                <Link to="/track-shipment" onClick={() => trackPublicEvent('tracking_cta_click', { source: 'hero_intake_card' })} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-infamous-red-light hover:underline">
+                  Track shipment <Search aria-hidden="true" size={15} />
+                </Link>
+              </div>
+            </aside>
+          </div>
+
           <div className="grid gap-7 xl:grid-cols-[minmax(0,1.35fr)_520px]">
             <div className="overflow-hidden rounded-[12px] border border-infamous-red-light/45 bg-[#090303]/90 shadow-[0_0_42px_rgba(255,26,26,0.22)]">
               <div className="grid min-h-[680px] lg:grid-cols-[220px_minmax(0,1fr)]">
@@ -507,9 +578,9 @@ const LandingPage: React.FC = () => {
           <div className="mt-7 flex flex-col items-center justify-between gap-5 border-t border-infamous-red-light/20 pt-7 text-center lg:flex-row lg:text-left">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.24em] text-infamous-red-light">{BRAND.displayName}</p>
-              <h1 className="mt-3 max-w-4xl font-display text-3xl font-black uppercase leading-tight text-[#F5E8E8] text-glow-strong sm:text-5xl">
-                Freight quotes, dispatch coordination, and shipment tracking for time-sensitive operations.
-              </h1>
+              <h2 className="mt-3 max-w-4xl font-display text-3xl font-black uppercase leading-tight text-[#F5E8E8] text-glow-strong sm:text-5xl">
+                Operations tools for quote intake, dispatch coordination, and shipment tracking.
+              </h2>
               <p className="mt-4 max-w-3xl text-base leading-7 text-[#B88989]">
                 Share the lane, equipment, freight details, timing, and contact information. Dispatch can review the request, confirm the next step in writing, and keep shipment context organized through delivery.
               </p>

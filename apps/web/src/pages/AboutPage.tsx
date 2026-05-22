@@ -3,7 +3,7 @@ import { ArrowRight, CheckCircle2, Eye, Headset, LayoutDashboard, Phone, Shield,
 import { BRAND } from '@/lib/brand';
 
 const standards = [
-  'Verify drivers, carriers, insurance, authority, and payment details before loads move',
+  'Review driver, carrier, insurance, authority, and payment details before loads move',
   'Give shippers simple quote intake, live tracking, and proof-of-delivery visibility',
   'Keep dispatch, carriers, customers, and accounting working from one operational record',
   'Reduce phone tag, missed updates, and preventable exception confusion',
@@ -12,7 +12,7 @@ const standards = [
 const values = [
   {
     title: 'Trust before speed',
-    description: 'Fast freight still has to be verified. We prioritize clean carrier records, clear paperwork, and proof at every step.',
+    description: 'Fast freight still needs clean records. We prioritize carrier review, clear paperwork, and proof at every step.',
     icon: <ShieldCheck size={22} />,
   },
   {
@@ -36,7 +36,7 @@ const metrics = [
 
 const commitments = [
   { title: 'Documented rate confirmations', description: 'Written rate agreements before any load moves — no verbal-only arrangements.' },
-  { title: 'Carrier document review', description: 'Insurance, authority, and operating credentials verified and kept on file.' },
+  { title: 'Carrier document review', description: 'Insurance, authority, and operating credentials reviewed and kept with the shipment workflow where applicable.' },
   { title: 'Proof-of-delivery workflows', description: 'BOL signatures, delivery photos, and timestamps captured and accessible to all parties.' },
   { title: 'Transparent communication', description: 'Status updates, ETA changes, and exception alerts pushed proactively — not on request.' },
 ];
@@ -52,7 +52,7 @@ const AboutPage: React.FC = () => {
               Freight should be easier to book, easier to track, and harder to fake.
             </h1>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-[#F5E8E8]/80">
-              Infamous Freight is building a verified freight operations platform for shippers, drivers, carriers, and dispatch teams. The goal is simple: move freight with less confusion, more proof, and cleaner handoffs.
+              Infamous Freight is building a freight operations platform for shippers, drivers, carriers, and dispatch teams. The goal is simple: move freight with less confusion, more proof, and cleaner handoffs.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link to="/request-quote" className="inline-flex items-center justify-center gap-2 rounded-xl bg-infamous-orange px-5 py-3 font-semibold text-[#F5E8E8] transition hover:opacity-90">
@@ -70,7 +70,7 @@ const AboutPage: React.FC = () => {
             <div className="mt-5 space-y-4">
               {[
                 ['Shippers', 'Companies that need local and regional freight moved with clear pricing and reliable updates.'],
-                ['Drivers and carriers', 'Verified operators looking for cleaner load opportunities and organized documentation.'],
+                ['Drivers and carriers', 'Operators looking for cleaner load opportunities and organized documentation.'],
                 ['Dispatch teams', 'Operations teams that need quote, load, tracking, POD, and invoice workflows in one place.'],
               ].map(([title, body]) => (
                 <div key={title} className="rounded-2xl border border-infamous-border bg-infamous-panel p-4">
