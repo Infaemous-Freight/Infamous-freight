@@ -453,21 +453,6 @@ function createRequirePaidSubscription(dataStore: DataStore) {
   };
 }
 
-function initializeSentry() {
-  const dsn = process.env.SENTRY_DSN;
-
-  if (!dsn) {
-    return;
-  }
-
-  Sentry.init({
-    dsn,
-    environment: process.env.NODE_ENV ?? 'development',
-    sendDefaultPii: false,
-    tracesSampleRate: 0,
-  });
-}
-
 function getAllowedCorsOrigins(): string[] {
   return (process.env.CORS_ORIGINS ?? process.env.CORS_ORIGIN ?? '')
     .split(',')
@@ -1342,7 +1327,6 @@ export function createApp() {
   const auditLogger = createAuditLogger(getPrismaClient());
 
   assertSafeAuthConfiguration();
-  initializeSentry();
   app.use(assignRequestId);
 
   app.use((_req: Request, res: Response, next: NextFunction) => {
@@ -1455,6 +1439,8 @@ export function createApp() {
   });
 
   registerRoutes(app, dataStore, auditLogger);
+
+  Sentry.setupExpressErrorHandler(app);
 
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof HttpError) {

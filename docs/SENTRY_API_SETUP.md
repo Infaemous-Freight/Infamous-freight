@@ -2,7 +2,7 @@
 
 ## Status
 
-The API already initializes Sentry from the runtime environment variable `SENTRY_DSN`.
+The API initializes Sentry from the runtime environment variable `SENTRY_DSN`.
 
 Do **not** hardcode the DSN in source code. Configure it as a runtime secret in Fly.io or the production hosting provider.
 
@@ -25,7 +25,7 @@ flyctl deploy --remote-only --config fly.toml --app infamous-freight-api
 
 ## Current API behavior
 
-`apps/api/src/app.ts` calls `initializeSentry()` during app creation.
+`apps/api/src/server.ts` imports `apps/api/src/instrument.ts` before the rest of the API bootstrap so Sentry can register Node auto-instrumentation before other application imports load. The Express Sentry error handler is registered after all API routes and before the API's JSON error response middleware.
 
 Current behavior:
 
@@ -57,10 +57,7 @@ Only enable PII after confirming:
 After setting `SENTRY_DSN`, run:
 
 ```bash
-pnpm run build:api
 pnpm run test:api
-pnpm run fly:deploy
-pnpm run production:smoke-test
 ```
 
 Then trigger a controlled non-production test error and confirm it appears in the Sentry project.
