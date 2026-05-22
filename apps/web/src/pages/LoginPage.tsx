@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Apple, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { AuthError, MissingIdentityError, getSettings, login, oauthLogin, signup, type AuthProvider } from '@netlify/identity';
 import { useAppStore } from '@/store/app-store';
 import { hydrateNetlifyIdentityUser, isEmailVerified } from '@/lib/netlifyIdentityAuth';
@@ -8,7 +8,16 @@ import BrandMark from '@/components/ui/BrandMark';
 import { BRAND } from '@/lib/brand';
 import toast from 'react-hot-toast';
 
-type SocialProvider = 'google' | 'apple';
+type SocialProvider = 'google';
+
+type IdentitySettings = Awaited<ReturnType<typeof getSettings>> & {
+  external?: Partial<Record<SocialProvider, boolean>>;
+  providers?: Partial<Record<SocialProvider, boolean>>;
+};
+
+function isProviderEnabled(settings: IdentitySettings | null, provider: SocialProvider): boolean {
+  return Boolean(settings?.external?.[provider] ?? settings?.providers?.[provider]);
+}
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,6 +31,7 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [oauthProvider, setOauthProvider] = useState<SocialProvider | null>(null);
   const [providerError, setProviderError] = useState<string | null>(null);
+  const [identitySettings, setIdentitySettings] = useState<IdentitySettings | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -47,6 +57,22 @@ const LoginPage: React.FC = () => {
       isMounted = false;
     };
   }, [navigate, setUser]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getSettings()
+      .then((settings) => {
+        if (isMounted) setIdentitySettings(settings as IdentitySettings);
+      })
+      .catch(() => {
+        if (isMounted) setIdentitySettings(null);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   if (user) {
     return <Navigate to="/ops" replace />;
@@ -110,10 +136,9 @@ const LoginPage: React.FC = () => {
     setProviderError(null);
 
     try {
-      const settings = await getSettings().catch(() => null);
-      const providers = settings?.providers as Record<string, boolean> | undefined;
-      if (providers && providers[provider] === false) {
-        const message = `${provider === 'apple' ? 'Apple' : 'Google'} login needs to be enabled in Netlify Identity settings.`;
+      const settings = identitySettings ?? ((await getSettings().catch(() => null)) as IdentitySettings | null);
+      if (!isProviderEnabled(settings, provider)) {
+        const message = 'Google login needs to be enabled in Netlify Identity settings.';
         setProviderError(message);
         toast.error(message);
         setOauthProvider(null);
@@ -149,26 +174,19 @@ const LoginPage: React.FC = () => {
             {isRegister ? 'Start your operations account' : 'Welcome back — sign in to dispatch'}
           </p>
 
-          <div className="grid gap-3 sm:grid-cols-2 mb-5">
-            <button
-              type="button"
-              onClick={() => handleOAuthLogin('google')}
-              disabled={oauthProvider !== null}
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-infamous-border bg-[#F5E8E8] px-3 py-2 text-sm font-semibold text-[#160608] transition hover:bg-white disabled:cursor-wait disabled:opacity-70"
-            >
-              <span aria-hidden="true" className="text-base font-bold">G</span>
-              {oauthProvider === 'google' ? 'Opening...' : 'Google'}
-            </button>
-            <button
-              type="button"
-              onClick={() => handleOAuthLogin('apple')}
-              disabled={oauthProvider !== null}
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-infamous-border bg-[#050505] px-3 py-2 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-wait disabled:opacity-70"
-            >
-              <Apple size={17} aria-hidden="true" />
-              {oauthProvider === 'apple' ? 'Opening...' : 'Apple'}
-            </button>
-          </div>
+          {isProviderEnabled(identitySettings, 'google') && (
+            <div className="mb-5">
+              <button
+                type="button"
+                onClick={() => handleOAuthLogin('google')}
+                disabled={oauthProvider !== null}
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-infamous-border bg-[#F5E8E8] px-3 py-2 text-sm font-semibold text-[#160608] transition hover:bg-white disabled:cursor-wait disabled:opacity-70"
+              >
+                <span aria-hidden="true" className="text-base font-bold">G</span>
+                {oauthProvider === 'google' ? 'Opening...' : 'Continue with Google'}
+              </button>
+            </div>
+          )}
 
           {providerError && (
             <p role="alert" className="mb-5 rounded-lg border border-infamous-orange/30 bg-infamous-orange/10 p-3 text-sm text-infamous-orange-light">
