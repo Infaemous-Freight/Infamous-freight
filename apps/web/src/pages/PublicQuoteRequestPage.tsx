@@ -441,7 +441,7 @@ const PublicQuoteRequestPage: React.FC = () => {
                 ['Equipment', form.equipment],
                 ['Weight', form.weight ? `${form.weight} lbs` : '—'],
                 ['Miles', form.miles || '—'],
-                ['Company', form.company],
+                ['Company', form.company || '—'],
                 ['Contact', form.contact],
                 ['Email', form.email],
                 ['Phone', form.phone || '—'],

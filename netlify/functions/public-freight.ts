@@ -92,21 +92,19 @@ async function createQuote(req: Request) {
     return json(400, { error: 'invalid_json', message: 'Request body must be valid JSON.' });
   }
 
-  const company = text(body.company, 160);
+  const company = text(body.company, 160) || 'Not provided';
   const contact = text(body.contact, 160);
   const email = text(body.email, 180).toLowerCase();
   const origin = text(body.origin, 160);
   const destination = text(body.destination, 160);
-  const freightType = text(body.freightType, 160);
+  const freightType = text(body.freightType, 160) || 'General freight';
   const equipment = text(body.equipment, 80) || 'Dry van';
 
   const missing: string[] = [];
-  if (!company) missing.push('company');
   if (!contact) missing.push('contact');
   if (!email) missing.push('email');
   if (!origin) missing.push('origin');
   if (!destination) missing.push('destination');
-  if (!freightType) missing.push('freightType');
 
   if (missing.length > 0) {
     return json(400, { error: 'missing_fields', fields: missing });

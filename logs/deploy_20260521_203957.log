@@ -1,0 +1,4 @@
+[0;31m❌ Invalid FLY_DEPLOY_IMAGE: must not contain whitespace[0m
+[0;31m❌ Invalid FLY_DEPLOY_IMAGE: expected image in registry.fly.io/<app>:<tag> format[0m
+[0;31m❌ Invalid FLY_DEPLOY_IMAGE: expected a tagged image or digest (example: registry.fly.io/app:tag)[0m
+[0;31m❌ Invalid FLY_DEPLOY_IMAGE: app mismatch (expected infamous-freight, got another-app)[0m
