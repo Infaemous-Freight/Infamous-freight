@@ -276,6 +276,35 @@ const WEBSITE_JSONLD = JSON.stringify({
   },
 });
 
+const LOGISTICS_SERVICE_JSONLD = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: `${BRAND.displayName} freight quote and logistics coordination`,
+  provider: {
+    '@type': 'Organization',
+    name: BRAND.displayName,
+    url: SITE_URL,
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'United States',
+  },
+  serviceType: [
+    'Freight quote intake',
+    'Shipment tracking',
+    'Dispatch coordination',
+    'Carrier coordination',
+    'Proof of delivery workflow',
+  ],
+  description:
+    'Freight quote intake, dispatch coordination, shipment tracking context, carrier communication, and delivery follow-up for shippers, carriers, drivers, and logistics teams.',
+  offers: {
+    '@type': 'Offer',
+    availability: 'https://schema.org/InStock',
+    url: `${SITE_URL}/request-quote`,
+  },
+});
+
 const FAQ_ITEMS = [
   {
     question: 'How do I get a freight quote from Infamous Freight?',
@@ -413,6 +442,7 @@ const SeoManager = () => {
       <meta name="twitter:image:alt" content={OG_IMAGE_ALT} />
       <script type="application/ld+json">{ORGANIZATION_JSONLD}</script>
       {isHome && <script type="application/ld+json">{WEBSITE_JSONLD}</script>}
+      {(isHome || pathname === '/services') && <script type="application/ld+json">{LOGISTICS_SERVICE_JSONLD}</script>}
       {(isHome || isFaq) && <script type="application/ld+json">{FAQ_JSONLD}</script>}
       {breadcrumbJsonLd && <script type="application/ld+json">{breadcrumbJsonLd}</script>}
     </Helmet>

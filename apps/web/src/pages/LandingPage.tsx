@@ -200,6 +200,13 @@ const workflowHighlights = [
   { label: 'Delivery', value: 'Updates documented', color: 'text-infamous-orange' },
 ];
 
+const heroProofPoints = [
+  'Freight quote intake',
+  'Shipment tracking context',
+  'Carrier and driver coordination',
+  'Proof-of-delivery workflows',
+];
+
 const commandStats = [
   { label: 'Quote Intake', value: '4', delta: 'sample queue', icon: Package },
   { label: 'In Transit', value: '3', delta: 'sample loads', icon: Truck },
@@ -399,7 +406,7 @@ const LandingPage: React.FC = () => {
                   <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_270px]">
                     <div className="rounded-lg border border-infamous-red-light/25 bg-black/50 p-4">
                       <div className="mb-3 flex items-center justify-between">
-                        <h1 className="font-display text-sm font-black uppercase tracking-[0.12em]">Shipment Tracking <span className="ml-2 text-[10px] text-infamous-red-light">Sample</span></h1>
+                        <h2 className="font-display text-sm font-black uppercase tracking-[0.12em]">Shipment Tracking <span className="ml-2 text-[10px] text-infamous-red-light">Sample</span></h2>
                         <Link to="/track-shipment" className="rounded border border-infamous-red-light/50 px-3 py-1.5 text-[10px] font-black uppercase text-infamous-red-light">View all shipments</Link>
                       </div>
                       <div className="relative h-[285px] overflow-hidden rounded-md border border-infamous-red-light/10 bg-[#080304]">
@@ -499,8 +506,20 @@ const LandingPage: React.FC = () => {
 
           <div className="mt-7 flex flex-col items-center justify-between gap-5 border-t border-infamous-red-light/20 pt-7 text-center lg:flex-row lg:text-left">
             <div>
-              <h1 className="font-display text-3xl font-black uppercase tracking-[0.32em] text-[#F5E8E8] text-glow-strong sm:text-5xl">Infamous Freight</h1>
-              <p className="mt-3 text-sm font-bold uppercase tracking-[0.48em] text-infamous-red-light">{BRAND.tagline}</p>
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-infamous-red-light">{BRAND.displayName}</p>
+              <h1 className="mt-3 max-w-4xl font-display text-3xl font-black uppercase leading-tight text-[#F5E8E8] text-glow-strong sm:text-5xl">
+                Freight quotes, dispatch coordination, and shipment tracking for time-sensitive operations.
+              </h1>
+              <p className="mt-4 max-w-3xl text-base leading-7 text-[#B88989]">
+                Share the lane, equipment, freight details, timing, and contact information. Dispatch can review the request, confirm the next step in writing, and keep shipment context organized through delivery.
+              </p>
+              <div className="mt-5 flex flex-wrap justify-center gap-2 lg:justify-start" aria-label="Freight workflow highlights">
+                {heroProofPoints.map((point) => (
+                  <span key={point} className="rounded-full border border-infamous-red-light/25 bg-infamous-red/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.08em] text-[#F5E8E8]/90">
+                    {point}
+                  </span>
+                ))}
+              </div>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Link to="/request-quote" onClick={() => trackPublicEvent('quote_cta_click', { source: 'hero_command_center' })} className="btn-primary btn-lg inline-flex items-center justify-center gap-2 glow-high">Get a Freight Quote <ArrowRight size={20} /></Link>
