@@ -1,9 +1,7 @@
-import dotenv from 'dotenv';
+import './instrument';
 import express from 'express';
 import * as Sentry from '@sentry/node';
 import { createApp } from './app';
-
-dotenv.config();
 
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = process.env.Database_URL ?? process.env.database_url ?? '';
