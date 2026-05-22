@@ -1,5 +1,7 @@
 node_modules/
 .env
+.netlify/
+apps/web/.netlify/plugins/
 build/
 dist/
 coverage/

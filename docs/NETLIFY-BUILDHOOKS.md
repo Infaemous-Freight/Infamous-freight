@@ -2,8 +2,10 @@
 
 Netlify may install build-time integration packages in local `.netlify/plugins`
 directories. Those directories are generated CLI state and are not repo-owned
-source. This document records the known ownership, source artifact, integrity
-value, and maintenance path for URL-hosted packages that have appeared there.
+source; the repository ignores `apps/web/.netlify/plugins/` so dashboard-managed
+buildhooks cannot be reintroduced as committed source. This document records the
+known ownership, source artifact, integrity value, and maintenance path for
+URL-hosted packages that have appeared there.
 
 ---
 
@@ -127,6 +129,7 @@ local CLI state and are ignored by the repository.
 Future maintainers should:
 1. Cross-check the packages listed here against the integrations enabled in the
    Netlify dashboard.
-2. Ensure no generated `.netlify/plugins` package metadata is committed.
+2. Ensure no generated `.netlify/plugins` package metadata is committed or
+   force-added around the repository ignore rule.
 3. Immediately investigate any integrity mismatch surfaced by Netlify or local
    integration package installation.
