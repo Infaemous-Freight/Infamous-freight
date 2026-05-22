@@ -223,7 +223,7 @@ const ContactPage: React.FC = () => {
             <div className="rounded-3xl border border-infamous-border bg-infamous-panel p-6">
               <MapPin className="mb-3 text-infamous-orange" size={24} />
               <h2 className="text-lg font-bold">Service region</h2>
-              <p className="mt-3 text-sm leading-6 text-[#B88989]">Local and regional freight across core U.S. lanes, with emphasis on verified capacity and shipment visibility.</p>
+              <p className="mt-3 text-sm leading-6 text-[#B88989]">Local and regional freight across core U.S. lanes, with emphasis on capacity review and shipment visibility.</p>
             </div>
             <Link to="/request-quote" className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-infamous-orange px-5 py-3 font-semibold text-[#F5E8E8]">
               Need a quote instead? <ArrowRight size={17} />

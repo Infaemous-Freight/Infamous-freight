@@ -317,7 +317,7 @@ const DispatchBoardPage: React.FC = () => {
         </div>
         <div className="flex-1">
           <p className="text-sm font-semibold">Auto-Dispatch AI Ready</p>
-          <p className="text-xs text-[#B88989]">{pendingCount} {pendingCount === 1 ? 'load needs' : 'loads need'} carriers. Auto-Dispatch will rank verified carriers in seconds.</p>
+          <p className="text-xs text-[#B88989]">{pendingCount} {pendingCount === 1 ? 'load needs' : 'loads need'} carriers. Auto-Dispatch ranks carrier options from the available dispatch context.</p>
         </div>
         <button onClick={runAutoDispatch} className="btn-primary flex items-center gap-2">
           <Zap size={16} /> Run Auto-Dispatch

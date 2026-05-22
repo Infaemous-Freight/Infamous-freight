@@ -8,7 +8,7 @@ type SeoConfig = {
 };
 
 const SITE_URL = (import.meta.env.VITE_SITE_URL ?? BRAND.siteUrl).replace(/\/$/, '');
-const OG_IMAGE = `${SITE_URL}/og-image.png`;
+const OG_IMAGE = `${SITE_URL}/og-image.svg`;
 const OG_IMAGE_ALT = `${BRAND.displayName} freight services and quote intake`;
 
 const DEFAULT_SEO: SeoConfig = {
@@ -125,7 +125,7 @@ const SEO_BY_PATH: Record<string, SeoConfig> = {
   },
   '/about': {
     title: `About | ${BRAND.displayName}`,
-    description: 'Learn how Infamous Freight approaches verified freight operations, tracking, PODs, and cleaner handoffs.'
+    description: 'Learn how Infamous Freight approaches freight operations, tracking, PODs, and cleaner handoffs.'
   },
   '/faq': {
     title: `Frequently Asked Questions | ${BRAND.displayName}`,
@@ -133,11 +133,11 @@ const SEO_BY_PATH: Record<string, SeoConfig> = {
   },
   '/drive': {
     title: `Apply to Drive | ${BRAND.displayName}`,
-    description: 'Apply to join the Infamous Freight driver network for verified local and regional freight opportunities.'
+    description: 'Apply to join the Infamous Freight driver network for local and regional freight opportunities.'
   },
   '/drivers': {
     title: `Driver and Carrier Opportunities | ${BRAND.displayName}`,
-    description: 'Apply to join the Infamous Freight driver network for verified local and regional freight opportunities.'
+    description: 'Apply to join the Infamous Freight driver network for local and regional freight opportunities.'
   },
   '/customer-portal': {
     title: `Customer Portal | ${BRAND.displayName}`,
@@ -149,7 +149,7 @@ const SEO_BY_PATH: Record<string, SeoConfig> = {
   },
   '/load-board': {
     title: `Freight Load Board | ${BRAND.displayName}`,
-    description: 'Browse available freight loads with verified lanes, equipment requirements, and real-time status from Infamous Freight dispatch.'
+    description: 'Browse available freight loads with lane details, equipment requirements, and real-time status from Infamous Freight dispatch.'
   },
   '/graphhopper': {
     title: `Route Planning and Distance Tools | ${BRAND.displayName}`,
@@ -309,7 +309,7 @@ const FAQ_ITEMS = [
   {
     question: 'How do I get a freight quote from Infamous Freight?',
     answer:
-      'Submit your shipment details including pickup location, destination, freight type, and timing on the Request a Quote page. Our dispatch team reviews your request and provides a rate with carrier and equipment confirmation, typically within hours.',
+      'Submit shipment details including pickup location, destination, freight type, and timing on the Request a Quote page. Dispatch reviews the request and follows up with rate, capacity, and equipment next steps.',
   },
   {
     question: 'What types of freight services do you offer?',
@@ -344,7 +344,7 @@ const FAQ_ITEMS = [
   {
     question: 'How do I apply to drive with Infamous Freight?',
     answer:
-      'Visit the Apply to Drive page and submit your name, contact info, city, equipment type, and any notes. Our onboarding team reviews applications and connects verified drivers with freight opportunities on matching lanes.',
+      'Visit the Apply to Drive page and submit your name, contact info, city, equipment type, and any notes. Onboarding reviews applications against current lane needs and follows up when there is a practical match.',
   },
 ];
 
@@ -429,7 +429,7 @@ const SeoManager = () => {
       <meta property="og:description" content={seo.description} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:image" content={OG_IMAGE} />
-      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:type" content="image/svg+xml" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={OG_IMAGE_ALT} />

@@ -10,7 +10,7 @@ const faqCategories = [
       {
         question: 'How do I get a freight quote?',
         answer:
-          'Submit your shipment details on the Request a Quote page — pickup location, destination, freight type, timing, and contact information. Dispatch reviews the request and follows up with the next step, typically within hours.',
+          'Submit your shipment details on the Request a Quote page — pickup location, destination, freight type, timing, and contact information. Dispatch reviews the request and follows up with the next step.',
       },
       {
         question: 'What information do I need to request a quote?',
@@ -85,12 +85,12 @@ const faqCategories = [
       {
         question: 'How do I apply to drive with Infamous Freight?',
         answer:
-          'Visit the Apply to Drive page and submit your name, contact info, city, equipment type, and any notes. The onboarding team reviews applications and connects verified drivers with freight opportunities on matching lanes.',
+          'Visit the Apply to Drive page and submit your name, contact info, city, equipment type, and any notes. Onboarding reviews applications against current lane needs and follows up when there is a practical match.',
       },
       {
         question: 'How can I view available loads?',
         answer:
-          'The public Load Board shows available freight with lane details, equipment requirements, and real-time status. Verified carriers can also access assigned loads through the Carrier Portal.',
+          'The public Load Board shows available freight with lane details, equipment requirements, and real-time status. Carriers can also access assigned loads through the Carrier Portal after onboarding.',
       },
     ],
   },

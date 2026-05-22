@@ -55,7 +55,7 @@ const plans = [
       'Everything in Pro',
       'Custom integrations',
       'Dedicated account manager',
-      'SLA guarantee',
+      'Support response target',
       'White-label option',
     ],
     cta: 'Contact Sales',

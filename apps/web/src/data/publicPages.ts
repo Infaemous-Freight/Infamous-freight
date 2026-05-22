@@ -19,7 +19,7 @@ export const servicePages: ServicePage[] = [
     eyebrow: 'Dedicated capacity',
     summary: 'Full truckload freight for shipments that fill an entire trailer — dry van, flatbed, or reefer.',
     description:
-      'Full truckload is the right choice when your freight fills or nearly fills a 53-foot trailer. Shipment details are verified before booking so equipment, timing, and route expectations are clear before dispatch.',
+      'Full truckload is the right choice when your freight fills or nearly fills a 53-foot trailer. Shipment details are reviewed before booking so equipment, timing, and route expectations are clear before dispatch.',
     Icon: Truck,
     bullets: ['Dedicated trailer planning for larger freight', 'Direct pickup and delivery coordination', 'Dry van, flatbed, and reefer options', 'Carrier documents reviewed before dispatch'],
     bestFor: ['Large volume shipments', 'Time-sensitive full loads', 'High-value freight', 'Consistent lane commitments'],
@@ -87,7 +87,7 @@ export const servicePages: ServicePage[] = [
     description:
       'Freight brokerage support starts with clear intake: lane, equipment, timing, freight details, and written rate confirmation before the load is booked.',
     Icon: Warehouse,
-    bullets: ['Shipment details verified before booking', 'Carrier documents reviewed before dispatch', 'Rate and payment terms confirmed in writing', 'Clear communication from quote to delivery'],
+    bullets: ['Shipment details reviewed before booking', 'Carrier documents reviewed before dispatch', 'Rate and payment terms confirmed in writing', 'Clear communication from quote to delivery'],
     bestFor: ['Shippers without carrier relationships', 'Overflow capacity needs', 'New market or lane coverage', 'Seasonal freight surges'],
   },
   {

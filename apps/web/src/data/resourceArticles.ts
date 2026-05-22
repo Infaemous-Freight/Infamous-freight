@@ -70,7 +70,7 @@ export const resourceArticles: ResourceArticle[] = [
       },
       {
         heading: 'How to book box truck freight',
-        body: 'Start by gathering your shipment details: origin and destination addresses, freight weight and dimensions, number of pallets or pieces, any special handling requirements, and your preferred pickup and delivery dates. Submit these details through a freight quote request. A dispatch team will match your shipment with a verified carrier who has the right equipment and availability for your lane. Once a carrier is confirmed, you will receive booking confirmation with driver details, a tracking reference, and pickup instructions. After delivery, proof of delivery is captured and available for your records.',
+        body: 'Start by gathering your shipment details: origin and destination addresses, freight weight and dimensions, number of pallets or pieces, any special handling requirements, and your preferred pickup and delivery dates. Submit these details through a freight quote request. A dispatch team will review equipment fit and availability for your lane. Once a carrier is confirmed, you will receive booking confirmation with driver details, a tracking reference, and pickup instructions. After delivery, proof of delivery is captured and available for your records.',
       },
     ],
     relatedLinks: [
