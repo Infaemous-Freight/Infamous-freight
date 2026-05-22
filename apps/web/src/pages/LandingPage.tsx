@@ -39,11 +39,15 @@ import { BRAND } from '@/lib/brand';
 
 const navLinks = [
   { label: 'Services', href: '/services' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'Load Board', href: '/load-board' },
+  { label: 'Freight Assistant', href: '/freight-assistant' },
+  { label: 'Partners', href: '/partners' },
+  { label: 'Case Studies', href: '/case-studies' },
   { label: 'Request Quote', href: '/request-quote' },
   { label: 'Track Shipment', href: '/track-shipment' },
   { label: 'Carriers', href: '/carrier-portal' },
   { label: 'About', href: '/about' },
-  { label: 'FAQ', href: '/faq' },
   { label: 'Contact', href: '/contact' },
 ] as const;
 
@@ -949,6 +953,7 @@ const LandingPage: React.FC = () => {
                 <Link to="/track-shipment" className="block hover:text-infamous-red-light transition">Track Shipment</Link>
                 <Link to="/load-board" className="block hover:text-infamous-red-light transition">Load Board</Link>
                 <Link to="/pricing" className="block hover:text-infamous-red-light transition">Pricing</Link>
+                <Link to="/freight-assistant" className="block hover:text-infamous-red-light transition">Freight Assistant</Link>
               </div>
             </div>
             <div>
@@ -974,6 +979,7 @@ const LandingPage: React.FC = () => {
               <h2 className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#F5E8E8]/80">Company</h2>
               <div className="space-y-2.5">
                 <Link to="/about" className="block hover:text-infamous-red-light transition">About</Link>
+                <Link to="/case-studies" className="block hover:text-infamous-red-light transition">Case Studies</Link>
                 <Link to="/faq" className="block hover:text-infamous-red-light transition">FAQ</Link>
                 <Link to="/contact" className="block hover:text-infamous-red-light transition">Contact</Link>
                 <Link to="/terms" className="block hover:text-infamous-red-light transition">Terms</Link>
