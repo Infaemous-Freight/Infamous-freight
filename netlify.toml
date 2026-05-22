@@ -25,6 +25,11 @@
   # can exceed Netlify's per-function environment limit during deploy.
   FEATURE_FLAGS = ""
 
+# netlify/edge-functions/seo-prerender.ts is intentionally disabled as
+# seo-prerender.ts.disabled. Netlify attaches the site environment payload when
+# creating Edge Functions, and this site currently exceeds Netlify's 4 KB Edge
+# Function environment limit before any user code runs.
+
 [[redirects]]
   from = "https://infamousfreight.com/*"
   to = "https://www.infamousfreight.com/:splat"

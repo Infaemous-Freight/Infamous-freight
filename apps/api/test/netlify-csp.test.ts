@@ -77,6 +77,17 @@ describe('Netlify production routing', () => {
     expect(rootContent).not.toContain('functions = "netlify/functions"');
   });
 
+  it('keeps Edge Functions disabled until the Netlify environment payload fits deploy limits', () => {
+    const activeSeoPrerender = path.join(repoRoot, 'netlify/edge-functions/seo-prerender.ts');
+    const disabledSeoPrerender = `${activeSeoPrerender}.disabled`;
+    const rootContent = read(rootNetlify);
+
+    expect(fs.existsSync(activeSeoPrerender)).toBe(false);
+    expect(fs.existsSync(disabledSeoPrerender)).toBe(true);
+    expect(rootContent).toContain('seo-prerender.ts.disabled');
+    expect(rootContent).toContain('4 KB Edge');
+  });
+
   it('keeps public Netlify function entrypoints present for deploy packaging', () => {
     const loadRequestsContent = read(path.join(repoRoot, 'netlify/functions/load-requests.ts'));
     const publicFreightContent = read(path.join(repoRoot, 'netlify/functions/public-freight.ts'));
