@@ -164,8 +164,8 @@ Watch progress at: `https://github.com/Infamous-Freight/Infamous-freight/actions
 fly deploy --app infamous-freight-api
 
 # Web (Netlify)
-npm run build:web
-netlify deploy --prod --dir=apps/web/dist --functions netlify/disabled-functions
+pnpm run build:web
+netlify deploy --prod --dir=apps/web/dist --functions netlify/event-functions
 ```
 
 ---

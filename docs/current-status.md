@@ -1,6 +1,6 @@
 # Current status
 
-Updated 2026-05-14.
+Updated 2026-05-22.
 
 ## Active runtime
 
@@ -13,6 +13,7 @@ Updated 2026-05-14.
 - Some operator-facing views still contain sample data.
 - The main dashboard sample data should be replaced with live API-backed services.
 - Unfinished authenticated routes should be explicitly gated when they are not production-ready.
+- Public demo freight records are disabled by default in production builds. Set `VITE_ENABLE_DEMO_DATA=true` only for controlled demos or sales sandboxes.
 
 ## Authenticated route readiness
 
@@ -23,7 +24,7 @@ Source of truth in code: `apps/web/src/lib/routeReadiness.ts`.
 | `/ops` | demo-backed | Dashboard is demo-backed while live operations data wiring is in progress. |
 | `/loads` | demo-backed | Load board records are demo-backed. |
 | `/dispatch` | demo-backed | Dispatch workflow is demo-backed. |
-| `/drivers` | demo-backed | Driver management view is demo-backed. |
+| `/ops/drivers` | demo-backed | Driver management view is demo-backed. |
 | `/invoices` | demo-backed | Invoice management view is demo-backed. |
 | `/analytics` | demo-backed | Metrics are demo-backed and not final production analytics. |
 | `/compliance` | demo-backed | Compliance records are demo-backed and require source-system validation. |
@@ -44,3 +45,5 @@ Run:
 - `pnpm run prisma:validate`
 - `pnpm run build`
 - `pnpm run test`
+
+Do not approve a public launch from this document alone. Launch approval still requires credential-backed production checks, pending database migration review/application, and evidence recorded in the launch readiness documents.

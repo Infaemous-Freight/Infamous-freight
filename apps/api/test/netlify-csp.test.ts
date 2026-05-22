@@ -109,10 +109,11 @@ describe('Netlify production routing', () => {
     expect(redirectContent).not.toContain('/socket.io/*');
   });
 
-  it('keeps CLI production deploys from uploading repo-owned Netlify functions', () => {
+  it('keeps CLI production deploys aligned with the normal Netlify function bundle', () => {
     const script = read(path.join(repoRoot, 'scripts/netlify-production-readiness.sh'));
 
-    expect(script).toContain('netlify-cli deploy --prod --dir apps/web/dist --functions netlify/disabled-functions');
+    expect(script).toContain('netlify-cli deploy --prod --dir apps/web/dist --functions netlify/event-functions');
+    expect(script).not.toContain('netlify-cli deploy --prod --dir apps/web/dist --functions netlify/disabled-functions');
   });
 
   it('keeps public Fly API route checks in production readiness automation', () => {

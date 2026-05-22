@@ -12,6 +12,8 @@ This is the entry point for production readiness, beta approval, paid launch app
 
 Ready for verification. Not approved for public launch until all critical checks pass with evidence.
 
+Production web builds now keep bundled MVP/demo freight records disabled unless `VITE_ENABLE_DEMO_DATA=true` is set intentionally. Use that flag only for controlled demo environments, not live customer operations.
+
 ## Required Documents
 
 | Document | Purpose |
@@ -39,6 +41,8 @@ Ready for verification. Not approved for public launch until all critical checks
 6. Record every test result in the evidence log.
 7. Open a blocker for every failed or unknown critical/high result using `docs/LAUNCH_BLOCKER_TEMPLATE.md`.
 8. Approve only the highest launch gate supported by actual evidence.
+
+Before any production launch gate is approved, confirm that pending Netlify database migrations have been reviewed and applied to the target database branch or intentionally reset and regenerated.
 
 ## Launch Gate Summary
 

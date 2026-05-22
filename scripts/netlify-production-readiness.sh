@@ -113,7 +113,7 @@ echo ""
 echo "==> Optional Netlify production deploy trigger"
 if [[ -n "${NETLIFY_AUTH_TOKEN:-}" && -n "${NETLIFY_SITE_ID:-}" ]]; then
   echo "Triggering deploy for site ${NETLIFY_SITE_ID} via Netlify CLI..."
-  pnpm dlx netlify-cli deploy --prod --dir apps/web/dist --functions netlify/disabled-functions --site "$NETLIFY_SITE_ID"
+  pnpm dlx netlify-cli deploy --prod --dir apps/web/dist --functions netlify/event-functions --site "$NETLIFY_SITE_ID"
 else
   echo "Skipped: set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID to trigger deploy from CLI."
 fi
