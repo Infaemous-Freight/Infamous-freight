@@ -6,11 +6,15 @@ import { trackPublicEvent } from '@/lib/analytics';
 
 const navLinks = [
   { label: 'Services', href: '/services' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'Load Board', href: '/load-board' },
+  { label: 'Freight Assistant', href: '/freight-assistant' },
+  { label: 'Partners', href: '/partners' },
+  { label: 'Case Studies', href: '/case-studies' },
   { label: 'Request Quote', href: '/request-quote' },
   { label: 'Track Shipment', href: '/track-shipment' },
   { label: 'Carriers', href: '/carrier-portal' },
   { label: 'About', href: '/about' },
-  { label: 'FAQ', href: '/faq' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -22,6 +26,7 @@ const footerGroups = [
       { label: 'Track Shipment', href: '/track-shipment' },
       { label: 'Load Board', href: '/load-board' },
       { label: 'Pricing', href: '/pricing' },
+      { label: 'Freight Assistant', href: '/freight-assistant' },
     ],
   },
   {
@@ -47,6 +52,7 @@ const footerGroups = [
     title: 'Company',
     links: [
       { label: 'About', href: '/about' },
+      { label: 'Case Studies', href: '/case-studies' },
       { label: 'FAQ', href: '/faq' },
       { label: 'Contact', href: '/contact' },
       { label: 'Terms', href: '/terms' },
