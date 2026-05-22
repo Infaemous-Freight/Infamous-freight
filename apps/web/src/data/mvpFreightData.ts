@@ -1,7 +1,8 @@
-// Seed/demo data shipped to clients. Production builds set
-// VITE_ENABLE_DEMO_DATA=false to drop these arrays from the bundle.
-// Consumers should fall back to live API responses when the flag is off.
-const demoEnabled = import.meta.env.VITE_ENABLE_DEMO_DATA !== 'false';
+// Seed/demo data shipped to clients. Production builds keep this off unless
+// explicitly enabled. Non-production environments can still disable it with
+// VITE_ENABLE_DEMO_DATA=false.
+const demoDataFlag = import.meta.env.VITE_ENABLE_DEMO_DATA;
+const demoEnabled = demoDataFlag === 'true' || (!import.meta.env.PROD && demoDataFlag !== 'false');
 
 const _demoShipments = [
   {

@@ -54,12 +54,12 @@ Follow-up captured in repo:
 | ID | Severity | Area | Description | Owner | Workaround | Status |
 |---|---|---|---|---|---|---|
 | B-001 | High | Infrastructure | Fly.io API endpoint (infamous-freight.fly.dev) not responding — direct health checks time out | MrMiless44 | Direct Fly API returned healthy JSON on 2026-05-08; rerun the full smoke test after Netlify redeploy and close if stable | Needs retest |
-| B-002 | Medium | Infrastructure | Bare domain infamousfreight.com not resolving — DNS connection refused | MrMiless44 | Apex redirected to https://www.infamousfreight.com/ on 2026-05-08; rerun the full smoke test after Netlify redeploy and close if stable | Needs retest |
+| B-002 | Medium | Infrastructure | Bare domain infamousfreight.com not resolving — DNS connection refused | MrMiless44 | Apex redirected to https://www.infamousfreight.com/ on 2026-05-08 and 2026-05-22 | Closed |
 | B-003 | Medium | Tooling | `flyctl` CLI not installed in local dev environment; preflight check fails | MrMiless44 | CI/CD deploys via GitHub Actions which has flyctl configured | Open |
 | B-004 | Unknown | Billing | Stripe mode not confirmed as Live — must verify before accepting real payments | MrMiless44 | Do not accept payments until confirmed Live mode | Open |
 | B-005 | Unknown | Database | Netlify Database migration application not confirmed for `20260508162000_create_public_freight_intake` and `20260510120000_create_platform_tables` | MrMiless44 | Confirm with Netlify Database migration status after deploy; keep pending files unapplied until reviewed | Open |
-| B-006 | Critical | Infrastructure | Production redirect loop: `https://www.infamousfreight.com/` 301→`https://infamousfreight.com/` 301→`https://www.infamousfreight.com/` (observed 2026-05-03 09:00 UTC). `curl --max-redirs 10` exhausted without reaching HTML (final HTTP 301, body 43 bytes). | MrMiless44 | Canonical web and apex redirect checks passed on 2026-05-08; rerun the full smoke test after Netlify redeploy and close if stable | Needs retest |
-| B-007 | High | Infrastructure | Production `https://www.infamousfreight.com/api/health` returns the web app HTML shell instead of API health JSON. The browser-critical API path is not currently proving the Fly API proxy. | MrMiless44 | Direct Fly API `https://infamous-freight.fly.dev/api/health` returned healthy JSON on 2026-05-08. The repository now includes exact forced `/api/health` routing plus forced API proxy rules; deploy and rerun the proxied check. | Open |
+| B-006 | Critical | Infrastructure | Production redirect loop: `https://www.infamousfreight.com/` 301→`https://infamousfreight.com/` 301→`https://www.infamousfreight.com/` (observed 2026-05-03 09:00 UTC). `curl --max-redirs 10` exhausted without reaching HTML (final HTTP 301, body 43 bytes). | MrMiless44 | Canonical web and apex redirect checks passed on 2026-05-08 and 2026-05-22 | Closed |
+| B-007 | High | Infrastructure | Production `https://www.infamousfreight.com/api/health` returned the web app HTML shell instead of API health JSON. The browser-critical API path was not proving the Fly API proxy. | MrMiless44 | Proxied `/api/health` returned HTTP 200 JSON with database connectivity on 2026-05-22 | Closed |
 
 ## Evidence Entry Template
 
@@ -100,6 +100,42 @@ None / Low / Medium / High / Critical
 ---
 
 # Evidence Entries
+
+## Test
+Phase 1 - Netlify Production Public Path Evidence Refresh
+
+## Date/Time
+2026-05-22 02:26 UTC
+
+## Owner
+Automation
+
+## Command or Action
+Captured fresh Netlify launch evidence with `pnpm production:capture-netlify-evidence`, then ran the repository recommended checks with build execution disabled to comply with Netlify task restrictions.
+
+## Expected Result
+The canonical web host returns HTTP 200, the apex domain resolves to `https://www.infamousfreight.com/`, browser-critical `/api/health` returns API JSON, public quote preflight returns HTTP 204, invalid tracking validation returns HTTP 400 JSON, and the live API health endpoint responds.
+
+## Actual Result
+- `https://www.infamousfreight.com` returned HTTP 200.
+- `https://infamousfreight.com` resolved to `https://www.infamousfreight.com/`.
+- `https://www.infamousfreight.com/api/health` returned HTTP 200 with `application/json; charset=utf-8` and `services.database: connected`.
+- `OPTIONS https://www.infamousfreight.com/api/public/quote-requests` returned HTTP 204.
+- `GET https://www.infamousfreight.com/api/public/shipments/invalid-tracking` returned HTTP 400 JSON with `invalid_tracking_number`.
+- The live Fly API health endpoint returned HTTP 200 JSON with `services.api: running`.
+- `pnpm install --frozen-lockfile`, frontend environment safety, Supabase browser environment safety, API tests, and web tests passed through `scripts/05_run_all_recommended_checks.sh` with `RUN_BUILD_CHECKS=0`.
+
+## Status
+PASS
+
+## Severity
+None
+
+## Follow-Up
+Keep dashboard-only launch items open until the owner verifies production secrets, Stripe live-mode configuration, webhook delivery, pending Netlify Database migration status, and Fly authenticated diagnostics in the provider dashboards.
+
+## Notes
+Build commands were intentionally not run in this environment. The detailed non-secret evidence was saved in `docs/evidence/netlify-launch-evidence-20260522T022608Z.md`.
 
 ## Test
 Phase 1 - Production Routing Retest And Proxy Rule Hardening

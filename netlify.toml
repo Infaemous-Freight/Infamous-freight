@@ -1,10 +1,11 @@
 [build]
   publish = "apps/web/dist"
   command = "pnpm run build:web"
-  # Event-triggered functions (submission-created) live in netlify/event-functions/
-  # but are currently disabled (.mts.disabled). The 20 site-level environment
-  # variables with "functions" scope total ~3 KB; combined with Netlify system
-  # vars they exceed the 4 KB per-function deploy limit.
+  # Only production-critical Netlify functions live in netlify/event-functions.
+  # The public-freight wrapper is active for quote intake and tracking lookup;
+  # submission-created remains disabled (.mts.disabled). The 20 site-level
+  # environment variables with "functions" scope total ~3 KB; combined with
+  # Netlify system vars they exceed the 4 KB per-function deploy limit.
   #
   # To re-enable:
   #   1. In Site settings → Environment variables, remove the "functions" scope
