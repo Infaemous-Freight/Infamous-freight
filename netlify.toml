@@ -94,13 +94,13 @@
 
 [[redirects]]
   from = "/api/public/quote-requests"
-  to = "https://infamous-freight-api.fly.dev/api/public/quote-requests"
+  to = "/.netlify/functions/public-freight"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/public/shipments/:trackingNumber"
-  to = "https://infamous-freight-api.fly.dev/api/public/shipments/:trackingNumber"
+  to = "/.netlify/functions/public-freight?trackingNumber=:trackingNumber"
   status = 200
   force = true
 
