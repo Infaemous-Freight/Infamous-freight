@@ -6,10 +6,14 @@ export type PublicQuotePayload = {
   origin: string;
   destination: string;
   freightType: string;
+  commodity: string;
   equipment: string;
   weight: string;
+  palletCount: string;
   miles: string;
   dimensions: string;
+  accessorials: string;
+  constraints: string;
   pickupDate: string;
   deliveryDate: string;
   instructions: string;

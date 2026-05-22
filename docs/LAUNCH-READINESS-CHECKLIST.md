@@ -69,6 +69,28 @@ The command writes a timestamped Markdown file under `docs/evidence/`. It record
 
 Operations should attach or reference the latest evidence file before closing launch-readiness work. If public quote intake falls back to Netlify Forms, leads should still be reviewed in Netlify Forms and matched to API quote records only when a tracking reference was returned.
 
+## Lead funnel validation
+
+Run this after the next Netlify production deploy and record the non-secret result in launch evidence:
+
+- Submit one mobile quote request with commodity, pallet or piece count, accessorials, pickup or delivery constraints, consent, and no attachment.
+- Submit one desktop quote request with an allowed attachment under 8 MB.
+- Confirm the API-backed path returns a tracking reference and that `/track-shipment` can look it up.
+- Confirm the Netlify Forms entry includes the same commodity, pallet or piece count, accessorials, constraints, consent, page URL, submission timestamp, and fallback details.
+- Confirm the contact form rejects invalid email or phone values, requires consent, and routes urgent freight issues to dispatch contact paths.
+- Confirm the owner for each submission queue can see the lead and knows the expected response window.
+
+## Operational ownership
+
+Before launch, assign an owner and response expectation for these public paths:
+
+- Quote requests: dispatch owner, same-business-day review target, Netlify Forms fallback checked when no tracking reference is returned.
+- Contact requests: support or dispatch owner based on topic, urgent active-load issues handled by phone or dispatch email.
+- Carrier and partner requests: onboarding owner, review queue, and written next-step response.
+- Driver requests: onboarding owner, qualification review, and follow-up path.
+
+Keep sample workflow data disabled in production unless it is intentionally enabled for a controlled demo. Any public sample surface should remain labeled as sample data so visitors do not confuse demo workflow records with live freight status.
+
 ## Production environment expectations
 
 Set production CORS explicitly:

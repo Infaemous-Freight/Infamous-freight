@@ -25,10 +25,14 @@ type QuoteFormState = {
   origin: string;
   destination: string;
   freightType: string;
+  commodity: string;
   equipment: string;
   weight: string;
+  palletCount: string;
   miles: string;
   dimensions: string;
+  accessorials: string;
+  constraints: string;
   pickupDate: string;
   deliveryDate: string;
   instructions: string;
@@ -45,10 +49,14 @@ const initialForm: QuoteFormState = {
   origin: '',
   destination: '',
   freightType: '',
+  commodity: '',
   equipment: 'Dry van',
   weight: '',
+  palletCount: '',
   miles: '',
   dimensions: '',
+  accessorials: '',
+  constraints: '',
   pickupDate: '',
   deliveryDate: '',
   instructions: '',
@@ -128,8 +136,11 @@ const computeEstimate = (form: QuoteFormState): Estimate | null => {
   if (form.origin.trim()) confidence += 8;
   if (form.destination.trim()) confidence += 8;
   if (weight) confidence += 6;
-  if (form.dimensions.trim()) confidence += 4;
+  if (form.dimensions.trim()) confidence += 3;
+  if (form.palletCount.trim()) confidence += 3;
   if (form.freightType.trim()) confidence += 4;
+  if (form.commodity.trim()) confidence += 4;
+  if (form.accessorials.trim()) confidence += 3;
   if (form.pickupDate) confidence += 4;
   if (miles > 0) confidence += 6;
   confidence = Math.min(confidence, 95);
@@ -279,8 +290,16 @@ const PublicQuoteRequestPage: React.FC = () => {
         contactConsent: form.contactConsent ? 'yes' : 'no',
         name: form.contact,
         pickupTiming: form.pickupDate,
-        freightDetails: [form.freightType, form.weight ? `${form.weight} lbs` : '', form.dimensions].filter(Boolean).join(' | '),
-        notes: form.instructions,
+        freightDetails: [
+          form.freightType,
+          form.commodity ? `Commodity: ${form.commodity}` : '',
+          form.weight ? `${form.weight} lbs` : '',
+          form.palletCount ? `${form.palletCount} pallets/pieces` : '',
+          form.dimensions,
+          form.accessorials ? `Accessorials: ${form.accessorials}` : '',
+          form.constraints ? `Constraints: ${form.constraints}` : '',
+        ].filter(Boolean).join(' | '),
+        notes: [form.instructions, form.constraints ? `Pickup/delivery constraints: ${form.constraints}` : ''].filter(Boolean).join('\n\n'),
         trackingNumber: apiTrackingNumber,
         estimateLow: estimate?.low,
         estimateMid: estimate?.mid,
@@ -367,11 +386,15 @@ const PublicQuoteRequestPage: React.FC = () => {
           <div className="space-y-5">
             <h2 className="text-xl font-bold">Freight Details</h2>
             <p className="text-sm text-[#B88989]">Add what is known now. These details help dispatch quote accurately but are not required to start the lead.</p>
-            <InputField label="Freight Type" name="freightType" value={form.freightType} onChange={(v) => updateField('freightType', v)} placeholder="e.g. Palletized goods, machinery, retail" />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <InputField label="Freight Type" name="freightType" value={form.freightType} onChange={(v) => updateField('freightType', v)} placeholder="e.g. LTL, truckload, expedited" />
+              <InputField label="Commodity" name="commodity" value={form.commodity} onChange={(v) => updateField('commodity', v)} placeholder="e.g. Retail goods, machinery, food-grade freight" />
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <InputField label="Weight (lbs)" name="weight" type="number" value={form.weight} onChange={(v) => updateField('weight', v)} inputMode="numeric" placeholder="Estimated total weight" />
-              <InputField label="Dimensions / Pallet Count" name="dimensions" value={form.dimensions} onChange={(v) => updateField('dimensions', v)} placeholder="e.g. 4 pallets, 48x40x60" />
+              <InputField label="Pallet / Piece Count" name="palletCount" type="number" value={form.palletCount} onChange={(v) => updateField('palletCount', v)} inputMode="numeric" placeholder="e.g. 4" />
             </div>
+            <InputField label="Dimensions" name="dimensions" value={form.dimensions} onChange={(v) => updateField('dimensions', v)} placeholder="e.g. 48x40x60 each, stackable if known" />
             <p className="text-xs leading-5 text-[#B88989]/80">
               Estimates are fine. Exact dimensions, pallet count, and weight help reduce follow-up questions before dispatch confirms pricing.
             </p>
@@ -386,6 +409,8 @@ const PublicQuoteRequestPage: React.FC = () => {
           <div className="space-y-5">
             <h2 className="text-xl font-bold">Service Options</h2>
             <p className="text-sm text-[#B88989]">Add any special requirements or documents.</p>
+            <InputField label="Accessorials" name="accessorials" value={form.accessorials} onChange={(v) => updateField('accessorials', v)} placeholder="Liftgate, appointment, residential, inside delivery, pallet jack" />
+            <InputField label="Pickup / Delivery Constraints" name="constraints" value={form.constraints} onChange={(v) => updateField('constraints', v)} placeholder="Dock hours, gated access, strict delivery window, limited truck access" />
             <label className="block">
               <span className="mb-2 block text-sm font-medium text-[#F5E8E8]/80">Special Instructions</span>
               <textarea
@@ -438,8 +463,12 @@ const PublicQuoteRequestPage: React.FC = () => {
                 ['Pickup Date', form.pickupDate],
                 ['Delivery Date', form.deliveryDate || '—'],
                 ['Freight Type', form.freightType],
+                ['Commodity', form.commodity || '—'],
                 ['Equipment', form.equipment],
                 ['Weight', form.weight ? `${form.weight} lbs` : '—'],
+                ['Pallet / Piece Count', form.palletCount || '—'],
+                ['Dimensions', form.dimensions || '—'],
+                ['Accessorials', form.accessorials || '—'],
                 ['Miles', form.miles || '—'],
                 ['Company', form.company || '—'],
                 ['Contact', form.contact],
@@ -457,6 +486,12 @@ const PublicQuoteRequestPage: React.FC = () => {
               <div className="rounded-lg border border-infamous-border bg-infamous-panel p-3">
                 <p className="text-xs uppercase tracking-wider text-infamous-muted">Special Instructions</p>
                 <p className="mt-1 text-sm text-[#F5E8E8]/80">{form.instructions}</p>
+              </div>
+            )}
+            {form.constraints && (
+              <div className="rounded-lg border border-infamous-border bg-infamous-panel p-3">
+                <p className="text-xs uppercase tracking-wider text-infamous-muted">Pickup / Delivery Constraints</p>
+                <p className="mt-1 text-sm text-[#F5E8E8]/80">{form.constraints}</p>
               </div>
             )}
 

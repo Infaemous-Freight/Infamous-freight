@@ -17,6 +17,9 @@ const initialForm = {
 type ContactFormKey = keyof typeof initialForm;
 type ContactTextKey = Exclude<ContactFormKey, 'contactConsent'>;
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_PATTERN = /^[+()\-\s.\d]{7,40}$/;
+
 const contactCards = [
   {
     label: 'Call dispatch',
@@ -55,8 +58,23 @@ const ContactPage: React.FC = () => {
     setForm((current) => ({ ...current, [key]: value }));
   };
 
+  const validationMessage = () => {
+    if (!form.name.trim()) return 'Add your name.';
+    if (!EMAIL_PATTERN.test(form.email.trim())) return 'Add a valid email address.';
+    if (form.phone.trim() && !PHONE_PATTERN.test(form.phone.trim())) return 'Add a valid phone number or leave it blank.';
+    if (form.message.trim().length < 12) return 'Add a short message with enough detail for follow-up.';
+    if (!form.contactConsent) return 'Confirm contact consent before sending.';
+    return '';
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const message = validationMessage();
+    if (message) {
+      setError(message);
+      return;
+    }
+
     setLoading(true);
     setError('');
 
