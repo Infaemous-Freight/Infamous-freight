@@ -10,10 +10,14 @@ type QuoteInput = {
   origin?: unknown;
   destination?: unknown;
   freightType?: unknown;
+  commodity?: unknown;
   equipment?: unknown;
   weight?: unknown;
+  palletCount?: unknown;
   miles?: unknown;
   dimensions?: unknown;
+  accessorials?: unknown;
+  constraints?: unknown;
   pickupDate?: unknown;
   deliveryDate?: unknown;
   instructions?: unknown;
@@ -98,7 +102,10 @@ async function createQuote(req: Request) {
   const origin = text(body.origin, 160);
   const destination = text(body.destination, 160);
   const freightType = text(body.freightType, 160) || 'General freight';
+  const commodity = text(body.commodity, 160);
   const equipment = text(body.equipment, 80) || 'Dry van';
+  const accessorials = text(body.accessorials, 400);
+  const constraints = text(body.constraints, 400);
 
   const missing: string[] = [];
   if (!contact) missing.push('contact');
@@ -151,10 +158,14 @@ async function createQuote(req: Request) {
       origin,
       destination,
       freight_type,
+      commodity,
       equipment,
       weight_lbs,
+      pallet_count,
       lane_miles,
       dimensions,
+      accessorials,
+      pickup_delivery_constraints,
       pickup_date,
       delivery_date,
       instructions,
@@ -174,10 +185,14 @@ async function createQuote(req: Request) {
       ${origin},
       ${destination},
       ${freightType},
+      ${commodity || null},
       ${equipment},
       ${numberOrNull(body.weight)},
+      ${numberOrNull(body.palletCount)},
       ${numberOrNull(body.miles)},
       ${text(body.dimensions, 240) || null},
+      ${accessorials || null},
+      ${constraints || null},
       ${pickupDate},
       ${deliveryDate},
       ${text(body.instructions, 1200) || null},

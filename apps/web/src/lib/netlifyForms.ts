@@ -72,6 +72,7 @@ const validatePayload = (data: NetlifyFormPayload) => {
   validateEmail(getStringValue(data.email));
   validatePhone(getStringValue(data.phone));
   validateNonNegativeNumber('Weight', getStringValue(data.weight));
+  validateNonNegativeNumber('Pallet or piece count', getStringValue(data.palletCount));
   validateNonNegativeNumber('Miles', getStringValue(data.miles));
   validateNonNegativeNumber('Estimate low', getStringValue(data.estimateLow));
   validateNonNegativeNumber('Estimate mid', getStringValue(data.estimateMid));
