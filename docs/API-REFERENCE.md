@@ -469,7 +469,45 @@ Common error codes:
 | `ai_usage_feature_required` | `400` | `feature` field missing from AI usage event body |
 | `invalid_stripe_signature` | `400` | Stripe webhook signature verification failed |
 | `stripe_secret_key_required` | `500` | `STRIPE_SECRET_KEY` environment variable not set |
+| `missing_messages` | `400` | `/api/chat` request did not include at least one user message |
+| `chat_timeout` | `504` | AI assistant response exceeded the configured timeout |
+| `chat_not_configured` | `503` | AI assistant provider environment is not configured |
 | `internal_server_error` | `500` | Unexpected server error |
+
+---
+
+## AI Site Assistant
+
+### `POST /api/chat`
+
+Streams a logistics-focused assistant response for the public site chat widget.
+
+The endpoint accepts recent chat messages, keeps only supported `user` and `assistant` roles, caps retained history and message length, prepends the Infamous Freight assistant instructions, and returns server-sent events.
+
+Request body:
+
+```json
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Can you help quote a dry van lane?"
+    }
+  ]
+}
+```
+
+Successful responses use `text/event-stream` and emit JSON `data:` events with streamed `content` chunks, followed by `data: [DONE]`.
+
+Runtime configuration:
+
+| Variable | Purpose |
+|---|---|
+| `OPENAI_API_KEY` / `OPENAI_BASE_URL` | Server-side OpenAI-compatible provider settings. Netlify AI Gateway can inject these automatically for deployed server-side code. |
+| `AI_CHAT_MODEL` | Optional model override. Defaults to `gpt-5.2`. |
+| `AI_CHAT_TIMEOUT_MS` | Optional positive integer timeout in milliseconds. Defaults to `25000`. |
+
+Do not expose provider keys through browser `VITE_*` variables.
 
 ---
 
@@ -487,7 +525,6 @@ The following route patterns are described in planning documents but are **not c
 | `GET /api/factoring/*` | Factoring integrations |
 | `GET /api/broker-credit/*` | Broker credit scoring |
 | `GET /api/eld/*` | ELD provider sync |
-| `GET /api/chat/*` | Real-time messaging |
 | `GET /api/payroll/*` | Driver payroll |
 | `GET /api/compliance-csa/*` | CSA monitoring |
 | `GET /api/compliance-expiry/*` | Document expiry tracking |

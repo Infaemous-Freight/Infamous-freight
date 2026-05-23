@@ -25,6 +25,7 @@ import {
   verifyStripeWebhookSignature,
 } from './billing';
 import { createAiUsageStore } from './ai-usage';
+import { createAiChatRouter } from './ai-chat';
 import { createRateLimitMiddleware } from './rate-limit';
 import { createStripeWebhookEventStore } from './stripe-webhook-events';
 import { createStripeOneTimePaymentStore } from './stripe-one-time-payments';
@@ -1051,6 +1052,8 @@ function registerWebhookRoute(app: express.Express, dataStore: DataStore, auditL
 
 function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger: AuditLogger) {
   const aiUsageStore = createAiUsageStore();
+
+  app.use(createAiChatRouter());
 
   // Public lead intake endpoints — no authentication required
   app.post('/api/leads/quote', wrapAsync(async (req, res) => {

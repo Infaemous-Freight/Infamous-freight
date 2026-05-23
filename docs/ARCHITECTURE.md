@@ -130,7 +130,7 @@ The following feature areas are not implemented in the active Express API. Add t
 | Load board aggregation | Express route module | Not implemented |
 | Invoice / BOL / POD | Express route module | Not implemented |
 | ELD integrations | Express route module | Not implemented |
-| Real-time chat | Express route module | Not implemented |
+| AI site assistant chat | `apps/api/src/ai-chat.ts` | Implemented at `POST /api/chat` with SSE streaming |
 | Driver payroll | Express route module | Not implemented |
 | Factoring | Express route module | Not implemented |
 | CSA compliance monitoring | Express route module | Not implemented |
