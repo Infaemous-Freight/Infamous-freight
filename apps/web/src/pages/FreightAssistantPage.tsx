@@ -26,15 +26,15 @@ const FreightAssistantPage: React.FC = () => {
   }, [input]);
 
   return (
-    <main className="min-h-screen bg-[#090909] px-6 py-8 text-[#F5E8E8]">
+    <div className="min-h-screen bg-[#090909] px-6 py-8 text-[#F5E8E8]">
       <div className="mx-auto max-w-6xl">
         <Link to="/home" className="mb-8 inline-flex items-center gap-2 text-sm text-[#B88989] hover:text-[#F5E8E8]">
-          <ArrowLeft size={16} /> Back to Infamous Freight
+          <ArrowLeft aria-hidden="true" size={16} /> Back to Infamous Freight
         </Link>
 
         <header className="mb-8">
           <div className="mb-3 inline-flex rounded-xl bg-infamous-orange/10 p-3 text-infamous-orange">
-            <Bot size={26} />
+            <Bot aria-hidden="true" size={26} />
           </div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-infamous-orange">AI operations assistant</p>
           <h1 className="mt-2 text-3xl font-bold">Turn messy freight requests into dispatch-ready next steps</h1>
@@ -46,10 +46,13 @@ const FreightAssistantPage: React.FC = () => {
         <section className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-3xl border border-infamous-border bg-infamous-card p-6">
             <div className="mb-4 flex items-center gap-3">
-              <MessageSquareText className="text-infamous-orange" size={22} />
-              <h2 className="text-xl font-bold">Freight request input</h2>
+              <MessageSquareText aria-hidden="true" className="text-infamous-orange" size={22} />
+              <h2 className="text-xl font-bold">
+                <label htmlFor="freight-assistant-request">Freight request input</label>
+              </h2>
             </div>
             <textarea
+              id="freight-assistant-request"
               value={input}
               onChange={(event) => setInput(event.target.value)}
               className="min-h-80 w-full rounded-2xl border border-infamous-border bg-infamous-panel p-4 text-sm leading-6 text-[#F5E8E8] outline-none transition focus:border-infamous-orange"
@@ -58,7 +61,7 @@ const FreightAssistantPage: React.FC = () => {
 
           <div className="rounded-3xl border border-infamous-border bg-infamous-card p-6">
             <div className="mb-4 flex items-center gap-3">
-              <ClipboardList className="text-infamous-orange" size={22} />
+              <ClipboardList aria-hidden="true" className="text-infamous-orange" size={22} />
               <h2 className="text-xl font-bold">Dispatch summary</h2>
             </div>
 
@@ -71,7 +74,7 @@ const FreightAssistantPage: React.FC = () => {
             <div className="space-y-3">
               {summary.nextSteps.map((step) => (
                 <div key={step} className="flex gap-3 rounded-2xl border border-infamous-border bg-infamous-panel p-4">
-                  <CheckCircle2 className="mt-0.5 flex-shrink-0 text-green-400" size={18} />
+                  <CheckCircle2 aria-hidden="true" className="mt-0.5 flex-shrink-0 text-green-400" size={18} />
                   <p className="text-sm leading-6 text-[#F5E8E8]/80">{step}</p>
                 </div>
               ))}
@@ -79,7 +82,7 @@ const FreightAssistantPage: React.FC = () => {
           </div>
         </section>
       </div>
-    </main>
+    </div>
   );
 };
 

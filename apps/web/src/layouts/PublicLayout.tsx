@@ -255,7 +255,7 @@ const PublicLayout: React.FC = () => {
               onClick={() => trackPublicEvent('quote_cta_click', { location: 'desktop_header', cta: 'get_quote' })}
               className="inline-flex items-center gap-2 btn-primary text-sm glow-high"
             >
-              Get a Quote <ArrowRight size={15} />
+              Get a Quote <ArrowRight aria-hidden="true" size={15} />
             </Link>
             <button
               type="button"
@@ -272,16 +272,26 @@ const PublicLayout: React.FC = () => {
 
         {mobileMenuOpen && (
           <nav id="public-mobile-navigation" className="lg:hidden border-t border-infamous-border bg-infamous-darker px-5 py-4 space-y-1" aria-label="Mobile navigation">
-            {navLinks.map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[#B88989] transition hover:bg-white/5 hover:text-[#F5E8E8]"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navLinks.map((item) => {
+              const active = pathname === item.href
+                || (item.href === '/services' && pathname.startsWith('/services'))
+                || (item.href === '/carrier-portal' && pathname.startsWith('/carrier'));
+              return (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition ${
+                    active
+                      ? 'bg-infamous-red/10 text-infamous-red-light'
+                      : 'text-[#B88989] hover:bg-white/5 hover:text-[#F5E8E8]'
+                  }`}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
             <Link
               to="/login"
               onClick={() => setMobileMenuOpen(false)}
