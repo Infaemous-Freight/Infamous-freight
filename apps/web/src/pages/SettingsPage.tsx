@@ -16,16 +16,23 @@ const SettingsPage: React.FC = () => {
     { id: 'integrations', label: 'Integrations', icon: Zap },
   ];
 
+  const activeSectionLabel = sections.find((section) => section.id === activeSection)?.label ?? 'Settings';
+
   return (
     <div className="space-y-6 animate-fade-in">
       <h1 className="text-2xl font-bold">Settings</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar */}
-        <div className="lg:col-span-1 space-y-1">
+        <div className="lg:col-span-1 space-y-1" role="tablist" aria-label="Settings sections">
           {sections.map((section) => (
             <button
               key={section.id}
+              id={`settings-tab-${section.id}`}
+              type="button"
+              role="tab"
+              aria-selected={activeSection === section.id}
+              aria-controls={`settings-panel-${section.id}`}
               onClick={() => setActiveSection(section.id)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-left ${
                 activeSection === section.id
@@ -33,45 +40,50 @@ const SettingsPage: React.FC = () => {
                   : 'text-[#B88989] hover:text-[#F5E8E8] hover:bg-infamous-card'
               }`}
             >
-              <section.icon size={16} />
+              <section.icon aria-hidden="true" size={16} />
               {section.label}
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div className="lg:col-span-3">
+        <div
+          id={`settings-panel-${activeSection}`}
+          className="lg:col-span-3"
+          role="tabpanel"
+          aria-labelledby={`settings-tab-${activeSection}`}
+        >
           {activeSection === 'profile' && (
             <div className="card space-y-6">
               <h2 className="text-lg font-semibold">Company Profile</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#B88989] mb-1">Company Name</label>
-                  <input type="text" className="input-field" defaultValue="Iron Route Logistics LLC" />
+                  <label htmlFor="settings-company-name" className="block text-sm text-[#B88989] mb-1">Company Name</label>
+                  <input id="settings-company-name" type="text" className="input-field" defaultValue="Iron Route Logistics LLC" />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#B88989] mb-1">MC Number</label>
-                  <input type="text" className="input-field" defaultValue="MC-123456" />
+                  <label htmlFor="settings-mc-number" className="block text-sm text-[#B88989] mb-1">MC Number</label>
+                  <input id="settings-mc-number" type="text" className="input-field" defaultValue="MC-123456" />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#B88989] mb-1">DOT Number</label>
-                  <input type="text" className="input-field" defaultValue="1234567" />
+                  <label htmlFor="settings-dot-number" className="block text-sm text-[#B88989] mb-1">DOT Number</label>
+                  <input id="settings-dot-number" type="text" className="input-field" defaultValue="1234567" />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#B88989] mb-1">EIN</label>
-                  <input type="text" className="input-field" defaultValue="12-3456789" />
+                  <label htmlFor="settings-ein" className="block text-sm text-[#B88989] mb-1">EIN</label>
+                  <input id="settings-ein" type="text" className="input-field" defaultValue="12-3456789" />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm text-[#B88989] mb-1">Address</label>
-                  <input type="text" className="input-field" defaultValue="123 Main St, Dallas, TX 75201" />
+                  <label htmlFor="settings-address" className="block text-sm text-[#B88989] mb-1">Address</label>
+                  <input id="settings-address" type="text" className="input-field" defaultValue="123 Main St, Dallas, TX 75201" />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#B88989] mb-1">Contact Email</label>
-                  <input type="email" className="input-field" defaultValue="dispatch@acmetrucking.com" />
+                  <label htmlFor="settings-contact-email" className="block text-sm text-[#B88989] mb-1">Contact Email</label>
+                  <input id="settings-contact-email" type="email" className="input-field" defaultValue="dispatch@acmetrucking.com" />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#B88989] mb-1">Phone</label>
-                  <input type="text" className="input-field" defaultValue="(214) 555-0100" />
+                  <label htmlFor="settings-phone" className="block text-sm text-[#B88989] mb-1">Phone</label>
+                  <input id="settings-phone" type="text" className="input-field" defaultValue="(214) 555-0100" />
                 </div>
               </div>
               <button className="btn-primary">Save Changes</button>
@@ -91,7 +103,7 @@ const SettingsPage: React.FC = () => {
               ].map((provider) => (
                 <div key={provider.name} className="flex items-center justify-between p-4 bg-infamous-dark rounded-xl">
                   <div className="flex items-center gap-3">
-                    <Radio size={18} style={{ color: provider.color }} />
+                    <Radio aria-hidden="true" size={18} style={{ color: provider.color }} />
                     <span className="font-medium">{provider.name}</span>
                   </div>
                   {provider.status === 'connected' ? (
@@ -155,8 +167,9 @@ const SettingsPage: React.FC = () => {
                     <p className="text-sm font-medium">{pref.label}</p>
                     <p className="text-xs text-[#B88989]/70">{pref.desc}</p>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" defaultChecked={pref.default} className="sr-only peer" />
+                  <label className="relative inline-flex cursor-pointer items-center">
+                    <span className="sr-only">{pref.label}</span>
+                    <input type="checkbox" defaultChecked={pref.default} className="peer sr-only" />
                     <div className="w-11 h-6 bg-infamous-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-infamous-orange" />
                   </label>
                 </div>
@@ -168,12 +181,12 @@ const SettingsPage: React.FC = () => {
             <div className="card space-y-6">
               <h2 className="text-lg font-semibold">Security Settings</h2>
               <div>
-                <label className="block text-sm text-[#B88989] mb-1">Current Password</label>
-                <input type="password" className="input-field" placeholder="••••••••" />
+                <label htmlFor="settings-current-password" className="block text-sm text-[#B88989] mb-1">Current Password</label>
+                <input id="settings-current-password" type="password" className="input-field" placeholder="••••••••" />
               </div>
               <div>
-                <label className="block text-sm text-[#B88989] mb-1">New Password</label>
-                <input type="password" className="input-field" placeholder="••••••••" />
+                <label htmlFor="settings-new-password" className="block text-sm text-[#B88989] mb-1">New Password</label>
+                <input id="settings-new-password" type="password" className="input-field" placeholder="••••••••" />
               </div>
               <div>
                 <label className="block text-sm text-[#B88989] mb-1">Two-Factor Authentication</label>
@@ -185,7 +198,7 @@ const SettingsPage: React.FC = () => {
               <div>
                 <label className="block text-sm text-[#B88989] mb-1">API Keys</label>
                 <div className="flex items-center gap-2 p-3 bg-infamous-dark rounded-xl">
-                  <code className="text-xs text-[#B88989] flex-1 font-mono truncate">if_live_51SI7HQJBKY4ohJDA...</code>
+                  <code className="text-xs text-[#B88989] flex-1 font-mono truncate" aria-label="Masked API key">if_live_masked...</code>
                   <button className="text-xs text-infamous-orange hover:underline">Regenerate</button>
                 </div>
               </div>
@@ -224,7 +237,7 @@ const SettingsPage: React.FC = () => {
               ].map((integration) => (
                 <div key={integration.name} className="flex items-center justify-between p-3 bg-infamous-dark rounded-xl">
                   <div className="flex items-center gap-3">
-                    <Zap size={16} className="text-[#B88989]/70" />
+                    <Zap aria-hidden="true" size={16} className="text-[#B88989]/70" />
                     <div>
                       <p className="text-sm font-medium">{integration.name}</p>
                       <p className="text-xs text-[#B88989]/70">{integration.category}</p>
@@ -233,12 +246,13 @@ const SettingsPage: React.FC = () => {
                   {integration.status === 'connected' ? (
                     <span className="badge-green text-[10px]">Connected</span>
                   ) : (
-                    <button className="btn-secondary text-xs py-1.5 px-3">Connect</button>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+                  <button className="btn-secondary text-xs py-1.5 px-3">Connect</button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+          <span className="sr-only" aria-live="polite">{activeSectionLabel} settings section selected.</span>
         </div>
       </div>
     </div>
