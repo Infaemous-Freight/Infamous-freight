@@ -1,0 +1,137 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+  PNPM_VERSION: '10.0.0'
+
+jobs:
+  verify:
+    name: Verify workspace
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Configure pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate Prisma versions
+        run: pnpm run check:prisma-versions
+
+      - name: Check frontend environment safety
+        run: pnpm run env:check:frontend
+
+      - name: Check Supabase client environment
+        run: pnpm run env:check:supabase-client
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Test
+        run: pnpm run test
+
+      - name: Build web
+        run: pnpm run build:web
+        env:
+          SENTRY_DISABLE_UPLOAD: 'true'
+
+      - name: Upload web build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: apps/web/dist
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy-netlify:
+    name: Deploy Netlify production
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://www.infamousfreight.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download web build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: apps/web/dist
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: apps/web/dist
+          production-deploy: true
+          deploy-message: Production deploy from GitHub Actions ${{ github.sha }}
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+  smoke-test:
+    name: Production smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: deploy-netlify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Check production endpoints
+        run: |
+          set -euo pipefail
+
+          curl --fail --show-error --location --head https://www.infamousfreight.com
+          curl --fail --show-error --location https://www.infamousfreight.com/api/health
+          curl --fail --show-error --location https://www.infamousfreight.com/api/metrics
+          curl --fail --show-error --location https://www.infamousfreight.com/api/health/performance
+          curl --fail --show-error --location https://www.infamousfreight.com/api/health/database
+
+          redirect_status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://infamousfreight.com)"
+          if [ "$redirect_status" != "301" ] && [ "$redirect_status" != "200" ]; then
+            echo "Unexpected apex response: $redirect_status" >&2
+            exit 1
+          fi
