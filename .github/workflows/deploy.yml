@@ -60,14 +60,23 @@ jobs:
       - name: Check Supabase client environment
         run: pnpm run env:check:supabase-client
 
+      - name: Codex environment check
+        run: pnpm run codex:env-check
+
       - name: Typecheck
         run: pnpm run typecheck
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Validate Prisma schema
+        run: pnpm run prisma:validate
 
       - name: Test
         run: pnpm run test
 
-      - name: Build web
-        run: pnpm run build:web
+      - name: Build workspace
+        run: pnpm run build
         env:
           SENTRY_DISABLE_UPLOAD: 'true'
 
