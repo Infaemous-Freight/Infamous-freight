@@ -44,7 +44,7 @@ install_workspace_dependencies() {
   local package_manager="$1"
 
   if [ "$package_manager" = "pnpm" ]; then
-    pnpm install --frozen-lockfile || pnpm install
+    pnpm install --config.confirmModulesPurge=false --frozen-lockfile || pnpm install --config.confirmModulesPurge=false
     return
   fi
 
