@@ -22,12 +22,17 @@ describe('Netlify CSP policy', () => {
     }
   });
 
-  it('keeps the root app worker policy compatible with browser assets and the PWA scoped tightly', () => {
+  it('keeps worker-src locked to self for both root and driver PWA CSPs', () => {
     const rootContent = read(rootNetlify);
-    expect(rootContent).toContain("for = \"/*\"");
-    expect(rootContent).toContain("worker-src 'self' blob:");
-    expect(rootContent).toContain("for = \"/driver-pwa/*\"");
-    expect(rootContent).toContain("worker-src 'self'");
+    expect(rootContent).not.toContain("worker-src 'self' blob:");
+    expect(rootContent).toContain(
+      'for = "/*"\n  [headers.values]\n    X-Frame-Options = "SAMEORIGIN"',
+    );
+    expect(rootContent).toContain("frame-ancestors 'self'; worker-src 'self'; upgrade-insecure-requests");
+    expect(rootContent).toContain(
+      'for = "/driver-pwa/*"\n  [headers.values]\n    Content-Security-Policy =',
+    );
+    expect(rootContent).toContain("frame-ancestors 'self'; worker-src 'self'; upgrade-insecure-requests");
   });
 });
 
