@@ -6,7 +6,7 @@ Dispatch • Fleet intelligence • Driver coordination • Compliance • Billi
 
 ![license](https://img.shields.io/github/license/Infaemous-Freight/Infamous-freight)
 [![code style: TypeScript](https://img.shields.io/badge/code%20style-TypeScript-3178C6.svg)](https://www.typescriptlang.org/)
-[![deploy](https://github.com/MrMiless44/Infamous-freight/actions/workflows/deploy.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/deploy.yml)
+[![deploy](https://github.com/Infaemous-Freight/Infamous-freight/actions/workflows/deploy.yml/badge.svg)](https://github.com/Infaemous-Freight/Infamous-freight/actions/workflows/deploy.yml)
 
 ---
 
