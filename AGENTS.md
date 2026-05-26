@@ -9,6 +9,8 @@ This repository is configured for AI-assisted development. Use this guide before
 - Package manager: `pnpm`
 - Runtime: Node.js 22
 - App layout: pnpm monorepo
+- Production API app: `infamous-freight-api`
+- Production API health: `https://infamous-freight-api.fly.dev/api/health/live`
 
 ## Mission
 
@@ -54,6 +56,8 @@ Use `pnpm`, not npm or yarn.
 
 ```bash
 pnpm install --frozen-lockfile
+pnpm run env:check:frontend
+pnpm run env:check:supabase-client
 pnpm run lint
 pnpm run typecheck
 pnpm run check:prisma-versions
@@ -72,6 +76,40 @@ pnpm -C apps/web run typecheck
 pnpm -C apps/api run lint
 ```
 
+## Production validation commands
+
+Run these only from an authenticated operator terminal with Fly.io access:
+
+```bash
+flyctl auth whoami
+flyctl secrets list -a infamous-freight-api
+flyctl config validate --config fly.toml
+flyctl checks list -a infamous-freight-api
+curl -i https://infamous-freight-api.fly.dev/api/health/live
+```
+
+Do not paste secret values into tickets, PRs, logs, Codex output, or chat. Report only missing secret names and command status.
+
+## Required production secret names
+
+The Fly app should have these runtime secrets/config values present where the API requires them:
+
+- `DATABASE_URL`
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_JWT_SECRET`
+- `JWT_SECRET`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `REDIS_URL`
+- `CORS_ORIGINS`
+- `WEB_APP_URL`
+- `NODE_ENV`
+- `PORT`
+
+Use `flyctl secrets set` from an authenticated terminal only. Never commit real values.
+
 ## Safety rules
 
 - Do not commit secrets, tokens, `.env` files, private keys, database dumps, or production credentials.
@@ -80,13 +118,43 @@ pnpm -C apps/api run lint
 - Keep migrations immutable once applied.
 - Document any environment variable, deployment, database, or billing impact in the PR.
 
+## Auth, tenant, and RBAC rules
+
+- Do not rely on client-supplied `x-tenant-id`, `x-user-role`, or `subscription-status` as final production authority.
+- Prefer verified Supabase JWT claims plus database-backed organization membership checks.
+- Preserve tenant-aware and role-aware behavior in API, UI, realtime, and database access.
+- Enforce `organization_id` on tenant-scoped queries, service methods, realtime filters, RLS policies, and indexes.
+- Preserve the platform roles: `admin`, `owner`, `dispatcher`, `sales`, `accounting`, `shipper`, `carrier`, and `driver`.
+
+## Supabase and RLS rules
+
+- Browser/public variables must use Supabase API URLs, not Postgres database URLs.
+- Server-only database URLs belong in `DATABASE_URL` or server-side secret stores only.
+- Tenant-scoped tables need `FOR SELECT` policies tied to verified organization membership.
+- Realtime subscriptions for dispatch surfaces must filter by `organization_id`.
+- Add indexes for `organization_id` and common foreign keys used by tenant/RLS predicates.
+
+## Stripe webhook rules
+
+- Verify `stripe-signature` with `STRIPE_WEBHOOK_SECRET`.
+- Preserve raw request body for webhook verification.
+- Process Stripe events idempotently by event ID.
+- Do not expose `STRIPE_SECRET_KEY` or webhook secrets to browser code.
+- Success and cancel URLs should come from environment configuration.
+
+## Deployment rules
+
+- Keep Fly internal API port aligned with `PORT=3000` unless the app and Fly config are changed together.
+- Preserve Netlify redirects/proxy behavior for API routes.
+- Keep liveness/readiness checks explicit so `/api/health/live` can confirm process health while deeper checks can verify dependencies.
+- Prefer non-destructive deploy validation before applying production changes.
+
 ## Change standards
 
 - Keep changes focused and reversible.
 - Update docs when behavior, setup, deployment, env vars, or operator flows change.
 - Add or update tests for business logic and regression fixes.
 - Use existing scripts before inventing new ones.
-- Preserve tenant-aware and role-aware behavior.
 - Favor explicit TypeScript types and clear error handling.
 
 ## PR checklist for agents
