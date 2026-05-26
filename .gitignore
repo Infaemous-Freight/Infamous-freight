@@ -4,6 +4,7 @@ node_modules/
 **/.env.production
 .netlify/
 apps/web/.netlify/plugins/
+apps/web/.netlify/internal/db/migrations/
 build/
 dist/
 coverage/
