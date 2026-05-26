@@ -253,6 +253,27 @@
   status = 404
   force = true
 
+# Prevent missing static assets from falling back to index.html.
+# This avoids browser MIME errors when a stale HTML shell requests
+# a JS/CSS file that no longer exists after a deploy.
+[[redirects]]
+  from = "/assets/*.js"
+  to = "/404"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/assets/*.mjs"
+  to = "/404"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/assets/*.css"
+  to = "/404"
+  status = 404
+  force = true
+
 [[redirects]]
   from = "/track-shipment"
   to = "/tracking"
