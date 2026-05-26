@@ -87,7 +87,6 @@ export default defineConfig({
           if (id.includes('/recharts/')) return 'charts';
           if (id.includes('/@stripe/')) return 'stripe';
           if (id.includes('/@sentry/')) return 'vendor-sentry';
-          if (id.includes('/@supabase/')) return 'vendor-supabase';
           if (id.includes('/framer-motion/')) return 'vendor-motion';
           if (id.includes('/socket.io-client/') || id.includes('/engine.io-client/')) return 'vendor-socket';
           if (id.includes('/react-router-dom/') || id.includes('/react-router/')) return 'vendor-router';
