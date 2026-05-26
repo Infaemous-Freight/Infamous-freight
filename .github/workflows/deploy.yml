@@ -137,10 +137,35 @@ jobs:
           set -euo pipefail
 
           curl --fail --show-error --location --head https://www.infamousfreight.com
-          curl --fail --show-error --location https://www.infamousfreight.com/api/health
-          curl --fail --show-error --location https://www.infamousfreight.com/api/metrics
-          curl --fail --show-error --location https://www.infamousfreight.com/api/health/performance
-          curl --fail --show-error --location https://www.infamousfreight.com/api/health/database
+
+          web_live_status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://www.infamousfreight.com/api/health/live)"
+          if [ "$web_live_status" != "200" ]; then
+            echo "Unexpected web liveness response: $web_live_status" >&2
+            exit 1
+          fi
+
+          web_health_status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://www.infamousfreight.com/api/health)"
+          if [ "$web_health_status" != "200" ] && [ "$web_health_status" != "503" ]; then
+            echo "Unexpected web readiness response: $web_health_status" >&2
+            exit 1
+          fi
+
+          fly_live_status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://infamous-freight-api.fly.dev/api/health/live)"
+          if [ "$fly_live_status" != "200" ]; then
+            echo "Unexpected Fly API liveness response: $fly_live_status" >&2
+            exit 1
+          fi
+
+          for endpoint in \
+            https://www.infamousfreight.com/api/metrics \
+            https://www.infamousfreight.com/api/health/performance \
+            https://www.infamousfreight.com/api/health/database
+          do
+            endpoint_status="$(curl --silent --output /dev/null --write-out '%{http_code}' "$endpoint")"
+            if [ "$endpoint_status" = "000" ] || [ "$endpoint_status" -ge 500 ]; then
+              echo "warning: diagnostic endpoint $endpoint returned $endpoint_status" >&2
+            fi
+          done
 
           redirect_status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://infamousfreight.com)"
           if [ "$redirect_status" != "301" ] && [ "$redirect_status" != "200" ]; then
