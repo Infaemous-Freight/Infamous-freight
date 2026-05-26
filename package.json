@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
-  "description": "Infamous Freight — The freight dispatch platform built by truckers, for truckers",
-  "packageManager": "pnpm@10.0.0",
+  "description": "Infamous Freight \u2014 The freight dispatch platform built by truckers, for truckers",
+  "packageManager": "pnpm@11.3.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Infaemous-Freight/Infamous-freight.git"
@@ -89,21 +89,7 @@
   ],
   "engines": {
     "node": ">=22.0.0 <23.0.0",
-    "pnpm": ">=10.0.0 <11.0.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@prisma/client",
-      "@prisma/engines",
-      "@sentry/cli",
-      "esbuild",
-      "prisma",
-      "unrs-resolver"
-    ],
-    "overrides": {
-      "@hono/node-server": "1.19.13",
-      "ws": "8.20.1"
-    }
+    "pnpm": ">=11.3.0 <12.0.0"
   },
   "dependencies": {
     "@netlify/database": "^1.0.0",

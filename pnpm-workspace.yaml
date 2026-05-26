@@ -2,3 +2,23 @@ packages:
   - 'apps/*'
   - 'packages/*'
   - 'netlify/functions'
+
+overrides:
+  '@hono/node-server': 1.19.13
+  ws: 8.20.1
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@sentry/cli'
+  - esbuild
+  - prisma
+  - unrs-resolver
+
+
+allowBuilds:
+  '@prisma/engines': true
+  '@sentry/cli': true
+  esbuild: true
+  prisma: true
+  unrs-resolver: true
