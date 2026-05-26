@@ -14,8 +14,8 @@ describe('production smoke test script', () => {
   it('checks API liveness and readiness on /api/health routes', () => {
     const content = fs.readFileSync(scriptPath, 'utf8');
 
-    expect(content).toContain('curl --fail --show-error --silent "${API_URL%/}/api/health/live"');
-    expect(content).toContain('curl --fail --show-error --silent "${API_URL%/}/api/health/ready"');
+    expect(content).toContain('curl --fail --show-error --silent "${API_URL%/}${INFAMOUS_HEALTH_LIVE_PATH}"');
+    expect(content).toContain('curl --fail --show-error --silent "${API_URL%/}${INFAMOUS_HEALTH_READY_PATH}"');
     expect(content).not.toContain('"${API_URL%/}/health/live"');
     expect(content).not.toContain('"${API_URL%/}/health/ready"');
   });

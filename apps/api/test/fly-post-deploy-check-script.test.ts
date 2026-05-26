@@ -25,9 +25,9 @@ describe('fly post deploy check script', () => {
     expect(content).toContain('ERROR: ${APP_NAME} has ${unique_image_count} deployed images across machines.');
     expect(content).toContain('machine(s) with ${image}: ${ids}');
     expect(content).toContain('WARN: Continuing because ALLOW_MULTI_IMAGE_DEPLOY=true');
-    expect(content).toContain('curl -fsS "${APP_URL}/api/health/live" >/dev/null');
-    expect(content).toContain('curl -fsS "${APP_URL}/api/health/ready" >/dev/null');
-    expect(content).toContain('curl -fsS "${API_URL}/api/health/live" >/dev/null');
-    expect(content).toContain('curl -fsS "${API_URL}/api/health/ready" >/dev/null');
+    expect(content).toContain('curl -fsS "${APP_URL}${INFAMOUS_HEALTH_LIVE_PATH}" >/dev/null');
+    expect(content).toContain('curl -fsS "${APP_URL}${INFAMOUS_HEALTH_READY_PATH}" >/dev/null');
+    expect(content).toContain('curl -fsS "${API_URL}${INFAMOUS_HEALTH_LIVE_PATH}" >/dev/null');
+    expect(content).toContain('curl -fsS "${API_URL}${INFAMOUS_HEALTH_READY_PATH}" >/dev/null');
   });
 });
