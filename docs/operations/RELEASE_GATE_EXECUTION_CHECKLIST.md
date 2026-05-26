@@ -4,6 +4,8 @@
 
 Run and record the production release gate before paid beta or public launch.
 
+> Runtime/readiness source of truth: [`docs/current-status.md`](../current-status.md). This checklist validates release execution and evidence capture; it does not override current route readiness states.
+
 This checklist is intentionally operational. It does not change runtime code.
 
 ## Canonical production targets

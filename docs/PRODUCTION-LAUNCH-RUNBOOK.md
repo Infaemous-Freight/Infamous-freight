@@ -2,6 +2,8 @@
 
 This runbook covers the final production steps for Infamous Freight after the frontend is live and the API deployment is still blocked.
 
+> Runtime/readiness source of truth: [`docs/current-status.md`](./current-status.md). Use that document to confirm what is live vs demo-backed vs not ready before interpreting this runbook as launch approval.
+
 ## Clone the repository
 
 Use one of these commands from your workstation or deployment box:
