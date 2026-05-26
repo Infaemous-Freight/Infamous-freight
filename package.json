@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
-  "description": "Infamous Freight \u2014 The freight dispatch platform built by truckers, for truckers",
+  "description": "Infamous Freight — The freight dispatch platform built by truckers, for truckers",
   "packageManager": "pnpm@11.3.0",
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
     "dev:web": "pnpm -C apps/web run dev",
     "build": "pnpm run build:api && pnpm run build:web",
     "build:api": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run build",
-    "build:web": "bash scripts/check-pnpm-only.sh && pnpm -C apps/web run build",
+    "build:web": "bash scripts/check-pnpm-only.sh && pnpm -C apps/web run build:web",
     "start": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run start:prod",
     "lint": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run lint && pnpm -C apps/web run lint",
     "typecheck": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run lint && pnpm -C apps/web run typecheck",
@@ -74,7 +74,8 @@
     "@resvg/resvg-js": "2.6.2",
     "concurrently": "^9.0.0",
     "drizzle-kit": "1.0.0-beta.22",
-    "prisma": "7.8.0"
+    "prisma": "7.8.0",
+    "tsx": "^4.22.0"
   },
   "overrides": {
     "react-is": "^18.3.1",

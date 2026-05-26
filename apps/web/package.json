@@ -11,7 +11,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
-    "build:web": "pnpm run build",
+    "build:web": "vite build && tsx ../../scripts/generate-sitemap.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
