@@ -239,10 +239,6 @@ function getTrustedAuthContextFromJwt(token: string): TrustedAuthContext | null 
     claims.app_metadata?.tenantId,
     claims.app_metadata?.carrier_id,
     claims.app_metadata?.carrierId,
-    claims.user_metadata?.tenant_id,
-    claims.user_metadata?.tenantId,
-    claims.user_metadata?.carrier_id,
-    claims.user_metadata?.carrierId,
     claims.tenant_id,
     claims.tenantId,
     claims.carrier_id,
@@ -251,8 +247,6 @@ function getTrustedAuthContextFromJwt(token: string): TrustedAuthContext | null 
   const role = getRoleClaim(
     claims.app_metadata?.role,
     claims.app_metadata?.user_role,
-    claims.user_metadata?.role,
-    claims.user_metadata?.user_role,
     claims.user_role,
     claims.role,
   );

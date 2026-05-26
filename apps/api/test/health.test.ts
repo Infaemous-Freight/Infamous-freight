@@ -389,6 +389,56 @@ describe('configuration safety', () => {
     }
   });
 
+  it('rejects bearer tokens that only provide tenant and role in user_metadata', async () => {
+    const previousNodeEnv = process.env.NODE_ENV;
+    const previousDatabaseUrl = process.env.DATABASE_URL;
+    const previousAuthMode = process.env.AUTH_MODE;
+    const previousJwtSecret = process.env.SUPABASE_JWT_SECRET;
+
+    try {
+      process.env.NODE_ENV = 'production';
+      process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/infamous_test';
+      process.env.SUPABASE_JWT_SECRET = 'test-supabase-jwt-secret';
+      delete process.env.AUTH_MODE;
+
+      const token = signJwt({
+        sub: 'user-1',
+        exp: Math.floor(Date.now() / 1000) + 60,
+        user_metadata: {
+          tenant_id: 'tenant-from-user-metadata',
+          role: 'dispatcher',
+        },
+      });
+
+      const response = await request(createApp())
+        .get('/api/loads')
+        .set('authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(401);
+      expect(response.body.error).toBe('authentication_required');
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+
+      if (previousDatabaseUrl !== undefined) {
+        process.env.DATABASE_URL = previousDatabaseUrl;
+      } else {
+        delete process.env.DATABASE_URL;
+      }
+
+      if (previousAuthMode !== undefined) {
+        process.env.AUTH_MODE = previousAuthMode;
+      } else {
+        delete process.env.AUTH_MODE;
+      }
+
+      if (previousJwtSecret !== undefined) {
+        process.env.SUPABASE_JWT_SECRET = previousJwtSecret;
+      } else {
+        delete process.env.SUPABASE_JWT_SECRET;
+      }
+    }
+  });
+
   it('rejects expired or tampered bearer tokens in trusted auth mode', async () => {
     process.env.AUTH_MODE = 'trusted';
     process.env.SUPABASE_JWT_SECRET = 'test-supabase-jwt-secret';
