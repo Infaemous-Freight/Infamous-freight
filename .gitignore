@@ -11,3 +11,4 @@ coverage/
 .idea/
 out/
 .DS_Store
+**/.env*.local
