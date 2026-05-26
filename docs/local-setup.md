@@ -7,7 +7,7 @@ Quickstart for running the Infamous Freight monorepo on a developer workstation.
 ## Prerequisites
 
 - **Node.js** `>=22.0.0 <23.0.0` (see root [`package.json`](../package.json) `engines`). The repo includes [`.nvmrc`](../.nvmrc) and [`.node-version`](../.node-version), both set to `22` (latest Node 22.x).
-- **pnpm** `>=10.0.0 <11.0.0` (see root [`package.json`](../package.json) `packageManager` and `engines`). Install with `corepack enable` (recommended) or `npm install -g pnpm@10`.
+- **pnpm** `>=11.3.0 <12.0.0` (see root [`package.json`](../package.json) `packageManager` and `engines`). Install with `corepack enable` (recommended) or `npm install -g pnpm@11`.
 - **PostgreSQL** running locally (or via Docker / Supabase). Default local URL in [`.env.example`](../.env.example) is `postgresql://infamous:changeme@localhost:5432/infamous_freight`.
 - **Redis** for rate limiting / queues (default `localhost:6379` per `.env.example`).
 - Optional: **Docker** for spinning up Postgres + Redis via [`docker-compose.yml`](../docker-compose.yml).
@@ -79,6 +79,7 @@ pnpm run validate
 ## Troubleshooting
 
 - **`PrismaClientInitializationError` on Linux** — the schema includes `binaryTargets = ["native", "debian-openssl-1.1.x"]` for the production runtime. Locally, `prisma generate` should pick up the right target automatically; if not, re-run after installing system OpenSSL.
+- **`ERR_PNPM_UNEXPECTED_STORE`** — this happens when `node_modules` was linked by a different pnpm major version (for example pnpm 10 store `.../store/v10` vs pnpm 11 store `.../store/v11`). Preferred fix: reinstall dependencies with the active pnpm major using `pnpm install --frozen-lockfile` (pnpm will recreate `node_modules` as needed). In non-interactive shells, run `CI=true pnpm install --frozen-lockfile` to avoid purge confirmation prompts. If you must keep a custom location, set it explicitly with `pnpm config set store-dir <dir> --global` and reinstall.
 - **Stripe local testing** — see [`STRIPE-SETUP.md`](./STRIPE-SETUP.md).
 - **Auth / RLS issues** — see [`AUTHORIZATION_MIGRATION_PLAN.md`](./AUTHORIZATION_MIGRATION_PLAN.md).
 - **Required CLIs** — [`REQUIRED-CLIS.md`](./REQUIRED-CLIS.md).
