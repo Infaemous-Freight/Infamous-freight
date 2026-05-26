@@ -3,6 +3,8 @@ node_modules/
 .env.production
 **/.env.production
 .netlify/
+apps/web/.netlify/edge-functions-dist/
+apps/web/.netlify/edge-functions-import-map.json
 apps/web/.netlify/plugins/
 apps/web/.netlify/internal/db/migrations/
 build/
