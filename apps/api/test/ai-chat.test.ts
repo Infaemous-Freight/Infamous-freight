@@ -87,4 +87,17 @@ describe('AI chat route', () => {
     expect(requestBody.messages[0].role).toBe('system');
     expect(requestBody.messages.at(-1).content).toHaveLength(4_000);
   });
+
+  it('rate limits chat requests after 20 requests per minute', async () => {
+    const { app, create } = createTestApp(['Done.']);
+    const payload = { messages: [{ role: 'user', content: 'Need lane support.' }] };
+
+    for (let index = 0; index < 20; index += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await request(app).post('/api/chat').send(payload).expect(200);
+    }
+
+    await request(app).post('/api/chat').send(payload).expect(429);
+    expect(create).toHaveBeenCalledTimes(20);
+  });
 });

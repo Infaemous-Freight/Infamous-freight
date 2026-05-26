@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import OpenAI from 'openai';
 import type { NextFunction, Request, Response } from 'express';
 import type { ChatCompletionChunk } from 'openai/resources/chat/completions';
@@ -47,6 +48,8 @@ const HISTORY_LIMIT = 20;
 const MAX_MESSAGE_LENGTH = 4_000;
 const MAX_TOTAL_MESSAGE_CHARS = 12_000;
 const MAX_COMPLETION_TOKENS = 700;
+const CHAT_RATE_LIMIT_WINDOW_MS = 60_000;
+const CHAT_RATE_LIMIT_MAX_REQUESTS = 20;
 
 function getPositiveIntegerEnv(name: string, fallback: number): number {
   const rawValue = process.env[name];
@@ -110,8 +113,13 @@ export function createAiChatRouter(options: AiChatRouterOptions = {}) {
   const createClient = options.createClient ?? createDefaultClient;
   const model = options.model ?? process.env.AI_CHAT_MODEL?.trim() ?? DEFAULT_MODEL;
   const timeoutMs = options.timeoutMs ?? getPositiveIntegerEnv('AI_CHAT_TIMEOUT_MS', DEFAULT_TIMEOUT_MS);
+  const chatLimiter = rateLimit({
+    windowMs: CHAT_RATE_LIMIT_WINDOW_MS,
+    max: CHAT_RATE_LIMIT_MAX_REQUESTS,
+    standardHeaders: true,
+  });
 
-  router.post('/api/chat', async (req: Request, res: Response, next: NextFunction) => {
+  router.post('/api/chat', chatLimiter, async (req: Request, res: Response, next: NextFunction) => {
     const messages = sanitizeMessages(req.body?.messages);
     const lastUserMessage = getLastUserMessage(messages);
 
