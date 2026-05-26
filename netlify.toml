@@ -6,11 +6,10 @@
   # per-function deploy limit. Public API traffic is proxied to the Fly backend
   # instead of a Netlify function so deploys do not fail during function upload.
   #
-  # To re-enable:
-  #   1. In Site settings → Environment variables, remove the "functions" scope
-  #      from vars the function does not need (Firebase, Fly tokens, AWL_API_KEY,
-  #      Sentry, Supabase, Github).
-  #   2. Add the required function entrypoints under netlify/event-functions.
+  # Form submission event handlers now run from netlify/event-functions.
+  # Keep function-scoped env vars minimal so Netlify stays under the 4 KB
+  # per-function deploy limit. submission-created.mts only needs
+  # NETLIFY_DATABASE_URL at function scope.
   #
   # The functions directive must remain so Netlify does not fall back to
   # auto-detecting the HTTP API functions in netlify/functions/.

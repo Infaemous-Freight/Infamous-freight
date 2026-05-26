@@ -262,7 +262,8 @@ apps/
   mobile/   # Reserved mobile surface (planned)
 
 netlify/
-  functions/            # Public intake and lookup routes
+  event-functions/      # Netlify event handlers (form submission DB writes)
+  functions/            # Retained API function entrypoints (normally disabled in deploys)
   database/migrations/  # Netlify database migrations
 
 docs/       # Architecture, operations, launch, readiness
@@ -329,6 +330,7 @@ Verification should always include:
 - `https://www.infamousfreight.com/api/health`
 - public intake routes under `/api/public/*`
 - Fly.io runtime status after deploy
+- Netlify form events: `netlify/event-functions/submission-created.mts` must remain enabled (no `.disabled` suffix), and Netlify function scope should include only `NETLIFY_DATABASE_URL` for this handler
 
 ---
 
