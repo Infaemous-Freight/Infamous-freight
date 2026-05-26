@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source "$(dirname "$0")/lib/health-endpoints.sh"
+
 APP_NAME="${1:-infamous-freight-api}"
 APP_URL="${2:-https://infamous-freight-api.fly.dev}"
 API_URL="${3:-https://api.infamousfreight.com}"
@@ -43,9 +45,9 @@ if [[ "${unique_image_count}" != "1" ]]; then
   echo "WARN: Continuing because ALLOW_MULTI_IMAGE_DEPLOY=true (expected only during active rollout)." >&2
 fi
 
-curl -fsS "${APP_URL}/api/health/live" >/dev/null
-curl -fsS "${APP_URL}/api/health/ready" >/dev/null
-curl -fsS "${API_URL}/api/health/live" >/dev/null
-curl -fsS "${API_URL}/api/health/ready" >/dev/null
+curl -fsS "${APP_URL}${INFAMOUS_HEALTH_LIVE_PATH}" >/dev/null
+curl -fsS "${APP_URL}${INFAMOUS_HEALTH_READY_PATH}" >/dev/null
+curl -fsS "${API_URL}${INFAMOUS_HEALTH_LIVE_PATH}" >/dev/null
+curl -fsS "${API_URL}${INFAMOUS_HEALTH_READY_PATH}" >/dev/null
 
 echo "Fly deploy verification passed for ${APP_NAME}."
