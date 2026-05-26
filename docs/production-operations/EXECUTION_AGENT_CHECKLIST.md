@@ -37,6 +37,13 @@ rg -n "SUPABASE_DATABASE_URL|VITE_SUPABASE_DATABASE_URL|PUBLIC_SUPABASE_DATABASE
 ```
 
 
+Critical Fly config safety rule:
+
+```bash
+# Do NOT run unless explicitly instructed by owner
+# flyctl config save -a infamous-freight-api --yes
+```
+
 ## Install required CLIs and configure runtime environment variables
 
 Run one command to install required CLIs and apply canonical runtime env values when `FLY_API_TOKEN` is present:
@@ -80,6 +87,16 @@ pnpm run build
 pnpm run test
 ```
 
+Run full repo recommended validation before PR handoff:
+
+```bash
+pnpm run lint
+pnpm run typecheck
+pnpm run check:prisma-versions
+pnpm run prisma:validate
+pnpm run codex:env-check
+```
+
 Run Fly checks (authenticated Fly terminal required):
 
 ```bash
@@ -115,7 +132,7 @@ Use this PR-ready summary template:
 
 ## Deployment Guardrail
 
-When reconciling split/failed deploys:
+When reconciling split/failed deploys (one machine at a time):
 
 ```bash
 flyctl deploy -a infamous-freight-api --strategy rolling --max-concurrent 1
