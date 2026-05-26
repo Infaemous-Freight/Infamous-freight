@@ -86,6 +86,7 @@ This directory contains operational, architectural, and launch-readiness documen
 ## 🧰 Developer Environment
 
 - [CODEX_ENVIRONMENT.md](./CODEX_ENVIRONMENT.md) — Codex environment notes.
+- [CODEX_EXECUTION_PACKAGE.md](./CODEX_EXECUTION_PACKAGE.md) — Codex execution loop, safety, and verification checklist.
 - [REQUIRED-CLIS.md](./REQUIRED-CLIS.md) — Required CLIs.
 - [environment/](./environment) — Environment configuration references.
 - [GitHub Copilot custom instructions](../.github/copilot-instructions.md) — Repo-wide guidance for Copilot chat, code completion, and the coding agent.
