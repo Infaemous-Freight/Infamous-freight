@@ -18,7 +18,9 @@ Built as a **pnpm monorepo**, the platform currently ships a **React 19 + Vite w
 
 If you want one system for **dispatch**, **tracking**, **paperwork**, **analytics**, **compliance**, and **operational control**, this is the platform.
 
-> Runtime truth and current hardening status live in [`docs/current-status.md`](docs/current-status.md).
+> **Status source of truth:** For what is currently live in runtime (and what is still demo-backed or not ready), always use [`docs/current-status.md`](docs/current-status.md).
+>
+> README includes platform context and roadmap framing; when there is any conflict, `docs/current-status.md` is authoritative.
 
 ---
 
@@ -26,7 +28,7 @@ If you want one system for **dispatch**, **tracking**, **paperwork**, **analytic
 
 - `apps/api` — 🛠️ Node.js + Express 5 backend, TypeScript, Drizzle ORM, billing helpers, and freight workflow logic
 - `apps/web` — 🌐 React 19 + Vite frontend, strict TypeScript, operator surfaces, and client-side API helpers
-- `apps/mobile` — 📱 reserved mobile surface *(planned)*
+- `apps/mobile` — 📱 reserved mobile surface _(planned)_
 - `netlify/functions` — ⚡ retained function entrypoints for future packaging or emergency fallback; normal Netlify deploys currently keep these disabled and proxy browser API traffic to Fly.io
 - `docs/netlify-database-pending-migrations` — 🗄️ pending Netlify Database migration drafts kept outside Netlify's auto-provisioning path.
 - `docs/` — 📚 architecture, launch, operations, Stripe, Netlify, and production-readiness docs
@@ -39,15 +41,11 @@ If you want one system for **dispatch**, **tracking**, **paperwork**, **analytic
 
 ## 🔥 Platform Highlights
 
-- 🚚 AI-assisted dispatch workflows
-- 📍 Real-time shipment location, ETA, and status visibility
-- 💬 Driver-dispatch chat and operational messaging
-- 🤖 Load matching and negotiation support
-- 📄 Digital paperwork, BOL/POD, invoicing, and portal flows
-- 🛡️ Role-based, tenant-aware compliance controls
-- 💳 Stripe checkout, customer portal, webhook sync, and one-time payment tracking
-- 📊 Broker, rate, and operational analytics
-- 🔎 Support for load-board, geofencing, CSA, IFTA, and related freight workflow surfaces
+- ✅ **Working now:** production web + API deployment path is active (Netlify web, Fly API, same-origin `/api/*` proxy), with live billing/paywall activation. See [`docs/current-status.md`](docs/current-status.md) for exact live scope.
+- 🧪 **Demo-backed today:** key operator surfaces (dispatch, loads, drivers, invoices, analytics, compliance, carriers, accounting, quotes) are currently demo-backed while live wiring is completed.
+- 🛣️ **Planned / in progress:** broader AI-assisted operations expansion and deeper workflow hardening continue across non-live internal surfaces.
+
+For exact per-route readiness and gating status, use [`docs/current-status.md`](docs/current-status.md).
 
 ---
 
@@ -65,17 +63,17 @@ If you want one system for **dispatch**, **tracking**, **paperwork**, **analytic
 
 ## 🧱 Active Tech Stack
 
-| Layer | Tech |
-|---|---|
-| 🎨 Frontend | React 19, Vite, TypeScript, Tailwind CSS, Zustand, Socket.io client |
-| 🧠 Backend | Express 5, TypeScript, Drizzle ORM |
-| 🗄️ Database | PostgreSQL |
-| ⚡ Cache | Redis |
-| 🔐 Auth | Supabase Auth and JWT-derived trusted claims |
-| 💳 Billing | Stripe Checkout, Customer Portal, webhooks, and one-time payments |
-| 📡 Realtime | Socket.io |
-| ☁️ Deploy | Fly.io (API), Netlify (Web), Docker |
-| 🚨 Monitoring | Sentry is opt-in through environment configuration |
+| Layer         | Tech                                                                |
+| ------------- | ------------------------------------------------------------------- |
+| 🎨 Frontend   | React 19, Vite, TypeScript, Tailwind CSS, Zustand, Socket.io client |
+| 🧠 Backend    | Express 5, TypeScript, Drizzle ORM                                  |
+| 🗄️ Database   | PostgreSQL                                                          |
+| ⚡ Cache      | Redis                                                               |
+| 🔐 Auth       | Supabase Auth and JWT-derived trusted claims                        |
+| 💳 Billing    | Stripe Checkout, Customer Portal, webhooks, and one-time payments   |
+| 📡 Realtime   | Socket.io                                                           |
+| ☁️ Deploy     | Fly.io (API), Netlify (Web), Docker                                 |
+| 🚨 Monitoring | Sentry is opt-in through environment configuration                  |
 
 ---
 
@@ -111,16 +109,16 @@ Use any existing visuals you already keep in the repo:
 
 Replace the placeholders below with real product screenshots as the app matures.
 
-| View | Screenshot |
-|---|---|
-| 🚚 Dispatch Board | `docs/screenshots/dispatch-board.png` |
-| 📦 Shipment Detail View | `docs/screenshots/shipment-detail.png` |
-| 👨‍✈️ Driver Operations View | `docs/screenshots/driver-ops.png` |
-| 💬 Realtime Chat View | `docs/screenshots/chat-view.png` |
-| 💳 Billing / Invoicing View | `docs/screenshots/billing-invoice.png` |
-| 📊 Analytics Dashboard | `docs/screenshots/analytics-dashboard.png` |
-| 🛡️ Compliance Panel | `docs/screenshots/compliance-panel.png` |
-| 🗂️ Carrier Packet Workflow | `docs/screenshots/carrier-packet.png` |
+| View                        | Screenshot                                 |
+| --------------------------- | ------------------------------------------ |
+| 🚚 Dispatch Board           | `docs/screenshots/dispatch-board.png`      |
+| 📦 Shipment Detail View     | `docs/screenshots/shipment-detail.png`     |
+| 👨‍✈️ Driver Operations View   | `docs/screenshots/driver-ops.png`          |
+| 💬 Realtime Chat View       | `docs/screenshots/chat-view.png`           |
+| 💳 Billing / Invoicing View | `docs/screenshots/billing-invoice.png`     |
+| 📊 Analytics Dashboard      | `docs/screenshots/analytics-dashboard.png` |
+| 🛡️ Compliance Panel         | `docs/screenshots/compliance-panel.png`    |
+| 🗂️ Carrier Packet Workflow  | `docs/screenshots/carrier-packet.png`      |
 
 ### 🖼️ Social Preview
 
@@ -230,6 +228,7 @@ curl -X GET https://www.infamousfreight.com/api/health/ready
 ```
 
 Use these during:
+
 - local verification
 - pre-launch validation
 - post-deploy smoke checks
@@ -239,12 +238,12 @@ Use these during:
 
 ## 🧪 CI/CD & Quality Gates
 
-| Gate | Purpose |
-|---|---|
-| Lint | Code style and hygiene |
-| Typecheck | Strict TypeScript validation |
-| Test | Deterministic verification |
-| Build | CI-stable output |
+| Gate           | Purpose                            |
+| -------------- | ---------------------------------- |
+| Lint           | Code style and hygiene             |
+| Typecheck      | Strict TypeScript validation       |
+| Test           | Deterministic verification         |
+| Build          | CI-stable output                   |
 | Runtime checks | Docker, Fly, and health validation |
 
 - 🔁 CI runs through GitHub Actions under [`.github/workflows/`](.github/workflows/)
