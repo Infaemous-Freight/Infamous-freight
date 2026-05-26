@@ -68,8 +68,9 @@ Record successful evidence in `docs/LAUNCH_EVIDENCE_LOG.md` before paid beta/pub
 
 ### Dashboards and KPIs
 
-- Document dashboard URLs and owners for API latency, deploy health, dispatch/shipments, Stripe webhook failures, Socket.io reconnects, and AI usage.
-- Route Sentry alerts for repeated production exceptions.
+- Baseline registry published in `docs/operations/TELEMETRY_DASHBOARD_REGISTRY.md` with URLs, owners, metric mappings, and fallback paths.
+- Keep the registry in sync whenever dashboard slugs, ownership, or alert routing changes.
+- Route Sentry alerts for repeated production exceptions using the policy in the registry.
 
 ### Safe stress testing
 

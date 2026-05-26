@@ -1,0 +1,14 @@
+{
+  "uid": "billing-webhooks-v1",
+  "title": "Billing & Stripe Webhooks",
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": ["billing", "stripe", "webhooks"],
+  "panels": [
+    {"title": "Stripe Webhook Failures", "type": "timeseries", "targets": [{"expr": "stripe_webhook_failures"}]},
+    {"title": "Stripe Webhook Success Rate (%)", "type": "timeseries", "targets": [{"expr": "stripe_webhook_success_rate_percent"}]},
+    {"title": "Checkout Success Count", "type": "timeseries", "targets": [{"expr": "checkout_success_count"}]},
+    {"title": "Billing Sync Backlog", "type": "timeseries", "targets": [{"expr": "billing_sync_backlog_count"}]}
+  ]
+}

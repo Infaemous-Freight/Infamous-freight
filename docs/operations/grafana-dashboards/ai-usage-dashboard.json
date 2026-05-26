@@ -1,0 +1,14 @@
+{
+  "uid": "ai-usage-v1",
+  "title": "AI Usage & Throughput",
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": ["ai", "usage", "operations"],
+  "panels": [
+    {"title": "AI Usage Volume", "type": "timeseries", "targets": [{"expr": "ai_usage_volume"}]},
+    {"title": "AI Usage by Feature", "type": "barchart", "targets": [{"expr": "ai_usage_by_feature"}]},
+    {"title": "AI Request Latency (ms)", "type": "timeseries", "targets": [{"expr": "ai_request_latency_ms"}]},
+    {"title": "AI Override Rate (%)", "type": "timeseries", "targets": [{"expr": "ai_override_rate_percent"}]}
+  ]
+}
