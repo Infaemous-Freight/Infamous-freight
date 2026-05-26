@@ -1,0 +1,14 @@
+{
+  "uid": "api-reliability-v1",
+  "title": "Production API Reliability",
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": ["api", "reliability", "fly", "health"],
+  "panels": [
+    {"title": "API p95 Latency (ms)", "type": "timeseries", "targets": [{"expr": "api_latency_p95_ms"}]},
+    {"title": "API 5xx Rate (%)", "type": "timeseries", "targets": [{"expr": "api_5xx_rate_percent"}]},
+    {"title": "Deploy Health Success Rate (%)", "type": "timeseries", "targets": [{"expr": "deploy_health_success_rate"}]},
+    {"title": "Live Health Pass Rate (%)", "type": "timeseries", "targets": [{"expr": "api_health_live_pass_rate"}]}
+  ]
+}

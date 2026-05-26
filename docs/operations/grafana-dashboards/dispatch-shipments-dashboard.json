@@ -1,0 +1,14 @@
+{
+  "uid": "dispatch-shipments-v1",
+  "title": "Dispatch & Shipment Operations",
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": ["dispatch", "shipments", "operations"],
+  "panels": [
+    {"title": "Dispatch Latency (minutes)", "type": "timeseries", "targets": [{"expr": "dispatch_latency_minutes"}]},
+    {"title": "Shipment Completion Rate (%)", "type": "timeseries", "targets": [{"expr": "shipment_completion_rate_percent"}]},
+    {"title": "Active Shipments", "type": "stat", "targets": [{"expr": "active_shipments_count"}]},
+    {"title": "Socket.io Reconnect Spike Ratio", "type": "timeseries", "targets": [{"expr": "socket_reconnect_spike_ratio"}]}
+  ]
+}
