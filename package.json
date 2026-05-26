@@ -97,7 +97,8 @@
       "@prisma/engines",
       "@sentry/cli",
       "esbuild",
-      "prisma"
+      "prisma",
+      "unrs-resolver"
     ],
     "overrides": {
       "@hono/node-server": "1.19.13",
