@@ -6,6 +6,7 @@ Dispatch • Fleet intelligence • Driver coordination • Compliance • Billi
 
 ![license](https://img.shields.io/github/license/Infaemous-Freight/Infamous-freight)
 [![code style: TypeScript](https://img.shields.io/badge/code%20style-TypeScript-3178C6.svg)](https://www.typescriptlang.org/)
+[![deploy](https://github.com/MrMiless44/Infamous-freight/actions/workflows/deploy.yml/badge.svg)](https://github.com/MrMiless44/Infamous-freight/actions/workflows/deploy.yml)
 
 ---
 
@@ -13,7 +14,7 @@ Dispatch • Fleet intelligence • Driver coordination • Compliance • Billi
 
 Infamous Freight is an AI-powered freight operations platform for **dispatch execution**, **shipment visibility**, **driver coordination**, **compliance workflows**, **billing**, and **logistics automation**.
 
-Built as a **pnpm monorepo**, the platform currently ships a **React 19 + Vite web application on Netlify**, an **Express 5 API on Fly.io**, **Prisma-backed PostgreSQL data access**, **Socket.io realtime flows**, and **Stripe-powered billing** for modern freight teams and enterprise-ready operations.
+Built as a **pnpm monorepo**, the platform currently ships a **React 19 + Vite web application on Netlify**, an **Express 5 API on Fly.io**, **Drizzle ORM-backed PostgreSQL data access**, **Socket.io realtime flows**, and **Stripe-powered billing** for modern freight teams and enterprise-ready operations.
 
 If you want one system for **dispatch**, **tracking**, **paperwork**, **analytics**, **compliance**, and **operational control**, this is the platform.
 
@@ -23,7 +24,7 @@ If you want one system for **dispatch**, **tracking**, **paperwork**, **analytic
 
 ## 📦 Monorepo Overview
 
-- `apps/api` — 🛠️ Node.js + Express 5 backend, TypeScript, Prisma, billing helpers, and freight workflow logic
+- `apps/api` — 🛠️ Node.js + Express 5 backend, TypeScript, Drizzle ORM, billing helpers, and freight workflow logic
 - `apps/web` — 🌐 React 19 + Vite frontend, strict TypeScript, operator surfaces, and client-side API helpers
 - `apps/mobile` — 📱 reserved mobile surface *(planned)*
 - `netlify/functions` — ⚡ retained function entrypoints for future packaging or emergency fallback; normal Netlify deploys currently keep these disabled and proxy browser API traffic to Fly.io
@@ -67,7 +68,7 @@ If you want one system for **dispatch**, **tracking**, **paperwork**, **analytic
 | Layer | Tech |
 |---|---|
 | 🎨 Frontend | React 19, Vite, TypeScript, Tailwind CSS, Zustand, Socket.io client |
-| 🧠 Backend | Express 5, TypeScript, Prisma ORM |
+| 🧠 Backend | Express 5, TypeScript, Drizzle ORM |
 | 🗄️ Database | PostgreSQL |
 | ⚡ Cache | Redis |
 | 🔐 Auth | Supabase Auth and JWT-derived trusted claims |
@@ -81,7 +82,7 @@ If you want one system for **dispatch**, **tracking**, **paperwork**, **analytic
 ## 🏗️ Solution Architecture
 
 ```text
-web/   ─▶  api/   ─▶  db (Postgres/Prisma)
+web/   ─▶  api/   ─▶  db (Postgres/Drizzle ORM)
         │         ├─▶ Redis
         │         ├─▶ Stripe (billing)
         │         ├─▶ Socket.io (realtime)
@@ -256,7 +257,7 @@ Use these during:
 
 ```text
 apps/
-  api/      # Express 5 backend, TypeScript, Prisma
+  api/      # Express 5 backend, TypeScript, Drizzle ORM
   web/      # React 19 + Vite frontend
   mobile/   # Reserved mobile surface (planned)
 
