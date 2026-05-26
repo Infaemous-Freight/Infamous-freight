@@ -60,6 +60,7 @@ This guide standardizes Codex-driven execution for Infamous Freight using the op
   - `PUBLIC_SUPABASE_DATABASE_URL`
   - `NEXT_PUBLIC_SUPABASE_DATABASE_URL`
 - Required production secret: `SUPABASE_JWT_SECRET` (preferred) or `JWT_SECRET`.
+- Incident-response precedence: validate Supabase JWTs with `SUPABASE_JWT_SECRET` first; use `JWT_SECRET` only for legacy fallback paths.
 
 
 ## Git and branch bootstrap

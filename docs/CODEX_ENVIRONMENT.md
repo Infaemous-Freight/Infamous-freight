@@ -70,6 +70,7 @@ Supabase/security guardrails:
 - Never use `SUPABASE_DATABASE_URL` (or any `PUBLIC_`/`NEXT_PUBLIC_`/`VITE_` variant) for Supabase client setup.
 - Database connection strings belong only in `DATABASE_URL` on server-side runtime.
 - Production must include `SUPABASE_JWT_SECRET` or `JWT_SECRET` (prefer `SUPABASE_JWT_SECRET` when validating Supabase tokens).
+- Incident response should verify tokens with `SUPABASE_JWT_SECRET` first and treat `JWT_SECRET` as legacy fallback only.
 
 ## Recommended local development defaults
 

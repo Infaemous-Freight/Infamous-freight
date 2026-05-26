@@ -53,7 +53,8 @@ curl -i https://infamous-freight-api.fly.dev/api/health/ready
 
 Expected:
 - `/api/health/live` returns HTTP 200 when process liveness is healthy.
-- `/api/health/ready` returns HTTP 200 only when app dependencies (for example database) are healthy.
+- `/api/health` or `/api/health/ready` may return HTTP 503 when dependencies are degraded.
+- If `/api/health/live` returns `mode="fallback"`, treat startup as failed and inspect logs for missing secrets, DB errors, or auth configuration issues.
 
 If Fly cannot pull the digest from GHCR (private image/auth required), mirror into Fly registry:
 

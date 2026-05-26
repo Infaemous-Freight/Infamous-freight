@@ -151,7 +151,7 @@ is provided.
 6. **Rollback to last good release:**
    ```bash
    fly releases --app infamous-freight-api   # find the last good version
-   fly deploy --image <previous-image-tag> --app infamous-freight-api
+   fly deploy --image <previous-image-tag> --app infamous-freight-api --strategy rolling --max-concurrent 1 --wait-timeout 10m --yes
    ```
 
 ---

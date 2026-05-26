@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source "$(dirname "$0")/lib/health-endpoints.sh"
+
 APP="${FLY_APP:-infamous-freight-api}"
 BASE_URL="${BASE_URL:-https://infamous-freight-api.fly.dev}"
 FLY_BIN="$(command -v flyctl || command -v fly || true)"
@@ -23,7 +25,7 @@ echo "Releases:"
 echo
 
 echo "Health endpoints:"
-for path in /api/health/live /api/health /health/live /health; do
+for path in "${INFAMOUS_HEALTH_LIVE_PATH}" "${INFAMOUS_HEALTH_READY_PATH}" "${INFAMOUS_HEALTH_READINESS_FALLBACK_PATH}" /health/live /health; do
   echo "--- ${BASE_URL}${path}"
   curl -fsS -i --max-time 20 "${BASE_URL}${path}" | sed -n '1,40p' || true
   echo

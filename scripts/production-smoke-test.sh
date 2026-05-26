@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+source "$(dirname "$0")/lib/health-endpoints.sh"
+
 WEB_URL="${WEB_URL:-https://www.infamousfreight.com}"
 BARE_SITE_URL="${BARE_SITE_URL:-https://infamousfreight.com}"
 API_URL="${API_URL:-https://infamous-freight-api.fly.dev}"
@@ -19,11 +21,11 @@ if [[ "${final_url}" != "${WEB_URL%/}/" ]]; then
 fi
 
 echo "Checking API liveness..."
-curl --fail --show-error --silent "${API_URL%/}/api/health/live"
+curl --fail --show-error --silent "${API_URL%/}${INFAMOUS_HEALTH_LIVE_PATH}"
 echo
 
 echo "Checking API readiness..."
-curl --fail --show-error --silent "${API_URL%/}/api/health/ready"
+curl --fail --show-error --silent "${API_URL%/}${INFAMOUS_HEALTH_READY_PATH}"
 echo
 
 echo "Checking proxied web API health..."
