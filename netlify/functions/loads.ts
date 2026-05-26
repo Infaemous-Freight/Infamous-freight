@@ -51,6 +51,12 @@ function rowToLoad(row: Record<string, unknown>) {
   };
 }
 
+function rowToPublicLoad(row: Record<string, unknown>) {
+  const { shipperName: _shipperName, shipperEmail: _shipperEmail, ...publicLoad } = rowToLoad(row);
+  return publicLoad;
+}
+
+
 async function listLoads(req: Request, _user: TokenPayload) {
   const url = parseUrl(req);
   const status = url.searchParams.get('status');
@@ -181,7 +187,7 @@ async function searchLoads(req: Request) {
     `;
   }
 
-  let results = rows.map((r: Record<string, unknown>) => rowToLoad(r));
+  let results = rows.map((r: Record<string, unknown>) => rowToPublicLoad(r));
   if (minRate) {
     results = results.filter((l: { rate: number | null }) => l.rate !== null && l.rate >= minRate);
   }
