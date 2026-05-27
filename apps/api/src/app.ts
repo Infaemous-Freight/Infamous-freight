@@ -30,6 +30,7 @@ import { createRateLimitMiddleware } from './rate-limit';
 import { createStripeWebhookEventStore } from './stripe-webhook-events';
 import { createStripeOneTimePaymentStore } from './stripe-one-time-payments';
 import { createFreightWorkflowRouter } from './freight-workflow-routes';
+import { createDispatchAutomationRouter } from './dispatch-automation';
 import { createAuditLogger, AuditLogger } from './audit-logger';
 import type { UserRole } from './rbac/rbac-rules';
 
@@ -1316,6 +1317,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
   }));
 
   app.use('/api/workflows', ...protectedApi, createFreightWorkflowRouter(dataStore));
+  app.use('/api/dispatch', ...protectedApi, createDispatchAutomationRouter(auditLogger));
 }
 
 export function createApp() {
