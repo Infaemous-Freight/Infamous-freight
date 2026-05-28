@@ -180,3 +180,38 @@ Expected:
 ## Secret rotation policy
 
 Rotate any secret that is pasted into chat, committed, exposed in logs, or shared outside the owning platform. Treat exposed secrets as compromised even if deleted afterward.
+
+## Dispatch automation runtime
+
+Backend/API runtime only:
+
+```text
+SLACK_WEBHOOK_URL=<slack incoming webhook url>
+TWILIO_ACCOUNT_SID=<twilio account sid>
+TWILIO_AUTH_TOKEN=<twilio auth token>
+TWILIO_NUMBER=<twilio sender number>
+DISPATCH_ESCALATION_ENABLED=true
+DISPATCH_CRITICAL_PRIORITY_THRESHOLD=90
+DISPATCH_HIGH_PRIORITY_THRESHOLD=70
+DISPATCH_SLA_MINUTES=60
+ETA_DRIFT_CRITICAL_MINUTES=120
+HOS_CRITICAL_REMAINING_MINUTES=45
+POD_MISSING_ALERT_MINUTES=15
+GPS_IDLE_ALERT_MINUTES=45
+AUTH_MODE=trusted
+AUTH_JWT_AUDIENCE=authenticated
+ALLOW_UNSAFE_HEADER_AUTH=false
+ALLOW_CLIENT_SUBSCRIPTION_STATUS_HEADER=false
+```
+
+Frontend/public runtime only:
+
+```text
+NEXT_PUBLIC_SITE_URL=https://www.infamousfreight.com
+VITE_SITE_URL=https://www.infamousfreight.com
+PUBLIC_SITE_URL=https://www.infamousfreight.com
+VITE_API_URL=/api
+NEXT_PUBLIC_API_URL=/api
+```
+
+Never place backend secrets such as database URLs, service-role keys, payment secrets, webhook secrets, Redis credentials, or provider API tokens in frontend environment variables.

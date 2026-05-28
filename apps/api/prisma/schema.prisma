@@ -36,6 +36,10 @@ model Carrier {
   amazonInventoryItems  AmazonInventoryItem[]
   amazonFulfillments    AmazonFulfillmentRequest[]
   rateAgreement         RateAgreement?
+  dispatchIncidents      DispatchIncident[]
+  dispatchAlerts         DispatchAlert[]
+  dispatchSlaTimers      DispatchSlaTimer[]
+  hosRiskEvents          HosRiskEvent[]
 }
 
 model Driver {
@@ -56,6 +60,7 @@ model Driver {
 
   carrier Carrier @relation(fields: [carrierId], references: [id])
   loads   Load[]
+  hosRiskEvents HosRiskEvent[]
 
   @@index([carrierId, createdAt])
   @@index([carrierId, status])
@@ -96,6 +101,8 @@ model Load {
   deliveryConfirmation DeliveryConfirmation?
   carrierPayments      CarrierPayment[]
   loadBoardPost        LoadBoardPost?
+  dispatchIncidents  DispatchIncident[]
+  hosRiskEvents      HosRiskEvent[]
 
   @@index([carrierId, createdAt])
   @@index([carrierId, status])
@@ -467,4 +474,87 @@ model AmazonFulfillmentRequest {
   @@unique([carrierId, orderReference])
   @@index([carrierId, status])
   @@index([trackingNumber])
+}
+
+model DispatchIncident {
+  id                       String    @id @default(cuid())
+  carrierId                String
+  loadId                   String
+  priority                 Int
+  severity                 String
+  etaDriftMinutes          Int       @default(0)
+  hosRemainingMinutes      Int?
+  appointmentAcknowledged  Boolean   @default(false)
+  podUploaded              Boolean   @default(false)
+  gpsIdleMinutes           Int       @default(0)
+  reeferTempException      Boolean   @default(false)
+  status                   String    @default("open")
+  recoveryActions          String?
+  reasons                  String?
+  slaDueAt                 DateTime?
+  resolvedAt               DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+  load    Load    @relation(fields: [loadId], references: [id])
+  alerts  DispatchAlert[]
+  slaTimers DispatchSlaTimer[]
+
+  @@index([carrierId, status, priority])
+  @@index([loadId])
+  @@index([createdAt])
+}
+
+model DispatchAlert {
+  id          String   @id @default(cuid())
+  carrierId   String
+  incidentId  String?
+  loadId      String
+  channel     String
+  type        String
+  sentTo      String?
+  status      String   @default("queued")
+  payload     String?
+  createdAt   DateTime @default(now())
+
+  carrier  Carrier           @relation(fields: [carrierId], references: [id])
+  incident DispatchIncident? @relation(fields: [incidentId], references: [id])
+
+  @@index([carrierId, createdAt])
+  @@index([incidentId])
+}
+
+model DispatchSlaTimer {
+  id          String    @id @default(cuid())
+  carrierId   String
+  incidentId  String
+  dueAt       DateTime
+  status      String    @default("open")
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  carrier  Carrier          @relation(fields: [carrierId], references: [id])
+  incident DispatchIncident @relation(fields: [incidentId], references: [id])
+
+  @@index([carrierId, status, dueAt])
+}
+
+model HosRiskEvent {
+  id               String    @id @default(cuid())
+  carrierId        String
+  driverId         String?
+  loadId           String?
+  remainingMinutes Int
+  status           String    @default("open")
+  triggeredAt      DateTime  @default(now())
+  resolvedAt       DateTime?
+
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+  driver  Driver? @relation(fields: [driverId], references: [id])
+  load    Load?   @relation(fields: [loadId], references: [id])
+
+  @@index([carrierId, status, triggeredAt])
+  @@index([driverId])
+  @@index([loadId])
 }

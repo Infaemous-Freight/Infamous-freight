@@ -1218,6 +1218,8 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
 
   void registerAmazonDeliveryRoutes(app, protectedApi, auditLogger);
 
+  app.use('/api/dispatch', ...protectedApi, createDispatchAutomationRouter(auditLogger));
+
   app.post('/api/ai-usage/events', ...protectedApi, wrapAsync(async (req, res) => {
     if (!req.body?.feature || typeof req.body.feature !== 'string') {
       throw new HttpError(400, 'ai_usage_feature_required', 'AI usage events require a feature string.');
