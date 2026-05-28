@@ -403,6 +403,80 @@ model AuditLog {
   @@index([createdAt])
 }
 
+model DispatchIncident {
+  id         String   @id @default(cuid())
+  tenantId   String
+  loadId     String?
+  severity   String
+  status     String   @default("open")
+  summary    String
+  riskScore  Int
+  metadata   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  alerts     DispatchAlert[]
+  slaTimers  DispatchSlaTimer[]
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, status])
+  @@index([loadId])
+}
+
+model DispatchAlert {
+  id             String   @id @default(cuid())
+  tenantId       String
+  incidentId     String?
+  alertType      String
+  severity       String
+  channel        String
+  status         String   @default("pending")
+  acknowledgedAt DateTime?
+  metadata       String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  incident       DispatchIncident? @relation(fields: [incidentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([tenantId, status, createdAt])
+  @@index([incidentId])
+}
+
+model DispatchSlaTimer {
+  id            String    @id @default(cuid())
+  tenantId      String
+  incidentId    String?
+  timerType     String
+  status        String    @default("running")
+  startsAt      DateTime
+  dueAt         DateTime
+  resolvedAt    DateTime?
+  breachedAt    DateTime?
+  metadata      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  incident      DispatchIncident? @relation(fields: [incidentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([tenantId, status, dueAt])
+  @@index([incidentId])
+}
+
+model HosRiskEvent {
+  id                   String   @id @default(cuid())
+  tenantId             String
+  loadId               String?
+  driverId             String?
+  hosRemainingMinutes  Int
+  riskScore            Int
+  riskLevel            String
+  eventAt              DateTime @default(now())
+  metadata             String?
+  createdAt            DateTime @default(now())
+
+  @@index([tenantId, eventAt])
+  @@index([tenantId, riskLevel])
+  @@index([loadId])
+  @@index([driverId])
+}
+
 model AmazonConnection {
   id            String    @id @default(cuid())
   carrierId     String

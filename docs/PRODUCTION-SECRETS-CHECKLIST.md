@@ -47,6 +47,7 @@ REDIS_HOST=<managed redis host>
 REDIS_PORT=6379
 REDIS_PASSWORD=<managed redis password>
 REDIS_DB=0
+SLACK_WEBHOOK_URL=<slack incoming webhook url>
 SUPABASE_URL=https://<project>.supabase.co
 SUPABASE_SERVICE_KEY=<supabase service key>
 SUPABASE_SERVICE_ROLE_KEY=<supabase service role key>
@@ -68,6 +69,9 @@ DAT_API_KEY=<dat api key>
 TRUCKSTOP_API_KEY=<truckstop api key>
 LOADBOARD_API_KEY=<loadboard api key>
 SAMSARA_API_TOKEN=<samsara api token>
+TWILIO_ACCOUNT_SID=<twilio account sid>
+TWILIO_AUTH_TOKEN=<twilio auth token>
+TWILIO_NUMBER=<twilio sending number>
 ```
 
 ## Netlify production environment

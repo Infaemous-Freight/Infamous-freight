@@ -81,6 +81,12 @@ const metricIconMap: Record<string, React.ReactNode> = {
   'Revenue MTD': <Activity size={18} />,
 };
 
+const dispatchAlertPreview = [
+  { id: 'dp-1', loadId: 'LD-2281', severity: 'critical', action: 'HOS escalation', eta: '+93 min' },
+  { id: 'dp-2', loadId: 'LD-2284', severity: 'high', action: 'Receiver reappointment', eta: '+51 min' },
+  { id: 'dp-3', loadId: 'LD-2288', severity: 'moderate', action: 'POD recovery requested', eta: '+24 min' },
+];
+
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedLoad, setSelectedLoad] = useState<ActiveLoad>(mockActiveLoads[0]);
@@ -209,6 +215,29 @@ const DashboardPage: React.FC = () => {
           </div>
         </WidgetErrorBoundary>
       </div>
+
+      <WidgetErrorBoundary label="Dispatch automation preview">
+        <div className="panel-neon rounded-[18px] p-5">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-bold uppercase tracking-wide font-display flex items-center gap-2">
+              <Infinity size={14} className="text-infamous-red-light" /> Dispatch Automation Preview
+            </h2>
+            <span className="text-[10px] uppercase tracking-wider text-infamous-muted">Phase 1 preview</span>
+          </div>
+          <div className="space-y-2">
+            {dispatchAlertPreview.map((item) => (
+              <div key={item.id} className="rounded-xl border border-infamous-border/70 p-3 bg-black/20">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs font-semibold text-[#F5E8E8]">{item.loadId}</p>
+                  <span className="text-[10px] uppercase tracking-wider text-infamous-muted">{item.severity}</span>
+                </div>
+                <p className="text-xs text-infamous-muted mt-1">{item.action}</p>
+                <p className="text-[10px] text-infamous-red-light mt-1">ETA drift {item.eta}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </WidgetErrorBoundary>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <WidgetErrorBoundary label="Active loads">
