@@ -1317,7 +1317,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
   }));
 
   app.use('/api/workflows', ...protectedApi, createFreightWorkflowRouter(dataStore));
-  app.use('/api/dispatch', ...protectedApi, createDispatchAutomationRouter(auditLogger));
+  app.use('/api/dispatch', ...protectedApi, createDispatchAutomationRouter(auditLogger, getPrismaClient()));
 }
 
 export function createApp() {

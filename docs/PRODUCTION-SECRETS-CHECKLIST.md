@@ -79,6 +79,37 @@ PUBLIC_SITE_URL=https://www.infamousfreight.com
 VITE_API_URL=/api
 ```
 
+## Deployment split: backend-only vs frontend-only
+
+Backend-only (Fly API runtime only, never browser exposed):
+
+```text
+DATABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+SUPABASE_JWT_SECRET
+JWT_SECRET
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+DISPATCH_SLACK_WEBHOOK_URL
+DISPATCH_TWILIO_ACCOUNT_SID
+DISPATCH_TWILIO_AUTH_TOKEN
+DISPATCH_TWILIO_FROM_NUMBER
+DISPATCH_TWILIO_TO_NUMBER
+```
+
+Frontend-only/public-safe:
+
+```text
+VITE_SUPABASE_URL
+VITE_SUPABASE_PUBLISHABLE_KEY
+VITE_SUPABASE_ANON_KEY
+NEXT_PUBLIC_SUPABASE_URL
+VITE_SITE_URL
+NEXT_PUBLIC_SITE_URL
+PUBLIC_SITE_URL
+VITE_API_URL
+```
+
 ## Netlify operational markers
 
 Keep these status markers aligned with the current security decision state:
@@ -141,6 +172,14 @@ SUPABASE_URL=<supabase project url>
 SUPABASE_SERVICE_ROLE_KEY=<supabase service role key>
 SUPABASE_JWT_SECRET=<supabase jwt secret>
 REDIS_URL=<redis connection string>
+DISPATCH_AUTOMATION_ENABLED=true
+DISPATCH_ESCALATION_SMS_ENABLED=false
+DISPATCH_ESCALATION_SLACK_ENABLED=false
+DISPATCH_SLACK_WEBHOOK_URL=<optional dispatch slack webhook>
+DISPATCH_TWILIO_ACCOUNT_SID=<optional twilio account sid>
+DISPATCH_TWILIO_AUTH_TOKEN=<optional twilio auth token>
+DISPATCH_TWILIO_FROM_NUMBER=<optional twilio sender number>
+DISPATCH_TWILIO_TO_NUMBER=<optional twilio receiver number>
 ```
 
 ## Stripe Dashboard URLs

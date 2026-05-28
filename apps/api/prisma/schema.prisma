@@ -468,3 +468,70 @@ model AmazonFulfillmentRequest {
   @@index([carrierId, status])
   @@index([trackingNumber])
 }
+
+model DispatchIncident {
+  id             String   @id @default(cuid())
+  organizationId String
+  loadId         String?
+  severity       String
+  summary        String
+  riskScore      Int      @default(0)
+  status         String   @default("open")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  alerts    DispatchAlert[]
+  slaTimers DispatchSlaTimer[]
+
+  @@index([organizationId, status])
+  @@index([organizationId, createdAt])
+  @@index([loadId])
+}
+
+model DispatchAlert {
+  id             String   @id @default(cuid())
+  organizationId String
+  incidentId     String
+  channel        String
+  status         String   @default("created")
+  message        String
+  sentAt         DateTime?
+  createdAt      DateTime @default(now())
+
+  incident DispatchIncident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, createdAt])
+  @@index([incidentId])
+  @@index([status])
+}
+
+model DispatchSlaTimer {
+  id             String   @id @default(cuid())
+  organizationId String
+  incidentId     String
+  status         String   @default("running")
+  startedAt      DateTime @default(now())
+  deadlineAt     DateTime
+  resolvedAt     DateTime?
+  createdAt      DateTime @default(now())
+
+  incident DispatchIncident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, status])
+  @@index([incidentId, status])
+  @@index([deadlineAt])
+}
+
+model HosRiskEvent {
+  id             String   @id @default(cuid())
+  organizationId String
+  loadId         String
+  score          Int
+  severity       String
+  metadata       String?
+  createdAt      DateTime @default(now())
+
+  @@index([organizationId, createdAt])
+  @@index([loadId, createdAt])
+  @@index([severity])
+}
