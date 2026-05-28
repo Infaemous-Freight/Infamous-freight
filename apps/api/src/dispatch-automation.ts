@@ -18,6 +18,23 @@ type EscalationInput = DispatchRiskInput & {
   severity?: unknown;
 };
 
+type DispatchPlaybook = {
+  escalationEnabled: boolean;
+  thresholds: {
+    criticalPriority: number;
+    highPriority: number;
+    slaMinutes: number;
+    etaDriftCriticalMinutes: number;
+    hosCriticalRemainingMinutes: number;
+    podMissingAlertMinutes: number;
+    gpsIdleAlertMinutes: number;
+  };
+  providers: {
+    slackEnabled: boolean;
+    twilioEnabled: boolean;
+  };
+};
+
 class DispatchAutomationHttpError extends Error {
   constructor(
     public readonly statusCode: number,
@@ -136,8 +153,58 @@ function getAuditActor(req: Request): { userId: string; userName: string; reques
   return { userId, userName, requestId };
 }
 
+function getNumberEnv(name: string, fallback: number): number {
+  const raw = process.env[name];
+  if (!raw) {
+    return fallback;
+  }
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function getPlaybook(): DispatchPlaybook {
+  return {
+    escalationEnabled: process.env.DISPATCH_ESCALATION_ENABLED === 'true',
+    thresholds: {
+      criticalPriority: getNumberEnv('DISPATCH_CRITICAL_PRIORITY_THRESHOLD', 90),
+      highPriority: getNumberEnv('DISPATCH_HIGH_PRIORITY_THRESHOLD', 70),
+      slaMinutes: getNumberEnv('DISPATCH_SLA_MINUTES', 60),
+      etaDriftCriticalMinutes: getNumberEnv('ETA_DRIFT_CRITICAL_MINUTES', 120),
+      hosCriticalRemainingMinutes: getNumberEnv('HOS_CRITICAL_REMAINING_MINUTES', 45),
+      podMissingAlertMinutes: getNumberEnv('POD_MISSING_ALERT_MINUTES', 15),
+      gpsIdleAlertMinutes: getNumberEnv('GPS_IDLE_ALERT_MINUTES', 45),
+    },
+    providers: {
+      slackEnabled: Boolean(process.env.SLACK_WEBHOOK_URL),
+      twilioEnabled: Boolean(
+        process.env.TWILIO_ACCOUNT_SID
+        && process.env.TWILIO_AUTH_TOKEN
+        && process.env.TWILIO_NUMBER,
+      ),
+    },
+  };
+}
+
 export function createDispatchAutomationRouter(auditLogger: AuditLogger): Router {
   const router = Router();
+
+  router.get('/playbook', wrapAsync(async (req: TenantRequest, res: Response) => {
+    const tenantId = getRequiredTenantId(req);
+    const playbook = getPlaybook();
+    const actor = getAuditActor(req);
+
+    await auditLogger.log({
+      entityType: 'dispatchPlaybook',
+      entityId: tenantId,
+      action: 'dispatch.playbook_viewed',
+      userId: actor.userId,
+      userName: actor.userName,
+      details: JSON.stringify({ tenantId }),
+      requestId: actor.requestId,
+    });
+
+    res.status(200).json({ data: playbook });
+  }));
 
   router.post('/risk-score', wrapAsync(async (req: TenantRequest, res: Response) => {
     const tenantId = getRequiredTenantId(req);
@@ -181,6 +248,14 @@ export function createDispatchAutomationRouter(auditLogger: AuditLogger): Router
       },
       risk,
       createdAt: new Date().toISOString(),
+      notifications: {
+        slack: getPlaybook().providers.slackEnabled,
+        twilio: getPlaybook().providers.twilioEnabled,
+      },
+      sla: {
+        targetMinutes: getPlaybook().thresholds.slaMinutes,
+        dueAt: new Date(Date.now() + (getPlaybook().thresholds.slaMinutes * 60_000)).toISOString(),
+      },
     };
 
     const actor = getAuditActor(req);
