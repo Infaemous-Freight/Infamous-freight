@@ -30,6 +30,7 @@ import { createRateLimitMiddleware } from './rate-limit';
 import { createStripeWebhookEventStore } from './stripe-webhook-events';
 import { createStripeOneTimePaymentStore } from './stripe-one-time-payments';
 import { createFreightWorkflowRouter } from './freight-workflow-routes';
+import { createDispatchAutomationRouter } from './dispatch-automation';
 import { createAuditLogger, AuditLogger } from './audit-logger';
 import type { UserRole } from './rbac/rbac-rules';
 
@@ -1217,6 +1218,8 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
 
   void registerAmazonDeliveryRoutes(app, protectedApi, auditLogger);
 
+  app.use('/api/dispatch', ...protectedApi, createDispatchAutomationRouter(auditLogger));
+
   app.post('/api/ai-usage/events', ...protectedApi, wrapAsync(async (req, res) => {
     if (!req.body?.feature || typeof req.body.feature !== 'string') {
       throw new HttpError(400, 'ai_usage_feature_required', 'AI usage events require a feature string.');
@@ -1316,6 +1319,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
   }));
 
   app.use('/api/workflows', ...protectedApi, createFreightWorkflowRouter(dataStore));
+  app.use('/api/dispatch', ...protectedApi, createDispatchAutomationRouter(auditLogger));
 }
 
 export function createApp() {
