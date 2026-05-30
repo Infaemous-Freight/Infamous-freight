@@ -123,9 +123,11 @@ validate_not_placeholder() {
 
 # Validate core non-placeholder values only when present.
 for key in \
-  FLY_API_TOKEN DATABASE_URL SUPABASE_URL SUPABASE_SERVICE_KEY \
-  VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_KEY \
-  STRIPE_SECRET_KEY STRIPE_WEBHOOK_SECRET VITE_STRIPE_PUBLIC_KEY; do
+  FLY_API_TOKEN NODE_ENV PORT WEB_APP_URL CORS_ORIGINS DATABASE_URL \
+  SUPABASE_URL SUPABASE_ANON_KEY SUPABASE_SERVICE_KEY SUPABASE_SERVICE_ROLE_KEY \
+  SUPABASE_JWT_SECRET JWT_SECRET VITE_SUPABASE_URL VITE_SUPABASE_PUBLISHABLE_KEY \
+  VITE_SUPABASE_ANON_KEY STRIPE_SECRET_KEY STRIPE_WEBHOOK_SECRET \
+  VITE_STRIPE_PUBLIC_KEY REDIS_URL; do
   if [[ -n "${!key:-}" ]]; then
     validate_not_placeholder "${key}"
   fi
@@ -153,7 +155,9 @@ add_fly_secret DATABASE_URL
 add_fly_secret SUPABASE_URL
 add_fly_secret SUPABASE_SERVICE_KEY
 add_fly_secret SUPABASE_SERVICE_ROLE_KEY
+add_fly_secret SUPABASE_ANON_KEY
 add_fly_secret SUPABASE_JWT_SECRET
+add_fly_secret JWT_SECRET
 add_fly_secret STRIPE_ACCOUNT_ID
 add_fly_secret STRIPE_SECRET_KEY
 add_fly_secret STRIPE_WEBHOOK_SECRET
@@ -226,7 +230,7 @@ Secret bootstrap finished.
 Required follow-up:
 1. Trigger a fresh Fly/API deployment.
 2. Trigger a fresh Netlify production deploy.
-3. Run: pnpm env:check:strict
+3. Run: pnpm run env:check:strict
 4. Run: pnpm run production:preflight
 5. Run: pnpm run production:smoke-test
 6. Paste evidence into issue #1781 or docs/LAUNCH_EVIDENCE_LOG.md.
