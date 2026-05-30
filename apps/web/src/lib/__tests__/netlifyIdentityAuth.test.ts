@@ -6,11 +6,13 @@ const {
   hydrateSessionMock,
   getUserMock,
   onAuthChangeMock,
+  refreshSessionMock,
 } = vi.hoisted(() => ({
   handleAuthCallbackMock: vi.fn(),
   hydrateSessionMock: vi.fn(),
   getUserMock: vi.fn(),
   onAuthChangeMock: vi.fn(),
+  refreshSessionMock: vi.fn(),
 }));
 
 vi.mock('@netlify/identity', () => ({
@@ -19,9 +21,11 @@ vi.mock('@netlify/identity', () => ({
   hydrateSession: hydrateSessionMock,
   logout: vi.fn(),
   onAuthChange: onAuthChangeMock,
+  refreshSession: refreshSessionMock,
 }));
 
 import {
+  getNetlifyIdentityToken,
   hydrateNetlifyIdentityUser,
   isEmailVerified,
   mapNetlifyUser,
@@ -44,6 +48,7 @@ describe('netlifyIdentityAuth', () => {
     handleAuthCallbackMock.mockResolvedValue(null);
     hydrateSessionMock.mockResolvedValue(null);
     getUserMock.mockResolvedValue(null);
+    refreshSessionMock.mockResolvedValue(null);
   });
 
   describe('mapNetlifyUser', () => {
@@ -136,5 +141,41 @@ describe('netlifyIdentityAuth', () => {
 
   it('re-exports onAuthChange from @netlify/identity', () => {
     expect(onAuthChange).toBe(onAuthChangeMock);
+  });
+
+  describe('getNetlifyIdentityToken', () => {
+    function clearJwtCookie() {
+      document.cookie = 'nf_jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    }
+
+    beforeEach(() => {
+      clearJwtCookie();
+    });
+
+    it('returns the refreshed token when a refresh occurs', async () => {
+      refreshSessionMock.mockResolvedValue('refreshed.jwt.token');
+
+      await expect(getNetlifyIdentityToken()).resolves.toBe('refreshed.jwt.token');
+    });
+
+    it('falls back to the nf_jwt session cookie when no refresh is needed', async () => {
+      refreshSessionMock.mockResolvedValue(null);
+      document.cookie = `nf_jwt=${encodeURIComponent('cookie.jwt.token')}; path=/`;
+
+      await expect(getNetlifyIdentityToken()).resolves.toBe('cookie.jwt.token');
+    });
+
+    it('falls back to the cookie when refresh throws', async () => {
+      refreshSessionMock.mockRejectedValue(new Error('revoked refresh token'));
+      document.cookie = `nf_jwt=${encodeURIComponent('cookie.jwt.token')}; path=/`;
+
+      await expect(getNetlifyIdentityToken()).resolves.toBe('cookie.jwt.token');
+    });
+
+    it('returns null when there is no session', async () => {
+      refreshSessionMock.mockResolvedValue(null);
+
+      await expect(getNetlifyIdentityToken()).resolves.toBeNull();
+    });
   });
 });

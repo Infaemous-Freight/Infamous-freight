@@ -1,5 +1,5 @@
 import type { User as NetlifyUser } from '@netlify/identity';
-import { getUser, handleAuthCallback, hydrateSession, logout as netlifyLogout, onAuthChange } from '@netlify/identity';
+import { getUser, handleAuthCallback, hydrateSession, logout as netlifyLogout, onAuthChange, refreshSession } from '@netlify/identity';
 import type { SubscriptionStatus } from '@/lib/paywall';
 import { normalizeSubscriptionStatus } from '@/lib/paywall';
 
@@ -85,6 +85,41 @@ export function isEmailVerified(user: NetlifyUser): boolean {
 
 export async function logoutNetlifyIdentity(): Promise<void> {
   await netlifyLogout();
+}
+
+const NF_JWT_COOKIE = 'nf_jwt';
+
+function readSessionJwtCookie(): string | null {
+  if (typeof document === 'undefined' || !document.cookie) {
+    return null;
+  }
+
+  const escaped = NF_JWT_COOKIE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = new RegExp(`(?:^|; )${escaped}=([^;]*)`).exec(document.cookie);
+
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+/**
+ * Returns the current Netlify Identity access token (JWT) for the signed-in
+ * user, or null when no session is present. Triggers an immediate refresh when
+ * the token is near expiry, otherwise falls back to the stored `nf_jwt` session
+ * cookie. The token is meant to be forwarded to the data API as a Bearer
+ * credential so the API can verify the caller instead of trusting client
+ * headers.
+ */
+export async function getNetlifyIdentityToken(): Promise<string | null> {
+  try {
+    const refreshed = await refreshSession();
+    if (refreshed) {
+      return refreshed;
+    }
+  } catch {
+    // Refresh failures (e.g. revoked refresh token) are non-fatal here; fall
+    // back to the session cookie below and let the API reject if invalid.
+  }
+
+  return readSessionJwtCookie();
 }
 
 export { onAuthChange };

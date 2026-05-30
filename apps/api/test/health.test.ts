@@ -472,4 +472,57 @@ describe('configuration safety', () => {
     expect(tamperedResponse.status).toBe(401);
     expect(tamperedResponse.body.error).toBe('authentication_required');
   });
+
+  it('accepts a bearer token whose role is supplied via the Netlify Identity app_metadata.roles array', async () => {
+    const previousNodeEnv = process.env.NODE_ENV;
+    const previousDatabaseUrl = process.env.DATABASE_URL;
+    const previousAuthMode = process.env.AUTH_MODE;
+    const previousJwtSecret = process.env.SUPABASE_JWT_SECRET;
+
+    try {
+      process.env.NODE_ENV = 'production';
+      process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/infamous_test';
+      process.env.SUPABASE_JWT_SECRET = 'test-supabase-jwt-secret';
+      delete process.env.AUTH_MODE;
+
+      const token = signJwt({
+        sub: 'user-1',
+        exp: Math.floor(Date.now() / 1000) + 60,
+        app_metadata: {
+          carrier_id: 'tenant-token',
+          roles: ['unknown_role', 'dispatcher'],
+        },
+      });
+
+      const response = await request(createApp())
+        .get('/api/loads')
+        .set('authorization', `Bearer ${token}`)
+        .set('x-subscription-status', 'active');
+
+      // Reaching the paywall (402) proves the verified token authenticated and
+      // authorized the request; the role was resolved from the roles array.
+      expect(response.status).toBe(402);
+      expect(response.body.error).toBe('payment_required');
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+
+      if (previousDatabaseUrl !== undefined) {
+        process.env.DATABASE_URL = previousDatabaseUrl;
+      } else {
+        delete process.env.DATABASE_URL;
+      }
+
+      if (previousAuthMode !== undefined) {
+        process.env.AUTH_MODE = previousAuthMode;
+      } else {
+        delete process.env.AUTH_MODE;
+      }
+
+      if (previousJwtSecret !== undefined) {
+        process.env.SUPABASE_JWT_SECRET = previousJwtSecret;
+      } else {
+        delete process.env.SUPABASE_JWT_SECRET;
+      }
+    }
+  });
 });
