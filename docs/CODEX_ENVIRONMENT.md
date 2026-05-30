@@ -12,6 +12,23 @@ The repository includes a safe example file and a safe environment checker:
 
 Do not commit real `.env`, Stripe, Supabase, database, SendGrid, Sentry, or carrier API secret values.
 
+
+## Environment scopes are separate
+
+`pnpm run codex:env-check` reads only the current Codex/shell environment and local `.env.local`/`.env` files. It does **not** read Netlify site variables, Fly.io app secrets, GitHub Actions secrets, Stripe Dashboard secrets, or Supabase Dashboard values.
+
+Keep these stores reconciled by variable name, but never copy values into chat, PRs, issues, screenshots, or logs:
+
+| Store | Used by | Verification command | Notes |
+| --- | --- | --- | --- |
+| Codex environment | Agent builds, tests, and repo checks | `pnpm run codex:env-check` | Add values in the Codex runtime itself when checks run here. |
+| Netlify environment | Production web build/runtime | `netlify env:list --context production --site <site-id>` | Netlify values do not satisfy Codex checks unless separately configured in Codex. |
+| Fly.io secrets | `infamous-freight-api` runtime | `flyctl secrets list -a infamous-freight-api` | Fly secret names do not satisfy Codex checks unless separately configured in Codex. |
+| Supabase dashboard | Project API/Auth/database settings | Dashboard-only for secret retrieval | Use `https://wnaievjffghrztjuvutp.supabase.co` as the project URL; do not expose service-role, JWT, or database credentials. |
+| Stripe dashboard | Live API and webhook signing secrets | Dashboard-only for secret retrieval | Retrieve or rotate secret values from Stripe directly, then store them in Codex/Fly/Netlify as needed. |
+
+The confirmed Supabase production project is **Infæmous** (`wnaievjffghrztjuvutp`) with project URL `https://wnaievjffghrztjuvutp.supabase.co`. Use that URL for `SUPABASE_URL` and `VITE_SUPABASE_URL`; keep the direct Postgres connection string only in server-side `DATABASE_URL`.
+
 ## Required Codex environment variables
 
 Add these in the Codex **Environment variables** section when Codex needs to build, test, or run the full app:
@@ -177,12 +194,13 @@ The current agent environment is missing these required/core entries reported by
 - one of `SUPABASE_SERVICE_KEY` or `SUPABASE_SERVICE_ROLE_KEY`
 - one of `VITE_SUPABASE_PUBLISHABLE_KEY` or `VITE_SUPABASE_ANON_KEY`
 
-For strict production-launch validation, also configure the production-required web origin entries before rerunning the gate:
+For strict production-launch validation, also configure these production-required entries before rerunning the gate:
 
 - `WEB_APP_URL`
 - `CORS_ORIGINS` or legacy `CORS_ORIGIN`
+- `SUPABASE_JWT_SECRET` (preferred) or `JWT_SECRET`
 
-Root cause: these required runtime values are not configured in the current agent environment. Configure them in the deployment or operator environment before production launch validation, then rerun `pnpm run codex:env-check` or `pnpm run codex:env-check:strict`.
+Root cause: these required runtime values are not configured in the current agent environment. Netlify environment variables, Fly.io runtime secrets, GitHub Actions secrets, Stripe secrets, Supabase dashboard values, and Codex runtime variables are separate stores. Configure the missing names in the Codex runtime itself when this check runs in Codex; configure Fly and Netlify separately for deployed runtime validation. Then rerun `pnpm run codex:env-check` or `pnpm run codex:env-check:strict`.
 
 The environment checker now prints a names-only remediation section when required variables are missing or placeholder-looking values are configured. That output is safe to paste because it reports variable names only, but the follow-up secret-setting commands must be run from an authenticated operator terminal and must never include real values in shared logs.
 

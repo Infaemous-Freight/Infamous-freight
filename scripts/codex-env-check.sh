@@ -14,6 +14,8 @@ if [[ "${1:-}" == "--strict" ]]; then
 fi
 
 printf '\n== Codex Environment Check ==\n\n'
+printf 'Scope: current Codex/shell environment plus local .env.local/.env files only.\n'
+printf 'This check does not read Netlify environment variables or Fly.io runtime secrets.\n\n'
 
 # Load local dotenv files when present so the check matches repo configuration.
 # Precedence: existing exported env vars > .env.local > .env
@@ -233,6 +235,7 @@ for var in "${required_vars[@]}"; do
 done
 check_var "WEB_APP_URL" "${production_required}"
 check_one_of "${production_required}" CORS_ORIGINS CORS_ORIGIN
+check_one_of "${production_required}" SUPABASE_JWT_SECRET JWT_SECRET
 check_one_of "true" SUPABASE_SERVICE_KEY SUPABASE_SERVICE_ROLE_KEY
 check_one_of "true" VITE_SUPABASE_PUBLISHABLE_KEY VITE_SUPABASE_ANON_KEY
 
@@ -276,7 +279,9 @@ if [[ "${missing_required}" -gt 0 || "${placeholder_values}" -gt 0 ]]; then
 fi
 
 if [[ "${missing_required}" -gt 0 ]]; then
-  echo "Required variables are missing. Add them to Codex Environment variables, save the environment, then rerun this check."
+  echo "Required variables are missing in this Codex/shell environment."
+  echo "Netlify and Fly.io keep separate environment stores; values configured there do not satisfy this check unless also exported here."
+  echo "Add missing names to Codex Environment variables or export them in this shell, save/restart the environment, then rerun this check."
   if [[ "${strict}" == "1" ]]; then
     exit 1
   fi
