@@ -1,7 +1,20 @@
 import axios from 'axios';
+import { getNetlifyIdentityToken } from '@/lib/netlifyIdentityAuth';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '',
+});
+
+// Forward the signed-in user's Netlify Identity token so billing endpoints can
+// verify the caller. The x-tenant-id / x-user-role headers below remain for
+// local header-auth mode; in production the API ignores them and requires this
+// token.
+api.interceptors.request.use(async (config) => {
+  const token = await getNetlifyIdentityToken();
+  if (token) {
+    config.headers.set('Authorization', `Bearer ${token}`);
+  }
+  return config;
 });
 
 export type BillingPlan = 'starter' | 'professional' | 'enterprise';

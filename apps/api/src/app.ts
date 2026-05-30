@@ -62,6 +62,7 @@ type JwtClaims = {
     carrierId?: unknown;
     role?: unknown;
     user_role?: unknown;
+    roles?: unknown;
   };
   user_metadata?: {
     tenant_id?: unknown;
@@ -179,6 +180,24 @@ function getRoleClaim(...values: unknown[]): Role | null {
   return role && AUTHORIZED_API_ROLES.includes(role as Role) ? (role as Role) : null;
 }
 
+// Netlify Identity (GoTrue) stores authorization roles as an array in
+// app_metadata.roles rather than a scalar claim. Resolve the first array entry
+// that maps to a recognized API role so forwarded Identity tokens authorize.
+function getRoleClaimFromList(value: unknown): Role | null {
+  if (!Array.isArray(value)) {
+    return null;
+  }
+
+  for (const candidate of value) {
+    const role = getRoleClaim(candidate);
+    if (role) {
+      return role;
+    }
+  }
+
+  return null;
+}
+
 function audienceMatches(claims: JwtClaims): boolean {
   const expectedAudience = process.env.AUTH_JWT_AUDIENCE?.trim() || process.env.SUPABASE_JWT_AUDIENCE?.trim();
 
@@ -250,7 +269,7 @@ function getTrustedAuthContextFromJwt(token: string): TrustedAuthContext | null 
     claims.app_metadata?.user_role,
     claims.user_role,
     claims.role,
-  );
+  ) ?? getRoleClaimFromList(claims.app_metadata?.roles);
 
   if (!userId || !tenantId || !role) {
     return null;
