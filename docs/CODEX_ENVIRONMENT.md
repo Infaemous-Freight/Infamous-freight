@@ -184,6 +184,48 @@ For strict production-launch validation, also configure the production-required 
 
 Root cause: these required runtime values are not configured in the current agent environment. Configure them in the deployment or operator environment before production launch validation, then rerun `pnpm run codex:env-check` or `pnpm run codex:env-check:strict`.
 
+The environment checker now prints a names-only remediation section when required variables are missing or placeholder-looking values are configured. That output is safe to paste because it reports variable names only, but the follow-up secret-setting commands must be run from an authenticated operator terminal and must never include real values in shared logs.
+
+### Safe remediation commands
+
+Run secret-setting commands only from an authenticated operator terminal. Do not paste real values into chat, PRs, issues, screenshots, or shared logs, and do not copy the example labels below as literal secret values.
+
+First verify access and list only configured Fly secret names:
+
+```bash
+flyctl auth whoami
+flyctl secrets list -a infamous-freight-api
+```
+
+For API/runtime values, fetch each real value from the secure vault and import `NAME=VALUE` pairs through stdin. Keep `PORT=3000` aligned with the Fly internal port:
+
+```bash
+flyctl secrets import -a infamous-freight-api <<'EOF'
+NODE_ENV=production
+PORT=3000
+DATABASE_URL=<set-from-secure-vault>
+SUPABASE_URL=<set-from-secure-vault>
+SUPABASE_ANON_KEY=<set-from-secure-vault>
+SUPABASE_SERVICE_ROLE_KEY=<set-from-secure-vault>
+SUPABASE_JWT_SECRET=<set-from-secure-vault>
+STRIPE_SECRET_KEY=<set-from-secure-vault>
+STRIPE_WEBHOOK_SECRET=<set-from-secure-vault>
+CORS_ORIGINS=https://www.infamousfreight.com
+WEB_APP_URL=https://www.infamousfreight.com
+EOF
+```
+
+Do not run the import template with placeholder labels still present. If entering inline assignments instead, use a private terminal and clear any retained shell history according to your workstation policy after setting secrets.
+
+Use the frontend host for browser-public values only. Pass the real values from the secure vault in the authenticated operator terminal:
+
+```bash
+netlify env:set VITE_SUPABASE_URL '<real-supabase-api-url>'
+netlify env:set VITE_SUPABASE_PUBLISHABLE_KEY '<real-supabase-publishable-key>'
+```
+
+Do not add `DATABASE_URL`, Supabase service-role keys, JWT secrets, Stripe secret keys, or webhook secrets to frontend env files or browser-public environment variables.
+
 ### Recommended production/operator runtime values
 
 Before production launch validation, verify these runtime names exist in the target platform secret manager or operator environment without printing values:

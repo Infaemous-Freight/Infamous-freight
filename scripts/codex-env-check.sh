@@ -115,6 +115,9 @@ optional_vars=(
 missing_required=0
 missing_optional=0
 placeholder_values=0
+missing_required_names=()
+missing_optional_names=()
+placeholder_names=()
 
 placeholder_patterns=(
   "placeholder"
@@ -170,6 +173,7 @@ check_var() {
     if ! is_placeholder_override "$name" && contains_placeholder "${!name}"; then
       echo "❌ ${name} appears to still use a placeholder value"
       placeholder_values=$((placeholder_values + 1))
+      placeholder_names+=("${name}")
     fi
 
     if [[ "$name" == "REDIS_HOST" && "${!name}" == "localhost" ]]; then
@@ -182,9 +186,11 @@ check_var() {
   if [[ "${required}" == "true" ]]; then
     echo "❌ ${name} is NOT set"
     missing_required=$((missing_required + 1))
+    missing_required_names+=("${name}")
   else
     echo "⚠️  ${name} is not set"
     missing_optional=$((missing_optional + 1))
+    missing_optional_names+=("${name}")
   fi
 }
 
@@ -208,9 +214,11 @@ check_one_of() {
   if [[ "${required}" == "true" ]]; then
     echo "❌ one-of [${names[*]}] is NOT set"
     missing_required=$((missing_required + 1))
+    missing_required_names+=("one-of [${names[*]}]")
   else
     echo "⚠️  one-of [${names[*]}] is not set"
     missing_optional=$((missing_optional + 1))
+    missing_optional_names+=("one-of [${names[*]}]")
   fi
 }
 
@@ -237,6 +245,7 @@ check_one_of "false" STRIPE_PUBLISHABLE_KEY VITE_STRIPE_PUBLIC_KEY
 if [[ -n "${STRIPE_ACCOUNT_ID:-}" && ! "${STRIPE_ACCOUNT_ID}" =~ ^acct_[A-Za-z0-9]+$ ]]; then
   echo "❌ STRIPE_ACCOUNT_ID does not look like a Stripe account ID"
   placeholder_values=$((placeholder_values + 1))
+  placeholder_names+=("STRIPE_ACCOUNT_ID")
 fi
 
 printf '\nSafe environment inventory — names only, no values:\n'
@@ -246,6 +255,25 @@ printf '\nSummary:\n'
 echo "Required missing: ${missing_required}"
 echo "Optional missing: ${missing_optional}"
 echo "Placeholder-looking values: ${placeholder_values}"
+
+if [[ "${missing_required}" -gt 0 || "${placeholder_values}" -gt 0 ]]; then
+  printf '\nRemediation guidance — names only, no values:\n'
+
+  if [[ "${missing_required}" -gt 0 ]]; then
+    echo "Missing required/core entries:"
+    for name in "${missing_required_names[@]}"; do
+      echo "- ${name}"
+    done
+    echo "Configure backend/runtime secrets in Fly.io and public browser keys in the frontend host. Do not paste real values into logs, issues, PRs, or chat."
+  fi
+
+  if [[ "${placeholder_values}" -gt 0 ]]; then
+    echo "Placeholder-looking entries to replace with real configured values:"
+    for name in "${placeholder_names[@]}"; do
+      echo "- ${name}"
+    done
+  fi
+fi
 
 if [[ "${missing_required}" -gt 0 ]]; then
   echo "Required variables are missing. Add them to Codex Environment variables, save the environment, then rerun this check."
