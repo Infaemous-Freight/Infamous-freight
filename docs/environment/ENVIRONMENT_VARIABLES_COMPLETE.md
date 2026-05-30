@@ -8,9 +8,11 @@ This guide documents production environment-variable behavior for `apps/api` and
 
 ### Core
 - `NODE_ENV`
+- `PORT` (`3000` for Fly production)
 - `DATABASE_URL`
 - `WEB_APP_URL` in production or strict validation
 - `CORS_ORIGINS` or legacy `CORS_ORIGIN` in production or strict validation
+- `REDIS_URL` for production runtime where Redis-backed features are enabled
 
 ### Stripe
 - `STRIPE_SECRET_KEY`
@@ -23,21 +25,37 @@ This guide documents production environment-variable behavior for `apps/api` and
 
 ### Supabase
 - `SUPABASE_URL`
-- `SUPABASE_SERVICE_KEY` or legacy `SUPABASE_SERVICE_ROLE_KEY`
+- `SUPABASE_ANON_KEY` for backend integrations that require the anon API key
+- `SUPABASE_SERVICE_ROLE_KEY` or legacy `SUPABASE_SERVICE_KEY`
+- `SUPABASE_JWT_SECRET` for real Supabase token verification, or `JWT_SECRET` only as a legacy fallback
 - `VITE_SUPABASE_URL`
 - one frontend Supabase key:
   - preferred: `VITE_SUPABASE_PUBLISHABLE_KEY`
   - legacy fallback: `VITE_SUPABASE_ANON_KEY`
 
-Do not use backend-only `SUPABASE_ANON_KEY` as a substitute for a frontend `VITE_` Supabase key.
+Do not use backend-only `SUPABASE_ANON_KEY` as a substitute for a frontend `VITE_` Supabase key. Do not create public/browser database URL variables such as `VITE_SUPABASE_DATABASE_URL`, `PUBLIC_SUPABASE_DATABASE_URL`, or `NEXT_PUBLIC_SUPABASE_DATABASE_URL`.
 
 ### Rate limiting
 `RATE_LIMIT_ENABLED` is the canonical flag. `API_RATE_LIMIT_ENABLED` is a legacy fallback. Rate limiting defaults to enabled unless explicitly set to `false`.
 
-## Validation command
+## Validation commands
+
+Run from the repository root after saving environment changes:
 
 ```bash
-pnpm env:check:strict
+pnpm install --frozen-lockfile
+pnpm run env:check:frontend
+pnpm run env:check:supabase-client
+pnpm run codex:env-check:strict
+pnpm run build
+```
+
+Run from an authenticated operator terminal with Fly.io access for production launch validation:
+
+```bash
+flyctl config validate --config fly.toml
+flyctl checks list -a infamous-freight-api
+curl -i https://infamous-freight-api.fly.dev/api/health/live
 ```
 
 Strict validation should fail when:

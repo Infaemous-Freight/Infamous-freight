@@ -119,7 +119,27 @@ SAMSARA_API_KEY
 
 ## Fly.io API runtime secrets
 
-Set with `flyctl secrets set` for app `infamous-freight-api`:
+Set with `flyctl secrets set` for app `infamous-freight-api`. Do not print the values in terminal logs, issues, PR comments, or screenshots.
+
+Required for production launch validation:
+
+```text
+NODE_ENV=production
+PORT=3000
+DATABASE_URL=<production postgres connection string>
+SUPABASE_URL=<supabase project url>
+SUPABASE_ANON_KEY=<supabase anon key>
+SUPABASE_SERVICE_ROLE_KEY=<supabase service role key>
+SUPABASE_JWT_SECRET=<supabase jwt secret>
+JWT_SECRET=<legacy fallback jwt secret, only if required>
+STRIPE_SECRET_KEY=<stripe secret key>
+STRIPE_WEBHOOK_SECRET=<stripe webhook signing secret>
+REDIS_URL=<redis connection string>
+CORS_ORIGINS=https://www.infamousfreight.com,https://app.infamousfreight.com
+WEB_APP_URL=https://www.infamousfreight.com
+```
+
+Recommended supporting runtime values and enabled integrations:
 
 ```text
 SITE_URL=https://www.infamousfreight.com
@@ -127,20 +147,16 @@ PUBLIC_SITE_URL=https://www.infamousfreight.com
 FRONTEND_URL=https://www.infamousfreight.com
 CORS_ORIGIN=https://www.infamousfreight.com
 API_PUBLIC_URL=https://infamous-freight-api.fly.dev
-DATABASE_URL=<production postgres connection string>
-```
-
-Optional, depending on enabled integrations:
-
-```text
 SENTRY_DSN=<api sentry dsn>
 STRIPE_ACCOUNT_ID=<stripe account id>
-STRIPE_SECRET_KEY=<stripe secret key>
-STRIPE_WEBHOOK_SECRET=<stripe webhook signing secret>
-SUPABASE_URL=<supabase project url>
-SUPABASE_SERVICE_ROLE_KEY=<supabase service role key>
-SUPABASE_JWT_SECRET=<supabase jwt secret>
-REDIS_URL=<redis connection string>
+STRIPE_CHECKOUT_SUCCESS_URL=https://www.infamousfreight.com/billing/success
+STRIPE_CHECKOUT_CANCEL_URL=https://www.infamousfreight.com/billing/cancel
+STRIPE_PORTAL_RETURN_URL=https://www.infamousfreight.com/billing
+SUPABASE_SERVICE_KEY=<legacy supabase service key alias, if still used>
+REDIS_HOST=<managed redis host>
+REDIS_PORT=6379
+REDIS_PASSWORD=<managed redis password>
+REDIS_DB=0
 ```
 
 ## Stripe Dashboard URLs

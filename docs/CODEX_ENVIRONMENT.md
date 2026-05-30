@@ -158,6 +158,57 @@ bash scripts/codex-env-check.sh --strict
 
 The script confirms whether variables are set and lists variable names only. It does not print secret values.
 
+## Latest agent environment inventory result
+
+_Last checked: May 30, 2026._
+
+The final environment inventory check completed safely: it listed environment variable names only and did not print secret values.
+
+### Current agent-environment blockers
+
+The current agent environment is missing these required/core entries reported by `pnpm run codex:env-check`:
+
+- `NODE_ENV`
+- `DATABASE_URL`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `SUPABASE_URL`
+- `VITE_SUPABASE_URL`
+- one of `SUPABASE_SERVICE_KEY` or `SUPABASE_SERVICE_ROLE_KEY`
+- one of `VITE_SUPABASE_PUBLISHABLE_KEY` or `VITE_SUPABASE_ANON_KEY`
+
+For strict production-launch validation, also configure the production-required web origin entries before rerunning the gate:
+
+- `WEB_APP_URL`
+- `CORS_ORIGINS` or legacy `CORS_ORIGIN`
+
+Root cause: these required runtime values are not configured in the current agent environment. Configure them in the deployment or operator environment before production launch validation, then rerun `pnpm run codex:env-check` or `pnpm run codex:env-check:strict`.
+
+### Recommended production/operator runtime values
+
+Before production launch validation, verify these runtime names exist in the target platform secret manager or operator environment without printing values:
+
+- `NODE_ENV=production`
+- `PORT=3000`
+- `DATABASE_URL`
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY` (or legacy `SUPABASE_SERVICE_KEY` where supported)
+- `SUPABASE_JWT_SECRET` (preferred) or `JWT_SECRET`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `REDIS_URL`
+- `CORS_ORIGINS`
+- `WEB_APP_URL`
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY` or `VITE_SUPABASE_ANON_KEY`
+
+Risk check: do not paste real values into logs, PR comments, issues, or screenshots. Only report missing variable names and command status.
+
+Fallback: if production validation must continue from an authenticated operator terminal, configure the missing values in the deployment environment, validate Fly configuration, then check `https://infamous-freight-api.fly.dev/api/health/live` without printing secrets. If `/api/health/live` returns `mode="fallback"`, treat that as a real API startup failure even if Fly liveness passes and inspect logs for missing secrets, database connectivity errors, or auth configuration errors.
+
+Rollback note for the related operational metrics launch work: revert the operational metrics migration hardening and tenant-scoping changes, then rerun Prisma validation plus the focused freight operations, health, and RBAC tests before redeployment.
+
 ## Avoid unsafe commands
 
 Do not run this in shared logs unless you are certain no secrets are present:
