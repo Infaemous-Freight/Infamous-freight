@@ -82,6 +82,17 @@ describe('Netlify production routing', () => {
     expect(rootContent).not.toContain('functions = "netlify/functions"');
   });
 
+  it('keeps the form submission handler parked until the environment payload fits deploy limits', () => {
+    const activeHandler = path.join(repoRoot, 'netlify/event-functions/submission-created.mts');
+    const disabledHandler = path.join(repoRoot, 'netlify/disabled-functions/submission-created.mts.disabled');
+
+    expect(fs.existsSync(activeHandler)).toBe(false);
+    expect(fs.existsSync(disabledHandler)).toBe(true);
+    // The event-functions directory must still exist (and stay package-free) so
+    // the functions directive does not fall back to auto-detecting netlify/functions/.
+    expect(fs.existsSync(path.join(repoRoot, 'netlify/event-functions'))).toBe(true);
+  });
+
   it('keeps Edge Functions disabled until the Netlify environment payload fits deploy limits', () => {
     const activeSeoPrerender = path.join(repoRoot, 'netlify/edge-functions/seo-prerender.ts');
     const disabledSeoPrerender = `${activeSeoPrerender}.disabled`;

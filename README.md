@@ -261,7 +261,8 @@ apps/
   mobile/   # Reserved mobile surface (planned)
 
 netlify/
-  event-functions/      # Netlify event handlers (form submission DB writes)
+  event-functions/      # Active event-handler bundle (empty until env payload < 4 KB)
+  disabled-functions/   # Parked handlers (e.g. form submission DB mirror)
   functions/            # Retained API function entrypoints (normally disabled in deploys)
   database/migrations/  # Netlify database migrations
 
@@ -329,7 +330,7 @@ Verification should always include:
 - `https://www.infamousfreight.com/api/health`
 - public intake routes under `/api/public/*`
 - Fly.io runtime status after deploy
-- Netlify form events: `netlify/event-functions/submission-created.mts` must remain enabled (no `.disabled` suffix), and Netlify function scope should include only `NETLIFY_DATABASE_URL` for this handler
+- Netlify form events: form submissions are captured natively by Netlify Forms. The Drizzle mirror handler is parked at `netlify/disabled-functions/submission-created.mts.disabled` because Netlify attaches the full site environment payload (currently over 4 KB) to every function and that broke deploys during function upload. Restore it into `netlify/event-functions/` once the site's function-scoped environment variables are reduced below 4 KB
 
 ---
 
