@@ -30,9 +30,18 @@ NC='\033[0m'
 # ---------------------------------------------------------------------------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$SCRIPT_DIR"
+SCRIPT_SOURCED=false
+if [[ "${BASH_SOURCE[0]}" != "$0" ]]; then
+  SCRIPT_SOURCED=true
+fi
+
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-LOG_FILE="$PROJECT_ROOT/logs/deploy_${TIMESTAMP}.log"
-mkdir -p "$PROJECT_ROOT/logs"
+if [[ "$SCRIPT_SOURCED" == "true" ]]; then
+  LOG_FILE="${LOG_FILE:-/dev/null}"
+else
+  LOG_FILE="$PROJECT_ROOT/logs/deploy_${TIMESTAMP}.log"
+  mkdir -p "$PROJECT_ROOT/logs"
+fi
 
 # How long to wait for the service to start before health-checking (seconds)
 DEPLOY_SETTLE_TIME="${DEPLOY_SETTLE_TIME:-10}"
