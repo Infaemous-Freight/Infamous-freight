@@ -83,6 +83,46 @@ describe('freight operations API', () => {
     expect(otherTenantResponse.body.data).toEqual([]);
   });
 
+  it('keeps operational metrics isolated by tenant', async () => {
+    const app = createApp();
+
+    const metricResponse = await request(app)
+      .post('/api/freight-operations/operationalMetrics')
+      .set(headers)
+      .send({
+        date: '2026-05-01T00:00:00.000Z',
+        period: 'daily',
+        loadsBooked: 7,
+        grossMargin: 2500,
+        onTimePickup: 98,
+        onTimeDelivery: 96,
+        daysOutstanding: 14,
+      })
+      .expect(201);
+
+    expect(metricResponse.body.data).toMatchObject({
+      tenantId: 'carrier_123',
+      period: 'daily',
+      loadsBooked: 7,
+    });
+
+    const sameTenantResponse = await request(app)
+      .get('/api/freight-operations/operationalMetrics')
+      .set(headers)
+      .expect(200);
+
+    expect(sameTenantResponse.body.count).toBe(1);
+    expect(sameTenantResponse.body.data[0].id).toBe(metricResponse.body.data.id);
+
+    const otherTenantResponse = await request(app)
+      .get('/api/freight-operations/operationalMetrics')
+      .set({ ...headers, 'x-tenant-id': 'carrier_999' })
+      .expect(200);
+
+    expect(otherTenantResponse.body.count).toBe(0);
+    expect(otherTenantResponse.body.data).toEqual([]);
+  });
+
   it('rejects unsupported freight operation resources', async () => {
     const app = createApp();
 

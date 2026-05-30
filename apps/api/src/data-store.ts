@@ -157,6 +157,7 @@ const OPERATION_CONFIG: Record<FreightOperationResource, OperationConfig> = {
   },
   operationalMetrics: {
     delegate: 'operationalMetric',
+    tenantField: 'carrierId',
     numberFields: ['loadsBooked', 'grossMargin', 'onTimePickup', 'onTimeDelivery', 'daysOutstanding'],
     dateFields: ['date'],
   },

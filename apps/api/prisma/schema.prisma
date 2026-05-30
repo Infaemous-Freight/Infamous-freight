@@ -36,6 +36,7 @@ model Carrier {
   amazonInventoryItems  AmazonInventoryItem[]
   amazonFulfillments    AmazonFulfillmentRequest[]
   rateAgreement         RateAgreement?
+  operationalMetrics    OperationalMetric[]
   dispatchIncidents      DispatchIncident[]
   dispatchAlerts         DispatchAlert[]
   dispatchSlaTimers      DispatchSlaTimer[]
@@ -304,6 +305,7 @@ model RateAgreement {
 
 model OperationalMetric {
   id              String   @id @default(cuid())
+  carrierId       String
   date            DateTime
   period          String
   loadsBooked     Int      @default(0)
@@ -314,7 +316,10 @@ model OperationalMetric {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  @@index([date])
+  carrier Carrier @relation(fields: [carrierId], references: [id])
+
+  @@index([carrierId, date])
+  @@index([carrierId, period])
   @@index([period])
 }
 
