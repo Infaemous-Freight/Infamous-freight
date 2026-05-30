@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Search, Filter, MapPin, DollarSign, Clock, Star, Truck, Bookmark, Phone, CreditCard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import EmptyState from '@/components/ui/EmptyState';
+import api from '@/api-client/client';
 
 interface Load {
   id: string;
@@ -19,16 +20,70 @@ interface Load {
   isHot: boolean;
 }
 
-const mockLoads: Load[] = [
-  { id: 'DAT-49201', broker: 'RXO', credit: 'A+', origin: 'Chicago, IL', dest: 'Dallas, TX', distance: 925, rate: 3200, ratePerMile: 3.46, equipment: 'Dry Van', weight: 32000, pickup: 'Today 2PM', age: '3m', isHot: true },
-  { id: 'TS-77342', broker: 'TQL', credit: 'A', origin: 'Atlanta, GA', dest: 'Charlotte, NC', distance: 245, rate: 1850, ratePerMile: 2.71, equipment: 'Dry Van', weight: 28000, pickup: 'Tomorrow 8AM', age: '12m', isHot: false },
-  { id: '123-11092', broker: 'Landstar', credit: 'A+', origin: 'Houston, TX', dest: 'Phoenix, AZ', distance: 1080, rate: 4100, ratePerMile: 3.80, equipment: 'Reefer', weight: 35000, pickup: 'Today 6PM', age: '8m', isHot: true },
-  { id: 'DAT-49205', broker: 'JB Hunt', credit: 'A', origin: 'Memphis, TN', dest: 'Indianapolis, IN', distance: 380, rate: 2400, ratePerMile: 2.53, equipment: 'Flatbed', weight: 42000, pickup: 'Tomorrow 10AM', age: '25m', isHot: false },
-  { id: 'TS-77348', broker: 'Schneider', credit: 'B', origin: 'Denver, CO', dest: 'Kansas City, MO', distance: 560, rate: 1950, ratePerMile: 2.19, equipment: 'Dry Van', weight: 25000, pickup: 'Today 4PM', age: '45m', isHot: false },
-  { id: 'DAT-49211', broker: 'RXO', credit: 'A+', origin: 'Seattle, WA', dest: 'Portland, OR', distance: 175, rate: 1200, ratePerMile: 2.74, equipment: 'Dry Van', weight: 18000, pickup: 'Today 3PM', age: '1m', isHot: true },
-];
+// Mirrors the backend LoadRecord shape returned by `GET /api/loads`.
+interface LoadRecord {
+  id: string;
+  brokerName: string;
+  brokerMc?: string;
+  originCity: string;
+  originState: string;
+  destCity: string;
+  destState: string;
+  distance: number;
+  rate: number;
+  ratePerMile: number;
+  equipmentType: string;
+  weight: number;
+  status: string;
+  pickupDate: string;
+  deliveryDate?: string;
+  driverId?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const creditColor: Record<string, string> = { 'A+': 'badge-green', A: 'badge-blue', B: 'badge-yellow', C: 'badge-red' };
+
+// Derive a short relative-age string ("3m", "2h", "1d") from an ISO timestamp.
+function formatAge(iso: string): string {
+  const created = new Date(iso).getTime();
+  if (Number.isNaN(created)) return '';
+  const diffMs = Date.now() - created;
+  if (diffMs < 0) return '0m';
+  const minutes = Math.floor(diffMs / 60000);
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h`;
+  return `${Math.floor(hours / 24)}d`;
+}
+
+// Render a readable pickup string from an ISO timestamp.
+function formatPickup(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  return date.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+// Map a backend LoadRecord onto the page's display-only Load interface.
+// Unknown/underivable display fields use sensible defaults — never fabricated values.
+function mapLoad(record: LoadRecord): Load {
+  return {
+    id: record.id,
+    broker: record.brokerName,
+    credit: record.brokerMc ? 'A' : 'B',
+    origin: `${record.originCity}, ${record.originState}`,
+    dest: `${record.destCity}, ${record.destState}`,
+    distance: record.distance,
+    rate: record.rate,
+    ratePerMile: record.ratePerMile,
+    equipment: record.equipmentType,
+    weight: record.weight,
+    pickup: formatPickup(record.pickupDate),
+    age: formatAge(record.createdAt),
+    isHot: false,
+  };
+}
 
 const LoadsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -36,8 +91,29 @@ const LoadsPage: React.FC = () => {
   const [equipment, setEquipment] = useState('All');
   const [minRate, setMinRate] = useState('');
   const [saved, setSaved] = useState<Set<string>>(new Set());
+  const [loads, setLoads] = useState<Load[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const filtered = mockLoads.filter((l) => {
+  const fetchLoads = useCallback(async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await api.getLoads();
+      const records: LoadRecord[] = Array.isArray(response?.data) ? response.data : [];
+      setLoads(records.map(mapLoad));
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLoads();
+  }, [fetchLoads]);
+
+  const filtered = loads.filter((l) => {
     if (search && !(`${l.origin} ${l.dest} ${l.broker}`.toLowerCase().includes(search.toLowerCase()))) return false;
     if (equipment !== 'All' && l.equipment !== equipment) return false;
     if (minRate && l.ratePerMile < parseFloat(minRate)) return false;
@@ -95,7 +171,26 @@ const LoadsPage: React.FC = () => {
       </div>
 
       {/* Load Cards */}
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="flex items-center justify-center py-16 text-sm text-[#B88989]/70">Loading…</div>
+      ) : error ? (
+        <EmptyState
+          icon={<Truck size={40} />}
+          title="Couldn't load the load board"
+          description="Something went wrong while fetching live loads. Please try again."
+          action={
+            <button onClick={() => fetchLoads()} className="btn-secondary text-sm">
+              Retry
+            </button>
+          }
+        />
+      ) : loads.length === 0 ? (
+        <EmptyState
+          icon={<Truck size={40} />}
+          title="No loads available"
+          description="There are no loads on your board right now. New loads will appear here as they come in."
+        />
+      ) : filtered.length === 0 ? (
         <EmptyState
           icon={<Truck size={40} />}
           title="No loads match your filters"
