@@ -1,0 +1,5 @@
+# Intentionally empty.
+# netlify.toml sets `functions = "netlify/event-functions"` so Netlify does not
+# auto-detect the HTTP API entrypoints in netlify/functions/. The form
+# submission handler is parked in netlify/disabled-functions/ until the site
+# environment payload fits Netlify's 4 KB per-function deploy limit.

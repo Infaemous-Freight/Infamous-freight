@@ -6,13 +6,17 @@
   # per-function deploy limit. Public API traffic is proxied to the Fly backend
   # instead of a Netlify function so deploys do not fail during function upload.
   #
-  # Form submission event handlers now run from netlify/event-functions.
-  # Keep function-scoped env vars minimal so Netlify stays under the 4 KB
-  # per-function deploy limit. submission-created.mts only needs
-  # NETLIFY_DATABASE_URL at function scope.
+  # The form submission event handler is also parked (see
+  # netlify/disabled-functions/submission-created.mts.disabled). Netlify attaches
+  # the full site environment payload when creating any function, and that
+  # payload currently exceeds the 4 KB limit even for a single handler, which
+  # broke deploys during function upload. Form submissions are still captured
+  # natively by Netlify Forms; restore the handler into this directory once the
+  # site's function-scoped environment variables are reduced below 4 KB.
   #
-  # The functions directive must remain so Netlify does not fall back to
-  # auto-detecting the HTTP API functions in netlify/functions/.
+  # netlify/event-functions therefore contains no packaged functions today, but
+  # the directive must remain so Netlify does not fall back to auto-detecting the
+  # HTTP API functions in netlify/functions/.
   functions = "netlify/event-functions"
 
 [build.environment]
