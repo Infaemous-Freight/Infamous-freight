@@ -32,6 +32,24 @@ describe('codex-env-check.sh', () => {
     expect(result.stdout).toContain('Placeholder-looking values:');
   });
 
+  it('prints names-only remediation guidance for missing required variables', () => {
+    const result = spawnSync('/usr/bin/bash', [scriptPath], {
+      encoding: 'utf8',
+      env: {
+        PATH: process.env.PATH,
+      },
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Remediation guidance — names only, no values:');
+    expect(result.stdout).toContain('- NODE_ENV');
+    expect(result.stdout).toContain('- DATABASE_URL');
+    expect(result.stdout).toContain('- one-of [SUPABASE_SERVICE_KEY SUPABASE_SERVICE_ROLE_KEY]');
+    expect(result.stdout).toContain('Do not paste real values into logs, issues, PRs, or chat.');
+    expect(result.stdout).not.toContain('postgresql://user:password');
+    expect(result.stdout).not.toContain('sk_live_');
+  });
+
   it('warns when REDIS_HOST is localhost', () => {
     const result = spawnSync('/usr/bin/bash', [scriptPath], {
       encoding: 'utf8',
