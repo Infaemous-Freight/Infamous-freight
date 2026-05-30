@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Truck,
@@ -24,14 +24,112 @@ import {
   DollarSign,
 } from 'lucide-react';
 import WidgetErrorBoundary from '@/components/ui/WidgetErrorBoundary';
+import EmptyState from '@/components/ui/EmptyState';
 import { LazyShipmentRouteMap, preloadShipmentRouteMap } from '@/components/LazyShipmentRouteMap';
+import api from '@/api-client/client';
 import {
+  // TODO: alerts and deliveryStatuses remain seeded — they await a backend feed.
   alerts,
-  dashboardMetricSeeds,
   deliveryStatuses,
   mockActiveLoads,
   type ActiveLoad,
 } from '@/mocks/dashboard';
+
+// Backend record shapes returned by the implemented Express routes.
+interface LoadRecord {
+  id: string;
+  brokerName: string;
+  brokerMc?: string;
+  originCity: string;
+  originState: string;
+  destCity: string;
+  destState: string;
+  distance: number;
+  rate: number;
+  ratePerMile: number;
+  equipmentType: string;
+  weight: number;
+  status: string;
+  pickupDate: string;
+  deliveryDate?: string;
+  driverId?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const closedStatuses = new Set(['delivered', 'closed', 'cancelled', 'canceled', 'invoiced', 'pod_uploaded']);
+
+const statusLabelMap: Record<string, string> = {
+  in_transit: 'In Transit',
+  at_pickup: 'At Pickup',
+  dispatched: 'Dispatched',
+  delivered: 'Delivered',
+  exception: 'Delayed',
+  pickup_scheduled: 'Pickup Scheduled',
+  carrier_assigned: 'Carrier Assigned',
+  booked: 'Booked',
+  pod_uploaded: 'POD Uploaded',
+  invoiced: 'Invoiced',
+};
+
+function titleCase(value: string): string {
+  return value
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+const usd0 = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+function formatRate(rate: number): string {
+  if (!Number.isFinite(rate)) return '';
+  return usd0.format(rate);
+}
+
+function formatRevenue(total: number): string {
+  if (total >= 1_000_000) return `$${(total / 1_000_000).toFixed(1)}M`;
+  if (total >= 1_000) return `$${(total / 1_000).toFixed(1)}K`;
+  return usd0.format(total);
+}
+
+function formatEta(load: LoadRecord): string {
+  const iso = load.deliveryDate ?? load.pickupDate;
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function formatDate(iso?: string): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+// Map a backend LoadRecord onto the existing ActiveLoad display shape.
+// Display-only fields are derived from the record; unknown values stay blank.
+function mapLoadToActiveLoad(load: LoadRecord): ActiveLoad {
+  return {
+    ref: load.id,
+    origin: `${load.originCity}, ${load.originState}`,
+    destination: `${load.destCity}, ${load.destState}`,
+    carrier: load.brokerName ?? '',
+    status: load.status,
+    statusLabel: statusLabelMap[load.status] ?? titleCase(load.status),
+    eta: formatEta(load),
+    rate: formatRate(load.rate),
+    equipment: load.equipmentType ?? '',
+    weight: Number.isFinite(load.weight) ? `${load.weight.toLocaleString()} lbs` : '',
+    miles: Number.isFinite(load.distance) ? `${load.distance.toLocaleString()} mi` : '',
+    driver: '',
+    phone: '',
+    pickupDate: formatDate(load.pickupDate),
+    deliveryDate: formatDate(load.deliveryDate),
+    docStatus: { bol: false, pod: false, rateCon: false, invoice: false },
+    margin: '',
+  };
+}
 
 const statusBarColor: Record<string, string> = {
   in_transit: 'bg-infamous-red-light',
@@ -87,11 +185,50 @@ const DashboardPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [alertFilter, setAlertFilter] = useState<string>('all');
 
+  const [loads, setLoads] = useState<ActiveLoad[]>([]);
+  const [loadRecords, setLoadRecords] = useState<LoadRecord[]>([]);
+  const [shipmentCount, setShipmentCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   useEffect(() => {
     preloadShipmentRouteMap();
   }, []);
 
-  const filteredLoads = mockActiveLoads.filter((load) => {
+  const fetchDashboard = useCallback(async () => {
+    setIsLoading(true);
+    setLoadError(null);
+    try {
+      const [loadsResponse, shipmentsResponse] = await Promise.all([
+        api.getLoads() as Promise<{ data?: LoadRecord[]; count?: number }>,
+        api.getShipments() as Promise<{ data?: unknown[]; count?: number }>,
+      ]);
+      const records = Array.isArray(loadsResponse?.data) ? loadsResponse.data : [];
+      setLoadRecords(records);
+      setLoads(records.map(mapLoadToActiveLoad));
+      setShipmentCount(
+        typeof shipmentsResponse?.count === 'number'
+          ? shipmentsResponse.count
+          : Array.isArray(shipmentsResponse?.data)
+            ? shipmentsResponse.data.length
+            : 0,
+      );
+    } catch {
+      setLoadError("Couldn't load dashboard data");
+      setLoadRecords([]);
+      setLoads([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchDashboard();
+  }, [fetchDashboard]);
+
+  // While loading, fall back to the seeds for the active-loads panel only.
+  const sourceLoads = isLoading && !loadError ? mockActiveLoads : loads;
+
+  const filteredLoads = sourceLoads.filter((load) => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (
@@ -103,14 +240,37 @@ const DashboardPage: React.FC = () => {
     );
   });
 
+  // Keep the detail panel pointed at a real row from the active list.
+  useEffect(() => {
+    if (sourceLoads.length === 0) return;
+    if (!sourceLoads.some((load) => load.ref === selectedLoad.ref)) {
+      setSelectedLoad(sourceLoads[0]);
+    }
+  }, [sourceLoads, selectedLoad.ref]);
+
   const filteredAlerts = alerts.filter((a) => alertFilter === 'all' || a.severity === alertFilter);
 
-  const metrics = dashboardMetricSeeds.map((metric) => ({
+  // Live aggregates derived from the backend load records.
+  const activeLoadCount = loadRecords.filter((l) => !closedStatuses.has(l.status)).length;
+  const inTransitCount = loadRecords.filter((l) => l.status === 'in_transit').length;
+  const totalRevenue = loadRecords.reduce((sum, l) => sum + (Number.isFinite(l.rate) ? l.rate : 0), 0);
+
+  // Same tile labels/layout as before; only the numeric values are live.
+  const metrics = [
+    { label: 'Active Loads', value: String(activeLoadCount), tone: 'red' },
+    { label: 'In Transit', value: String(inTransitCount), tone: 'red' },
+    { label: 'Available Drivers', value: '—', tone: 'green' },
+    { label: 'On-Time Rate', value: '—', tone: 'green' },
+    { label: 'Revenue MTD', value: formatRevenue(totalRevenue), tone: 'red' },
+  ].map((metric) => ({
     label: metric.label,
     value: metric.value,
     icon: metricIconMap[metric.label] ?? <Activity size={18} />,
     color: metric.tone === 'green' ? 'text-infamous-green' : 'text-infamous-red-light',
   }));
+
+  // Total shipments tracked, surfaced alongside the live metric label.
+  const shipmentSummary = shipmentCount > 0 ? ` · ${shipmentCount} shipments tracked` : '';
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -137,19 +297,33 @@ const DashboardPage: React.FC = () => {
 
       <WidgetErrorBoundary label="Operations metrics">
         <div>
-          <p className="text-[10px] text-infamous-muted uppercase tracking-wider mb-2">Sample data — connect your account for live metrics</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
-            {metrics.map((m) => (
-              <div key={m.label} className="panel-neon relative overflow-hidden rounded-[16px] p-4 transition-all group">
-                <div className="flex items-center justify-between mb-2">
-                  <span className={`${m.color} opacity-70`}>{m.icon}</span>
+          <p className="text-[10px] text-infamous-muted uppercase tracking-wider mb-2">
+            {isLoading ? 'Loading live metrics…' : loadError ? 'Live metrics unavailable' : `Live metrics${shipmentSummary}`}
+          </p>
+          {loadError ? (
+            <EmptyState
+              title="Couldn't load metrics"
+              description={loadError}
+              action={
+                <button onClick={() => void fetchDashboard()} className="btn-secondary inline-flex items-center gap-2 text-sm">
+                  Retry
+                </button>
+              }
+            />
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
+              {metrics.map((m) => (
+                <div key={m.label} className="panel-neon relative overflow-hidden rounded-[16px] p-4 transition-all group">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`${m.color} opacity-70`}>{m.icon}</span>
+                  </div>
+                  <p className="text-3xl font-black font-display tracking-tight">{isLoading ? '…' : m.value}</p>
+                  <p className="text-[11px] text-infamous-muted mt-1 uppercase tracking-wider font-medium">{m.label}</p>
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-infamous-red/30 to-transparent" />
                 </div>
-                <p className="text-3xl font-black font-display tracking-tight">{m.value}</p>
-                <p className="text-[11px] text-infamous-muted mt-1 uppercase tracking-wider font-medium">{m.label}</p>
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-infamous-red/30 to-transparent" />
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </WidgetErrorBoundary>
 
@@ -229,32 +403,51 @@ const DashboardPage: React.FC = () => {
               <span className="text-right">Rate</span>
             </div>
 
-            <div className="space-y-1.5">
-              {filteredLoads.map((load) => (
-                <button
-                  key={load.ref}
-                  type="button"
-                  onClick={() => setSelectedLoad(load)}
-                  className={`w-full text-left md:grid md:grid-cols-[auto_1fr_1fr_110px_80px_80px] flex flex-col gap-1 md:gap-3 items-start md:items-center p-3 rounded-xl transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-red ${
-                    selectedLoad.ref === load.ref
-                      ? 'bg-infamous-red/8 border border-infamous-red/25 glow-low'
-                      : 'border border-transparent hover:bg-infamous-panel hover:border-infamous-border/60'
-                  }`}
-                >
-                  <div className={`w-1.5 h-8 rounded-full ${statusBarColor[load.status] ?? 'bg-gray-400'} hidden md:block`} />
-                  <div className="min-w-0">
-                    <span className="text-xs font-mono text-infamous-muted">{load.ref}</span>
-                    <p className="text-[15px] font-medium text-[#F5E8E8] truncate">{load.origin} → {load.destination}</p>
-                  </div>
-                  <span className="text-xs text-infamous-muted truncate">{load.carrier}</span>
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${statusBadgeClass[load.status] ?? ''}`}>
-                    {load.statusLabel}
-                  </span>
-                  <span className="text-xs text-infamous-muted text-right">{load.eta}</span>
-                  <span className="text-[15px] font-bold text-right">{load.rate}</span>
-                </button>
-              ))}
-            </div>
+            {isLoading ? (
+              <div className="py-12 text-center text-sm text-infamous-muted">Loading…</div>
+            ) : loadError ? (
+              <EmptyState
+                title="Couldn't load active loads"
+                description={loadError}
+                action={
+                  <button onClick={() => void fetchDashboard()} className="btn-secondary inline-flex items-center gap-2 text-sm">
+                    Retry
+                  </button>
+                }
+              />
+            ) : filteredLoads.length === 0 ? (
+              <EmptyState
+                title={searchQuery ? 'No loads match your search' : 'No active loads yet'}
+                description={searchQuery ? 'Try a different reference, city, or carrier.' : 'New loads will appear here as they are booked.'}
+              />
+            ) : (
+              <div className="space-y-1.5">
+                {filteredLoads.map((load) => (
+                  <button
+                    key={load.ref}
+                    type="button"
+                    onClick={() => setSelectedLoad(load)}
+                    className={`w-full text-left md:grid md:grid-cols-[auto_1fr_1fr_110px_80px_80px] flex flex-col gap-1 md:gap-3 items-start md:items-center p-3 rounded-xl transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-red ${
+                      selectedLoad.ref === load.ref
+                        ? 'bg-infamous-red/8 border border-infamous-red/25 glow-low'
+                        : 'border border-transparent hover:bg-infamous-panel hover:border-infamous-border/60'
+                    }`}
+                  >
+                    <div className={`w-1.5 h-8 rounded-full ${statusBarColor[load.status] ?? 'bg-gray-400'} hidden md:block`} />
+                    <div className="min-w-0">
+                      <span className="text-xs font-mono text-infamous-muted">{load.ref}</span>
+                      <p className="text-[15px] font-medium text-[#F5E8E8] truncate">{load.origin} → {load.destination}</p>
+                    </div>
+                    <span className="text-xs text-infamous-muted truncate">{load.carrier}</span>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${statusBadgeClass[load.status] ?? ''}`}>
+                      {load.statusLabel}
+                    </span>
+                    <span className="text-xs text-infamous-muted text-right">{load.eta}</span>
+                    <span className="text-[15px] font-bold text-right">{load.rate}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </WidgetErrorBoundary>
 

@@ -117,6 +117,20 @@ class ApiClient {
     return data;
   }
 
+  // Returns the tenant's loads from the implemented `GET /api/loads` route.
+  // Shape: { data: LoadRecord[]; count: number }.
+  async getLoads() {
+    const { data } = await this.client.get('/loads');
+    return data;
+  }
+
+  // Returns the tenant's shipments from `GET /api/shipments`.
+  // Shape: { data: ShipmentRecord[]; count: number }.
+  async getShipments() {
+    const { data } = await this.client.get('/shipments');
+    return data;
+  }
+
   async bookLoad(loadId: string, driverId?: string) {
     const { data } = await this.client.post('/loads/book', { loadId, driverId });
     return data;
