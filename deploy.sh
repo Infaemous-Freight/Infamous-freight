@@ -31,8 +31,8 @@ NC='\033[0m'
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$SCRIPT_DIR"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-LOG_FILE="$PROJECT_ROOT/logs/deploy_${TIMESTAMP}.log"
-mkdir -p "$PROJECT_ROOT/logs"
+LOG_FILE="${DEPLOY_LOG_FILE:-$PROJECT_ROOT/logs/deploy_${TIMESTAMP}.log}"
+mkdir -p "$(dirname "$LOG_FILE")"
 
 # How long to wait for the service to start before health-checking (seconds)
 DEPLOY_SETTLE_TIME="${DEPLOY_SETTLE_TIME:-10}"

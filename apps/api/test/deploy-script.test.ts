@@ -1,8 +1,15 @@
 import path from 'path';
+import { mkdtempSync, rmSync } from 'fs';
+import { tmpdir } from 'os';
 import { spawnSync } from 'child_process';
 
 describe('root deploy script', () => {
   const scriptPath = path.resolve(__dirname, '../../../deploy.sh');
+  const logDir = mkdtempSync(path.join(tmpdir(), 'infamous-deploy-test-'));
+
+  afterAll(() => {
+    rmSync(logDir, { force: true, recursive: true });
+  });
 
   const runValidation = (imageRef: string, expectedApp?: string) => {
     const expectedArg = expectedApp ? ` "${expectedApp}"` : '';
@@ -10,7 +17,13 @@ describe('root deploy script', () => {
     return spawnSync(
       'bash',
       ['-lc', `source "${scriptPath}"; validate_container_image_ref "${imageRef}"${expectedArg}`],
-      { encoding: 'utf8' },
+      {
+        encoding: 'utf8',
+        env: {
+          ...process.env,
+          DEPLOY_LOG_FILE: path.join(logDir, `deploy-${process.pid}-${Date.now()}.log`),
+        },
+      },
     );
   };
 
