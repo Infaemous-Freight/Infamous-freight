@@ -2,6 +2,50 @@
 
 Use this file during production readiness verification. Do not mark the launch ready based on unchecked assumptions. Paste command output, screenshot summaries, dashboard links, timestamps, owners, and blocker notes.
 
+## 2026-05-31 Production Launch Approval Assessment
+
+Current launch status: **Production Candidate - Not Approved**.
+
+The latest production launch review separates infrastructure health from launch approval. Public route and proxy evidence shows the web property, Netlify API proxy, and Fly.io API health paths have passed recent unauthenticated checks. That evidence is not sufficient for production approval because several required checks need authenticated provider access, live billing verification, production database migration proof, full workflow smoke testing, observability proof, and owner acceptance.
+
+Do not move Infamous Freight to Production Approved until every blocking row below has evidence recorded in this log or in a linked dated evidence file under `docs/launch-evidence/`.
+
+| Gate | Required Evidence | Current Status | Launch Impact | Evidence Destination |
+|---|---|---|---|---|
+| Production database verification | Latest production migration applied successfully; no pending Prisma migrations; production database reachable; backup and restore procedure documented and tested outside production | Pending authenticated operator verification | Blocking | `docs/LAUNCH_EVIDENCE_LOG.md`, `docs/BACKUP_RESTORE_VERIFICATION.md` |
+| Stripe live verification | Live checkout succeeds; subscription is created; webhook delivery succeeds; customer portal opens for the live customer | Pending controlled live-mode verification | Blocking | `docs/LAUNCH_EVIDENCE_LOG.md`, `docs/STRIPE_WEBHOOK_VERIFICATION.md`, `docs/STRIPE_LIVE_BILLING_VERIFICATION.md` |
+| Authenticated Fly.io diagnostics | Application logs reviewed; required runtime variables verified by name only; worker/background processes healthy; no startup failures | Pending authenticated Fly.io verification | Blocking | `docs/LAUNCH_EVIDENCE_LOG.md`, `docs/FLY-RUNTIME-OPERATIONS.md` |
+| End-to-end smoke test | Register, login, create load, assign driver, track shipment, generate invoice, pay invoice, access customer portal, and logout all pass | Pending production workflow execution | Blocking | `docs/LAUNCH_EVIDENCE_LOG.md`, `docs/PRODUCTION_SMOKE_TESTING.md` |
+| Observability | Error monitoring active; production log retention confirmed; alerts configured; incident response procedure accepted | Partially documented; proof still pending | High risk | `docs/OBSERVABILITY.md`, `docs/INCIDENT-RESPONSE.md`, `docs/operations/INCIDENT_RESPONSE_RUNBOOK.md` |
+| Owner sign-off | Launch checklist complete; residual risks accepted; rollback plan approved by named owner | Pending owner approval | Blocking | `docs/LAUNCH_EVIDENCE_LOG.md`, `docs/ROLLBACK_PLAN.md`, `docs/production-operations/LAUNCH_CHECKLIST.md` |
+
+Score snapshot from the review:
+
+| Category | Score |
+|---|---:|
+| Infrastructure | 96/100 |
+| Frontend | 95/100 |
+| Backend | 94/100 |
+| Dashboard | 95/100 |
+| Billing | 90/100 |
+| Security | 90/100 |
+| Monitoring | 75/100 |
+| Operations | 85/100 |
+| Launch Evidence | 60/100 |
+
+Overall platform quality is estimated at approximately 94/100. Launch verification is estimated at approximately 70/100. Production approval remains blocked because the missing items are operational proof gaps, not known code-quality failures.
+
+Next required actions:
+
+1. Execute production migration verification from an authenticated operator terminal.
+2. Execute Stripe live-mode verification with approved low-risk live payment coverage.
+3. Execute authenticated Fly.io diagnostics without recording secret values.
+4. Execute the full end-to-end smoke test in production with controlled test data.
+5. Add evidence entries for each passing or failing check.
+6. Record final owner sign-off, risk acceptance, and rollback approval.
+
+Operators can run `pnpm run launch:approval-gates` before live verification to confirm the repository still contains the expected launch gate runbooks and helper scripts. That command does not contact production providers; it only prints the remaining evidence gates and checks that the non-secret repo-side materials are present.
+
 ## 2026-05-17 Netlify Production Public Path Retest
 
 Re-ran the recommended public-path checks for the canonical host, apex redirect, proxied API health route, public quote preflight, and invalid tracking lookup. The checks were limited to HTTP status and content type so no secrets or customer data were captured.
