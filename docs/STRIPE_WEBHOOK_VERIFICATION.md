@@ -26,14 +26,14 @@ Use this before paid beta and public launch. Stripe must be treated as the billi
 
 | Event | Expected Application Behavior | Status |
 |---|---|---|
-| `payment_intent.succeeded` | Payment marked successful once; access/order state updated once | UNKNOWN |
-| `payment_intent.payment_failed` | Failure recorded; paid access not granted | UNKNOWN |
 | `checkout.session.completed` | Customer/session linked; fulfillment starts only once | UNKNOWN |
-| `invoice.paid` | Subscription/invoice marked paid once | UNKNOWN |
+| `invoice.paid` | Subscription/account billing state marked active once | UNKNOWN |
+| `invoice.payment_succeeded` | Subscription/account billing state marked active once | UNKNOWN |
 | `invoice.payment_failed` | Account billing state marked past due or failed | UNKNOWN |
 | `customer.subscription.updated` | Subscription status, plan, and renewal data updated | UNKNOWN |
 | `customer.subscription.deleted` | Subscription cancellation reflected; access adjusted according to policy | UNKNOWN |
-| `charge.refunded` | Refund recorded; user/account state adjusted if required | UNKNOWN |
+| `charge.refunded` | Refund risk recorded; account marked for billing follow-up | UNKNOWN |
+| `charge.dispute.created` | Dispute risk recorded; account marked for billing follow-up | UNKNOWN |
 
 ## Idempotency Tests
 
@@ -138,6 +138,10 @@ If Stripe and app state disagree:
 4. Log the correction.
 5. Notify user if money, access, or invoices were affected.
 6. Create a root-cause issue.
+
+## Automated live verification framework
+
+Run `pnpm run billing:verify-live` from an approved operator terminal and follow [`STRIPE_LIVE_BILLING_VERIFICATION.md`](./STRIPE_LIVE_BILLING_VERIFICATION.md) before controlled live payments.
 
 ## Launch Gate
 
