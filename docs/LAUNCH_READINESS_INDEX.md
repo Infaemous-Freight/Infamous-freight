@@ -35,14 +35,15 @@ Production web builds now keep bundled MVP/demo freight records disabled unless 
 ## Execution Order
 
 1. Assign launch owner, rollback owner, support owner, and technical owner.
-2. Open `docs/LAUNCH_EVIDENCE_LOG.md` and fill in run metadata.
-3. Create a dated file from `docs/launch-evidence/TEMPLATE.md` to collect screenshots, command output, Netlify deploy ID, Fly release ID, monitoring proof, and launch decision evidence.
-4. Create test accounts and test records using `docs/PRODUCTION_TEST_DATA_PLAN.md`.
-5. Execute `docs/PRODUCTION_READINESS_VERIFICATION.md` from Phase 0 through Phase 7.
-6. Use the specialized runbooks when a phase references backup/restore, Stripe, admin recovery, or notifications.
-7. Record every test result in the evidence log.
-8. Open a blocker for every failed or unknown critical/high result using `docs/LAUNCH_BLOCKER_TEMPLATE.md`.
-9. Approve only the highest launch gate supported by actual evidence.
+2. Run `pnpm run launch:approval-gates` to confirm the repo-side launch runbooks and helper scripts are present before starting live verification.
+3. Open `docs/LAUNCH_EVIDENCE_LOG.md` and fill in run metadata.
+4. Create a dated file from `docs/launch-evidence/TEMPLATE.md` to collect screenshots, command output, Netlify deploy ID, Fly release ID, monitoring proof, and launch decision evidence.
+5. Create test accounts and test records using `docs/PRODUCTION_TEST_DATA_PLAN.md`.
+6. Execute `docs/PRODUCTION_READINESS_VERIFICATION.md` from Phase 0 through Phase 7.
+7. Use the specialized runbooks when a phase references backup/restore, Stripe, admin recovery, or notifications.
+8. Record every test result in the evidence log.
+9. Open a blocker for every failed or unknown critical/high result using `docs/LAUNCH_BLOCKER_TEMPLATE.md`.
+10. Approve only the highest launch gate supported by actual evidence.
 
 Before any production launch gate is approved, confirm that pending Netlify database migrations have been reviewed and applied to the target database branch or intentionally reset and regenerated.
 
