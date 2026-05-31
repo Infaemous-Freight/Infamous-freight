@@ -27,6 +27,8 @@ It contains operations, compliance, dispatch, carrier, sales, launch readiness, 
 - [MVP Technical Implementation Spec](MVP_TECHNICAL_IMPLEMENTATION_SPEC.md)
 - [MVP Existing Architecture Alignment](MVP_EXISTING_ARCHITECTURE_ALIGNMENT.md)
 - [Production Readiness Evidence](PRODUCTION_READINESS_EVIDENCE.md)
+- [Full Production Smoke Test](FULL_PRODUCTION_SMOKE_TEST.md)
+- [Daily Operations Report Template](DAILY_OPERATIONS_REPORT_TEMPLATE.md)
 
 ## Build Priority
 
