@@ -4,17 +4,18 @@ A phased plan for building Infamous Freight forward from the current monorepo. T
 
 > Stack reminder: pnpm monorepo with `apps/api` (Express 5 + Prisma + PostgreSQL + Socket.IO + Stripe) and `apps/web` (React + Vite + TypeScript + Tailwind). See [`README.md`](../README.md) and [`ARCHITECTURE.md`](./ARCHITECTURE.md).
 
+> Revenue-first execution note: when roadmap items compete, prioritize the paid MVP sequence in [`REVENUE_FIRST_ROADMAP.md`](./REVENUE_FIRST_ROADMAP.md): authentication, organizations, tenant isolation, carrier onboarding, shipment tracking, POD upload, and billing before AI, marketplace, or advanced analytics.
+
 ---
 
-## Phase 1 — Branding
+## Phase 1 — Revenue MVP and production trust
 
-Lock down visual and verbal identity across the web app and public surfaces.
+Complete the paid-MVP path before expanding into advanced automation. Pull work from [`REVENUE_FIRST_ROADMAP.md`](./REVENUE_FIRST_ROADMAP.md), starting with authentication, organizations, tenant isolation, carrier onboarding, shipment tracking, POD upload, and billing.
 
-- Apply the brand palette, typography, and logo treatment in `apps/web`.
-- Ensure marketing/header assets in [`docs/screenshots/`](./screenshots) and [`docs/branding/`](./branding) stay consistent with what ships in the UI.
-- Confirm the Netlify-served site at `https://www.infamousfreight.com` reflects the brand (apex + `*.netlify.app` already 301 to the canonical URL via [`netlify.toml`](../netlify.toml)).
-
-Detailed actions: [`phase-1-branding-plan.md`](./phase-1-branding-plan.md).
+- Keep the public quote, tracking, carrier, load, POD, and invoice flows tied to implemented API routes.
+- Make tenant isolation and organization membership verification launch blockers, not polish items.
+- Update [`CAPABILITY_STATUS_MAP.md`](./CAPABILITY_STATUS_MAP.md) only when implementation, tests, and evidence match the claim.
+- Keep brand polish focused on revenue conversion and trust while the MVP path is being hardened; detailed visual actions remain in [`phase-1-branding-plan.md`](./phase-1-branding-plan.md).
 
 ## Phase 2 — Verify local setup
 

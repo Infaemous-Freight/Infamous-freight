@@ -77,11 +77,11 @@ Prioritize:
 Before production release:
 
 ```bash
-npm install
-npm run lint
-npm run build
-npm run test
-npm run production:preflight
+pnpm install --frozen-lockfile
+pnpm run lint
+pnpm run build
+pnpm run test
+pnpm run production:preflight
 ```
 
 ## Spark Prompt for Future Prototyping
