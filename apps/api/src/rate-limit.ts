@@ -13,10 +13,26 @@ type RateLimitEntry = {
 
 const buckets = new Map<string, RateLimitEntry>();
 
+function allowsHeaderTenantRateLimitKey(): boolean {
+  const configured = process.env.AUTH_MODE?.trim().toLowerCase();
+
+  if (configured === 'trusted') {
+    return false;
+  }
+
+  if (configured === 'header') {
+    return true;
+  }
+
+  return process.env.NODE_ENV !== 'production';
+}
+
 function getClientKey(req: Request, keyPrefix: string): string {
   const forwardedFor = req.header('x-forwarded-for')?.split(',')[0]?.trim();
   const ip = forwardedFor || req.ip || req.socket.remoteAddress || 'unknown';
-  const tenantId = req.header('x-tenant-id')?.trim() || 'no-tenant';
+  const verifiedTenantId = req.rateLimitTenantId?.trim() || req.authenticatedUser?.tenantId?.trim();
+  const headerTenantId = allowsHeaderTenantRateLimitKey() ? req.header('x-tenant-id')?.trim() : null;
+  const tenantId = verifiedTenantId || headerTenantId || 'no-tenant';
 
   return `${keyPrefix}:${tenantId}:${ip}`;
 }

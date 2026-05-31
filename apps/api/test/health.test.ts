@@ -118,6 +118,148 @@ describe('rate limiting', () => {
     expect(first.status).toBe(200);
     expect(second.status).toBe(200);
   });
+
+  it('does not use caller-controlled tenant headers for unauthenticated trusted-mode rate limit keys', async () => {
+    const previousAuthMode = process.env.AUTH_MODE;
+    const previousJwtSecret = process.env.SUPABASE_JWT_SECRET;
+    const previousRateLimitEnabled = process.env.RATE_LIMIT_ENABLED;
+    const previousRateLimitWindowMs = process.env.RATE_LIMIT_WINDOW_MS;
+    const previousRateLimitMaxRequests = process.env.RATE_LIMIT_MAX_REQUESTS;
+
+    try {
+      process.env.AUTH_MODE = 'trusted';
+      process.env.SUPABASE_JWT_SECRET = 'test-supabase-jwt-secret';
+      process.env.RATE_LIMIT_ENABLED = 'true';
+      process.env.RATE_LIMIT_WINDOW_MS = '60000';
+      process.env.RATE_LIMIT_MAX_REQUESTS = '1';
+
+      const app = createApp();
+
+      const first = await request(app)
+        .get('/api/loads')
+        .set('x-tenant-id', 'spoofed-tenant-1')
+        .set('x-user-role', 'owner');
+      const second = await request(app)
+        .get('/api/loads')
+        .set('x-tenant-id', 'spoofed-tenant-2')
+        .set('x-user-role', 'owner');
+
+      expect(first.status).toBe(401);
+      expect(first.body.error).toBe('authentication_required');
+      expect(second.status).toBe(429);
+      expect(second.body.error).toBe('rate_limit_exceeded');
+    } finally {
+      if (previousAuthMode !== undefined) {
+        process.env.AUTH_MODE = previousAuthMode;
+      } else {
+        delete process.env.AUTH_MODE;
+      }
+
+      if (previousJwtSecret !== undefined) {
+        process.env.SUPABASE_JWT_SECRET = previousJwtSecret;
+      } else {
+        delete process.env.SUPABASE_JWT_SECRET;
+      }
+
+      if (previousRateLimitEnabled !== undefined) {
+        process.env.RATE_LIMIT_ENABLED = previousRateLimitEnabled;
+      } else {
+        delete process.env.RATE_LIMIT_ENABLED;
+      }
+
+      if (previousRateLimitWindowMs !== undefined) {
+        process.env.RATE_LIMIT_WINDOW_MS = previousRateLimitWindowMs;
+      } else {
+        delete process.env.RATE_LIMIT_WINDOW_MS;
+      }
+
+      if (previousRateLimitMaxRequests !== undefined) {
+        process.env.RATE_LIMIT_MAX_REQUESTS = previousRateLimitMaxRequests;
+      } else {
+        delete process.env.RATE_LIMIT_MAX_REQUESTS;
+      }
+    }
+  });
+
+  it('uses verified tenant context for rate limit keys before caller-controlled tenant headers', async () => {
+    const previousAuthMode = process.env.AUTH_MODE;
+    const previousJwtSecret = process.env.SUPABASE_JWT_SECRET;
+    const previousRateLimitEnabled = process.env.RATE_LIMIT_ENABLED;
+    const previousRateLimitWindowMs = process.env.RATE_LIMIT_WINDOW_MS;
+    const previousRateLimitMaxRequests = process.env.RATE_LIMIT_MAX_REQUESTS;
+    const dataStore = dataStoreModule.createDataStore();
+    const getCarrierMembershipSpy = jest.spyOn(dataStore, 'getCarrierMembership');
+    const createDataStoreSpy = jest.spyOn(dataStoreModule, 'createDataStore').mockReturnValue(dataStore);
+
+    try {
+      process.env.AUTH_MODE = 'trusted';
+      process.env.SUPABASE_JWT_SECRET = 'test-supabase-jwt-secret';
+      process.env.RATE_LIMIT_ENABLED = 'true';
+      process.env.RATE_LIMIT_WINDOW_MS = '60000';
+      process.env.RATE_LIMIT_MAX_REQUESTS = '1';
+
+      const app = createApp();
+      const token = signJwt({
+        sub: 'user-1',
+        exp: Math.floor(Date.now() / 1000) + 60,
+        app_metadata: {
+          tenant_id: 'tenant-token',
+        },
+      });
+      const authHeader = `Bearer ${token}`;
+
+      const first = await request(app)
+        .get('/api/loads')
+        .set('authorization', authHeader)
+        .set('x-tenant-id', 'spoofed-tenant-1')
+        .set('x-user-role', 'owner')
+        .set('x-subscription-status', 'active');
+      const second = await request(app)
+        .get('/api/loads')
+        .set('authorization', authHeader)
+        .set('x-tenant-id', 'spoofed-tenant-2')
+        .set('x-user-role', 'owner')
+        .set('x-subscription-status', 'active');
+
+      expect(first.status).toBe(200);
+      expect(second.status).toBe(429);
+      expect(second.body.error).toBe('rate_limit_exceeded');
+      expect(getCarrierMembershipSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      createDataStoreSpy.mockRestore();
+      getCarrierMembershipSpy.mockRestore();
+
+      if (previousAuthMode !== undefined) {
+        process.env.AUTH_MODE = previousAuthMode;
+      } else {
+        delete process.env.AUTH_MODE;
+      }
+
+      if (previousJwtSecret !== undefined) {
+        process.env.SUPABASE_JWT_SECRET = previousJwtSecret;
+      } else {
+        delete process.env.SUPABASE_JWT_SECRET;
+      }
+
+      if (previousRateLimitEnabled !== undefined) {
+        process.env.RATE_LIMIT_ENABLED = previousRateLimitEnabled;
+      } else {
+        delete process.env.RATE_LIMIT_ENABLED;
+      }
+
+      if (previousRateLimitWindowMs !== undefined) {
+        process.env.RATE_LIMIT_WINDOW_MS = previousRateLimitWindowMs;
+      } else {
+        delete process.env.RATE_LIMIT_WINDOW_MS;
+      }
+
+      if (previousRateLimitMaxRequests !== undefined) {
+        process.env.RATE_LIMIT_MAX_REQUESTS = previousRateLimitMaxRequests;
+      } else {
+        delete process.env.RATE_LIMIT_MAX_REQUESTS;
+      }
+    }
+  });
 });
 
 describe('tenant-protected resource routes', () => {
