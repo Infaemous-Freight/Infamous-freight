@@ -21,6 +21,7 @@ Production web builds now keep bundled MVP/demo freight records disabled unless 
 | `docs/PRODUCTION_READINESS_VERIFICATION.md` | Main verification checklist, launch gates, severity rules, and sign-off requirements |
 | `docs/PRODUCTION_DASHBOARD_REMAINING_WORK.md` | Remaining production dashboard, secret-management, Stripe webhook, and billing verification work after environment and billing hardening |
 | `docs/LAUNCH_EVIDENCE_LOG.md` | Evidence log template for command output, dashboard checks, blocker notes, and final decision |
+| `docs/launch-evidence/README.md` | Phase A evidence package workspace for screenshots, command output, deploy IDs, monitoring proof, and final launch decision artifacts |
 | `docs/ROLLBACK_PLAN.md` | Rollback triggers and recovery process for API, web, database, billing, notifications, and support |
 | `docs/PRODUCTION_TEST_DATA_PLAN.md` | Controlled production test accounts, freight records, documents, billing data, and cleanup rules |
 | `docs/MVP_LAUNCH_DEMO_DATA_SET.md` | MVP launch demo data set for sales demos and smoke tests: sample customers, carriers, shipments, tracking events, quotes, and cleanup |
@@ -35,12 +36,13 @@ Production web builds now keep bundled MVP/demo freight records disabled unless 
 
 1. Assign launch owner, rollback owner, support owner, and technical owner.
 2. Open `docs/LAUNCH_EVIDENCE_LOG.md` and fill in run metadata.
-3. Create test accounts and test records using `docs/PRODUCTION_TEST_DATA_PLAN.md`.
-4. Execute `docs/PRODUCTION_READINESS_VERIFICATION.md` from Phase 0 through Phase 7.
-5. Use the specialized runbooks when a phase references backup/restore, Stripe, admin recovery, or notifications.
-6. Record every test result in the evidence log.
-7. Open a blocker for every failed or unknown critical/high result using `docs/LAUNCH_BLOCKER_TEMPLATE.md`.
-8. Approve only the highest launch gate supported by actual evidence.
+3. Create a dated file from `docs/launch-evidence/TEMPLATE.md` to collect screenshots, command output, Netlify deploy ID, Fly release ID, monitoring proof, and launch decision evidence.
+4. Create test accounts and test records using `docs/PRODUCTION_TEST_DATA_PLAN.md`.
+5. Execute `docs/PRODUCTION_READINESS_VERIFICATION.md` from Phase 0 through Phase 7.
+6. Use the specialized runbooks when a phase references backup/restore, Stripe, admin recovery, or notifications.
+7. Record every test result in the evidence log.
+8. Open a blocker for every failed or unknown critical/high result using `docs/LAUNCH_BLOCKER_TEMPLATE.md`.
+9. Approve only the highest launch gate supported by actual evidence.
 
 Before any production launch gate is approved, confirm that pending Netlify database migrations have been reviewed and applied to the target database branch or intentionally reset and regenerated.
 
