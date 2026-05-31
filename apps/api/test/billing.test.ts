@@ -99,6 +99,70 @@ describe('Stripe billing endpoints', () => {
     expect(response.body.error).toBe('stripe_secret_key_required');
   });
 
+  it('treats Stripe invoice.paid webhooks as active billing updates', async () => {
+    const app = createApp();
+    const initialPayload = JSON.stringify({
+      id: 'evt_checkout_invoice_paid_carrier',
+      type: 'checkout.session.completed',
+      data: {
+        object: {
+          customer: 'cus_invoice_paid',
+          metadata: {
+            carrierId: 'carrier_invoice_paid',
+            plan: 'starter',
+          },
+        },
+      },
+    });
+
+    await request(app)
+      .post('/api/billing/webhook')
+      .set('stripe-signature', createStripeSignature(initialPayload, 'whsec_test_secret'))
+      .set('Content-Type', 'application/json')
+      .send(initialPayload)
+      .expect(200, { received: true });
+
+    const failedPayload = JSON.stringify({
+      id: 'evt_invoice_paid_previous_failure',
+      type: 'invoice.payment_failed',
+      data: {
+        object: {
+          customer: 'cus_invoice_paid',
+        },
+      },
+    });
+
+    await request(app)
+      .post('/api/billing/webhook')
+      .set('stripe-signature', createStripeSignature(failedPayload, 'whsec_test_secret'))
+      .set('Content-Type', 'application/json')
+      .send(failedPayload)
+      .expect(200, { received: true });
+
+    const paidPayload = JSON.stringify({
+      id: 'evt_invoice_paid_recovered',
+      type: 'invoice.paid',
+      data: {
+        object: {
+          customer: 'cus_invoice_paid',
+        },
+      },
+    });
+
+    await request(app)
+      .post('/api/billing/webhook')
+      .set('stripe-signature', createStripeSignature(paidPayload, 'whsec_test_secret'))
+      .set('Content-Type', 'application/json')
+      .send(paidPayload)
+      .expect(200, { received: true });
+
+    await request(app)
+      .get('/api/loads')
+      .set('x-tenant-id', 'carrier_invoice_paid')
+      .set('x-user-role', 'dispatcher')
+      .expect(200);
+  });
+
   it('uses stored Stripe-synced carrier status for protected routes without client billing headers', async () => {
     const app = createApp();
     const payload = JSON.stringify({

@@ -346,6 +346,7 @@ export function getBillingSyncFromStripeEvent(event: StripeEvent): BillingSyncPa
         status: 'active',
       };
     }
+    case 'invoice.paid':
     case 'invoice.payment_succeeded': {
       return {
         stripeCustomerId,

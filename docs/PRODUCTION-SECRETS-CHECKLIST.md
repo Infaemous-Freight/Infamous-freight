@@ -163,7 +163,7 @@ REDIS_DB=0
 
 ```text
 Business website: https://www.infamousfreight.com
-Webhook endpoint: https://www.infamousfreight.com/api/stripe/webhook
+Webhook endpoint: https://infamous-freight-api.fly.dev/api/billing/webhook
 Checkout success URL: https://www.infamousfreight.com/billing/success
 Checkout cancel URL: https://www.infamousfreight.com/billing/cancel
 Customer portal return URL: https://www.infamousfreight.com/billing
