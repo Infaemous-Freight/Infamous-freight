@@ -8,6 +8,8 @@ export type PublicEventName =
   | 'login_cta_click'
   | 'partner_cta_click'
   | 'contact_cta_click'
+  | 'quote_step_view'
+  | 'quote_step_error'
   | 'form_submit_success'
   | 'form_submit_error'
   | 'load_board_view'
