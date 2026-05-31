@@ -256,6 +256,20 @@ function coerceAuthorizedRole(value: string): Role | null {
   return AUTHORIZED_API_ROLES.includes(value as Role) ? (value as Role) : null;
 }
 
+function attachVerifiedTenantForRateLimit(req: Request, _res: Response, next: NextFunction) {
+  const [scheme, token] = (req.header('authorization') ?? '').split(/\s+/, 2);
+
+  if (scheme?.toLowerCase() === 'bearer' && token) {
+    const verifiedJwt = getVerifiedJwtContext(token);
+
+    if (verifiedJwt) {
+      req.rateLimitTenantId = verifiedJwt.tenantId;
+    }
+  }
+
+  next();
+}
+
 function authenticateBearerToken(dataStore: DataStore) {
   return (req: Request, _res: Response, next: NextFunction) => {
     void (async () => {
@@ -1414,6 +1428,7 @@ export function createApp() {
   );
   app.use(csrfProtectionMiddleware(allowedOrigins));
 
+  app.use(attachVerifiedTenantForRateLimit);
   app.use('/api', createRateLimitMiddleware('api'));
   registerWebhookRoute(app, dataStore, auditLogger);
   app.use(express.json());
@@ -1537,6 +1552,7 @@ declare global {
 
     interface Request {
       authenticatedUser?: AuthenticatedUser;
+      rateLimitTenantId?: string;
       tenantId?: string;
       userRole?: Role;
       subscriptionStatus?: SubscriptionStatus;

@@ -207,6 +207,10 @@ GET /api/ai-usage/summary
 
 Returns aggregate usage totals for the current carrier.
 
+## Live billing verification
+
+Use [`STRIPE_LIVE_BILLING_VERIFICATION.md`](./STRIPE_LIVE_BILLING_VERIFICATION.md) for the operator-safe framework and `pnpm run billing:verify-live` command before approving paid beta or public launch. Live Checkout Session creation requires the explicit `BILLING_VERIFY_CREATE_CHECKOUT=true` opt-in.
+
 ## Required environment variables
 
 API:
