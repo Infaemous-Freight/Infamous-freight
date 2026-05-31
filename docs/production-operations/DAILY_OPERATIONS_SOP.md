@@ -26,3 +26,7 @@
 - Update TMS
 - Log carrier performance
 - Review gross margin
+
+## Required Daily Report
+
+Create one daily report from [`DAILY_OPERATIONS_REPORT_TEMPLATE.md`](DAILY_OPERATIONS_REPORT_TEMPLATE.md) before end of day. The report must include API uptime, error rate, failed logins, failed Stripe webhooks, quote submissions, tracking lookups, usage signals, acquisition progress, blockers, owners, and the next-day operating priority.
