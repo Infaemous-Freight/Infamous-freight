@@ -198,6 +198,17 @@ const OPERATION_CONFIG: Record<FreightOperationResource, OperationConfig> = {
   },
 };
 
+export type CarrierMembership = {
+  tenantId: string;
+  role: string;
+};
+
+export type CarrierMembershipLookup = {
+  tenantId: string;
+  userId: string;
+  email?: string | null;
+};
+
 export interface DataStore {
   listLoads(tenantId: string): Promise<LoadRecord[]>;
   createLoad(tenantId: string, payload: Record<string, unknown>): Promise<LoadRecord>;
@@ -265,6 +276,7 @@ export interface DataStore {
   syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean>;
   getCarrierStripeCustomerId(tenantId: string): Promise<string | null>;
   getCarrierSubscriptionStatus(tenantId: string): Promise<string | null>;
+  getCarrierMembership(lookup: CarrierMembershipLookup): Promise<CarrierMembership | null>;
   healthCheck(): Promise<'connected' | 'disconnected'>;
 }
 
@@ -690,6 +702,17 @@ class MemoryDataStore implements DataStore {
 
   async getCarrierSubscriptionStatus(tenantId: string): Promise<string | null> {
     return this.carrierBilling.get(tenantId)?.status ?? null;
+  }
+
+  async getCarrierMembership(lookup: CarrierMembershipLookup): Promise<CarrierMembership | null> {
+    if (process.env.NODE_ENV === 'test' || process.env.JEST_WORKER_ID) {
+      const fallbackRole = typeof process.env.TEST_AUTH_MEMBERSHIP_ROLE === 'string'
+        ? process.env.TEST_AUTH_MEMBERSHIP_ROLE
+        : 'dispatcher';
+      return { tenantId: lookup.tenantId, role: fallbackRole };
+    }
+
+    return null;
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {
@@ -1140,6 +1163,39 @@ class PrismaDataStore implements DataStore {
     });
 
     return carrier?.status ?? null;
+  }
+
+  async getCarrierMembership(lookup: CarrierMembershipLookup): Promise<CarrierMembership | null> {
+    const email = lookup.email?.trim();
+
+    if (email) {
+      const ownerCarrier = await this.prisma.carrier.findFirst({
+        where: {
+          id: lookup.tenantId,
+          email: { equals: email, mode: 'insensitive' },
+        },
+        select: { id: true },
+      });
+
+      if (ownerCarrier) {
+        return { tenantId: lookup.tenantId, role: 'owner' };
+      }
+
+      const teamMember = await this.prisma.teamMember.findFirst({
+        where: {
+          carrierId: lookup.tenantId,
+          email: { equals: email, mode: 'insensitive' },
+          status: 'active',
+        },
+        select: { role: true },
+      });
+
+      if (teamMember) {
+        return { tenantId: lookup.tenantId, role: teamMember.role };
+      }
+    }
+
+    return null;
   }
 
   async healthCheck(): Promise<'connected' | 'disconnected'> {

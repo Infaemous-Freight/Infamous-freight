@@ -29,6 +29,7 @@ afterEach(() => {
   delete process.env.JWT_SECRET;
   delete process.env.AUTH_JWT_AUDIENCE;
   delete process.env.SUPABASE_JWT_AUDIENCE;
+  delete process.env.TEST_AUTH_MEMBERSHIP_ROLE;
 });
 
 describe('health endpoint', () => {
@@ -389,6 +390,127 @@ describe('configuration safety', () => {
     }
   });
 
+
+
+  it('uses database membership role instead of a privileged token role', async () => {
+    const previousNodeEnv = process.env.NODE_ENV;
+    const previousDatabaseUrl = process.env.DATABASE_URL;
+    const previousAuthMode = process.env.AUTH_MODE;
+    const previousJwtSecret = process.env.SUPABASE_JWT_SECRET;
+    const previousMembershipRole = process.env.TEST_AUTH_MEMBERSHIP_ROLE;
+
+    try {
+      process.env.NODE_ENV = 'production';
+      process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/infamous_test';
+      process.env.SUPABASE_JWT_SECRET = 'test-supabase-jwt-secret';
+      process.env.TEST_AUTH_MEMBERSHIP_ROLE = 'dispatcher';
+      delete process.env.AUTH_MODE;
+
+      const token = signJwt({
+        sub: 'user-1',
+        email: 'dispatcher@example.test',
+        exp: Math.floor(Date.now() / 1000) + 60,
+        app_metadata: {
+          tenant_id: 'tenant-token',
+          role: 'owner',
+        },
+      });
+
+      const response = await request(createApp())
+        .post('/api/billing/checkout-session')
+        .set('authorization', `Bearer ${token}`)
+        .send({ plan: 'professional', billingInterval: 'month' });
+
+      expect(response.status).toBe(403);
+      expect(response.body.error).toBe('billing_forbidden');
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+
+      if (previousDatabaseUrl !== undefined) {
+        process.env.DATABASE_URL = previousDatabaseUrl;
+      } else {
+        delete process.env.DATABASE_URL;
+      }
+
+      if (previousAuthMode !== undefined) {
+        process.env.AUTH_MODE = previousAuthMode;
+      } else {
+        delete process.env.AUTH_MODE;
+      }
+
+      if (previousJwtSecret !== undefined) {
+        process.env.SUPABASE_JWT_SECRET = previousJwtSecret;
+      } else {
+        delete process.env.SUPABASE_JWT_SECRET;
+      }
+
+      if (previousMembershipRole !== undefined) {
+        process.env.TEST_AUTH_MEMBERSHIP_ROLE = previousMembershipRole;
+      } else {
+        delete process.env.TEST_AUTH_MEMBERSHIP_ROLE;
+      }
+    }
+  });
+
+  it('rejects verified tokens without an active database membership role', async () => {
+    const previousNodeEnv = process.env.NODE_ENV;
+    const previousDatabaseUrl = process.env.DATABASE_URL;
+    const previousAuthMode = process.env.AUTH_MODE;
+    const previousJwtSecret = process.env.SUPABASE_JWT_SECRET;
+    const previousMembershipRole = process.env.TEST_AUTH_MEMBERSHIP_ROLE;
+
+    try {
+      process.env.NODE_ENV = 'production';
+      process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/infamous_test';
+      process.env.SUPABASE_JWT_SECRET = 'test-supabase-jwt-secret';
+      process.env.TEST_AUTH_MEMBERSHIP_ROLE = 'accounting';
+      delete process.env.AUTH_MODE;
+
+      const token = signJwt({
+        sub: 'user-1',
+        email: 'accounting@example.test',
+        exp: Math.floor(Date.now() / 1000) + 60,
+        app_metadata: {
+          tenant_id: 'tenant-token',
+          role: 'owner',
+        },
+      });
+
+      const response = await request(createApp())
+        .get('/api/loads')
+        .set('authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(401);
+      expect(response.body.error).toBe('authentication_required');
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+
+      if (previousDatabaseUrl !== undefined) {
+        process.env.DATABASE_URL = previousDatabaseUrl;
+      } else {
+        delete process.env.DATABASE_URL;
+      }
+
+      if (previousAuthMode !== undefined) {
+        process.env.AUTH_MODE = previousAuthMode;
+      } else {
+        delete process.env.AUTH_MODE;
+      }
+
+      if (previousJwtSecret !== undefined) {
+        process.env.SUPABASE_JWT_SECRET = previousJwtSecret;
+      } else {
+        delete process.env.SUPABASE_JWT_SECRET;
+      }
+
+      if (previousMembershipRole !== undefined) {
+        process.env.TEST_AUTH_MEMBERSHIP_ROLE = previousMembershipRole;
+      } else {
+        delete process.env.TEST_AUTH_MEMBERSHIP_ROLE;
+      }
+    }
+  });
+
   it('rejects bearer tokens that only provide tenant and role in user_metadata', async () => {
     const previousNodeEnv = process.env.NODE_ENV;
     const previousDatabaseUrl = process.env.DATABASE_URL;
@@ -473,24 +595,26 @@ describe('configuration safety', () => {
     expect(tamperedResponse.body.error).toBe('authentication_required');
   });
 
-  it('accepts a bearer token whose role is supplied via the Netlify Identity app_metadata.roles array', async () => {
+  it('accepts a verified token without trusting a token role claim', async () => {
     const previousNodeEnv = process.env.NODE_ENV;
     const previousDatabaseUrl = process.env.DATABASE_URL;
     const previousAuthMode = process.env.AUTH_MODE;
     const previousJwtSecret = process.env.SUPABASE_JWT_SECRET;
+    const previousMembershipRole = process.env.TEST_AUTH_MEMBERSHIP_ROLE;
 
     try {
       process.env.NODE_ENV = 'production';
       process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/infamous_test';
       process.env.SUPABASE_JWT_SECRET = 'test-supabase-jwt-secret';
+      process.env.TEST_AUTH_MEMBERSHIP_ROLE = 'dispatcher';
       delete process.env.AUTH_MODE;
 
       const token = signJwt({
         sub: 'user-1',
+        email: 'dispatcher@example.test',
         exp: Math.floor(Date.now() / 1000) + 60,
         app_metadata: {
           carrier_id: 'tenant-token',
-          roles: ['unknown_role', 'dispatcher'],
         },
       });
 
@@ -499,8 +623,8 @@ describe('configuration safety', () => {
         .set('authorization', `Bearer ${token}`)
         .set('x-subscription-status', 'active');
 
-      // Reaching the paywall (402) proves the verified token authenticated and
-      // authorized the request; the role was resolved from the roles array.
+      // Reaching the paywall (402) proves the token authenticated while the
+      // request role came from database membership, not JWT role claims.
       expect(response.status).toBe(402);
       expect(response.body.error).toBe('payment_required');
     } finally {
@@ -522,6 +646,12 @@ describe('configuration safety', () => {
         process.env.SUPABASE_JWT_SECRET = previousJwtSecret;
       } else {
         delete process.env.SUPABASE_JWT_SECRET;
+      }
+
+      if (previousMembershipRole !== undefined) {
+        process.env.TEST_AUTH_MEMBERSHIP_ROLE = previousMembershipRole;
+      } else {
+        delete process.env.TEST_AUTH_MEMBERSHIP_ROLE;
       }
     }
   });

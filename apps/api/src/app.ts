@@ -42,6 +42,13 @@ type TrustedAuthContext = {
   userId: string;
   tenantId: string;
   role: Role;
+  email?: string | null;
+};
+
+type VerifiedJwtContext = {
+  userId: string;
+  tenantId: string;
+  email: string | null;
 };
 
 type JwtClaims = {
@@ -49,28 +56,24 @@ type JwtClaims = {
   exp?: unknown;
   nbf?: unknown;
   aud?: unknown;
+  email?: unknown;
   tenant_id?: unknown;
   tenantId?: unknown;
   carrier_id?: unknown;
   carrierId?: unknown;
-  role?: unknown;
-  user_role?: unknown;
   app_metadata?: {
     tenant_id?: unknown;
     tenantId?: unknown;
     carrier_id?: unknown;
     carrierId?: unknown;
-    role?: unknown;
-    user_role?: unknown;
-    roles?: unknown;
+    email?: unknown;
   };
   user_metadata?: {
+    email?: unknown;
     tenant_id?: unknown;
     tenantId?: unknown;
     carrier_id?: unknown;
     carrierId?: unknown;
-    role?: unknown;
-    user_role?: unknown;
   };
 };
 
@@ -174,30 +177,6 @@ function getStringClaim(...values: unknown[]): string | null {
   return null;
 }
 
-function getRoleClaim(...values: unknown[]): Role | null {
-  const role = getStringClaim(...values);
-
-  return role && AUTHORIZED_API_ROLES.includes(role as Role) ? (role as Role) : null;
-}
-
-// Netlify Identity (GoTrue) stores authorization roles as an array in
-// app_metadata.roles rather than a scalar claim. Resolve the first array entry
-// that maps to a recognized API role so forwarded Identity tokens authorize.
-function getRoleClaimFromList(value: unknown): Role | null {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-
-  for (const candidate of value) {
-    const role = getRoleClaim(candidate);
-    if (role) {
-      return role;
-    }
-  }
-
-  return null;
-}
-
 function audienceMatches(claims: JwtClaims): boolean {
   const expectedAudience = process.env.AUTH_JWT_AUDIENCE?.trim() || process.env.SUPABASE_JWT_AUDIENCE?.trim();
 
@@ -216,7 +195,7 @@ function audienceMatches(claims: JwtClaims): boolean {
   return false;
 }
 
-function getTrustedAuthContextFromJwt(token: string): TrustedAuthContext | null {
+function getVerifiedJwtContext(token: string): VerifiedJwtContext | null {
   const secret = getJwtVerificationSecret();
 
   if (!secret) {
@@ -264,31 +243,49 @@ function getTrustedAuthContextFromJwt(token: string): TrustedAuthContext | null 
     claims.carrier_id,
     claims.carrierId,
   );
-  const role = getRoleClaim(
-    claims.app_metadata?.role,
-    claims.app_metadata?.user_role,
-    claims.user_role,
-    claims.role,
-  ) ?? getRoleClaimFromList(claims.app_metadata?.roles);
-
-  if (!userId || !tenantId || !role) {
+  if (!userId || !tenantId) {
     return null;
   }
 
-  return { userId, tenantId, role };
+  const email = getStringClaim(claims.email, claims.app_metadata?.email);
+
+  return { userId, tenantId, email };
 }
 
-function authenticateBearerToken(req: Request, _res: Response, next: NextFunction) {
-  const [scheme, token] = (req.header('authorization') ?? '').split(/\s+/, 2);
+function coerceAuthorizedRole(value: string): Role | null {
+  return AUTHORIZED_API_ROLES.includes(value as Role) ? (value as Role) : null;
+}
 
-  if (scheme?.toLowerCase() === 'bearer' && token) {
-    const trustedAuth = getTrustedAuthContextFromJwt(token);
-    if (trustedAuth) {
-      req.authenticatedUser = trustedAuth;
-    }
-  }
+function authenticateBearerToken(dataStore: DataStore) {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    void (async () => {
+      const [scheme, token] = (req.header('authorization') ?? '').split(/\s+/, 2);
 
-  next();
+      if (scheme?.toLowerCase() === 'bearer' && token) {
+        const verifiedJwt = getVerifiedJwtContext(token);
+
+        if (verifiedJwt) {
+          const membership = await dataStore.getCarrierMembership({
+            userId: verifiedJwt.userId,
+            tenantId: verifiedJwt.tenantId,
+            email: verifiedJwt.email,
+          });
+          const membershipRole = membership ? coerceAuthorizedRole(membership.role) : null;
+
+          if (membershipRole) {
+            req.authenticatedUser = {
+              userId: verifiedJwt.userId,
+              tenantId: verifiedJwt.tenantId,
+              role: membershipRole,
+              email: verifiedJwt.email,
+            };
+          }
+        }
+      }
+
+      next();
+    })().catch(next);
+  };
 }
 
 function getTrustedAuthContext(req: Request): TrustedAuthContext | null {
@@ -1420,7 +1417,7 @@ export function createApp() {
   app.use('/api', createRateLimitMiddleware('api'));
   registerWebhookRoute(app, dataStore, auditLogger);
   app.use(express.json());
-  app.use(authenticateBearerToken);
+  app.use(authenticateBearerToken(dataStore));
 
   app.get('/health', wrapAsync(async (_req, res) => {
     const readiness = await createReadinessResponse(dataStore);
@@ -1535,6 +1532,7 @@ declare global {
       userId: string;
       tenantId: string;
       role: Role;
+      email?: string | null;
     }
 
     interface Request {
