@@ -38,6 +38,10 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
     state: 'demo',
     message: 'Settings contains mixed readiness surfaces; treat profile, security, and integrations controls as demo-backed unless documented otherwise.',
   },
+  '/settings/billing': {
+    state: 'live',
+    message: 'Billing activation and paywall access controls are production-enabled.',
+  },
   '/billing': {
     state: 'live',
     message: 'Billing activation and paywall access controls are production-enabled.',
