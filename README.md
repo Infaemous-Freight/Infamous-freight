@@ -14,20 +14,27 @@ Dispatch • Fleet Intelligence • Driver Coordination • Shipment Visibility 
 
 **INFÆMOUS FREIGHT** is an AI-powered freight operations platform built to help carriers, brokers, dispatchers, owner-operators, shippers, and logistics teams manage freight execution from intake through delivery.
 
-The platform is designed as a unified command center for:
+The platform is designed as a unified command center for dispatch execution, load and shipment visibility, driver coordination, fleet intelligence, compliance workflows, billing, operational analytics, and AI-assisted freight automation.
 
-- dispatch execution
-- load and shipment visibility
-- driver coordination
-- fleet intelligence
-- compliance workflows
-- billing and customer payments
-- operational analytics
-- AI-assisted freight automation
-
-Built as a **pnpm monorepo**, the current production path uses a **React 19 + Vite web application on Netlify**, an **Express 5 API on Fly.io**, **Drizzle ORM-backed PostgreSQL data access**, **Socket.io realtime flows**, and **Stripe-powered billing**.
+Built as a **pnpm monorepo**, the current production path uses a **React 19 + Vite web application on Netlify**, an **Express 5 API on Fly.io**, **Prisma-backed PostgreSQL access in the active API**, and **Stripe-powered billing**. Drizzle/Netlify Database assets may exist for Netlify form-submission workflows, but the active API runtime should be treated as Prisma-backed unless [`docs/current-status.md`](docs/current-status.md) says otherwise.
 
 > **Status source of truth:** For what is currently live, demo-backed, gated, or still in progress, always use [`docs/current-status.md`](docs/current-status.md). README provides platform positioning and onboarding context; when there is any conflict, `docs/current-status.md` is authoritative.
+
+---
+
+## ✅ Runtime Readiness Snapshot
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Web deployment | Live path active | Netlify serves the React/Vite app. |
+| API deployment | Live path active | Fly.io hosts the Express API behind same-origin `/api/*` browser traffic. |
+| Billing/paywall | Live | Stripe billing and paid-access paths are production-enabled. |
+| Public tracking | Foundation active | Positive production lookup requires a known-safe public tracking record for launch evidence. |
+| Public quote/contact intake | Active path | Verify and record evidence after deploys. |
+| Operator dashboard | Demo-backed | Live operations data wiring remains in progress. |
+| Dispatch/load workflows | Demo-backed | Not yet the production source of dispatch execution. |
+| Mobile app | Planned / not ready | `/driver-app` remains gated. |
+| AI dispatch automation | In progress | Requires freight-domain guardrails, auditability, and operator approval. |
 
 ---
 
@@ -47,18 +54,18 @@ The goal is to reduce fragmented logistics workflows, replace manual spreadsheet
 | 🚛 Carriers | Coordinate drivers, fleet activity, dispatch execution, compliance, and billing. |
 | 📦 Freight brokers | Track shipments, manage customers, coordinate carriers, and monitor load execution. |
 | 🏢 Shippers | Submit freight requests and monitor shipment movement. |
-| 🧭 Dispatchers | Assign loads, coordinate drivers, update statuses, and control operational workflows. |
-| 🌎 Enterprise logistics teams | Centralize freight visibility, reporting, compliance, workflow automation, and operational governance. |
+| 🧭 Dispatchers | Assign loads, coordinate drivers, update statuses, and manage operational workflows. |
+| 🌎 Enterprise logistics teams | Centralize freight visibility, reporting, compliance, workflow automation, and governance. |
 
 ---
 
 ## 🔥 Platform Highlights
 
-- ✅ **Production deployment path:** Netlify web frontend, Fly.io API backend, same-origin `/api/*` browser traffic, and active health verification.
+- ✅ **Production deployment path:** Netlify web frontend, Fly.io API backend, same-origin `/api/*` browser traffic, and health verification.
 - ✅ **Billing foundation:** Stripe Checkout, Customer Portal, webhook handling, and paid access workflows.
 - ✅ **Freight operations surfaces:** dispatch, loads, drivers, quotes, tracking, invoices, analytics, compliance, carriers, and accounting surfaces are represented in the app.
 - 🧪 **In progress:** some internal operator modules are still demo-backed while production API wiring is completed.
-- 🛣️ **Roadmap:** deeper AI-assisted dispatch, mobile operations, compliance automation, carrier workflows, and enterprise-grade workflow hardening.
+- 🛣️ **Roadmap:** deeper AI-assisted dispatch, mobile operations, compliance automation, carrier workflows, and enterprise workflow hardening.
 
 For exact route-by-route readiness, use [`docs/current-status.md`](docs/current-status.md).
 
@@ -116,17 +123,9 @@ For exact route-by-route readiness, use [`docs/current-status.md`](docs/current-
 
 ## 🤖 AI Freight Intelligence
 
-INFÆMOUS FREIGHT is being built toward AI-assisted logistics execution, including:
+INFÆMOUS FREIGHT is being built toward AI-assisted logistics execution, including dispatch recommendations, freight workflow automation, operational insights, shipment exception detection, notification support, analytics summaries, predictive routing, and load-planning opportunities.
 
-- dispatch recommendations
-- freight workflow automation
-- operational insights
-- shipment exception detection
-- customer and driver notification support
-- analytics summaries
-- predictive routing and load-planning opportunities
-
-AI features should always be implemented with freight-domain guardrails, auditability, and operator control.
+AI features should be implemented with freight-domain guardrails, auditability, and operator approval.
 
 ---
 
@@ -134,17 +133,15 @@ AI features should always be implemented with freight-domain guardrails, auditab
 
 | Path | Purpose |
 | --- | --- |
-| `apps/api` | Node.js + Express 5 backend, TypeScript, Drizzle ORM, billing helpers, health checks, and freight workflow logic. |
+| `apps/api` | Node.js + Express 5 backend, TypeScript, Prisma-backed PostgreSQL access, billing helpers, health checks, and freight workflow logic. |
 | `apps/web` | React 19 + Vite frontend, TypeScript, Tailwind CSS, operator surfaces, public routes, and browser API helpers. |
 | `apps/mobile` | Reserved mobile surface for future driver/operator workflows. |
 | `netlify/functions` | Retained fallback function entrypoints; normal deploys currently proxy browser API traffic to Fly.io. |
-| `netlify/event-functions` | Event-handler bundle area; currently kept lean to avoid Netlify function environment payload issues. |
+| `netlify/event-functions` | Event-handler bundle area for event workflows when enabled. |
 | `netlify/disabled-functions` | Parked handlers that can be restored when runtime constraints are resolved. |
 | `docs` | Architecture, launch, operations, security, production-readiness, Stripe, Netlify, and environment references. |
 | `scripts` | Local setup, validation, deployment helpers, smoke tests, and operational tooling. |
 | `.github` | CI workflows, repository automation, and metadata. |
-
-> Workspace managed with **pnpm**. The web app and production API are deployed separately. Browser traffic should use same-origin `/api/*` routes from Netlify, which proxy to the Fly.io API origin.
 
 ---
 
@@ -152,13 +149,12 @@ AI features should always be implemented with freight-domain guardrails, auditab
 
 | Layer | Technology |
 | --- | --- |
-| 🎨 Frontend | React 19, Vite, TypeScript, Tailwind CSS, Zustand, Socket.io client |
-| 🧠 Backend | Express 5, TypeScript, Drizzle ORM |
+| 🎨 Frontend | React 19, Vite, TypeScript, Tailwind CSS, Zustand |
+| 🧠 Backend | Express 5, TypeScript, Prisma |
 | 🗄️ Database | PostgreSQL |
-| ⚡ Cache | Redis |
+| ⚡ Cache | Redis where configured |
 | 🔐 Auth | Supabase Auth and JWT-derived trusted claims |
 | 💳 Billing | Stripe Checkout, Customer Portal, webhooks, and one-time payments |
-| 📡 Realtime | Socket.io |
 | ☁️ Deployment | Netlify web, Fly.io API, Docker |
 | 🚨 Monitoring | Sentry opt-in through environment configuration |
 
@@ -175,11 +171,10 @@ Netlify Web + Same-Origin /api Proxy
       ▼
 Fly.io Express API
       │
-      ├── PostgreSQL via Drizzle ORM
-      ├── Redis
+      ├── PostgreSQL via Prisma
+      ├── Redis where configured
       ├── Stripe Billing
       ├── Supabase Auth / JWT Claims
-      ├── Socket.io Realtime
       └── Optional Sentry Monitoring
 ```
 
@@ -199,34 +194,32 @@ Current repository visuals, when present:
 ![Platform Overview](docs/screenshots/infamousfreight-platform-overview.svg)
 ```
 
-Recommended product screenshots to add as the app matures:
+Recommended screenshot targets:
 
 | View | Target File |
 | --- | --- |
-| 🚚 Dispatch Board | `docs/screenshots/dispatch-board.png` |
-| 📦 Shipment Detail | `docs/screenshots/shipment-detail.png` |
-| 👨‍✈️ Driver Operations | `docs/screenshots/driver-ops.png` |
-| 💬 Realtime Chat | `docs/screenshots/chat-view.png` |
-| 💳 Billing / Invoicing | `docs/screenshots/billing-invoice.png` |
-| 📊 Analytics Dashboard | `docs/screenshots/analytics-dashboard.png` |
-| 🛡️ Compliance Panel | `docs/screenshots/compliance-panel.png` |
-| 🗂️ Carrier Packet Workflow | `docs/screenshots/carrier-packet.png` |
+| Landing page | `docs/screenshots/landing-page.png` |
+| Quote request page | `docs/screenshots/quote-request.png` |
+| Tracking page | `docs/screenshots/tracking-page.png` |
+| Operator dashboard | `docs/screenshots/operator-dashboard.png` |
+| Dispatch Board | `docs/screenshots/dispatch-board.png` |
+| Shipment Detail | `docs/screenshots/shipment-detail.png` |
+| Driver Operations | `docs/screenshots/driver-ops.png` |
+| Billing / Invoicing | `docs/screenshots/billing-invoice.png` |
+| Analytics Dashboard | `docs/screenshots/analytics-dashboard.png` |
+| Compliance Panel | `docs/screenshots/compliance-panel.png` |
+
+See [`docs/SCREENSHOTS.md`](docs/SCREENSHOTS.md) for the screenshot checklist.
 
 ### 🖼️ GitHub Social Preview
 
-The social preview image should live at:
-
-```text
-.github/social-preview.png
-```
-
-Regenerate after branding updates:
+The social preview image should live at `.github/social-preview.png`.
 
 ```bash
 pnpm run social-preview:generate
 ```
 
-Then upload the PNG manually in GitHub under **Settings → General → Social preview**. GitHub does not accept SVG for that setting and does not expose a normal repository API for changing it.
+Then upload the PNG manually in GitHub under **Settings → General → Social preview**.
 
 ---
 
@@ -276,15 +269,18 @@ Further setup references:
 - `/ops`
 - `/loads`
 - `/dispatch`
-- `/drivers`
+- `/ops/drivers`
 - `/invoices`
 - `/analytics`
 - `/compliance`
 - `/settings`
+- `/settings/billing`
 - `/billing`
 - `/carriers`
 - `/accounting`
 - `/quotes`
+- `/messages`
+- `/driver-app`
 
 Read [`docs/current-status.md`](docs/current-status.md) before treating any route as fully live, fully wired, or production-ready.
 
@@ -298,14 +294,6 @@ Production browser traffic should use the same-origin Netlify API path:
 VITE_API_URL=/api
 ```
 
-The committed Netlify configuration should:
-
-- publish the Vite output from `apps/web/dist`
-- redirect the apex host and default Netlify hostname to `https://www.infamousfreight.com`
-- keep repo-owned Netlify Functions out of normal deploys unless intentionally restored
-- proxy `/api/health`, public freight intake routes, and broader `/api/*` traffic to the Fly.io API
-- keep the SPA fallback last
-
 Launch-critical checks should verify:
 
 - `https://www.infamousfreight.com`
@@ -317,9 +305,21 @@ Direct `api.infamousfreight.com` checks are useful for operations diagnostics on
 
 ---
 
-## 🔌 Health & Runtime Verification
+## 🧪 Production Smoke Testing
 
-Recommended checks:
+Recommended public production smoke check:
+
+```bash
+pnpm run production:smoke-test
+```
+
+Launch-critical manual checks should include canonical website load, apex-to-www redirect, health endpoints, public quote request, public shipment tracking cases, Stripe Checkout, Stripe Customer Portal, authenticated route gating, operator demo-backed warnings, and Netlify launch evidence capture.
+
+See [`docs/PRODUCTION_SMOKE_TESTING.md`](docs/PRODUCTION_SMOKE_TESTING.md) for the full checklist.
+
+---
+
+## 🔌 Health & Runtime Verification
 
 ```bash
 curl -X GET https://www.infamousfreight.com/api/health
@@ -327,12 +327,15 @@ curl -X GET https://www.infamousfreight.com/api/health/live
 curl -X GET https://www.infamousfreight.com/api/health/ready
 ```
 
-Use these during:
+Use these during local verification, pre-launch validation, post-deploy smoke checks, and production incident response.
 
-- local verification
-- pre-launch validation
-- post-deploy smoke checks
-- production incident response
+---
+
+## 💼 Business Model
+
+INFÆMOUS FREIGHT is designed for subscription-based freight operations access, with optional paid workflow features, billing tools, and future marketplace/automation opportunities.
+
+Primary revenue paths may include monthly SaaS subscriptions, carrier and dispatcher operations plans, broker/team plans, enterprise logistics plans, paid billing/compliance/analytics workflows, and future transaction or automation-based revenue.
 
 ---
 
@@ -359,12 +362,12 @@ Repository rules:
 
 ```text
 apps/
-  api/      # Express 5 backend, TypeScript, Drizzle ORM
+  api/      # Express 5 backend, TypeScript, Prisma
   web/      # React 19 + Vite frontend
   mobile/   # Reserved mobile surface
 
 netlify/
-  event-functions/      # Active event-handler bundle area
+  event-functions/      # Event-handler bundle area
   disabled-functions/   # Parked handlers
   functions/            # Retained fallback API function entrypoints
   database/migrations/  # Netlify database migrations
@@ -397,25 +400,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for PR and style expectations.
 
 INFÆMOUS FREIGHT is built with production-sensitive freight workflows in mind.
 
-Security posture includes:
-
-- JWT-based authentication flow
-- trusted-claim checks
-- role-based access control direction
-- environment-based secret management
-- strict external input validation
-- CI-enforced quality checks
-- least-privilege deployment posture
-- audit logging direction
-- responsible disclosure process through [`SECURITY.md`](SECURITY.md)
-
-Operational security expectations:
-
-- never commit `.env` files or secrets
-- rotate credentials after any suspected exposure
-- verify production environment variables before deploy
-- keep public payloads sanitized
-- treat freight, billing, customer, driver, and shipment records as sensitive operational data
+Security posture includes JWT-based authentication flow, trusted-claim checks, role-based access control direction, environment-based secret management, strict external input validation, CI-enforced quality checks, least-privilege deployment posture, audit logging direction, and responsible disclosure through [`SECURITY.md`](SECURITY.md).
 
 ---
 
@@ -433,20 +418,11 @@ Supporting references:
 - [`docs/NETLIFY-BUILDHOOKS.md`](docs/NETLIFY-BUILDHOOKS.md)
 - [`docs/CUSTOM-DOMAIN.md`](docs/CUSTOM-DOMAIN.md)
 - [`docs/netlify-deploy-checklist.md`](docs/netlify-deploy-checklist.md)
-
-Production verification should always include:
-
-- canonical website load at `https://www.infamousfreight.com`
-- apex redirect from `https://infamousfreight.com`
-- proxied health check at `https://www.infamousfreight.com/api/health`
-- public intake route checks under `/api/public/*`
-- Fly.io runtime status after API deploy
-- Stripe webhook verification when billing changes ship
-- controlled authenticated smoke testing before launch-critical releases
+- [`docs/PRODUCTION_SMOKE_TESTING.md`](docs/PRODUCTION_SMOKE_TESTING.md)
 
 ### Netlify form event note
 
-Netlify form submissions are captured natively by Netlify Forms. The Drizzle mirror handler is parked at `netlify/disabled-functions/submission-created.mts.disabled` because Netlify attaches the full site environment payload to every function, and the payload previously exceeded upload/runtime constraints. Restore it into `netlify/event-functions/` only after the site's function-scoped environment variables are reduced enough for reliable deploys.
+Netlify form submissions are captured natively by Netlify Forms. Any Drizzle/Netlify Database mirror handlers should stay parked or carefully scoped unless the site's function-scoped environment payload and deployment constraints are verified.
 
 ---
 
@@ -481,6 +457,8 @@ Netlify form submissions are captured natively by Netlify Forms. The Drizzle mir
 - richer fleet intelligence
 - enterprise reporting and audit exports
 
+See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the expanded roadmap.
+
 ---
 
 ## 📚 Documentation
@@ -491,6 +469,9 @@ Netlify form submissions are captured natively by Netlify Forms. The Drizzle mir
 - [Environment Variables Reference](docs/environment/ENVIRONMENT_VARIABLES_COMPLETE.md)
 - [Detailed Architecture](docs/ARCHITECTURE.md)
 - [API Reference](docs/API-REFERENCE.md)
+- [Production Smoke Testing](docs/PRODUCTION_SMOKE_TESTING.md)
+- [Screenshot Checklist](docs/SCREENSHOTS.md)
+- [Product Roadmap](docs/ROADMAP.md)
 - [Production, Compliance, and Launch Docs](docs/LAUNCH_READINESS_INDEX.md)
 
 ---
@@ -501,14 +482,6 @@ Netlify form submissions are captured natively by Netlify Forms. The Drizzle mir
 - Every PR should include a clear summary, test notes, risk notes, and rollback considerations where relevant.
 - Branches should follow `feature/*`, `fix/*`, `docs/*`, `chore/*`, or `security/*`.
 - Use GitHub Issues or Discussions for planning and implementation questions.
-
-Recommended PR checklist:
-
-- [ ] Summary is clear
-- [ ] Tests or verification steps are documented
-- [ ] Secrets are not included
-- [ ] Public/runtime impact is explained
-- [ ] Rollback path is known for production-sensitive changes
 
 ---
 
