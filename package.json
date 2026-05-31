@@ -26,6 +26,8 @@
     "prisma:generate": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run prisma:generate",
     "prisma:validate": "node scripts/ensure-api-workspace.js && pnpm -C apps/api exec prisma validate --schema prisma/schema.prisma",
     "prisma:migrate": "node scripts/ensure-api-workspace.js && pnpm -C apps/api exec prisma migrate dev --schema prisma/schema.prisma",
+    "prisma:migrate:deploy": "node scripts/ensure-api-workspace.js && pnpm -C apps/api exec prisma migrate deploy --schema prisma/schema.prisma",
+    "prisma:migrate:status": "node scripts/ensure-api-workspace.js && pnpm -C apps/api exec prisma migrate status --schema prisma/schema.prisma",
     "prisma:seed": "pnpm run prisma:generate && node scripts/ensure-api-workspace.js && pnpm -C apps/api exec prisma db seed --schema prisma/schema.prisma",
     "db:setup": "pnpm run prisma:generate && pnpm run prisma:migrate && pnpm run prisma:seed",
     "docker:up": "docker compose up -d",
