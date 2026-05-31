@@ -42,6 +42,14 @@ type TrustedAuthContext = {
   userId: string;
   tenantId: string;
   role: Role;
+  email?: string | null;
+};
+
+type VerifiedJwtContext = {
+  userId: string;
+  tenantId: string;
+  claimedRole: Role;
+  email: string | null;
 };
 
 type JwtClaims = {
@@ -49,6 +57,7 @@ type JwtClaims = {
   exp?: unknown;
   nbf?: unknown;
   aud?: unknown;
+  email?: unknown;
   tenant_id?: unknown;
   tenantId?: unknown;
   carrier_id?: unknown;
@@ -63,8 +72,10 @@ type JwtClaims = {
     role?: unknown;
     user_role?: unknown;
     roles?: unknown;
+    email?: unknown;
   };
   user_metadata?: {
+    email?: unknown;
     tenant_id?: unknown;
     tenantId?: unknown;
     carrier_id?: unknown;
@@ -216,7 +227,7 @@ function audienceMatches(claims: JwtClaims): boolean {
   return false;
 }
 
-function getTrustedAuthContextFromJwt(token: string): TrustedAuthContext | null {
+function getVerifiedJwtContext(token: string): VerifiedJwtContext | null {
   const secret = getJwtVerificationSecret();
 
   if (!secret) {
@@ -275,20 +286,45 @@ function getTrustedAuthContextFromJwt(token: string): TrustedAuthContext | null 
     return null;
   }
 
-  return { userId, tenantId, role };
+  const email = getStringClaim(claims.email, claims.app_metadata?.email);
+
+  return { userId, tenantId, claimedRole: role, email };
 }
 
-function authenticateBearerToken(req: Request, _res: Response, next: NextFunction) {
-  const [scheme, token] = (req.header('authorization') ?? '').split(/\s+/, 2);
+function coerceAuthorizedRole(value: string): Role | null {
+  return AUTHORIZED_API_ROLES.includes(value as Role) ? (value as Role) : null;
+}
 
-  if (scheme?.toLowerCase() === 'bearer' && token) {
-    const trustedAuth = getTrustedAuthContextFromJwt(token);
-    if (trustedAuth) {
-      req.authenticatedUser = trustedAuth;
-    }
-  }
+function authenticateBearerToken(dataStore: DataStore) {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    void (async () => {
+      const [scheme, token] = (req.header('authorization') ?? '').split(/\s+/, 2);
 
-  next();
+      if (scheme?.toLowerCase() === 'bearer' && token) {
+        const verifiedJwt = getVerifiedJwtContext(token);
+
+        if (verifiedJwt) {
+          const membership = await dataStore.getCarrierMembership({
+            userId: verifiedJwt.userId,
+            tenantId: verifiedJwt.tenantId,
+            email: verifiedJwt.email,
+          });
+          const membershipRole = membership ? coerceAuthorizedRole(membership.role) : null;
+
+          if (membershipRole) {
+            req.authenticatedUser = {
+              userId: verifiedJwt.userId,
+              tenantId: verifiedJwt.tenantId,
+              role: membershipRole,
+              email: verifiedJwt.email,
+            };
+          }
+        }
+      }
+
+      next();
+    })().catch(next);
+  };
 }
 
 function getTrustedAuthContext(req: Request): TrustedAuthContext | null {
@@ -1420,7 +1456,7 @@ export function createApp() {
   app.use('/api', createRateLimitMiddleware('api'));
   registerWebhookRoute(app, dataStore, auditLogger);
   app.use(express.json());
-  app.use(authenticateBearerToken);
+  app.use(authenticateBearerToken(dataStore));
 
   app.get('/health', wrapAsync(async (_req, res) => {
     const readiness = await createReadinessResponse(dataStore);
@@ -1535,6 +1571,7 @@ declare global {
       userId: string;
       tenantId: string;
       role: Role;
+      email?: string | null;
     }
 
     interface Request {
