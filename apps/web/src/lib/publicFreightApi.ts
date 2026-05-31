@@ -48,6 +48,7 @@ export type PublicShipment = {
   notes: string | null;
   timeline?: Array<{ label: string; status?: string; timestamp?: string }>;
   updatedAt: string;
+  lastUpdated?: string;
 };
 
 export async function createPublicQuoteRequest(payload: PublicQuotePayload): Promise<PublicQuoteResponse> {

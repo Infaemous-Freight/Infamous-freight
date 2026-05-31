@@ -1157,7 +1157,13 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
       );
     }
 
-    throw new HttpError(404, 'shipment_not_found', 'No public shipment was found for that tracking number.');
+    const shipment = await dataStore.getPublicShipment(trackingNumber);
+
+    if (!shipment) {
+      throw new HttpError(404, 'shipment_not_found', 'No public shipment was found for that tracking number.');
+    }
+
+    res.status(200).json({ success: true, shipment });
   }));
 
   app.get('/api/billing/status', requireTenant, requireRole, wrapAsync(async (req, res) => {

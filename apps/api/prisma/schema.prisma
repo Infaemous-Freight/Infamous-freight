@@ -197,6 +197,25 @@ model PublicLead {
   @@index([receivedAt])
 }
 
+model PublicShipment {
+  trackingNumber String   @id
+  route          String
+  origin         String
+  destination    String
+  status         String   @default("Quote received")
+  pickupDate     String?
+  deliveryDate   String?
+  eta            String?
+  equipment      String?
+  publicNotes    String?
+  timeline       Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([status])
+  @@index([updatedAt])
+}
+
 model LoadAssignment {
   id            String    @id @default(cuid())
   loadId        String    @unique

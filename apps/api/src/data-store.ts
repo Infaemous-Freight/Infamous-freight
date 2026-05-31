@@ -24,6 +24,21 @@ export type FreightWorkflowResult = Record<string, unknown>;
 export type LoadRecord = BaseRecord & Record<string, unknown>;
 export type DriverRecord = BaseRecord & Record<string, unknown>;
 export type ShipmentRecord = BaseRecord & Record<string, unknown>;
+export type PublicShipmentRecord = {
+  trackingNumber: string;
+  route: string;
+  origin: string;
+  destination: string;
+  status: string;
+  pickupDate: string | null;
+  deliveryDate: string | null;
+  eta: string | null;
+  equipment: string | null;
+  notes: string | null;
+  timeline: unknown[];
+  updatedAt: string;
+  lastUpdated: string;
+};
 export type FreightOperationRecord = BaseRecord & Record<string, unknown>;
 
 export type QuoteLeadRecord = {
@@ -104,6 +119,21 @@ type PrismaDriverRecord = {
   createdAt: Date;
 };
 
+type PrismaPublicShipmentRecord = {
+  trackingNumber: string;
+  route: string;
+  origin: string;
+  destination: string;
+  status: string;
+  pickupDate: string | null;
+  deliveryDate: string | null;
+  eta: string | null;
+  equipment: string | null;
+  publicNotes: string | null;
+  timeline: unknown;
+  updatedAt: Date | string;
+};
+
 type OperationConfig = {
   delegate: string;
   tenantField?: string;
@@ -175,6 +205,7 @@ export interface DataStore {
   createDriver(tenantId: string, payload: Record<string, unknown>): Promise<DriverRecord>;
   listShipments(tenantId: string): Promise<ShipmentRecord[]>;
   createShipment(tenantId: string, payload: Record<string, unknown>): Promise<ShipmentRecord>;
+  getPublicShipment(trackingNumber: string): Promise<PublicShipmentRecord | null>;
   listFreightOperations(
     resource: FreightOperationResource,
     tenantId: string,
@@ -333,6 +364,45 @@ function normalizePublicLead(record: PrismaPublicLeadRecord): QuoteLeadRecord {
   };
 }
 
+function normalizeTimeline(value: unknown): unknown[] {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value) as unknown;
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+}
+
+function normalizePublicShipment(record: PrismaPublicShipmentRecord): PublicShipmentRecord {
+  const updatedAt = record.updatedAt instanceof Date
+    ? record.updatedAt.toISOString()
+    : String(record.updatedAt);
+
+  return {
+    trackingNumber: record.trackingNumber,
+    route: record.route,
+    origin: record.origin,
+    destination: record.destination,
+    status: record.status,
+    pickupDate: record.pickupDate,
+    deliveryDate: record.deliveryDate,
+    eta: record.eta,
+    equipment: record.equipment,
+    notes: record.publicNotes,
+    timeline: normalizeTimeline(record.timeline),
+    updatedAt,
+    lastUpdated: updatedAt,
+  };
+}
+
 async function assertLoadBelongsToTenant(
   prisma: PrismaClient,
   tenantId: string,
@@ -356,6 +426,23 @@ class MemoryDataStore implements DataStore {
   private loads: LoadRecord[] = [];
   private drivers: DriverRecord[] = [];
   private shipments: ShipmentRecord[] = [];
+  private publicShipments: PublicShipmentRecord[] = [
+    {
+      trackingNumber: 'IF-10001',
+      route: 'Atlanta, GA → Dallas, TX',
+      origin: 'Atlanta, GA',
+      destination: 'Dallas, TX',
+      status: 'In transit',
+      pickupDate: null,
+      deliveryDate: null,
+      eta: 'Dispatch ETA pending',
+      equipment: 'Dry Van',
+      notes: 'TEST public smoke fixture with non-sensitive shipment fields only.',
+      timeline: [],
+      updatedAt: new Date('2026-05-31T00:00:00.000Z').toISOString(),
+      lastUpdated: new Date('2026-05-31T00:00:00.000Z').toISOString(),
+    },
+  ];
   private leads: QuoteLeadRecord[] = [];
   private carrierBilling = new Map<string, {
     stripeCustomerId: string | null;
@@ -402,6 +489,12 @@ class MemoryDataStore implements DataStore {
     const record = { id: randomUUID(), tenantId, ...payload };
     this.shipments.push(record);
     return record;
+  }
+
+  async getPublicShipment(trackingNumber: string): Promise<PublicShipmentRecord | null> {
+    return this.publicShipments.find(
+      (shipment) => shipment.trackingNumber === trackingNumber,
+    ) ?? null;
   }
 
   async listFreightOperations(
@@ -771,6 +864,15 @@ class PrismaDataStore implements DataStore {
       deliveryDate: load.deliveryDate ?? null,
       rate: load.rate,
     };
+  }
+
+  async getPublicShipment(trackingNumber: string): Promise<PublicShipmentRecord | null> {
+    const publicShipmentDelegate = (this.prisma as unknown as Record<string, any>).publicShipment;
+    const shipment = await publicShipmentDelegate.findUnique({
+      where: { trackingNumber },
+    }) as PrismaPublicShipmentRecord | null;
+
+    return shipment ? normalizePublicShipment(shipment) : null;
   }
 
   async listFreightOperations(
