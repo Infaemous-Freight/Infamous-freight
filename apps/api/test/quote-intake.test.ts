@@ -92,6 +92,28 @@ describe('quote intake workflow', () => {
     expect(response.body.error).toBe('invalid_tracking_number');
   });
 
+  it('returns safe public shipment details for a known tracking number without authentication', async () => {
+    const app = createApp();
+
+    const response = await request(app)
+      .get('/api/public/shipments/IF-10001')
+      .expect(200);
+
+    expect(response.body.success).toBe(true);
+    expect(response.body.shipment).toEqual(
+      expect.objectContaining({
+        trackingNumber: 'IF-10001',
+        status: expect.any(String),
+        origin: expect.any(String),
+        destination: expect.any(String),
+        updatedAt: expect.any(String),
+        lastUpdated: expect.any(String),
+      }),
+    );
+    expect(response.body.shipment).not.toHaveProperty('tenantId');
+    expect(response.body.shipment).not.toHaveProperty('carrierId');
+  });
+
   it('returns a public not found response for valid but unknown tracking numbers', async () => {
     const app = createApp();
 

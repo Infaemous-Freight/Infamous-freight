@@ -19,4 +19,16 @@ describe('production smoke test script', () => {
     expect(content).not.toContain('"${API_URL%/}/health/live"');
     expect(content).not.toContain('"${API_URL%/}/health/ready"');
   });
+
+  it('can optionally validate a known safe public tracking response', () => {
+    const content = fs.readFileSync(scriptPath, 'utf8');
+
+    expect(content).toContain('PUBLIC_VALID_TRACKING_NUMBER="${PUBLIC_VALID_TRACKING_NUMBER:-}"');
+    expect(content).toContain('PUBLIC_VALID_SHIPMENT_URL="${PUBLIC_VALID_SHIPMENT_URL:-}"');
+    expect(content).toContain('Checking valid public tracking lookup');
+    expect(content).toContain(
+      "for (const field of ['trackingNumber', 'status', 'origin', 'destination', 'lastUpdated'])",
+    );
+    expect(content).toContain('Valid tracking response success flag must be true.');
+  });
 });
