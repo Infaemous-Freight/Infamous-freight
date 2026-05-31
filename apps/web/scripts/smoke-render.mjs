@@ -2,12 +2,15 @@ import { chromium } from 'playwright';
 
 const baseUrl = process.env.SITE_URL ?? process.env.TARGET_URL ?? 'https://www.infamousfreight.com';
 const timeoutMs = Number(process.env.SMOKE_TIMEOUT_MS ?? 20_000);
-const routeList = (process.env.SMOKE_ROUTES ?? '/,/request-quote,/track-shipment,/services,/pricing,/contact')
+const routeList = (process.env.SMOKE_ROUTES ?? '/,/request-quote,/track-shipment,/tracking,/services,/pricing,/load-board,/contact,/about')
   .split(',')
   .map((route) => route.trim())
   .filter(Boolean);
 
-const loadingCopy = 'Loading freight command center';
+const blockedFallbackCopy = [
+  'Loading freight command center',
+  'route content is preparing',
+];
 const minimumTextLength = Number(process.env.SMOKE_MIN_TEXT_LENGTH ?? 120);
 
 const toUrl = (route) => new URL(route, baseUrl).toString();
@@ -60,8 +63,12 @@ try {
     const bodyText = (await page.locator('body').innerText({ timeout: timeoutMs })).trim();
     const title = await page.title();
 
-    if (bodyText.includes(loadingCopy)) {
-      fail(`Route is still stuck on the app loading fallback: ${route}`, [`Title: ${title}`]);
+    const matchedFallbackCopy = blockedFallbackCopy.find((copy) => bodyText.includes(copy));
+    if (matchedFallbackCopy) {
+      fail(`Route is still stuck on fallback content: ${route}`, [
+        `Matched fallback copy: ${matchedFallbackCopy}`,
+        `Title: ${title}`,
+      ]);
       continue;
     }
 

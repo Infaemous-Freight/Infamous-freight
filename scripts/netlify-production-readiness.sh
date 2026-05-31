@@ -79,7 +79,8 @@ fi
 run_step "Install Playwright browser" pnpm -C apps/web exec playwright install chromium --with-deps
 run_step "Prisma client generation" pnpm prisma:generate
 run_step "Type/lint checks" pnpm lint
-run_step "API tests (runInBand)" pnpm -w test --runInBand
+run_step "API tests" pnpm run test:api
+run_step "Web tests" pnpm run test:web
 run_step "Strict environment checks" pnpm env:check:strict
 run_step "Web production build" pnpm -C apps/web run build
 run_step "Local built web render smoke check" smoke_local_preview
