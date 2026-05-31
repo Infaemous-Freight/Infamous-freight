@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
 import { AuthError, MissingIdentityError, getSettings, login, oauthLogin, signup, type AuthProvider } from '@netlify/identity';
 import { useAppStore } from '@/store/app-store';
@@ -21,9 +21,10 @@ function isProviderEnabled(settings: IdentitySettings | null, provider: SocialPr
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setUser } = useAppStore();
   const user = useAppStore((s) => s.user);
-  const [isRegister, setIsRegister] = useState(false);
+  const [isRegister, setIsRegister] = useState(() => location.pathname === '/register' || location.pathname === '/signup');
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -73,6 +74,10 @@ const LoginPage: React.FC = () => {
       isMounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    setIsRegister(location.pathname === '/register' || location.pathname === '/signup');
+  }, [location.pathname]);
 
   if (user) {
     return <Navigate to="/ops" replace />;

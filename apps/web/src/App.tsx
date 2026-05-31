@@ -109,6 +109,9 @@ function App() {
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/services/:serviceSlug" element={<ServiceDetailPage />} />
             <Route path="/request-quote" element={<PublicQuoteRequestPage />} />
+            <Route path="/quote" element={<PublicQuoteRequestPage />} />
+            <Route path="/get-quote" element={<PublicQuoteRequestPage />} />
+            <Route path="/track" element={<ShipmentTrackingPage />} />
             <Route path="/tracking" element={<ShipmentTrackingPage />} />
             <Route path="/track-shipment" element={<ShipmentTrackingPage />} />
             <Route path="/customer-portal" element={<CustomerPortalPage />} />
@@ -135,6 +138,8 @@ function App() {
           </Route>
 
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<LoginPage />} />
+          <Route path="/signup" element={<LoginPage />} />
           <Route path="/onboarding" element={<OnboardingWizard />} />
 
           <Route element={<AppLayout />}>
@@ -146,6 +151,7 @@ function App() {
             <Route path="/analytics" element={<RouteGuard minRole="admin"><MetricsDashboard /></RouteGuard>} />
             <Route path="/compliance" element={<RouteGuard minRole="admin"><CompliancePage /></RouteGuard>} />
             <Route path="/settings" element={<RouteGuard minRole="admin"><SettingsPage /></RouteGuard>} />
+            <Route path="/settings/billing" element={<RouteGuard minRole="owner"><BillingRequiredPage /></RouteGuard>} />
             <Route path="/billing" element={<RouteGuard minRole="owner"><BillingRequiredPage /></RouteGuard>} />
             <Route path="/rate-comparison" element={<RouteGuard minRole="dispatcher"><RateComparisonTool /></RouteGuard>} />
             <Route path="/pay-per-load" element={<RouteGuard minRole="owner"><PayPerLoadPricing /></RouteGuard>} />

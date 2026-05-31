@@ -2,7 +2,7 @@ import { chromium } from 'playwright';
 
 const baseUrl = process.env.SITE_URL ?? process.env.TARGET_URL ?? 'https://www.infamousfreight.com';
 const timeoutMs = Number(process.env.SMOKE_TIMEOUT_MS ?? 20_000);
-const routeList = (process.env.SMOKE_ROUTES ?? '/,/request-quote,/track-shipment,/services,/pricing,/contact')
+const routeList = (process.env.SMOKE_ROUTES ?? '/,/request-quote,/quote,/get-quote,/track-shipment,/track,/tracking,/services,/pricing,/contact,/register,/signup,/drivers,/load-board,/resources,/about')
   .split(',')
   .map((route) => route.trim())
   .filter(Boolean);

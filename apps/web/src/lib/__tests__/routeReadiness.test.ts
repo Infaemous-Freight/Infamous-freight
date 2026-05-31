@@ -17,6 +17,7 @@ describe('routeReadiness', () => {
       '/analytics': 'demo',
       '/compliance': 'demo',
       '/settings': 'demo',
+      '/settings/billing': 'live',
       '/billing': 'live',
       '/carriers': 'demo',
       '/accounting': 'demo',
@@ -36,6 +37,7 @@ describe('routeReadiness', () => {
     expect(resolveRouteReadiness('/messages')?.state).toBe('not_ready');
     expect(resolveRouteReadiness('/quotes/123')?.state).toBe('demo');
     expect(resolveRouteReadiness('/billing/portal')?.state).toBe('live');
+    expect(resolveRouteReadiness('/settings/billing')?.state).toBe('live');
   });
 
   it('returns null for paths outside the readiness map', () => {
@@ -51,6 +53,9 @@ describe('routeReadiness', () => {
       '/services',
       '/services/flatbed',
       '/request-quote',
+      '/quote',
+      '/get-quote',
+      '/track',
       '/track-shipment',
       '/tracking',
       '/carrier-portal',
@@ -65,6 +70,8 @@ describe('routeReadiness', () => {
       '/terms',
       '/privacy',
       '/thank-you',
+      '/register',
+      '/signup',
     ].forEach((path) => expect(isPublicPath(path)).toBe(true));
 
     expect(isPublicPath('/ops')).toBe(false);
