@@ -595,24 +595,26 @@ describe('configuration safety', () => {
     expect(tamperedResponse.body.error).toBe('authentication_required');
   });
 
-  it('accepts a bearer token whose role is supplied via the Netlify Identity app_metadata.roles array', async () => {
+  it('accepts a verified token without trusting a token role claim', async () => {
     const previousNodeEnv = process.env.NODE_ENV;
     const previousDatabaseUrl = process.env.DATABASE_URL;
     const previousAuthMode = process.env.AUTH_MODE;
     const previousJwtSecret = process.env.SUPABASE_JWT_SECRET;
+    const previousMembershipRole = process.env.TEST_AUTH_MEMBERSHIP_ROLE;
 
     try {
       process.env.NODE_ENV = 'production';
       process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/infamous_test';
       process.env.SUPABASE_JWT_SECRET = 'test-supabase-jwt-secret';
+      process.env.TEST_AUTH_MEMBERSHIP_ROLE = 'dispatcher';
       delete process.env.AUTH_MODE;
 
       const token = signJwt({
         sub: 'user-1',
+        email: 'dispatcher@example.test',
         exp: Math.floor(Date.now() / 1000) + 60,
         app_metadata: {
           carrier_id: 'tenant-token',
-          roles: ['unknown_role', 'dispatcher'],
         },
       });
 
@@ -621,8 +623,8 @@ describe('configuration safety', () => {
         .set('authorization', `Bearer ${token}`)
         .set('x-subscription-status', 'active');
 
-      // Reaching the paywall (402) proves the verified token authenticated and
-      // authorized the request; the role was resolved from the roles array.
+      // Reaching the paywall (402) proves the token authenticated while the
+      // request role came from database membership, not JWT role claims.
       expect(response.status).toBe(402);
       expect(response.body.error).toBe('payment_required');
     } finally {
@@ -644,6 +646,12 @@ describe('configuration safety', () => {
         process.env.SUPABASE_JWT_SECRET = previousJwtSecret;
       } else {
         delete process.env.SUPABASE_JWT_SECRET;
+      }
+
+      if (previousMembershipRole !== undefined) {
+        process.env.TEST_AUTH_MEMBERSHIP_ROLE = previousMembershipRole;
+      } else {
+        delete process.env.TEST_AUTH_MEMBERSHIP_ROLE;
       }
     }
   });
