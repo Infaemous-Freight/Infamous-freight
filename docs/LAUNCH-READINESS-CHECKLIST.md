@@ -65,9 +65,9 @@ After the next Netlify production deploy, capture a non-secret evidence file:
 pnpm production:capture-netlify-evidence
 ```
 
-The command writes a timestamped Markdown file under `docs/evidence/`. It records canonical homepage status, apex-to-www redirect behavior, proxied `/api/health` behavior, public quote preflight behavior, invalid tracking validation, security headers, and the active Netlify request identifier. It does not create a quote request or shipment record.
+The command writes a timestamped Markdown file under `docs/evidence/`. It records canonical homepage status, apex-to-www redirect behavior, proxied `/api/health` behavior, public quote preflight behavior, invalid tracking validation, optional positive tracking validation, security headers, and the active Netlify request identifier. It does not create a quote request or shipment record.
 
-Operations should attach or reference the latest evidence file before closing launch-readiness work. If public quote intake falls back to Netlify Forms, leads should still be reviewed in Netlify Forms and matched to API quote records only when a tracking reference was returned.
+Operations should attach or reference the latest evidence file before closing launch-readiness work. If public quote intake falls back to Netlify Forms, leads should still be reviewed in Netlify Forms and matched to API quote records only when a tracking reference was returned. Positive public tracking validation needs a known-safe real production tracking record; run the evidence capture with `PUBLIC_VALID_TRACKING_NUMBER=IF-#####` or `PUBLIC_VALID_SHIPMENT_URL=https://www.infamousfreight.com/api/public/shipments/IF-#####` once operations provides that record. The evidence file records only a sanitized validation summary, not the full shipment response or configured lookup URL.
 
 ## Lead funnel validation
 
@@ -76,6 +76,7 @@ Run this after the next Netlify production deploy and record the non-secret resu
 - Submit one mobile quote request with commodity, pallet or piece count, accessorials, pickup or delivery constraints, consent, and no attachment.
 - Submit one desktop quote request with an allowed attachment under 8 MB.
 - Confirm the API-backed path returns a tracking reference and that `/track-shipment` can look it up.
+- Capture positive public tracking evidence against a known-safe production tracking record using `PUBLIC_VALID_TRACKING_NUMBER=IF-##### pnpm production:capture-netlify-evidence`; do not paste shipment notes, customer details, or secret values into the evidence.
 - Confirm the Netlify Forms entry includes the same commodity, pallet or piece count, accessorials, constraints, consent, page URL, submission timestamp, and fallback details.
 - Confirm the contact form rejects invalid email or phone values, requires consent, and routes urgent freight issues to dispatch contact paths.
 - Confirm the owner for each submission queue can see the lead and knows the expected response window.
