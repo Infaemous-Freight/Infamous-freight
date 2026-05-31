@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -240,6 +240,7 @@ const PublicQuoteRequestPage: React.FC = () => {
     const message = validationMessage(step);
     if (message) {
       setError(message);
+      trackPublicEvent('quote_step_error', { step: STEPS[step].label, message });
       return;
     }
     setError('');
@@ -255,6 +256,7 @@ const PublicQuoteRequestPage: React.FC = () => {
     const message = validationMessage(3);
     if (message) {
       setError(message);
+      trackPublicEvent('quote_step_error', { step: STEPS[3].label, message });
       return;
     }
 
@@ -337,6 +339,10 @@ const PublicQuoteRequestPage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    trackPublicEvent('quote_step_view', { step: STEPS[step].label, stepIndex: step + 1 });
+  }, [step]);
+
   const renderStepContent = () => {
     switch (step) {
       case 0:
@@ -386,6 +392,9 @@ const PublicQuoteRequestPage: React.FC = () => {
           <div className="space-y-5">
             <h2 className="text-xl font-bold">Freight Details</h2>
             <p className="text-sm text-[#B88989]">Add what is known now. These details help dispatch quote accurately but are not required to start the lead.</p>
+            <div className="rounded-xl border border-infamous-red/20 bg-infamous-red/5 p-4 text-sm leading-6 text-[#F5E8E8]/80">
+              Unsure about exact freight details? Enter estimates and use the notes field for what still needs confirmation. Weight, dimensions, pallet count, and commodity are the details most likely to reduce follow-up.
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <InputField label="Freight Type" name="freightType" value={form.freightType} onChange={(v) => updateField('freightType', v)} placeholder="e.g. LTL, truckload, expedited" />
               <InputField label="Commodity" name="commodity" value={form.commodity} onChange={(v) => updateField('commodity', v)} placeholder="e.g. Retail goods, machinery, food-grade freight" />
@@ -409,6 +418,9 @@ const PublicQuoteRequestPage: React.FC = () => {
           <div className="space-y-5">
             <h2 className="text-xl font-bold">Service Options</h2>
             <p className="text-sm text-[#B88989]">Add any special requirements or documents.</p>
+            <div className="rounded-xl border border-infamous-border bg-infamous-panel p-4 text-sm leading-6 text-[#B88989]">
+              Helpful attachments include a BOL, packing list, rate confirmation, or freight photos. Avoid sending private credentials, payment cards, or unnecessary sensitive documents.
+            </div>
             <InputField label="Accessorials" name="accessorials" value={form.accessorials} onChange={(v) => updateField('accessorials', v)} placeholder="Liftgate, appointment, residential, inside delivery, pallet jack" />
             <InputField label="Pickup / Delivery Constraints" name="constraints" value={form.constraints} onChange={(v) => updateField('constraints', v)} placeholder="Dock hours, gated access, strict delivery window, limited truck access" />
             <label className="block">

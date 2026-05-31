@@ -6,16 +6,19 @@ import { trackPublicEvent } from '@/lib/analytics';
 
 const navLinks = [
   { label: 'Services', href: '/services' },
+  { label: 'Partners', href: '/partners' },
+  { label: 'Track Shipment', href: '/track-shipment' },
+  { label: 'Carriers', href: '/carrier-portal' },
+  { label: 'Contact', href: '/contact' },
+];
+
+const secondaryMobileLinks = [
   { label: 'Pricing', href: '/pricing' },
   { label: 'Load Board', href: '/load-board' },
   { label: 'Freight Assistant', href: '/freight-assistant' },
-  { label: 'Partners', href: '/partners' },
   { label: 'Case Studies', href: '/case-studies' },
-  { label: 'Request Quote', href: '/request-quote' },
-  { label: 'Track Shipment', href: '/track-shipment' },
-  { label: 'Carriers', href: '/carrier-portal' },
   { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'FAQ', href: '/faq' },
 ];
 
 const footerGroups = [
@@ -253,7 +256,7 @@ const PublicLayout: React.FC = () => {
             <Link
               to="/request-quote"
               onClick={() => trackPublicEvent('quote_cta_click', { location: 'desktop_header', cta: 'get_quote' })}
-              className="inline-flex items-center gap-2 btn-primary text-sm glow-high"
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-infamous-red px-4 py-2 text-sm font-black text-[#F5E8E8] shadow-[0_0_24px_rgba(211,47,47,0.35)] transition hover:bg-infamous-red-light focus:outline-none focus:ring-2 focus:ring-infamous-red-light focus:ring-offset-2 focus:ring-offset-infamous-darker"
             >
               Get a Quote <ArrowRight aria-hidden="true" size={15} />
             </Link>
@@ -272,6 +275,16 @@ const PublicLayout: React.FC = () => {
 
         {mobileMenuOpen && (
           <nav id="public-mobile-navigation" className="lg:hidden border-t border-infamous-border bg-infamous-darker px-5 py-4 space-y-1" aria-label="Mobile navigation">
+            <Link
+              to="/request-quote"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                trackPublicEvent('quote_cta_click', { location: 'mobile_menu', cta: 'request_quote' });
+              }}
+              className="mb-3 flex min-h-12 items-center justify-center gap-2 rounded-lg bg-infamous-red px-3 py-3 text-sm font-black text-[#F5E8E8] shadow-[0_0_24px_rgba(211,47,47,0.3)]"
+            >
+              Request a Quote <ArrowRight aria-hidden="true" size={16} />
+            </Link>
             {navLinks.map((item) => {
               const active = pathname === item.href
                 || (item.href === '/services' && pathname.startsWith('/services'))
@@ -299,6 +312,21 @@ const PublicLayout: React.FC = () => {
             >
               Login
             </Link>
+            <div className="mt-3 border-t border-infamous-border pt-3">
+              <p className="px-3 text-xs font-bold uppercase tracking-[0.18em] text-infamous-muted">More</p>
+              <div className="mt-2 grid grid-cols-2 gap-1">
+                {secondaryMobileLinks.map((item) => (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="rounded-lg px-3 py-2 text-sm font-medium text-[#B88989] transition hover:bg-white/5 hover:text-[#F5E8E8]"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </nav>
         )}
       </header>

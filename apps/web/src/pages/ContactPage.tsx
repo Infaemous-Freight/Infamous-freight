@@ -10,6 +10,7 @@ const initialForm = {
   email: '',
   phone: '',
   topic: 'Freight quote',
+  loadReference: '',
   message: '',
   contactConsent: false,
 };
@@ -62,6 +63,7 @@ const ContactPage: React.FC = () => {
     if (!form.name.trim()) return 'Add your name.';
     if (!EMAIL_PATTERN.test(form.email.trim())) return 'Add a valid email address.';
     if (form.phone.trim() && !PHONE_PATTERN.test(form.phone.trim())) return 'Add a valid phone number or leave it blank.';
+    if (form.topic === 'Shipment tracking' && form.loadReference.trim().length < 4) return 'Add the tracking or load number for shipment tracking help.';
     if (form.message.trim().length < 12) return 'Add a short message with enough detail for follow-up.';
     if (!form.contactConsent) return 'Confirm contact consent before sending.';
     return '';
@@ -188,6 +190,24 @@ const ContactPage: React.FC = () => {
                     <option>General support</option>
                   </select>
                 </label>
+                {form.topic === 'Shipment tracking' ? (
+                  <label htmlFor="contact-load-reference" className="block">
+                    <span className="mb-2 block text-sm font-medium text-[#F5E8E8]/80">Tracking or load number <span className="text-infamous-orange">*</span></span>
+                    <input
+                      id="contact-load-reference"
+                      name="loadReference"
+                      type="text"
+                      maxLength={80}
+                      value={form.loadReference}
+                      onChange={(event) => update('loadReference', event.target.value)}
+                      className="w-full rounded-xl border border-infamous-border bg-infamous-panel px-4 py-3 text-[#F5E8E8] outline-none transition focus:border-infamous-orange"
+                      placeholder="e.g. IF-20491 or shipper reference"
+                      required
+                      aria-required="true"
+                    />
+                    <span className="mt-2 block text-xs leading-5 text-[#B88989]">This helps dispatch locate status, ETA, delivery notes, and proof-of-delivery context faster.</span>
+                  </label>
+                ) : null}
                 <label htmlFor="contact-message" className="block">
                   <span className="mb-2 block text-sm font-medium text-[#F5E8E8]/80">Message</span>
                   <textarea
@@ -221,13 +241,21 @@ const ContactPage: React.FC = () => {
                   </span>
                 </label>
                 {error ? <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200">{error}</p> : null}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="inline-flex items-center gap-2 rounded-xl bg-infamous-orange px-5 py-3 font-semibold text-[#F5E8E8] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {loading ? 'Sending...' : 'Send message'} <Send size={17} />
-                </button>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-infamous-orange px-5 py-3 font-semibold text-[#F5E8E8] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {loading ? 'Sending...' : 'Send message'} <Send size={17} />
+                  </button>
+                  <a
+                    href={BRAND.dispatchPhoneHref}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-infamous-border bg-infamous-panel px-5 py-3 text-sm font-semibold text-[#F5E8E8] transition hover:border-infamous-orange/50"
+                  >
+                    <Phone size={16} /> Urgent load issue? Call dispatch
+                  </a>
+                </div>
               </form>
             )}
           </div>
