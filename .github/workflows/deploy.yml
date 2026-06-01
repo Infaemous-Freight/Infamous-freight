@@ -19,7 +19,10 @@ concurrency:
 
 env:
   NODE_VERSION: '22'
-  PNPM_VERSION: '10.0.0'
+  PNPM_VERSION: '11.3.0'
+  WEB_PRODUCTION_URL: https://www.infamousfreight.com
+  API_PRODUCTION_URL: https://api.infamousfreight.com
+  FLY_APP: infamous-freight-api
 
 jobs:
   verify:
@@ -96,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: verify
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch' }}
     environment:
       name: production
       url: https://www.infamousfreight.com
@@ -111,6 +114,23 @@ jobs:
           name: web-dist
           path: apps/web/dist
 
+      - name: Validate Netlify deployment secrets
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          set -euo pipefail
+          missing=0
+          if [ -z "${NETLIFY_AUTH_TOKEN:-}" ]; then
+            echo "Missing required GitHub Actions secret: NETLIFY_AUTH_TOKEN" >&2
+            missing=1
+          fi
+          if [ -z "${NETLIFY_SITE_ID:-}" ]; then
+            echo "Missing required GitHub Actions secret: NETLIFY_SITE_ID" >&2
+            missing=1
+          fi
+          exit "${missing}"
+
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
@@ -124,51 +144,103 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
+  deploy-fly:
+    name: Deploy Fly API production
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: verify
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch' }}
+    environment:
+      name: production
+      url: https://api.infamousfreight.com/api/health
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Fly deployment secret
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FLY_API_TOKEN:-}" ]; then
+            echo "Missing required GitHub Actions secret: FLY_API_TOKEN" >&2
+            exit 1
+          fi
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Verify Fly CLI authentication
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          flyctl auth whoami >/dev/null
+          echo "Fly CLI authentication verified."
+
+      - name: Validate Fly configuration
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: flyctl config validate --config fly.toml
+
+      - name: Deploy API to Fly
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          flyctl deploy \
+            --app "${FLY_APP}" \
+            --config fly.toml \
+            --remote-only \
+            --strategy rolling \
+            --max-concurrent 1
+
+      - name: Check Fly release health
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          flyctl checks list -a "${FLY_APP}"
+          curl --fail --show-error --silent --location --retry 5 --retry-delay 10 --retry-connrefused \
+            "https://${FLY_APP}.fly.dev/api/health/live" >/dev/null
+
   smoke-test:
     name: Production smoke test
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: deploy-netlify
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs:
+      - deploy-netlify
+      - deploy-fly
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Check production endpoints
+        env:
+          WEB_PRODUCTION_URL: ${{ env.WEB_PRODUCTION_URL }}
+          API_PRODUCTION_URL: ${{ env.API_PRODUCTION_URL }}
+          FLY_APP: ${{ env.FLY_APP }}
         run: |
           set -euo pipefail
 
-          curl --fail --show-error --location --head https://www.infamousfreight.com
+          check_endpoint() {
+            local label="$1"
+            local url="$2"
+            echo "Checking ${label}: ${url}"
+            curl --fail --show-error --silent --location --retry 5 --retry-delay 10 --retry-connrefused \
+              --max-time 20 "${url}" >/dev/null
+          }
 
-          web_live_status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://www.infamousfreight.com/api/health/live)"
-          if [ "$web_live_status" != "200" ]; then
-            echo "Unexpected web liveness response: $web_live_status" >&2
-            exit 1
-          fi
+          check_endpoint "web root" "${WEB_PRODUCTION_URL}"
+          check_endpoint "proxied API health" "${WEB_PRODUCTION_URL}/api/health"
+          check_endpoint "direct API liveness" "${API_PRODUCTION_URL}/api/health/live"
+          check_endpoint "direct API health" "${API_PRODUCTION_URL}/api/health"
+          check_endpoint "direct API readiness" "${API_PRODUCTION_URL}/api/health/ready"
+          check_endpoint "Fly app liveness" "https://${FLY_APP}.fly.dev/api/health/live"
 
-          web_health_status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://www.infamousfreight.com/api/health)"
-          if [ "$web_health_status" != "200" ] && [ "$web_health_status" != "503" ]; then
-            echo "Unexpected web readiness response: $web_health_status" >&2
-            exit 1
-          fi
-
-          fly_live_status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://infamous-freight-api.fly.dev/api/health/live)"
-          if [ "$fly_live_status" != "200" ]; then
-            echo "Unexpected Fly API liveness response: $fly_live_status" >&2
-            exit 1
-          fi
-
-          for endpoint in \
-            https://www.infamousfreight.com/api/metrics \
-            https://www.infamousfreight.com/api/health/performance \
-            https://www.infamousfreight.com/api/health/database
-          do
-            endpoint_status="$(curl --silent --output /dev/null --write-out '%{http_code}' "$endpoint")"
-            if [ "$endpoint_status" = "000" ] || [ "$endpoint_status" -ge 500 ]; then
-              echo "warning: diagnostic endpoint $endpoint returned $endpoint_status" >&2
-            fi
-          done
-
-          redirect_status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://infamousfreight.com)"
-          if [ "$redirect_status" != "301" ] && [ "$redirect_status" != "200" ]; then
-            echo "Unexpected apex response: $redirect_status" >&2
+          final_url="$(curl --silent --location --head --retry 5 --retry-delay 10 --retry-connrefused \
+            --max-time 20 --output /dev/null --write-out '%{url_effective}' https://infamousfreight.com)"
+          if [ "${final_url}" != "${WEB_PRODUCTION_URL}/" ]; then
+            echo "Unexpected apex redirect target: ${final_url}" >&2
             exit 1
           fi

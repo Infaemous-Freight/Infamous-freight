@@ -82,6 +82,7 @@ This directory contains operational, architectural, and launch-readiness documen
 - [digitalocean-lptms-deployment.md](./digitalocean-lptms-deployment.md) — DigitalOcean App Platform guidance for LPTMS demo and production deployments.
 - [NETLIFY-BUILDHOOKS.md](./NETLIFY-BUILDHOOKS.md) — Netlify build hooks.
 - [netlify-deploy-checklist.md](./netlify-deploy-checklist.md) — Netlify deploy checklist.
+- [PRODUCTION_DEPLOYMENT_WORKFLOW.md](./PRODUCTION_DEPLOYMENT_WORKFLOW.md) — GitHub Actions production deploy workflow for Netlify, Fly.io, and smoke checks.
 - [MANUS-PRODUCTION-BUILD-PACKAGE.md](./MANUS-PRODUCTION-BUILD-PACKAGE.md) — Production build package notes.
 
 ## 🧰 Developer Environment
