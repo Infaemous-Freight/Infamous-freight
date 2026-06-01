@@ -93,7 +93,24 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              name="book-demo"
+              method="POST"
+              action="/thank-you/?form=book-demo"
+              data-netlify="true"
+              data-netlify-form="book-demo"
+              data-success-url="/thank-you/?form=book-demo"
+              netlify-honeypot="bot-field"
+              onSubmit={handleSubmit}
+              className="space-y-4"
+            >
+              <input type="hidden" name="form-name" value="book-demo" />
+              <input type="hidden" name="csrf-token" value="netlify-form-book-demo-v1" />
+              <input type="hidden" name="clientSubmittedAt" />
+              <input type="hidden" name="pageUrl" />
+              <p className="hidden">
+                <label>Do not fill this out: <input name="bot-field" tabIndex={-1} autoComplete="off" /></label>
+              </p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="demo-name" className="text-sm text-[#B88989] mb-1 block">Name</label>
@@ -101,9 +118,10 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
                     <User aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#B88989]/70" />
                     <Input
                       id="demo-name"
+                      name="name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="John Smith"
+                      placeholder="Maya Benton"
                       className="pl-10 border-infamous-border bg-infamous-panel text-[#F5E8E8]"
                       required
                       aria-required="true"
@@ -116,9 +134,10 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
                     <Building2 aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#B88989]/70" />
                     <Input
                       id="demo-company"
+                      name="company"
                       value={formData.company}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      placeholder="Iron Route Logistics"
+                      placeholder="Redline Produce Transport"
                       className="pl-10 border-infamous-border bg-infamous-panel text-[#F5E8E8]"
                       required
                       aria-required="true"
@@ -133,10 +152,11 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
                   <Mail aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#B88989]/70" />
                     <Input
                     id="demo-email"
+                    name="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="john@acmetrucking.com"
+                    placeholder="ops@redlineproduce.example"
                     className="pl-10 border-infamous-border bg-infamous-panel text-[#F5E8E8]"
                     required
                     aria-required="true"
@@ -150,6 +170,7 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
                   <Phone aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#B88989]/70" />
                   <Input
                     id="demo-phone"
+                    name="phone"
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -163,6 +184,7 @@ function BookDemoModal({ onClose }: { onClose: () => void }) {
                 <label htmlFor="demo-fleet-size" className="text-sm text-[#B88989] mb-1 block">Fleet Size</label>
                 <select
                   id="demo-fleet-size"
+                  name="fleetSize"
                   value={formData.fleetSize}
                   onChange={(e) => setFormData({ ...formData, fleetSize: e.target.value })}
                   className="w-full rounded-md border border-infamous-border bg-infamous-panel px-3 py-2 text-[#F5E8E8] text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"

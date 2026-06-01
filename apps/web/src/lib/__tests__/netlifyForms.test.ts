@@ -68,4 +68,25 @@ describe('Netlify form submissions', () => {
 
     vi.unstubAllGlobals();
   });
+
+  it('posts SPA form submissions to the static Netlify form registry', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await submitNetlifyForm('book-demo', {
+      email: 'demo-lead@example.com',
+      phone: '2145550199',
+      name: 'Maya Benton',
+      company: 'Redline Produce Transport',
+      fleetSize: '6-20',
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith('/__forms.html', expect.objectContaining({
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    }));
+    expect(fetchMock.mock.calls[0][1].body).toContain('form-name=book-demo');
+
+    vi.unstubAllGlobals();
+  });
 });
