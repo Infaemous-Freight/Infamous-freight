@@ -69,16 +69,25 @@ class ApiClient {
         }
 
         const message = error.response?.data?.message || error.message || 'Something went wrong';
+        const status = error.response?.status;
+        const method = config?.method?.toUpperCase() ?? 'GET';
 
-        if (error.response?.status === 401) {
+        // Dashboard and mobile panels render their own inline empty/error states.
+        // Avoid repeated toast spam for missing optional GET resources while API
+        // fallbacks are rolling out.
+        if (status === 404 && method === 'GET') {
+          return Promise.reject(error);
+        }
+
+        if (status === 401) {
           // Centralize logout so the React tree updates synchronously and
           // route guards (in AppLayout) handle navigation — avoid a hard
           // window.location reload that would discard in-progress drafts.
           useAppStore.getState().logout();
           toast.error('Session expired — please log in again');
-        } else if (error.response?.status === 429) {
+        } else if (status === 429) {
           toast.error('Rate limit exceeded — please slow down');
-        } else if (error.response?.status === 500) {
+        } else if (status === 500) {
           toast.error('Server error — our team has been notified');
         } else {
           toast.error(message);

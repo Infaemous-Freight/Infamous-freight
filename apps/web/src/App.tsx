@@ -89,7 +89,7 @@ const RouteFallback = () => (
           </div>
         </div>
       </div>
-      <span className="sr-only">{BRAND.displayName} route content is preparing.</span>
+      <span className="sr-only">{BRAND.displayName} route content is loading.</span>
     </section>
   </main>
 );
@@ -144,6 +144,7 @@ function App() {
 
           <Route element={<AppLayout />}>
             <Route path="/ops" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/loads" element={<LoadsPage />} />
             <Route path="/dispatch" element={<RouteGuard minRole="dispatcher"><DispatchBoardPage /></RouteGuard>} />
             <Route path="/ops/drivers" element={<RouteGuard minRole="dispatcher"><DriversPage /></RouteGuard>} />
@@ -151,6 +152,7 @@ function App() {
             <Route path="/analytics" element={<RouteGuard minRole="admin"><MetricsDashboard /></RouteGuard>} />
             <Route path="/compliance" element={<RouteGuard minRole="admin"><CompliancePage /></RouteGuard>} />
             <Route path="/settings" element={<RouteGuard minRole="admin"><SettingsPage /></RouteGuard>} />
+            <Route path="/account" element={<RouteGuard minRole="driver"><SettingsPage /></RouteGuard>} />
             <Route path="/settings/billing" element={<RouteGuard minRole="owner"><BillingRequiredPage /></RouteGuard>} />
             <Route path="/billing" element={<RouteGuard minRole="owner"><BillingRequiredPage /></RouteGuard>} />
             <Route path="/rate-comparison" element={<RouteGuard minRole="dispatcher"><RateComparisonTool /></RouteGuard>} />

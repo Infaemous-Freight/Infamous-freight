@@ -189,11 +189,11 @@ const AppLayout: React.FC = () => {
         {offlineBanner}
         {readinessBanner}
         <TopBar />
-        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto p-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:p-6 md:pb-6">
           {notReadyGate ?? <Outlet />}
         </main>
       </div>
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-infamous-border bg-infamous-navy md:hidden" aria-label="Mobile navigation">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-infamous-border bg-infamous-navy/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden" aria-label="Mobile navigation">
         <div className="flex items-center justify-around py-2">
           {[
             { to: '/ops', icon: LayoutDashboard, label: 'Dashboard' },
@@ -205,7 +205,7 @@ const AppLayout: React.FC = () => {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `flex flex-col items-center gap-0.5 px-3 py-1 ${isActive ? 'text-infamous-red-light' : 'text-[#B88989]/70'}`
+                `min-h-12 flex flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-2 py-1 text-[11px] ${isActive ? 'text-infamous-red-light bg-infamous-red/10' : 'text-[#B88989]/70'}`
               }
             >
               <item.icon size={20} />

@@ -58,13 +58,21 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
     state: 'demo',
     message: 'Internal quote workflow is demo-backed; use public intake and documented dispatch review for live commitments.',
   },
+  '/dashboard': {
+    state: 'demo',
+    message: 'Dashboard is available with safe empty states and demo-backed widgets while live integrations are hardened.',
+  },
+  '/account': {
+    state: 'demo',
+    message: 'Account settings are available for operators; some integration controls remain demo-backed until production verification is complete.',
+  },
   '/messages': {
-    state: 'not_ready',
-    message: 'Messaging is not production-ready yet and remains unavailable for live operational communication.',
+    state: 'demo',
+    message: 'Messaging opens with a safe operator inbox and demo-backed conversations while live communication services are being integrated.',
   },
   '/driver-app': {
-    state: 'not_ready',
-    message: 'Driver app is not production-ready yet and remains unavailable for live dispatch execution.',
+    state: 'demo',
+    message: 'Driver mobile surfaces open with safe empty states while live dispatch execution is being integrated.',
   },
 };
 
