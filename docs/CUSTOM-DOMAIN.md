@@ -113,9 +113,11 @@ curl -sIL https://infamousfreight.com | grep -i '^location:'
 
 # Test proxied API health
 curl -s https://www.infamousfreight.com/api/health
+curl -s https://www.infamousfreight.com/api/health/ready
 
-# Optional direct API checks
-curl -s https://api.infamousfreight.com/health
+# Optional direct API checks once api.infamousfreight.com routes to Fly
+curl -s https://api.infamousfreight.com/api/health
+curl -s https://api.infamousfreight.com/api/health/ready
 ```
 
 All should return `200 OK` with valid SSL certificates.
@@ -130,7 +132,9 @@ All should return `200 OK` with valid SSL certificates.
 | **API** | `https://api.infamousfreight.com` |
 | **WebSocket** | `wss://api.infamousfreight.com` |
 | **Proxied Health Check** | `https://www.infamousfreight.com/api/health` |
-| **Direct Health Check** | `https://api.infamousfreight.com/health` |
+| **Proxied Readiness Check** | `https://www.infamousfreight.com/api/health/ready` |
+| **Direct Health Check** | `https://api.infamousfreight.com/api/health` |
+| **Direct Readiness Check** | `https://api.infamousfreight.com/api/health/ready` |
 | **API Docs** | `https://api.infamousfreight.com/api/docs` |
 | **Stripe Webhook** | `https://api.infamousfreight.com/stripe/webhook` |
 

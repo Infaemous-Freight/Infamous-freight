@@ -143,8 +143,8 @@ curl --silent --show-error --location --max-redirs 5 --output /dev/null --write-
 Optional direct API domain checks (if `api.infamousfreight.com` is configured to the API origin):
 
 ```bash
-curl --fail --show-error --silent --location --retry 5 --retry-delay 10 --retry-connrefused https://api.infamousfreight.com/health
 curl --fail --show-error --silent --location --retry 5 --retry-delay 10 --retry-connrefused https://api.infamousfreight.com/api/health
+curl --fail --show-error --silent --location --retry 5 --retry-delay 10 --retry-connrefused https://api.infamousfreight.com/api/health/ready
 ```
 
 If direct API-domain checks return `404`, validate DNS/routing for `api.infamousfreight.com` and keep production smoke checks pointed at `https://www.infamousfreight.com/api/health` until fixed.

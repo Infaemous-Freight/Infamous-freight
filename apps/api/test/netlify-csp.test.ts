@@ -51,6 +51,7 @@ describe('Netlify production routing', () => {
     const rootContent = read(rootNetlify);
 
     const healthProxy = indexOf(rootContent, 'from = "/api/health"');
+    const readyProxy = indexOf(rootContent, 'from = "/api/health/ready"');
     const loadRequestsProxy = indexOf(rootContent, 'from = "/api/load-requests"');
     const quoteRequestsProxy = indexOf(rootContent, 'from = "/api/public/quote-requests"');
     const shipmentLookupProxy = indexOf(rootContent, 'from = "/api/public/shipments/:trackingNumber"');
@@ -59,6 +60,7 @@ describe('Netlify production routing', () => {
     const spaFallback = indexOf(rootContent, 'from = "/*"');
 
     expect(healthProxy).toBeLessThan(apiProxy);
+    expect(readyProxy).toBeLessThan(apiProxy);
     expect(loadRequestsProxy).toBeLessThan(apiProxy);
     expect(quoteRequestsProxy).toBeLessThan(apiProxy);
     expect(shipmentLookupProxy).toBeLessThan(apiProxy);
@@ -136,8 +138,11 @@ describe('Netlify production routing', () => {
 
     expect(script).toContain('PUBLIC_QUOTE_PREFLIGHT_URL="${PUBLIC_QUOTE_PREFLIGHT_URL:-https://www.infamousfreight.com/api/public/quote-requests}"');
     expect(script).toContain('PUBLIC_INVALID_SHIPMENT_URL="${PUBLIC_INVALID_SHIPMENT_URL:-https://www.infamousfreight.com/api/public/shipments/invalid-tracking}"');
+    expect(script).toContain('WEB_READY_URL="${WEB_READY_URL:-https://www.infamousfreight.com/api/health/ready}"');
+    expect(script).toContain('FLY_API_READY_URL="${FLY_API_READY_URL:-https://infamous-freight-api.fly.dev/api/health/ready}"');
     expect(script).toContain('run_step "Public quote API preflight check" curl_options "$PUBLIC_QUOTE_PREFLIGHT_URL"');
     expect(script).toContain('run_step "Public invalid shipment lookup check" curl_expect_status 400 "$PUBLIC_INVALID_SHIPMENT_URL"');
+    expect(script).toContain('run_step "Canonical API readiness check" curl_get "$WEB_READY_URL"');
     expect(script).not.toContain('.netlify/functions/public-freight');
   });
 });

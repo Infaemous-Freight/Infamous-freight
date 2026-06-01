@@ -51,8 +51,9 @@ Optional direct API origin checks:
 ```bash
 curl -i https://infamous-freight-api.fly.dev/health
 curl -i https://infamous-freight-api.fly.dev/api/health
-curl -i https://api.infamousfreight.com/health
+curl -i https://infamous-freight-api.fly.dev/api/health/ready
 curl -i https://api.infamousfreight.com/api/health
+curl -i https://api.infamousfreight.com/api/health/ready
 ```
 
 Direct API checks are operational diagnostics. Do not block the Netlify web launch on `api.infamousfreight.com` until that route is confirmed; the launch-critical browser path is `https://www.infamousfreight.com/api/health`.
