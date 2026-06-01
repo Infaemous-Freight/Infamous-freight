@@ -340,6 +340,63 @@ describe('tenant-protected resource routes', () => {
     expect(listT1.body.count).toBe(1);
     expect(listT1.body.data[0].reference).toBe('REF-1');
   });
+
+  it('returns safe dashboard, message, and notification payloads instead of 404s', async () => {
+    const app = createApp();
+    const headers = {
+      'x-tenant-id': 'tenant-1',
+      'x-user-role': 'dispatcher',
+      'x-subscription-status': 'active',
+    };
+
+    const [dashboard, messages, notifications] = await Promise.all([
+      request(app).get('/api/dashboard').set(headers),
+      request(app).get('/api/messages').set(headers),
+      request(app).get('/api/notifications').set(headers),
+    ]);
+
+    expect(dashboard.status).toBe(200);
+    expect(dashboard.body.data.metrics).toMatchObject({
+      loads: 0,
+      drivers: 0,
+      shipments: 0,
+      notifications: 0,
+      unreadMessages: 0,
+    });
+    expect(dashboard.body.data.loads).toEqual([]);
+    expect(dashboard.body.data.drivers).toEqual([]);
+    expect(dashboard.body.data.shipments).toEqual([]);
+
+    expect(messages.status).toBe(200);
+    expect(messages.body).toMatchObject({
+      data: [],
+      count: 0,
+      threads: [],
+      messages: [],
+    });
+
+    expect(notifications.status).toBe(200);
+    expect(notifications.body).toMatchObject({
+      data: [],
+      count: 0,
+      notifications: [],
+      unreadCount: 0,
+    });
+  });
+
+  it('keeps safe dashboard, message, and notification payloads behind tenant auth', async () => {
+    const app = createApp();
+
+    const [dashboard, messages, notifications] = await Promise.all([
+      request(app).get('/api/dashboard').set('x-user-role', 'dispatcher'),
+      request(app).get('/api/messages').set('x-user-role', 'dispatcher'),
+      request(app).get('/api/notifications').set('x-user-role', 'dispatcher'),
+    ]);
+
+    expect(dashboard.status).toBe(400);
+    expect(messages.status).toBe(400);
+    expect(notifications.status).toBe(400);
+  });
 });
 
 describe('security headers', () => {

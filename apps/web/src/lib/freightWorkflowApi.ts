@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { getConfiguredApiBaseUrl } from '@/lib/apiBase';
 import { getNetlifyIdentityToken } from '@/lib/netlifyIdentityAuth';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '',
+  baseURL: getConfiguredApiBaseUrl().replace(/\/api$/, ''),
 });
 
 // Forward the signed-in user's Netlify Identity token so the API can verify the
