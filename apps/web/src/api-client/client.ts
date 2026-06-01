@@ -1,11 +1,12 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, Method } from 'axios';
 import toast from 'react-hot-toast';
 import { useAppStore } from '@/store/app-store';
+import { getConfiguredApiBaseUrl } from '@/lib/apiBase';
 
-// Empty string means "same origin" — the Netlify /api/* proxy forwards requests
-// to the Fly.io backend. Set VITE_API_URL to an absolute URL (e.g.
-// https://api.infamousfreight.com) only when bypassing the proxy.
-const API_BASE = import.meta.env.VITE_API_URL ?? '';
+// The browser should call the same-origin /api proxy by default. Netlify
+// deploys may set VITE_API_BASE_URL=/api, while older environments may set
+// VITE_API_URL=https://api.infamousfreight.com.
+const API_BASE = getConfiguredApiBaseUrl();
 
 const MAX_RETRIES = 2;
 const RETRY_BASE_MS = 500;
@@ -34,7 +35,7 @@ class ApiClient {
 
   constructor() {
     this.client = axios.create({
-      baseURL: `${API_BASE}/api`,
+      baseURL: API_BASE,
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',

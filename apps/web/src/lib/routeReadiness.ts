@@ -59,8 +59,8 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
     message: 'Internal quote workflow is demo-backed; use public intake and documented dispatch review for live commitments.',
   },
   '/messages': {
-    state: 'not_ready',
-    message: 'Messaging is not production-ready yet and remains unavailable for live operational communication.',
+    state: 'demo',
+    message: 'Messaging is demo-backed until live carrier and driver communication integrations are completed.',
   },
   '/driver-app': {
     state: 'not_ready',

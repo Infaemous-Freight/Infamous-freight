@@ -117,6 +117,18 @@
   status = 200
   force = true
 
+[[redirects]]
+  from = "/api/dashboard"
+  to = "https://infamous-freight-api.fly.dev/api/dashboard"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/messages"
+  to = "https://infamous-freight-api.fly.dev/api/messages"
+  status = 200
+  force = true
+
 # Accounts / Auth
 [[redirects]]
   from = "/api/auth/*"

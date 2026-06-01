@@ -1325,6 +1325,48 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
     res.status(201).json({ data });
   }));
 
+  app.get('/api/dashboard', ...protectedApi, wrapAsync(async (req, res) => {
+    const tenantId = getRequiredTenantId(req);
+    const [loads, drivers, shipments] = await Promise.all([
+      dataStore.listLoads(tenantId),
+      dataStore.listDrivers(tenantId),
+      dataStore.listShipments(tenantId),
+    ]);
+
+    res.status(200).json({
+      data: {
+        loads,
+        drivers,
+        shipments,
+        metrics: {
+          loads: loads.length,
+          drivers: drivers.length,
+          shipments: shipments.length,
+          notifications: 0,
+          unreadMessages: 0,
+        },
+      },
+    });
+  }));
+
+  app.get('/api/messages', ...protectedApi, (_req, res) => {
+    res.status(200).json({
+      data: [],
+      count: 0,
+      threads: [],
+      messages: [],
+    });
+  });
+
+  app.get('/api/notifications', ...protectedApi, (_req, res) => {
+    res.status(200).json({
+      data: [],
+      count: 0,
+      notifications: [],
+      unreadCount: 0,
+    });
+  });
+
   app.get('/api/freight-operations/:resource', ...protectedApi, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.listFreightOperations(resource, getRequiredTenantId(req));
