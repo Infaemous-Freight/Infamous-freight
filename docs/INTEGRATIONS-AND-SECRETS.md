@@ -107,7 +107,7 @@ is provided.
 ### 3.1 Deploy failure — API (Fly.io)
 
 **Symptom:** The `deploy-api` job fails or the API is unreachable at
-`https://api.infamousfreight.com/health`.
+`https://api.infamousfreight.com/api/health`.
 
 **Steps:**
 
@@ -136,7 +136,8 @@ is provided.
    app deploys for routine releases. After any machine-level update, verify the
    API is healthy:
    ```bash
-   curl -fsS https://api.infamousfreight.com/health
+   curl -fsS https://api.infamousfreight.com/api/health
+   curl -fsS https://api.infamousfreight.com/api/health/ready
    ```
 
 4. **Build failed before deploy:** The `build-api` job must succeed before

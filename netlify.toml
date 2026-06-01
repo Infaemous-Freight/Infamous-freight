@@ -88,6 +88,12 @@
   force = true
 
 [[redirects]]
+  from = "/api/health/ready"
+  to = "https://infamous-freight-api.fly.dev/api/health/ready"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/load-requests"
   to = "https://api.infamousfreight.com/api/load-requests"
   status = 200

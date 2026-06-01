@@ -5,11 +5,14 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 WEB_HEALTH_URL="${WEB_HEALTH_URL:-https://www.infamousfreight.com/api/health}"
+WEB_READY_URL="${WEB_READY_URL:-https://www.infamousfreight.com/api/health/ready}"
 SITE_URL="${SITE_URL:-https://www.infamousfreight.com}"
 PUBLIC_QUOTE_PREFLIGHT_URL="${PUBLIC_QUOTE_PREFLIGHT_URL:-https://www.infamousfreight.com/api/public/quote-requests}"
 PUBLIC_INVALID_SHIPMENT_URL="${PUBLIC_INVALID_SHIPMENT_URL:-https://www.infamousfreight.com/api/public/shipments/invalid-tracking}"
-API_HEALTH_URL="${API_HEALTH_URL:-https://api.infamousfreight.com/health}"
-API_HEALTH_FALLBACK_URL="${API_HEALTH_FALLBACK_URL:-https://api.infamousfreight.com/api/health}"
+FLY_API_HEALTH_URL="${FLY_API_HEALTH_URL:-https://infamous-freight-api.fly.dev/api/health}"
+FLY_API_READY_URL="${FLY_API_READY_URL:-https://infamous-freight-api.fly.dev/api/health/ready}"
+API_HEALTH_URL="${API_HEALTH_URL:-https://api.infamousfreight.com/api/health}"
+API_READY_URL="${API_READY_URL:-https://api.infamousfreight.com/api/health/ready}"
 LOCAL_PREVIEW_URL="${LOCAL_PREVIEW_URL:-http://127.0.0.1:4173}"
 CHECK_LIVE_RENDER="${CHECK_LIVE_RENDER:-true}"
 
@@ -87,6 +90,7 @@ run_step "Docker build validation" pnpm docker:build
 
 run_step "Site HEAD check" curl_head "$SITE_URL"
 run_step "Canonical API health check" curl_get "$WEB_HEALTH_URL"
+run_step "Canonical API readiness check" curl_get "$WEB_READY_URL"
 run_step "Public quote API preflight check" curl_options "$PUBLIC_QUOTE_PREFLIGHT_URL"
 run_step "Public invalid shipment lookup check" curl_expect_status 400 "$PUBLIC_INVALID_SHIPMENT_URL"
 
@@ -99,13 +103,16 @@ else
 fi
 
 echo ""
-echo "==> Optional direct API domain checks"
-if curl_get "$API_HEALTH_URL"; then
-  echo "Direct API health URL succeeded: $API_HEALTH_URL"
-elif curl_get "$API_HEALTH_FALLBACK_URL"; then
-  echo "Direct API fallback health URL succeeded: $API_HEALTH_FALLBACK_URL"
+echo "==> Direct Fly API checks"
+curl_get "$FLY_API_HEALTH_URL"
+curl_get "$FLY_API_READY_URL"
+
+echo ""
+echo "==> Optional custom API domain checks"
+if curl_get "$API_HEALTH_URL" && curl_get "$API_READY_URL"; then
+  echo "Custom API domain health checks succeeded."
 else
-  echo "WARNING: Direct API domain health checks failed (both endpoints)." >&2
+  echo "WARNING: Custom API domain health checks failed." >&2
   echo "Keep smoke checks pointed at ${WEB_HEALTH_URL} and verify DNS/origin routing for api.infamousfreight.com." >&2
 fi
 

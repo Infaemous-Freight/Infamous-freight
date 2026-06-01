@@ -151,7 +151,8 @@ Watch progress at: `https://github.com/Infamous-Freight/Infamous-freight/actions
 
 | Service | URL | What to Check |
 |---------|-----|---------------|
-| API | `https://api.infamousfreight.com/health` | Should return `{"status":"ok"}` |
+| API | `https://api.infamousfreight.com/api/health` | Should return health JSON after the API hostname routes to Fly |
+| API readiness | `https://api.infamousfreight.com/api/health/ready` | Should return readiness JSON after the API hostname routes to Fly |
 | Web | `https://infamousfreight.com` | Should show login page |
 | API Docs | `https://api.infamousfreight.com/api/docs` | Swagger/OpenAPI UI |
 
