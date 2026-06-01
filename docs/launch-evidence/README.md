@@ -67,6 +67,18 @@ Before approving public launch, confirm the following monitors are configured an
 | Better Stack | API uptime, DNS uptime, SSL expiration |
 | UptimeRobot | `https://www.infamousfreight.com` and `https://www.infamousfreight.com/api/health` |
 
+## Recent generated evidence
+
+Generated Netlify evidence files live in `docs/evidence/`. When `pnpm run production:capture-netlify-evidence` creates a new timestamped file, also add a short entry to `docs/LAUNCH_EVIDENCE_LOG.md` that records:
+
+- which command generated the artifact,
+- which public checks passed,
+- which checks were skipped or blocked,
+- the owner/environment needed for blocked operator checks, and
+- whether the artifact changes launch approval status.
+
+Most recent generated artifact recorded here: `docs/evidence/netlify-launch-evidence-20260601T045404Z.md`.
+
 ## Related runbooks
 
 - `docs/LAUNCH_READINESS_INDEX.md`
