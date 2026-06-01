@@ -7,10 +7,10 @@ This update summarizes the next practical recommendations for the Netlify-hosted
 ## Recommended Priority
 
 1. Keep `www.infamousfreight.com` as the canonical public web host. The committed Netlify configuration redirects the apex and default Netlify hostname to `https://www.infamousfreight.com`, so DNS, Netlify domain settings, launch docs, and smoke tests should all use the same direction.
-2. Continue using the Netlify `/api` proxy for production frontend API calls. `VITE_API_URL=/api` keeps browser traffic on the same origin and validates the Netlify proxy path to the Fly.io API.
+2. Continue using the Netlify `/api` proxy for production frontend API calls. `VITE_API_URL=/api` keeps browser traffic on the same origin and validates the Netlify proxy path to the canonical API hostname, `https://api.infamousfreight.com`, which is backed by the Fly.io API.
 3. Resolve production redirect evidence before launch. Any out-of-repo reverse redirect from `www` back to the apex should be removed because it conflicts with `netlify.toml` and can make the site unreachable.
 4. Record fresh production evidence after the next Netlify deploy. At minimum, capture the canonical web response, apex-to-www redirect, proxied `/api/health`, security headers, and the current deploy identifier.
-5. Keep direct `api.infamousfreight.com` checks optional until that route is confirmed. The launch-critical frontend path is `https://www.infamousfreight.com/api/health` because that is what the Netlify-hosted app depends on.
+5. Keep direct Fly-origin checks available as a fallback diagnostic, but treat `https://api.infamousfreight.com` as the canonical public API hostname for Netlify proxy targets. The launch-critical frontend path remains `https://www.infamousfreight.com/api/health` because that is what the Netlify-hosted app depends on.
 6. Avoid broad architecture changes until launch blockers are closed. The current repo source of truth is React/Vite on Netlify for the web app and Express on Fly.io for the API.
 
 ## Documentation Updates Made

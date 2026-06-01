@@ -18,7 +18,7 @@ In Netlify Dashboard → **Site configuration** → **Environment variables**, c
 ### Recommended compatibility fallback
 - `VITE_SUPABASE_ANON_KEY`
 
-Do not add backend-only secrets such as `DATABASE_URL`, `SUPABASE_SERVICE_KEY`, `STRIPE_SECRET_KEY`, or `STRIPE_WEBHOOK_SECRET` to Netlify. Netlify serves the web app and proxies `/api/*` to the Fly API origin, so backend secrets belong in the API runtime.
+Do not add backend-only secrets such as `DATABASE_URL`, `SUPABASE_SERVICE_KEY`, `STRIPE_SECRET_KEY`, or `STRIPE_WEBHOOK_SECRET` to Netlify. Netlify serves the web app and proxies `/api/*` to the canonical API hostname backed by Fly, so backend secrets belong in the API runtime.
 
 ## 2) Confirm backend/API environment variables in Fly and provider dashboards
 
