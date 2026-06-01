@@ -22,7 +22,7 @@ describe('routeReadiness', () => {
       '/carriers': 'demo',
       '/accounting': 'demo',
       '/quotes': 'demo',
-      '/messages': 'not_ready',
+      '/messages': 'demo',
       '/driver-app': 'not_ready',
     };
 
@@ -34,7 +34,7 @@ describe('routeReadiness', () => {
   });
 
   it('matches direct and nested route paths', () => {
-    expect(resolveRouteReadiness('/messages')?.state).toBe('not_ready');
+    expect(resolveRouteReadiness('/messages')?.state).toBe('demo');
     expect(resolveRouteReadiness('/quotes/123')?.state).toBe('demo');
     expect(resolveRouteReadiness('/billing/portal')?.state).toBe('live');
     expect(resolveRouteReadiness('/settings/billing')?.state).toBe('live');
