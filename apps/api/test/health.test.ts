@@ -341,7 +341,7 @@ describe('tenant-protected resource routes', () => {
     expect(listT1.body.data[0].reference).toBe('REF-1');
   });
 
-  it('returns safe dashboard, message, and notification payloads instead of 404s', async () => {
+  it('returns safe dashboard, load, driver, shipment, message, notification, and chat payloads instead of 404s', async () => {
     const app = createApp();
     const headers = {
       'x-tenant-id': 'tenant-1',
@@ -353,6 +353,16 @@ describe('tenant-protected resource routes', () => {
       request(app).get('/api/dashboard').set(headers),
       request(app).get('/api/messages').set(headers),
       request(app).get('/api/notifications').set(headers),
+    ]);
+    const [loads, loadDetail, drivers, driverDetail, shipments, hos, chatThreads, chatMessages] = await Promise.all([
+      request(app).get('/api/loads').set(headers),
+      request(app).get('/api/loads/load-1').set(headers),
+      request(app).get('/api/drivers').set(headers),
+      request(app).get('/api/drivers/driver-1').set(headers),
+      request(app).get('/api/shipments').set(headers),
+      request(app).get('/api/eld/drivers/driver-1/hos').set(headers),
+      request(app).get('/api/chat/threads').set(headers),
+      request(app).get('/api/chat/threads/thread-1/messages').set(headers),
     ]);
 
     expect(dashboard.status).toBe(200);
@@ -382,20 +392,46 @@ describe('tenant-protected resource routes', () => {
       notifications: [],
       unreadCount: 0,
     });
+
+    expect(loads.status).toBe(200);
+    expect(loads.body).toMatchObject({ data: [], count: 0 });
+    expect(loadDetail.status).toBe(200);
+    expect(loadDetail.body).toEqual({ data: null });
+    expect(drivers.status).toBe(200);
+    expect(drivers.body).toMatchObject({ data: [], count: 0 });
+    expect(driverDetail.status).toBe(200);
+    expect(driverDetail.body).toEqual({ data: null });
+    expect(shipments.status).toBe(200);
+    expect(shipments.body).toMatchObject({ data: [], count: 0 });
+    expect(hos.status).toBe(200);
+    expect(hos.body.data).toMatchObject({ status: 'unavailable', hoursRemaining: 0, violations: [] });
+    expect(chatThreads.status).toBe(200);
+    expect(chatThreads.body).toMatchObject({ data: [], count: 0, threads: [] });
+    expect(chatMessages.status).toBe(200);
+    expect(chatMessages.body).toMatchObject({ data: [], count: 0, messages: [] });
   });
 
-  it('keeps safe dashboard, message, and notification payloads behind tenant auth', async () => {
+  it('returns a safe public load search payload instead of a 404', async () => {
+    const response = await request(createApp()).get('/api/loads/search');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({ data: [], count: 0, loads: [] });
+  });
+
+  it('keeps safe dashboard, message, notification, and chat payloads behind tenant auth', async () => {
     const app = createApp();
 
-    const [dashboard, messages, notifications] = await Promise.all([
+    const [dashboard, messages, notifications, chatThreads] = await Promise.all([
       request(app).get('/api/dashboard').set('x-user-role', 'dispatcher'),
       request(app).get('/api/messages').set('x-user-role', 'dispatcher'),
       request(app).get('/api/notifications').set('x-user-role', 'dispatcher'),
+      request(app).get('/api/chat/threads').set('x-user-role', 'dispatcher'),
     ]);
 
     expect(dashboard.status).toBe(400);
     expect(messages.status).toBe(400);
     expect(notifications.status).toBe(400);
+    expect(chatThreads.status).toBe(400);
   });
 });
 

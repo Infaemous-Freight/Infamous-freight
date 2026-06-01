@@ -10,7 +10,9 @@ describe('normalizeApiBaseUrl', () => {
   it('does not duplicate the api path when the configured value already includes it', () => {
     expect(normalizeApiBaseUrl('/api')).toBe('/api');
     expect(normalizeApiBaseUrl('/api/')).toBe('/api');
+    expect(normalizeApiBaseUrl('/api/api')).toBe('/api');
     expect(normalizeApiBaseUrl('https://api.infamousfreight.com/api')).toBe('https://api.infamousfreight.com/api');
+    expect(normalizeApiBaseUrl('https://api.infamousfreight.com/api/api')).toBe('https://api.infamousfreight.com/api');
   });
 
   it('adds the api path to origin-only backend URLs', () => {

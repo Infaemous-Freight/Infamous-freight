@@ -1254,6 +1254,14 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
 
   void registerAmazonDeliveryRoutes(app, protectedApi, auditLogger);
 
+  app.get('/api/loads/search', (_req, res) => {
+    res.status(200).json({
+      data: [],
+      count: 0,
+      loads: [],
+    });
+  });
+
   app.use('/api/dispatch', ...protectedApi, createDispatchAutomationRouter(auditLogger));
 
   app.post('/api/ai-usage/events', ...protectedApi, wrapAsync(async (req, res) => {
@@ -1279,6 +1287,10 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
     res.status(200).json({ data, count: data.length });
   }));
 
+  app.get('/api/loads/:id', ...protectedApi, (_req, res) => {
+    res.status(200).json({ data: null });
+  });
+
   app.post('/api/loads', ...protectedApi, wrapAsync(async (req, res) => {
     const tenantId = getRequiredTenantId(req);
     const missing = validateLoadPayload(req.body ?? {});
@@ -1295,6 +1307,20 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
     const data = await dataStore.listDrivers(getRequiredTenantId(req));
     res.status(200).json({ data, count: data.length });
   }));
+
+  app.get('/api/drivers/:id', ...protectedApi, (_req, res) => {
+    res.status(200).json({ data: null });
+  });
+
+  app.get('/api/eld/drivers/:driverId/hos', ...protectedApi, (_req, res) => {
+    res.status(200).json({
+      data: {
+        status: 'unavailable',
+        hoursRemaining: 0,
+        violations: [],
+      },
+    });
+  });
 
   app.post('/api/drivers', ...protectedApi, wrapAsync(async (req, res) => {
     const tenantId = getRequiredTenantId(req);
@@ -1354,6 +1380,22 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
       data: [],
       count: 0,
       threads: [],
+      messages: [],
+    });
+  });
+
+  app.get('/api/chat/threads', ...protectedApi, (_req, res) => {
+    res.status(200).json({
+      data: [],
+      count: 0,
+      threads: [],
+    });
+  });
+
+  app.get('/api/chat/threads/:threadId/messages', ...protectedApi, (_req, res) => {
+    res.status(200).json({
+      data: [],
+      count: 0,
       messages: [],
     });
   });
