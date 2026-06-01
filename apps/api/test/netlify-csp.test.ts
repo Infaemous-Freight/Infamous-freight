@@ -64,14 +64,14 @@ describe('Netlify production routing', () => {
     expect(shipmentLookupProxy).toBeLessThan(apiProxy);
     expect(apiProxy).toBeLessThan(spaFallback);
     expect(socketProxy).toBeLessThan(spaFallback);
-    expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/api/health"');
-    expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/api/load-requests"');
-    expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/api/public/quote-requests"');
-    expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/api/public/shipments/:trackingNumber"');
-    expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/api/:splat"');
-    expect(rootContent).toContain('to = "https://infamous-freight-api.fly.dev/socket.io/:splat"');
-    expect(rootContent).toContain('from = "/api/*"\n  to = "https://infamous-freight-api.fly.dev/api/:splat"\n  status = 200\n  force = true');
-    expect(rootContent).toContain('from = "/socket.io/*"\n  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"\n  status = 200\n  force = true');
+    expect(rootContent).toContain('to = "https://api.infamousfreight.com/api/health"');
+    expect(rootContent).toContain('to = "https://api.infamousfreight.com/api/load-requests"');
+    expect(rootContent).toContain('to = "https://api.infamousfreight.com/api/public/quote-requests"');
+    expect(rootContent).toContain('to = "https://api.infamousfreight.com/api/public/shipments/:trackingNumber"');
+    expect(rootContent).toContain('to = "https://api.infamousfreight.com/api/:splat"');
+    expect(rootContent).toContain('to = "https://api.infamousfreight.com/socket.io/:splat"');
+    expect(rootContent).toContain('from = "/api/*"\n  to = "https://api.infamousfreight.com/api/:splat"\n  status = 200\n  force = true');
+    expect(rootContent).toContain('from = "/socket.io/*"\n  to = "https://api.infamousfreight.com/socket.io/:splat"\n  status = 200\n  force = true');
   });
 
   it('keeps normal Git deploys limited to event-triggered Netlify functions', () => {

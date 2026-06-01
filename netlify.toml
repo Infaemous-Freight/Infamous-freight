@@ -83,182 +83,182 @@
 
 [[redirects]]
   from = "/api/health"
-  to = "https://infamous-freight-api.fly.dev/api/health"
+  to = "https://api.infamousfreight.com/api/health"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/load-requests"
-  to = "https://infamous-freight-api.fly.dev/api/load-requests"
+  to = "https://api.infamousfreight.com/api/load-requests"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/load-requests/*"
-  to = "https://infamous-freight-api.fly.dev/api/load-requests/:splat"
+  to = "https://api.infamousfreight.com/api/load-requests/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/public/quote-requests"
-  to = "https://infamous-freight-api.fly.dev/api/public/quote-requests"
+  to = "https://api.infamousfreight.com/api/public/quote-requests"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/public/shipments/:trackingNumber"
-  to = "https://infamous-freight-api.fly.dev/api/public/shipments/:trackingNumber"
+  to = "https://api.infamousfreight.com/api/public/shipments/:trackingNumber"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/chat"
-  to = "https://infamous-freight-api.fly.dev/api/chat"
+  to = "https://api.infamousfreight.com/api/chat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/dashboard"
-  to = "https://infamous-freight-api.fly.dev/api/dashboard"
+  to = "https://api.infamousfreight.com/api/dashboard"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/messages"
-  to = "https://infamous-freight-api.fly.dev/api/messages"
+  to = "https://api.infamousfreight.com/api/messages"
   status = 200
   force = true
 
 # Accounts / Auth
 [[redirects]]
   from = "/api/auth/*"
-  to = "https://infamous-freight-api.fly.dev/api/auth/:splat"
+  to = "https://api.infamousfreight.com/api/auth/:splat"
   status = 200
   force = true
 
 # Loads
 [[redirects]]
   from = "/api/loads/*"
-  to = "https://infamous-freight-api.fly.dev/api/loads/:splat"
+  to = "https://api.infamousfreight.com/api/loads/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/loads"
-  to = "https://infamous-freight-api.fly.dev/api/loads"
+  to = "https://api.infamousfreight.com/api/loads"
   status = 200
   force = true
 
 # Carriers
 [[redirects]]
   from = "/api/carriers/*"
-  to = "https://infamous-freight-api.fly.dev/api/carriers/:splat"
+  to = "https://api.infamousfreight.com/api/carriers/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/carriers"
-  to = "https://infamous-freight-api.fly.dev/api/carriers"
+  to = "https://api.infamousfreight.com/api/carriers"
   status = 200
   force = true
 
 # Drivers
 [[redirects]]
   from = "/api/drivers/*"
-  to = "https://infamous-freight-api.fly.dev/api/drivers/:splat"
+  to = "https://api.infamousfreight.com/api/drivers/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/drivers"
-  to = "https://infamous-freight-api.fly.dev/api/drivers"
+  to = "https://api.infamousfreight.com/api/drivers"
   status = 200
   force = true
 
 # ELD / HOS
 [[redirects]]
   from = "/api/eld/*"
-  to = "https://infamous-freight-api.fly.dev/api/eld/:splat"
+  to = "https://api.infamousfreight.com/api/eld/:splat"
   status = 200
   force = true
 
 # GPS Tracking
 [[redirects]]
   from = "/api/tracking/*"
-  to = "https://infamous-freight-api.fly.dev/api/tracking/:splat"
+  to = "https://api.infamousfreight.com/api/tracking/:splat"
   status = 200
   force = true
 
 # Quotes / Pricing
 [[redirects]]
   from = "/api/quotes/*"
-  to = "https://infamous-freight-api.fly.dev/api/quotes/:splat"
+  to = "https://api.infamousfreight.com/api/quotes/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/quotes"
-  to = "https://infamous-freight-api.fly.dev/api/quotes"
+  to = "https://api.infamousfreight.com/api/quotes"
   status = 200
   force = true
 
 # Documents
 [[redirects]]
   from = "/api/documents/*"
-  to = "https://infamous-freight-api.fly.dev/api/documents/:splat"
+  to = "https://api.infamousfreight.com/api/documents/:splat"
   status = 200
   force = true
 
 # Invoices
 [[redirects]]
   from = "/api/invoices/*"
-  to = "https://infamous-freight-api.fly.dev/api/invoices/:splat"
+  to = "https://api.infamousfreight.com/api/invoices/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/invoices"
-  to = "https://infamous-freight-api.fly.dev/api/invoices"
+  to = "https://api.infamousfreight.com/api/invoices"
   status = 200
   force = true
 
 # Notifications
 [[redirects]]
   from = "/api/notifications/*"
-  to = "https://infamous-freight-api.fly.dev/api/notifications/:splat"
+  to = "https://api.infamousfreight.com/api/notifications/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/notifications"
-  to = "https://infamous-freight-api.fly.dev/api/notifications"
+  to = "https://api.infamousfreight.com/api/notifications"
   status = 200
   force = true
 
 # Mobile App Backend
 [[redirects]]
   from = "/api/mobile/*"
-  to = "https://infamous-freight-api.fly.dev/api/mobile/:splat"
+  to = "https://api.infamousfreight.com/api/mobile/:splat"
   status = 200
   force = true
 
 # Amazon delivery orchestration
 [[redirects]]
   from = "/api/amazon-delivery/*"
-  to = "https://infamous-freight-api.fly.dev/api/amazon-delivery/:splat"
+  to = "https://api.infamousfreight.com/api/amazon-delivery/:splat"
   status = 200
   force = true
 
 # Fly.io fallback for remaining API routes
 [[redirects]]
   from = "/api/*"
-  to = "https://infamous-freight-api.fly.dev/api/:splat"
+  to = "https://api.infamousfreight.com/api/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/socket.io/*"
-  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"
+  to = "https://api.infamousfreight.com/socket.io/:splat"
   status = 200
   force = true
 
@@ -312,7 +312,7 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://www.google-analytics.com https://stats.g.doubleclick.net; connect-src 'self' https://infamous-freight-api.fly.dev https://api.infamousfreight.com https://api.stripe.com https://*.sentry.io https://*.ingest.sentry.io https://ingesteer.services-prod.nsvcs.net https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://js.stripe.com https://hooks.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; worker-src 'self'; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://www.google-analytics.com https://stats.g.doubleclick.net; connect-src 'self' https://api.infamousfreight.com https://api.stripe.com https://*.sentry.io https://*.ingest.sentry.io https://ingesteer.services-prod.nsvcs.net https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://js.stripe.com https://hooks.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; worker-src 'self'; upgrade-insecure-requests"
     Cross-Origin-Embedder-Policy = "credentialless"
     Cross-Origin-Opener-Policy = "same-origin-allow-popups"
     Cross-Origin-Resource-Policy = "same-origin"
@@ -324,7 +324,7 @@
 [[headers]]
   for = "/driver-pwa/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; font-src 'self' data:; img-src 'self' data:; connect-src 'self' https://infamous-freight-api.fly.dev https://api.infamousfreight.com https://*.sentry.io https://*.ingest.sentry.io; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; worker-src 'self'; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; font-src 'self' data:; img-src 'self' data:; connect-src 'self' https://api.infamousfreight.com https://*.sentry.io https://*.ingest.sentry.io; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; worker-src 'self'; upgrade-insecure-requests"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"

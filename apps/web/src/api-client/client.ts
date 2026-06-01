@@ -81,8 +81,6 @@ class ApiClient {
           toast.error('Rate limit exceeded — please slow down');
         } else if (error.response?.status === 500) {
           toast.error('Server error — our team has been notified');
-        } else {
-          toast.error(message);
         }
 
         return Promise.reject(error);

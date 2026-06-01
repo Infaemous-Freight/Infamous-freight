@@ -1,7 +1,10 @@
 export function normalizeApiBaseUrl(configuredBase?: string): string {
-  const trimmed = configuredBase?.trim().replace(/\/+$/, '') ?? '';
+  let trimmed = configuredBase?.trim().replace(/\/+$/, '') ?? '';
 
   if (!trimmed) return '/api';
+  while (trimmed.endsWith('/api/api')) {
+    trimmed = trimmed.slice(0, -4);
+  }
   if (trimmed.endsWith('/api')) return trimmed;
 
   return `${trimmed}/api`;
