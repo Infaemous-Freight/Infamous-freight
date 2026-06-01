@@ -2,6 +2,37 @@
 
 Use this file during production readiness verification. Do not mark the launch ready based on unchecked assumptions. Paste command output, screenshot summaries, dashboard links, timestamps, owners, and blocker notes.
 
+## 2026-06-01 Netlify Launch Evidence Refresh
+
+Current launch status: **Production Candidate - Not Approved**.
+
+This refresh records the generated Netlify evidence artifact from `pnpm run production:capture-netlify-evidence` and separates passing public-route evidence from checks that still require an authenticated operator environment. It does not approve launch on its own.
+
+| Gate | Evidence | Status | Follow-Up |
+|---|---|---|---|
+| Public web and proxy smoke test | `pnpm run production:smoke-test` returned passing canonical host, apex redirect, API liveness/readiness, proxied API health, quote preflight, and invalid tracking checks. | Pass | Rerun after the next Netlify or Fly deploy. |
+| Netlify launch evidence artifact | `docs/evidence/netlify-launch-evidence-20260601T045404Z.md` captured HTTP statuses, security headers, proxied API health JSON, invalid tracking validation, Netlify request ID, and cache status. | Pass | Keep the artifact with this log for audit history. |
+| Positive public tracking lookup | Evidence capture skipped the positive tracking case because no `PUBLIC_VALID_TRACKING_NUMBER` or `PUBLIC_VALID_SHIPMENT_URL` was configured. | Pending | Rerun with a known-safe production shipment reference that does not expose private customer data. |
+| Production Postgres backup | `pnpm run production:backup-postgres` stopped before running `pg_dump` because `DATABASE_URL` was not set in this environment. | Blocked in Codex environment | Rerun from an authenticated operator terminal with `DATABASE_URL` set, without printing the value. |
+| Fly app status and logs | `flyctl` was installed locally for retry, but authenticated Fly commands stopped with `no access token available`; this flyctl build also rejected `logs --follow` because logs tail by default. | Blocked in Codex environment | Rerun from an authenticated operator terminal with `flyctl` signed in. Use `flyctl logs --app infamous-freight-api` for a live tail, or add `--no-tail` for a bounded snapshot. |
+
+Operator rerun commands for the blocked checks:
+
+```bash
+# Do not echo DATABASE_URL.
+pnpm run production:backup-postgres
+
+flyctl auth whoami
+flyctl status --app infamous-freight-api
+flyctl logs --app infamous-freight-api
+# For a bounded snapshot instead of a live tail:
+flyctl logs --app infamous-freight-api --no-tail
+flyctl checks list -a infamous-freight-api
+curl -i https://infamous-freight-api.fly.dev/api/health/live
+```
+
+Risk and rollback: this is evidence-only documentation. If the artifact is incorrect or superseded, add a newer timestamped evidence file and update this log rather than editing historical command output.
+
 ## 2026-05-31 Production Launch Approval Assessment
 
 Current launch status: **Production Candidate - Not Approved**.
