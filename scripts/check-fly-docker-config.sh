@@ -19,7 +19,17 @@ pass() {
 if [[ -f fly.toml ]]; then
   grep -q 'PORT = "3000"' fly.toml || grep -q "PORT = '3000'" fly.toml || fail "fly.toml must set PORT to 3000"
   grep -q 'internal_port = 3000' fly.toml || fail "fly.toml must set internal_port = 3000"
-  grep -q 'size = "performance-1x"' fly.toml || grep -q "size = 'performance-1x'" fly.toml || fail "fly.toml must use size = performance-1x"
+  if grep -q 'size = "shared-cpu-1x"' fly.toml || grep -q "size = 'shared-cpu-1x'" fly.toml; then
+    grep -q 'cpu_kind = "shared"' fly.toml || grep -q "cpu_kind = 'shared'" fly.toml || fail "shared Fly machines must set cpu_kind = shared"
+    grep -q 'memory = "512mb"' fly.toml || grep -q "memory = '512mb'" fly.toml || fail "shared Fly machines must set memory = 512mb"
+    grep -q 'memory_mb = 512' fly.toml || fail "shared Fly machines must set memory_mb = 512"
+  elif grep -q 'size = "performance-1x"' fly.toml || grep -q "size = 'performance-1x'" fly.toml; then
+    grep -q 'cpu_kind = "performance"' fly.toml || grep -q "cpu_kind = 'performance'" fly.toml || fail "performance Fly machines must set cpu_kind = performance"
+    grep -q 'memory = "2gb"' fly.toml || grep -q "memory = '2gb'" fly.toml || fail "performance Fly machines must set memory = 2gb"
+    grep -q 'memory_mb = 2048' fly.toml || fail "performance Fly machines must set memory_mb = 2048"
+  else
+    fail "fly.toml must use either size = shared-cpu-1x or size = performance-1x"
+  fi
   ! grep -q 'performance-cpu-1x' fly.toml || fail "fly.toml contains invalid performance-cpu-1x"
   grep -q '/api/health/live' fly.toml || fail "fly.toml health check must use /api/health/live"
 fi
