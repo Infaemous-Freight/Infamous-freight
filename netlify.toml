@@ -271,9 +271,17 @@
   status = 200
   force = true
 
+# If api.infamousfreight.com is attached to this Netlify site, route Socket.IO
+# traffic directly to the Fly origin so the API custom domain cannot self-proxy.
+[[redirects]]
+  from = "https://api.infamousfreight.com/socket.io/*"
+  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/socket.io/*"
-  to = "https://api.infamousfreight.com/socket.io/:splat"
+  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"
   status = 200
   force = true
 
