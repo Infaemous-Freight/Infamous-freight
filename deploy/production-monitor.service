@@ -1,0 +1,29 @@
+[Unit]
+Description=Infamous Freight Production Monitor
+Documentation=https://github.com/Infaemous-Freight/Infamous-freight
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=infamous-monitor
+Group=infamous-monitor
+WorkingDirectory=/opt/infamous-freight
+EnvironmentFile=/etc/infamous-freight/production-monitor.env
+ExecStart=/usr/bin/env node /opt/infamous-freight/scripts/production-monitor.mjs
+Restart=always
+RestartSec=15
+StartLimitIntervalSec=300
+StartLimitBurst=5
+KillSignal=SIGTERM
+TimeoutStopSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/log/infamous-freight
+StandardOutput=append:/var/log/infamous-freight/production-monitor.log
+StandardError=append:/var/log/infamous-freight/production-monitor.err.log
+
+[Install]
+WantedBy=multi-user.target
