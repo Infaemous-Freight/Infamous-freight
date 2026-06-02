@@ -6,45 +6,63 @@
 
 # Infamous Freight — API Reference
 
-_Last updated: May 2026_
+_Last updated: June 2026_
 
-This document lists all **implemented** API endpoints in the active Express 5 backend (`apps/api/src/app.ts`).
+This document lists the implemented API endpoints in the active Express 5 backend (`apps/api/src/app.ts`).
 
-> For the canonical architecture overview, see [`docs/ARCHITECTURE.md`](ARCHITECTURE.md).
+> For the canonical architecture overview, see [`docs/ARCHITECTURE.md`](ARCHITECTURE.md). For live/demo/not-ready product status, see [`docs/current-status.md`](current-status.md).
 
 ---
 
 ## Base URL
 
-| Environment | Base URL |
-|---|---|
-| Local development | `http://localhost:3000` |
-| Docker Compose | `http://localhost:3001` |
-| Production browser path | `https://www.infamousfreight.com/api` |
-| Production direct API diagnostics | `https://api.infamousfreight.com` |
+| Environment | Base URL | Notes |
+|---|---|---|
+| Local API development | `http://localhost:3000` | Direct Express API when running the API process locally. |
+| Docker Compose web entrypoint | `http://localhost:3000` | Browser entrypoint through the nginx `web` container; `/api/*` proxies to the API container on internal port `3000`. |
+| Docker Compose direct API diagnostics | `http://localhost:4000` | Host-mapped API port from `docker-compose.yml` (`4000:3000`). |
+| Production browser path | `https://www.infamousfreight.com/api` | Same-origin browser API path proxied to Fly.io. |
+| Production direct API diagnostics | `https://api.infamousfreight.com` | Direct API hostname for operator diagnostics and smoke checks. |
 
 ---
 
-## Authentication Headers
+## Authentication and tenant context
 
-All tenant-scoped endpoints require these headers:
+Production protected routes use trusted authenticated context by default.
 
-| Header | Required | Description |
-|---|---|---|
-| `x-tenant-id` | Yes | Carrier / tenant identifier. Request body and query-string tenant values are not accepted for protected routes. |
-| `x-user-role` | Yes | One of `owner`, `admin`, or `dispatcher`. Billing actions additionally require `owner` or `admin`. |
+### Production / trusted auth mode
+
+In production, the API should run in trusted JWT mode unless explicitly configured otherwise. Tenant, user, role, and billing context are derived from verified authentication and database-backed records. Clients should authenticate normally through the application auth flow rather than manually supplying tenant or role headers.
+
+JWT verification requires either `SUPABASE_JWT_SECRET` or `JWT_SECRET`. Tokens are verified before their claims are trusted.
+
+### Local / test header auth mode
+
+Header-based tenant context is only for local development, tests, or explicitly configured transitional environments where header auth is allowed.
+
+| Header | Local/test purpose |
+|---|---|
+| `x-tenant-id` | Carrier / tenant identifier for protected route testing. Request body and query-string tenant values are not accepted for protected routes. |
+| `x-user-role` | Role used for authorization checks. Supported operational roles include `owner`, `admin`, and `dispatcher`; billing actions require `owner` or `admin`. |
+
+Do not enable unsafe header auth in production unless there is a documented, time-limited incident or migration reason.
+
+---
+
+## Response headers
+
+All API responses include an `x-request-id` response header. Clients may provide `x-request-id`; otherwise the API generates one.
 
 ---
 
 ## Health Checks
 
-All API responses include an `x-request-id` response header. Clients may provide `x-request-id`; otherwise the API generates one.
+Health endpoints do not require authentication.
 
 ### `GET /health`
 
-Returns liveness-style API status plus database status for operator convenience. No authentication required. This endpoint keeps HTTP 200 even if the database is degraded so uptime probes can remain lightweight.
+Returns liveness-style API status plus database status for operator convenience. This endpoint keeps HTTP `200` even if the database is degraded so uptime probes can remain lightweight.
 
-**Response**
 ```json
 {
   "status": "ok",
@@ -55,15 +73,15 @@ Returns liveness-style API status plus database status for operator convenience.
 
 ### `GET /health/live`
 
-Returns API liveness only. No authentication required.
+Returns API liveness only.
 
 ### `GET /health/ready`
 
-Returns database readiness. No authentication required. HTTP status is `200` when ready and `503` when the database is disconnected.
+Returns database readiness. HTTP status is `200` when ready and `503` when the database is disconnected.
 
 ### `GET /api/health`
 
-Returns readiness status at the `/api` prefix for Netlify proxy checks. HTTP status is `200` when ready and `503` when the database is disconnected.
+Returns readiness status at the `/api` prefix for Netlify and same-origin proxy checks. HTTP status is `200` when ready and `503` when the database is disconnected.
 
 ### `GET /api/health/live`
 
@@ -81,9 +99,8 @@ Returns database readiness at the `/api` prefix.
 
 List all loads for the authenticated tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
-**Response**
 ```json
 { "data": [ /* load objects */ ], "count": 12 }
 ```
@@ -92,11 +109,10 @@ List all loads for the authenticated tenant.
 
 Create a new load for the authenticated tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
-**Body:** Load creation fields (see data store schema).
+**Body:** Load creation fields, aligned with the Prisma data model.
 
-**Response** `201`
 ```json
 { "data": { /* created load */ } }
 ```
@@ -109,9 +125,8 @@ Create a new load for the authenticated tenant.
 
 List all drivers for the authenticated tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
-**Response**
 ```json
 { "data": [ /* driver objects */ ], "count": 5 }
 ```
@@ -120,11 +135,10 @@ List all drivers for the authenticated tenant.
 
 Create a new driver for the authenticated tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
 **Body:** Driver creation fields.
 
-**Response** `201`
 ```json
 { "data": { /* created driver */ } }
 ```
@@ -137,9 +151,8 @@ Create a new driver for the authenticated tenant.
 
 List all shipments for the authenticated tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
-**Response**
 ```json
 { "data": [ /* shipment objects */ ], "count": 8 }
 ```
@@ -148,11 +161,10 @@ List all shipments for the authenticated tenant.
 
 Create a new shipment for the authenticated tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
 **Body:** Shipment creation fields.
 
-**Response** `201`
 ```json
 { "data": { /* created shipment */ } }
 ```
@@ -181,9 +193,8 @@ These endpoints provide CRUD access to freight operation resources.
 
 List all records for the given resource for the authenticated tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
-**Response**
 ```json
 { "data": [ /* records */ ], "count": 3 }
 ```
@@ -192,11 +203,10 @@ List all records for the given resource for the authenticated tenant.
 
 Create a new record for the given resource.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
 **Body:** Resource-specific creation fields.
 
-**Response** `201`
 ```json
 { "data": { /* created record */ } }
 ```
@@ -205,16 +215,15 @@ Create a new record for the given resource.
 
 Update an existing record for the given resource.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
 **Body:** Partial update fields.
 
-**Response** `200`
 ```json
 { "data": { /* updated record */ } }
 ```
 
-**Error** `404` — `freight_operation_not_found` when the record does not exist for this tenant.
+**Error:** `404 freight_operation_not_found` when the record does not exist for this tenant.
 
 ---
 
@@ -226,26 +235,24 @@ These endpoints drive state transitions in multi-step freight workflows.
 
 Convert an approved quote request into a load record.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
 **Body:** Optional conversion fields.
 
-**Response** `201`
 ```json
 { "data": { /* created load */ } }
 ```
 
-**Error** `404` — `quote_request_not_found`.
+**Error:** `404 quote_request_not_found`.
 
 ### `POST /api/workflows/load-assignments/:id/:decision`
 
 Accept or reject a load assignment. `:decision` must be `accepted` or `rejected`.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
 **Body:** Optional decision metadata.
 
-**Response** `200`
 ```json
 { "data": { /* updated assignment */ } }
 ```
@@ -254,39 +261,36 @@ Accept or reject a load assignment. `:decision` must be `accepted` or `rejected`
 
 Confirm a pending dispatch.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
 **Body:** Optional confirmation fields.
 
-**Response** `200`
 ```json
 { "data": { /* updated dispatch */ } }
 ```
 
 ### `POST /api/workflows/loads/:loadId/tracking-updates`
 
-Record a new tracking update (location, status) for a load.
+Record a new tracking update for a load.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
-**Body:** Tracking update fields (location, status, timestamp, etc.).
+**Body:** Tracking update fields such as location, status, and timestamp.
 
-**Response** `201`
 ```json
 { "data": { /* created tracking update */ } }
 ```
 
-**Error** `404` — `load_not_found_for_tenant`.
+**Error:** `404 load_not_found_for_tenant`.
 
 ### `POST /api/workflows/loads/:loadId/verify-delivery`
 
-Record a delivery confirmation (POD) for a load.
+Record a delivery confirmation / proof of delivery for a load.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
 **Body:** Delivery verification fields.
 
-**Response** `201`
 ```json
 { "data": { /* created delivery verification */ } }
 ```
@@ -295,11 +299,14 @@ Record a delivery confirmation (POD) for a load.
 
 Update the status of a carrier payment record.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
-**Body:** `{ "status": "..." }` and optional metadata.
+**Body:**
 
-**Response** `200`
+```json
+{ "status": "..." }
+```
+
 ```json
 { "data": { /* updated payment */ } }
 ```
@@ -308,24 +315,26 @@ Update the status of a carrier payment record.
 
 Create a rolled-up operational metrics snapshot for the tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
 **Body:** Metrics rollup fields.
 
-**Response** `201`
 ```json
 { "data": { /* created metrics record */ } }
 ```
 
 ### `POST /api/workflows/load-board-posts/:id/status`
 
-Update the status (e.g. active, filled, expired) of a load board post.
+Update the status of a load board post, such as active, filled, or expired.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
-**Body:** `{ "status": "..." }` and optional metadata.
+**Body:**
 
-**Response** `200`
+```json
+{ "status": "..." }
+```
+
 ```json
 { "data": { /* updated post */ } }
 ```
@@ -334,15 +343,14 @@ Update the status (e.g. active, filled, expired) of a load board post.
 
 ## Billing
 
-Billing actions require `x-user-role` of `owner` or `admin`.
+Billing actions require an authenticated role of `owner` or `admin`. In trusted production mode, this role must come from verified auth context and backend records. In local/test header mode, the role may be supplied through `x-user-role` only when unsafe header auth is explicitly enabled.
 
 ### `GET /api/billing/status`
 
 Return Stripe customer status for the authenticated tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role` (`owner` or `admin`)
+**Auth:** protected billing route; owner/admin required.
 
-**Response** `200`
 ```json
 {
   "data": {
@@ -356,9 +364,10 @@ Return Stripe customer status for the authenticated tenant.
 
 Create a Stripe Checkout Session to set up a new subscription.
 
-**Headers:** `x-tenant-id`, `x-user-role` (`owner` or `admin`)
+**Auth:** protected billing route; owner/admin required.
 
-**Body**
+**Body:**
+
 ```json
 {
   "plan": "starter | professional | enterprise",
@@ -366,35 +375,33 @@ Create a Stripe Checkout Session to set up a new subscription.
 }
 ```
 
-**Response** `200`
 ```json
 { "data": { "url": "https://checkout.stripe.com/..." } }
 ```
 
-**Error** `409` — `stripe_customer_already_linked` when the tenant already has a Stripe customer (use Customer Portal instead).
+**Error:** `409 stripe_customer_already_linked` when the tenant already has a Stripe customer. Use Customer Portal instead.
 
 ### `POST /api/billing/customer-portal`
 
 Create a Stripe Customer Portal session to manage an existing subscription.
 
-**Headers:** `x-tenant-id`, `x-user-role` (`owner` or `admin`)
+**Auth:** protected billing route; owner/admin required.
 
-**Response** `200`
 ```json
 { "data": { "url": "https://billing.stripe.com/..." } }
 ```
 
-**Error** `404` — `stripe_customer_not_found`.
+**Error:** `404 stripe_customer_not_found`.
 
 ### `POST /api/billing/webhook`
 
 Stripe webhook receiver. **Do not call this manually.**
 
 - Requires a valid `stripe-signature` header matching `STRIPE_WEBHOOK_SECRET`.
-- Raw body is required (not JSON-parsed).
+- Raw body is required, not JSON-parsed body.
 - Records and processes `checkout.session.completed`, `customer.subscription.*`, `invoice.paid`, and related events.
+- Uses webhook-event idempotency to prevent duplicate processing.
 
-**Response** `200`
 ```json
 { "received": true }
 ```
@@ -407,9 +414,10 @@ Stripe webhook receiver. **Do not call this manually.**
 
 Record an AI feature usage event for the authenticated tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
-**Body**
+**Body:**
+
 ```json
 {
   "feature": "auto-dispatch",
@@ -419,9 +427,8 @@ Record an AI feature usage event for the authenticated tenant.
 }
 ```
 
-`feature` (string) is required. All other fields are optional metadata.
+`feature` is required. Other fields are optional metadata.
 
-**Response** `201`
 ```json
 { "data": { /* recorded event */ } }
 ```
@@ -430,49 +437,11 @@ Record an AI feature usage event for the authenticated tenant.
 
 Return an AI usage summary for the authenticated tenant.
 
-**Headers:** `x-tenant-id`, `x-user-role`
+**Auth:** protected tenant route.
 
-**Response** `200`
 ```json
 { "data": { /* usage summary */ } }
 ```
-
----
-
-## Error Responses
-
-All error responses follow this shape:
-
-```json
-{
-  "error": "error_code",
-  "message": "Human-readable description."
-}
-```
-
-Common error codes:
-
-| Code | HTTP Status | Description |
-|---|---|---|
-| `tenant_id_required` | `400` | `x-tenant-id` header (or body/query `tenantId`) is missing |
-| `forbidden` | `403` | `x-user-role` header is missing or not an allowed role |
-| `billing_forbidden` | `403` | Billing action attempted by a non-owner/admin role |
-| `invalid_billing_plan` | `400` | `plan` must be `starter`, `professional`, or `enterprise` |
-| `invalid_billing_interval` | `400` | `billingInterval` must be `month` or `year` |
-| `stripe_customer_already_linked` | `409` | Tenant already has a Stripe customer |
-| `stripe_customer_not_found` | `404` | No Stripe customer linked to this tenant |
-| `freight_operation_resource_not_found` | `404` | Unsupported `:resource` value |
-| `freight_operation_not_found` | `404` | Record not found for this tenant |
-| `load_not_found_for_tenant` | `404` | Referenced load not found for this tenant |
-| `quote_request_not_found` | `404` | Quote request not found for this tenant |
-| `invalid_load_assignment_decision` | `400` | `:decision` must be `accepted` or `rejected` |
-| `ai_usage_feature_required` | `400` | `feature` field missing from AI usage event body |
-| `invalid_stripe_signature` | `400` | Stripe webhook signature verification failed |
-| `stripe_secret_key_required` | `500` | `STRIPE_SECRET_KEY` environment variable not set |
-| `missing_messages` | `400` | `/api/chat` request did not include at least one user message |
-| `chat_timeout` | `504` | AI assistant response exceeded the configured timeout |
-| `chat_not_configured` | `503` | AI assistant provider environment is not configured |
-| `internal_server_error` | `500` | Unexpected server error |
 
 ---
 
@@ -484,7 +453,7 @@ Streams a logistics-focused assistant response for the public site chat widget.
 
 The endpoint accepts recent chat messages, keeps only supported `user` and `assistant` roles, caps retained history and message length, prepends the Infamous Freight assistant instructions, and returns server-sent events.
 
-Request body:
+**Body:**
 
 ```json
 {
@@ -508,6 +477,44 @@ Runtime configuration:
 | `AI_CHAT_TIMEOUT_MS` | Optional positive integer timeout in milliseconds. Defaults to `25000`. |
 
 Do not expose provider keys through browser `VITE_*` variables.
+
+---
+
+## Error Responses
+
+All error responses follow this shape:
+
+```json
+{
+  "error": "error_code",
+  "message": "Human-readable description."
+}
+```
+
+Common error codes:
+
+| Code | HTTP Status | Description |
+|---|---|---|
+| `unauthorized` | `401` | Protected route was called without valid authentication in trusted auth mode. |
+| `tenant_id_required` | `400` | Tenant context is missing. In production, this usually means trusted auth context did not resolve a tenant. In local/test header mode, this usually means `x-tenant-id` is missing. |
+| `forbidden` | `403` | The authenticated role is missing or not allowed for the route. |
+| `billing_forbidden` | `403` | Billing action attempted by a non-owner/admin role. |
+| `invalid_billing_plan` | `400` | `plan` must be `starter`, `professional`, or `enterprise`. |
+| `invalid_billing_interval` | `400` | `billingInterval` must be `month` or `year`. |
+| `stripe_customer_already_linked` | `409` | Tenant already has a Stripe customer. |
+| `stripe_customer_not_found` | `404` | No Stripe customer linked to this tenant. |
+| `freight_operation_resource_not_found` | `404` | Unsupported `:resource` value. |
+| `freight_operation_not_found` | `404` | Record not found for this tenant. |
+| `load_not_found_for_tenant` | `404` | Referenced load not found for this tenant. |
+| `quote_request_not_found` | `404` | Quote request not found for this tenant. |
+| `invalid_load_assignment_decision` | `400` | `:decision` must be `accepted` or `rejected`. |
+| `ai_usage_feature_required` | `400` | `feature` field missing from AI usage event body. |
+| `invalid_stripe_signature` | `400` | Stripe webhook signature verification failed. |
+| `stripe_secret_key_required` | `500` | `STRIPE_SECRET_KEY` environment variable not set. |
+| `missing_messages` | `400` | `/api/chat` request did not include at least one user message. |
+| `chat_timeout` | `504` | AI assistant response exceeded the configured timeout. |
+| `chat_not_configured` | `503` | AI assistant provider environment is not configured. |
+| `internal_server_error` | `500` | Unexpected server error. |
 
 ---
 
