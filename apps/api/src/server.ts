@@ -2,6 +2,7 @@ import './instrument';
 import express from 'express';
 import * as Sentry from '@sentry/node';
 import { createApp } from './app';
+import { validateEnv } from './config/validate-env';
 
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = process.env.Database_URL ?? process.env.database_url ?? '';
@@ -11,6 +12,7 @@ const port = Number(process.env.PORT ?? 3000);
 const host = process.env.HOST ?? '0.0.0.0';
 
 try {
+  validateEnv();
   const app = createApp();
   app.listen(port, host, () => {
     console.log(`Infamous Freight API listening on ${host}:${port}`);

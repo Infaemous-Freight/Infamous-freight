@@ -22,6 +22,11 @@ services:
       retries: 5
     networks:
       - infamous-network
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Redis Cache
   redis:
@@ -57,10 +62,14 @@ services:
       REDIS_PORT: 6379
       REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS is required}
+      WEB_APP_URL: ${WEB_APP_URL:-http://localhost:3000}
       STRIPE_ACCOUNT_ID: ${STRIPE_ACCOUNT_ID}
-      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
-      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:?STRIPE_SECRET_KEY is required}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:?STRIPE_WEBHOOK_SECRET is required}
       SUPABASE_URL: ${SUPABASE_URL}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
       SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY}
       DAT_API_KEY: ${DAT_API_KEY}
       TRUCKSTOP_API_KEY: ${TRUCKSTOP_API_KEY}
@@ -71,7 +80,7 @@ services:
       XERO_CLIENT_SECRET: ${XERO_CLIENT_SECRET}
       SENDGRID_API_KEY: ${SENDGRID_API_KEY}
     ports:
-      - "3001:3000"
+      - "4000:3000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -82,9 +91,15 @@ services:
     deploy:
       resources:
         limits:
+          cpus: "1.0"
           memory: 512M
         reservations:
           memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Frontend (static served by nginx)
   web:
@@ -95,12 +110,22 @@ services:
       - ./apps/web/dist:/usr/share/nginx/html:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
-      - "80:80"
+      - "3000:80"
       - "443:443"
     depends_on:
       - api
     networks:
       - infamous-network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   postgres_data:
