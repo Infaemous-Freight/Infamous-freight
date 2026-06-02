@@ -56,6 +56,7 @@ describe('Netlify production routing', () => {
     const quoteRequestsProxy = indexOf(rootContent, 'from = "/api/public/quote-requests"');
     const shipmentLookupProxy = indexOf(rootContent, 'from = "/api/public/shipments/:trackingNumber"');
     const apiProxy = indexOf(rootContent, 'from = "/api/*"');
+    const hostSocketProxy = indexOf(rootContent, 'from = "https://api.infamousfreight.com/socket.io/*"');
     const socketProxy = indexOf(rootContent, 'from = "/socket.io/*"');
     const spaFallback = indexOf(rootContent, 'from = "/*"');
 
@@ -65,15 +66,19 @@ describe('Netlify production routing', () => {
     expect(quoteRequestsProxy).toBeLessThan(apiProxy);
     expect(shipmentLookupProxy).toBeLessThan(apiProxy);
     expect(apiProxy).toBeLessThan(spaFallback);
+    expect(hostSocketProxy).toBeLessThan(socketProxy);
     expect(socketProxy).toBeLessThan(spaFallback);
     expect(rootContent).toContain('to = "https://api.infamousfreight.com/api/health"');
     expect(rootContent).toContain('to = "https://api.infamousfreight.com/api/load-requests"');
     expect(rootContent).toContain('to = "https://api.infamousfreight.com/api/public/quote-requests"');
     expect(rootContent).toContain('to = "https://api.infamousfreight.com/api/public/shipments/:trackingNumber"');
     expect(rootContent).toContain('to = "https://api.infamousfreight.com/api/:splat"');
-    expect(rootContent).toContain('to = "https://api.infamousfreight.com/socket.io/:splat"');
     expect(rootContent).toContain('from = "/api/*"\n  to = "https://api.infamousfreight.com/api/:splat"\n  status = 200\n  force = true');
-    expect(rootContent).toContain('from = "/socket.io/*"\n  to = "https://api.infamousfreight.com/socket.io/:splat"\n  status = 200\n  force = true');
+    expect(rootContent).toContain(
+      'from = "https://api.infamousfreight.com/socket.io/*"\n  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"\n  status = 200\n  force = true',
+    );
+    expect(rootContent).toContain('from = "/socket.io/*"\n  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"\n  status = 200\n  force = true');
+    expect(rootContent).not.toContain('to = "https://api.infamousfreight.com/socket.io/:splat"');
   });
 
   it('keeps normal Git deploys limited to event-triggered Netlify functions', () => {

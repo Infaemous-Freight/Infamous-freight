@@ -272,8 +272,14 @@
   force = true
 
 [[redirects]]
+  from = "https://api.infamousfreight.com/socket.io/*"
+  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/socket.io/*"
-  to = "https://api.infamousfreight.com/socket.io/:splat"
+  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"
   status = 200
   force = true
 
