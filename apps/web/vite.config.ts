@@ -24,6 +24,8 @@ const uploadSourcemaps =
   sentryConfig.enableSentryUpload || process.env.SENTRY_SOURCEMAPS === '1';
 
 const requestedMinifier = process.env.VITE_MINIFIER === 'esbuild' ? 'esbuild' : 'terser';
+const apiProxyTarget = process.env.VITE_DEV_API_PROXY_TARGET ?? 'http://localhost:3000';
+const socketProxyTarget = process.env.VITE_DEV_SOCKET_PROXY_TARGET ?? apiProxyTarget.replace(/^http/, 'ws');
 
 export default defineConfig({
   define: {
@@ -56,11 +58,11 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: apiProxyTarget,
         changeOrigin: true,
       },
       '/socket.io': {
-        target: 'ws://localhost:3001',
+        target: socketProxyTarget,
         ws: true,
       },
     },
