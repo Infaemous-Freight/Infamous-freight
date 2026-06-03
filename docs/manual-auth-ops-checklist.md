@@ -65,6 +65,10 @@ PAGERDUTY_ROUTING_KEY=<set-in-netlify-ui>
 - Go to **Authentication → Security**.
 - Enable leaked password protection.
 
+## 8) GitHub OAuth for active auth provider
+
+Owner-only OAuth setup is tracked in [`docs/auth/github-oauth-owner-runbook.md`](./auth/github-oauth-owner-runbook.md). Use that runbook to create the GitHub OAuth app, enable GitHub in the active production auth provider, configure callback/redirect URLs, and verify the browser sign-in flow without exposing secrets.
+
 ## Risk check
 
 - Never paste secrets in PR bodies, logs, issues, screenshots, or chat.
