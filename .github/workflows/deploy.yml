@@ -51,40 +51,17 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Verify workspace with diagnostics
+        run: bash scripts/ci-verify-workspace.sh
 
-      - name: Validate Prisma versions
-        run: pnpm run check:prisma-versions
-
-      - name: Check frontend environment safety
-        run: pnpm run env:check:frontend
-
-      - name: Check Supabase client environment
-        run: pnpm run env:check:supabase-client
-
-      - name: Check Fly + Docker deployment invariants
-        run: bash scripts/check-fly-docker-config.sh
-
-      - name: Codex environment check
-        run: pnpm run codex:env-check
-
-      - name: Typecheck
-        run: pnpm run typecheck
-
-      - name: Lint
-        run: pnpm run lint
-
-      - name: Validate Prisma schema
-        run: pnpm run prisma:validate
-
-      - name: Test
-        run: pnpm run test
-
-      - name: Build workspace
-        run: pnpm run build
-        env:
-          SENTRY_DISABLE_UPLOAD: 'true'
+      - name: Upload verify diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-workspace-diagnostics
+          path: .ci/
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Upload web build artifact
         uses: actions/upload-artifact@v4
