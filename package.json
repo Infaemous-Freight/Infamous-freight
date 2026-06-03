@@ -16,6 +16,7 @@
     "build": "pnpm run build:api && pnpm run build:web",
     "build:api": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run build",
     "build:web": "bash scripts/check-pnpm-only.sh && pnpm -C apps/web run build:web",
+    "netlify:static-assets": "node scripts/validate-netlify-static-assets.mjs",
     "start": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run start:prod",
     "lint": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run lint && pnpm -C apps/web run lint",
     "typecheck": "node scripts/ensure-api-workspace.js && pnpm -C apps/api run lint && pnpm -C apps/web run typecheck",
