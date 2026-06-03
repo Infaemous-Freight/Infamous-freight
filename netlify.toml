@@ -15,6 +15,11 @@
   # can exceed Netlify's per-function environment limit during deploy.
   FEATURE_FLAGS = ""
 
+# netlify/edge-functions/seo-prerender.ts is intentionally disabled as
+# seo-prerender.ts.disabled. Netlify attaches the site environment payload when
+# creating Edge Functions, and this site currently exceeds Netlify's 4 KB Edge
+# Function environment limit before any user code runs.
+
 # Canonical domain redirects
 [[redirects]]
   from = "https://infamousfreight.com/*"
@@ -80,6 +85,43 @@
   force = true
 
 # Frontend-relative API and websocket traffic proxies to the production Fly API.
+
+[[redirects]]
+  from = "/api/health"
+  to = "https://api.infamousfreight.com/api/health"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/health/ready"
+  to = "https://api.infamousfreight.com/api/health/ready"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/load-requests"
+  to = "https://api.infamousfreight.com/api/load-requests"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/load-requests/*"
+  to = "https://api.infamousfreight.com/api/load-requests/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/public/quote-requests"
+  to = "https://api.infamousfreight.com/api/public/quote-requests"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/public/shipments/:trackingNumber"
+  to = "https://api.infamousfreight.com/api/public/shipments/:trackingNumber"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/api/*"
   to = "https://api.infamousfreight.com/api/:splat"
@@ -131,6 +173,24 @@
     Cross-Origin-Opener-Policy = "same-origin-allow-popups"
     Cross-Origin-Resource-Policy = "same-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(self https://js.stripe.com), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(), gyroscope=(), magnetometer=(), ambient-light-sensor=(), autoplay=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(self), idle-detection=(), interest-cohort=(), picture-in-picture=(self), screen-wake-lock=(), xr-spatial-tracking=()"
+    X-Powered-By = ""
+    X-DNS-Prefetch-Control = "off"
+    X-Permitted-Cross-Domain-Policies = "none"
+
+
+[[headers]]
+  for = "/driver-pwa/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; font-src 'self' data:; img-src 'self' data:; connect-src 'self' https://api.infamousfreight.com https://*.sentry.io https://*.ingest.sentry.io; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; worker-src 'self'; upgrade-insecure-requests"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Cross-Origin-Embedder-Policy = "credentialless"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(), gyroscope=(), magnetometer=(), ambient-light-sensor=(), autoplay=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(self), idle-detection=(), interest-cohort=(), picture-in-picture=(), screen-wake-lock=(), xr-spatial-tracking=()"
     X-Powered-By = ""
     X-DNS-Prefetch-Control = "off"
     X-Permitted-Cross-Domain-Policies = "none"

@@ -11,6 +11,61 @@
   SENTRY_DISABLE_UPLOAD = "true"
   FEATURE_FLAGS = ""
 
+# netlify/edge-functions/seo-prerender.ts is intentionally disabled as
+# seo-prerender.ts.disabled. Netlify attaches the site environment payload when
+# creating Edge Functions, and this site currently exceeds Netlify's 4 KB Edge
+# Function environment limit before any user code runs.
+
+# If api.infamousfreight.com is attached to this Netlify site, proxy it to the Fly API.
+# If DNS points api.infamousfreight.com directly at Fly, this rule is not involved.
+[[redirects]]
+  from = "https://api.infamousfreight.com/api/*"
+  to = "https://infamous-freight-api.fly.dev/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://api.infamousfreight.com/socket.io/*"
+  to = "https://infamous-freight-api.fly.dev/socket.io/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/health"
+  to = "https://api.infamousfreight.com/api/health"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/health/ready"
+  to = "https://api.infamousfreight.com/api/health/ready"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/load-requests"
+  to = "https://api.infamousfreight.com/api/load-requests"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/load-requests/*"
+  to = "https://api.infamousfreight.com/api/load-requests/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/public/quote-requests"
+  to = "https://api.infamousfreight.com/api/public/quote-requests"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/public/shipments/:trackingNumber"
+  to = "https://api.infamousfreight.com/api/public/shipments/:trackingNumber"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/api/*"
   to = "https://api.infamousfreight.com/api/:splat"
@@ -46,6 +101,24 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://www.google-analytics.com https://stats.g.doubleclick.net; connect-src 'self' https://api.infamousfreight.com https://api.stripe.com https://*.sentry.io https://*.ingest.sentry.io https://ingesteer.services-prod.nsvcs.net https://www.google-analytics.com https://www.googletagmanager.com; frame-src https://js.stripe.com https://hooks.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; worker-src 'self'; upgrade-insecure-requests"
+
+
+[[headers]]
+  for = "/driver-pwa/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; font-src 'self' data:; img-src 'self' data:; connect-src 'self' https://api.infamousfreight.com https://*.sentry.io https://*.ingest.sentry.io; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; worker-src 'self'; upgrade-insecure-requests"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Cross-Origin-Embedder-Policy = "credentialless"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(), gyroscope=(), magnetometer=(), ambient-light-sensor=(), autoplay=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(self), idle-detection=(), interest-cohort=(), picture-in-picture=(), screen-wake-lock=(), xr-spatial-tracking=()"
+    X-Powered-By = ""
+    X-DNS-Prefetch-Control = "off"
+    X-Permitted-Cross-Domain-Policies = "none"
 
 [[headers]]
   for = "/*.html"
