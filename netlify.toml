@@ -5,18 +5,6 @@
   # the site's function-scoped environment payload exceeds Netlify's 4 KB
   # per-function deploy limit. Public API traffic is proxied to the Fly backend
   # instead of a Netlify function so deploys do not fail during function upload.
-  #
-  # The form submission event handler is also parked (see
-  # netlify/disabled-functions/submission-created.mts.disabled). Netlify attaches
-  # the full site environment payload when creating any function, and that
-  # payload currently exceeds the 4 KB limit even for a single handler, which
-  # broke deploys during function upload. Form submissions are still captured
-  # natively by Netlify Forms; restore the handler into this directory once the
-  # site's function-scoped environment variables are reduced below 4 KB.
-  #
-  # netlify/event-functions therefore contains no packaged functions today, but
-  # the directive must remain so Netlify does not fall back to auto-detecting the
-  # HTTP API functions in netlify/functions/.
   functions = "netlify/event-functions"
 
 [build.environment]
@@ -27,11 +15,7 @@
   # can exceed Netlify's per-function environment limit during deploy.
   FEATURE_FLAGS = ""
 
-# netlify/edge-functions/seo-prerender.ts is intentionally disabled as
-# seo-prerender.ts.disabled. Netlify attaches the site environment payload when
-# creating Edge Functions, and this site currently exceeds Netlify's 4 KB Edge
-# Function environment limit before any user code runs.
-
+# Canonical domain redirects
 [[redirects]]
   from = "https://infamousfreight.com/*"
   to = "https://www.infamousfreight.com/:splat"
@@ -42,15 +26,6 @@
   from = "https://infamous-freight.netlify.app/*"
   to = "https://www.infamousfreight.com/:splat"
   status = 301
-  force = true
-
-# If api.infamousfreight.com is attached to this Netlify site, proxy it to the Fly API
-# origin instead of serving the frontend site's fallback/404 response. If DNS is
-# pointed directly at Fly, this rule is not involved.
-[[redirects]]
-  from = "https://api.infamousfreight.com/api/*"
-  to = "https://infamous-freight-api.fly.dev/api/:splat"
-  status = 200
   force = true
 
 # Platform subdomain redirects
@@ -90,184 +65,11 @@
   status = 301
   force = true
 
+# If api.infamousfreight.com is attached to this Netlify site, proxy it to the Fly API.
+# If DNS points api.infamousfreight.com directly at Fly, this rule is not involved.
 [[redirects]]
-  from = "/api/health"
-  to = "https://api.infamousfreight.com/api/health"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/health/ready"
-  to = "https://api.infamousfreight.com/api/health/ready"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/load-requests"
-  to = "https://api.infamousfreight.com/api/load-requests"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/load-requests/*"
-  to = "https://api.infamousfreight.com/api/load-requests/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/public/quote-requests"
-  to = "https://api.infamousfreight.com/api/public/quote-requests"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/public/shipments/:trackingNumber"
-  to = "https://api.infamousfreight.com/api/public/shipments/:trackingNumber"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/chat"
-  to = "https://api.infamousfreight.com/api/chat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/dashboard"
-  to = "https://api.infamousfreight.com/api/dashboard"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/messages"
-  to = "https://api.infamousfreight.com/api/messages"
-  status = 200
-  force = true
-
-# Accounts / Auth
-[[redirects]]
-  from = "/api/auth/*"
-  to = "https://api.infamousfreight.com/api/auth/:splat"
-  status = 200
-  force = true
-
-# Loads
-[[redirects]]
-  from = "/api/loads/*"
-  to = "https://api.infamousfreight.com/api/loads/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/loads"
-  to = "https://api.infamousfreight.com/api/loads"
-  status = 200
-  force = true
-
-# Carriers
-[[redirects]]
-  from = "/api/carriers/*"
-  to = "https://api.infamousfreight.com/api/carriers/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/carriers"
-  to = "https://api.infamousfreight.com/api/carriers"
-  status = 200
-  force = true
-
-# Drivers
-[[redirects]]
-  from = "/api/drivers/*"
-  to = "https://api.infamousfreight.com/api/drivers/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/drivers"
-  to = "https://api.infamousfreight.com/api/drivers"
-  status = 200
-  force = true
-
-# ELD / HOS
-[[redirects]]
-  from = "/api/eld/*"
-  to = "https://api.infamousfreight.com/api/eld/:splat"
-  status = 200
-  force = true
-
-# GPS Tracking
-[[redirects]]
-  from = "/api/tracking/*"
-  to = "https://api.infamousfreight.com/api/tracking/:splat"
-  status = 200
-  force = true
-
-# Quotes / Pricing
-[[redirects]]
-  from = "/api/quotes/*"
-  to = "https://api.infamousfreight.com/api/quotes/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/quotes"
-  to = "https://api.infamousfreight.com/api/quotes"
-  status = 200
-  force = true
-
-# Documents
-[[redirects]]
-  from = "/api/documents/*"
-  to = "https://api.infamousfreight.com/api/documents/:splat"
-  status = 200
-  force = true
-
-# Invoices
-[[redirects]]
-  from = "/api/invoices/*"
-  to = "https://api.infamousfreight.com/api/invoices/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/invoices"
-  to = "https://api.infamousfreight.com/api/invoices"
-  status = 200
-  force = true
-
-# Notifications
-[[redirects]]
-  from = "/api/notifications/*"
-  to = "https://api.infamousfreight.com/api/notifications/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/notifications"
-  to = "https://api.infamousfreight.com/api/notifications"
-  status = 200
-  force = true
-
-# Mobile App Backend
-[[redirects]]
-  from = "/api/mobile/*"
-  to = "https://api.infamousfreight.com/api/mobile/:splat"
-  status = 200
-  force = true
-
-# Amazon delivery orchestration
-[[redirects]]
-  from = "/api/amazon-delivery/*"
-  to = "https://api.infamousfreight.com/api/amazon-delivery/:splat"
-  status = 200
-  force = true
-
-# Canonical API fallback for remaining API routes
-[[redirects]]
-  from = "/api/*"
-  to = "https://api.infamousfreight.com/api/:splat"
+  from = "https://api.infamousfreight.com/api/*"
+  to = "https://infamous-freight-api.fly.dev/api/:splat"
   status = 200
   force = true
 
@@ -277,39 +79,27 @@
   status = 200
   force = true
 
+# Frontend-relative API and websocket traffic proxies to the production Fly API.
+[[redirects]]
+  from = "/api/*"
+  to = "https://api.infamousfreight.com/api/:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/socket.io/*"
   to = "https://infamous-freight-api.fly.dev/socket.io/:splat"
   status = 200
   force = true
 
+# Source maps should not be publicly served.
 [[redirects]]
   from = "/*.map"
   to = "/404"
   status = 404
   force = true
 
-# Prevent missing static assets from falling back to index.html.
-# This avoids browser MIME errors when a stale HTML shell requests
-# a JS/CSS file that no longer exists after a deploy.
-[[redirects]]
-  from = "/assets/*.js"
-  to = "/404"
-  status = 404
-  force = true
-
-[[redirects]]
-  from = "/assets/*.mjs"
-  to = "/404"
-  status = 404
-  force = true
-
-[[redirects]]
-  from = "/assets/*.css"
-  to = "/404"
-  status = 404
-  force = true
-
+# Public route aliases
 [[redirects]]
   from = "/track-shipment"
   to = "/tracking"
@@ -320,6 +110,9 @@
   to = "/drivers"
   status = 301
 
+# SPA fallback. This must stay after API, websocket, and static-file rules.
+# Do not add forced /assets/* redirects above this rule; doing so can block
+# real Vite JS/CSS bundles and leave production stuck on the static shell.
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -343,32 +136,9 @@
     X-Permitted-Cross-Domain-Policies = "none"
 
 [[headers]]
-  for = "/driver-pwa/*"
-  [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; font-src 'self' data:; img-src 'self' data:; connect-src 'self' https://api.infamousfreight.com https://*.sentry.io https://*.ingest.sentry.io; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; worker-src 'self'; upgrade-insecure-requests"
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
-    Cross-Origin-Embedder-Policy = "credentialless"
-    Cross-Origin-Opener-Policy = "same-origin"
-    Cross-Origin-Resource-Policy = "same-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(), gyroscope=(), magnetometer=(), ambient-light-sensor=(), autoplay=(), display-capture=(), document-domain=(), encrypted-media=(), fullscreen=(self), idle-detection=(), interest-cohort=(), picture-in-picture=(), screen-wake-lock=(), xr-spatial-tracking=()"
-    X-Powered-By = ""
-    X-DNS-Prefetch-Control = "off"
-    X-Permitted-Cross-Domain-Policies = "none"
-
-[[headers]]
   for = "/"
   [headers.values]
     Cache-Control = "public, max-age=0, s-maxage=300, stale-while-revalidate=86400"
-
-[[headers]]
-  for = "/health"
-  [headers.values]
-    Cache-Control = "no-store, no-cache, must-revalidate"
-    Content-Type = "application/json; charset=utf-8"
 
 [[headers]]
   for = "/*.html"
@@ -377,16 +147,6 @@
 
 [[headers]]
   for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/**/*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/**/*.css"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
@@ -401,41 +161,6 @@
     Cache-Control = "public, max-age=86400"
 
 [[headers]]
-  for = "/.well-known/*"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
-
-[[headers]]
-  for = "/driver-pwa/manifest.json"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
-
-[[headers]]
   for = "/manifest.webmanifest"
   [headers.values]
     Cache-Control = "public, max-age=86400"
-
-[[headers]]
-  for = "/**/*.svg"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/**/*.png"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/**/*.jpg"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/**/*.webp"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/**/*.woff2"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
