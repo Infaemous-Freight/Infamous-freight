@@ -7,7 +7,11 @@ const routeList = (process.env.SMOKE_ROUTES ?? '/,/request-quote,/quote,/get-quo
   .map((route) => route.trim())
   .filter(Boolean);
 
-const loadingCopy = 'Loading freight command center';
+const loadingCopyPatterns = [
+  'Loading freight command center',
+  'route content is preparing',
+  'Infamous Freight route content is preparing',
+];
 const minimumTextLength = Number(process.env.SMOKE_MIN_TEXT_LENGTH ?? 120);
 
 const toUrl = (route) => new URL(route, baseUrl).toString();
@@ -59,9 +63,13 @@ try {
 
     const bodyText = (await page.locator('body').innerText({ timeout: timeoutMs })).trim();
     const title = await page.title();
+    const matchedFallbackCopy = loadingCopyPatterns.find((copy) => bodyText.includes(copy));
 
-    if (bodyText.includes(loadingCopy)) {
-      fail(`Route is still stuck on the app loading fallback: ${route}`, [`Title: ${title}`]);
+    if (matchedFallbackCopy) {
+      fail(`Route is still stuck on the app loading fallback: ${route}`, [
+        `Matched fallback copy: ${matchedFallbackCopy}`,
+        `Title: ${title}`,
+      ]);
       continue;
     }
 
