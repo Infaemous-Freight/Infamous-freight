@@ -8,7 +8,14 @@ import BrandMark from '@/components/ui/BrandMark';
 import { BRAND } from '@/lib/brand';
 import toast from 'react-hot-toast';
 
-type SocialProvider = 'google';
+type SocialProvider = 'google' | 'github';
+
+const SOCIAL_PROVIDER_LABELS: Record<SocialProvider, string> = {
+  google: 'Google',
+  github: 'GitHub',
+};
+
+const SOCIAL_PROVIDERS: SocialProvider[] = ['google', 'github'];
 
 type IdentitySettings = Awaited<ReturnType<typeof getSettings>> & {
   external?: Partial<Record<SocialProvider, boolean>>;
@@ -143,7 +150,7 @@ const LoginPage: React.FC = () => {
     try {
       const settings = identitySettings ?? ((await getSettings().catch(() => null)) as IdentitySettings | null);
       if (!isProviderEnabled(settings, provider)) {
-        const message = 'Google login needs to be enabled in Netlify Identity settings.';
+        const message = `${SOCIAL_PROVIDER_LABELS[provider]} login needs to be enabled in Netlify Identity settings.`;
         setProviderError(message);
         toast.error(message);
         setOauthProvider(null);
@@ -179,17 +186,22 @@ const LoginPage: React.FC = () => {
             {isRegister ? 'Start your operations account' : 'Welcome back — sign in to dispatch'}
           </p>
 
-          {isProviderEnabled(identitySettings, 'google') && (
-            <div className="mb-5">
-              <button
-                type="button"
-                onClick={() => handleOAuthLogin('google')}
-                disabled={oauthProvider !== null}
-                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-infamous-border bg-[#F5E8E8] px-3 py-2 text-sm font-semibold text-[#160608] transition hover:bg-white disabled:cursor-wait disabled:opacity-70"
-              >
-                <span aria-hidden="true" className="text-base font-bold">G</span>
-                {oauthProvider === 'google' ? 'Opening...' : 'Continue with Google'}
-              </button>
+          {SOCIAL_PROVIDERS.some((provider) => isProviderEnabled(identitySettings, provider)) && (
+            <div className="mb-5 space-y-3">
+              {SOCIAL_PROVIDERS.filter((provider) => isProviderEnabled(identitySettings, provider)).map((provider) => (
+                <button
+                  key={provider}
+                  type="button"
+                  onClick={() => handleOAuthLogin(provider)}
+                  disabled={oauthProvider !== null}
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-infamous-border bg-[#F5E8E8] px-3 py-2 text-sm font-semibold text-[#160608] transition hover:bg-white disabled:cursor-wait disabled:opacity-70"
+                >
+                  <span aria-hidden="true" className="text-base font-bold">
+                    {provider === 'github' ? 'GH' : 'G'}
+                  </span>
+                  {oauthProvider === provider ? 'Opening...' : `Continue with ${SOCIAL_PROVIDER_LABELS[provider]}`}
+                </button>
+              ))}
             </div>
           )}
 
@@ -258,37 +270,36 @@ const LoginPage: React.FC = () => {
                   aria-pressed={showPassword}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#B88989]/60 hover:text-[#F5E8E8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-infamous-red rounded"
                 >
-                  {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full btn-primary py-3"
-            >
-              {loading ? (isRegister ? 'Creating account...' : 'Signing in...') : isRegister ? 'Create Account' : 'Sign In'}
+            <button type="submit" disabled={loading} className="btn-primary w-full py-3 disabled:opacity-60 disabled:cursor-wait">
+              {loading ? 'Please wait...' : isRegister ? 'Create Account' : 'Sign In'}
             </button>
           </form>
 
-          <div className="mt-4 text-center">
-            <button
-              onClick={() => setIsRegister(!isRegister)}
-              className="text-sm text-[#B88989]/70 hover:text-infamous-red-light transition-colors"
-            >
-              {isRegister ? 'Already have an account? Sign in' : "Don't have an account? Get started"}
-            </button>
+          <div className="mt-5 flex items-start gap-3 rounded-lg border border-infamous-border bg-black/20 p-3 text-xs text-[#B88989]/70">
+            <ShieldCheck size={18} className="text-infamous-orange mt-0.5" />
+            <p>Secure access with role-based controls for owners, admins, and dispatch teams.</p>
           </div>
-        </div>
 
-        {/* Trust badges */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-6 text-[10px] text-[#B88989]/60">
-          <span className="inline-flex items-center gap-1"><ShieldCheck size={12} aria-hidden="true" /> Secure Netlify Identity</span>
-          <span>•</span>
-          <span>Verified email access</span>
-          <span>•</span>
-          <span>Role-aware dispatch workspace</span>
+          <p className="text-center text-sm text-[#B88989]/70 mt-5">
+            {isRegister ? 'Already have an account?' : 'New to Infæmous Freight?'}{' '}
+            <button
+              type="button"
+              onClick={() => {
+                const nextRegister = !isRegister;
+                setIsRegister(nextRegister);
+                setProviderError(null);
+                navigate(nextRegister ? '/register' : '/login');
+              }}
+              className="text-infamous-orange hover:underline"
+            >
+              {isRegister ? 'Sign in' : 'Create one'}
+            </button>
+          </p>
         </div>
       </div>
     </div>
