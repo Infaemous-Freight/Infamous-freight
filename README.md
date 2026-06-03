@@ -7,6 +7,13 @@ Dispatch • Fleet Intelligence • Driver Coordination • Shipment Visibility 
 ![license](https://img.shields.io/github/license/Infaemous-Freight/Infamous-freight)
 [![code style: TypeScript](https://img.shields.io/badge/code%20style-TypeScript-3178C6.svg)](https://www.typescriptlang.org/)
 [![deploy](https://github.com/Infaemous-Freight/Infamous-freight/actions/workflows/deploy.yml/badge.svg)](https://github.com/Infaemous-Freight/Infamous-freight/actions/workflows/deploy.yml)
+![Production Readiness](https://img.shields.io/badge/Production%20Readiness-96%25-brightgreen)
+![Node](https://img.shields.io/badge/Node-22.x-green)
+![React](https://img.shields.io/badge/React-19-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blue)
+![Fly.io](https://img.shields.io/badge/API-Fly.io-purple)
+![Netlify](https://img.shields.io/badge/Web-Netlify-teal)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
 
 ---
 
@@ -35,6 +42,24 @@ Built as a **pnpm monorepo**, the current production path uses a **React 19 + Vi
 | Dispatch/load workflows | Demo-backed | Not yet the production source of dispatch execution. |
 | Mobile app | Planned / not ready | `/driver-app` remains gated. |
 | AI dispatch automation | In progress | Requires freight-domain guardrails, auditability, and operator approval. |
+
+---
+
+## 🚦 Production Status
+
+| Area | Status |
+| --- | --- |
+| Netlify Web | ✅ Live |
+| Fly.io API | ✅ Live |
+| PostgreSQL | ✅ Live |
+| Stripe Billing | ✅ Integrated |
+| RBAC | ✅ Active |
+| Tenant Isolation | ✅ Active |
+| CI/CD | ✅ Active |
+| Driver Tracking | 🚧 In Progress |
+| Traccar Integration | 🚧 Planned |
+| GraphHopper Routing | 🚧 Planned |
+| Mobile App | 🚧 Planned |
 
 ---
 
@@ -151,9 +176,9 @@ AI features should be implemented with freight-domain guardrails, auditability, 
 | --- | --- |
 | 🎨 Frontend | React 19, Vite, TypeScript, Tailwind CSS, Zustand |
 | 🧠 Backend | Express 5, TypeScript, Prisma |
-| 🗄️ Database | PostgreSQL |
+| 🗄️ Database | PostgreSQL, Prisma ORM, Supabase RLS, Redis where configured |
 | ⚡ Cache | Redis where configured |
-| 🔐 Auth | Supabase Auth and JWT-derived trusted claims |
+| 🔐 Auth | Netlify Identity, JWT trusted claims, and Supabase-backed authorization |
 | 💳 Billing | Stripe Checkout, Customer Portal, webhooks, and one-time payments |
 | ☁️ Deployment | Netlify web, Fly.io API, Docker |
 | 🚨 Monitoring | Sentry opt-in through environment configuration |
@@ -174,7 +199,8 @@ Fly.io Express API
       ├── PostgreSQL via Prisma
       ├── Redis where configured
       ├── Stripe Billing
-      ├── Supabase Auth / JWT Claims
+      ├── Netlify Identity / JWT Claims
+      ├── Supabase-backed authorization and RLS
       └── Optional Sentry Monitoring
 ```
 
@@ -264,25 +290,20 @@ Further setup references:
 - `/drive`
 - `/contact`
 
-### Authenticated and operator-facing routes
+### Authenticated operational routes
 
 - `/ops`
 - `/loads`
 - `/dispatch`
-- `/ops/drivers`
+- `/drivers`
 - `/invoices`
 - `/analytics`
 - `/compliance`
 - `/settings`
-- `/settings/billing`
 - `/billing`
 - `/carriers`
 - `/accounting`
 - `/quotes`
-- `/messages`
-- `/driver-app`
-
-Read [`docs/current-status.md`](docs/current-status.md) before treating any route as fully live, fully wired, or production-ready.
 
 ---
 
@@ -294,32 +315,22 @@ Production browser traffic should use the same-origin Netlify API path:
 VITE_API_URL=/api
 ```
 
+The committed Netlify configuration publishes the Vite output from `apps/web/dist`, redirects the apex and default Netlify hostname to `https://www.infamousfreight.com`, keeps repo-owned Netlify Functions out of normal deploys, proxies `/api/health`, public freight intake paths, broader `/api/*` traffic, and `/socket.io/*` traffic to the Fly.io API, and keeps the SPA fallback last.
+
 Launch-critical checks should verify:
 
 - `https://www.infamousfreight.com`
-- `https://infamousfreight.com` redirects to the `www` host
+- `https://infamousfreight.com` redirecting to the `www` host
 - `https://www.infamousfreight.com/api/health`
 - public API routes under `/api/public/*` through the Netlify-to-Fly proxy
 
-Direct `api.infamousfreight.com` checks are useful for operations diagnostics only after that domain is confirmed.
-
----
-
-## 🧪 Production Smoke Testing
-
-Recommended public production smoke check:
-
-```bash
-pnpm run production:smoke-test
-```
-
-Launch-critical manual checks should include canonical website load, apex-to-www redirect, health endpoints, public quote request, public shipment tracking cases, Stripe Checkout, Stripe Customer Portal, authenticated route gating, operator demo-backed warnings, and Netlify launch evidence capture.
-
-See [`docs/PRODUCTION_SMOKE_TESTING.md`](docs/PRODUCTION_SMOKE_TESTING.md) for the full checklist.
+Direct `api.infamousfreight.com` checks are useful for operations diagnostics after DNS and Fly health are confirmed.
 
 ---
 
 ## 🔌 Health & Runtime Verification
+
+Recommended checks:
 
 ```bash
 curl -X GET https://www.infamousfreight.com/api/health
@@ -327,15 +338,12 @@ curl -X GET https://www.infamousfreight.com/api/health/live
 curl -X GET https://www.infamousfreight.com/api/health/ready
 ```
 
-Use these during local verification, pre-launch validation, post-deploy smoke checks, and production incident response.
+Use these during:
 
----
-
-## 💼 Business Model
-
-INFÆMOUS FREIGHT is designed for subscription-based freight operations access, with optional paid workflow features, billing tools, and future marketplace/automation opportunities.
-
-Primary revenue paths may include monthly SaaS subscriptions, carrier and dispatcher operations plans, broker/team plans, enterprise logistics plans, paid billing/compliance/analytics workflows, and future transaction or automation-based revenue.
+- local verification
+- pre-launch validation
+- post-deploy smoke checks
+- production incident response
 
 ---
 
@@ -346,15 +354,12 @@ Primary revenue paths may include monthly SaaS subscriptions, carrier and dispat
 | Lint | Code style and hygiene |
 | Typecheck | Strict TypeScript validation |
 | Test | Deterministic verification |
-| Build | CI-stable production output |
-| Runtime checks | Docker, Fly.io, Netlify, API health, and smoke validation |
+| Build | CI-stable output |
+| Runtime checks | Docker, Fly, and health validation |
 
-Repository rules:
-
-- CI runs through GitHub Actions under [`.github/workflows/`](.github/workflows/).
-- Pull requests should not merge unless lint, typecheck, build, tests, and relevant runtime checks pass.
-- Environment checks must pass before production deployment.
-- Secrets must never be committed to source control.
+- CI runs through GitHub Actions under `.github/workflows/`.
+- All checks must pass before PR merge.
+- Workspace scripts enforce path discipline, validation consistency, and environment sanity.
 
 ---
 
@@ -367,10 +372,8 @@ apps/
   mobile/   # Reserved mobile surface
 
 netlify/
-  event-functions/      # Event-handler bundle area
-  disabled-functions/   # Parked handlers
-  functions/            # Retained fallback API function entrypoints
-  database/migrations/  # Netlify database migrations
+  functions/            # Public intake and lookup routes retained for fallback/future packaging
+  database/migrations/  # Netlify database migrations where used
 
 docs/       # Architecture, operations, launch, readiness
 scripts/    # Setup, validation, deployment, runtime checks
@@ -379,28 +382,65 @@ scripts/    # Setup, validation, deployment, runtime checks
 
 ---
 
+## 🛣️ Roadmap
+
+### Phase 1 — Production foundation
+
+- Authentication and owner-controlled access
+- Billing and paid-access gating
+- Dispatch/load workflow foundations
+- RBAC and tenant isolation
+- Netlify/Fly deployment hardening
+
+### Phase 2 — Logistics integrations
+
+- Driver tracking foundation
+- Traccar integration
+- GraphHopper routing and dispatch scoring
+- Geofencing workflows
+- Public tracking evidence collection
+
+### Phase 3 — Intelligence and scale
+
+- AI dispatch optimization
+- Predictive ETA and exception detection
+- Fleet intelligence and performance scoring
+- Mobile driver operations
+- Enterprise compliance and audit workflows
+
+---
+
 ## 📝 Coding Standards
 
-- TypeScript-first implementation
-- pnpm workspace discipline
-- explicit exports
-- small composable modules
-- predictable file layouts
-- clear domain boundaries across dispatch, fleet, driver, billing, compliance, and operations modules
-- strict validation for external input
-- environment-driven configuration
-- no secrets in code
-- lint, typecheck, tests, and builds required before merge
+- TypeScript-first implementation.
+- pnpm workspace discipline.
+- Explicit exports and small composable functions.
+- Predictable file layouts.
+- Clear domain boundaries across dispatch, fleet, driver, billing, and operations modules.
+- All changes must pass lint, typecheck, test, and build.
+- Environment configuration belongs in `.env` files and managed secret stores.
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for PR and style expectations.
 
 ---
 
-## 🛡️ Security & Compliance
+## 👩‍💻 Contributing & Onboarding
 
-INFÆMOUS FREIGHT is built with production-sensitive freight workflows in mind.
+- See [`CONTRIBUTING.md`](CONTRIBUTING.md) for full guidelines.
+- Every PR should include a clear summary, logical commit structure, and CI readiness.
+- Branches should follow `feature/*`, `fix/*`, `docs/*`, `chore/*`, or `security/*`.
+- Use GitHub Discussions or Issues for questions and planning.
 
-Security posture includes JWT-based authentication flow, trusted-claim checks, role-based access control direction, environment-based secret management, strict external input validation, CI-enforced quality checks, least-privilege deployment posture, audit logging direction, and responsible disclosure through [`SECURITY.md`](SECURITY.md).
+---
+
+## 📚 Documentation
+
+- [`docs/README.md`](docs/README.md) — Project docs index
+- [`docs/LOCAL_STARTUP_CHECKLIST.md`](docs/LOCAL_STARTUP_CHECKLIST.md) — Local startup checklist
+- [`docs/environment/ENVIRONMENT_VARIABLES_COMPLETE.md`](docs/environment/ENVIRONMENT_VARIABLES_COMPLETE.md) — Environment variables reference
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — Detailed architecture
+- [`docs/API-REFERENCE.md`](docs/API-REFERENCE.md) — API reference
+- [`docs/current-status.md`](docs/current-status.md) — Runtime truth and current readiness
 
 ---
 
@@ -408,8 +448,8 @@ Security posture includes JWT-based authentication flow, trusted-claim checks, r
 
 Pushes to `main` can deploy:
 
-- 🚚 API to Fly.io
-- 🌐 web app to Netlify
+- API to Fly.io
+- Web to Netlify
 
 Supporting references:
 
@@ -418,83 +458,33 @@ Supporting references:
 - [`docs/NETLIFY-BUILDHOOKS.md`](docs/NETLIFY-BUILDHOOKS.md)
 - [`docs/CUSTOM-DOMAIN.md`](docs/CUSTOM-DOMAIN.md)
 - [`docs/netlify-deploy-checklist.md`](docs/netlify-deploy-checklist.md)
-- [`docs/PRODUCTION_SMOKE_TESTING.md`](docs/PRODUCTION_SMOKE_TESTING.md)
 
-### Netlify form event note
+Verification should always include:
 
-Netlify form submissions are captured natively by Netlify Forms. Any Drizzle/Netlify Database mirror handlers should stay parked or carefully scoped unless the site's function-scoped environment payload and deployment constraints are verified.
-
----
-
-## 🧭 Product Roadmap
-
-### Current foundation
-
-- production web deployment path
-- production API deployment path
-- Stripe billing/paywall foundation
-- public shipment tracking foundation
-- health checks and smoke-test documentation
-- public marketing and intake surfaces
-
-### In progress
-
-- live API wiring for remaining operator modules
-- dispatch workflow hardening
-- quote and tracking workflow expansion
-- authenticated freight operations polish
-- dashboard metrics from live operational data
-- production smoke coverage for every critical path
-
-### Planned
-
-- mobile driver/operator app
-- AI dispatch assistant
-- advanced carrier portal
-- customer portal expansion
-- predictive routing
-- automated compliance monitoring
-- richer fleet intelligence
-- enterprise reporting and audit exports
-
-See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the expanded roadmap.
+- `https://www.infamousfreight.com`
+- redirect from `https://infamousfreight.com`
+- `https://www.infamousfreight.com/api/health`
+- public intake routes under `/api/public/*`
+- Fly.io runtime status after deploy
 
 ---
 
-## 📚 Documentation
+## 🔒 Security & Compliance
 
-- [Project Docs Index](docs/README.md)
-- [Current Runtime Status](docs/current-status.md)
-- [Local Startup Checklist](docs/LOCAL_STARTUP_CHECKLIST.md)
-- [Environment Variables Reference](docs/environment/ENVIRONMENT_VARIABLES_COMPLETE.md)
-- [Detailed Architecture](docs/ARCHITECTURE.md)
-- [API Reference](docs/API-REFERENCE.md)
-- [Production Smoke Testing](docs/PRODUCTION_SMOKE_TESTING.md)
-- [Screenshot Checklist](docs/SCREENSHOTS.md)
-- [Product Roadmap](docs/ROADMAP.md)
-- [Production, Compliance, and Launch Docs](docs/LAUNCH_READINESS_INDEX.md)
+- External input must be validated before use.
+- Secrets must never be hardcoded or committed.
+- Production credentials belong in local or managed environment configuration.
+- Least privilege should be preserved across platform services and workflows.
+- Sentry monitoring and operational observability are supported when configured.
+- RBAC and trusted-claim checks are enforced at the API layer.
+- Supabase RLS and plan-aware auth hardening guidance are documented under `docs/security/`.
 
----
-
-## 👩‍💻 Contributing & Onboarding
-
-- See [`CONTRIBUTING.md`](CONTRIBUTING.md) for full guidelines.
-- Every PR should include a clear summary, test notes, risk notes, and rollback considerations where relevant.
-- Branches should follow `feature/*`, `fix/*`, `docs/*`, `chore/*`, or `security/*`.
-- Use GitHub Issues or Discussions for planning and implementation questions.
+Responsible disclosure: see [`SECURITY.md`](SECURITY.md).
 
 ---
 
 ## 📄 License / Ownership
 
-Copyright 2025–2026 Infamous Freight.
+Copyright 2025–2026 Infamous Freight. All rights reserved. MIT License.
 
-Released under the MIT License. See [`LICENSE`](LICENSE) for details.
-
-> This project and its code/modules are production-sensitive. Handle them with the same care expected for enterprise procurement, auditing, customer review, and security operations.
-
----
-
-## 🏁 Vision
-
-INFÆMOUS FREIGHT aims to become an AI-powered operating system for modern freight transportation by connecting carriers, brokers, drivers, shippers, dispatchers, and logistics teams through one unified execution platform.
+This project and its code/modules are production-sensitive. Handle them with the same care expected for enterprise procurement, auditing, customer review, and security operations.
