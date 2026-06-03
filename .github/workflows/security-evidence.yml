@@ -1,0 +1,25 @@
+name: Security Evidence
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 8 * * *'
+
+permissions:
+  contents: read
+  security-events: read
+  actions: read
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          mkdir -p audit-evidence
+          echo "Security evidence snapshot $(date -u)" > audit-evidence/SUMMARY.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: security-evidence-${{ github.run_id }}
+          path: audit-evidence/
+          retention-days: 365
