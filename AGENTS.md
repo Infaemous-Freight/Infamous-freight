@@ -16,6 +16,19 @@ This repository is configured for AI-assisted development. Use this guide before
 
 Infamous Freight is an AI-driven freight operations platform covering dispatch execution, shipment visibility, driver coordination, compliance workflows, billing, and logistics automation.
 
+## Codex Infamous execution profile
+
+When acting as the Codex execution agent for this repo, optimize for operationally safe freight-platform delivery:
+
+- Be direct, do not guess, and cite the exact files or commands used when answering repo questions.
+- Keep the app deployable on Fly.io before, during, and after every patch.
+- Never weaken security, tenant isolation, Supabase JWT verification, Stripe webhook verification, or approval gates just to make a build pass.
+- Prefer small, reversible commits that can be reviewed and rolled back independently.
+- Use free, legal, open-source tooling first.
+- Never expose secrets in logs, commits, screenshots, issues, comments, PRs, or chat output.
+- Before code changes, inspect the relevant files, identify the likely root cause, make the smallest safe patch, and avoid broad rewrites.
+- After code changes, run the narrowest relevant checks first, then broader checks when behavior, build, deployment, or security posture changed.
+
 ## Operating loop
 
 Every change should follow this sequence:
@@ -52,7 +65,7 @@ Direct commits to `main` should be avoided except for emergency fixes explicitly
 
 ## Required commands
 
-Use `pnpm`, not npm or yarn.
+Use `pnpm`, not npm or yarn. Do not bypass `pnpm install --frozen-lockfile` as the default dependency fix; prefer syncing `package.json` with `pnpm-lock.yaml` or updating the lockfile intentionally.
 
 ```bash
 pnpm install --frozen-lockfile
@@ -75,6 +88,21 @@ pnpm -C apps/web run test
 pnpm -C apps/web run typecheck
 pnpm -C apps/api run lint
 ```
+
+## Codex completion checklist
+
+For repo changes, record each applicable result in the PR or final response. If a command cannot run because it needs an authenticated operator terminal or a missing local tool, mark it as an environment limitation and provide the exact command for the operator to run.
+
+1. Dependency integrity: `pnpm install --frozen-lockfile`.
+2. Frontend secret safety: `pnpm run env:check:frontend`.
+3. Supabase client safety: `pnpm run env:check:supabase-client`.
+4. Static analysis: `pnpm run lint`.
+5. TypeScript validation: `pnpm run typecheck`.
+6. Build validation: `pnpm run build`.
+7. Behavior validation when code behavior changes or when the PR description recommends it: `pnpm run test`.
+8. Fly config validation when `fly.toml`, `Dockerfile`, deployment scripts, ports, processes, health checks, or runtime env behavior change: `flyctl config validate --config fly.toml`.
+9. Authenticated Fly checks from an operator terminal when production health or deployment state is in scope: `flyctl checks list -a infamous-freight-api`.
+10. Production liveness smoke check when production health is in scope: `curl -i https://infamous-freight-api.fly.dev/api/health/live`.
 
 ## Production validation commands
 
@@ -128,8 +156,11 @@ Use `flyctl secrets set` from an authenticated terminal only. Never commit real 
 
 ## Supabase and RLS rules
 
+- `createClient()` must use `SUPABASE_URL` or `VITE_SUPABASE_URL`, never `SUPABASE_DATABASE_URL`.
 - Browser/public variables must use Supabase API URLs, not Postgres database URLs.
 - Server-only database URLs belong in `DATABASE_URL` or server-side secret stores only.
+- Never create or use `VITE_SUPABASE_DATABASE_URL`, `PUBLIC_SUPABASE_DATABASE_URL`, or `NEXT_PUBLIC_SUPABASE_DATABASE_URL`.
+- `SUPABASE_JWT_SECRET` or `JWT_SECRET` is required in production; prefer `SUPABASE_JWT_SECRET` when verifying real Supabase tokens.
 - Tenant-scoped tables need `FOR SELECT` policies tied to verified organization membership.
 - Realtime subscriptions for dispatch surfaces must filter by `organization_id`.
 - Add indexes for `organization_id` and common foreign keys used by tenant/RLS predicates.
@@ -145,8 +176,16 @@ Use `flyctl secrets set` from an authenticated terminal only. Never commit real 
 ## Deployment rules
 
 - Keep Fly internal API port aligned with `PORT=3000` unless the app and Fly config are changed together.
+- Keep the API process as `node apps/api/dist/src/server.js`.
+- Keep `fly.toml` for `infamous-freight-api` on `http_service.internal_port = 3000`.
+- Keep the root `Dockerfile` API image on `ENV PORT=3000`, `EXPOSE 3000`, and `CMD ["node", "apps/api/dist/src/server.js"]`.
+- Do not run or recommend `flyctl config save -a infamous-freight-api --yes` unless explicitly requested; it can regenerate unsafe `fly.toml` values.
+- When reconciling failed or split Fly deployments, deploy one machine at a time with `--strategy rolling --max-concurrent 1`.
+- If using shared Fly machines, keep `cpu_kind = "shared"`, `memory = "512mb"`, `memory_mb = 512`, and `size = "shared-cpu-1x"`.
+- If intentionally moving to performance Fly machines, keep `cpu_kind = "performance"`, `memory = "2gb"`, `memory_mb = 2048`, and `size = "performance-1x"`.
 - Preserve Netlify redirects/proxy behavior for API routes.
-- Keep liveness/readiness checks explicit so `/api/health/live` can confirm process health while deeper checks can verify dependencies.
+- Keep liveness/readiness checks explicit so `/api/health/live` returns 200 when the process is alive, while `/api/health` may return 503 when dependencies are degraded.
+- If `/api/health/live` returns `mode="fallback"`, Fly health may pass but real API startup still failed; check logs for missing secrets, database errors, or auth configuration errors.
 - Prefer non-destructive deploy validation before applying production changes.
 
 ## Change standards
@@ -157,16 +196,31 @@ Use `flyctl secrets set` from an authenticated terminal only. Never commit real 
 - Use existing scripts before inventing new ones.
 - Favor explicit TypeScript types and clear error handling.
 
+## Git hygiene
+
+- Confirm the remote before pulling or pushing with `git remote -v`.
+- If `origin` is missing, add `https://github.com/Infaemous-Freight/Infamous-freight.git`.
+- Prefer short-lived branch names like `codex/infamous-{feature}-{date}` for agent work unless a higher-priority instruction requires staying on the current branch.
+- Use direct, operational commit messages.
+
 ## PR checklist for agents
 
 Before opening or updating a PR, include:
 
 - Summary of what changed.
-- Commands run and results.
+- Commands run and results, including explicit pass, fail, or environment-limited status for each relevant Codex completion checklist command.
 - Production impact.
 - Rollback plan for deployment or database changes.
 - Screenshots or logs when UI/deployment behavior changed.
 - Linked issue when applicable.
+- Risk check and fallback or rollback path.
+
+## Response standards
+
+- Be direct and include exact commands.
+- Do not guess about production, credentials, secrets, or external account state.
+- If a step requires the user's authenticated Fly.io or GitHub terminal, say so and provide the exact command.
+- Include a risk check and fallback for operational changes.
 
 ## Recommended automation path
 
