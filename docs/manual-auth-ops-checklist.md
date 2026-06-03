@@ -63,7 +63,9 @@ PAGERDUTY_ROUTING_KEY=<set-in-netlify-ui>
 ## 7) Supabase
 
 - Go to **Authentication → Security**.
-- Enable leaked password protection.
+- Enable leaked password protection only when the Supabase project is on a plan that supports it.
+- If the project plan does not support leaked password protection, record the accepted risk and do not treat the setting as a hard CI/CD blocker.
+- Keep all other actionable Supabase Security Advisor findings on the launch checklist.
 
 ## 8) GitHub OAuth for active auth provider
 
