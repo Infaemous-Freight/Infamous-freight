@@ -23,6 +23,23 @@ require_file() {
   fi
 }
 
+require_workflow_job() {
+  local file="$1"
+  local job="$2"
+  if [ ! -f "$file" ]; then
+    echo "MISSING: $file"
+    failures=$((failures + 1))
+    return
+  fi
+
+  if ! grep -Eq "^[[:space:]]{2}${job}:$" "$file"; then
+    echo "MISSING: ${file} job ${job}"
+    failures=$((failures + 1))
+  else
+    echo "OK: ${file} job ${job}"
+  fi
+}
+
 echo "Checking required local tools..."
 require_command git
 require_command node
@@ -37,8 +54,9 @@ require_file package.json
 require_file Dockerfile
 require_file fly.toml
 require_file netlify.toml
-require_file .github/workflows/deploy-fly.yml
-require_file .github/workflows/smoke-test.yml
+require_file .github/workflows/deploy.yml
+require_workflow_job .github/workflows/deploy.yml deploy-fly
+require_workflow_job .github/workflows/deploy.yml smoke-test
 require_file docs/PRODUCTION-LAUNCH-RUNBOOK.md
 require_file docs/PRODUCTION-SECRETS-CHECKLIST.md
 require_file scripts/production-canonical-env.sh

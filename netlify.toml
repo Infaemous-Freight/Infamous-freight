@@ -88,43 +88,43 @@
 
 [[redirects]]
   from = "/api/health"
-  to = "https://api.infamousfreight.com/api/health"
+  to = "https://infamous-freight-api.fly.dev/api/health"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/health/ready"
-  to = "https://api.infamousfreight.com/api/health/ready"
+  to = "https://infamous-freight-api.fly.dev/api/health/ready"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/load-requests"
-  to = "https://api.infamousfreight.com/api/load-requests"
+  to = "https://infamous-freight-api.fly.dev/api/load-requests"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/load-requests/*"
-  to = "https://api.infamousfreight.com/api/load-requests/:splat"
+  to = "https://infamous-freight-api.fly.dev/api/load-requests/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/public/quote-requests"
-  to = "https://api.infamousfreight.com/api/public/quote-requests"
+  to = "https://infamous-freight-api.fly.dev/api/public/quote-requests"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/public/shipments/:trackingNumber"
-  to = "https://api.infamousfreight.com/api/public/shipments/:trackingNumber"
+  to = "https://infamous-freight-api.fly.dev/api/public/shipments/:trackingNumber"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/*"
-  to = "https://api.infamousfreight.com/api/:splat"
+  to = "https://infamous-freight-api.fly.dev/api/:splat"
   status = 200
   force = true
 
