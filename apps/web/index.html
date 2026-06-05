@@ -70,39 +70,47 @@
         color: #F5E8E8;
         text-align: center;
       }
-      .app-shell-fallback__card { width: min(100%, 920px); text-align: left; }
-      .shell-line { display: block; height: 18px; border-radius: 999px; background: rgba(245, 232, 232, 0.14); animation: shell-pulse 1.4s ease-in-out infinite; }
-      .shell-line--brand { width: 180px; background: rgba(255, 59, 48, 0.32); margin-bottom: 28px; }
-      .shell-line--hero { width: min(100%, 720px); height: clamp(52px, 8vw, 84px); border-radius: 10px; margin-bottom: 14px; }
-      .shell-line--hero-short { width: min(78%, 540px); height: clamp(52px, 8vw, 84px); border-radius: 10px; margin-bottom: 24px; }
-      .shell-line--copy { width: min(70%, 520px); height: 14px; background: rgba(184, 137, 137, 0.26); margin-bottom: 10px; }
-      .shell-line--copy-short { width: min(52%, 380px); height: 14px; background: rgba(184, 137, 137, 0.2); }
-      @keyframes shell-pulse { 0%, 100% { opacity: 0.54; } 50% { opacity: 1; } }
-      .noscript-nav { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
-      .noscript-nav a { color: #FF3B30; text-decoration: underline; font-size: 0.95rem; }
+      .app-shell-fallback__card { width: min(100%, 960px); text-align: left; }
+      .fallback-kicker { color: #FF3B30; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; }
+      .fallback-title { margin: 1rem 0 0; max-width: 820px; font-size: clamp(2.5rem, 8vw, 5.75rem); line-height: 0.9; text-transform: uppercase; }
+      .fallback-copy { max-width: 720px; color: #D8B8B8; font-size: clamp(1rem, 2vw, 1.2rem); line-height: 1.7; }
+      .fallback-actions { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 0.85rem; }
+      .fallback-actions a { border: 1px solid rgba(255, 59, 48, 0.38); border-radius: 999px; color: #F5E8E8; padding: 0.85rem 1rem; text-decoration: none; }
+      .fallback-actions a:first-child { background: #FF1A1A; border-color: #FF1A1A; font-weight: 800; }
+      .fallback-support { margin-top: 2rem; color: #B88989; font-size: 0.95rem; }
+      .fallback-support a { color: #FF6B5F; }
+      .noscript-nav { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+      .noscript-nav a { color: #FF6B5F; text-decoration: underline; font-size: 0.95rem; }
     </style>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <div id="root">
       <main class="app-shell-fallback" aria-live="polite">
-        <section class="app-shell-fallback__card">
-          <span class="shell-line shell-line--brand" aria-hidden="true"></span>
-          <span class="shell-line shell-line--hero" aria-hidden="true"></span>
-          <span class="shell-line shell-line--hero-short" aria-hidden="true"></span>
-          <span class="shell-line shell-line--copy" aria-hidden="true"></span>
-          <span class="shell-line shell-line--copy-short" aria-hidden="true"></span>
-          <span class="skip-link">Infamous Freight route content is preparing.</span>
+        <section class="app-shell-fallback__card" aria-label="Infamous Freight public homepage">
+          <p class="fallback-kicker">Infamous Freight command center</p>
+          <h1 class="fallback-title">Freight quotes, shipment tracking, carrier onboarding, and support.</h1>
+          <p class="fallback-copy">
+            Request a freight quote, track a shipment, start carrier onboarding, or contact dispatch support.
+            Genesis AI assistant intake is available for low-risk concierge questions before an operations handoff.
+          </p>
+          <div class="fallback-actions" aria-label="Primary freight actions">
+            <a href="/request-quote">Request a freight quote</a>
+            <a href="/tracking">Track shipment</a>
+            <a href="/carrier-portal">Carrier onboarding</a>
+            <a href="/freight-assistant">Genesis AI assistant</a>
+            <a href="/contact">Contact / support</a>
+          </div>
+          <p class="fallback-support">
+            Need dispatch help or service details? Visit <a href="/services">services</a>, <a href="/pricing">pricing</a>, or the <a href="/load-board">public load board</a>.
+          </p>
           <noscript>
-            <nav class="noscript-nav" aria-label="Site navigation">
-              <a href="/request-quote">Request a Quote</a>
-              <a href="/tracking">Track Shipment</a>
-              <a href="/services">Services</a>
-              <a href="/pricing">Pricing</a>
+            <nav class="noscript-nav" aria-label="Additional site navigation">
+              <a href="/quote">Quote shortcut</a>
+              <a href="/track-shipment">Tracking shortcut</a>
+              <a href="/freight-assistant">Genesis assistant</a>
               <a href="/drivers">Apply to Drive</a>
-              <a href="/load-board">Load Board</a>
               <a href="/resources">Resources</a>
-              <a href="/contact">Contact</a>
               <a href="/about">About</a>
             </nav>
           </noscript>

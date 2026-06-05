@@ -89,7 +89,7 @@ const RouteFallback = () => (
           </div>
         </div>
       </div>
-      <span className="sr-only">{BRAND.displayName} route content is preparing.</span>
+      <span className="sr-only">Loading freight command center.</span>
     </section>
   </main>
 );
