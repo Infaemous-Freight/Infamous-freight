@@ -31,6 +31,11 @@ import { createStripeWebhookEventStore } from './stripe-webhook-events';
 import { createStripeOneTimePaymentStore } from './stripe-one-time-payments';
 import { createFreightWorkflowRouter } from './freight-workflow-routes';
 import { createDispatchAutomationRouter } from './dispatch-automation';
+import {
+  buildQuoteIntakeNotifications,
+  prioritizeQuoteWithGenesis,
+  validateQuoteIntakePayload,
+} from './quote-intake-automation';
 import { createAuditLogger, AuditLogger } from './audit-logger';
 import type { UserRole } from './rbac/rbac-rules';
 
@@ -1290,6 +1295,64 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
   app.get('/api/loads/:id', ...protectedApi, (_req, res) => {
     res.status(200).json({ data: null });
   });
+
+  app.post('/api/loads/intake', ...protectedApi, wrapAsync(async (req, res) => {
+    const tenantId = getRequiredTenantId(req);
+    const validation = validateQuoteIntakePayload(req.body ?? {});
+
+    if (!validation.ok) {
+      throw new HttpError(
+        400,
+        'quote_intake_validation_failed',
+        `Quote intake validation failed. Missing: ${validation.missing.join(', ') || 'none'}. Invalid: ${validation.invalid.join(', ') || 'none'}.`,
+      );
+    }
+
+    const genesis = prioritizeQuoteWithGenesis(validation.input);
+    const profitMargin = validation.input.shipperRate - validation.input.carrierCost;
+    const quoteRequest = await dataStore.createFreightOperation('quoteRequests', tenantId, {
+      brokerName: validation.input.brokerName,
+      originCity: validation.input.originCity,
+      destCity: validation.input.destCity,
+      freightType: validation.input.freightType,
+      weight: validation.input.weight,
+      pickupDate: validation.input.pickupDate,
+      deliveryDeadline: validation.input.deliveryDeadline,
+      shipperRate: validation.input.shipperRate,
+      carrierCost: validation.input.carrierCost,
+      profitMargin,
+      status: genesis.priority === 'review' ? 'needs_review' : 'pending',
+    });
+    const notifications = buildQuoteIntakeNotifications({
+      tenantId,
+      quoteRequestId: quoteRequest.id,
+      brokerName: validation.input.brokerName,
+      originCity: validation.input.originCity,
+      destCity: validation.input.destCity,
+      priority: genesis.priority,
+    });
+    const user = getAuditUser(req);
+    void auditLogger.log({
+      entityType: 'quoteRequests',
+      entityId: String(quoteRequest.id),
+      action: 'intake_create',
+      ...user,
+      details: `genesisPriority=${genesis.priority} genesisScore=${genesis.score}`,
+      requestId: req.requestId,
+    });
+    for (const notification of notifications) {
+      void auditLogger.log({
+        entityType: 'notification',
+        entityId: notification.dedupeKey,
+        action: 'queue',
+        ...user,
+        details: `topic=${notification.topic} role=${notification.recipientRole} priority=${notification.priority}`,
+        requestId: req.requestId,
+      });
+    }
+
+    res.status(202).json({ data: { quoteRequest, genesis, notifications } });
+  }));
 
   app.post('/api/loads', ...protectedApi, wrapAsync(async (req, res) => {
     const tenantId = getRequiredTenantId(req);
