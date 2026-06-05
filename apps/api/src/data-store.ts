@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import { createPrismaClient } from './prisma-client';
 import { BillingSyncPayload } from './billing';
+import { calculateGenesisPriority, createQueuedDispatcherNotification, LoadIntakeResult, validateLoadIntakePayload } from './load-intake';
 
 type BaseRecord = {
   id: string;
@@ -212,6 +213,7 @@ export type CarrierMembershipLookup = {
 export interface DataStore {
   listLoads(tenantId: string): Promise<LoadRecord[]>;
   createLoad(tenantId: string, payload: Record<string, unknown>): Promise<LoadRecord>;
+  createLoadIntake(tenantId: string, payload: Record<string, unknown>): Promise<LoadIntakeResult>;
   listDrivers(tenantId: string): Promise<DriverRecord[]>;
   createDriver(tenantId: string, payload: Record<string, unknown>): Promise<DriverRecord>;
   listShipments(tenantId: string): Promise<ShipmentRecord[]>;
@@ -436,6 +438,7 @@ async function assertLoadBelongsToTenant(
 
 class MemoryDataStore implements DataStore {
   private loads: LoadRecord[] = [];
+  private loadIntakes: LoadIntakeResult[] = [];
   private drivers: DriverRecord[] = [];
   private shipments: ShipmentRecord[] = [];
   private publicShipments: PublicShipmentRecord[] = [
@@ -481,6 +484,30 @@ class MemoryDataStore implements DataStore {
     const record = { id: randomUUID(), tenantId, ...payload };
     this.loads.push(record);
     return record;
+  }
+
+  async createLoadIntake(tenantId: string, payload: Record<string, unknown>): Promise<LoadIntakeResult> {
+    const validation = validateLoadIntakePayload(payload);
+    if (!validation.ok) {
+      throw new Error(`load_intake_invalid:${validation.issues.join('|')}`);
+    }
+
+    const priority = calculateGenesisPriority(validation.value);
+    const load = await this.createLoad(tenantId, validation.value);
+    const notification = createQueuedDispatcherNotification(priority);
+    const result: LoadIntakeResult = {
+      intakeId: randomUUID(),
+      load,
+      priority,
+      notification: {
+        id: notification.id,
+        status: notification.status,
+        channel: notification.channel,
+      },
+    };
+
+    this.loadIntakes.push(result);
+    return result;
   }
 
   async listDrivers(tenantId: string): Promise<DriverRecord[]> {
@@ -781,6 +808,66 @@ class PrismaDataStore implements DataStore {
       },
     }) as PrismaLoadRecord;
     return { ...load, tenantId: load.carrierId };
+  }
+
+  async createLoadIntake(tenantId: string, payload: Record<string, unknown>): Promise<LoadIntakeResult> {
+    const validation = validateLoadIntakePayload(payload);
+    if (!validation.ok) {
+      throw new Error(`load_intake_invalid:${validation.issues.join('|')}`);
+    }
+
+    const priority = calculateGenesisPriority(validation.value);
+    const notification = createQueuedDispatcherNotification(priority);
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      const load = await tx.load.create({
+        data: {
+          carrierId: tenantId,
+          ...validation.value,
+          pickupDate: new Date(validation.value.pickupDate),
+          deliveryDate: validation.value.deliveryDate ? new Date(validation.value.deliveryDate) : null,
+        },
+      }) as PrismaLoadRecord;
+
+      const intake = await tx.loadIntake.create({
+        data: {
+          carrierId: tenantId,
+          loadId: load.id,
+          status: 'accepted',
+          source: typeof payload.source === 'string' ? payload.source : 'api',
+          priorityScore: priority.score,
+          priorityLevel: priority.level,
+          priorityReasons: JSON.stringify(priority.reasons),
+          payload: JSON.stringify(payload),
+        },
+      });
+
+      const queuedNotification = await tx.dispatcherNotificationQueue.create({
+        data: {
+          id: notification.id,
+          carrierId: tenantId,
+          loadId: load.id,
+          intakeId: intake.id,
+          type: notification.type,
+          priorityLevel: notification.priorityLevel,
+          status: notification.status,
+          payload: JSON.stringify({ loadId: load.id, intakeId: intake.id, priority }),
+        },
+      });
+
+      return { load, intake, queuedNotification };
+    });
+
+    return {
+      intakeId: result.intake.id,
+      load: { ...result.load, tenantId: result.load.carrierId },
+      priority,
+      notification: {
+        id: result.queuedNotification.id,
+        status: 'queued',
+        channel: 'dispatcher_queue',
+      },
+    };
   }
 
   async listDrivers(tenantId: string): Promise<DriverRecord[]> {

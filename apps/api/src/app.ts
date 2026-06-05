@@ -1291,6 +1291,36 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
     res.status(200).json({ data: null });
   });
 
+  app.post('/api/loads/intake', ...protectedApi, wrapAsync(async (req, res) => {
+    const tenantId = getRequiredTenantId(req);
+    const user = getAuditUser(req);
+
+    try {
+      const data = await dataStore.createLoadIntake(tenantId, req.body ?? {});
+      await auditLogger.log({
+        entityType: 'loadIntake',
+        entityId: data.intakeId,
+        action: 'load_intake.created',
+        ...user,
+        details: JSON.stringify({
+          tenantId,
+          loadId: data.load.id,
+          priorityScore: data.priority.score,
+          priorityLevel: data.priority.level,
+          notificationId: data.notification.id,
+        }),
+        requestId: req.requestId,
+      });
+      res.status(201).json({ data });
+    } catch (error) {
+      if (error instanceof Error && error.message.startsWith('load_intake_invalid:')) {
+        const issues = error.message.slice('load_intake_invalid:'.length).split('|').filter(Boolean);
+        throw new HttpError(400, 'load_intake_invalid', issues.join(' '));
+      }
+      throw error;
+    }
+  }));
+
   app.post('/api/loads', ...protectedApi, wrapAsync(async (req, res) => {
     const tenantId = getRequiredTenantId(req);
     const missing = validateLoadPayload(req.body ?? {});

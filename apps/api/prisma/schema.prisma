@@ -23,6 +23,8 @@ model Carrier {
 
   drivers               Driver[]
   loads                 Load[]
+  loadIntakes           LoadIntake[]
+  dispatcherNotifications DispatcherNotificationQueue[]
   invoices              Invoice[]
   documents             Document[]
   teamMembers           TeamMember[]
@@ -104,6 +106,8 @@ model Load {
   loadBoardPost        LoadBoardPost?
   dispatchIncidents  DispatchIncident[]
   hosRiskEvents      HosRiskEvent[]
+  loadIntake         LoadIntake?
+  dispatcherNotifications DispatcherNotificationQueue[]
 
   @@index([carrierId, createdAt])
   @@index([carrierId, status])
@@ -432,6 +436,53 @@ model AuditLog {
   @@index([entityType, entityId])
   @@index([userId])
   @@index([createdAt])
+}
+
+model LoadIntake {
+  id              String   @id @default(cuid())
+  carrierId       String
+  loadId          String   @unique
+  source          String   @default("api")
+  status          String   @default("accepted")
+  priorityScore   Int
+  priorityLevel   String
+  priorityReasons String
+  payload         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  carrier       Carrier                       @relation(fields: [carrierId], references: [id])
+  load          Load                          @relation(fields: [loadId], references: [id])
+  notifications DispatcherNotificationQueue[]
+
+  @@index([carrierId, createdAt])
+  @@index([carrierId, priorityLevel, status])
+  @@index([loadId])
+}
+
+model DispatcherNotificationQueue {
+  id            String    @id @default(cuid())
+  carrierId     String
+  loadId        String
+  intakeId      String?
+  type          String
+  priorityLevel String
+  status        String    @default("queued")
+  payload       String?
+  attempts      Int       @default(0)
+  availableAt   DateTime  @default(now())
+  sentAt        DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  carrier Carrier     @relation(fields: [carrierId], references: [id])
+  load    Load        @relation(fields: [loadId], references: [id])
+  intake  LoadIntake? @relation(fields: [intakeId], references: [id])
+
+  @@index([carrierId, status, availableAt])
+  @@index([carrierId, priorityLevel, createdAt])
+  @@index([loadId])
+  @@index([intakeId])
 }
 
 model AmazonConnection {
