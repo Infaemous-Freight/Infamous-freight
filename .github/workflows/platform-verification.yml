@@ -1,0 +1,94 @@
+name: Platform Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_production_checks:
+        description: Run production-facing smoke/evidence checks
+        required: true
+        type: choice
+        default: 'true'
+        options:
+          - 'true'
+          - 'false'
+      run_billing_checks:
+        description: Run approved live billing checks
+        required: true
+        type: choice
+        default: 'false'
+        options:
+          - 'false'
+          - 'true'
+      run_build_checks:
+        description: Run full build checks
+        required: true
+        type: choice
+        default: 'true'
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: platform-verification-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '22'
+  PNPM_VERSION: '11.3.0'
+  RUN_PRODUCTION_CHECKS: ${{ inputs.run_production_checks == 'true' && '1' || '0' }}
+  RUN_BILLING_CHECKS: ${{ inputs.run_billing_checks == 'true' && '1' || '0' }}
+  RUN_BUILD_CHECKS: ${{ inputs.run_build_checks == 'true' && '1' || '0' }}
+
+jobs:
+  verify-platform:
+    name: Verify full platform
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Configure pnpm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Run full platform verification
+        env:
+          # Production/provider secrets are intentionally optional here.
+          # The script records missing credentials as failed evidence without printing secret values.
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_JWT_SECRET: ${{ secrets.SUPABASE_JWT_SECRET }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          VITE_STRIPE_PUBLIC_KEY: ${{ secrets.VITE_STRIPE_PUBLIC_KEY }}
+          REPORT_DIR: .platform-verification
+        run: pnpm run verify:platform
+
+      - name: Upload verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: platform-verification-evidence
+          path: .platform-verification/
+          if-no-files-found: warn
+          retention-days: 30
