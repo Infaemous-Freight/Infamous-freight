@@ -51,6 +51,7 @@
     "phase1:gate": "bash scripts/phase1-technical-platform-gate.sh",
     "phase2:gate": "bash scripts/phase2-freight-operations-gate.sh",
     "validate": "bash scripts/validate-repo.sh",
+    "verify:platform": "bash scripts/verify-entire-platform.sh",
     "deploy:full": "bash scripts/deploy-entire-repo.sh",
     "fly:deploy": "bash scripts/fly-sync-validate-deploy.sh",
     "fly:health": "bash scripts/fly-health-diagnose.sh",
