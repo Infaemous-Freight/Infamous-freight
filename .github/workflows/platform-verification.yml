@@ -1,6 +1,9 @@
 name: Platform Verification
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       run_production_checks:
@@ -39,9 +42,9 @@ concurrency:
 env:
   NODE_VERSION: '22'
   PNPM_VERSION: '11.3.0'
-  RUN_PRODUCTION_CHECKS: ${{ inputs.run_production_checks == 'true' && '1' || '0' }}
-  RUN_BILLING_CHECKS: ${{ inputs.run_billing_checks == 'true' && '1' || '0' }}
-  RUN_BUILD_CHECKS: ${{ inputs.run_build_checks == 'true' && '1' || '0' }}
+  RUN_PRODUCTION_CHECKS: ${{ github.event_name == 'workflow_dispatch' && inputs.run_production_checks == 'false' && '0' || '1' }}
+  RUN_BILLING_CHECKS: ${{ github.event_name == 'workflow_dispatch' && inputs.run_billing_checks == 'true' && '1' || '0' }}
+  RUN_BUILD_CHECKS: ${{ github.event_name == 'workflow_dispatch' && inputs.run_build_checks == 'false' && '0' || '1' }}
 
 jobs:
   verify-platform:
