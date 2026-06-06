@@ -32,6 +32,7 @@ This directory contains operational, architectural, and launch-readiness documen
 ## 🚀 Launch & Readiness
 
 - [PLATFORM_VERIFICATION_RUNBOOK.md](./PLATFORM_VERIFICATION_RUNBOOK.md) — Full-platform verification runbook for repo, production, billing, tracking, quote intake, and launch evidence.
+- [PLATFORM_VERIFICATION_BLOCKER_REGISTER.md](./PLATFORM_VERIFICATION_BLOCKER_REGISTER.md) — Current verification blocker register while GitHub Issues are disabled.
 - [LAUNCH_EVIDENCE_TEMPLATE.md](./LAUNCH_EVIDENCE_TEMPLATE.md) — Repeatable launch evidence template for release checks, quote intake, tracking, authenticated routes, Genesis, and security review.
 - [CAPABILITY_STATUS_MAP.md](./CAPABILITY_STATUS_MAP.md) — Live/beta/planned status for every platform capability.
 - [LAUNCH_READINESS_INDEX.md](./LAUNCH_READINESS_INDEX.md) — Index of launch-readiness artifacts.
