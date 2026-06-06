@@ -9,6 +9,9 @@ This directory contains operational, architectural, and launch-readiness documen
 
 ## 🧭 Platform Setup & Roadmap
 
+- [INFAMOUS_FREIGHT_MASTER_IMPLEMENTATION_PLAN.md](./INFAMOUS_FREIGHT_MASTER_IMPLEMENTATION_PLAN.md) — Master implementation plan for Genesis, portals, quote intake, tracking, KPIs, and service expansion.
+- [INFAMOUS_FREIGHT_EXECUTION_BACKLOG.md](./INFAMOUS_FREIGHT_EXECUTION_BACKLOG.md) — Developer-ready workstream backlog for the recommended rollout.
+- [NEXT_SPRINT_PUBLIC_REVENUE_LIVE_OPS.md](./NEXT_SPRINT_PUBLIC_REVENUE_LIVE_OPS.md) — Next sprint plan for public revenue capture and live operations wiring.
 - [platform-roadmap.md](./platform-roadmap.md) — Phased build direction for Infamous Freight.
 - [phase-1-branding-plan.md](./phase-1-branding-plan.md) — Phase 1 branding plan.
 - [INFAMOUS_FREIGHT_REQUIRED_SETUP.md](./INFAMOUS_FREIGHT_REQUIRED_SETUP.md) — Required GitHub, local, and deployment setup guardrails, including the Laravel TMS branch path and current Netlify monorepo distinction.
@@ -28,6 +31,7 @@ This directory contains operational, architectural, and launch-readiness documen
 
 ## 🚀 Launch & Readiness
 
+- [LAUNCH_EVIDENCE_TEMPLATE.md](./LAUNCH_EVIDENCE_TEMPLATE.md) — Repeatable launch evidence template for release checks, quote intake, tracking, authenticated routes, Genesis, and security review.
 - [CAPABILITY_STATUS_MAP.md](./CAPABILITY_STATUS_MAP.md) — Live/beta/planned status for every platform capability.
 - [LAUNCH_READINESS_INDEX.md](./LAUNCH_READINESS_INDEX.md) — Index of launch-readiness artifacts.
 - [LAUNCH-READINESS-CHECKLIST.md](./LAUNCH-READINESS-CHECKLIST.md) — Pre-launch checklist.
