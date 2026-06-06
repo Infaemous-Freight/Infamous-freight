@@ -1315,12 +1315,16 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
       originCity: validation.input.originCity,
       destCity: validation.input.destCity,
       freightType: validation.input.freightType,
+      contactEmail: validation.input.contactEmail,
       weight: validation.input.weight,
       pickupDate: validation.input.pickupDate,
       deliveryDeadline: validation.input.deliveryDeadline,
       shipperRate: validation.input.shipperRate,
       carrierCost: validation.input.carrierCost,
       profitMargin,
+      genesisScore: genesis.score,
+      genesisPriority: genesis.priority,
+      genesisReasons: genesis.reasons,
       status: genesis.priority === 'review' ? 'needs_review' : 'pending',
     });
     const notifications = buildQuoteIntakeNotifications({
@@ -1332,6 +1336,9 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
       priority: genesis.priority,
     });
     const user = getAuditUser(req);
+    const retryQueue = [];
+    let queuedNotifications = [];
+
     void auditLogger.log({
       entityType: 'quoteRequests',
       entityId: String(quoteRequest.id),
@@ -1340,18 +1347,59 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
       details: `genesisPriority=${genesis.priority} genesisScore=${genesis.score}`,
       requestId: req.requestId,
     });
-    for (const notification of notifications) {
+
+    try {
+      queuedNotifications = await dataStore.queueLoadIntakeNotifications(
+        tenantId,
+        String(quoteRequest.id),
+        notifications,
+      );
+    } catch (err) {
+      Sentry.captureException(err);
+      const retry = await dataStore.createLoadIntakeRetry(tenantId, {
+        quoteRequestId: String(quoteRequest.id),
+        operation: 'queue_load_intake_notifications',
+        lastError: err instanceof Error ? err.message : 'notification_queue_failed',
+        context: {
+          notificationCount: notifications.length,
+          genesisPriority: genesis.priority,
+          genesisScore: genesis.score,
+        },
+      });
+      retryQueue.push(retry);
+      queuedNotifications = notifications.map((notification) => ({
+        ...notification,
+        id: notification.dedupeKey,
+        tenantId,
+        quoteRequestId: String(quoteRequest.id),
+        status: 'retry_queued',
+        attempts: 0,
+      }));
+    }
+
+    for (const notification of queuedNotifications) {
       void auditLogger.log({
         entityType: 'notification',
-        entityId: notification.dedupeKey,
+        entityId: String(notification.dedupeKey),
         action: 'queue',
         ...user,
-        details: `topic=${notification.topic} role=${notification.recipientRole} priority=${notification.priority}`,
+        details: `topic=${notification.topic} role=${notification.recipientRole} priority=${notification.priority} status=${notification.status}`,
         requestId: req.requestId,
       });
     }
 
-    res.status(202).json({ data: { quoteRequest, genesis, notifications } });
+    for (const retry of retryQueue) {
+      void auditLogger.log({
+        entityType: 'retry_queue',
+        entityId: String(retry.id),
+        action: 'queue',
+        ...user,
+        details: `operation=${retry.operation} quoteRequestId=${retry.quoteRequestId ?? 'none'}`,
+        requestId: req.requestId,
+      });
+    }
+
+    res.status(202).json({ data: { quoteRequest, genesis, notifications: queuedNotifications, retryQueue } });
   }));
 
   app.post('/api/loads', ...protectedApi, wrapAsync(async (req, res) => {

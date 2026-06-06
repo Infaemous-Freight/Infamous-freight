@@ -118,13 +118,24 @@ describe('load intake automation', () => {
       originCity: 'Dallas',
       destCity: 'Atlanta',
       freightType: 'dry_van',
+      contactEmail: 'ops@genesis.example',
       weight: 42000,
       shipperRate: 3200,
       carrierCost: 2500,
       profitMargin: 700,
+      genesisScore: expect.any(Number),
+      genesisPriority: expect.stringMatching(/urgent|high|standard|review/),
+      genesisReasons: expect.any(Array),
     });
     expect(response.body.data.genesis.provider).toBe('genesis');
     expect(response.body.data.notifications).toHaveLength(2);
+    expect(response.body.data.notifications[0]).toMatchObject({
+      tenantId: 'carrier_automation',
+      quoteRequestId: response.body.data.quoteRequest.id,
+      status: 'queued',
+      attempts: 0,
+    });
+    expect(response.body.data.retryQueue).toEqual([]);
 
     const listResponse = await request(app)
       .get('/api/freight-operations/quoteRequests')
