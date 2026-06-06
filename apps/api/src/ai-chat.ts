@@ -4,6 +4,13 @@ import rateLimit from 'express-rate-limit';
 import OpenAI from 'openai';
 import type { NextFunction, Request, Response } from 'express';
 import type { ChatCompletionChunk } from 'openai/resources/chat/completions';
+import {
+  evaluateAiCoreDecision,
+  getAiCorePublicDisclosure,
+  INFAMOUS_FREIGHT_AI_CORE_VERSION,
+  INFAMOUS_FREIGHT_AI_SYSTEM_PROMPT,
+  normalizeAiCoreText,
+} from './ai-core';
 
 type ChatRole = 'system' | 'user' | 'assistant';
 
@@ -37,9 +44,12 @@ type AiChatRouterOptions = {
 };
 
 const CHAT_SYSTEM_PROMPT = `
-You are the Infamous Freight site assistant. Help shippers, brokers, carriers, drivers, and dispatch teams understand Infamous Freight services, quote requests, shipment tracking, carrier onboarding, driver applications, pricing, documents, and operational workflows.
+${INFAMOUS_FREIGHT_AI_SYSTEM_PROMPT}
 
-Keep answers practical, concise, and focused on freight logistics. Do not invent shipment statuses, prices, certifications, legal advice, compliance determinations, or account-specific information. When a request requires private account data, a firm quote, a booking decision, or human review, direct the visitor to the relevant site workflow or the Infamous Freight team.
+Public site assistant mode:
+- Help visitors understand Infamous Freight services, quote requests, shipment tracking, carrier onboarding, driver applications, pricing workflows, documents, and operational workflows.
+- Keep answers practical, concise, and focused on freight logistics.
+- Use this disclosure when relevant: ${getAiCorePublicDisclosure()}
 `.trim();
 
 const DEFAULT_MODEL = 'gpt-5.2';
@@ -78,8 +88,9 @@ function sanitizeMessages(messages: unknown): ChatMessage[] {
     .slice(-HISTORY_LIMIT)
     .map((message) => ({
       role: message.role,
-      content: message.content.trim().slice(0, MAX_MESSAGE_LENGTH),
-    }));
+      content: normalizeAiCoreText(message.content, MAX_MESSAGE_LENGTH),
+    }))
+    .filter((message) => message.content.length > 0);
 
   let totalChars = 0;
   const withinTotalCap: ChatMessage[] = [];
@@ -119,6 +130,24 @@ export function createAiChatRouter(options: AiChatRouterOptions = {}) {
     standardHeaders: true,
   });
 
+  router.get('/api/chat/policy', (_req: Request, res: Response) => {
+    res.status(200).json({
+      data: {
+        core: 'Genesis AI Core',
+        version: INFAMOUS_FREIGHT_AI_CORE_VERSION,
+        disclosure: getAiCorePublicDisclosure(),
+        blockedAutonomousActions: [
+          'quotes',
+          'bookings',
+          'dispatch',
+          'carrier approval',
+          'compliance verification',
+          'billing/account changes',
+        ],
+      },
+    });
+  });
+
   router.post('/api/chat', chatLimiter, async (req: Request, res: Response, next: NextFunction) => {
     const messages = sanitizeMessages(req.body?.messages);
     const lastUserMessage = getLastUserMessage(messages);
@@ -132,6 +161,16 @@ export function createAiChatRouter(options: AiChatRouterOptions = {}) {
       return;
     }
 
+    const decision = evaluateAiCoreDecision({
+      text: lastUserMessage.content,
+      mode: 'public_assistant',
+    });
+
+    const policyContext: ChatMessage = {
+      role: 'system',
+      content: `AI Core policy context: risk=${decision.riskLevel}; humanReviewRequired=${decision.requiresHumanReview}; reasons=${decision.reasons.join(', ')}; blockedActions=${decision.blockedActions.join(', ') || 'none'}.`,
+    };
+
     const abortController = new AbortController();
     const timeout = setTimeout(() => abortController.abort(), timeoutMs);
     const requestId = req.requestId ?? randomUUID();
@@ -140,7 +179,7 @@ export function createAiChatRouter(options: AiChatRouterOptions = {}) {
       const stream = await createClient().chat.completions.create(
         {
           model,
-          messages: [{ role: 'system', content: CHAT_SYSTEM_PROMPT }, ...messages],
+          messages: [{ role: 'system', content: CHAT_SYSTEM_PROMPT }, policyContext, ...messages],
           stream: true,
           max_completion_tokens: MAX_COMPLETION_TOKENS,
         },
@@ -152,6 +191,9 @@ export function createAiChatRouter(options: AiChatRouterOptions = {}) {
       res.setHeader('cache-control', 'no-cache, no-transform');
       res.setHeader('connection', 'keep-alive');
       res.setHeader('x-content-type-options', 'nosniff');
+      res.setHeader('x-ai-core-version', INFAMOUS_FREIGHT_AI_CORE_VERSION);
+      res.setHeader('x-ai-human-review-required', String(decision.requiresHumanReview));
+      res.setHeader('x-ai-risk-level', decision.riskLevel);
       res.flushHeaders?.();
 
       for await (const chunk of stream) {
