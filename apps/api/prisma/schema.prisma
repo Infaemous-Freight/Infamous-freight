@@ -21,26 +21,28 @@ model Carrier {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  drivers               Driver[]
-  loads                 Load[]
-  invoices              Invoice[]
-  documents             Document[]
-  teamMembers           TeamMember[]
-  quoteRequests         QuoteRequest[]
-  loadAssignments       LoadAssignment[]
-  loadDispatches        LoadDispatch[]
-  carrierPayments       CarrierPayment[]
-  aiUsageEvents         AiUsageEvent[]
-  stripeOneTimePayments StripeOneTimePayment[]
-  amazonConnections     AmazonConnection[]
-  amazonInventoryItems  AmazonInventoryItem[]
-  amazonFulfillments    AmazonFulfillmentRequest[]
-  rateAgreement         RateAgreement?
-  operationalMetrics    OperationalMetric[]
-  dispatchIncidents      DispatchIncident[]
-  dispatchAlerts         DispatchAlert[]
-  dispatchSlaTimers      DispatchSlaTimer[]
-  hosRiskEvents          HosRiskEvent[]
+  drivers                      Driver[]
+  loads                        Load[]
+  invoices                     Invoice[]
+  documents                    Document[]
+  teamMembers                  TeamMember[]
+  quoteRequests                QuoteRequest[]
+  loadIntakeNotificationQueues LoadIntakeNotificationQueue[]
+  loadIntakeRetryQueues        LoadIntakeRetryQueue[]
+  loadAssignments              LoadAssignment[]
+  loadDispatches               LoadDispatch[]
+  carrierPayments              CarrierPayment[]
+  aiUsageEvents                AiUsageEvent[]
+  stripeOneTimePayments        StripeOneTimePayment[]
+  amazonConnections            AmazonConnection[]
+  amazonInventoryItems         AmazonInventoryItem[]
+  amazonFulfillments           AmazonFulfillmentRequest[]
+  rateAgreement                RateAgreement?
+  operationalMetrics           OperationalMetric[]
+  dispatchIncidents            DispatchIncident[]
+  dispatchAlerts               DispatchAlert[]
+  dispatchSlaTimers            DispatchSlaTimer[]
+  hosRiskEvents                HosRiskEvent[]
 }
 
 model Driver {
@@ -59,8 +61,8 @@ model Driver {
   lastLocationAt DateTime @default(now())
   createdAt      DateTime @default(now())
 
-  carrier Carrier @relation(fields: [carrierId], references: [id])
-  loads   Load[]
+  carrier       Carrier        @relation(fields: [carrierId], references: [id])
+  loads         Load[]
   hosRiskEvents HosRiskEvent[]
 
   @@index([carrierId, createdAt])
@@ -102,8 +104,8 @@ model Load {
   deliveryConfirmation DeliveryConfirmation?
   carrierPayments      CarrierPayment[]
   loadBoardPost        LoadBoardPost?
-  dispatchIncidents  DispatchIncident[]
-  hosRiskEvents      HosRiskEvent[]
+  dispatchIncidents    DispatchIncident[]
+  hosRiskEvents        HosRiskEvent[]
 
   @@index([carrierId, createdAt])
   @@index([carrierId, status])
@@ -158,25 +160,79 @@ model QuoteRequest {
   originCity       String
   destCity         String
   freightType      String
+  contactEmail     String?
   weight           Int
   pickupDate       DateTime
   deliveryDeadline DateTime?
   shipperRate      Float
   carrierCost      Float
   profitMargin     Float
+  genesisScore     Int?
+  genesisPriority  String?
+  genesisReasons   Json?
   status           String    @default("pending")
   expiresAt        DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  carrier Carrier @relation(fields: [carrierId], references: [id])
+  carrier           Carrier                       @relation(fields: [carrierId], references: [id])
+  notificationQueue LoadIntakeNotificationQueue[]
+  retryQueue        LoadIntakeRetryQueue[]
 
   @@index([carrierId])
+  @@index([carrierId, status, createdAt])
   @@index([status])
 }
 
+model LoadIntakeNotificationQueue {
+  id             String   @id @default(cuid())
+  carrierId      String
+  quoteRequestId String
+  channel        String
+  topic          String
+  recipientRole  String
+  priority       String
+  dedupeKey      String   @unique
+  message        String
+  status         String   @default("queued")
+  attempts       Int      @default(0)
+  availableAt    DateTime @default(now())
+  lastError      String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  carrier      Carrier      @relation(fields: [carrierId], references: [id])
+  quoteRequest QuoteRequest @relation(fields: [quoteRequestId], references: [id])
+
+  @@index([carrierId, status, availableAt])
+  @@index([quoteRequestId])
+  @@index([recipientRole, status])
+}
+
+model LoadIntakeRetryQueue {
+  id             String   @id @default(cuid())
+  carrierId      String
+  quoteRequestId String?
+  operation      String
+  status         String   @default("queued")
+  attempts       Int      @default(0)
+  maxAttempts    Int      @default(3)
+  availableAt    DateTime @default(now())
+  lastError      String?
+  context        Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  carrier      Carrier       @relation(fields: [carrierId], references: [id])
+  quoteRequest QuoteRequest? @relation(fields: [quoteRequestId], references: [id])
+
+  @@index([carrierId, status, availableAt])
+  @@index([quoteRequestId])
+  @@index([operation, status])
+}
+
 model PublicLead {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   name        String
   email       String
   phone       String?
@@ -184,12 +240,12 @@ model PublicLead {
   originCity  String?
   destCity    String?
   freightType String?
-  weight      Float    @default(0)
+  weight      Float     @default(0)
   pickupDate  DateTime?
   notes       String?
-  source      String   @default("web-form")
-  status      String   @default("new")
-  receivedAt  DateTime @default(now())
+  source      String    @default("web-form")
+  status      String    @default("new")
+  receivedAt  DateTime  @default(now())
 
   @@index([email])
   @@index([source])
@@ -455,17 +511,17 @@ model AmazonConnection {
 }
 
 model AmazonInventoryItem {
-  id              String    @id @default(cuid())
-  carrierId       String
-  sellerSku       String
-  fulfillmentSku  String?
-  productName     String?
-  availableUnits  Int       @default(0)
-  reservedUnits   Int       @default(0)
-  inboundUnits    Int       @default(0)
-  lastSyncedAt    DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id             String    @id @default(cuid())
+  carrierId      String
+  sellerSku      String
+  fulfillmentSku String?
+  productName    String?
+  availableUnits Int       @default(0)
+  reservedUnits  Int       @default(0)
+  inboundUnits   Int       @default(0)
+  lastSyncedAt   DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   carrier Carrier @relation(fields: [carrierId], references: [id])
 
@@ -474,24 +530,24 @@ model AmazonInventoryItem {
 }
 
 model AmazonFulfillmentRequest {
-  id                   String    @id @default(cuid())
-  carrierId            String
-  loadId               String?
-  orderReference       String
-  routeDecision        String
-  status               String    @default("planned")
-  serviceLevel         String?
-  amazonOrderId        String?
-  amazonShipmentId     String?
-  carrierService       String?
-  trackingNumber       String?
-  labelDocumentId      String?
-  fulfillmentStatus    String?
-  lastEventType        String?
-  lastEventAt          DateTime?
-  requestPayload       String?
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  id                String    @id @default(cuid())
+  carrierId         String
+  loadId            String?
+  orderReference    String
+  routeDecision     String
+  status            String    @default("planned")
+  serviceLevel      String?
+  amazonOrderId     String?
+  amazonShipmentId  String?
+  carrierService    String?
+  trackingNumber    String?
+  labelDocumentId   String?
+  fulfillmentStatus String?
+  lastEventType     String?
+  lastEventAt       DateTime?
+  requestPayload    String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   carrier Carrier @relation(fields: [carrierId], references: [id])
 
@@ -501,28 +557,28 @@ model AmazonFulfillmentRequest {
 }
 
 model DispatchIncident {
-  id                       String    @id @default(cuid())
-  carrierId                String
-  loadId                   String
-  priority                 Int
-  severity                 String
-  etaDriftMinutes          Int       @default(0)
-  hosRemainingMinutes      Int?
-  appointmentAcknowledged  Boolean   @default(false)
-  podUploaded              Boolean   @default(false)
-  gpsIdleMinutes           Int       @default(0)
-  reeferTempException      Boolean   @default(false)
-  status                   String    @default("open")
-  recoveryActions          String?
-  reasons                  String?
-  slaDueAt                 DateTime?
-  resolvedAt               DateTime?
-  createdAt                DateTime  @default(now())
-  updatedAt                DateTime  @updatedAt
+  id                      String    @id @default(cuid())
+  carrierId               String
+  loadId                  String
+  priority                Int
+  severity                String
+  etaDriftMinutes         Int       @default(0)
+  hosRemainingMinutes     Int?
+  appointmentAcknowledged Boolean   @default(false)
+  podUploaded             Boolean   @default(false)
+  gpsIdleMinutes          Int       @default(0)
+  reeferTempException     Boolean   @default(false)
+  status                  String    @default("open")
+  recoveryActions         String?
+  reasons                 String?
+  slaDueAt                DateTime?
+  resolvedAt              DateTime?
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
 
-  carrier Carrier @relation(fields: [carrierId], references: [id])
-  load    Load    @relation(fields: [loadId], references: [id])
-  alerts  DispatchAlert[]
+  carrier   Carrier            @relation(fields: [carrierId], references: [id])
+  load      Load               @relation(fields: [loadId], references: [id])
+  alerts    DispatchAlert[]
   slaTimers DispatchSlaTimer[]
 
   @@index([carrierId, status, priority])
@@ -531,16 +587,16 @@ model DispatchIncident {
 }
 
 model DispatchAlert {
-  id          String   @id @default(cuid())
-  carrierId   String
-  incidentId  String?
-  loadId      String
-  channel     String
-  type        String
-  sentTo      String?
-  status      String   @default("queued")
-  payload     String?
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  carrierId  String
+  incidentId String?
+  loadId     String
+  channel    String
+  type       String
+  sentTo     String?
+  status     String   @default("queued")
+  payload    String?
+  createdAt  DateTime @default(now())
 
   carrier  Carrier           @relation(fields: [carrierId], references: [id])
   incident DispatchIncident? @relation(fields: [incidentId], references: [id])

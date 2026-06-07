@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { PrismaClient } from '@prisma/client';
 import { createPrismaClient } from './prisma-client';
 import { BillingSyncPayload } from './billing';
+import type { NotificationQueueItem } from './quote-intake-automation';
 
 type BaseRecord = {
   id: string;
@@ -40,6 +41,34 @@ export type PublicShipmentRecord = {
   lastUpdated: string;
 };
 export type FreightOperationRecord = BaseRecord & Record<string, unknown>;
+
+export type LoadIntakeNotificationQueueRecord = BaseRecord & {
+  quoteRequestId: string;
+  channel: string;
+  topic: string;
+  recipientRole: string;
+  priority: string;
+  dedupeKey: string;
+  message: string;
+  status: string;
+  attempts: number;
+  availableAt?: Date | string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+};
+
+export type LoadIntakeRetryQueueRecord = BaseRecord & {
+  quoteRequestId?: string | null;
+  operation: string;
+  status: string;
+  attempts: number;
+  maxAttempts: number;
+  availableAt?: Date | string;
+  lastError?: string | null;
+  context?: unknown;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+};
 
 export type QuoteLeadRecord = {
   id: string;
@@ -272,6 +301,20 @@ export interface DataStore {
     postId: string,
     payload: Record<string, unknown>,
   ): Promise<FreightOperationRecord>;
+  queueLoadIntakeNotifications(
+    tenantId: string,
+    quoteRequestId: string,
+    notifications: NotificationQueueItem[],
+  ): Promise<LoadIntakeNotificationQueueRecord[]>;
+  createLoadIntakeRetry(
+    tenantId: string,
+    payload: {
+      quoteRequestId?: string | null;
+      operation: string;
+      lastError?: string | null;
+      context?: unknown;
+    },
+  ): Promise<LoadIntakeRetryQueueRecord>;
   submitQuoteLead(payload: Record<string, unknown>): Promise<QuoteLeadRecord>;
   syncCarrierBilling(payload: BillingSyncPayload): Promise<boolean>;
   getCarrierStripeCustomerId(tenantId: string): Promise<string | null>;
@@ -472,6 +515,8 @@ class MemoryDataStore implements DataStore {
     operationalMetrics: [],
     loadBoardPosts: [],
   };
+  private loadIntakeNotifications: LoadIntakeNotificationQueueRecord[] = [];
+  private loadIntakeRetries: LoadIntakeRetryQueueRecord[] = [];
 
   async listLoads(tenantId: string): Promise<LoadRecord[]> {
     return this.loads.filter((item) => item.tenantId === tenantId);
@@ -541,6 +586,65 @@ class MemoryDataStore implements DataStore {
 
     records[index] = { ...records[index], ...payload, id, tenantId };
     return records[index];
+  }
+
+  async queueLoadIntakeNotifications(
+    tenantId: string,
+    quoteRequestId: string,
+    notifications: NotificationQueueItem[],
+  ): Promise<LoadIntakeNotificationQueueRecord[]> {
+    const records = notifications.map((notification) => {
+      const existing = this.loadIntakeNotifications.find((item) => item.dedupeKey === notification.dedupeKey);
+      if (existing) return existing;
+
+      const record: LoadIntakeNotificationQueueRecord = {
+        id: randomUUID(),
+        tenantId,
+        quoteRequestId,
+        channel: notification.channel,
+        topic: notification.topic,
+        recipientRole: notification.recipientRole,
+        priority: notification.priority,
+        dedupeKey: notification.dedupeKey,
+        message: notification.message,
+        status: 'queued',
+        attempts: 0,
+        availableAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      this.loadIntakeNotifications.push(record);
+      return record;
+    });
+
+    return records;
+  }
+
+  async createLoadIntakeRetry(
+    tenantId: string,
+    payload: {
+      quoteRequestId?: string | null;
+      operation: string;
+      lastError?: string | null;
+      context?: unknown;
+    },
+  ): Promise<LoadIntakeRetryQueueRecord> {
+    const record: LoadIntakeRetryQueueRecord = {
+      id: randomUUID(),
+      tenantId,
+      quoteRequestId: payload.quoteRequestId ?? null,
+      operation: payload.operation,
+      status: 'queued',
+      attempts: 0,
+      maxAttempts: 3,
+      availableAt: new Date().toISOString(),
+      lastError: payload.lastError ?? null,
+      context: payload.context,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    this.loadIntakeRetries.push(record);
+    return record;
   }
 
   async convertQuoteToLoad(
@@ -931,6 +1035,63 @@ class PrismaDataStore implements DataStore {
     const delegate = (this.prisma as unknown as Record<string, any>)[config.delegate];
     const record = await delegate.create({ data }) as Record<string, unknown>;
     return normalizeOperationRecord(record, tenantId);
+  }
+
+  async queueLoadIntakeNotifications(
+    tenantId: string,
+    quoteRequestId: string,
+    notifications: NotificationQueueItem[],
+  ): Promise<LoadIntakeNotificationQueueRecord[]> {
+    const delegate = (this.prisma as unknown as Record<string, any>).loadIntakeNotificationQueue;
+    const dedupeKeys = notifications.map((notification) => notification.dedupeKey);
+
+    await delegate.createMany({
+      data: notifications.map((notification) => ({
+        carrierId: tenantId,
+        quoteRequestId,
+        channel: notification.channel,
+        topic: notification.topic,
+        recipientRole: notification.recipientRole,
+        priority: notification.priority,
+        dedupeKey: notification.dedupeKey,
+        message: notification.message,
+      })),
+      skipDuplicates: true,
+    });
+
+    const records = await delegate.findMany({
+      where: {
+        carrierId: tenantId,
+        quoteRequestId,
+        dedupeKey: { in: dedupeKeys },
+      },
+      orderBy: { createdAt: 'asc' },
+    }) as Array<Record<string, unknown>>;
+
+    return records.map((record) => normalizeOperationRecord(record, tenantId) as LoadIntakeNotificationQueueRecord);
+  }
+
+  async createLoadIntakeRetry(
+    tenantId: string,
+    payload: {
+      quoteRequestId?: string | null;
+      operation: string;
+      lastError?: string | null;
+      context?: unknown;
+    },
+  ): Promise<LoadIntakeRetryQueueRecord> {
+    const delegate = (this.prisma as unknown as Record<string, any>).loadIntakeRetryQueue;
+    const record = await delegate.create({
+      data: {
+        carrierId: tenantId,
+        quoteRequestId: payload.quoteRequestId ?? null,
+        operation: payload.operation,
+        lastError: payload.lastError ?? null,
+        context: payload.context ?? undefined,
+      },
+    }) as Record<string, unknown>;
+
+    return normalizeOperationRecord(record, tenantId) as LoadIntakeRetryQueueRecord;
   }
 
   async updateFreightOperation(
