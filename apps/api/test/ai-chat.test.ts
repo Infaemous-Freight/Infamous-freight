@@ -83,8 +83,15 @@ describe('AI chat route', () => {
     await request(app).post('/api/chat').send({ messages }).expect(200);
 
     const requestBody = create.mock.calls[0][0];
-    expect(requestBody.messages).toHaveLength(21);
+    const conversationMessages = requestBody.messages.filter((message: { role: string }) => message.role !== 'system');
+
+    expect(requestBody.messages).toHaveLength(22);
     expect(requestBody.messages[0].role).toBe('system');
+    expect(requestBody.messages[1]).toEqual(expect.objectContaining({
+      role: 'system',
+      content: expect.stringContaining('AI Core policy context:'),
+    }));
+    expect(conversationMessages).toHaveLength(20);
     expect(requestBody.messages.at(-1).content).toHaveLength(4_000);
   });
 
