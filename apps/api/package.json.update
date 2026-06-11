@@ -1,0 +1,17 @@
+Update apps/api/package.json dependencies:
+
+"dependencies": {
+  "@prisma/adapter-pg": "^7.8.0",
+  "@prisma/client": "7.8.0",
+  "@prisma/extension-accelerate": "3.0.1",
+  "@sentry/node": "^10.53.1",
+  "cors": "^2.8.5",
+  "dotenv": "^17.4.2",
+  "express": "^5.2.1",
+  "express-rate-limit": "^8.5.2",
+  "helmet": "^8.1.0",
+  "openai": "^6.38.0",
+  "redis": "^4.6.14"
+}
+
+Run: pnpm install
