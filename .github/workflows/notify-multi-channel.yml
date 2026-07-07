@@ -1,0 +1,220 @@
+name: Multi-Channel Notifications
+
+on:
+  workflow_run:
+    workflows: ['Deploy']
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+
+env:
+  DEPLOYMENT_SUCCESS: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+jobs:
+  determine-status:
+    name: Determine deployment status
+    runs-on: ubuntu-latest
+    outputs:
+      emoji: ${{ steps.status.outputs.emoji }}
+      status: ${{ steps.status.outputs.status }}
+      status_title: ${{ steps.status.outputs.status_title }}
+      color: ${{ steps.status.outputs.color }}
+    steps:
+      - name: Set status outputs
+        id: status
+        run: |
+          if [ "${{ github.event.workflow_run.conclusion }}" == "success" ]; then
+            echo "emoji=✅" >> $GITHUB_OUTPUT
+            echo "status=succeeded" >> $GITHUB_OUTPUT
+            echo "status_title=Deployment Successful" >> $GITHUB_OUTPUT
+            echo "color=good" >> $GITHUB_OUTPUT
+          else
+            echo "emoji=❌" >> $GITHUB_OUTPUT
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "status_title=Deployment Failed" >> $GITHUB_OUTPUT
+            echo "color=danger" >> $GITHUB_OUTPUT
+          fi
+
+  notify-slack:
+    name: Notify Slack
+    runs-on: ubuntu-latest
+    needs: determine-status
+    if: ${{ secrets.SLACK_WEBHOOK_URL != '' }}
+
+    steps:
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          payload: |
+            {
+              "text": "${{ needs.determine-status.outputs.emoji }} ${{ needs.determine-status.outputs.status_title }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ needs.determine-status.outputs.emoji }} ${{ needs.determine-status.outputs.status_title }}",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Repository:*\n${{ github.event.workflow_run.repository.full_name }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:*\n${{ github.event.workflow_run.head_branch }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Commit:*\n`${{ github.event.workflow_run.head_commit.id | slice: 0, 7 }}`"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author:*\n${{ github.event.workflow_run.head_commit.author.name }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Message:*\n```${{ github.event.workflow_run.head_commit.message }}```"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Run"
+                      },
+                      "url": "${{ github.event.workflow_run.html_url }}"
+                    },
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Commit"
+                      },
+                      "url": "${{ github.event.workflow_run.head_commit.url }}"
+                    }
+                  ]
+                }
+              ]
+            }
+
+  notify-discord:
+    name: Notify Discord
+    runs-on: ubuntu-latest
+    needs: determine-status
+    if: ${{ secrets.DISCORD_WEBHOOK_URL != '' }}
+
+    steps:
+      - name: Send Discord notification
+        uses: tsickert/discord-webhook@v1.3.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          content: "${{ needs.determine-status.outputs.emoji }} **${{ needs.determine-status.outputs.status_title }}**"
+          embeds: |
+            [
+              {
+                "title": "Deployment Status",
+                "color": ${{ needs.determine-status.outputs.color == 'good' && '2E8B57' || '8B0000' }},
+                "fields": [
+                  {
+                    "name": "Repository",
+                    "value": "${{ github.event.workflow_run.repository.full_name }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Branch",
+                    "value": "${{ github.event.workflow_run.head_branch }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Commit",
+                    "value": "`${{ github.event.workflow_run.head_commit.id | slice: 0, 7 }}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "Author",
+                    "value": "${{ github.event.workflow_run.head_commit.author.name }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Message",
+                    "value": "${{ github.event.workflow_run.head_commit.message }}",
+                    "inline": false
+                  }
+                ],
+                "url": "${{ github.event.workflow_run.html_url }}"
+              }
+            ]
+
+  notify-teams:
+    name: Notify Microsoft Teams
+    runs-on: ubuntu-latest
+    needs: determine-status
+    if: ${{ secrets.TEAMS_WEBHOOK_URL != '' }}
+
+    steps:
+      - name: Send Teams notification
+        uses: jdcargile/ms-teams-notification@v1.3
+        with:
+          github-token: ${{ github.token }}
+          ms-teams-webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          notification-color: ${{ needs.determine-status.outputs.color == 'good' && '28a745' || 'dc3545' }}
+          title: ${{ needs.determine-status.outputs.status_title }}
+          message: |
+            **Repository:** ${{ github.event.workflow_run.repository.full_name }}
+            **Branch:** ${{ github.event.workflow_run.head_branch }}
+            **Commit:** `${{ github.event.workflow_run.head_commit.id | slice: 0, 7 }}`
+            **Author:** ${{ github.event.workflow_run.head_commit.author.name }}
+            **Message:** ${{ github.event.workflow_run.head_commit.message }}
+
+  notify-github:
+    name: GitHub Deployment Status
+    runs-on: ubuntu-latest
+    needs: determine-status
+
+    steps:
+      - name: Create GitHub deployment status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ needs.determine-status.outputs.status }}' === 'succeeded' ? 'success' : 'failure';
+            const description = '${{ needs.determine-status.outputs.emoji }} Deployment ${{ needs.determine-status.outputs.status }}';
+            
+            core.notice(`${description} - View at ${{ github.event.workflow_run.html_url }}`);
+            
+            if (status === 'success') {
+              core.info('✅ All deployment channels notified');
+            } else {
+              core.warning('❌ Deployment failed - check logs for details');
+            }
+
+  summary:
+    name: Notification Summary
+    runs-on: ubuntu-latest
+    needs: [notify-slack, notify-discord, notify-teams]
+    if: always()
+
+    steps:
+      - name: Report notification status
+        run: |
+          echo "📢 Notification Summary"
+          echo "===================="
+          echo "Slack: ${{ needs.notify-slack.result }}"
+          echo "Discord: ${{ needs.notify-discord.result }}"
+          echo "Teams: ${{ needs.notify-teams.result }}"
+          echo ""
+          echo "✅ All notifications sent (or skipped if secrets not configured)"
