@@ -1,0 +1,41 @@
+ci: add production health monitor with automatic rollback on failures
+
+Comprehensive production health monitoring system:
+- Scheduled health checks (every 5 minutes by default)
+- Multi-endpoint health verification (web, API, Fly)
+- Error rate analysis and thresholds
+- Automatic rollback decision engine
+- Manual override capability (force rollback)
+- Post-rollback verification
+- Incident tracking via GitHub issues
+- Complete health status reporting
+
+Features:
+- Web root availability check
+- API liveness and readiness probes
+- Fly deployment status
+- HTTP response validation
+- Response time monitoring
+- Error rate threshold checking
+- Automatic rollback to previous release
+- Graceful degradation handling
+- Multi-stage verification
+
+Safety mechanisms:
+- No health check retries (fail-fast)
+- Multiple endpoint checks before rollback
+- Manual approval environment for rollback
+- Post-rollback health verification
+- Automatic incident issue creation
+- Force rollback capability for emergency use
+
+Monitoring endpoints:
+- GET /api/health (general)
+- GET /api/health/live (liveness)
+- GET /api/health/ready (readiness)
+- Web root availability
+
+Configure via repository variables:
+- HEALTH_CHECK_TIMEOUT: Timeout in seconds (default: 20)
+- ALERT_THRESHOLD_MINUTES: Alert after N minutes of issues
+- FLY_APP: Fly application name
