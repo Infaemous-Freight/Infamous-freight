@@ -1,0 +1,371 @@
+name: Test Coverage & Performance Gates
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+  PNPM_VERSION: '11.3.0'
+  COVERAGE_THRESHOLD: 70
+  BUNDLE_SIZE_THRESHOLD_MB: 500
+
+jobs:
+  test-coverage-api:
+    name: API Test Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run API tests with coverage
+        run: pnpm -C apps/api run test:coverage
+
+      - name: Check coverage thresholds
+        run: |
+          set -euo pipefail
+          COVERAGE_FILE="apps/api/coverage/coverage-summary.json"
+          
+          if [ ! -f "$COVERAGE_FILE" ]; then
+            echo "❌ Coverage summary file not found: $COVERAGE_FILE"
+            exit 1
+          fi
+          
+          # Extract coverage percentages
+          LINES=$(grep -o '"lines":{"total":{"pct":[^}]*}' "$COVERAGE_FILE" | grep -o '[0-9.]*' | head -1)
+          FUNCTIONS=$(grep -o '"functions":{"total":{"pct":[^}]*}' "$COVERAGE_FILE" | grep -o '[0-9.]*' | head -1)
+          BRANCHES=$(grep -o '"branches":{"total":{"pct":[^}]*}' "$COVERAGE_FILE" | grep -o '[0-9.]*' | head -1)
+          STATEMENTS=$(grep -o '"statements":{"total":{"pct":[^}]*}' "$COVERAGE_FILE" | grep -o '[0-9.]*' | head -1)
+          
+          THRESHOLD=${{ env.COVERAGE_THRESHOLD }}
+          
+          echo "📊 API Test Coverage Report"
+          echo "============================"
+          echo "Lines:       ${LINES}% (threshold: ${THRESHOLD}%)"
+          echo "Functions:   ${FUNCTIONS}% (threshold: ${THRESHOLD}%)"
+          echo "Branches:    ${BRANCHES}% (threshold: ${THRESHOLD}%)"
+          echo "Statements:  ${STATEMENTS}% (threshold: ${THRESHOLD}%)"
+          echo ""
+          
+          FAILED=0
+          if (( $(echo "$LINES < $THRESHOLD" | bc -l) )); then
+            echo "❌ Lines coverage ($LINES%) below threshold ($THRESHOLD%)"
+            FAILED=1
+          fi
+          if (( $(echo "$FUNCTIONS < $THRESHOLD" | bc -l) )); then
+            echo "❌ Functions coverage ($FUNCTIONS%) below threshold ($THRESHOLD%)"
+            FAILED=1
+          fi
+          if (( $(echo "$BRANCHES < $THRESHOLD" | bc -l) )); then
+            echo "⚠️ Branches coverage ($BRANCHES%) below threshold ($THRESHOLD%) - warning only"
+          fi
+          if (( $(echo "$STATEMENTS < $THRESHOLD" | bc -l) )); then
+            echo "❌ Statements coverage ($STATEMENTS%) below threshold ($THRESHOLD%)"
+            FAILED=1
+          fi
+          
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "❌ Coverage thresholds not met"
+            exit 1
+          else
+            echo ""
+            echo "✅ All coverage thresholds met"
+          fi
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-coverage-report-${{ github.run_id }}
+          path: apps/api/coverage/
+          retention-days: 30
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const coverage = JSON.parse(fs.readFileSync('apps/api/coverage/coverage-summary.json', 'utf8'));
+            
+            const lines = coverage.total.lines.pct;
+            const functions = coverage.total.functions.pct;
+            const branches = coverage.total.branches.pct;
+            const statements = coverage.total.statements.pct;
+            
+            const comment = `## 📊 API Test Coverage Report
+            
+| Metric | Coverage | Status |
+|--------|----------|--------|
+| Lines | ${lines}% | ${lines >= 70 ? '✅' : '❌'} |
+| Functions | ${functions}% | ${functions >= 70 ? '✅' : '❌'} |
+| Branches | ${branches}% | ${branches >= 70 ? '⚠️' : '❌'} |
+| Statements | ${statements}% | ${statements >= 70 ? '✅' : '❌'} |
+
+Threshold: 70%
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  test-coverage-web:
+    name: Web Test Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Web tests with coverage
+        run: pnpm -C apps/web run test -- --coverage
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-coverage-report-${{ github.run_id }}
+          path: apps/web/coverage/
+          retention-days: 30
+
+  bundle-size-analysis:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Web bundle
+        run: pnpm -C apps/web run build
+
+      - name: Check bundle size
+        run: |
+          set -euo pipefail
+          DIST_DIR="apps/web/dist"
+          THRESHOLD_MB=${{ env.BUNDLE_SIZE_THRESHOLD_MB }}
+          
+          if [ ! -d "$DIST_DIR" ]; then
+            echo "❌ Build output directory not found: $DIST_DIR"
+            exit 1
+          fi
+          
+          TOTAL_SIZE=$(du -sh "$DIST_DIR" | cut -f1)
+          TOTAL_SIZE_BYTES=$(du -sb "$DIST_DIR" | cut -f1)
+          TOTAL_SIZE_MB=$((TOTAL_SIZE_BYTES / 1024 / 1024))
+          
+          echo "📦 Bundle Size Analysis"
+          echo "======================="
+          echo "Total size: $TOTAL_SIZE ($TOTAL_SIZE_MB MB)"
+          echo "Threshold: ${THRESHOLD_MB} MB"
+          echo ""
+          
+          # Analyze individual assets
+          echo "📂 Asset Breakdown:"
+          find "$DIST_DIR" -type f \( -name "*.js" -o -name "*.css" -o -name "*.woff2" \) \
+            -exec du -h {} + | sort -hr | head -20
+          
+          echo ""
+          if [ "$TOTAL_SIZE_MB" -gt "$THRESHOLD_MB" ]; then
+            echo "⚠️ Bundle size ($TOTAL_SIZE_MB MB) exceeds threshold ($THRESHOLD_MB MB)"
+            echo "Consider optimizing or increasing threshold if intentional"
+          else
+            echo "✅ Bundle size ($TOTAL_SIZE_MB MB) within threshold ($THRESHOLD_MB MB)"
+          fi
+
+      - name: Comment PR with bundle analysis
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const { execSync } = require('child_process');
+            
+            const distDir = 'apps/web/dist';
+            const sizeBytes = parseInt(execSync(`du -sb ${distDir} | cut -f1`).toString());
+            const sizeMB = (sizeBytes / 1024 / 1024).toFixed(2);
+            
+            // Get largest files
+            const files = execSync(`find ${distDir} -type f -exec du -b {} + | sort -rn | head -10`)
+              .toString()
+              .split('\n')
+              .filter(l => l)
+              .map(l => {
+                const [bytes, file] = l.split('\t');
+                return {
+                  file: file.replace(distDir + '/', ''),
+                  sizeMB: (parseInt(bytes) / 1024 / 1024).toFixed(2)
+                };
+              });
+            
+            let filesList = files.map(f => `| ${f.file} | ${f.sizeMB} MB |`).join('\n');
+            
+            const comment = `## 📦 Bundle Size Analysis
+            
+**Total Size:** ${sizeMB} MB (Threshold: 500 MB)
+            
+### Largest Assets:
+| File | Size |
+|------|------|
+${filesList}
+            
+Status: ${parseFloat(sizeMB) <= 500 ? '✅' : '⚠️'}
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  performance-metrics:
+    name: Performance Metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build API
+        run: pnpm -C apps/api run build
+
+      - name: Calculate build times
+        run: |
+          set -euo pipefail
+          echo "⏱️ Build Performance Metrics"
+          echo "============================"
+          echo ""
+          
+          echo "API Build:"
+          time pnpm -C apps/api run build 2>&1 | tail -5 || true
+          
+          echo ""
+          echo "Web Build:"
+          time pnpm -C apps/web run build 2>&1 | tail -5 || true
+
+      - name: Analyze TypeScript compilation
+        run: |
+          set -euo pipefail
+          echo "🔍 TypeScript Compilation Analysis"
+          echo "===================================="
+          
+          echo ""
+          echo "API TypeScript Check:"
+          pnpm -C apps/api run lint
+          
+          echo ""
+          echo "Web TypeScript Check:"
+          pnpm -C apps/web run typecheck
+
+  gates-summary:
+    name: Quality Gates Summary
+    runs-on: ubuntu-latest
+    needs: [test-coverage-api, test-coverage-web, bundle-size-analysis, performance-metrics]
+    if: always()
+
+    steps:
+      - name: Check all gates
+        run: |
+          echo "🎯 Quality Gates Summary"
+          echo "======================="
+          echo ""
+          echo "API Test Coverage: ${{ needs.test-coverage-api.result }}"
+          echo "Web Test Coverage: ${{ needs.test-coverage-web.result }}"
+          echo "Bundle Size Analysis: ${{ needs.bundle-size-analysis.result }}"
+          echo "Performance Metrics: ${{ needs.performance-metrics.result }}"
+          echo ""
+          
+          if [ "${{ needs.test-coverage-api.result }}" != "success" ] || \
+             [ "${{ needs.test-coverage-web.result }}" != "success" ] || \
+             [ "${{ needs.bundle-size-analysis.result }}" != "success" ] || \
+             [ "${{ needs.performance-metrics.result }}" != "success" ]; then
+            echo "❌ Some quality gates failed - review details above"
+            exit 1
+          else
+            echo "✅ All quality gates passed"
+          fi
