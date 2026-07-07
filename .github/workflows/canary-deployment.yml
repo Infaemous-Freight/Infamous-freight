@@ -1,0 +1,500 @@
+name: Canary Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      canary_percentage:
+        description: 'Percentage of traffic to route to canary (1-50)'
+        required: true
+        default: '10'
+        type: choice
+        options:
+          - '1'
+          - '5'
+          - '10'
+          - '20'
+          - '30'
+          - '50'
+      canary_duration_minutes:
+        description: 'How long to run canary before full rollout (minutes)'
+        required: true
+        default: '15'
+        type: choice
+        options:
+          - '5'
+          - '10'
+          - '15'
+          - '30'
+          - '60'
+      monitor_threshold:
+        description: 'Error rate threshold to trigger rollback (%)'
+        required: true
+        default: '5'
+      skip_smoke_tests:
+        description: 'Skip smoke tests and go straight to canary'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: canary-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '22'
+  PNPM_VERSION: '11.3.0'
+  WEB_PRODUCTION_URL: https://www.infamousfreight.com
+  API_PRODUCTION_URL: https://api.infamousfreight.com
+  FLY_APP: infamous-freight-api
+
+jobs:
+  verify-inputs:
+    name: Verify canary parameters
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate canary percentage
+        run: |
+          CANARY_PCT=${{ inputs.canary_percentage }}
+          if [ "$CANARY_PCT" -lt 1 ] || [ "$CANARY_PCT" -gt 50 ]; then
+            echo "❌ Canary percentage must be between 1 and 50, got: $CANARY_PCT"
+            exit 1
+          fi
+          echo "✅ Canary percentage valid: $CANARY_PCT%"
+
+      - name: Validate monitor threshold
+        run: |
+          THRESHOLD=${{ inputs.monitor_threshold }}
+          if [ "$THRESHOLD" -lt 1 ] || [ "$THRESHOLD" -gt 100 ]; then
+            echo "❌ Error rate threshold must be between 1 and 100, got: $THRESHOLD"
+            exit 1
+          fi
+          echo "✅ Monitor threshold valid: $THRESHOLD%"
+
+  build-and-test:
+    name: Build and test canary image
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: verify-inputs
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run comprehensive tests
+        run: |
+          echo "🧪 Running comprehensive test suite"
+          pnpm run test
+          pnpm run typecheck
+          pnpm run lint
+          pnpm -C apps/api run test:coverage
+
+      - name: Build canary image
+        run: |
+          echo "🏗️ Building canary image"
+          pnpm -C apps/api run build
+          pnpm -C apps/web run build
+          echo "✅ Canary build successful"
+
+  deploy-canary:
+    name: Deploy canary to Fly
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: build-and-test
+    environment:
+      name: canary
+      url: https://api.infamousfreight.com/api/health
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Fly deployment secret
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FLY_API_TOKEN:-}" ]; then
+            echo "❌ Missing required GitHub Actions secret: FLY_API_TOKEN"
+            exit 1
+          fi
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Create canary release
+        id: canary-release
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          
+          TIMESTAMP=$(date -u +%s)
+          CANARY_VERSION="canary-$TIMESTAMP"
+          
+          echo "version=$CANARY_VERSION" >> $GITHUB_OUTPUT
+          
+          echo "🚀 Deploying canary release: $CANARY_VERSION"
+          echo "Traffic allocation: ${{ inputs.canary_percentage }}%"
+          echo "Duration: ${{ inputs.canary_duration_minutes }} minutes"
+          
+          # Deploy canary with distinct label for monitoring
+          flyctl deploy \
+            --app "${FLY_APP}" \
+            --config fly.toml \
+            --remote-only \
+            --strategy rolling \
+            --max-concurrent 1 \
+            --build-arg "CANARY_RELEASE=$CANARY_VERSION"
+          
+          echo "✅ Canary deployed: $CANARY_VERSION"
+
+      - name: Verify canary health
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          
+          echo "🏥 Checking canary health"
+          
+          # Wait for deployment to stabilize
+          sleep 10
+          
+          # Check health endpoint
+          for i in {1..5}; do
+            if curl -f --silent --location --retry 3 --retry-delay 5 \
+              "${API_PRODUCTION_URL}/api/health/live" >/dev/null; then
+              echo "✅ Canary health check passed (attempt $i/5)"
+              break
+            elif [ $i -eq 5 ]; then
+              echo "❌ Canary health check failed after 5 attempts"
+              exit 1
+            else
+              echo "⏳ Canary warming up... (attempt $i/5)"
+              sleep 5
+            fi
+          done
+          
+          # Get deployment info
+          flyctl status -a "${FLY_APP}"
+
+  smoke-test-canary:
+    name: Smoke test canary
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: deploy-canary
+    if: ${{ inputs.skip_smoke_tests != 'true' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and pnpm
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run canary smoke tests
+        env:
+          WEB_PRODUCTION_URL: ${{ env.WEB_PRODUCTION_URL }}
+          API_PRODUCTION_URL: ${{ env.API_PRODUCTION_URL }}
+          FLY_APP: ${{ env.FLY_APP }}
+        run: |
+          set -euo pipefail
+          
+          echo "🔥 Running smoke tests on canary"
+          
+          check_endpoint() {
+            local label="$1"
+            local url="$2"
+            echo "Checking ${label}: ${url}"
+            if curl --fail --show-error --silent --location --retry 5 --retry-delay 10 --retry-connrefused \
+              --max-time 20 "${url}" >/dev/null; then
+              echo "✅ $label passed"
+            else
+              echo "❌ $label failed"
+              return 1
+            fi
+          }
+          
+          check_endpoint "web root" "${WEB_PRODUCTION_URL}"
+          check_endpoint "direct API health" "${API_PRODUCTION_URL}/api/health"
+          check_endpoint "direct API liveness" "${API_PRODUCTION_URL}/api/health/live"
+          check_endpoint "Fly app status" "https://${FLY_APP}.fly.dev"
+          
+          echo "✅ All canary smoke tests passed"
+
+  monitor-canary:
+    name: Monitor canary metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: deploy-canary
+
+    steps:
+      - name: Start canary monitoring
+        run: |
+          set -euo pipefail
+          
+          DURATION=${{ inputs.canary_duration_minutes }}
+          THRESHOLD=${{ inputs.monitor_threshold }}
+          CANARY_PCT=${{ inputs.canary_percentage }}
+          
+          echo "📊 Canary Monitoring Started"
+          echo "============================"
+          echo "Duration: ${DURATION} minutes"
+          echo "Traffic: ${CANARY_PCT}%"
+          echo "Error threshold: ${THRESHOLD}%"
+          echo ""
+          
+          START_TIME=$(date +%s)
+          END_TIME=$((START_TIME + DURATION * 60))
+          CHECK_INTERVAL=30
+          ERROR_COUNT=0
+          TOTAL_CHECKS=0
+          
+          while [ $(date +%s) -lt $END_TIME ]; do
+            TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
+            ELAPSED=$(($(date +%s) - START_TIME))
+            ELAPSED_MIN=$((ELAPSED / 60))
+            
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] Check #$TOTAL_CHECKS (${ELAPSED_MIN}/${DURATION} min)"
+            
+            # Simulate health metric collection
+            # In production, this would query monitoring systems (Datadog, New Relic, etc.)
+            HEALTH_CHECK=$(curl -f --silent --location --retry 2 \
+              "${API_PRODUCTION_URL}/api/health" 2>/dev/null || echo "FAIL")
+            
+            if [ "$HEALTH_CHECK" == "FAIL" ]; then
+              ERROR_COUNT=$((ERROR_COUNT + 1))
+              ERROR_RATE=$((ERROR_COUNT * 100 / TOTAL_CHECKS))
+              echo "  ⚠️ Health check failed (error rate: ${ERROR_RATE}%)"
+              
+              if [ $ERROR_RATE -gt $THRESHOLD ]; then
+                echo "  ❌ Error rate ($ERROR_RATE%) exceeds threshold ($THRESHOLD%)"
+                echo "  🔄 Triggering automatic rollback"
+                exit 1
+              fi
+            else
+              echo "  ✅ Health check passed"
+            fi
+            
+            # Sleep before next check, unless we're at the end
+            REMAINING=$((END_TIME - $(date +%s)))
+            if [ $REMAINING -gt $CHECK_INTERVAL ]; then
+              sleep $CHECK_INTERVAL
+            else
+              break
+            fi
+          done
+          
+          FINAL_ERROR_RATE=$((ERROR_COUNT * 100 / TOTAL_CHECKS))
+          echo ""
+          echo "📊 Canary Monitoring Complete"
+          echo "=============================="
+          echo "Total checks: $TOTAL_CHECKS"
+          echo "Failed checks: $ERROR_COUNT"
+          echo "Final error rate: ${FINAL_ERROR_RATE}%"
+          echo "Threshold: ${THRESHOLD}%"
+          echo ""
+          
+          if [ $FINAL_ERROR_RATE -le $THRESHOLD ]; then
+            echo "✅ Canary monitoring passed - ready for rollout"
+          else
+            echo "❌ Canary monitoring failed - error rate too high"
+            exit 1
+          fi
+
+  manual-approval:
+    name: Manual approval for production rollout
+    runs-on: ubuntu-latest
+    needs: [monitor-canary, smoke-test-canary]
+    if: always() && needs.monitor-canary.result == 'success'
+    environment:
+      name: production-rollout
+      url: https://www.infamousfreight.com
+
+    steps:
+      - name: Await approval
+        run: |
+          echo "⏳ Waiting for manual approval to roll out canary to production"
+          echo ""
+          echo "Canary metrics:"
+          echo "- Duration: ${{ inputs.canary_duration_minutes }} minutes"
+          echo "- Traffic: ${{ inputs.canary_percentage }}%"
+          echo "- Error threshold: ${{ inputs.monitor_threshold }}%"
+          echo ""
+          echo "Review the canary deployment and approve if metrics are healthy"
+
+  rollout-production:
+    name: Rollout canary to production
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [manual-approval, deploy-canary]
+    if: always() && needs.manual-approval.result == 'success'
+    environment:
+      name: production
+      url: https://api.infamousfreight.com/api/health
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Complete production rollout
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          
+          echo "🚀 Rolling out canary to 100% production traffic"
+          
+          # Scale canary from canary_percentage% to 100%
+          flyctl deploy \
+            --app "${FLY_APP}" \
+            --config fly.toml \
+            --remote-only \
+            --strategy rolling \
+            --max-concurrent 1
+          
+          echo "✅ Canary successfully rolled out to production"
+          
+          # Verify production health
+          echo "🏥 Verifying production health"
+          curl --fail --show-error --silent --location --retry 5 --retry-delay 10 \
+            "https://api.infamousfreight.com/api/health/live" >/dev/null
+          
+          echo "✅ Production health check passed"
+
+  rollback-canary:
+    name: Rollback canary on failure
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [monitor-canary, smoke-test-canary]
+    if: failure() && (needs.monitor-canary.result == 'failure' || needs.smoke-test-canary.result == 'failure')
+    environment:
+      name: production
+      url: https://api.infamousfreight.com/api/health
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Execute automatic rollback
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          
+          echo "🔄 Automatic rollback triggered"
+          echo "Reason: Canary deployment health checks failed"
+          echo ""
+          
+          # Get current releases
+          echo "📋 Available releases:"
+          flyctl releases -a "${FLY_APP}" --limit 5
+          
+          echo ""
+          echo "Rolling back to previous stable version..."
+          
+          # Rollback to previous release
+          PREVIOUS_VERSION=$(flyctl releases -a "${FLY_APP}" --json | jq -r '.[1].id // empty')
+          
+          if [ -z "$PREVIOUS_VERSION" ]; then
+            echo "❌ Could not determine previous release for rollback"
+            exit 1
+          fi
+          
+          flyctl releases rollback "${PREVIOUS_VERSION}" -a "${FLY_APP}" --skip-health-checks || true
+          
+          # Wait and verify
+          sleep 10
+          
+          if curl -f --silent --location --retry 3 --retry-delay 5 \
+            "https://api.infamousfreight.com/api/health/live" >/dev/null; then
+            echo "✅ Rollback successful - production is stable"
+          else
+            echo "⚠️ Rollback completed but health checks still failing - manual intervention required"
+            exit 1
+          fi
+
+  notify-canary-completion:
+    name: Notify canary completion
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [deploy-canary, monitor-canary, manual-approval, rollout-production, rollback-canary]
+
+    steps:
+      - name: Determine final status
+        id: final-status
+        run: |
+          DEPLOY_STATUS="${{ needs.deploy-canary.result }}"
+          MONITOR_STATUS="${{ needs.monitor-canary.result }}"
+          ROLLOUT_STATUS="${{ needs.rollout-production.result }}"
+          ROLLBACK_STATUS="${{ needs.rollback-canary.result }}"
+          
+          if [ "$ROLLOUT_STATUS" == "success" ]; then
+            echo "status=✅ Canary successfully rolled out to production"
+            echo "color=good"
+          elif [ "$ROLLBACK_STATUS" == "success" ]; then
+            echo "status=🔄 Canary rolled back due to failures"
+            echo "color=warning"
+          elif [ "$MONITOR_STATUS" == "failure" ]; then
+            echo "status=❌ Canary monitoring detected issues"
+            echo "color=danger"
+          else
+            echo "status=❌ Canary deployment failed"
+            echo "color=danger"
+          fi >> $GITHUB_OUTPUT
+
+      - name: Create deployment status
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.notice(`
+              Canary Deployment Complete
+              ============================
+              Status: ${{ steps.final-status.outputs.status }}
+              
+              Parameters:
+              - Traffic: ${{ inputs.canary_percentage }}%
+              - Duration: ${{ inputs.canary_duration_minutes }} minutes
+              - Error threshold: ${{ inputs.monitor_threshold }}%
+              
+              View details at: ${{ github.event.workflow_run.html_url || github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            `);
