@@ -24,7 +24,7 @@
     "@sentry/react": "^10.53.1",
     "@stripe/react-stripe-js": "^6.3.0",
     "@stripe/stripe-js": "^9.5.0",
-    "axios": "~1.16.0",
+    "axios": "~1.18.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "date-fns": "^4.1.0",
