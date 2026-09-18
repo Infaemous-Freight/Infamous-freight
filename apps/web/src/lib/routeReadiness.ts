@@ -39,11 +39,11 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
     message: 'Settings contains mixed readiness surfaces and is not approved as a production control plane.',
   },
   '/settings/billing': {
-    state: 'live',
+    state: 'not_ready',
     message: 'Billing UI is implemented; production payment and subscription verification remains a launch gate.',
   },
   '/billing': {
-    state: 'live',
+    state: 'not_ready',
     message: 'Billing UI is implemented; production payment and subscription verification remains a launch gate.',
   },
   '/carriers': {
