@@ -23,8 +23,8 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
     message: 'Driver roster is backed by tenant-scoped API driver records. HOS remains non-authoritative until an ELD integration is connected.',
   },
   '/invoices': {
-    state: 'demo',
-    message: 'Invoice management currently contains demo-backed records and requires live billing integration completion.',
+    state: 'live',
+    message: 'Invoice records are tenant-scoped API data. Stripe collection and revenue reconciliation still require production verification.',
   },
   '/analytics': {
     state: 'demo',
