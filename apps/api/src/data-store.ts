@@ -18,7 +18,8 @@ export type FreightOperationResource =
   | 'carrierPayments'
   | 'rateAgreements'
   | 'operationalMetrics'
-  | 'loadBoardPosts';
+  | 'loadBoardPosts'
+  | 'invoices';
 
 export type LoadAssignmentDecision = 'accepted' | 'rejected';
 export type FreightWorkflowResult = Record<string, unknown>;
@@ -224,6 +225,12 @@ const OPERATION_CONFIG: Record<FreightOperationResource, OperationConfig> = {
     delegate: 'loadBoardPost',
     tenantRelation: 'load',
     dateFields: ['postedAt', 'expiresAt'],
+  },
+  invoices: {
+    delegate: 'invoice',
+    tenantField: 'carrierId',
+    numberFields: ['amount'],
+    dateFields: ['dueDate', 'paidAt'],
   },
 };
 
@@ -517,6 +524,7 @@ class MemoryDataStore implements DataStore {
     rateAgreements: [],
     operationalMetrics: [],
     loadBoardPosts: [],
+    invoices: [],
   };
   private loadIntakeNotifications: LoadIntakeNotificationQueueRecord[] = [];
   private loadIntakeRetries: LoadIntakeRetryQueueRecord[] = [];
