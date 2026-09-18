@@ -11,16 +11,16 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
     message: 'Operations dashboard currently uses sample operational data while live integrations are being wired in.',
   },
   '/loads': {
-    state: 'demo',
-    message: 'Load board currently uses demo-backed records and does not reflect live broker feed activity.',
+    state: 'live',
+    message: 'Load board is backed by tenant-scoped API load records. External broker/load-board feeds are not yet connected.',
   },
   '/dispatch': {
     state: 'demo',
     message: 'Dispatch board workflows are demo-backed and should not be treated as production dispatch execution.',
   },
   '/ops/drivers': {
-    state: 'demo',
-    message: 'Driver roster and performance widgets are demo-backed while live driver services are being integrated.',
+    state: 'live',
+    message: 'Driver roster is backed by tenant-scoped API driver records. HOS remains non-authoritative until an ELD integration is connected.',
   },
   '/invoices': {
     state: 'demo',
