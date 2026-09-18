@@ -252,14 +252,14 @@ const DashboardPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-full space-y-5 text-[#F5E8E8]">
-      <section className="relative overflow-hidden rounded-[8px] border border-infamous-border bg-[#160608] p-5 shadow-[0_18px_80px_rgba(0,0,0,0.28)] md:p-6">
+    <div className="neon-command-center -m-4 min-h-full space-y-5 p-4 text-[#F5E8E8] md:-m-6 md:p-6">
+      <section className="neon-panel relative overflow-hidden rounded-[8px] border border-infamous-border bg-[#160608] p-5 shadow-[0_18px_80px_rgba(0,0,0,0.28)] md:p-6">
         <div className="absolute inset-0 command-grid opacity-70" aria-hidden="true" />
         <div className="relative grid gap-5 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-infamous-red-light">INFÆMOUS FREIGHT operations</p>
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-infamous-red-light">INFÆMOUS FREIGHT // COMMAND CENTER</p>
             <h1 className="mt-3 max-w-4xl text-3xl font-black tracking-tight text-[#fff7f7] md:text-5xl">
-              Dispatch command center for freight that cannot drift.
+              Freight operations command center.
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-[#D8B8B8] md:text-base">
               Coordinate brokers, carriers, drivers, shippers, invoices, compliance checks, and live shipment exceptions from one enterprise-ready view.
