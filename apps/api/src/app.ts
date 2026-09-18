@@ -37,6 +37,7 @@ import {
   validateQuoteIntakePayload,
 } from './quote-intake-automation';
 import { createAuditLogger, AuditLogger } from './audit-logger';
+import { calculateDispatchFee, calculateFreightQuote, getCarrierPlans, getPlatformPlans } from './pricing';
 import type { UserRole } from './rbac/rbac-rules';
 
 type Role = Extract<UserRole, 'owner' | 'admin' | 'dispatcher'>;
@@ -1180,6 +1181,59 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
     }
 
     res.status(200).json({ success: true, shipment });
+  }));
+
+  app.get('/api/pricing/catalog', wrapAsync(async (_req, res) => {
+    res.status(200).json({
+      data: {
+        freight: {
+          description: 'Customer freight pricing: carrier cost + accessorials + configurable operating margin.',
+          defaultMarginPercent: 12,
+          minimumMarginDollars: 150,
+        },
+        dispatch: {
+          standardPercent: 5,
+          managedPercent: 7,
+        },
+        carrier: getCarrierPlans(),
+        platform: getPlatformPlans(),
+        note: 'Pricing is configurable and transaction margins remain subject to Infamous Freight business-model and regulatory classification.',
+      },
+    });
+  }));
+
+  app.post('/api/pricing/quote', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const carrierCost = Number(req.body?.carrierCost);
+    const accessorials = Number(req.body?.accessorials ?? 0);
+    if (!Number.isFinite(carrierCost) || carrierCost < 0 || !Number.isFinite(accessorials) || accessorials < 0) {
+      throw new HttpError(400, 'invalid_pricing_input', 'carrierCost and accessorials must be non-negative numbers.');
+    }
+
+    const quote = calculateFreightQuote({
+      carrierCost,
+      accessorials,
+      marginPercent: req.body?.marginPercent,
+      minimumMarginDollars: req.body?.minimumMarginDollars,
+    });
+
+    res.status(200).json({ data: quote });
+  }));
+
+  app.post('/api/pricing/dispatch-fee', requireTenant, requireRole, wrapAsync(async (req, res) => {
+    const grossLoadRevenue = Number(req.body?.grossLoadRevenue);
+    if (!Number.isFinite(grossLoadRevenue) || grossLoadRevenue < 0) {
+      throw new HttpError(400, 'invalid_pricing_input', 'grossLoadRevenue must be a non-negative number.');
+    }
+
+    const managed = req.body?.managed === true;
+    res.status(200).json({
+      data: {
+        grossLoadRevenue,
+        managed,
+        fee: calculateDispatchFee(grossLoadRevenue, managed),
+        ratePercent: managed ? 7 : 5,
+      },
+    });
   }));
 
   app.get('/api/billing/status', requireTenant, requireRole, wrapAsync(async (req, res) => {
