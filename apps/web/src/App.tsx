@@ -9,6 +9,7 @@ import { BRAND } from '@/lib/brand';
 import { AiChatWidget } from '@/components/AiChatWidget';
 
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'));
+const InternalDashboardPage = lazy(() => import('@/pages/InternalDashboardPage'));
 const LoadsPage = lazy(() => import('@/pages/LoadsPage'));
 const DispatchBoardPage = lazy(() => import('@/pages/DispatchBoardPage'));
 const DriversPage = lazy(() => import('@/pages/DriversPage'));
@@ -143,6 +144,7 @@ function App() {
           <Route path="/onboarding" element={<OnboardingWizard />} />
 
           <Route element={<AppLayout />}>
+            <Route path="/internal" element={<RouteGuard minRole="admin"><InternalDashboardPage /></RouteGuard>} />
             <Route path="/ops" element={<DashboardPage />} />
             <Route path="/loads" element={<LoadsPage />} />
             <Route path="/dispatch" element={<RouteGuard minRole="dispatcher"><DispatchBoardPage /></RouteGuard>} />
