@@ -1,121 +1,90 @@
 # Production launch evidence checklist
 
-_Last updated: June 2026._
+_Last verified: 2026-09-18 UTC._
 
 This document is the operator-facing evidence log for approving Infamous Freight production launch readiness. Do not mark a gate complete from assumptions, local-only checks, or screenshots without matching production evidence.
 
-## Approval rule
+## Current release identity
 
-A public launch is approved only when every critical gate below has dated production evidence, the operator who collected it is named, and the result is reproducible from an authenticated production environment.
+- Canonical production site: https://www.infamousfreight.com
+- Netlify site ID: `d03682ba-fcb4-4dc6-984e-f7eae7fff59c`
+- Current GitHub `main` launch-readiness commits include `6f23db1` and `91163f5`.
+- Last verified Netlify production deployment remains commit `5ec0b815d41929d4af5f4208185ad6e81da62cc3` from 2026-06-03.
+- Therefore the current production deployment does **not** yet prove the September launch-readiness code is live.
 
-If any critical gate is incomplete, the launch status remains **not approved**.
+## Current decision
+
+**END-TO-END PRODUCTION PROOF: BLOCKED**
+
+The blocker is deployment identity. Production evidence collected against the June deployment cannot be used as proof for the current September release.
 
 ## Evidence standards
 
 For each gate, record:
-
-- date and time with timezone
+- date/time with timezone
 - operator name
 - production URL, workflow, or command used
 - sanitized result summary
-- artifact location, such as screenshot path, CI run URL, Stripe event ID, Fly release ID, or log reference
+- artifact location, such as CI run URL, Stripe event ID, Fly release ID, or log reference
 - follow-up issue or PR if failed
 
 Never paste secrets, tokens, customer payment details, raw JWTs, full database URLs, private keys, or service-role keys into this document.
 
 ## Critical gates
 
-| Gate | Required evidence | Status | Evidence link / notes |
-| --- | --- | --- | --- |
-| Repository validation | `pnpm install --frozen-lockfile`, env safety checks, Prisma validation, typecheck, lint, test, and build pass on the launch commit. | Pending | |
-| GitHub Actions deploy | Main deploy workflow completes verify, Netlify deploy, Fly deploy, and production smoke test. | Pending | |
-| Fly API health | Authenticated operator confirms Fly app, release/check status, `/api/health/live`, `/api/health`, and `/api/health/ready`. | Pending | |
-| Netlify web health | `https://www.infamousfreight.com` returns HTTP 200 and apex redirects to canonical www URL. | Pending | |
-| Same-origin API proxy | `https://www.infamousfreight.com/api/health` returns expected API health through Netlify proxy. | Pending | |
-| Production database migrations | Operator confirms pending migrations are reviewed and applied, or explicitly confirms no pending migrations for the launch commit. | Pending | |
-| Public quote/contact intake | Submit a controlled production test lead and verify it is received by the backend/system of record. | Pending | |
-| Public tracking negative cases | Malformed and unknown tracking numbers return expected safe errors. | Pending | |
-| Public tracking positive case | A known-safe production tracking number returns a sanitized public shipment payload. | Pending | |
-| Registration | A controlled production user can register without manual backend intervention. | Pending | |
-| Login/session | The controlled production user can log in and maintain an authenticated session. | Pending | |
-| Tenant isolation | Controlled production users cannot access another tenant's records. | Pending | |
-| Load creation | A controlled production tenant can create a load record through the live app/API path. | Pending | |
-| Dispatch workflow | A controlled production tenant can move a load through the documented dispatch workflow without demo data. | Pending | |
-| Shipment/tracking workflow | A controlled production tenant can update shipment/tracking state and verify expected visibility. | Pending | |
-| Billing Checkout | Stripe live Checkout can be started for an eligible production tenant. | Pending | |
-| Billing Customer Portal | A Stripe-linked production tenant can open the Customer Portal. | Pending | |
-| Stripe webhook delivery | Live Stripe webhook events are delivered, signature-verified, idempotently processed, and reflected in backend state. | Pending | |
-| Paid access gate | Paid/unpaid account state produces the expected app access behavior. | Pending | |
-| Demo-data controls | Production build confirms public demo freight records are disabled unless intentionally enabled for a controlled demo/sandbox. | Pending | |
-| Not-ready route gating | `/driver-app`, messaging, and unfinished operational routes are gated or clearly marked according to `apps/web/src/lib/routeReadiness.ts`. | Pending | |
-| Security headers | Production web responses include the expected security headers from `netlify.toml`. | Pending | |
-| Secret exposure check | No secrets are exposed in browser env, built assets, logs, docs, or committed files. | Pending | |
-| Rollback path | Operator confirms the previous known-good Netlify deploy and Fly release can be restored. | Pending | |
+| Gate | Required evidence | Status |
+| --- | --- | --- |
+| Repository validation | Frozen install, env safety checks, Prisma validation, typecheck, lint, test, and build pass on launch commit. | Pending |
+| Production deployment identity | Netlify production deploy commit equals approved GitHub launch commit. | **BLOCKED** |
+| Fly API health | Production Fly health/live/readiness checks pass. | Pending |
+| Netlify web health | Canonical site returns expected HTTP response and canonical redirect behavior. | Pending |
+| Same-origin API proxy | `www.infamousfreight.com/api/health` reaches the production API successfully. | Pending |
+| Production DB migrations | Launch schema is confirmed current with no unsafe pending migration. | Pending |
+| Public quote intake | Controlled quote request creates a production system-of-record record. | Pending |
+| Tracking negative cases | Malformed/unknown tracking inputs return safe expected errors. | Pending |
+| Tracking positive case | Known-safe tracking record returns sanitized production payload. | Pending |
+| Registration/login/session | Controlled production user can authenticate and maintain session. | Pending |
+| Tenant isolation | Cross-tenant access is denied. | Pending |
+| Load creation | Controlled tenant creates a real load through the live path. | Pending |
+| Carrier verification/assignment | Controlled carrier reaches approved assignment state from production records. | Pending |
+| Dispatch workflow | Load progresses through auditable dispatch states without demo data. | Pending |
+| Shipment/tracking workflow | Shipment events persist and public tracking reflects approved state. | Pending |
+| Delivery/POD | Delivery completion and POD persist against the load. | Pending |
+| Invoice | Invoice is generated from the real operational record. | Pending |
+| Stripe Checkout | Eligible production payment flow starts in live Stripe mode. | Pending |
+| Stripe webhook | Live signed webhook is verified, idempotently processed, and reconciled to backend state. | Pending |
+| Revenue reconciliation | Payment, invoice, carrier payout/fee, and revenue records reconcile. | Pending |
+| Audit trail | Operational and financial mutations are attributable and auditable. | Pending |
+| Security headers | HSTS, CSP, and X-Frame-Options are present as required. | Pending |
+| Secret exposure | No secrets are exposed in browser assets, logs, docs, or committed files. | Pending |
+| Rollback | Known-good Netlify and Fly rollback targets are identified and restorable. | Pending |
+| Genesis authorization boundary | Binding quote, booking, carrier, dispatch, compliance, and billing actions require the defined authorization path. | Pending |
 
-## High-risk non-launch blockers to track
+## Launch rule
 
-These do not automatically block a marketing/controlled beta launch if they are visibly gated, but they block claiming full operational production readiness.
+A green repository build, healthy API, or successful web deployment alone is not end-to-end production proof.
 
-| Area | Required before full production operations | Status | Notes |
-| --- | --- | --- | --- |
-| `/ops` | Replace demo-backed dashboard data with live API-backed services and production tests. | Pending | |
-| `/loads` | Replace demo-backed load-board records with live tenant-scoped load services. | Pending | |
-| `/dispatch` | Replace demo-backed dispatch workflow with auditable live workflow state transitions. | Pending | |
-| `/ops/drivers` | Replace demo-backed driver roster/performance widgets with live services. | Pending | |
-| `/invoices` | Complete production invoice/billing integration and tests. | Pending | |
-| `/analytics` | Replace demo-backed metrics with verified production analytics queries. | Pending | |
-| `/compliance` | Connect compliance views to source systems and validate records. | Pending | |
-| `/carriers` | Complete carrier onboarding and approval source of truth. | Pending | |
-| `/accounting` | Complete QuickBooks/Xero or accounting-system integration. | Pending | |
-| AI dispatch automation | Add freight-domain guardrails, audit logs, approval controls, and rollback behavior. | Pending | |
-| Mobile driver app | Build, test, and gate mobile/driver workflows before live dispatch use. | Pending | |
+Full proof requires the controlled production money loop:
 
-## Operator command bundle
+`shipper → quote → review → load → verified carrier → dispatch → tracking → delivery/POD → invoice → payment → revenue → audit`
 
-Run from an authenticated production operator terminal only.
+Every financial mutation must be traceable. Every freight event must be auditable. Every AI binding action must be authorization-bounded.
 
-```bash
-pnpm install --frozen-lockfile
-pnpm run env:check:frontend
-pnpm run env:check:supabase-client
-pnpm run check:prisma-versions
-pnpm run prisma:validate
-bash scripts/check-fly-docker-config.sh
-pnpm run typecheck
-pnpm run lint
-pnpm run build
-pnpm run test
-```
+## Deployment execution note
 
-```bash
-flyctl auth whoami
-flyctl config validate --config fly.toml
-flyctl secrets list -a infamous-freight-api
-flyctl checks list -a infamous-freight-api
-curl -i https://infamous-freight-api.fly.dev/api/health/live
-curl -i https://infamous-freight-api.fly.dev/api/health
-curl -i https://infamous-freight-api.fly.dev/api/health/ready
-curl -i https://api.infamousfreight.com/api/health/live
-curl -i https://api.infamousfreight.com/api/health
-curl -i https://api.infamousfreight.com/api/health/ready
-curl -i https://www.infamousfreight.com
-curl -i https://www.infamousfreight.com/api/health
-```
+The connected Netlify deployment operation returned the site-specific deployment command, but this environment cannot execute that command against the repository network. A new production deploy therefore must be triggered by the repository's Netlify integration/CI or by an authenticated operator terminal.
 
-Do not run `flyctl config save -a infamous-freight-api --yes` unless an operator explicitly intends to rewrite Fly configuration.
+Once a new deploy is published, re-run the production evidence bundle and replace this blocked status only after the deployed commit is verified.
 
-## Evidence entry template
+## Existing verified Netlify deployment
 
-```md
-### Gate: <gate name>
+- Deploy ID: `6a1ff804e5f8190008d78326`
+- State: ready
+- Commit: `5ec0b815d41929d4af5f4208185ad6e81da62cc3`
+- Published: 2026-06-03
+- Redirect rules: 16 processed without errors
+- Header rules: 7 processed without errors
+- Secret scan: 651 files scanned, 0 matches
+- Netlify Forms: enabled
 
-- Date/time:
-- Operator:
-- Launch commit:
-- Production target:
-- Command/workflow:
-- Result:
-- Artifact/evidence:
-- Follow-up issue/PR:
-- Decision: Pass / Fail / Blocked
-```
+These facts validate the June deployment only; they do not establish current September production readiness.
