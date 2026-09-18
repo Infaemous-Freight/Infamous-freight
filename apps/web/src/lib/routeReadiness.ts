@@ -10,6 +10,10 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
     state: 'live',
     message: 'Internal command center is restricted to authenticated admin users and uses tenant-scoped live API records.',
   },
+  '/customer-portal': {
+    state: 'live',
+    message: 'Client portal uses authenticated tenant-scoped shipment and invoice APIs and contains no demo freight records.',
+  },
   '/ops': {
     state: 'not_ready',
     message: 'Operations dashboard is not production-ready until live operational data is verified.',
