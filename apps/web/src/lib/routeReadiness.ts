@@ -6,6 +6,10 @@ export type RouteReadiness = {
 };
 
 export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
+  '/internal': {
+    state: 'live',
+    message: 'Internal command center is restricted to authenticated admin users and uses tenant-scoped live API records.',
+  },
   '/ops': {
     state: 'not_ready',
     message: 'Operations dashboard is not production-ready until live operational data is verified.',
