@@ -1,253 +1,150 @@
-import { useMemo, useState } from 'react';
-import { FileText, DollarSign, Clock, Send, CheckCircle, AlertTriangle, Download, TrendingUp, FileCheck2, Sparkles } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AlertTriangle, CheckCircle, DollarSign, FileText, RefreshCw, Send, TrendingUp } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
+import api from '@/api-client/client';
+
+type InvoiceStatus = 'draft' | 'sent' | 'overdue' | 'paid';
 
 interface Invoice {
   id: string;
-  number: string;
-  broker: string;
-  loadRef: string;
+  invoiceNumber: string;
+  brokerName: string;
+  loadId: string;
   amount: number;
-  status: 'draft' | 'sent' | 'overdue' | 'paid';
-  issueDate: string;
-  dueDate: string;
-  age: number;
+  status: InvoiceStatus;
+  dueDate?: string | null;
+  paidAt?: string | null;
+  createdAt?: string | null;
 }
 
-interface PodReadyLoad {
-  loadRef: string;
-  broker: string;
-  lane: string;
-  amount: number;
-  podReceivedAt: string;
-  ocrConfidence: number;
-}
-
-const initialPodReadyLoads: PodReadyLoad[] = [
-  { loadRef: 'LD-4815', broker: 'RXO',       lane: 'Dallas, TX → Houston, TX',     amount: 700,  podReceivedAt: 'Today · 10:42 AM', ocrConfidence: 96 },
-  { loadRef: 'LD-4828', broker: 'JB Hunt',   lane: 'Phoenix, AZ → Las Vegas, NV',  amount: 950,  podReceivedAt: 'Today · 9:18 AM',  ocrConfidence: 92 },
-  { loadRef: 'LD-4819', broker: 'Schneider', lane: 'Memphis, TN → Indianapolis, IN', amount: 2400, podReceivedAt: 'Yesterday · 6:05 PM', ocrConfidence: 88 },
-];
-
-const mockInvoices: Invoice[] = [
-  { id: '1', number: 'INV-240421-001', broker: 'RXO', loadRef: 'LD-4815', amount: 3200, status: 'paid', issueDate: 'Apr 15', dueDate: 'May 15', age: 0 },
-  { id: '2', number: 'INV-240421-002', broker: 'TQL', loadRef: 'LD-4816', amount: 1850, status: 'sent', issueDate: 'Apr 16', dueDate: 'May 16', age: 4 },
-  { id: '3', number: 'INV-240421-003', broker: 'Landstar', loadRef: 'LD-4817', amount: 4100, status: 'sent', issueDate: 'Apr 17', dueDate: 'May 17', age: 3 },
-  { id: '4', number: 'INV-240418-004', broker: 'Schneider', loadRef: 'LD-4809', amount: 1950, status: 'overdue', issueDate: 'Apr 10', dueDate: 'May 10', age: 10 },
-  { id: '5', number: 'INV-240421-005', broker: 'JB Hunt', loadRef: 'LD-4818', amount: 2400, status: 'draft', issueDate: '—', dueDate: '—', age: 0 },
-  { id: '6', number: 'INV-240415-006', broker: 'RXO', loadRef: 'LD-4802', amount: 2800, status: 'paid', issueDate: 'Apr 1', dueDate: 'May 1', age: 0 },
-];
-
-const statusBadge: Record<string, string> = {
+const statusBadge: Record<InvoiceStatus, string> = {
   draft: 'badge-yellow',
   sent: 'badge-blue',
   overdue: 'badge-red',
   paid: 'badge-green',
 };
 
-const statusIcon: Record<string, React.ReactNode> = {
-  draft: <Clock size={12} />,
+const statusIcon: Record<InvoiceStatus, React.ReactNode> = {
+  draft: <span>•</span>,
   sent: <Send size={12} />,
   overdue: <AlertTriangle size={12} />,
   paid: <CheckCircle size={12} />,
 };
 
+function money(value: number): string {
+  return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
+}
+
+function date(value?: string | null): string {
+  if (!value) return '—';
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? '—' : parsed.toLocaleDateString();
+}
+
 const InvoicesPage: React.FC = () => {
-  const [filter, setFilter] = useState('all');
-  const [extraInvoices, setExtraInvoices] = useState<Invoice[]>([]);
-  const [podReadyLoads, setPodReadyLoads] = useState<PodReadyLoad[]>(initialPodReadyLoads);
+  const [filter, setFilter] = useState<'all' | InvoiceStatus>('all');
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const allInvoices = useMemo(() => [...extraInvoices, ...mockInvoices], [extraInvoices]);
-  const filtered = filter === 'all' ? allInvoices : allInvoices.filter((i) => i.status === filter);
+  const fetchInvoices = useCallback(async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await api.getInvoices();
+      const records = Array.isArray(response?.data) ? response.data as Invoice[] : [];
+      setInvoices(records);
+    } catch {
+      setError(true);
+      setInvoices([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const totalOutstanding = allInvoices.filter((i) => i.status === 'sent' || i.status === 'overdue').reduce((s, i) => s + i.amount, 0);
-  const totalOverdue = allInvoices.filter((i) => i.status === 'overdue').reduce((s, i) => s + i.amount, 0);
+  useEffect(() => { void fetchInvoices(); }, [fetchInvoices]);
 
-  const draftFromPod = (load: PodReadyLoad) => {
-    const today = new Date();
-    const due = new Date(today);
-    due.setDate(due.getDate() + 30);
-    const fmt = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const newInvoice: Invoice = {
-      id: `pod-${load.loadRef}`,
-      number: `INV-${load.loadRef.replace('LD-', '')}`,
-      broker: load.broker,
-      loadRef: load.loadRef,
-      amount: load.amount,
-      status: 'draft',
-      issueDate: fmt(today),
-      dueDate: fmt(due),
-      age: 0,
-    };
-    setExtraInvoices((prev) => [newInvoice, ...prev]);
-    setPodReadyLoads((prev) => prev.filter((p) => p.loadRef !== load.loadRef));
-    setFilter('draft');
-  };
+  const visible = useMemo(
+    () => filter === 'all' ? invoices : invoices.filter((invoice) => invoice.status === filter),
+    [filter, invoices],
+  );
+
+  const outstanding = invoices.filter((i) => i.status === 'sent' || i.status === 'overdue').reduce((s, i) => s + Number(i.amount || 0), 0);
+  const overdue = invoices.filter((i) => i.status === 'overdue').reduce((s, i) => s + Number(i.amount || 0), 0);
+  const paid = invoices.filter((i) => i.status === 'paid').reduce((s, i) => s + Number(i.amount || 0), 0);
+  const counts = (status: InvoiceStatus) => invoices.filter((invoice) => invoice.status === status).length;
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">Invoices</h1>
-          <p className="text-sm text-[#B88989]/70 mt-0.5">Manage billing and track payments</p>
+          <p className="text-sm text-[#B88989]/70 mt-0.5">Live tenant billing records from the Infamous Freight API.</p>
         </div>
-        <button type="button" className="btn-primary flex items-center gap-2">
-          <FileText aria-hidden="true" size={16} /> Create Invoice
+        <button type="button" onClick={() => void fetchInvoices()} className="btn-secondary flex items-center gap-2" disabled={loading}>
+          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} /> Refresh
         </button>
       </div>
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Total Outstanding', value: `$${totalOutstanding.toLocaleString()}`, icon: <DollarSign size={18} />, color: 'text-infamous-orange' },
-          { label: 'Overdue', value: `$${totalOverdue.toLocaleString()}`, icon: <AlertTriangle size={18} />, color: 'text-red-400' },
-          { label: 'Paid This Month', value: '$8,450', icon: <CheckCircle size={18} />, color: 'text-green-400' },
-          { label: 'Avg Days to Pay', value: '18 days', icon: <TrendingUp size={18} />, color: 'text-blue-400' },
-        ].map((stat, i) => (
-          <div key={i} className="card flex items-center gap-3">
-            <span className={stat.color} aria-hidden="true">{stat.icon}</span>
-            <div>
-              <p className="text-lg font-bold">{stat.value}</p>
-              <p className="text-xs text-[#B88989]/70">{stat.label}</p>
-            </div>
+          { label: 'Outstanding', value: money(outstanding), icon: <DollarSign size={18} /> },
+          { label: 'Overdue', value: money(overdue), icon: <AlertTriangle size={18} /> },
+          { label: 'Paid', value: money(paid), icon: <CheckCircle size={18} /> },
+          { label: 'Invoice count', value: String(invoices.length), icon: <TrendingUp size={18} /> },
+        ].map((stat) => (
+          <div key={stat.label} className="card flex items-center gap-3">
+            <span className="text-infamous-orange">{stat.icon}</span>
+            <div><p className="text-lg font-bold">{stat.value}</p><p className="text-xs text-[#B88989]/70">{stat.label}</p></div>
           </div>
         ))}
       </div>
 
-      {/* POD-ready queue — auto-creates an invoice draft from a delivered POD */}
-      {podReadyLoads.length > 0 && (
-        <section
-          aria-label="PODs ready to invoice"
-          className="rounded-2xl border border-infamous-orange/30 bg-gradient-to-r from-infamous-orange/10 via-infamous-card to-infamous-card p-5"
-        >
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-infamous-orange/15 text-infamous-orange">
-                <FileCheck2 aria-hidden="true" size={20} />
-              </span>
-              <div>
-                <h2 className="text-base font-bold">PODs ready to invoice</h2>
-                <p className="text-xs text-[#B88989]">
-                  {podReadyLoads.length} delivered load{podReadyLoads.length === 1 ? '' : 's'} with a clean POD on file. One click drafts the invoice with carrier rate and broker billing details pre-filled.
-                </p>
-              </div>
-            </div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-infamous-orange/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-infamous-orange">
-              <Sparkles aria-hidden="true" size={12} /> OCR verified
-            </span>
-          </div>
-          <ul className="space-y-2">
-            {podReadyLoads.map((load) => (
-              <li
-                key={load.loadRef}
-                className="flex flex-wrap items-center gap-3 rounded-xl border border-infamous-border bg-infamous-panel p-3"
-              >
-                <div className="flex-1 min-w-[180px]">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-mono text-xs text-[#B88989]/70">{load.loadRef}</span>
-                    <span className="badge badge-green text-[10px]">POD received</span>
-                    <span className="text-[10px] text-[#B88989]/70">{load.podReceivedAt}</span>
-                  </div>
-                  <p className="mt-1 text-sm font-medium">{load.lane}</p>
-                  <p className="text-xs text-[#B88989]/70">{load.broker} · OCR confidence {load.ocrConfidence}%</p>
-                </div>
-                <p className="text-sm font-semibold text-[#F5E8E8]">${load.amount.toLocaleString()}</p>
-                <button
-                  type="button"
-                  onClick={() => draftFromPod(load)}
-                  className="rounded-xl bg-infamous-orange px-4 py-2 text-xs font-semibold text-[#F5E8E8] hover:bg-[#ff6d00]"
-                >
-                  Create invoice draft
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {/* Filters */}
-      <div className="flex gap-2">
-        {['all', 'draft', 'sent', 'overdue', 'paid'].map((f) => (
+      <div className="flex flex-wrap gap-2">
+        {(['all', 'draft', 'sent', 'overdue', 'paid'] as const).map((status) => (
           <button
             type="button"
-            key={f}
-            onClick={() => setFilter(f)}
-            aria-pressed={filter === f}
-            className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all ${
-              filter === f ? 'bg-infamous-orange text-[#F5E8E8]' : 'bg-infamous-card text-[#B88989] hover:text-[#F5E8E8] border border-infamous-border'
-            }`}
+            key={status}
+            onClick={() => setFilter(status)}
+            aria-pressed={filter === status}
+            className={\`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all \${filter === status ? 'bg-infamous-orange text-[#F5E8E8]' : 'bg-infamous-card text-[#B88989] hover:text-[#F5E8E8] border border-infamous-border'}\`}
           >
-            {f} {f !== 'all' && <span className="text-xs opacity-70">({allInvoices.filter((i) => i.status === f).length})</span>}
+            {status} {status !== 'all' && <span className="text-xs opacity-70">({counts(status)})</span>}
           </button>
         ))}
       </div>
 
-      {/* Invoice Table */}
       <div className="card overflow-hidden p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-infamous-border">
-                <th className="table-header">Invoice #</th>
-                <th className="table-header">Broker</th>
-                <th className="table-header">Load</th>
-                <th className="table-header text-right">Amount</th>
-                <th className="table-header">Status</th>
-                <th className="table-header">Issued</th>
-                <th className="table-header">Due</th>
-                <th className="table-header text-right">Age</th>
-                <th className="table-header"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((inv) => (
-                <tr key={inv.id} className="hover:bg-infamous-panel transition-colors">
-                  <td className="table-cell font-mono text-xs">{inv.number}</td>
-                  <td className="table-cell font-medium">{inv.broker}</td>
-                  <td className="table-cell text-xs text-[#B88989]/70">{inv.loadRef}</td>
-                  <td className="table-cell text-right font-semibold">${inv.amount.toLocaleString()}</td>
-                  <td className="table-cell">
-                    <span className={`badge ${statusBadge[inv.status]} flex items-center gap-1 w-fit`}>
-                      {statusIcon[inv.status]} {inv.status}
-                    </span>
-                  </td>
-                  <td className="table-cell text-xs text-[#B88989]/70">{inv.issueDate}</td>
-                  <td className="table-cell text-xs text-[#B88989]/70">{inv.dueDate}</td>
-                  <td className="table-cell text-right">
-                    {inv.age > 0 ? (
-                      <span className={`text-xs font-medium ${inv.age > 7 ? 'text-red-400' : 'text-yellow-400'}`}>{inv.age}d</span>
-                    ) : (
-                      <span className="text-xs text-[#B88989]/60">—</span>
-                    )}
-                  </td>
-                  <td className="table-cell">
-                    <div className="flex gap-1">
-                      <button type="button" aria-label={`Download invoice ${inv.number}`} className="p-1.5 rounded-lg hover:bg-infamous-border text-[#B88989]/70 hover:text-[#F5E8E8] transition-colors">
-                        <Download aria-hidden="true" size={14} />
-                      </button>
-                      {inv.status === 'draft' && (
-                        <button type="button" aria-label={`Send invoice ${inv.number}`} className="p-1.5 rounded-lg hover:bg-infamous-border text-[#B88989]/70 hover:text-infamous-orange transition-colors">
-                          <Send aria-hidden="true" size={14} />
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={9}>
-                    <EmptyState
-                      icon={<FileText size={40} />}
-                      title="No invoices match this filter"
-                      description="Try selecting a different status or create a new invoice."
-                    />
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-16 text-sm text-[#B88989]/70">Loading live invoices…</div>
+        ) : error ? (
+          <EmptyState icon={<FileText size={40} />} title="Invoice service unavailable" description="The live invoice API could not be reached. No sample invoices are shown." />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead><tr className="border-b border-infamous-border">
+                <th className="table-header">Invoice #</th><th className="table-header">Broker</th><th className="table-header">Load</th>
+                <th className="table-header text-right">Amount</th><th className="table-header">Status</th><th className="table-header">Created</th>
+                <th className="table-header">Due</th><th className="table-header"></th>
+              </tr></thead>
+              <tbody>
+                {visible.map((invoice) => (
+                  <tr key={invoice.id} className="hover:bg-infamous-panel transition-colors">
+                    <td className="table-cell font-mono text-xs">{invoice.invoiceNumber}</td>
+                    <td className="table-cell font-medium">{invoice.brokerName || '—'}</td>
+                    <td className="table-cell text-xs text-[#B88989]/70">{invoice.loadId}</td>
+                    <td className="table-cell text-right font-semibold">{money(Number(invoice.amount || 0))}</td>
+                    <td className="table-cell"><span className={\`badge \${statusBadge[invoice.status] ?? 'badge-blue'} flex items-center gap-1 w-fit\`}>{statusIcon[invoice.status] ?? '•'} {invoice.status}</span></td>
+                    <td className="table-cell text-xs text-[#B88989]/70">{date(invoice.createdAt)}</td>
+                    <td className="table-cell text-xs text-[#B88989]/70">{date(invoice.dueDate)}</td>
+                    <td className="table-cell text-right">{invoice.status === 'draft' && <button type="button" className="p-1.5 rounded-lg hover:bg-infamous-border text-[#B88989]/70 hover:text-infamous-orange" aria-label={\`Send invoice \${invoice.invoiceNumber}\`}><Send size={14} /></button>}</td>
+                  </tr>
+                ))}
+                {visible.length === 0 && <tr><td colSpan={8}><EmptyState icon={<FileText size={40} />} title="No live invoices" description="Invoices will appear here after a real load is billed. Sample billing data has been removed." /></td></tr>}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
