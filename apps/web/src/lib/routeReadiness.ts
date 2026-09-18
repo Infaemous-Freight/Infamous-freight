@@ -7,16 +7,16 @@ export type RouteReadiness = {
 
 export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
   '/ops': {
-    state: 'demo',
-    message: 'Operations dashboard currently uses sample operational data while live integrations are being wired in.',
+    state: 'not_ready',
+    message: 'Operations dashboard is not production-ready until live operational data is verified.',
   },
   '/loads': {
     state: 'live',
     message: 'Load board is backed by tenant-scoped API load records. External broker/load-board feeds are not yet connected.',
   },
   '/dispatch': {
-    state: 'demo',
-    message: 'Dispatch board workflows are demo-backed and should not be treated as production dispatch execution.',
+    state: 'not_ready',
+    message: 'Production dispatch execution is not enabled until assignment, status, exception, audit, and realtime controls are verified.',
   },
   '/ops/drivers': {
     state: 'live',
@@ -24,47 +24,47 @@ export const AUTHENTICATED_ROUTE_READINESS: Record<string, RouteReadiness> = {
   },
   '/invoices': {
     state: 'live',
-    message: 'Invoice records are tenant-scoped API data. Stripe collection and revenue reconciliation still require production verification.',
+    message: 'Invoice records are tenant-scoped API data. Stripe collection and revenue reconciliation require production verification.',
   },
   '/analytics': {
-    state: 'demo',
-    message: 'Analytics metrics are demo-backed and should be treated as non-final until production data verification is complete.',
+    state: 'not_ready',
+    message: 'Production analytics are not enabled until metrics are sourced from verified live operational and financial records.',
   },
   '/compliance': {
-    state: 'demo',
-    message: 'Compliance views currently use sample records and must be cross-checked with source systems for live operations.',
+    state: 'not_ready',
+    message: 'Production compliance controls are not enabled until carrier authority, insurance, document expiry, and source-system verification are complete.',
   },
   '/settings': {
-    state: 'demo',
-    message: 'Settings contains mixed readiness surfaces; treat profile, security, and integrations controls as demo-backed unless documented otherwise.',
+    state: 'not_ready',
+    message: 'Settings contains mixed readiness surfaces and is not approved as a production control plane.',
   },
   '/settings/billing': {
     state: 'live',
-    message: 'Billing activation and paywall access controls are production-enabled.',
+    message: 'Billing UI is implemented; production payment and subscription verification remains a launch gate.',
   },
   '/billing': {
     state: 'live',
-    message: 'Billing activation and paywall access controls are production-enabled.',
+    message: 'Billing UI is implemented; production payment and subscription verification remains a launch gate.',
   },
   '/carriers': {
-    state: 'demo',
-    message: 'Carrier onboarding and approval views are demo-backed and are not yet the source of truth for production onboarding.',
+    state: 'not_ready',
+    message: 'Carrier onboarding is not production-ready until authority, insurance, documentation, approval, expiration, and audit controls are verified.',
   },
   '/accounting': {
-    state: 'demo',
-    message: 'Accounting workflows currently use demo-backed finance records while production systems are hardened.',
+    state: 'not_ready',
+    message: 'Production accounting is not enabled until ledger, payment reconciliation, refunds, disputes, and settlement controls are verified.',
   },
   '/quotes': {
-    state: 'demo',
-    message: 'Internal quote workflow is demo-backed; use public intake and documented dispatch review for live commitments.',
+    state: 'not_ready',
+    message: 'Internal quote commitments are not production-enabled until pricing, approval, load creation, and audit flows are verified.',
   },
   '/messages': {
-    state: 'demo',
-    message: 'Messaging is demo-backed until live carrier and driver communication integrations are completed.',
+    state: 'not_ready',
+    message: 'Production messaging is not enabled until persistent carrier/driver communication and audit controls are verified.',
   },
   '/driver-app': {
     state: 'not_ready',
-    message: 'Driver app is not production-ready yet and remains unavailable for live dispatch execution.',
+    message: 'Driver app is not production-ready and remains unavailable for live dispatch execution.',
   },
 };
 
