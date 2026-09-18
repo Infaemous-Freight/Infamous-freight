@@ -1,0 +1,71 @@
+name: Production Launch Gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-launch-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository-gates:
+    name: Repository gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Prisma validate
+        run: pnpm run prisma:validate
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Test
+        run: pnpm run test
+
+  production-approval:
+    name: Production approval checklist
+    runs-on: ubuntu-latest
+    needs: repository-gates
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Print controlled launch procedure
+        run: |
+          echo "Repository gates passed."
+          echo "Production launch still requires credential-backed checks."
+          echo "Required before approval:"
+          echo "  - business/regulatory classification verified"
+          echo "  - production DB migration status verified"
+          echo "  - Stripe live checkout/webhook evidence verified"
+          echo "  - public quote positive-path evidence captured"
+          echo "  - known-safe public tracking positive-path evidence captured"
+          echo "  - authenticated tenant-isolation evidence captured"
+          echo "  - rollback procedure verified"
+          echo "See docs/LAUNCH-EXECUTION-PLAN.md and docs/production-launch-evidence.md."
