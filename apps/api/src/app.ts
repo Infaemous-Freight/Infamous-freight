@@ -1581,6 +1581,48 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
     });
   });
 
+  app.get('/api/invoices', ...protectedApi, wrapAsync(async (req, res) => {
+    const tenantId = getRequiredTenantId(req);
+    const status = typeof req.query.status === 'string' ? req.query.status : undefined;
+    const invoices = await dataStore.listFreightOperations('invoices', tenantId);
+    const data = status ? invoices.filter((invoice) => String(invoice.status) === status) : invoices;
+    res.status(200).json({ data, count: data.length });
+  }));
+
+  app.post('/api/invoices', ...protectedApi, wrapAsync(async (req, res) => {
+    const tenantId = getRequiredTenantId(req);
+    const payload = req.body ?? {};
+    if (!payload.loadId || typeof payload.loadId !== 'string') {
+      throw new HttpError(400, 'invoice_load_required', 'loadId is required to create an invoice.');
+    }
+
+    const load = await dataStore.getLoad(tenantId, payload.loadId);
+    if (!load) {
+      throw new HttpError(404, 'load_not_found_for_tenant', 'The invoice load was not found for this tenant.');
+    }
+
+    const amount = Number(payload.amount);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      throw new HttpError(400, 'invoice_amount_invalid', 'Invoice amount must be greater than zero.');
+    }
+
+    const invoiceNumber = typeof payload.invoiceNumber === 'string' && payload.invoiceNumber.trim()
+      ? payload.invoiceNumber.trim()
+      : `INV-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(Date.now()).slice(-6)}`;
+
+    const data = await dataStore.createFreightOperation('invoices', tenantId, {
+      ...payload,
+      invoiceNumber,
+      amount,
+      brokerName: String(payload.brokerName ?? load.brokerName ?? ''),
+      status: String(payload.status ?? 'draft'),
+    });
+
+    const user = getAuditUser(req);
+    void auditLogger.log({ entityType: 'invoice', entityId: String(data.id), action: 'create', ...user, requestId: req.requestId });
+    res.status(201).json({ data });
+  }));
+
   app.get('/api/freight-operations/:resource', ...protectedApi, wrapAsync(async (req, res) => {
     const resource = getFreightOperationResource(req);
     const data = await dataStore.listFreightOperations(resource, getRequiredTenantId(req));
