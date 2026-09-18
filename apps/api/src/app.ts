@@ -1259,13 +1259,10 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
 
   void registerAmazonDeliveryRoutes(app, protectedApi, auditLogger);
 
-  app.get('/api/loads/search', (_req, res) => {
-    res.status(200).json({
-      data: [],
-      count: 0,
-      loads: [],
-    });
-  });
+  app.get('/api/loads/search', ...protectedApi, wrapAsync(async (req, res) => {
+    const data = await dataStore.searchLoads(getRequiredTenantId(req), req.query as Record<string, unknown>);
+    res.status(200).json({ data, count: data.length, loads: data });
+  }));
 
   app.use('/api/dispatch', ...protectedApi, createDispatchAutomationRouter(auditLogger));
 
@@ -1292,9 +1289,11 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.get('/api/loads/:id', ...protectedApi, (_req, res) => {
-    res.status(200).json({ data: null });
-  });
+  app.get('/api/loads/:id', ...protectedApi, wrapAsync(async (req, res) => {
+    const data = await dataStore.getLoad(getRequiredTenantId(req), getRouteParam(req, 'id'));
+    if (!data) throw new HttpError(404, 'load_not_found_for_tenant', 'Load was not found for this tenant.');
+    res.status(200).json({ data });
+  }));
 
   app.post('/api/loads/intake', ...protectedApi, wrapAsync(async (req, res) => {
     const tenantId = getRequiredTenantId(req);
@@ -1419,19 +1418,27 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
     res.status(200).json({ data, count: data.length });
   }));
 
-  app.get('/api/drivers/:id', ...protectedApi, (_req, res) => {
-    res.status(200).json({ data: null });
-  });
+  app.get('/api/drivers/:id', ...protectedApi, wrapAsync(async (req, res) => {
+    const data = await dataStore.getDriver(getRequiredTenantId(req), getRouteParam(req, 'id'));
+    if (!data) throw new HttpError(404, 'driver_not_found_for_tenant', 'Driver was not found for this tenant.');
+    res.status(200).json({ data });
+  }));
 
-  app.get('/api/eld/drivers/:driverId/hos', ...protectedApi, (_req, res) => {
+  app.get('/api/eld/drivers/:driverId/hos', ...protectedApi, wrapAsync(async (req, res) => {
+    const driver = await dataStore.getDriver(getRequiredTenantId(req), getRouteParam(req, 'driverId'));
+    if (!driver) throw new HttpError(404, 'driver_not_found_for_tenant', 'Driver was not found for this tenant.');
     res.status(200).json({
       data: {
-        status: 'unavailable',
-        hoursRemaining: 0,
+        status: String(driver.hosStatus ?? 'unavailable'),
+        hoursRemaining: Number(driver.hoursRemaining ?? 0),
         violations: [],
+        source: 'driver_record',
+        authoritative: false,
+        message: 'HOS data is not an authoritative ELD source until an ELD integration is connected.',
+        lastUpdated: driver.updatedAt ?? driver.lastLocationAt ?? null,
       },
     });
-  });
+  }));
 
   app.post('/api/drivers', ...protectedApi, wrapAsync(async (req, res) => {
     const tenantId = getRequiredTenantId(req);

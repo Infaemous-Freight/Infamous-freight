@@ -125,7 +125,7 @@ const LoadsPage: React.FC = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Load Board</h1>
-          <p className="text-sm text-[#B88989]/70 mt-0.5">Sample loads from DAT, Truckstop, and 123Loadboard — searchable in one place.</p>
+          <p className="text-sm text-[#B88989]/70 mt-0.5">Tenant loads from the Infamous Freight API. External broker/load-board feeds are not connected yet.</p>
         </div>
         <button onClick={() => navigate('/rate-comparison')} className="btn-secondary flex items-center gap-2">
           <DollarSign size={16} /> Rate Tool
@@ -167,7 +167,7 @@ const LoadsPage: React.FC = () => {
         <span className="text-gray-700">|</span>
         <span className="text-green-400">{filtered.filter((l) => l.isHot).length} hot loads</span>
         <span className="text-gray-700">|</span>
-        <span>Updated 2 min ago</span>
+        <span>Live tenant data</span>
       </div>
 
       {/* Load Cards */}
