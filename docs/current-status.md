@@ -19,6 +19,16 @@ Updated 2026-09-17.
 - Billing/paywall code paths are implemented, but live Stripe account/payment verification remains blocked by the absence of a connected live account.
 - Public demo freight records are disabled by default in production builds. Set `VITE_ENABLE_DEMO_DATA=true` only for controlled demos or sales sandboxes.
 
+
+## End-to-end transaction spine
+
+The repository now contains workflow/data-store primitives for quote-to-load conversion, load assignments, dispatch confirmation, shipment tracking, delivery verification, carrier payment status, operational metrics, and load-board status updates. These primitives are not considered production-live until the corresponding authenticated UI, realtime events, authorization, audit evidence, and external-provider paths are verified together.
+
+The release target is:
+
+quote request -> quote approval -> load -> verified carrier -> assignment -> dispatch -> driver -> tracking -> delivery/POD -> invoice -> payment -> reconciliation -> analytics -> Genesis optimization.
+
+
 ## Runtime readiness snapshot
 
 | Area | Status | Notes |
