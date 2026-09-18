@@ -9,7 +9,7 @@ import Sidebar from '@/components/ui/Sidebar';
 import TopBar from '@/components/ui/TopBar';
 import { BRAND } from '@/lib/brand';
 import { Toaster } from 'react-hot-toast';
-import { LayoutDashboard, MessageSquare, Truck, User } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, Truck, User, RadioTower, Sparkles } from 'lucide-react';
 
 const AppLayout: React.FC = () => {
   const { sidebarOpen, isLoading, user, setUser, setLoading, logout } = useAppStore();
@@ -189,17 +189,18 @@ const AppLayout: React.FC = () => {
         {offlineBanner}
         {readinessBanner}
         <TopBar />
-        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto p-4 md:p-6 pb-24 md:pb-6">
           {notReadyGate ?? <Outlet />}
         </main>
       </div>
       <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-infamous-border bg-infamous-navy md:hidden" aria-label="Mobile navigation">
         <div className="flex items-center justify-around py-2">
           {[
-            { to: '/ops', icon: LayoutDashboard, label: 'Dashboard' },
+            { to: '/ops', icon: LayoutDashboard, label: 'Home' },
             { to: '/loads', icon: Truck, label: 'Loads' },
+            { to: '/dispatch', icon: RadioTower, label: 'Dispatch' },
             { to: '/messages', icon: MessageSquare, label: 'Messages' },
-            { to: '/settings', icon: User, label: 'Account' },
+            { to: '/freight-assistant', icon: Sparkles, label: 'Genesis' },
           ].map((item) => (
             <NavLink
               key={item.to}
