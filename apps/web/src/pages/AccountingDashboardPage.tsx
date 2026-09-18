@@ -1,131 +1,109 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  DollarSign, FileText, Send, CheckCircle, AlertTriangle,
-  Clock, TrendingUp, Download, ChevronRight, Truck, Activity
+  AlertTriangle, CheckCircle, DollarSign, FileText, RefreshCw,
+  Send, TrendingUp, Clock,
 } from 'lucide-react';
-import WidgetErrorBoundary from '@/components/ui/WidgetErrorBoundary';
 import EmptyState from '@/components/ui/EmptyState';
+import api from '@/api-client/client';
 
 type InvoiceStatus = 'draft' | 'sent' | 'overdue' | 'paid';
 
-interface AccountingInvoice {
+interface Invoice {
   id: string;
-  number: string;
-  shipper: string;
-  loadRef: string;
-  shipperAmount: number;
-  carrierPay: number;
-  grossMargin: number;
-  grossMarginPct: number;
-  status: InvoiceStatus;
-  podAttached: boolean;
-  issueDate: string;
-  dueDate: string;
-  daysAge: number;
-}
-
-interface CarrierPayRecord {
-  id: string;
-  carrier: string;
-  loadRef: string;
+  invoiceNumber: string;
+  brokerName?: string | null;
+  loadId: string;
   amount: number;
-  status: 'pending' | 'processing' | 'paid';
-  dueDate: string;
+  status: InvoiceStatus;
+  dueDate?: string | null;
+  paidAt?: string | null;
+  createdAt?: string | null;
 }
 
-const mockInvoices: AccountingInvoice[] = [
-  { id: '1', number: 'INV-240427-001', shipper: 'Harborside Retail Group', loadRef: 'LD-4815', shipperAmount: 3500, carrierPay: 2800, grossMargin: 700, grossMarginPct: 20, status: 'paid', podAttached: true, issueDate: 'Apr 1', dueDate: 'May 1', daysAge: 0 },
-  { id: '2', number: 'INV-240427-002', shipper: 'Global Trade Inc.', loadRef: 'LD-4816', shipperAmount: 2200, carrierPay: 1750, grossMargin: 450, grossMarginPct: 20.5, status: 'sent', podAttached: true, issueDate: 'Apr 16', dueDate: 'May 16', daysAge: 11 },
-  { id: '3', number: 'INV-240427-003', shipper: 'Pacific Imports', loadRef: 'LD-4817', shipperAmount: 4800, carrierPay: 3700, grossMargin: 1100, grossMarginPct: 22.9, status: 'sent', podAttached: true, issueDate: 'Apr 17', dueDate: 'May 17', daysAge: 10 },
-  { id: '4', number: 'INV-240415-004', shipper: 'Midwest Supplies', loadRef: 'LD-4809', shipperAmount: 2100, carrierPay: 1680, grossMargin: 420, grossMarginPct: 20, status: 'overdue', podAttached: true, issueDate: 'Apr 10', dueDate: 'Apr 25', daysAge: 2 },
-  { id: '5', number: 'INV-240427-005', shipper: 'Eastern Distribution', loadRef: 'LD-4818', shipperAmount: 2700, carrierPay: 2100, grossMargin: 600, grossMarginPct: 22.2, status: 'draft', podAttached: false, issueDate: '—', dueDate: '—', daysAge: 0 },
-  { id: '6', number: 'INV-240415-006', shipper: 'National Retail', loadRef: 'LD-4802', shipperAmount: 3200, carrierPay: 2500, grossMargin: 700, grossMarginPct: 21.9, status: 'overdue', podAttached: true, issueDate: 'Apr 8', dueDate: 'Apr 23', daysAge: 4 },
-];
-
-const mockCarrierPay: CarrierPayRecord[] = [
-  { id: '1', carrier: 'Swift Logistics LLC', loadRef: 'LD-4821', amount: 2800, status: 'pending', dueDate: 'May 5' },
-  { id: '2', carrier: 'Desert Haul Co.', loadRef: 'LD-4823', amount: 3700, status: 'processing', dueDate: 'May 3' },
-  { id: '3', carrier: 'Midland Freight Inc.', loadRef: 'LD-4824', amount: 1900, status: 'pending', dueDate: 'May 6' },
-  { id: '4', carrier: 'Pacific Freight Co.', loadRef: 'LD-4826', amount: 950, status: 'paid', dueDate: 'Apr 28' },
-];
-
-const invoiceStatusBadge: Record<InvoiceStatus, string> = {
+const badge: Record<InvoiceStatus, string> = {
   draft: 'badge-yellow',
   sent: 'badge-blue',
   overdue: 'badge-red',
   paid: 'badge-green',
 };
 
-const invoiceStatusIcon: Record<InvoiceStatus, React.ReactNode> = {
-  draft: <Clock size={11} />,
-  sent: <Send size={11} />,
-  overdue: <AlertTriangle size={11} />,
-  paid: <CheckCircle size={11} />,
-};
+const money = (value: number) => value.toLocaleString('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 2,
+});
 
-const carrierPayBadge: Record<string, string> = {
-  pending: 'badge-yellow',
-  processing: 'badge-blue',
-  paid: 'badge-green',
+const date = (value?: string | null) => {
+  if (!value) return '—';
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? '—' : parsed.toLocaleDateString();
 };
 
 const AccountingDashboardPage: React.FC = () => {
-  const [invoiceFilter, setInvoiceFilter] = useState<'all' | InvoiceStatus>('all');
-  const [tab, setTab] = useState<'invoices' | 'carrier_pay'>('invoices');
+  const [filter, setFilter] = useState<'all' | InvoiceStatus>('all');
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const filteredInvoices = invoiceFilter === 'all'
-    ? mockInvoices
-    : mockInvoices.filter((i) => i.status === invoiceFilter);
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const response = await api.getInvoices();
+      setInvoices(Array.isArray(response?.data) ? response.data as Invoice[] : []);
+    } catch {
+      setInvoices([]);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const totalShipperRevenue = mockInvoices.reduce((s, i) => s + i.shipperAmount, 0);
-  const totalCarrierPay = mockInvoices.reduce((s, i) => s + i.carrierPay, 0);
-  const totalGrossMargin = mockInvoices.reduce((s, i) => s + i.grossMargin, 0);
-  const avgMarginPct = mockInvoices.length > 0
-    ? Math.round(mockInvoices.reduce((s, i) => s + i.grossMarginPct, 0) / mockInvoices.length * 10) / 10
-    : 0;
+  useEffect(() => { void refresh(); }, [refresh]);
 
-  const invoiceCounts = {
-    draft: mockInvoices.filter((i) => i.status === 'draft').length,
-    sent: mockInvoices.filter((i) => i.status === 'sent').length,
-    overdue: mockInvoices.filter((i) => i.status === 'overdue').length,
-    paid: mockInvoices.filter((i) => i.status === 'paid').length,
-  };
+  const visible = useMemo(
+    () => filter === 'all' ? invoices : invoices.filter((invoice) => invoice.status === filter),
+    [filter, invoices],
+  );
 
-  const carrierPayPending = mockCarrierPay.filter((p) => p.status === 'pending' || p.status === 'processing')
-    .reduce((s, p) => s + p.amount, 0);
+  const totals = useMemo(() => ({
+    revenue: invoices.reduce((sum, invoice) => sum + Number(invoice.amount || 0), 0),
+    outstanding: invoices
+      .filter((invoice) => invoice.status === 'sent' || invoice.status === 'overdue')
+      .reduce((sum, invoice) => sum + Number(invoice.amount || 0), 0),
+    overdue: invoices
+      .filter((invoice) => invoice.status === 'overdue')
+      .reduce((sum, invoice) => sum + Number(invoice.amount || 0), 0),
+    paid: invoices
+      .filter((invoice) => invoice.status === 'paid')
+      .reduce((sum, invoice) => sum + Number(invoice.amount || 0), 0),
+  }), [invoices]);
+
+  const count = (status: InvoiceStatus) => invoices.filter((invoice) => invoice.status === status).length;
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">Accounting</h1>
-          <p className="text-sm text-[#B88989]/70 mt-0.5">Invoices, payments, and margin tracking · sample data</p>
+          <p className="text-sm text-[#B88989]/70 mt-0.5">
+            Live tenant invoices and collection state. No sample accounting records are displayed.
+          </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-infamous-card border border-infamous-border rounded-xl px-3 py-2">
-            <Activity size={14} className="text-[#B88989]/70" />
-            <span className="text-xs text-[#B88989]/70">Demo data</span>
-          </div>
-          <button className="btn-primary flex items-center gap-2">
-            <FileText size={16} /> Create Invoice
-          </button>
-        </div>
+        <button type="button" onClick={() => void refresh()} className="btn-secondary flex items-center gap-2" disabled={loading}>
+          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} /> Refresh
+        </button>
       </div>
 
-      {/* Summary Cards */}
-      <WidgetErrorBoundary label="Accounting summary">
-      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Draft Invoices',    value: invoiceCounts.draft,                             icon: <Clock size={18} />,       color: 'text-yellow-400' },
-          { label: 'Sent Invoices',     value: invoiceCounts.sent,                              icon: <Send size={18} />,         color: 'text-blue-400' },
-          { label: 'Overdue Invoices',  value: invoiceCounts.overdue,                           icon: <AlertTriangle size={18} />, color: 'text-red-400' },
-          { label: 'Paid Invoices',     value: invoiceCounts.paid,                              icon: <CheckCircle size={18} />,  color: 'text-green-400' },
-          { label: 'Gross Margin',      value: `$${totalGrossMargin.toLocaleString()}`,         icon: <TrendingUp size={18} />,   color: 'text-infamous-orange' },
-          { label: 'Carrier Pay Pending', value: `$${carrierPayPending.toLocaleString()}`,      icon: <Truck size={18} />,        color: 'text-purple-400' },
-        ].map((stat, i) => (
-          <div key={i} className="card flex items-center gap-3">
-            <span className={stat.color}>{stat.icon}</span>
+          { label: 'Billed', value: money(totals.revenue), icon: <DollarSign size={18} /> },
+          { label: 'Outstanding', value: money(totals.outstanding), icon: <Clock size={18} /> },
+          { label: 'Overdue', value: money(totals.overdue), icon: <AlertTriangle size={18} /> },
+          { label: 'Paid', value: money(totals.paid), icon: <CheckCircle size={18} /> },
+        ].map((stat) => (
+          <div key={stat.label} className="card flex items-center gap-3">
+            <span className="text-infamous-orange">{stat.icon}</span>
             <div>
               <p className="text-lg font-bold">{stat.value}</p>
               <p className="text-xs text-[#B88989]/70">{stat.label}</p>
@@ -133,187 +111,82 @@ const AccountingDashboardPage: React.FC = () => {
           </div>
         ))}
       </div>
-      </WidgetErrorBoundary>
 
-      {/* Margin Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {[
-          { label: 'Total Shipper Revenue', value: `$${totalShipperRevenue.toLocaleString()}`, color: 'text-infamous-orange' },
-          { label: 'Total Carrier Cost',    value: `$${totalCarrierPay.toLocaleString()}`,     color: 'text-blue-400' },
-          { label: 'Avg Gross Margin %',    value: `${avgMarginPct}%`,                         color: 'text-green-400' },
-        ].map((item, i) => (
-          <div key={i} className="card">
-            <p className={`text-2xl font-bold ${item.color}`}>{item.value}</p>
-            <p className="text-sm text-[#B88989]/70 mt-1">{item.label}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-2 border-b border-infamous-border">
-        {([
-          { key: 'invoices',    label: 'Invoices' },
-          { key: 'carrier_pay', label: 'Carrier Pay' },
-        ] as const).map((t) => (
+      <div className="flex flex-wrap gap-2">
+        {(['all', 'draft', 'sent', 'overdue', 'paid'] as const).map((status) => (
           <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
-            className={`px-4 py-3 text-sm font-medium border-b-2 transition-all ${
-              tab === t.key ? 'border-infamous-orange text-infamous-orange' : 'border-transparent text-[#B88989]/70 hover:text-[#F5E8E8]'
-            }`}
+            type="button"
+            key={status}
+            onClick={() => setFilter(status)}
+            aria-pressed={filter === status}
+            className={`px-4 py-2 rounded-xl text-sm font-medium capitalize transition-all ${filter === status ? 'bg-infamous-orange text-[#F5E8E8]' : 'bg-infamous-card text-[#B88989] hover:text-[#F5E8E8] border border-infamous-border'}`}
           >
-            {t.label}
-            {t.key === 'invoices' && invoiceCounts.overdue > 0 && (
-              <span className="ml-2 bg-red-500 text-[#F5E8E8] text-[10px] font-bold px-1.5 py-0.5 rounded-full">{invoiceCounts.overdue}</span>
-            )}
+            {status}{status !== 'all' && <span className="text-xs opacity-70"> ({count(status)})</span>}
           </button>
         ))}
       </div>
 
-      {tab === 'invoices' && (
-        <div className="space-y-4">
-          {/* Invoice Filters */}
-          <div className="flex gap-2 flex-wrap">
-            {(['all', 'draft', 'sent', 'overdue', 'paid'] as const).map((f) => {
-              const count = f !== 'all' ? invoiceCounts[f] : undefined;
-              return (
-                <button
-                  key={f}
-                  onClick={() => setInvoiceFilter(f)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-medium capitalize transition-all ${
-                    invoiceFilter === f ? 'bg-infamous-orange text-[#F5E8E8]' : 'bg-infamous-card text-[#B88989] hover:text-[#F5E8E8] border border-infamous-border'
-                  }`}
-                >
-                  {f} {count !== undefined && (
-                    <span className="opacity-70">({count})</span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Invoice Table */}
-          <div className="card overflow-hidden p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-infamous-border">
-                    <th className="table-header">Invoice #</th>
-                    <th className="table-header">Shipper</th>
-                    <th className="table-header">Load</th>
-                    <th className="table-header text-right">Shipper $</th>
-                    <th className="table-header text-right">Carrier Pay</th>
-                    <th className="table-header text-right">Margin</th>
-                    <th className="table-header text-right">Margin %</th>
-                    <th className="table-header">POD</th>
-                    <th className="table-header">Status</th>
-                    <th className="table-header">Due</th>
-                    <th className="table-header"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredInvoices.map((inv) => (
-                    <tr key={inv.id} className="hover:bg-infamous-panel transition-colors">
-                      <td className="table-cell font-mono text-xs">{inv.number}</td>
-                      <td className="table-cell font-medium">{inv.shipper}</td>
-                      <td className="table-cell text-xs text-[#B88989]/70">{inv.loadRef}</td>
-                      <td className="table-cell text-right font-semibold">${inv.shipperAmount.toLocaleString()}</td>
-                      <td className="table-cell text-right text-[#B88989]">${inv.carrierPay.toLocaleString()}</td>
-                      <td className="table-cell text-right text-green-400 font-semibold">${inv.grossMargin.toLocaleString()}</td>
-                      <td className="table-cell text-right">
-                        <span className={`text-xs font-medium ${inv.grossMarginPct >= 20 ? 'text-green-400' : inv.grossMarginPct >= 15 ? 'text-yellow-400' : 'text-red-400'}`}>
-                          {inv.grossMarginPct}%
-                        </span>
-                      </td>
-                      <td className="table-cell">
-                        <span className={`badge text-[10px] ${inv.podAttached ? 'badge-green' : 'badge-red'}`}>
-                          {inv.podAttached ? 'Attached' : 'Missing'}
-                        </span>
-                      </td>
-                      <td className="table-cell">
-                        <span className={`badge ${invoiceStatusBadge[inv.status]} flex items-center gap-1 w-fit`}>
-                          {invoiceStatusIcon[inv.status]} {inv.status}
-                        </span>
-                      </td>
-                      <td className="table-cell text-xs text-[#B88989]/70">
-                        {inv.dueDate}
-                        {inv.daysAge > 0 && (
-                          <span className={`ml-1 ${inv.daysAge > 7 ? 'text-red-400' : 'text-yellow-400'}`}>
-                            +{inv.daysAge}d
-                          </span>
-                        )}
-                      </td>
-                      <td className="table-cell">
-                        <div className="flex gap-1">
-                          <button className="p-1.5 rounded-lg hover:bg-infamous-border text-[#B88989]/70 hover:text-[#F5E8E8] transition-colors">
-                            <Download size={13} />
-                          </button>
-                          {inv.status === 'draft' && inv.podAttached && (
-                            <button className="p-1.5 rounded-lg hover:bg-infamous-border text-[#B88989]/70 hover:text-infamous-orange transition-colors">
-                              <Send size={13} />
-                            </button>
-                          )}
-                          {inv.status !== 'paid' && (
-                            <button className="p-1.5 rounded-lg hover:bg-infamous-border text-[#B88989]/70 hover:text-[#F5E8E8] transition-colors" title="View detail">
-                              <ChevronRight size={13} />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {filteredInvoices.length === 0 && (
-                    <tr>
-                      <td colSpan={11}>
-                        <EmptyState title="No invoices" description="No invoices match the selected status filter" />
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {tab === 'carrier_pay' && (
-        <div className="card overflow-hidden p-0">
+      <div className="card overflow-hidden p-0">
+        {loading ? (
+          <div className="flex items-center justify-center py-16 text-sm text-[#B88989]/70">Loading live accounting data…</div>
+        ) : error ? (
+          <EmptyState
+            icon={<FileText size={40} />}
+            title="Accounting service unavailable"
+            description="The live invoice API could not be reached. No sample accounting records are shown."
+          />
+        ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-infamous-border">
-                  <th className="table-header">Carrier</th>
+                  <th className="table-header">Invoice #</th>
+                  <th className="table-header">Customer</th>
                   <th className="table-header">Load</th>
                   <th className="table-header text-right">Amount</th>
-                  <th className="table-header">Due Date</th>
                   <th className="table-header">Status</th>
+                  <th className="table-header">Created</th>
+                  <th className="table-header">Due</th>
+                  <th className="table-header">Paid</th>
                   <th className="table-header"></th>
                 </tr>
               </thead>
               <tbody>
-                {mockCarrierPay.map((pay) => (
-                  <tr key={pay.id} className="hover:bg-infamous-panel transition-colors">
-                    <td className="table-cell font-medium">{pay.carrier}</td>
-                    <td className="table-cell text-xs text-[#B88989]/70">{pay.loadRef}</td>
-                    <td className="table-cell text-right font-semibold">${pay.amount.toLocaleString()}</td>
-                    <td className="table-cell text-xs text-[#B88989]/70">{pay.dueDate}</td>
+                {visible.map((invoice) => (
+                  <tr key={invoice.id} className="hover:bg-infamous-panel transition-colors">
+                    <td className="table-cell font-mono text-xs">{invoice.invoiceNumber}</td>
+                    <td className="table-cell font-medium">{invoice.brokerName || '—'}</td>
+                    <td className="table-cell text-xs text-[#B88989]/70">{invoice.loadId}</td>
+                    <td className="table-cell text-right font-semibold">{money(Number(invoice.amount || 0))}</td>
                     <td className="table-cell">
-                      <span className={`badge ${carrierPayBadge[pay.status]} capitalize`}>{pay.status}</span>
+                      <span className={`badge ${badge[invoice.status] ?? 'badge-blue'} w-fit capitalize`}>
+                        {invoice.status}
+                      </span>
                     </td>
-                    <td className="table-cell">
-                      {pay.status === 'pending' && (
-                        <button className="px-3 py-1 rounded-lg bg-infamous-orange/10 text-infamous-orange text-xs font-medium hover:bg-infamous-orange hover:text-[#F5E8E8] transition-all">
-                          Pay Now
+                    <td className="table-cell text-xs text-[#B88989]/70">{date(invoice.createdAt)}</td>
+                    <td className="table-cell text-xs text-[#B88989]/70">{date(invoice.dueDate)}</td>
+                    <td className="table-cell text-xs text-[#B88989]/70">{date(invoice.paidAt)}</td>
+                    <td className="table-cell text-right">
+                      {invoice.status === 'draft' && (
+                        <button type="button" className="p-1.5 rounded-lg hover:bg-infamous-border text-[#B88989]/70 hover:text-infamous-orange" aria-label={`Send invoice ${invoice.invoiceNumber}`}>
+                          <Send size={14} />
                         </button>
                       )}
                     </td>
                   </tr>
                 ))}
+                {visible.length === 0 && (
+                  <tr>
+                    <td colSpan={9}>
+                      <EmptyState icon={<TrendingUp size={40} />} title="No live invoice records" description="Create an invoice from a tenant load to begin tracking collections." />
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
