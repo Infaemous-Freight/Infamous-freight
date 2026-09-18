@@ -38,16 +38,11 @@ import { trackPublicEvent, trackFunnelEvent } from '@/lib/analytics';
 import { BRAND } from '@/lib/brand';
 
 const navLinks = [
-  { label: 'Services', href: '/services' },
+  { label: 'Platform', href: '/services' },
+  { label: 'How It Works', href: '/about' },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'Load Board', href: '/load-board' },
-  { label: 'Freight Assistant', href: '/freight-assistant' },
-  { label: 'Partners', href: '/partners' },
-  { label: 'Case Studies', href: '/case-studies' },
-  { label: 'Request Quote', href: '/request-quote' },
-  { label: 'Track Shipment', href: '/track-shipment' },
-  { label: 'Carriers', href: '/carrier-portal' },
-  { label: 'About', href: '/about' },
+  { label: 'Track', href: '/track-shipment' },
+  { label: 'For Carriers', href: '/carrier-portal' },
   { label: 'Contact', href: '/contact' },
 ] as const;
 
@@ -225,11 +220,11 @@ const laneSignals = [
 ];
 
 const commandStats = [
-  { label: 'Quote Intake', value: '4', delta: 'sample queue', icon: Package },
-  { label: 'In Transit', value: '3', delta: 'sample loads', icon: Truck },
-  { label: 'Delivered', value: '2', delta: 'sample PODs', icon: CheckCircle2 },
-  { label: 'Exception Review', value: '1', delta: 'needs follow-up', icon: Clock },
-  { label: 'Billing Review', value: '2', delta: 'sample invoices', icon: DollarSign },
+  { label: 'Quote Intake', value: 'Live', delta: 'connected workflow', icon: Package },
+  { label: 'Loads', value: 'Live', delta: 'tenant operations', icon: Truck },
+  { label: 'Tracking', value: 'Live', delta: 'shipment context', icon: Eye },
+  { label: 'Documents', value: 'Connected', delta: 'POD + freight records', icon: FileText },
+  { label: 'AI', value: 'Genesis', delta: 'bounded assistance', icon: Cpu },
 ];
 
 const commandLoads = [
@@ -348,10 +343,10 @@ const LandingPage: React.FC = () => {
             <div className="flex min-h-[520px] flex-col justify-center rounded-xl border border-infamous-red-light/25 bg-[#090303]/82 p-6 shadow-[0_0_32px_rgba(255,26,26,0.18)] sm:p-8 lg:p-10">
               <p className="text-xs font-black uppercase tracking-[0.24em] text-infamous-red-light">{BRAND.displayName}</p>
               <h1 className="mt-4 max-w-4xl font-display text-4xl font-black uppercase leading-tight text-[#F5E8E8] text-glow-strong sm:text-5xl lg:text-6xl">
-                Freight quotes, dispatch coordination, and shipment tracking without the runaround.
+                AI-powered freight operations — from quote to delivery.
               </h1>
               <p className="mt-5 max-w-3xl text-base leading-8 text-[#D3B3B3] sm:text-lg">
-                Send the lane, equipment, freight details, timing, and contact information. Dispatch can review the request, confirm next steps in writing, and keep shipment context organized through delivery.
+                Infamous Freight connects shippers, carriers, drivers, dispatchers, and operations in one freight operating system. Get quotes, manage loads, coordinate dispatch, track shipments, and keep documents and billing connected.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link to="/request-quote" onClick={() => trackPublicEvent('quote_cta_click', { source: 'hero_primary' })} className="btn-primary btn-lg inline-flex items-center justify-center gap-2 glow-high">Request a Freight Quote <ArrowRight size={20} /></Link>
@@ -378,7 +373,7 @@ const LandingPage: React.FC = () => {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.22em] text-infamous-red-light">Fast Intake</p>
-                  <h2 id="quick-quote-heading" className="mt-2 font-display text-2xl font-black uppercase text-[#F5E8E8]">Start with the details dispatch needs.</h2>
+                  <h2 id="quick-quote-heading" className="mt-2 font-display text-2xl font-black uppercase text-[#F5E8E8]">Start with your freight.</h2>
                 </div>
                 <FileText aria-hidden="true" className="shrink-0 text-infamous-red-light" size={28} />
               </div>
@@ -391,7 +386,7 @@ const LandingPage: React.FC = () => {
                 ))}
               </div>
               <Link to="/request-quote" onClick={() => trackPublicEvent('quote_cta_click', { source: 'hero_intake_card' })} className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-infamous-red px-5 py-3 text-sm font-bold text-[#F5E8E8] transition hover:bg-infamous-red-light">
-                Open Quote Form <ArrowRight aria-hidden="true" size={16} />
+                Request a Quote <ArrowRight aria-hidden="true" size={16} />
               </Link>
               <div className="mt-5 rounded-lg border border-infamous-border/70 bg-black/25 p-4">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#B88989]">Need status on an active load?</p>
@@ -677,9 +672,9 @@ const LandingPage: React.FC = () => {
         <div className="mx-auto max-w-7xl px-5 py-24 lg:px-6">
           <div className="mb-14 text-center">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-infamous-red-light">Shipment Visibility</p>
-            <h2 className="mt-3 font-display text-3xl font-black uppercase lg:text-4xl">Keep freight details connected.</h2>
+            <h2 className="mt-3 font-display text-3xl font-black uppercase lg:text-4xl">One freight record. Every team connected.</h2>
             <p className="mt-4 mx-auto max-w-2xl text-[#B88989]">
-              Lane details, status updates, exceptions, and delivery documents stay organized around the shipment.
+              Shippers, operators, carriers, and drivers work from the same freight record while Genesis AI helps surface the next action.
             </p>
           </div>
 
@@ -823,9 +818,9 @@ const LandingPage: React.FC = () => {
         <div className="mx-auto max-w-7xl px-5 py-24 lg:px-6">
           <div className="mb-14 text-center">
             <p className="font-display text-sm font-semibold uppercase tracking-[0.2em] text-infamous-red-light">Technology</p>
-            <h2 className="mt-3 font-display text-3xl font-black uppercase lg:text-4xl">Built for practical freight follow-through.</h2>
+            <h2 className="mt-3 font-display text-3xl font-black uppercase lg:text-4xl">One operating system for freight.</h2>
             <p className="mt-4 mx-auto max-w-2xl text-[#B88989]">
-              Public quote intake, tracking, portals, and dispatch tools support the same operating workflow.
+              Bring quote intake, loads, dispatch, tracking, compliance, documents, billing, analytics, and AI assistance into one operating layer.
             </p>
           </div>
 
@@ -898,9 +893,9 @@ const LandingPage: React.FC = () => {
             className="rounded-2xl border border-infamous-red/20 p-12 lg:p-16 text-center"
             style={{ background: 'radial-gradient(circle at top, rgba(255, 26, 26, 0.12), transparent 60%), rgba(36, 16, 19, 0.85)' }}
           >
-            <h2 className="font-display text-3xl font-black uppercase lg:text-4xl">Ready to move freight?</h2>
+            <h2 className="font-display text-3xl font-black uppercase lg:text-4xl">Run freight with less friction.</h2>
             <p className="mt-5 mx-auto max-w-xl text-lg text-[#B88989]">
-              Send the lane, timing, equipment, and contact details. Dispatch can follow up with the next step.
+              Start with a quote or sign in to manage the freight already moving through your operation.
             </p>
             <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
               <Link
