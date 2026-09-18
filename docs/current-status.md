@@ -1,6 +1,6 @@
 # Current status
 
-Updated 2026-05-31.
+Updated 2026-09-17.
 
 ## Active runtime
 
@@ -26,7 +26,7 @@ Updated 2026-05-31.
 
 ## Still being hardened
 
-- Some operator-facing views still contain sample/demo-backed data.
+- Some operator-facing views still contain sample/demo-backed data; invoices and core load/driver roster surfaces have now been moved to tenant-scoped API data.
 - The main dashboard sample data should be replaced with live API-backed services.
 - Unfinished authenticated routes should remain explicitly gated when they are not production-ready.
 - Positive public tracking lookup should be smoke-tested with a known-safe production tracking number before launch approval.
@@ -40,10 +40,10 @@ Source of truth in code: `apps/web/src/lib/routeReadiness.ts`.
 | Route | Readiness | Notes |
 | --- | --- | --- |
 | `/ops` | demo-backed | Dashboard is demo-backed while live operations data wiring is in progress. |
-| `/loads` | demo-backed | Load board records are demo-backed. |
+| `/loads` | live | Load board records are tenant-scoped API data; external load-board feeds remain disconnected. |
 | `/dispatch` | demo-backed | Dispatch workflow is demo-backed. |
-| `/ops/drivers` | demo-backed | Driver management view is demo-backed. |
-| `/invoices` | demo-backed | Invoice management view is demo-backed. |
+| `/ops/drivers` | live | Driver roster is tenant-scoped API data; HOS remains non-authoritative without an ELD integration. |
+| `/invoices` | live | Invoice records now come from the tenant-scoped invoice API; Stripe collection/reconciliation still requires production verification. |
 | `/analytics` | demo-backed | Metrics are demo-backed and not final production analytics. |
 | `/compliance` | demo-backed | Compliance records are demo-backed and require source-system validation. |
 | `/settings` | demo-backed | Settings contains mixed readiness surfaces and is not fully live. |
@@ -52,7 +52,7 @@ Source of truth in code: `apps/web/src/lib/routeReadiness.ts`.
 | `/carriers` | demo-backed | Carrier onboarding and approval are demo-backed. |
 | `/accounting` | demo-backed | Accounting workflows are demo-backed. |
 | `/quotes` | demo-backed | Internal quote workflow is demo-backed. |
-| `/messages` | not ready | Route is explicitly gated in-app and unavailable for live operations. |
+| `/messages` | demo-backed | Messaging route remains demo-backed until persistent carrier/driver communication is implemented. |
 | `/driver-app` | not ready | Route is explicitly gated in-app and unavailable for live operations. |
 
 ## Verification
