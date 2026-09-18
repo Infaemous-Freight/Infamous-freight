@@ -89,9 +89,10 @@ run_step "Local built web render smoke check" smoke_local_preview
 run_step "Docker build validation" pnpm docker:build
 
 run_step "Site HEAD check" curl_head "$SITE_URL"
+run_step "Security headers check" bash -c 'headers="$(curl --fail --show-error --silent --location --head "$SITE_URL")"; echo "$headers" | grep -qi "^strict-transport-security:"; echo "$headers" | grep -qi "^content-security-policy:"; echo "$headers" | grep -qi "^x-frame-options:"'
 run_step "Canonical API health check" curl_get "$WEB_HEALTH_URL"
 run_step "Canonical API readiness check" curl_get "$WEB_READY_URL"
-run_step "Public quote API preflight check" curl_options "$PUBLIC_QUOTE_PREFLIGHT_URL"
+run_step "Public quote API preflight check" bash -c 'status="$(curl --show-error --silent --location --request OPTIONS --output /dev/null --write-out "%{http_code}" "$PUBLIC_QUOTE_PREFLIGHT_URL")"; test "$status" = "204"'
 run_step "Public invalid shipment lookup check" curl_expect_status 400 "$PUBLIC_INVALID_SHIPMENT_URL"
 
 if [[ "$CHECK_LIVE_RENDER" == "true" ]]; then
