@@ -1,337 +1,312 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   AlertTriangle,
   ArrowRight,
   Bell,
-  ChevronRight,
-  Clock,
+  CheckCircle2,
+  Clock3,
   DollarSign,
-  Download,
   FileText,
   MapPin,
   MessageSquare,
-  Navigation,
   Package,
   RefreshCw,
   Search,
   Truck,
 } from 'lucide-react';
-import { demoQuotes, demoShipments } from '@/data/mvpFreightData';
-import { LazyShipmentRouteMap, preloadShipmentRouteMap } from '@/components/LazyShipmentRouteMap';
+import api from '@/api-client/client';
+import { useAppStore } from '@/store/app-store';
 
-const statusColorMap: Record<string, string> = {
-  'In Transit': 'badge-blue',
-  'Picked Up': 'badge-blue',
-  'Booked': 'badge-blue',
-  'Carrier Assigned': 'badge-blue',
-  'Delivered': 'badge-green',
-  'POD Uploaded': 'badge-green',
-  'Delayed': 'badge-orange',
-  'Exception': 'badge-red',
-  'Quote Pending': 'badge-gray',
-  'Invoiced': 'badge-green',
+type Shipment = Record<string, unknown>;
+type Invoice = Record<string, unknown>;
+
+const asText = (value: unknown, fallback = '—') =>
+  value === null || value === undefined || String(value).trim() === '' ? fallback : String(value);
+
+const money = (value: unknown) => {
+  const amount = Number(value);
+  return Number.isFinite(amount)
+    ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
+    : '—';
 };
 
-function getStatusBadge(status: string) {
-  const cls = statusColorMap[status] || 'badge-blue';
-  return <span className={`${cls}`}>{status}</span>;
-}
-
-const recentAlerts = [
-  { id: 1, type: 'warning', message: 'ETA updated for IF-20491 — delayed 2 hours', time: '35 min ago' },
-  { id: 2, type: 'success', message: 'Shipment IF-20490 delivered successfully', time: '2 hours ago' },
-  { id: 3, type: 'info', message: 'Invoice #INV-1042 ready for download', time: '4 hours ago' },
-];
-
-const recentInvoices = [
-  { id: 'INV-1042', load: 'IF-20490', amount: '$2,450.00', status: 'Ready', date: 'May 8, 2026' },
-  { id: 'INV-1038', load: 'IF-20487', amount: '$1,875.00', status: 'Paid', date: 'May 5, 2026' },
-  { id: 'INV-1035', load: 'IF-20482', amount: '$3,200.00', status: 'Paid', date: 'May 1, 2026' },
-];
-
-const recentDocuments = [
-  { name: 'POD — IF-20490', type: 'Proof of Delivery', date: 'May 8, 2026' },
-  { name: 'BOL — IF-20491', type: 'Bill of Lading', date: 'May 7, 2026' },
-  { name: 'Rate Confirmation — IF-20491', type: 'Rate Con', date: 'May 6, 2026' },
-];
+const statusClass = (status: string) => {
+  const normalized = status.toLowerCase();
+  if (normalized.includes('deliver') || normalized.includes('paid') || normalized.includes('complete')) return 'badge-green';
+  if (normalized.includes('delay') || normalized.includes('exception') || normalized.includes('overdue')) return 'badge-orange';
+  if (normalized.includes('pending') || normalized.includes('draft')) return 'badge-gray';
+  return 'badge-blue';
+};
 
 const CustomerPortalPage: React.FC = () => {
+  const user = useAppStore((state) => state.user);
+  const [shipments, setShipments] = useState<Shipment[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [trackingInput, setTrackingInput] = useState('');
-  const [selectedShipment, setSelectedShipment] = useState(demoShipments[0]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
+
+  const loadPortal = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    try {
+      const [shipmentResponse, invoiceResponse] = await Promise.all([
+        api.getShipments(),
+        api.getInvoices(),
+      ]);
+      const nextShipments = Array.isArray(shipmentResponse?.data) ? shipmentResponse.data : [];
+      const nextInvoices = Array.isArray(invoiceResponse?.data) ? invoiceResponse.data : [];
+      setShipments(nextShipments);
+      setInvoices(nextInvoices);
+      setSelectedShipment((current) => current ?? nextShipments[0] ?? null);
+    } catch {
+      setError('We could not load your freight records. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    preloadShipmentRouteMap();
-  }, []);
+    void loadPortal();
+  }, [user]);
+
+  const activeShipments = useMemo(
+    () => shipments.filter((shipment) => !String(shipment.status ?? '').toLowerCase().includes('deliver')),
+    [shipments],
+  );
+
+  const actionShipments = useMemo(
+    () => shipments.filter((shipment) => /delay|exception|action/i.test(String(shipment.status ?? ''))),
+    [shipments],
+  );
+
+  const unpaidInvoices = useMemo(
+    () => invoices.filter((invoice) => !/paid|settled|complete/i.test(String(invoice.status ?? ''))),
+    [invoices],
+  );
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-infamous-dark px-5 py-16 text-[#F5E8E8]">
+        <div className="mx-auto max-w-xl rounded-2xl border border-infamous-border bg-infamous-card p-8 text-center">
+          <Truck className="mx-auto mb-4 text-infamous-red-light" size={40} />
+          <h1 className="text-3xl font-black">Client Portal</h1>
+          <p className="mt-3 text-infamous-muted">Sign in to view your quotes, freight, tracking, documents, and invoices.</p>
+          <Link to="/login" className="mt-7 inline-flex items-center gap-2 rounded-xl bg-infamous-red px-6 py-3 font-semibold">
+            Sign In <ArrowRight size={16} />
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-infamous-dark px-5 py-8 text-[#F5E8E8] lg:px-6">
       <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <header className="mb-8 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
+        <header className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-infamous-red-light">Shipper Dashboard</p>
-            <h1 className="mt-2 text-3xl font-black">Freight Overview</h1>
-            <p className="mt-2 max-w-2xl text-[#B88989]">Track shipments, manage quotes, review invoices, and handle documents from one place.</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-infamous-red-light">Infamous Freight</p>
+            <h1 className="mt-2 text-3xl font-black">Client Portal</h1>
+            <p className="mt-2 max-w-2xl text-infamous-muted">
+              Your freight, tracking, documents, and billing in one secure workspace.
+            </p>
           </div>
-          <div className="flex items-center gap-3">
-            <Link to="/request-quote" className="inline-flex items-center gap-2 rounded-xl bg-infamous-red px-6 py-3 font-semibold text-[#F5E8E8] shadow-lg shadow-infamous-red/20 transition hover:bg-infamous-red-light">
-              Get a Quote <ArrowRight size={16} />
+          <div className="flex flex-wrap gap-3">
+            <button onClick={() => void loadPortal()} className="inline-flex items-center gap-2 rounded-xl border border-infamous-border bg-infamous-card px-5 py-3 font-semibold">
+              <RefreshCw size={16} /> Refresh
+            </button>
+            <Link to="/request-quote" className="inline-flex items-center gap-2 rounded-xl bg-infamous-red px-6 py-3 font-semibold">
+              Request a Quote <ArrowRight size={16} />
             </Link>
           </div>
         </header>
 
-        {/* Quick Track */}
         <div className="mb-8 flex items-center gap-3 rounded-xl border border-infamous-border bg-infamous-card p-4">
           <Search size={18} className="shrink-0 text-infamous-muted" />
           <input
-            type="text"
-            placeholder="Enter tracking number to check status..."
             value={trackingInput}
-            onChange={(e) => setTrackingInput(e.target.value)}
-            className="flex-1 bg-transparent text-sm text-[#F5E8E8] placeholder-[#B88989]/60 focus:outline-none"
+            onChange={(event) => setTrackingInput(event.target.value)}
+            placeholder="Enter a tracking number..."
+            className="flex-1 bg-transparent text-sm placeholder:text-infamous-muted focus:outline-none"
           />
           <Link
-            to={`/track-shipment${trackingInput ? `?tracking=${trackingInput}` : ''}`}
-            className="rounded-lg bg-infamous-red/10 px-4 py-2 text-sm font-semibold text-infamous-red-light transition hover:bg-infamous-red/20"
+            to={`/track-shipment${trackingInput ? `?tracking=${encodeURIComponent(trackingInput)}` : ''}`}
+            className="rounded-lg bg-infamous-red/10 px-4 py-2 text-sm font-semibold text-infamous-red-light"
           >
             Track
           </Link>
         </div>
 
-        {/* Top Stats */}
-        <div className="mb-8 grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <div className="metric-card">
-            <div className="flex items-center justify-between">
-              <Truck size={20} className="text-infamous-red-light" />
-              <span className="badge-blue">Active</span>
-            </div>
-            <p className="mt-4 text-3xl font-black">{demoShipments.length}</p>
-            <p className="mt-1 text-sm text-infamous-muted">Active Loads</p>
+        {error && (
+          <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-infamous-orange/30 bg-infamous-orange/10 p-4 text-sm">
+            <span>{error}</span>
+            <button onClick={() => void loadPortal()} className="font-semibold underline">Retry</button>
           </div>
-          <div className="metric-card">
-            <div className="flex items-center justify-between">
-              <AlertTriangle size={20} className="text-infamous-orange" />
-              <span className="badge-orange">Action</span>
+        )}
+
+        <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {[
+            { icon: Truck, value: loading ? '—' : activeShipments.length, label: 'Active Shipments' },
+            { icon: AlertTriangle, value: loading ? '—' : actionShipments.length, label: 'Needs Attention' },
+            { icon: DollarSign, value: loading ? '—' : unpaidInvoices.length, label: 'Open Invoices' },
+            { icon: Package, value: loading ? '—' : shipments.length, label: 'Total Shipments' },
+          ].map(({ icon: Icon, value, label }) => (
+            <div key={label} className="metric-card">
+              <Icon size={20} className="text-infamous-red-light" />
+              <p className="mt-4 text-3xl font-black">{value}</p>
+              <p className="mt-1 text-sm text-infamous-muted">{label}</p>
             </div>
-            <p className="mt-4 text-3xl font-black">1</p>
-            <p className="mt-1 text-sm text-infamous-muted">Loads Needing Action</p>
-          </div>
-          <div className="metric-card">
-            <div className="flex items-center justify-between">
-              <DollarSign size={20} className="text-[#36D399]" />
-              <span className="badge-green">Ready</span>
-            </div>
-            <p className="mt-4 text-3xl font-black">$2,450</p>
-            <p className="mt-1 text-sm text-infamous-muted">Recent Invoices</p>
-          </div>
-          <div className="metric-card">
-            <div className="flex items-center justify-between">
-              <Package size={20} className="text-infamous-ember" />
-              <span className="badge-gray">Month</span>
-            </div>
-            <p className="mt-4 text-3xl font-black">12</p>
-            <p className="mt-1 text-sm text-infamous-muted">Delivered This Month</p>
-          </div>
+          ))}
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1.4fr_0.6fr]">
-          {/* Left Column */}
           <div className="space-y-6">
-            {/* Active Shipments */}
-            <div className="rounded-xl border border-infamous-border bg-infamous-card">
+            <section className="rounded-xl border border-infamous-border bg-infamous-card">
               <div className="flex items-center justify-between border-b border-infamous-border p-5">
-                <h2 className="text-lg font-bold">Active Shipments</h2>
-                <Link to="/track-shipment" className="text-sm font-medium text-infamous-red-light hover:underline">View All</Link>
+                <div>
+                  <h2 className="text-lg font-bold">Your Shipments</h2>
+                  <p className="mt-1 text-xs text-infamous-muted">Live records for your authenticated organization.</p>
+                </div>
+                <Link to="/track-shipment" className="text-sm font-medium text-infamous-red-light">Track</Link>
               </div>
-              <div className="divide-y divide-infamous-border">
-                {demoShipments.map((shipment) => (
-                  <button
-                    type="button"
-                    key={shipment.trackingNumber}
-                    onClick={() => setSelectedShipment(shipment)}
-                    className={`w-full flex items-center justify-between gap-4 p-5 transition text-left ${
-                      selectedShipment?.trackingNumber === shipment.trackingNumber
-                        ? 'bg-infamous-red/5 border-l-2 border-infamous-red'
-                        : 'hover:bg-infamous-panel/50'
-                    }`}
-                  >
-                    <Link
-                      to={`/shipment/${shipment.trackingNumber}`}
-                      className="min-w-0 flex-1"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-xs text-infamous-muted">{shipment.trackingNumber}</span>
-                        {getStatusBadge(shipment.status)}
-                      </div>
-                      <h3 className="mt-1.5 font-semibold text-[#F5E8E8] truncate">{shipment.route}</h3>
-                      <div className="mt-1 flex items-center gap-4 text-xs text-[#B88989]/70">
-                        <span className="flex items-center gap-1"><Truck size={12} /> {shipment.carrier}</span>
-                        <span className="flex items-center gap-1"><Clock size={12} /> ETA {shipment.eta}</span>
-                      </div>
-                    </Link>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {(shipment.status === 'Delivered' || shipment.status === 'POD Uploaded' || shipment.status === 'Invoiced') && (
-                        <Link
-                          to={`/request-quote?origin=${encodeURIComponent(shipment.origin)}&destination=${encodeURIComponent(shipment.destination)}&equipment=${encodeURIComponent(shipment.equipment)}`}
-                          className="flex items-center gap-1.5 rounded-lg bg-infamous-red/10 px-3 py-1.5 text-xs font-semibold text-infamous-red-light transition hover:bg-infamous-red/20"
-                          title="Rebook this lane"
-                        >
-                          <RefreshCw size={12} /> Rebook
-                        </Link>
-                      )}
-                      <ChevronRight size={18} className="text-infamous-muted" />
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
+              {loading ? (
+                <div className="p-6 text-sm text-infamous-muted">Loading freight records…</div>
+              ) : shipments.length === 0 ? (
+                <div className="p-8 text-center">
+                  <Package className="mx-auto mb-3 text-infamous-muted" size={32} />
+                  <p className="font-semibold">No shipments yet</p>
+                  <p className="mt-1 text-sm text-infamous-muted">Request a quote to start your next shipment.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-infamous-border">
+                  {shipments.map((shipment, index) => {
+                    const status = asText(shipment.status, 'Pending');
+                    const tracking = asText(shipment.trackingNumber, asText(shipment.id, `Shipment ${index + 1}`));
+                    return (
+                      <button
+                        key={tracking}
+                        type="button"
+                        onClick={() => setSelectedShipment(shipment)}
+                        className="w-full p-5 text-left transition hover:bg-infamous-panel/50"
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="font-mono text-xs text-infamous-muted">{tracking}</span>
+                              <span className={statusClass(status)}>{status}</span>
+                            </div>
+                            <h3 className="mt-2 truncate font-semibold">
+                              {asText(shipment.origin, 'Origin')} → {asText(shipment.destination, 'Destination')}
+                            </h3>
+                            <div className="mt-2 flex flex-wrap gap-4 text-xs text-infamous-muted">
+                              <span className="flex items-center gap-1"><MapPin size={12} /> {asText(shipment.equipmentType, asText(shipment.equipment, 'Equipment pending'))}</span>
+                              <span className="flex items-center gap-1"><Clock3 size={12} /> ETA {asText(shipment.eta, asText(shipment.deliveryDate, 'Pending'))}</span>
+                            </div>
+                          </div>
+                          <ArrowRight size={18} className="mt-2 shrink-0 text-infamous-muted" />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
 
-            {/* Route Map */}
             {selectedShipment && (
-              <div className="rounded-xl border border-infamous-border bg-infamous-card overflow-hidden">
-                <div className="flex items-center justify-between border-b border-infamous-border px-5 py-3">
-                  <h2 className="text-sm font-bold flex items-center gap-2">
-                    <Navigation size={14} className="text-infamous-red-light" /> Live Route
-                  </h2>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs text-infamous-muted">{selectedShipment.trackingNumber}</span>
-                    <span className="text-xs text-[#B88989]">{selectedShipment.route}</span>
+              <section className="rounded-xl border border-infamous-border bg-infamous-card p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="font-mono text-xs text-infamous-muted">{asText(selectedShipment.trackingNumber, asText(selectedShipment.id))}</p>
+                    <h2 className="mt-1 text-lg font-bold">Shipment Details</h2>
                   </div>
+                  <span className={statusClass(asText(selectedShipment.status, 'Pending'))}>{asText(selectedShipment.status, 'Pending')}</span>
                 </div>
-                <div className="h-[280px]">
-                  <LazyShipmentRouteMap
-                    origin={selectedShipment.origin}
-                    destination={selectedShipment.destination}
-                    status={selectedShipment.status.toLowerCase().replace(/\s+/g, '_')}
-                  />
+                <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                  <div className="rounded-lg bg-infamous-panel p-4"><p className="text-xs text-infamous-muted">Origin</p><p className="mt-1 font-semibold">{asText(selectedShipment.origin)}</p></div>
+                  <div className="rounded-lg bg-infamous-panel p-4"><p className="text-xs text-infamous-muted">Destination</p><p className="mt-1 font-semibold">{asText(selectedShipment.destination)}</p></div>
+                  <div className="rounded-lg bg-infamous-panel p-4"><p className="text-xs text-infamous-muted">ETA</p><p className="mt-1 font-semibold">{asText(selectedShipment.eta, asText(selectedShipment.deliveryDate))}</p></div>
                 </div>
-              </div>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <Link to={`/shipment/${encodeURIComponent(asText(selectedShipment.trackingNumber, asText(selectedShipment.id))) }`} className="inline-flex items-center gap-2 rounded-lg bg-infamous-red px-4 py-2 text-sm font-semibold">
+                    View Tracking <ArrowRight size={14} />
+                  </Link>
+                  <Link to="/contact" className="inline-flex items-center gap-2 rounded-lg border border-infamous-border px-4 py-2 text-sm font-semibold">
+                    <MessageSquare size={14} /> Contact Support
+                  </Link>
+                </div>
+              </section>
             )}
-
-            {/* Shipment Timeline Preview */}
-            <div className="rounded-xl border border-infamous-border bg-infamous-card p-5">
-              <h2 className="mb-4 text-lg font-bold">Shipment Lifecycle</h2>
-              <div className="flex items-center gap-2 overflow-x-auto pb-2">
-                {['Quote Created', 'Booked', 'Carrier Assigned', 'Picked Up', 'In Transit', 'Delivered', 'POD Uploaded', 'Invoiced'].map((step, i) => (
-                  <div key={step} className="flex items-center gap-2 shrink-0">
-                    <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold ${
-                      i < 5 ? 'bg-infamous-red text-[#F5E8E8]' : 'bg-infamous-panel text-infamous-muted border border-infamous-border'
-                    }`}>
-                      {i + 1}
-                    </div>
-                    <span className={`text-xs whitespace-nowrap ${i < 5 ? 'text-[#F5E8E8] font-medium' : 'text-infamous-muted'}`}>{step}</span>
-                    {i < 7 && <div className={`w-6 h-px ${i < 4 ? 'bg-infamous-red' : 'bg-infamous-border'}`} />}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Quote Requests */}
-            <div className="rounded-xl border border-infamous-border bg-infamous-card">
-              <div className="flex items-center justify-between border-b border-infamous-border p-5">
-                <h2 className="text-lg font-bold">Recent Quotes</h2>
-                <Link to="/request-quote" className="text-sm font-medium text-infamous-red-light hover:underline">New Quote</Link>
-              </div>
-              <div className="divide-y divide-infamous-border">
-                {demoQuotes.map((quote) => (
-                  <div key={quote.id} className="p-5">
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="font-mono text-xs text-infamous-muted">{quote.id}</span>
-                      <span className={quote.status === 'pending' ? 'badge-orange' : 'badge-blue'}>{quote.status}</span>
-                    </div>
-                    <h3 className="mt-1.5 font-semibold">{quote.lane}</h3>
-                    <p className="mt-1 text-sm text-[#B88989]/70">{quote.equipment} · {quote.weight}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
-          {/* Right Column */}
           <div className="space-y-6">
-            {/* Alerts */}
-            <div className="rounded-xl border border-infamous-border bg-infamous-card">
-              <div className="flex items-center justify-between border-b border-infamous-border p-5">
-                <h2 className="text-lg font-bold flex items-center gap-2">
-                  <Bell size={18} className="text-infamous-red-light" /> Alerts
-                </h2>
+            <section className="rounded-xl border border-infamous-border bg-infamous-card">
+              <div className="border-b border-infamous-border p-5">
+                <h2 className="flex items-center gap-2 text-lg font-bold"><Bell size={18} className="text-infamous-red-light" /> Attention</h2>
               </div>
-              <div className="divide-y divide-infamous-border">
-                {recentAlerts.map((alert) => (
-                  <div key={alert.id} className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${
-                        alert.type === 'warning' ? 'bg-infamous-orange' :
-                        alert.type === 'success' ? 'bg-[#36D399]' : 'bg-infamous-red-light'
-                      }`} />
-                      <div>
-                        <p className="text-sm text-[#F5E8E8]/80">{alert.message}</p>
-                        <p className="mt-1 text-xs text-infamous-muted">{alert.time}</p>
+              <div className="p-5">
+                {actionShipments.length === 0 ? (
+                  <div className="flex items-start gap-3 text-sm">
+                    <CheckCircle2 className="mt-0.5 text-[#36D399]" size={18} />
+                    <div><p className="font-semibold">Nothing needs your attention</p><p className="mt-1 text-infamous-muted">Your current shipment records have no flagged exceptions.</p></div>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {actionShipments.map((shipment) => (
+                      <div key={String(shipment.id)} className="rounded-lg bg-infamous-panel p-3 text-sm">
+                        <p className="font-semibold">{asText(shipment.trackingNumber, asText(shipment.id))}</p>
+                        <p className="mt-1 text-infamous-muted">{asText(shipment.status)}</p>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            </div>
+            </section>
 
-            {/* Invoices */}
-            <div className="rounded-xl border border-infamous-border bg-infamous-card">
-              <div className="flex items-center justify-between border-b border-infamous-border p-5">
-                <h2 className="text-lg font-bold flex items-center gap-2">
-                  <DollarSign size={18} className="text-[#36D399]" /> Invoices
-                </h2>
+            <section className="rounded-xl border border-infamous-border bg-infamous-card">
+              <div className="border-b border-infamous-border p-5">
+                <h2 className="flex items-center gap-2 text-lg font-bold"><DollarSign size={18} className="text-[#36D399]" /> Invoices</h2>
               </div>
-              <div className="divide-y divide-infamous-border">
-                {recentInvoices.map((inv) => (
-                  <div key={inv.id} className="flex items-center justify-between p-4">
-                    <div>
-                      <p className="text-sm font-semibold text-[#F5E8E8]">{inv.id}</p>
-                      <p className="text-xs text-infamous-muted">{inv.load} · {inv.date}</p>
+              {invoices.length === 0 ? (
+                <div className="p-6 text-sm text-infamous-muted">No invoices are available for this organization.</div>
+              ) : (
+                <div className="divide-y divide-infamous-border">
+                  {invoices.slice(0, 5).map((invoice) => (
+                    <div key={String(invoice.id)} className="flex items-center justify-between gap-3 p-4">
+                      <div>
+                        <p className="text-sm font-semibold">{asText(invoice.invoiceNumber, asText(invoice.id))}</p>
+                        <p className="mt-1 text-xs text-infamous-muted">{asText(invoice.status, 'Pending')}</p>
+                      </div>
+                      <p className="font-bold">{money(invoice.amount)}</p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-[#F5E8E8]">{inv.amount}</p>
-                      <span className={inv.status === 'Paid' ? 'badge-green' : 'badge-blue'}>{inv.status}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+                  ))}
+                </div>
+              )}
+            </section>
 
-            {/* Documents */}
-            <div className="rounded-xl border border-infamous-border bg-infamous-card">
-              <div className="flex items-center justify-between border-b border-infamous-border p-5">
-                <h2 className="text-lg font-bold flex items-center gap-2">
-                  <FileText size={18} className="text-infamous-ember" /> Documents
-                </h2>
+            <section className="rounded-xl border border-infamous-border bg-infamous-card p-5">
+              <div className="flex items-start gap-3">
+                <FileText className="mt-0.5 text-infamous-ember" size={20} />
+                <div>
+                  <h2 className="font-bold">Documents & POD</h2>
+                  <p className="mt-1 text-sm text-infamous-muted">Documents will appear here as your shipment records receive BOL/POD files.</p>
+                </div>
               </div>
-              <div className="divide-y divide-infamous-border">
-                {recentDocuments.map((doc) => (
-                  <div key={doc.name} className="flex items-center justify-between p-4">
-                    <div>
-                      <p className="text-sm font-medium text-[#F5E8E8]">{doc.name}</p>
-                      <p className="text-xs text-infamous-muted">{doc.type} · {doc.date}</p>
-                    </div>
-                    <button className="rounded-lg bg-infamous-panel p-2 text-infamous-muted transition hover:text-[#F5E8E8]">
-                      <Download size={14} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+            </section>
 
-            {/* Support */}
-            <Link
-              to="/contact"
-              className="flex items-center gap-3 rounded-xl border border-infamous-border bg-infamous-card p-5 transition hover:border-infamous-red/20"
-            >
+            <Link to="/freight-assistant" className="flex items-center gap-3 rounded-xl border border-infamous-red/20 bg-infamous-red/5 p-5 transition hover:bg-infamous-red/10">
               <MessageSquare size={20} className="text-infamous-red-light" />
               <div className="flex-1">
-                <p className="font-semibold text-[#F5E8E8]">Need Help?</p>
-                <p className="text-sm text-infamous-muted">Message dispatch support</p>
+                <p className="font-semibold">Ask Genesis</p>
+                <p className="text-sm text-infamous-muted">Get help understanding your freight status.</p>
               </div>
-              <ChevronRight size={16} className="text-infamous-muted" />
+              <ArrowRight size={16} />
             </Link>
           </div>
         </div>
