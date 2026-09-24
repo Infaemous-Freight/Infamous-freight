@@ -1,6 +1,5 @@
-import { GoogleGenAI } from '@google/genai';
-
 const DEFAULT_MODEL = process.env.GEMINI_MODEL?.trim() || 'gemini-3.8-flash';
+const GEMINI_INTERACTIONS_URL = 'https://generativelanguage.googleapis.com/v1beta/interactions';
 
 const GENESIS_SYSTEM_INSTRUCTION = [
   'You are Genesis, the AI operations assistant for Infamous Freight.',
@@ -22,6 +21,12 @@ export type GenesisContext = {
   billing?: unknown;
 };
 
+type GeminiInteractionResponse = {
+  id?: string;
+  output_text?: string;
+  error?: { message?: string };
+};
+
 export async function askGenesisWithGemini(input: string, context: GenesisContext) {
   const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey) {
@@ -30,7 +35,6 @@ export async function askGenesisWithGemini(input: string, context: GenesisContex
     throw error;
   }
 
-  const ai = new GoogleGenAI({ apiKey });
   const safeContext = {
     role: context.role ?? 'operator',
     loads: context.loads ?? [],
@@ -39,22 +43,37 @@ export async function askGenesisWithGemini(input: string, context: GenesisContex
     billing: context.billing ?? null,
   };
 
-  const interaction = await ai.interactions.create({
-    model: DEFAULT_MODEL,
-    input: [
-      GENESIS_SYSTEM_INSTRUCTION,
-      '',
-      'Tenant-scoped operational context (do not infer beyond this data):',
-      JSON.stringify(safeContext),
-      '',
-      'Operator request: ' + input.trim().slice(0, 8000),
-    ].join('\n'),
+  const response = await fetch(GEMINI_INTERACTIONS_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-goog-api-key': apiKey,
+    },
+    body: JSON.stringify({
+      model: DEFAULT_MODEL,
+      input: [
+        GENESIS_SYSTEM_INSTRUCTION,
+        '',
+        'Tenant-scoped operational context (do not infer beyond this data):',
+        JSON.stringify(safeContext),
+        '',
+        'Operator request: ' + input.trim().slice(0, 8000),
+      ].join('\n'),
+    }),
   });
+
+  const payload = (await response.json()) as GeminiInteractionResponse;
+
+  if (!response.ok) {
+    const error = new Error(payload.error?.message || 'gemini_request_failed');
+    error.name = 'GeminiRequestError';
+    throw error;
+  }
 
   return {
     provider: 'google-gemini',
     model: DEFAULT_MODEL,
-    interactionId: interaction.id,
-    output: interaction.output_text,
+    interactionId: payload.id ?? null,
+    output: payload.output_text ?? '',
   };
 }
