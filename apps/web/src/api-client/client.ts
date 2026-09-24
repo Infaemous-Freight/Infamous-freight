@@ -223,6 +223,12 @@ class ApiClient {
     return data;
   }
 
+  // Genesis AI
+  async askGenesis(message: string) {
+    const { data } = await this.client.post('/genesis/chat', { message });
+    return data;
+  }
+
   // Chat
   async getThreads() {
     const { data } = await this.client.get('/chat/threads');
