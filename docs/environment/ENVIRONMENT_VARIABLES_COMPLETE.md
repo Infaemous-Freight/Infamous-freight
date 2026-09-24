@@ -1,3 +1,12 @@
+# Gemini / Genesis
+
+API runtime variables:
+
+- `GEMINI_API_KEY` — server-side Google Gemini API key; never expose to the browser.
+- `GEMINI_MODEL` — optional model override; defaults to `gemini-3.8-flash`.
+
+Genesis endpoint: `POST /api/genesis/chat`.
+
 # Infamous Freight environment variables
 
 _Last updated: May 2, 2026._

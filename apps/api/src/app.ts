@@ -31,6 +31,7 @@ import { createStripeWebhookEventStore } from './stripe-webhook-events';
 import { createStripeOneTimePaymentStore } from './stripe-one-time-payments';
 import { createFreightWorkflowRouter } from './freight-workflow-routes';
 import { createDispatchAutomationRouter } from './dispatch-automation';
+import { createGenesisGeminiRouter } from './genesis-gemini-routes';
 import {
   buildQuoteIntakeNotifications,
   prioritizeQuoteWithGenesis,
@@ -1319,6 +1320,7 @@ function registerRoutes(app: express.Express, dataStore: DataStore, auditLogger:
   }));
 
   app.use('/api/dispatch', ...protectedApi, createDispatchAutomationRouter(auditLogger));
+  app.use('/api/genesis', ...protectedApi, createGenesisGeminiRouter(dataStore));
 
   app.post('/api/ai-usage/events', ...protectedApi, wrapAsync(async (req, res) => {
     if (!req.body?.feature || typeof req.body.feature !== 'string') {

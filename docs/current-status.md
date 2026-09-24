@@ -11,6 +11,12 @@ Updated 2026-09-24.
 - Supabase production project `wnaievjffghrztjuvutp` has the freight/Stripe schema and RLS enabled. A security hardening migration for `public.set_updated_at()` was applied on 2026-09-17/18 and is now tracked in the repository migration set.
 - Supabase security advisory checks still report Stripe-managed tables with RLS/no policies as informational and Supabase Auth leaked-password protection as disabled. These require provider-console/configuration review before final security sign-off.
 
+## AI runtime
+
+- Genesis now has a tenant-scoped Gemini reasoning adapter on the feature branch and an authenticated `POST /api/genesis/chat` API contract.
+- Gemini credentials are server-side only. The integration does not grant Gemini direct Stripe, dispatch, billing, or database mutation authority.
+- The Gemini runtime is not production-verified until `GEMINI_API_KEY` is configured on the Fly API runtime and the endpoint passes authenticated smoke testing.
+
 ## Active runtime
 
 - `apps/api` is the active backend runtime.
