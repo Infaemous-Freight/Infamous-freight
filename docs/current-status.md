@@ -1,11 +1,11 @@
 # Current status
 
-Updated 2026-09-17.
+Updated 2026-09-24.
 
 ## Production truth
 
 - The canonical Netlify site is `https://www.infamousfreight.com`.
-- The currently verified Netlify production deploy is still the June 3, 2026 deploy `6a1ff804e5f8190008d78326`, built from commit `5ec0b815d41929d4af5f4208185ad6e81da62cc3`.
+- The currently verified Netlify production deploy remains the June 3, 2026 deploy `6a1ff804e5f8190008d78326`, built from commit `5ec0b815d41929d4af5f4208185ad6e81da62cc3`; the September `main` release is still awaiting verified production deployment.
 - September `main` changes are **not yet proven live** on the canonical site. The connected Netlify deployment tool returns an operator-side CLI command rather than executing the source upload in this environment.
 - The connected Stripe accounts are test-mode only; no live Infamous Freight Stripe account is available through the current connection. Do not represent Stripe live payments as verified.
 - Supabase production project `wnaievjffghrztjuvutp` has the freight/Stripe schema and RLS enabled. A security hardening migration for `public.set_updated_at()` was applied on 2026-09-17/18 and is now tracked in the repository migration set.
